@@ -1078,48 +1078,78 @@ void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Ma
 template <typename DataType>
 void Matrix<DataType>:: copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns)
 {
-
-
-
     if (src.m_pMatrix==m_pMatrix)
+    {
         _handleException(25, "template <typename DataType> void Matrix<DataType>:: copy(const Matrix<DataType> &m, int step1, int step2)");
-    if ((nrOfRows<0) || (nrOfColumns<0))
+    }
+
+    if (nrOfRows<0 || nrOfColumns<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>:: copy(const Matrix<DataType> &m, int step1, int step2)");
+    }
+
     if ((src.m_PosX+nrOfRows>src.m_NrOfRows) || (src.m_PosY+nrOfColumns>src.m_NrOfColumns) || (m_PosX+nrOfRows>m_NrOfRows) || (m_PosY+nrOfColumns>m_NrOfColumns))
+    {
         _handleException(18, "template <typename DataType> void Matrix<DataType>:: copy(const Matrix<DataType> &m, int step1, int step2)");
-    for (int i=0; i<nrOfRows; i++)
-        for (int j=0; j<nrOfColumns; j++)
-            m_pMatrix[m_PosX+i][m_PosY+j]=src.m_pMatrix[src.m_PosX+i][src.m_PosY+j];
+    }
+
+    for (int row{0}; row<nrOfRows; ++row)
+    {
+        for (int col{0}; col<nrOfColumns; ++col)
+        {
+            m_pMatrix[m_PosX+row][m_PosY+col] = src.m_pMatrix[src.m_PosX+row][src.m_PosY+col];
+        }
+    }
 }
 
 template <typename DataType>
 void Matrix<DataType>::copy(DataType** src, int nrOfRows, int nrOfColumns)
 {
-    int i,j;
-    if (src==0)
+    if (src==nullptr)
+    {
         _handleException(22, "template <typename DataType> void Matrix<DataType>::copy(DataType** m, int ln, int cl)");
+    }
+
     if ((nrOfRows<=0)||(nrOfColumns<=0))
+    {
         _handleException(3, "template <typename DataType> void Matrix<DataType>::copy(DataType** m, int ln, int cl)");
+    }
+
     _deallocMemory();
     _allocMemory(nrOfRows, nrOfColumns);
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<m_NrOfColumns; j++)
-                m_pMatrix[i][j]=src[i][j];
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            m_pMatrix[row][col] = src[row][col];
+        }
+    }
 }
 
 template <typename DataType>
 void Matrix<DataType>::copy(DataType* src, int nrOfRows, int nrOfColumns)
 {
-    int i,j;
-    if (src==0)
+    if (src==nullptr)
+    {
         _handleException(22, "template <typename DataType> void Matrix<DataType>::copy(DataType* m, int ln, int cl)");
+    }
+
     if ((nrOfRows<=0)||(nrOfColumns<=0))
+    {
         _handleException(3, "template <typename DataType> void Matrix<DataType>::copy(DataType* m, int ln, int cl)");
+    }
+
     _deallocMemory();
     _allocMemory(nrOfRows, nrOfColumns);
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<m_NrOfColumns; j++)
-                m_pMatrix[i][j]=*(src++);
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            m_pMatrix[row][col] = *(src++);
+        }
+    }
 }
 
 template <typename DataType>
