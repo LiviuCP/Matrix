@@ -1481,48 +1481,142 @@ Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
 }
 
 template <typename DataType>
-bool Matrix<DataType>::operator==(const Matrix<DataType>& matrix)
+bool Matrix<DataType>::operator==(const Matrix<DataType>& matrix) const
 {
-    int i,j;
+    bool areEqual{false};
+
     if (matrix.m_pMatrix==m_pMatrix)
-        return true;
-    if ((m_NrOfRows!=matrix.m_NrOfRows) || (m_NrOfColumns!=matrix.m_NrOfColumns))
-        _handleException(10, "template <typename DataType> bool Matrix<DataType>::operator==(const Matrix<DataType> &m)");
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<m_NrOfColumns; j++)
-            if (m_pMatrix[i][j]!=matrix.m_pMatrix[i][j])
-                return false;
-    return true;
+    {
+        areEqual = true;
+    }
+    else if (m_NrOfRows == matrix.m_NrOfRows && m_NrOfColumns == matrix.m_NrOfColumns)
+    {
+        bool continueChecking{true};
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                if (m_pMatrix[row][col]!=matrix.m_pMatrix[row][col])
+                {
+                    continueChecking = false;
+                    break;
+                }
+            }
+
+            if (!continueChecking)
+            {
+                break;
+            }
+        }
+    }
+
+    return areEqual;
 }
 
 template<typename DataType>
-bool Matrix<DataType>::operator !=(Matrix<DataType> &matrix)
+bool Matrix<DataType>::operator !=(const Matrix<DataType>& matrix) const
 {
-    if(m_pMatrix==matrix.m_pMatrix) return false; if (rank()!=matrix.rank()) return true; return false;
+    bool areRanksDifferent{true};
+
+    if (&matrix != this)
+    {
+        // avoid calling the rank() method if same matrix (too costly)
+        if (rank() == matrix.rank())
+        {
+            areRanksDifferent = false;
+        }
+    }
+    else
+    {
+        areRanksDifferent = false;
+    }
+
+    return areRanksDifferent;
 }
 
 template<typename DataType>
-bool Matrix<DataType>::operator <(Matrix<DataType> &matrix)
+bool Matrix<DataType>::operator <(const Matrix<DataType> &matrix) const
 {
-    if (m_pMatrix==matrix.m_pMatrix) return false; if (rank()<matrix.rank()) return true; return false;
+    bool isRankSmaller{true};
+
+    if (&matrix !=this)
+    {
+        // avoid calling the rank() method if same matrix (too costly)
+        if (rank()>=matrix.rank())
+        {
+            isRankSmaller = false;
+        }
+    }
+    else
+    {
+        isRankSmaller = false;
+    }
+
+    return isRankSmaller;
 }
 
 template<typename DataType>
-bool Matrix<DataType>::operator <=(Matrix<DataType> &matrix)
+bool Matrix<DataType>::operator <=(const Matrix<DataType> &matrix) const
 {
-    if (m_pMatrix==matrix.m_pMatrix) return true; if (rank()<=matrix.rank()) return true; return false;
+    bool isRankSmallerOrEqual{true};
+
+    if (&matrix !=this)
+    {
+        // avoid calling the rank() method if same matrix (too costly)
+        if (rank()>matrix.rank())
+        {
+            isRankSmallerOrEqual = false;
+        }
+    }
+    else
+    {
+        isRankSmallerOrEqual = false;
+    }
+
+    return isRankSmallerOrEqual;
 }
 
 template<typename DataType>
-bool Matrix<DataType>::operator >(Matrix<DataType> &matrix)
+bool Matrix<DataType>::operator >(const Matrix<DataType> &matrix) const
 {
-    if (m_pMatrix==matrix.m_pMatrix) return false; if (rank()>matrix.rank()) return true; return false;
+    bool isRankHigher{true};
+
+    if (&matrix !=this)
+    {
+        // avoid calling the rank() method if same matrix (too costly)
+        if (rank()<=matrix.rank())
+        {
+            isRankHigher = false;
+        }
+    }
+    else
+    {
+        isRankHigher = false;
+    }
+
+    return isRankHigher;
 }
 
 template<typename DataType>
-bool Matrix<DataType>::operator >=(Matrix<DataType> &matrix)
+bool Matrix<DataType>::operator >=(const Matrix<DataType> &matrix) const
 {
-    if (m_pMatrix==matrix.m_pMatrix) return true; if (rank()>=matrix.rank()) return true; return false;
+    bool isRankHigherOrEqual{true};
+
+    if (&matrix !=this)
+    {
+        // avoid calling the rank() method if same matrix (too costly)
+        if (rank()<matrix.rank())
+        {
+            isRankHigherOrEqual = false;
+        }
+    }
+    else
+    {
+        isRankHigherOrEqual = false;
+    }
+
+    return isRankHigherOrEqual;
 }
 
 template<typename DataType>

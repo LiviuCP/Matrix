@@ -95,12 +95,12 @@ public:
     Matrix<DataType> operator*(const DataType& data);
     Matrix<DataType> operator^ (int exp);
     Matrix<DataType>& operator= (const Matrix<DataType>& matrix);
-    bool operator== (const Matrix<DataType>& matrix);
-    bool operator != (Matrix<DataType>& matrix);
-    bool operator < (Matrix<DataType>& matrix);
-    bool operator <= (Matrix<DataType>& matrix);
-    bool operator > (Matrix<DataType>& matrix);
-    bool operator >= (Matrix<DataType>& matrix);
+    bool operator== (const Matrix<DataType>& matrix) const;
+    bool operator != (const Matrix<DataType>& matrix) const;
+    bool operator < (const Matrix<DataType>& matrix) const;
+    bool operator <= (const Matrix<DataType>& matrix) const;
+    bool operator > (const Matrix<DataType>& matrix) const;
+    bool operator >= (const Matrix<DataType>& matrix) const;
 
     friend ostream &operator<<(ostream& out, Matrix<DataType>& matrix);
     friend istream &operator>> (istream& in, Matrix<DataType>& matrix);
