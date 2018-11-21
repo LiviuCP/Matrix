@@ -735,101 +735,179 @@ void Matrix<DataType>::sortAllElements(int mode)
 }
 
 template <typename DataType>
-void Matrix<DataType>::insertRow (int m)
+void Matrix<DataType>::insertRow (int rowNr)
 {
-    int i;
-    DataType **insert_ptr;
-    if (m<0)
+    if (rowNr<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::insert_row (int m)");
-    if (m>m_NrOfRows)
+    }
+
+    if (rowNr>m_NrOfRows)
+    {
         _handleException(17, "template <typename DataType> void Matrix<DataType>::insert_row (int m)");
-    insert_ptr=new DataType*[m_NrOfRows+1];
-    for (i=0; i<m; i++)
-        insert_ptr[i]=m_pMatrix[i];
-    insert_ptr[m]=new DataType[m_NrOfColumns];
-    for (i=0; i<m_NrOfColumns; i++)
-        insert_ptr[m][i]=0;
-    for (i=m; i<m_NrOfRows; i++)
-        insert_ptr[i+1]=m_pMatrix[i];
+    }
+
+    DataType** insert_ptr=new DataType*[m_NrOfRows+1];
+
+    for (int row{0}; row<rowNr; ++row)
+    {
+        insert_ptr[row] = m_pMatrix[row];
+    }
+
+    insert_ptr[rowNr]=new DataType[m_NrOfColumns];
+
+    for (int col{0}; col<m_NrOfColumns; ++col)
+    {
+        insert_ptr[rowNr][col]=0;
+    }
+
+    for (int row{rowNr}; row<m_NrOfRows; ++row)
+    {
+        insert_ptr[row+1] = m_pMatrix[row];
+    }
+
     delete []m_pMatrix;
-    m_pMatrix=insert_ptr;
-    m_NrOfRows++;
+    m_pMatrix = insert_ptr;
+    ++m_NrOfRows;
 }
 
 template <typename DataType>
-void Matrix<DataType>::deleteRow (int m)
+void Matrix<DataType>::deleteRow (int rowNr)
 {
-    int i;
-    DataType **insert_ptr;
     if (m_NrOfRows==1)
+    {
         _handleException(15, "template <typename DataType> void Matrix<DataType>::delete_row (int m)");
-    if (m>=m_NrOfRows)
+    }
+
+    if (rowNr>=m_NrOfRows)
+    {
         _handleException(4, "template <typename DataType> void Matrix<DataType>::delete_row (int m)");
-    if (m<0)
+    }
+
+    if (rowNr<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::delete_row (int m)");
-    insert_ptr=new DataType*[m_NrOfRows-1];
-    for (i=0; i<m; i++)
-        insert_ptr[i]=m_pMatrix[i];
-    delete []m_pMatrix[m];
-    for (i=m; i<m_NrOfRows-1; i++)
-        insert_ptr[i]=m_pMatrix[i+1];
+    }
+
+    DataType** insert_ptr{new DataType*[m_NrOfRows-1]};
+
+    for (int row{0}; row<rowNr; ++row)
+    {
+        insert_ptr[row] = m_pMatrix[row];
+    }
+
+    delete []m_pMatrix[rowNr];
+
+    for (int row{rowNr}; row<m_NrOfRows-1; ++row)
+    {
+        insert_ptr[row] = m_pMatrix[row+1];
+    }
+
     delete []m_pMatrix;
-    m_pMatrix=insert_ptr;
-    m_NrOfRows--;
+    m_pMatrix = insert_ptr;
+    --m_NrOfRows;
 }
 
 template <typename DataType>
-void Matrix<DataType>::insertColumn(int n)
+void Matrix<DataType>::insertColumn(int columnNr)
 {
-    int i,j;
-    DataType **insert_ptr;
-    if (n<0)
+    if (columnNr<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::insert_col(int n)");
-    if (n>m_NrOfColumns)
+    }
+
+    if (columnNr>m_NrOfColumns)
+    {
         _handleException(17, "template <typename DataType> void Matrix<DataType>::insert_col(int n)");
-    insert_ptr = new DataType*[m_NrOfRows];
-    for (i=0; i<m_NrOfRows; i++)
-        insert_ptr[i]=new DataType[m_NrOfColumns+1];
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<n; j++)
-            insert_ptr[i][j]=m_pMatrix[i][j];
-    for(i=0; i<m_NrOfRows; i++)
-        for(j=n+1; j<m_NrOfColumns+1; j++)
-            insert_ptr[i][j]=m_pMatrix[i][j-1];
-    for (i=0; i<m_NrOfRows; i++)
-        insert_ptr[i][n]=0;
-    for (i=0; i<m_NrOfRows; i++)
-        delete []m_pMatrix[i];
+    }
+
+    DataType** insert_ptr{new DataType*[m_NrOfRows]};
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        insert_ptr[row]=new DataType[m_NrOfColumns+1];
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col=0; col<columnNr; ++col)
+        {
+            insert_ptr[row][col]=m_pMatrix[row][col];
+        }
+    }
+
+    for(int row{0}; row<m_NrOfRows; ++row)
+    {
+        for(int col=columnNr+1; col<m_NrOfColumns+1; ++col)
+        {
+            insert_ptr[row][col]=m_pMatrix[row][col-1];
+        }
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        insert_ptr[row][columnNr]=0;
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        delete []m_pMatrix[row];
+    }
+
     delete []m_pMatrix;
-    m_pMatrix=insert_ptr;
-    m_NrOfColumns++;
+    m_pMatrix = insert_ptr;
+    ++m_NrOfColumns;
 }
 
 template <typename DataType>
-void Matrix<DataType>::deleteColumn(int n)
+void Matrix<DataType>::deleteColumn(int columnNr)
 {
-    int i,j;
     if (m_NrOfColumns==1)
+    {
         _handleException(14, "template <typename DataType> void Matrix<DataType>::delete_col(int n)");
-    if (n<0)
+    }
+
+    if (columnNr<0)
+    {
         _handleException (16, "template <typename DataType> void Matrix<DataType>::delete_col(int n)");
-    if (n>=m_NrOfColumns)
+    }
+
+    if (columnNr>=m_NrOfColumns)
+    {
         _handleException (7, "template <typename DataType> void Matrix<DataType>::delete_col(int n)");
-    DataType **insert_ptr;
-    insert_ptr = new DataType*[m_NrOfRows];
-    for (i=0; i<m_NrOfRows; i++)
-        insert_ptr[i]=new DataType[m_NrOfColumns-1];
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<n; j++)
-            insert_ptr[i][j]=m_pMatrix[i][j];
-    for(i=0; i<m_NrOfRows; i++)
-        for(j=n; j<m_NrOfColumns-1; j++)
-            insert_ptr[i][j]=m_pMatrix[i][j+1];
-    for (i=0; i<m_NrOfRows; i++)
-        delete []m_pMatrix[i];
+    }
+
+    DataType** insert_ptr{new DataType*[m_NrOfRows]};
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        insert_ptr[row]=new DataType[m_NrOfColumns-1];
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<columnNr; ++col)
+        {
+            insert_ptr[row][col]=m_pMatrix[row][col];
+        }
+    }
+
+    for(int row{0}; row<m_NrOfRows; ++row)
+    {
+        for(int col{columnNr}; col<m_NrOfColumns-1; ++col)
+        {
+            insert_ptr[row][col]=m_pMatrix[row][col+1];
+        }
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        delete []m_pMatrix[row];
+    }
+
     delete []m_pMatrix;
-    m_pMatrix=insert_ptr;
-    m_NrOfColumns--;
+    m_pMatrix = insert_ptr;
+    --m_NrOfColumns;
 }
 
 template<typename DataType>
