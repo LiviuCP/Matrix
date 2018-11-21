@@ -1,27 +1,27 @@
 #include "matrix.h"
 
-template<typename DataType> int Matrix<DataType>::f_x=0;
-template<typename DataType> int Matrix<DataType>::f_y=0;
+template<typename DataType> int Matrix<DataType>::s_FilePosX=0;
+template<typename DataType> int Matrix<DataType>::s_FilePosY=0;
 
 template <typename DataType> Matrix<DataType>::Matrix() {
     bool by_row=true;
-    line=1;
-    column=1;
-    mprint=0;
-    entdat=0;
-    ptr=new DataType*[1];
-    ptr[0]=new DataType;
-    ptr[0][0]=0;
+    m_NrOfRows=1;
+    m_NrOfColumns=1;
+    m_MatrixPrintMode=0;
+    m_MatrixEntryMode=0;
+    m_pMatrix=new DataType*[1];
+    m_pMatrix[0]=new DataType;
+    m_pMatrix[0][0]=0;
     resetCurrentPos();
 }
 
 template <typename DataType> Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns) {
     if (nrOfRows<=0 || nrOfColumns<=0) _handleException(3, "template <typename DataType> Matrix<DataType>::Matrix(int m, int n)");
-    by_row=true;
-    line=nrOfRows;
-    column=nrOfColumns;
-    entdat=0;
-    mprint=0;
+    m_WrapMatrixByRow=true;
+    m_NrOfRows=nrOfRows;
+    m_NrOfColumns=nrOfColumns;
+    m_MatrixEntryMode=0;
+    m_MatrixPrintMode=0;
     resetCurrentPos();
     _allocMemory(nrOfRows,nrOfColumns);
     setItemsToZero();
@@ -30,15 +30,15 @@ template <typename DataType> Matrix<DataType>::Matrix(int nrOfRows, int nrOfColu
 template <typename DataType> Matrix<DataType>::Matrix(int nrOfRowsColumns) {
     if (nrOfRowsColumns<=0) _handleException(3, "template <typename DataType> Matrix<DataType>::Matrix(int n)");
     bool by_row=true;
-    line = nrOfRowsColumns;
-    column = nrOfRowsColumns;
-    mprint=0;
-    entdat=0;
+    m_NrOfRows = nrOfRowsColumns;
+    m_NrOfColumns = nrOfRowsColumns;
+    m_MatrixPrintMode=0;
+    m_MatrixEntryMode=0;
     resetCurrentPos();
-    _allocMemory(line,column);
+    _allocMemory(m_NrOfRows,m_NrOfColumns);
     setItemsToZero();
     for (int i=0; i<nrOfRowsColumns; i++)
-        ptr[i][i]=1;
+        m_pMatrix[i][i]=1;
 }
 
 template <typename DataType> Matrix<DataType>::Matrix(DataType** matrixPtr, int nrOfRows, int nrOfColumns) {
@@ -47,14 +47,14 @@ template <typename DataType> Matrix<DataType>::Matrix(DataType** matrixPtr, int 
         _handleException(22,"template <typename DataType> Matrix<DataType>::Matrix(DataType** m, int ln, int cl)");
     if ((nrOfRows<=0) || (nrOfColumns<=0))
         _handleException(3,"template <typename DataType> Matrix<DataType>::Matrix(DataType** m, int ln, int cl)");
-    by_row=true;
-    mprint=0;
-    entdat=0;
+    m_WrapMatrixByRow=true;
+    m_MatrixPrintMode=0;
+    m_MatrixEntryMode=0;
     resetCurrentPos();
     _allocMemory(nrOfRows, nrOfColumns);
-    for (i=0; i<line; i++)
-        for (j=0; j<column; j++)
-                ptr[i][j]=matrixPtr[i][j];
+    for (i=0; i<m_NrOfRows; i++)
+        for (j=0; j<m_NrOfColumns; j++)
+                m_pMatrix[i][j]=matrixPtr[i][j];
 }
 
 template <typename DataType> Matrix<DataType>::Matrix(DataType* matrixPtr, int nrOfRows, int nrOfColumns) {
@@ -63,58 +63,58 @@ template <typename DataType> Matrix<DataType>::Matrix(DataType* matrixPtr, int n
         _handleException(22,"template <typename DataType> Matrix<DataType>::Matrix(DataType* m, int ln, int cl)");
     if ((nrOfRows<=0) || (nrOfColumns<=0))
         _handleException(3,"template <typename DataType> Matrix<DataType>::Matrix(DataType* m, int ln, int cl)");
-    by_row=true;
-    line=nrOfRows;
-    column=nrOfColumns;
-    mprint=0;
-    entdat=0;
+    m_WrapMatrixByRow=true;
+    m_NrOfRows=nrOfRows;
+    m_NrOfColumns=nrOfColumns;
+    m_MatrixPrintMode=0;
+    m_MatrixEntryMode=0;
     resetCurrentPos();
     _allocMemory(nrOfRows, nrOfColumns);
-    for (i=0; i<line; i++)
-        for (j=0; j<column; j++)
-                ptr[i][j]=*(matrixPtr++);
+    for (i=0; i<m_NrOfRows; i++)
+        for (j=0; j<m_NrOfColumns; j++)
+                m_pMatrix[i][j]=*(matrixPtr++);
 }
 
 template<typename DataType> Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, istream &in) {
     int i;
-    by_row=true;
-    mprint=0;
-    entdat=0;
-    line=nrOfRows; column=nrOfColumns;
+    m_WrapMatrixByRow=true;
+    m_MatrixPrintMode=0;
+    m_MatrixEntryMode=0;
+    m_NrOfRows=nrOfRows; m_NrOfColumns=nrOfColumns;
     _allocMemory(nrOfRows,nrOfColumns);
     _readDiscard(in);
-    pos_x=0;
-    for (i=0; i<line; i++) {
+    m_PosX=0;
+    for (i=0; i<m_NrOfRows; i++) {
         _readTextLine(in);
-        pos_x++;
-        f_x++;
+        m_PosX++;
+        s_FilePosX++;
     }
-    pos_x=0;
-    pos_y=0;
+    m_PosX=0;
+    m_PosY=0;
 }
 
 template <typename DataType> Matrix<DataType>::Matrix(const Matrix<DataType> &matrix) {
-    _allocMemory(matrix.line, matrix.column);
-    for (int i=0; i<line; i++)
-        for (int j=0; j<column; j++)
-            ptr[i][j]=matrix.ptr[i][j];
-    pos_x=matrix.pos_x;
-    pos_y=matrix.pos_y;
-    by_row=matrix.by_row;
-    entdat=matrix.entdat;
-    mprint=matrix.mprint;
+    _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
+    for (int i=0; i<m_NrOfRows; i++)
+        for (int j=0; j<m_NrOfColumns; j++)
+            m_pMatrix[i][j]=matrix.m_pMatrix[i][j];
+    m_PosX=matrix.m_PosX;
+    m_PosY=matrix.m_PosY;
+    m_WrapMatrixByRow=matrix.m_WrapMatrixByRow;
+    m_MatrixEntryMode=matrix.m_MatrixEntryMode;
+    m_MatrixPrintMode=matrix.m_MatrixPrintMode;
 }
 
 template<typename DataType> DataType& Matrix<DataType>:: get(int i,int j) {
     if ((i<0) || (j<0)) _handleException(16, "template<typename DataType> DataType& Matrix<DataType>::get(int i,int j)");
-    if ((i>=line) || (j>=column)) _handleException(18, "template<typename DataType> DataType& Matrix<DataType>::get(int i,int j)");
-    return ptr[i][j];
+    if ((i>=m_NrOfRows) || (j>=m_NrOfColumns)) _handleException(18, "template<typename DataType> DataType& Matrix<DataType>::get(int i,int j)");
+    return m_pMatrix[i][j];
 }
 
 template <typename DataType> void Matrix<DataType>::setItemsToZero() {
-    for (int i=0; i<line; i++)
-        for (int j=0; j<column; j++)
-            ptr[i][j]=0;
+    for (int i=0; i<m_NrOfRows; i++)
+        for (int j=0; j<m_NrOfColumns; j++)
+            m_pMatrix[i][j]=0;
 }
 
 template <typename DataType> void Matrix<DataType>::transformToUnitMatrix(int nrOfRowsColumns) {
@@ -123,7 +123,7 @@ template <typename DataType> void Matrix<DataType>::transformToUnitMatrix(int nr
     _allocMemory(nrOfRowsColumns,nrOfRowsColumns);
     setItemsToZero();
     for (int i=0; i<nrOfRowsColumns; i++)
-        ptr[i][i]=1;
+        m_pMatrix[i][i]=1;
 }
 
 template <typename DataType> void Matrix<DataType>::transformToZeroMatrix(int nrOfRows, int nrOfColumns) {
@@ -137,99 +137,99 @@ template <typename DataType> void Matrix<DataType>::transformToZeroMatrix(int nr
 template <typename DataType> void Matrix<DataType>::resize(int m, int n) {
     int i,j;
     DataType **temp;
-    if ((m==line)&&(n==column)) return;
+    if ((m==m_NrOfRows)&&(n==m_NrOfColumns)) return;
     if ((m<=0) || (n<=0))
         _handleException(3, "template <typename DataType> void Matrix<DataType>::resize_m(int m, int n)");
     Matrix a;
-    temp=a.ptr;
-    a.ptr=ptr;
-    ptr=temp;
-    a.line=line;
-    a.column=column;
-    delete ptr[0];
-    delete ptr;
+    temp=a.m_pMatrix;
+    a.m_pMatrix=m_pMatrix;
+    m_pMatrix=temp;
+    a.m_NrOfRows=m_NrOfRows;
+    a.m_NrOfColumns=m_NrOfColumns;
+    delete m_pMatrix[0];
+    delete m_pMatrix;
     _allocMemory(m,n);
-    if ((m<a.line)&&(n<a.column)) {
+    if ((m<a.m_NrOfRows)&&(n<a.m_NrOfColumns)) {
         for (i=0; i<m; i++)
             for (j=0; j<n; j++)
-                ptr[i][j]=a.ptr[i][j];
+                m_pMatrix[i][j]=a.m_pMatrix[i][j];
         return;
     }
-    if ((m<=a.line)&&(n>=a.column)) {
+    if ((m<=a.m_NrOfRows)&&(n>=a.m_NrOfColumns)) {
         for (i=0; i<m; i++)
-            for (j=0; j<a.column; j++)
-                ptr[i][j]=a.ptr[i][j];
+            for (j=0; j<a.m_NrOfColumns; j++)
+                m_pMatrix[i][j]=a.m_pMatrix[i][j];
         for (i=0; i<m; i++)
-            for (j=a.column; j<n; j++)
-                ptr[i][j]=0;
+            for (j=a.m_NrOfColumns; j<n; j++)
+                m_pMatrix[i][j]=0;
         return;
     }
-    if ((m>=a.line) && (n<=a.column)) {
-        for (i=0; i<a.line; i++)
+    if ((m>=a.m_NrOfRows) && (n<=a.m_NrOfColumns)) {
+        for (i=0; i<a.m_NrOfRows; i++)
             for (j=0; j<n; j++)
-                ptr[i][j]=a.ptr[i][j];
-        for (i=a.line; i<m; i++)
+                m_pMatrix[i][j]=a.m_pMatrix[i][j];
+        for (i=a.m_NrOfRows; i<m; i++)
             for (j=0; j<n; j++)
-                ptr[i][j]=0;
+                m_pMatrix[i][j]=0;
         return;
     }
 
-    for (i=0; i<a.line; i++)
-        for (j=0; j<a.column; j++)
-            ptr[i][j]=a.ptr[i][j];
+    for (i=0; i<a.m_NrOfRows; i++)
+        for (j=0; j<a.m_NrOfColumns; j++)
+            m_pMatrix[i][j]=a.m_pMatrix[i][j];
     for (i=0; i<m; i++)
-        for (j=a.column; j<n; j++)
-            ptr[i][j]=0;
-    for (i=a.line; i<m; i++)
+        for (j=a.m_NrOfColumns; j<n; j++)
+            m_pMatrix[i][j]=0;
+    for (i=a.m_NrOfRows; i<m; i++)
         for (j=0; j<n; j++)
-            ptr[i][j]=0;
-    for (i=a.line; i<m; i++)
-        for (j=a.column; j<n; j++)
-            ptr[i][j]=0;
+            m_pMatrix[i][j]=0;
+    for (i=a.m_NrOfRows; i<m; i++)
+        for (j=a.m_NrOfColumns; j<n; j++)
+            m_pMatrix[i][j]=0;
 }
 template <typename DataType> void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix& matrix, int matrixRowNr, int matrixColumnNr) {
     DataType swap;
-    if (matrix.ptr==ptr)
+    if (matrix.m_pMatrix==m_pMatrix)
         _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, Matrix &m2, int r2, int c2)");
     if ((rowNr<0) || (columnNr<0) || (matrixRowNr<0) || (matrixColumnNr<0))
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, Matrix &m2, int r2, int c2)");
-    if ((rowNr>=line) || (columnNr>=column) || (matrixRowNr>=matrix.line) || (matrixColumnNr>=matrix.column))
+    if ((rowNr>=m_NrOfRows) || (columnNr>=m_NrOfColumns) || (matrixRowNr>=matrix.m_NrOfRows) || (matrixColumnNr>=matrix.m_NrOfColumns))
         _handleException(18, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, Matrix &m2, int r2, int c2)");
-    swap=ptr[rowNr][columnNr];
-    ptr[rowNr][columnNr]=matrix.ptr[matrixRowNr][matrixColumnNr];
-    matrix.ptr[matrixRowNr][matrixColumnNr]=swap;
+    swap=m_pMatrix[rowNr][columnNr];
+    m_pMatrix[rowNr][columnNr]=matrix.m_pMatrix[matrixRowNr][matrixColumnNr];
+    matrix.m_pMatrix[matrixRowNr][matrixColumnNr]=swap;
 }
 
 template <typename DataType> void Matrix<DataType>::swapRow(int rowNr, Matrix& matrix, int matrixRowNr) {
     DataType *swap;
-    if (matrix.ptr==ptr)
+    if (matrix.m_pMatrix==m_pMatrix)
         _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
     if ((rowNr<0) || (matrixRowNr<0))
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
-    if ((rowNr>=line) || (matrixRowNr>=matrix.line))
+    if ((rowNr>=m_NrOfRows) || (matrixRowNr>=matrix.m_NrOfRows))
         _handleException(6, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
-    if (column!=matrix.column)
+    if (m_NrOfColumns!=matrix.m_NrOfColumns)
         _handleException(13, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
-    swap=ptr[rowNr];
-    ptr[rowNr]=matrix.ptr[matrixRowNr];
-    matrix.ptr[matrixRowNr]=swap;
+    swap=m_pMatrix[rowNr];
+    m_pMatrix[rowNr]=matrix.m_pMatrix[matrixRowNr];
+    matrix.m_pMatrix[matrixRowNr]=swap;
 }
 
 template <typename DataType> void Matrix<DataType>::swapColumn(int columnNr, Matrix& matrix, int matrixColumnNr) {
     DataType swap;
     int i;
-    if (matrix.ptr==ptr)
+    if (matrix.m_pMatrix==m_pMatrix)
         _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
     if ((columnNr<0) || (matrixColumnNr<0))
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
-    if ((columnNr>=column) || (matrixColumnNr>=matrix.column))
+    if ((columnNr>=m_NrOfColumns) || (matrixColumnNr>=matrix.m_NrOfColumns))
         _handleException(9, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
-    if (line!=matrix.line)
+    if (m_NrOfRows!=matrix.m_NrOfRows)
         _handleException(12, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
-    for(i=0; i<line; i++) {
-        swap=ptr[i][columnNr];
-        ptr[i][columnNr]=matrix.ptr[i][matrixColumnNr];
-        matrix.ptr[i][matrixColumnNr]=swap;
+    for(i=0; i<m_NrOfRows; i++) {
+        swap=m_pMatrix[i][columnNr];
+        m_pMatrix[i][columnNr]=matrix.m_pMatrix[i][matrixColumnNr];
+        matrix.m_pMatrix[i][matrixColumnNr]=swap;
     }
 }
 
@@ -238,41 +238,41 @@ template <typename DataType> void Matrix<DataType>::swapRowColumn(int rowNr, Mat
     int k;
     if ((rowNr<0) || (matrixColumnNr<0))
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
-    if (column!=matrix.line)
+    if (m_NrOfColumns!=matrix.m_NrOfRows)
         _handleException(11, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
-    if (rowNr>=line)
+    if (rowNr>=m_NrOfRows)
         _handleException(6, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
-    if (matrixColumnNr>=matrix.column)
+    if (matrixColumnNr>=matrix.m_NrOfColumns)
         _handleException(9, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
-    if (ptr==matrix.ptr)
+    if (m_pMatrix==matrix.m_pMatrix)
         _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
-    for (k=0; k<column; k++) {
-        swap=ptr[rowNr][k];
-        ptr[rowNr][k]=matrix.ptr[k][matrixColumnNr];
-        matrix.ptr[k][matrixColumnNr]=swap;
+    for (k=0; k<m_NrOfColumns; k++) {
+        swap=m_pMatrix[rowNr][k];
+        m_pMatrix[rowNr][k]=matrix.m_pMatrix[k][matrixColumnNr];
+        matrix.m_pMatrix[k][matrixColumnNr]=swap;
     }
 }
 
 template <typename DataType> void Matrix<DataType>::swapItem(int firstRowNr, int firstColumnNr, int secondRowNr, int secondColumnNr) {
     if ((firstRowNr<0) || (firstColumnNr<0) || (secondRowNr<0) || (secondColumnNr<0))
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, int r2, int c2)");
-    if ((firstRowNr>=line) || (firstColumnNr>=column) || (secondRowNr>=line) || (secondColumnNr>=column))
+    if ((firstRowNr>=m_NrOfRows) || (firstColumnNr>=m_NrOfColumns) || (secondRowNr>=m_NrOfRows) || (secondColumnNr>=m_NrOfColumns))
         _handleException(18, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, int r2, int c2)");
     DataType swap;
-    swap=ptr[firstRowNr][firstColumnNr];
-    ptr[firstRowNr][firstColumnNr]=ptr[secondRowNr][secondColumnNr];
-    ptr[secondRowNr][secondColumnNr]=swap;
+    swap=m_pMatrix[firstRowNr][firstColumnNr];
+    m_pMatrix[firstRowNr][firstColumnNr]=m_pMatrix[secondRowNr][secondColumnNr];
+    m_pMatrix[secondRowNr][secondColumnNr]=swap;
 }
 
 template <typename DataType> void Matrix<DataType>::swapRow(int firstRowNr, int secondRowNr) {
     DataType *swap;
     if ((firstRowNr<0) || (secondRowNr<0))
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, int r2)");
-    if ((firstRowNr>=line) || (secondRowNr>=line))
+    if ((firstRowNr>=m_NrOfRows) || (secondRowNr>=m_NrOfRows))
         _handleException(6, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, int r2)");
-    swap=ptr[firstRowNr];
-    ptr[firstRowNr]=ptr[secondRowNr];
-    ptr[secondRowNr]=swap;
+    swap=m_pMatrix[firstRowNr];
+    m_pMatrix[firstRowNr]=m_pMatrix[secondRowNr];
+    m_pMatrix[secondRowNr]=swap;
 }
 
 template <typename DataType> void Matrix<DataType>::swapColumn(int firstColumnNr, int secondColumnNr) {
@@ -280,28 +280,28 @@ template <typename DataType> void Matrix<DataType>::swapColumn(int firstColumnNr
     int i;
     if ((firstColumnNr<0) || (secondColumnNr<0))
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, int c2)");
-    if ((firstColumnNr>=column) || (secondColumnNr>=column))
+    if ((firstColumnNr>=m_NrOfColumns) || (secondColumnNr>=m_NrOfColumns))
         _handleException(9, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, int c2)");
-    for(i=0; i<line; i++) {
-        swap=ptr[i][firstColumnNr];
-        ptr[i][firstColumnNr]=ptr[i][secondColumnNr];
-        ptr[i][secondColumnNr]=swap;
+    for(i=0; i<m_NrOfRows; i++) {
+        swap=m_pMatrix[i][firstColumnNr];
+        m_pMatrix[i][firstColumnNr]=m_pMatrix[i][secondColumnNr];
+        m_pMatrix[i][secondColumnNr]=swap;
     }
 }
 
 template<typename DataType> void Matrix<DataType>::swapRowColumn(int rowColumnNr) {
     DataType swap;
     int k;
-    if (line!=column)
+    if (m_NrOfRows!=m_NrOfColumns)
         _handleException(1,"template<typename DataType> void Matrix<DataType>::swap_rc(int rc1)");
     if (rowColumnNr<0)
         _handleException(16,"template<typename DataType> void Matrix<DataType>::swap_rc(int rc1)");
-    if (rowColumnNr>=line)
+    if (rowColumnNr>=m_NrOfRows)
         _handleException(18,"template<typename DataType> void Matrix<DataType>::swap_rc(int rc1)");
-    for (k=0; k<line; k++) {
-        swap=ptr[rowColumnNr][k];
-        ptr[rowColumnNr][k]=ptr[k][rowColumnNr];
-        ptr[k][rowColumnNr]=swap;
+    for (k=0; k<m_NrOfRows; k++) {
+        swap=m_pMatrix[rowColumnNr][k];
+        m_pMatrix[rowColumnNr][k]=m_pMatrix[k][rowColumnNr];
+        m_pMatrix[k][rowColumnNr]=swap;
     }
 }
 
@@ -309,14 +309,14 @@ template<typename DataType> void Matrix<DataType>::swapWithMatrix(Matrix<DataTyp
     DataType** temp;
     int mtemp;
     bool br;
-    mtemp=line; line=m.line; m.line=mtemp;
-    mtemp=column; column=m.column; m.column=mtemp;
-    mtemp=entdat; entdat=m.entdat; m.entdat=mtemp;
-    mtemp=mprint; mprint=m.mprint; m.mprint=mtemp;
-    mtemp=pos_x; pos_x=m.pos_x; m.pos_x=mtemp;
-    mtemp=pos_y; pos_y=m.pos_y; m.pos_y=mtemp;
-    br=by_row; by_row=m.by_row; m.by_row=br;
-    temp=ptr; ptr=m.ptr; m.ptr=temp;
+    mtemp=m_NrOfRows; m_NrOfRows=m.m_NrOfRows; m.m_NrOfRows=mtemp;
+    mtemp=m_NrOfColumns; m_NrOfColumns=m.m_NrOfColumns; m.m_NrOfColumns=mtemp;
+    mtemp=m_MatrixEntryMode; m_MatrixEntryMode=m.m_MatrixEntryMode; m.m_MatrixEntryMode=mtemp;
+    mtemp=m_MatrixPrintMode; m_MatrixPrintMode=m.m_MatrixPrintMode; m.m_MatrixPrintMode=mtemp;
+    mtemp=m_PosX; m_PosX=m.m_PosX; m.m_PosX=mtemp;
+    mtemp=m_PosY; m_PosY=m.m_PosY; m.m_PosY=mtemp;
+    br=m_WrapMatrixByRow; m_WrapMatrixByRow=m.m_WrapMatrixByRow; m.m_WrapMatrixByRow=br;
+    temp=m_pMatrix; m_pMatrix=m.m_pMatrix; m.m_pMatrix=temp;
 }
 
 template <typename DataType> void Matrix<DataType>:: sortLineColumn(int lineColumnNr, int mode) {
@@ -324,24 +324,24 @@ template <typename DataType> void Matrix<DataType>:: sortLineColumn(int lineColu
         _handleException(21, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
     switch (mode) {
         case 0:
-            if (lineColumnNr<0 || lineColumnNr>line-1)
+            if (lineColumnNr<0 || lineColumnNr>m_NrOfRows-1)
                 _handleException(4, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
-            _quickSort(0,column-1,0, lineColumnNr);
+            _quickSort(0,m_NrOfColumns-1,0, lineColumnNr);
             return;
         case 1:
-            if (lineColumnNr<0 || lineColumnNr>line-1)
+            if (lineColumnNr<0 || lineColumnNr>m_NrOfRows-1)
                 _handleException(4, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
-            _quickSort(0,column-1,1, lineColumnNr);
+            _quickSort(0,m_NrOfColumns-1,1, lineColumnNr);
             return;
         case 2:
-            if (lineColumnNr<0 || lineColumnNr>column-1)
+            if (lineColumnNr<0 || lineColumnNr>m_NrOfColumns-1)
                 _handleException(7, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
-            _quickSort(0,line-1,2, lineColumnNr);
+            _quickSort(0,m_NrOfRows-1,2, lineColumnNr);
             return;
         case 3:
-            if (lineColumnNr<0 || lineColumnNr>column-1)
+            if (lineColumnNr<0 || lineColumnNr>m_NrOfColumns-1)
                 _handleException(7, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
-            _quickSort(0,line-1,3, lineColumnNr);
+            _quickSort(0,m_NrOfRows-1,3, lineColumnNr);
     }
 }
 
@@ -350,16 +350,16 @@ template <typename DataType> void Matrix<DataType>::sortAllElements(int mode) {
         _handleException(21, "template <typename DataType> void Matrix<DataType>::sort_matr(int mode)");
     switch (mode) {
         case 0:
-            _quickSort(0,line*column-1,0);
+            _quickSort(0,m_NrOfRows*m_NrOfColumns-1,0);
             return;
         case 1:
-            _quickSort(0,line*column-1,1);
+            _quickSort(0,m_NrOfRows*m_NrOfColumns-1,1);
             return;
         case 2:
-            _quickSort(0,line*column-1,2);
+            _quickSort(0,m_NrOfRows*m_NrOfColumns-1,2);
             return;
         case 3:
-            _quickSort(0,line*column-1,3);
+            _quickSort(0,m_NrOfRows*m_NrOfColumns-1,3);
     }
 }
 
@@ -368,39 +368,39 @@ template <typename DataType> void Matrix<DataType>::insertRow (int m) {
     DataType **insert_ptr;
     if (m<0)
         _handleException(16, "template <typename DataType> void Matrix<DataType>::insert_row (int m)");
-    if (m>line)
+    if (m>m_NrOfRows)
         _handleException(17, "template <typename DataType> void Matrix<DataType>::insert_row (int m)");
-    insert_ptr=new DataType*[line+1];
+    insert_ptr=new DataType*[m_NrOfRows+1];
     for (i=0; i<m; i++)
-        insert_ptr[i]=ptr[i];
-    insert_ptr[m]=new DataType[column];
-    for (i=0; i<column; i++)
+        insert_ptr[i]=m_pMatrix[i];
+    insert_ptr[m]=new DataType[m_NrOfColumns];
+    for (i=0; i<m_NrOfColumns; i++)
         insert_ptr[m][i]=0;
-    for (i=m; i<line; i++)
-        insert_ptr[i+1]=ptr[i];
-    delete []ptr;
-    ptr=insert_ptr;
-    line++;
+    for (i=m; i<m_NrOfRows; i++)
+        insert_ptr[i+1]=m_pMatrix[i];
+    delete []m_pMatrix;
+    m_pMatrix=insert_ptr;
+    m_NrOfRows++;
 }
 
 template <typename DataType> void Matrix<DataType>::deleteRow (int m) {
     int i;
     DataType **insert_ptr;
-    if (line==1)
+    if (m_NrOfRows==1)
         _handleException(15, "template <typename DataType> void Matrix<DataType>::delete_row (int m)");
-    if (m>=line)
+    if (m>=m_NrOfRows)
         _handleException(4, "template <typename DataType> void Matrix<DataType>::delete_row (int m)");
     if (m<0)
         _handleException(16, "template <typename DataType> void Matrix<DataType>::delete_row (int m)");
-    insert_ptr=new DataType*[line-1];
+    insert_ptr=new DataType*[m_NrOfRows-1];
     for (i=0; i<m; i++)
-        insert_ptr[i]=ptr[i];
-    delete []ptr[m];
-    for (i=m; i<line-1; i++)
-        insert_ptr[i]=ptr[i+1];
-    delete []ptr;
-    ptr=insert_ptr;
-    line--;
+        insert_ptr[i]=m_pMatrix[i];
+    delete []m_pMatrix[m];
+    for (i=m; i<m_NrOfRows-1; i++)
+        insert_ptr[i]=m_pMatrix[i+1];
+    delete []m_pMatrix;
+    m_pMatrix=insert_ptr;
+    m_NrOfRows--;
 }
 
 template <typename DataType> void Matrix<DataType>::insertColumn(int n) {
@@ -408,70 +408,70 @@ template <typename DataType> void Matrix<DataType>::insertColumn(int n) {
     DataType **insert_ptr;
     if (n<0)
         _handleException(16, "template <typename DataType> void Matrix<DataType>::insert_col(int n)");
-    if (n>column)
+    if (n>m_NrOfColumns)
         _handleException(17, "template <typename DataType> void Matrix<DataType>::insert_col(int n)");
-    insert_ptr = new DataType*[line];
-    for (i=0; i<line; i++)
-        insert_ptr[i]=new DataType[column+1];
-    for (i=0; i<line; i++)
+    insert_ptr = new DataType*[m_NrOfRows];
+    for (i=0; i<m_NrOfRows; i++)
+        insert_ptr[i]=new DataType[m_NrOfColumns+1];
+    for (i=0; i<m_NrOfRows; i++)
         for (j=0; j<n; j++)
-            insert_ptr[i][j]=ptr[i][j];
-    for(i=0; i<line; i++)
-        for(j=n+1; j<column+1; j++)
-            insert_ptr[i][j]=ptr[i][j-1];
-    for (i=0; i<line; i++)
+            insert_ptr[i][j]=m_pMatrix[i][j];
+    for(i=0; i<m_NrOfRows; i++)
+        for(j=n+1; j<m_NrOfColumns+1; j++)
+            insert_ptr[i][j]=m_pMatrix[i][j-1];
+    for (i=0; i<m_NrOfRows; i++)
         insert_ptr[i][n]=0;
-    for (i=0; i<line; i++)
-        delete []ptr[i];
-    delete []ptr;
-    ptr=insert_ptr;
-    column++;
+    for (i=0; i<m_NrOfRows; i++)
+        delete []m_pMatrix[i];
+    delete []m_pMatrix;
+    m_pMatrix=insert_ptr;
+    m_NrOfColumns++;
 }
 
 template <typename DataType> void Matrix<DataType>::deleteColumn(int n) {
     int i,j;
-    if (column==1)
+    if (m_NrOfColumns==1)
         _handleException(14, "template <typename DataType> void Matrix<DataType>::delete_col(int n)");
     if (n<0)
         _handleException (16, "template <typename DataType> void Matrix<DataType>::delete_col(int n)");
-    if (n>=column)
+    if (n>=m_NrOfColumns)
         _handleException (7, "template <typename DataType> void Matrix<DataType>::delete_col(int n)");
     DataType **insert_ptr;
-    insert_ptr = new DataType*[line];
-    for (i=0; i<line; i++)
-        insert_ptr[i]=new DataType[column-1];
-    for (i=0; i<line; i++)
+    insert_ptr = new DataType*[m_NrOfRows];
+    for (i=0; i<m_NrOfRows; i++)
+        insert_ptr[i]=new DataType[m_NrOfColumns-1];
+    for (i=0; i<m_NrOfRows; i++)
         for (j=0; j<n; j++)
-            insert_ptr[i][j]=ptr[i][j];
-    for(i=0; i<line; i++)
-        for(j=n; j<column-1; j++)
-            insert_ptr[i][j]=ptr[i][j+1];
-    for (i=0; i<line; i++)
-        delete []ptr[i];
-    delete []ptr;
-    ptr=insert_ptr;
-    column--;
+            insert_ptr[i][j]=m_pMatrix[i][j];
+    for(i=0; i<m_NrOfRows; i++)
+        for(j=n; j<m_NrOfColumns-1; j++)
+            insert_ptr[i][j]=m_pMatrix[i][j+1];
+    for (i=0; i<m_NrOfRows; i++)
+        delete []m_pMatrix[i];
+    delete []m_pMatrix;
+    m_pMatrix=insert_ptr;
+    m_NrOfColumns--;
 }
 
 template<typename DataType> void Matrix<DataType>::addRowToColumn(int rowNr, DataType& coeff, Matrix& src, int srcColumnNr, DataType& srcCoeff, Matrix& dest,int destColumnNr) {
     int i;
     if ((rowNr<0) || (srcColumnNr<0) || (destColumnNr<0))
         _handleException(16, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if (rowNr>=line)
+    if (rowNr>=m_NrOfRows)
         _handleException(4, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if (srcColumnNr>=src.column)
+    if (srcColumnNr>=src.m_NrOfColumns)
         _handleException(7, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if (dest.by_row) {
-        if (destColumnNr>=dest.line)
+    if (dest.m_WrapMatrixByRow) {
+        if (destColumnNr>=dest.m_NrOfRows)
             _handleException(5, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<line; i++)
-            dest.ptr[destColumnNr][i]=coeff*ptr[rowNr][i]+srcCoeff*src.ptr[i][srcColumnNr];
+        for (i=0; i<m_NrOfRows; i++)
+            dest.m_pMatrix[destColumnNr][i]=coeff*m_pMatrix[rowNr][i]+srcCoeff*src.m_pMatrix[i][srcColumnNr];
     }
     else {
-        if (destColumnNr>=dest.column)
+        if (destColumnNr>=dest.m_NrOfColumns)
             _handleException(8, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<line; i++)
-            dest.ptr[i][destColumnNr]=coeff*ptr[rowNr][i]+srcCoeff*src.ptr[i][srcColumnNr];
+        for (i=0; i<m_NrOfRows; i++)
+            dest.m_pMatrix[i][destColumnNr]=coeff*m_pMatrix[rowNr][i]+srcCoeff*src.m_pMatrix[i][srcColumnNr];
     }
 }
 
@@ -479,21 +479,21 @@ template<typename DataType> void Matrix<DataType>::addColumnToRow(int columnNr, 
     int i;
     if ((columnNr<0) || (srcRowNr<0) || (destRowNr<0))
         _handleException(16, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if (columnNr>=column)
+    if (columnNr>=m_NrOfColumns)
         _handleException(7, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if (srcRowNr>=src.line)
+    if (srcRowNr>=src.m_NrOfRows)
         _handleException(4, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if (dest.by_row) {
-        if (destRowNr>=dest.line)
+    if (dest.m_WrapMatrixByRow) {
+        if (destRowNr>=dest.m_NrOfRows)
             _handleException(5, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<line; i++)
-            dest.ptr[destRowNr][i]=coeff*ptr[i][columnNr]+srcCoeff*src.ptr[srcRowNr][i];
+        for (i=0; i<m_NrOfRows; i++)
+            dest.m_pMatrix[destRowNr][i]=coeff*m_pMatrix[i][columnNr]+srcCoeff*src.m_pMatrix[srcRowNr][i];
     }
     else {
-        if (destRowNr>=dest.column)
+        if (destRowNr>=dest.m_NrOfColumns)
             _handleException(8, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<line; i++)
-            dest.ptr[i][destRowNr]=coeff*ptr[i][columnNr]+srcCoeff*src.ptr[srcRowNr][i];
+        for (i=0; i<m_NrOfRows; i++)
+            dest.m_pMatrix[i][destRowNr]=coeff*m_pMatrix[i][columnNr]+srcCoeff*src.m_pMatrix[srcRowNr][i];
     }
 }
 
@@ -501,19 +501,19 @@ template<typename DataType> void Matrix<DataType>::addRowToRow(int rowNr, DataTy
     int i;
     if ((rowNr<0) || (srcRowNr<0) || (destRowNr<0))
         _handleException(16, "template <typename DataType> void Matrix<DataType>::add_rr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if ((rowNr>=line) || (srcRowNr>=src.line))
+    if ((rowNr>=m_NrOfRows) || (srcRowNr>=src.m_NrOfRows))
         _handleException(6, "template <typename DataType> void Matrix<DataType>::add_rr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if (dest.by_row) {
-        if (destRowNr>=dest.line)
+    if (dest.m_WrapMatrixByRow) {
+        if (destRowNr>=dest.m_NrOfRows)
             _handleException(5, "template <typename DataType> void Matrix<DataType>::add_rr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<line; i++)
-            dest.ptr[destRowNr][i]=coeff*ptr[rowNr][i]+srcCoeff*src.ptr[srcRowNr][i];
+        for (i=0; i<m_NrOfRows; i++)
+            dest.m_pMatrix[destRowNr][i]=coeff*m_pMatrix[rowNr][i]+srcCoeff*src.m_pMatrix[srcRowNr][i];
     }
     else {
-        if (destRowNr>=dest.column)
+        if (destRowNr>=dest.m_NrOfColumns)
             _handleException(8, "template <typename DataType> void Matrix<DataType>::add_rr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<line; i++)
-            dest.ptr[i][destRowNr]=coeff*ptr[rowNr][i]+srcCoeff*src.ptr[srcRowNr][i];
+        for (i=0; i<m_NrOfRows; i++)
+            dest.m_pMatrix[i][destRowNr]=coeff*m_pMatrix[rowNr][i]+srcCoeff*src.m_pMatrix[srcRowNr][i];
     }
 }
 
@@ -521,19 +521,19 @@ template<typename DataType> void Matrix<DataType>::addColumnToColumn(int columnN
     int i;
     if ((columnNr<0) || (srcColumnNr<0) || (destColumnNr<0))
         _handleException(16, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if ((columnNr>=column) || (srcColumnNr>=src.column))
+    if ((columnNr>=m_NrOfColumns) || (srcColumnNr>=src.m_NrOfColumns))
         _handleException(9, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if (dest.by_row) {
-        if (destColumnNr>=dest.line)
+    if (dest.m_WrapMatrixByRow) {
+        if (destColumnNr>=dest.m_NrOfRows)
             _handleException(5, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<line; i++)
-            dest.ptr[destColumnNr][i]=coeff*ptr[i][columnNr]+srcCoeff*src.ptr[i][srcColumnNr];
+        for (i=0; i<m_NrOfRows; i++)
+            dest.m_pMatrix[destColumnNr][i]=coeff*m_pMatrix[i][columnNr]+srcCoeff*src.m_pMatrix[i][srcColumnNr];
     }
     else {
-        if (destColumnNr>=dest.column)
+        if (destColumnNr>=dest.m_NrOfColumns)
             _handleException(8, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<line; i++)
-            dest.ptr[i][destColumnNr]=coeff*ptr[i][columnNr]+srcCoeff*src.ptr[i][srcColumnNr];
+        for (i=0; i<m_NrOfRows; i++)
+            dest.m_pMatrix[i][destColumnNr]=coeff*m_pMatrix[i][columnNr]+srcCoeff*src.m_pMatrix[i][srcColumnNr];
     }
 }
 
@@ -541,15 +541,15 @@ template <typename DataType> void Matrix<DataType>:: copy(const Matrix<DataType>
 
 
 
-    if (src.ptr==ptr)
+    if (src.m_pMatrix==m_pMatrix)
         _handleException(25, "template <typename DataType> void Matrix<DataType>:: copy(const Matrix<DataType> &m, int step1, int step2)");
     if ((nrOfRows<0) || (nrOfColumns<0))
         _handleException(16, "template <typename DataType> void Matrix<DataType>:: copy(const Matrix<DataType> &m, int step1, int step2)");
-    if ((src.pos_x+nrOfRows>src.line) || (src.pos_y+nrOfColumns>src.column) || (pos_x+nrOfRows>line) || (pos_y+nrOfColumns>column))
+    if ((src.m_PosX+nrOfRows>src.m_NrOfRows) || (src.m_PosY+nrOfColumns>src.m_NrOfColumns) || (m_PosX+nrOfRows>m_NrOfRows) || (m_PosY+nrOfColumns>m_NrOfColumns))
         _handleException(18, "template <typename DataType> void Matrix<DataType>:: copy(const Matrix<DataType> &m, int step1, int step2)");
     for (int i=0; i<nrOfRows; i++)
         for (int j=0; j<nrOfColumns; j++)
-            ptr[pos_x+i][pos_y+j]=src.ptr[src.pos_x+i][src.pos_y+j];
+            m_pMatrix[m_PosX+i][m_PosY+j]=src.m_pMatrix[src.m_PosX+i][src.m_PosY+j];
 }
 
 template <typename DataType> void Matrix<DataType>::copy(DataType** src, int nrOfRows, int nrOfColumns) {
@@ -560,9 +560,9 @@ template <typename DataType> void Matrix<DataType>::copy(DataType** src, int nrO
         _handleException(3, "template <typename DataType> void Matrix<DataType>::copy(DataType** m, int ln, int cl)");
     _deallocMemory();
     _allocMemory(nrOfRows, nrOfColumns);
-    for (i=0; i<line; i++)
-        for (j=0; j<column; j++)
-                ptr[i][j]=src[i][j];
+    for (i=0; i<m_NrOfRows; i++)
+        for (j=0; j<m_NrOfColumns; j++)
+                m_pMatrix[i][j]=src[i][j];
 }
 
 template <typename DataType> void Matrix<DataType>::copy(DataType* src, int nrOfRows, int nrOfColumns) {
@@ -573,145 +573,145 @@ template <typename DataType> void Matrix<DataType>::copy(DataType* src, int nrOf
         _handleException(3, "template <typename DataType> void Matrix<DataType>::copy(DataType* m, int ln, int cl)");
     _deallocMemory();
     _allocMemory(nrOfRows, nrOfColumns);
-    for (i=0; i<line; i++)
-        for (j=0; j<column; j++)
-                ptr[i][j]=*(src++);
+    for (i=0; i<m_NrOfRows; i++)
+        for (j=0; j<m_NrOfColumns; j++)
+                m_pMatrix[i][j]=*(src++);
 }
 
 template <typename DataType> void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix) {
     Matrix m3;
-    if (by_row && (firstSrcMatrix.column!=secondSrcMatrix.column))
+    if (m_WrapMatrixByRow && (firstSrcMatrix.m_NrOfColumns!=secondSrcMatrix.m_NrOfColumns))
         _handleException(13,"template <typename DataType> void Matrix<DataType>::cat(const Matrix<DataType> &m1, const Matrix<DataType> &m2)");
-    if ((!by_row) && (firstSrcMatrix.line!=secondSrcMatrix.line))
+    if ((!m_WrapMatrixByRow) && (firstSrcMatrix.m_NrOfRows!=secondSrcMatrix.m_NrOfRows))
         _handleException(12, "template <typename DataType> void Matrix<DataType>::cat(const Matrix<DataType> &m1, const Matrix<DataType> &m2)");
-    if ((firstSrcMatrix.ptr==ptr) || (secondSrcMatrix.ptr==ptr)) {
-        m3.ptr=ptr;
-        m3.line=line;
-        m3.column=column;
+    if ((firstSrcMatrix.m_pMatrix==m_pMatrix) || (secondSrcMatrix.m_pMatrix==m_pMatrix)) {
+        m3.m_pMatrix=m_pMatrix;
+        m3.m_NrOfRows=m_NrOfRows;
+        m3.m_NrOfColumns=m_NrOfColumns;
         _allocMemory(1,1);
     }
-    if ((firstSrcMatrix.ptr==ptr) && (secondSrcMatrix.ptr!=ptr)) { _concatenate(m3, secondSrcMatrix); return; }
-    if ((firstSrcMatrix.ptr!=ptr) && (secondSrcMatrix.ptr==ptr)) { _concatenate(firstSrcMatrix, m3); return; }
-    if ((firstSrcMatrix.ptr==ptr) && (secondSrcMatrix.ptr==ptr)) { _concatenate(m3, m3); return; }
+    if ((firstSrcMatrix.m_pMatrix==m_pMatrix) && (secondSrcMatrix.m_pMatrix!=m_pMatrix)) { _concatenate(m3, secondSrcMatrix); return; }
+    if ((firstSrcMatrix.m_pMatrix!=m_pMatrix) && (secondSrcMatrix.m_pMatrix==m_pMatrix)) { _concatenate(firstSrcMatrix, m3); return; }
+    if ((firstSrcMatrix.m_pMatrix==m_pMatrix) && (secondSrcMatrix.m_pMatrix==m_pMatrix)) { _concatenate(m3, m3); return; }
     _concatenate(firstSrcMatrix, secondSrcMatrix);
 }
 
 template <typename DataType> void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix,int splitRowColumnNr) {
     Matrix m3;
-    if (firstDestMatrix.ptr==secondDestMatrix.ptr)
+    if (firstDestMatrix.m_pMatrix==secondDestMatrix.m_pMatrix)
         _handleException(24, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
     if (splitRowColumnNr<0)
         _handleException(16, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
-    if (by_row) {
-        if (splitRowColumnNr>line)
+    if (m_WrapMatrixByRow) {
+        if (splitRowColumnNr>m_NrOfRows)
             _handleException(4, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
-        if ((splitRowColumnNr==0)||(splitRowColumnNr==line))
+        if ((splitRowColumnNr==0)||(splitRowColumnNr==m_NrOfRows))
             _handleException(19, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
     }
     else {
-        if (splitRowColumnNr>column)
+        if (splitRowColumnNr>m_NrOfColumns)
             _handleException(7, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
-        if ((splitRowColumnNr==0)||(splitRowColumnNr==column))
+        if ((splitRowColumnNr==0)||(splitRowColumnNr==m_NrOfColumns))
             _handleException(20, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
     }
-    if ((firstDestMatrix.ptr==ptr) || (secondDestMatrix.ptr==ptr)) {
-        m3.ptr=ptr;
-        m3.line=line;
-        m3.column=column;
-        m3.by_row=by_row;
+    if ((firstDestMatrix.m_pMatrix==m_pMatrix) || (secondDestMatrix.m_pMatrix==m_pMatrix)) {
+        m3.m_pMatrix=m_pMatrix;
+        m3.m_NrOfRows=m_NrOfRows;
+        m3.m_NrOfColumns=m_NrOfColumns;
+        m3.m_WrapMatrixByRow=m_WrapMatrixByRow;
         _allocMemory(1,1);
     }
-    if ((firstDestMatrix.ptr==ptr) && (secondDestMatrix.ptr!=ptr)) { m3._split(*this, secondDestMatrix, splitRowColumnNr); return; }
-    if ((firstDestMatrix.ptr!=ptr) && (secondDestMatrix.ptr==ptr)) { m3._split(firstDestMatrix, *this, splitRowColumnNr); return; }
+    if ((firstDestMatrix.m_pMatrix==m_pMatrix) && (secondDestMatrix.m_pMatrix!=m_pMatrix)) { m3._split(*this, secondDestMatrix, splitRowColumnNr); return; }
+    if ((firstDestMatrix.m_pMatrix!=m_pMatrix) && (secondDestMatrix.m_pMatrix==m_pMatrix)) { m3._split(firstDestMatrix, *this, splitRowColumnNr); return; }
     _split(firstDestMatrix, secondDestMatrix, splitRowColumnNr);
 }
 
 template <typename DataType> void Matrix<DataType>::applyCoefficientsToRow (const Matrix &coeff, Matrix &src, bool multiply) {
     int i,j;
-    if (ptr==coeff.ptr)
+    if (m_pMatrix==coeff.m_pMatrix)
         _handleException(25, "template <typename DataType> void Matrix<DataType>::coef_row (const Matrix &coeff, Matrix &src, bool multiply)");
-    if (coeff.line!=src.line)
+    if (coeff.m_NrOfRows!=src.m_NrOfRows)
         _handleException(12,"template <typename DataType> void Matrix<DataType>::coef_row (const Matrix &coeff, Matrix &src, bool multiply)");
-    if ((line!=src.line)||(column!=src.column))
-        resizeNoInit(src.line, src.column);
+    if ((m_NrOfRows!=src.m_NrOfRows)||(m_NrOfColumns!=src.m_NrOfColumns))
+        resizeNoInit(src.m_NrOfRows, src.m_NrOfColumns);
     if (multiply==true)
-        for (i=0; i<line; i++)
-            for (j=0; j<column; j++)
-                ptr[i][j]=src.ptr[i][j]*coeff.ptr[i][0];
+        for (i=0; i<m_NrOfRows; i++)
+            for (j=0; j<m_NrOfColumns; j++)
+                m_pMatrix[i][j]=src.m_pMatrix[i][j]*coeff.m_pMatrix[i][0];
     else {
-        for (i=0; i<line; i++)
-            if (coeff.ptr[i][0]==0)
+        for (i=0; i<m_NrOfRows; i++)
+            if (coeff.m_pMatrix[i][0]==0)
                 _handleException(23,"template <typename DataType> void Matrix<DataType>::coef_row (const Matrix &coeff, Matrix &src, bool multiply)");
-        for (i=0; i<line; i++)
-            for (j=0; j<column; j++)
-                ptr[i][j]=src.ptr[i][j]/coeff.ptr[i][0];
+        for (i=0; i<m_NrOfRows; i++)
+            for (j=0; j<m_NrOfColumns; j++)
+                m_pMatrix[i][j]=src.m_pMatrix[i][j]/coeff.m_pMatrix[i][0];
     }
 }
 
 template <typename DataType> void Matrix<DataType>::applyCoefficientsToColumn (const Matrix &coeff, Matrix &src, bool multiply) {
     int i, j;
-    if (coeff.ptr==ptr)
+    if (coeff.m_pMatrix==m_pMatrix)
         _handleException(25,"template <typename DataType> void Matrix<DataType>::coef_col (const Matrix &coeff, Matrix &src, bool multiply)");
-    if (coeff.column!=src.column)
+    if (coeff.m_NrOfColumns!=src.m_NrOfColumns)
         _handleException(13,"template <typename DataType> void Matrix<DataType>::coef_col (const Matrix &coeff, Matrix &src, bool multiply)");
-    if ((line!=src.line)||(column!=src.column))
-        resizeNoInit(src.line, src.column);
+    if ((m_NrOfRows!=src.m_NrOfRows)||(m_NrOfColumns!=src.m_NrOfColumns))
+        resizeNoInit(src.m_NrOfRows, src.m_NrOfColumns);
     if (multiply==true)
-        for (j=0; j<column; j++)
-            for (i=0; i<line; i++)
-                ptr[i][j]=src.ptr[i][j]*coeff.ptr[0][j];
+        for (j=0; j<m_NrOfColumns; j++)
+            for (i=0; i<m_NrOfRows; i++)
+                m_pMatrix[i][j]=src.m_pMatrix[i][j]*coeff.m_pMatrix[0][j];
     else {
-        for (j=0; j<column; j++)
-            if (coeff.ptr[0][j]==0)
+        for (j=0; j<m_NrOfColumns; j++)
+            if (coeff.m_pMatrix[0][j]==0)
                 _handleException(23,"template <typename DataType> void Matrix<DataType>::coef_col (const Matrix &coeff, Matrix &src, bool multiply)");
-        for (j=0; j<column; j++)
-            for (i=0; i<line; i++)
-                ptr[i][j]=src.ptr[i][j]/coeff.ptr[0][j];
+        for (j=0; j<m_NrOfColumns; j++)
+            for (i=0; i<m_NrOfRows; i++)
+                m_pMatrix[i][j]=src.m_pMatrix[i][j]/coeff.m_pMatrix[0][j];
     }
 }
 
 template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator+ (const Matrix<DataType>& matrix) {
     int i,j;
-    if ((line!=matrix.line) || (column!=matrix.column))
+    if ((m_NrOfRows!=matrix.m_NrOfRows) || (m_NrOfColumns!=matrix.m_NrOfColumns))
         _handleException(10, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator+ (const Matrix<DataType> &m)");
-    Matrix a(line,column);
-    for (i=0; i<line; i++)
-        for (j=0; j<column; j++)
-            a.ptr[i][j]=ptr[i][j]+matrix.ptr[i][j];
+    Matrix a(m_NrOfRows,m_NrOfColumns);
+    for (i=0; i<m_NrOfRows; i++)
+        for (j=0; j<m_NrOfColumns; j++)
+            a.m_pMatrix[i][j]=m_pMatrix[i][j]+matrix.m_pMatrix[i][j];
     return a;
 }
 
 template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator- (const Matrix<DataType>& matrix) {
     int i,j;
-    if ((line!=matrix.line) || (column!=matrix.column))
+    if ((m_NrOfRows!=matrix.m_NrOfRows) || (m_NrOfColumns!=matrix.m_NrOfColumns))
         _handleException(10, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator- (const Matrix<DataType> &m)");
-    Matrix a(line,column);
-    for (i=0; i<line; i++)
-        for (j=0; j<column; j++)
-            a.ptr[i][j]=ptr[i][j]-matrix.ptr[i][j];
+    Matrix a(m_NrOfRows,m_NrOfColumns);
+    for (i=0; i<m_NrOfRows; i++)
+        for (j=0; j<m_NrOfColumns; j++)
+            a.m_pMatrix[i][j]=m_pMatrix[i][j]-matrix.m_pMatrix[i][j];
     return a;
 }
 
 template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator* (const Matrix<DataType>& matrix) {
     int i,j,k;
-    if (column!=matrix.line)
+    if (m_NrOfColumns!=matrix.m_NrOfRows)
         _handleException(11, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator* (const Matrix<DataType> &m)");
-    Matrix a(line,matrix.column);
-    for (i=0; i<line; i++)
-        for (j=0; j<matrix.column; j++)
-            for (k=0; k<column; k++)
-                a.ptr[i][j]=a.ptr[i][j]+ptr[i][k]*matrix.ptr[k][j];
+    Matrix a(m_NrOfRows,matrix.m_NrOfColumns);
+    for (i=0; i<m_NrOfRows; i++)
+        for (j=0; j<matrix.m_NrOfColumns; j++)
+            for (k=0; k<m_NrOfColumns; k++)
+                a.m_pMatrix[i][j]=a.m_pMatrix[i][j]+m_pMatrix[i][k]*matrix.m_pMatrix[k][j];
     return a;
 }
 
 template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator^ (int exp) {
     Matrix a;
-    if (line!=column)
+    if (m_NrOfRows!=m_NrOfColumns)
         _handleException(1, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator^ (int m)");
     if (exp<0)
         _handleException(16, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator^ (int m)");
     if (exp==0) {
-        a.transformToUnitMatrix(line);
+        a.transformToUnitMatrix(m_NrOfRows);
         return a;
     }
 
@@ -720,45 +720,45 @@ template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator^ (int
 }
 
 template <typename DataType> Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix) {
-    if (matrix.ptr==ptr) goto is_current_matrix;
-    if ((line==matrix.line)&&(column==matrix.column)) goto is_equal;
+    if (matrix.m_pMatrix==m_pMatrix) goto is_current_matrix;
+    if ((m_NrOfRows==matrix.m_NrOfRows)&&(m_NrOfColumns==matrix.m_NrOfColumns)) goto is_equal;
     _deallocMemory();
-    _allocMemory(matrix.line, matrix.column);
+    _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
 is_equal:
-    for (int i=0; i<line; i++)
-        for (int j=0; j<column; j++)
-            ptr[i][j]=matrix.ptr[i][j];
-    pos_x=matrix.pos_x;
-    pos_y=matrix.pos_y;
-    by_row=matrix.by_row;
+    for (int i=0; i<m_NrOfRows; i++)
+        for (int j=0; j<m_NrOfColumns; j++)
+            m_pMatrix[i][j]=matrix.m_pMatrix[i][j];
+    m_PosX=matrix.m_PosX;
+    m_PosY=matrix.m_PosY;
+    m_WrapMatrixByRow=matrix.m_WrapMatrixByRow;
 is_current_matrix:
     return *this;
 }
 
 template <typename DataType> bool Matrix<DataType>::operator==(const Matrix<DataType>& matrix) {
     int i,j;
-    if (matrix.ptr==ptr)
+    if (matrix.m_pMatrix==m_pMatrix)
         return true;
-    if ((line!=matrix.line) || (column!=matrix.column))
+    if ((m_NrOfRows!=matrix.m_NrOfRows) || (m_NrOfColumns!=matrix.m_NrOfColumns))
         _handleException(10, "template <typename DataType> bool Matrix<DataType>::operator==(const Matrix<DataType> &m)");
-    for (i=0; i<line; i++)
-        for (j=0; j<column; j++)
-            if (ptr[i][j]!=matrix.ptr[i][j])
+    for (i=0; i<m_NrOfRows; i++)
+        for (j=0; j<m_NrOfColumns; j++)
+            if (m_pMatrix[i][j]!=matrix.m_pMatrix[i][j])
                 return false;
     return true;
 }
 
 template <typename DataType> DataType Matrix<DataType>::determinant() {
     int i,j,k,l,temp=1;
-    if (line!=column)
+    if (m_NrOfRows!=m_NrOfColumns)
         _handleException(1, "template <typename DataType> DataType Matrix<DataType>::det()");
     Matrix m = *this;
     DataType det=1;
     int semn=1;
-    for (k=0; k<line-1; k++) {
-        if (m.ptr[k][k]==0) {
-            for (l=k+1; l<line; l++)
-                if (m.ptr[l][k]!=0) {
+    for (k=0; k<m_NrOfRows-1; k++) {
+        if (m.m_pMatrix[k][k]==0) {
+            for (l=k+1; l<m_NrOfRows; l++)
+                if (m.m_pMatrix[l][k]!=0) {
                     m.swapRow(k,l);
                     semn = semn*(-1);
                     goto Prelucrare;
@@ -766,14 +766,14 @@ template <typename DataType> DataType Matrix<DataType>::determinant() {
             return 0;
         }
 Prelucrare:
-        for (j=k+1; j<column; j++)
-            for (i=k+1; i<line; i++) {
-                m.ptr[i][j]=m.ptr[i][j]*(m.ptr[k][k])-m.ptr[k][j]*(m.ptr[i][k]);
-                temp=temp*(m.ptr[k][k]*m.ptr[i][k]);
+        for (j=k+1; j<m_NrOfColumns; j++)
+            for (i=k+1; i<m_NrOfRows; i++) {
+                m.m_pMatrix[i][j]=m.m_pMatrix[i][j]*(m.m_pMatrix[k][k])-m.m_pMatrix[k][j]*(m.m_pMatrix[i][k]);
+                temp=temp*(m.m_pMatrix[k][k]*m.m_pMatrix[i][k]);
             }
     }
-    for (k=0; k<line; k++)
-        det=det*m.ptr[k][k];
+    for (k=0; k<m_NrOfRows; k++)
+        det=det*m.m_pMatrix[k][k];
     return (det/temp)*semn;
 }
 
@@ -781,37 +781,37 @@ template<typename DataType> int Matrix<DataType>::rank() {
     int i,j;
     int rang=0;
     Matrix p;
-    if (line>column)
+    if (m_NrOfRows>m_NrOfColumns)
         getTransposedMatrix(p);
     else p=*this;
-    p.pos_x=0;
-    p.pos_y=0;
-    while (p.pos_x<p.line-1) {
-        if (p.ptr[p.pos_x][p.pos_y]==0) {
-            for (i=p.pos_x+1; i<p.line; i++)
-                if (p.ptr[i][p.pos_y]!=0) {
+    p.m_PosX=0;
+    p.m_PosY=0;
+    while (p.m_PosX<p.m_NrOfRows-1) {
+        if (p.m_pMatrix[p.m_PosX][p.m_PosY]==0) {
+            for (i=p.m_PosX+1; i<p.m_NrOfRows; i++)
+                if (p.m_pMatrix[i][p.m_PosY]!=0) {
                     rang++;
-                    p.swapRow(i,p.pos_x);
+                    p.swapRow(i,p.m_PosX);
                     goto Prelucrare;
                 }
-            for (j=p.pos_y+1; j<p.column; j++)
-                if (p.ptr[p.pos_x][j]!=0) {
+            for (j=p.m_PosY+1; j<p.m_NrOfColumns; j++)
+                if (p.m_pMatrix[p.m_PosX][j]!=0) {
                     rang++;
-                    p.swapColumn(j,p.pos_y);
+                    p.swapColumn(j,p.m_PosY);
                     goto Prelucrare;
                 }
         }
         else
             rang++;
 Prelucrare:
-    for (i=p.pos_x+1; i<p.line; i++)
-        for (j=p.pos_y+1; j<p.column; j++)
-            p.ptr[i][j]=(p.ptr[i][j])*(p.ptr[p.pos_x][p.pos_y]) - (p.ptr[p.pos_x][j])*(p.ptr[i][p.pos_y]);
-    (p.pos_x)++;
-    (p.pos_y)++;
+    for (i=p.m_PosX+1; i<p.m_NrOfRows; i++)
+        for (j=p.m_PosY+1; j<p.m_NrOfColumns; j++)
+            p.m_pMatrix[i][j]=(p.m_pMatrix[i][j])*(p.m_pMatrix[p.m_PosX][p.m_PosY]) - (p.m_pMatrix[p.m_PosX][j])*(p.m_pMatrix[i][p.m_PosY]);
+    (p.m_PosX)++;
+    (p.m_PosY)++;
     }
-    for (j=p.pos_y; j<p.column; j++)
-        if (p.ptr[p.pos_x][j]!=0) {
+    for (j=p.m_PosY; j<p.m_NrOfColumns; j++)
+        if (p.m_pMatrix[p.m_PosX][j]!=0) {
             rang++;
             break;
         }
@@ -821,18 +821,18 @@ Prelucrare:
 template<typename DataType> void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType>& pseudoInverse) {
     int i,j,k,l;
     Matrix <DataType> temp;
-    if ((ptr==coeff.ptr) || (ptr==pseudoInverse.ptr))
+    if ((m_pMatrix==coeff.m_pMatrix) || (m_pMatrix==pseudoInverse.m_pMatrix))
         _handleException(25, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
-    if (line!=column)
+    if (m_NrOfRows!=m_NrOfColumns)
         _handleException(1, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
     temp=*this;
-    pseudoInverse.transformToUnitMatrix(line);
-    coeff.resizeNoInit(line,1);
+    pseudoInverse.transformToUnitMatrix(m_NrOfRows);
+    coeff.resizeNoInit(m_NrOfRows,1);
 
-    for (k=0; k<line-1; k++) {
-        if (temp.ptr[k][k]==0) {
-            for (l=k+1; l<line; l++) {
-                if (temp.ptr[k][l]!=0) {
+    for (k=0; k<m_NrOfRows-1; k++) {
+        if (temp.m_pMatrix[k][k]==0) {
+            for (l=k+1; l<m_NrOfRows; l++) {
+                if (temp.m_pMatrix[k][l]!=0) {
                     temp.swapRow(k,l);
                     pseudoInverse.swapRow(k,l);
                     goto Prelucrare;
@@ -841,55 +841,55 @@ template<typename DataType> void Matrix<DataType>::getInverseMatrix(Matrix<DataT
             _handleException(2, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
         }
 Prelucrare:
-        for (j=0; j<line; j++)
-            for (i=k+1; i<line; i++) {
+        for (j=0; j<m_NrOfRows; j++)
+            for (i=k+1; i<m_NrOfRows; i++) {
                 if (j>k)
-                    temp.ptr[i][j]=temp.ptr[i][j]*temp.ptr[k][k]- temp.ptr[k][j]*temp.ptr[i][k];
-                pseudoInverse.ptr[i][j]=pseudoInverse.ptr[i][j]*temp.ptr[k][k] - pseudoInverse.ptr[k][j]*temp.ptr[i][k];
+                    temp.m_pMatrix[i][j]=temp.m_pMatrix[i][j]*temp.m_pMatrix[k][k]- temp.m_pMatrix[k][j]*temp.m_pMatrix[i][k];
+                pseudoInverse.m_pMatrix[i][j]=pseudoInverse.m_pMatrix[i][j]*temp.m_pMatrix[k][k] - pseudoInverse.m_pMatrix[k][j]*temp.m_pMatrix[i][k];
             }
     }
-    for (k=0; k<line; k++)
-        for (i=k+1; i<line; i++)
-            temp.ptr[i][k]=0;
-    if (temp.ptr[line-1][line-1]==0)
+    for (k=0; k<m_NrOfRows; k++)
+        for (i=k+1; i<m_NrOfRows; i++)
+            temp.m_pMatrix[i][k]=0;
+    if (temp.m_pMatrix[m_NrOfRows-1][m_NrOfRows-1]==0)
         _handleException(2, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
-    for (k=line-1; k>0; k--)
+    for (k=m_NrOfRows-1; k>0; k--)
         for (i=0; i<=k-1; i++)
-            for (j=0; j<=line-1; j++) {
+            for (j=0; j<=m_NrOfRows-1; j++) {
                 if (j<k)
-                    temp.ptr[i][j]=temp.ptr[i][j]*temp.ptr[k][k]-temp.ptr[k][j]*temp.ptr[i][k];
-                pseudoInverse.ptr[i][j]=pseudoInverse.ptr[i][j]*temp.ptr[k][k]-pseudoInverse.ptr[k][j]*temp.ptr[i][k];
+                    temp.m_pMatrix[i][j]=temp.m_pMatrix[i][j]*temp.m_pMatrix[k][k]-temp.m_pMatrix[k][j]*temp.m_pMatrix[i][k];
+                pseudoInverse.m_pMatrix[i][j]=pseudoInverse.m_pMatrix[i][j]*temp.m_pMatrix[k][k]-pseudoInverse.m_pMatrix[k][j]*temp.m_pMatrix[i][k];
             }
-    for (k=0; k<line; k++)
-        coeff.ptr[k][0]=temp.ptr[k][k];
+    for (k=0; k<m_NrOfRows; k++)
+        coeff.m_pMatrix[k][0]=temp.m_pMatrix[k][k];
 }
 
 template <typename DataType> void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result) {
     int i,j;
     Matrix temp;
     DataType **temp_ptr;
-    if (ptr==result.ptr) {
-        temp_ptr=temp.ptr;
-        temp.ptr=ptr;
-        ptr=temp_ptr;
-        temp.line=line;
-        temp.column=column;
-        resizeNoInit(column, line);
-        for (i=0; i<line; i++)
-            for (j=0; j<column; j++)
-                ptr[i][j]=temp.ptr[j][i];
+    if (m_pMatrix==result.m_pMatrix) {
+        temp_ptr=temp.m_pMatrix;
+        temp.m_pMatrix=m_pMatrix;
+        m_pMatrix=temp_ptr;
+        temp.m_NrOfRows=m_NrOfRows;
+        temp.m_NrOfColumns=m_NrOfColumns;
+        resizeNoInit(m_NrOfColumns, m_NrOfRows);
+        for (i=0; i<m_NrOfRows; i++)
+            for (j=0; j<m_NrOfColumns; j++)
+                m_pMatrix[i][j]=temp.m_pMatrix[j][i];
         return;
     }
-    result.resizeNoInit(column,line);
-    for (i=0; i<line; i++)
-        for (j=0; j<column; j++)
-            result.ptr[j][i]=ptr[i][j];
+    result.resizeNoInit(m_NrOfColumns,m_NrOfRows);
+    for (i=0; i<m_NrOfRows; i++)
+        for (j=0; j<m_NrOfColumns; j++)
+            result.m_pMatrix[j][i]=m_pMatrix[i][j];
 }
 
 template <typename DataType> void Matrix<DataType>::sums(Matrix& result, int mode) {
     int i,j;
     DataType sum=0;
-    if (result.ptr==ptr)
+    if (result.m_pMatrix==m_pMatrix)
         _handleException(25, "template <typename DataType> void Matrix<DataType>::sums(Matrix &m, int sum_type)");
     if (mode>4)
         _handleException(21, "template <typename DataType> void Matrix<DataType>::sums(Matrix &m, int sum_type)");
@@ -898,37 +898,37 @@ template <typename DataType> void Matrix<DataType>::sums(Matrix& result, int mod
     switch (mode) {
         case 0:
             result.resizeNoInit(1,1);
-            for (i=0; i<line; i++)
-                for (j=0; j<column; j++)
-                    sum=sum + ptr[i][j];
-            result.ptr[0][0]=sum;
+            for (i=0; i<m_NrOfRows; i++)
+                for (j=0; j<m_NrOfColumns; j++)
+                    sum=sum + m_pMatrix[i][j];
+            result.m_pMatrix[0][0]=sum;
             return;
         case 1:
             result.resizeNoInit(1,1);
-            for (j=0; j<column; j++)
-                sum=sum+ptr[pos_x][j];
-            result.ptr[0][0]=sum;
+            for (j=0; j<m_NrOfColumns; j++)
+                sum=sum+m_pMatrix[m_PosX][j];
+            result.m_pMatrix[0][0]=sum;
             return;
         case 2:
-            result.resizeNoInit(line,1);
-            for (i=0; i<line; i++) {
-                result.ptr[i][0]=0;
-                for (j=0; j<column; j++)
-                    result.ptr[i][0]=result.ptr[i][0]+ptr[i][j];
+            result.resizeNoInit(m_NrOfRows,1);
+            for (i=0; i<m_NrOfRows; i++) {
+                result.m_pMatrix[i][0]=0;
+                for (j=0; j<m_NrOfColumns; j++)
+                    result.m_pMatrix[i][0]=result.m_pMatrix[i][0]+m_pMatrix[i][j];
             }
             return;
         case 3:
             result.resizeNoInit(1,1);
-            for (i=0; i<line; i++)
-                sum=sum+ptr[i][pos_y];
-            result.ptr[0][0]=sum;
+            for (i=0; i<m_NrOfRows; i++)
+                sum=sum+m_pMatrix[i][m_PosY];
+            result.m_pMatrix[0][0]=sum;
             return;
         case 4:
-            result.resizeNoInit(1,column);
-            for (j=0; j<column; j++) {
-                result.ptr[0][j]=0;
-                for (int i=0; i<line; i++)
-                    result.ptr[0][j]=result.ptr[0][j]+ptr[i][j];
+            result.resizeNoInit(1,m_NrOfColumns);
+            for (j=0; j<m_NrOfColumns; j++) {
+                result.m_pMatrix[0][j]=0;
+                for (int i=0; i<m_NrOfRows; i++)
+                    result.m_pMatrix[0][j]=result.m_pMatrix[0][j]+m_pMatrix[i][j];
             }
             return;
     }
@@ -937,7 +937,7 @@ template <typename DataType> void Matrix<DataType>::sums(Matrix& result, int mod
 template <typename DataType> void Matrix<DataType>::products(Matrix& result, int mode) {
     int i,j;
     DataType product;
-    if (result.ptr==ptr)
+    if (result.m_pMatrix==m_pMatrix)
         _handleException(25, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
     if (mode>4)
         _handleException(21, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
@@ -947,41 +947,41 @@ template <typename DataType> void Matrix<DataType>::products(Matrix& result, int
         case 0:
             product=1;
             result.resizeNoInit(1,1);
-            for (i=0; i<line; i++)
-                for (j=0; j<column; j++)
-                    product = product * ptr[i][j];
-            result.ptr[0][0]=product;
+            for (i=0; i<m_NrOfRows; i++)
+                for (j=0; j<m_NrOfColumns; j++)
+                    product = product * m_pMatrix[i][j];
+            result.m_pMatrix[0][0]=product;
             return;
         case 1:
             product=1;
             result.resizeNoInit(1,1);
-            for (j=0; j<column; j++)
-                product=product*ptr[pos_x][j];
-            result.ptr[0][0]=product;
+            for (j=0; j<m_NrOfColumns; j++)
+                product=product*m_pMatrix[m_PosX][j];
+            result.m_pMatrix[0][0]=product;
             return;
         case 2:
-            result.resizeNoInit(line,1);
-            for (i=0; i<line; i++) {
+            result.resizeNoInit(m_NrOfRows,1);
+            for (i=0; i<m_NrOfRows; i++) {
                 product=1;
-                for (int j=0; j<column; j++)
-                    product=product*ptr[i][j];
-                result.ptr[i][0]=product;
+                for (int j=0; j<m_NrOfColumns; j++)
+                    product=product*m_pMatrix[i][j];
+                result.m_pMatrix[i][0]=product;
             }
             return;
         case 3:
             result.resizeNoInit(1,1);
             product=1;
-            for (i=0; i<line; i++)
-                product=product*ptr[i][pos_y];
-            result.ptr[0][0]=product;
+            for (i=0; i<m_NrOfRows; i++)
+                product=product*m_pMatrix[i][m_PosY];
+            result.m_pMatrix[0][0]=product;
             return;
         case 4:
-            result.resizeNoInit(1,column);
-            for (j=0; j<column; j++) {
+            result.resizeNoInit(1,m_NrOfColumns);
+            for (j=0; j<m_NrOfColumns; j++) {
                 product=1;
-                for (int i=0; i<line; i++)
-                    product=product*ptr[i][j];
-                result.ptr[0][j]=product;
+                for (int i=0; i<m_NrOfRows; i++)
+                    product=product*m_pMatrix[i][j];
+                result.m_pMatrix[0][j]=product;
             }
             return;
     }
@@ -989,56 +989,56 @@ template <typename DataType> void Matrix<DataType>::products(Matrix& result, int
 
 template <typename DataType> void Matrix<DataType>::getNegativeMatrix(Matrix<DataType>& result) {
     int i,j;
-    if (result.ptr==ptr) goto negativation;
-    result.resizeNoInit(line,column);
+    if (result.m_pMatrix==m_pMatrix) goto negativation;
+    result.resizeNoInit(m_NrOfRows,m_NrOfColumns);
 negativation:
-    for (i=0; i<line; i++)
-        for (j=0; j<column; j++)
-            result.ptr[i][j]=(-1)*ptr[i][j];
+    for (i=0; i<m_NrOfRows; i++)
+        for (j=0; j<m_NrOfColumns; j++)
+            result.m_pMatrix[i][j]=(-1)*m_pMatrix[i][j];
 }
 
 template <typename DataType> void Matrix<DataType>::getInverseElementsMatrix(Matrix<DataType>& result) {
     int i,j;
-    for (i=0; i<line; i++)
-        for (j=0; j<column; j++)
-            if (ptr[i][j]==0)
+    for (i=0; i<m_NrOfRows; i++)
+        for (j=0; j<m_NrOfColumns; j++)
+            if (m_pMatrix[i][j]==0)
                 _handleException(23,"template <typename DataType> void Matrix<DataType>::inv_matrix(Matrix<DataType> &m)");
-    if (result.ptr==ptr) goto inversion;
-    result.resizeNoInit(line,column);
+    if (result.m_pMatrix==m_pMatrix) goto inversion;
+    result.resizeNoInit(m_NrOfRows,m_NrOfColumns);
 inversion:
-    for (i=0; i<line; i++)
-        for (j=0; j<column; j++)
-            result.ptr[i][j]=1/ptr[i][j];
+    for (i=0; i<m_NrOfRows; i++)
+        for (j=0; j<m_NrOfColumns; j++)
+            result.m_pMatrix[i][j]=1/m_pMatrix[i][j];
 }
 
 template <typename DataType> void Matrix<DataType>::_writeMatrix(ostream& os, int mode) {
     int i,j;
     switch (mode) {
         case 0:
-            for (i=0; i<line; i++) {
-                for (j=0; j<column; j++)
-                    os<<ptr[i][j]<<" ";
+            for (i=0; i<m_NrOfRows; i++) {
+                for (j=0; j<m_NrOfColumns; j++)
+                    os<<m_pMatrix[i][j]<<" ";
                 os<<endl;
             }
             return;
         case 1:
-            for (j=0; j<column; j++)
-                os<<ptr[pos_x][j]<<" ";
+            for (j=0; j<m_NrOfColumns; j++)
+                os<<m_pMatrix[m_PosX][j]<<" ";
             return;
         case 2:
-            for (i=0; i<line; i++)
-                os<<ptr[i][pos_y]<<endl;
+            for (i=0; i<m_NrOfRows; i++)
+                os<<m_pMatrix[i][m_PosY]<<endl;
             return;
         case 3:
-            os<<ptr[pos_x][pos_y];
+            os<<m_pMatrix[m_PosX][m_PosY];
             return;
         case 4:
-            for (i=0; i<line; i++)
-                os<<ptr[i][i]<<" ";
+            for (i=0; i<m_NrOfRows; i++)
+                os<<m_pMatrix[i][i]<<" ";
             return;
         case 5:
-            for (i=line-1; i>=0; i--)
-                os<<ptr[i][line-1-i]<<" ";
+            for (i=m_NrOfRows-1; i>=0; i--)
+                os<<m_pMatrix[i][m_NrOfRows-1-i]<<" ";
             return;
     }
 }
@@ -1049,57 +1049,57 @@ template <typename DataType> void Matrix<DataType>::_readMatrix(istream &is, int
     stringstream str_st(ios::in|ios::out);
     switch (mode) {
         case 0:
-            for (i=0; i<line; i++)
-                for (j=0; j<column; j++) {
+            for (i=0; i<m_NrOfRows; i++)
+                for (j=0; j<m_NrOfColumns; j++) {
                     if (is.eof())
                         _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
                     cout<<"["<<i<<"]["<<j<<"]= ";
-                    is>>ptr[i][j];
+                    is>>m_pMatrix[i][j];
                 }
             return;
         case 1:
-            cout<<"["<<pos_x<<"]["<<pos_y<<"]= ";
-            is>>ptr[pos_x][pos_y];
+            cout<<"["<<m_PosX<<"]["<<m_PosY<<"]= ";
+            is>>m_pMatrix[m_PosX][m_PosY];
             return;
         case 2:
-            for (j=0; j<column; j++) {
+            for (j=0; j<m_NrOfColumns; j++) {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                cout<<"["<<pos_x<<"]["<<j<<"]= ";
-                is>>ptr[pos_x][j];
+                cout<<"["<<m_PosX<<"]["<<j<<"]= ";
+                is>>m_pMatrix[m_PosX][j];
             }
             return;
         case 3:
-            for (i=0; i<line; i++) {
+            for (i=0; i<m_NrOfRows; i++) {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                cout<<"["<<i<<"]["<<pos_y<<"]= ";
-                is>>ptr[i][pos_y];
+                cout<<"["<<i<<"]["<<m_PosY<<"]= ";
+                is>>m_pMatrix[i][m_PosY];
             }
             return;
         case 4:
-            for(i=0; i<line; i++) {
+            for(i=0; i<m_NrOfRows; i++) {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
                 cout<<"["<<i<<"]["<<i<<"]= ";
-                is>>ptr[i][i];
+                is>>m_pMatrix[i][i];
             }
             return;
         case 5:
-            for(i=line-1; i>=0; i--) {
+            for(i=m_NrOfRows-1; i>=0; i--) {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                cout<<"["<<i<<"]["<<line-1-i<<"]= ";
-                is>>ptr[i][line-1-i];
+                cout<<"["<<i<<"]["<<m_NrOfRows-1-i<<"]= ";
+                is>>m_pMatrix[i][m_NrOfRows-1-i];
             }
             return;
         case 6:
             _readDiscard(is);
-            pos_x=0;
-            for (i=0; i<line; i++) {
+            m_PosX=0;
+            for (i=0; i<m_NrOfRows; i++) {
                 _readTextLine(is);
-                pos_x++;
-                f_x++;
+                m_PosX++;
+                s_FilePosX++;
             }
             return;
         case 7:
@@ -1112,76 +1112,76 @@ template <typename DataType> void Matrix<DataType>::_readMatrix(istream &is, int
             return;
         case 9:
             _readDiscard(is);
-            pos_x=0;
-            for(i=0; i<line; i++) {
+            m_PosX=0;
+            for(i=0; i<m_NrOfRows; i++) {
                 _readSingleItem(is);
-                pos_x++;
-                f_x++;
+                m_PosX++;
+                s_FilePosX++;
             }
             return;
         case 10:
             _readDiscard(is);
             resetCurrentPos();
-            f_y=0;
-            for (i=0; i<line; i++) {
+            s_FilePosY=0;
+            for (i=0; i<m_NrOfRows; i++) {
                 _readSingleItem(is);
-                f_x++;
-                pos_y=++pos_x;
-                f_y++;
+                s_FilePosX++;
+                m_PosY=++m_PosX;
+                s_FilePosY++;
             }
             return;
         case 11:
             _readDiscard(is);
-            f_y=line-1;
-            pos_x=0;
-            pos_y=line-1;
-            for(i=0; i<line; i++) {
+            s_FilePosY=m_NrOfRows-1;
+            m_PosX=0;
+            m_PosY=m_NrOfRows-1;
+            for(i=0; i<m_NrOfRows; i++) {
                 _readSingleItem(is);
-                f_x++;
-                f_y--;
-                pos_x++;
-                pos_y--;
+                s_FilePosX++;
+                s_FilePosY--;
+                m_PosX++;
+                m_PosY--;
             }
             return;
         case 12:
-            for (i=0; i<line; i++)
-                for (j=0; j<column; j++) {
+            for (i=0; i<m_NrOfRows; i++)
+                for (j=0; j<m_NrOfColumns; j++) {
                     if (is.eof())
                         _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                    is>>ptr[i][j];
+                    is>>m_pMatrix[i][j];
                 }
             return;
         case 13:
             if (is.eof())
                 _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-            is>>ptr[pos_x][pos_y];
+            is>>m_pMatrix[m_PosX][m_PosY];
             return;
         case 14:
-            for (j=0; j<column; j++) {
+            for (j=0; j<m_NrOfColumns; j++) {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                is>>ptr[pos_x][j];
+                is>>m_pMatrix[m_PosX][j];
             }
             return;
         case 15:
-            for (i=0; i<line; i++) {
+            for (i=0; i<m_NrOfRows; i++) {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                is>>ptr[i][pos_y];
+                is>>m_pMatrix[i][m_PosY];
             }
             return;
         case 16:
-            for (i=0; i<line; i++)  {
+            for (i=0; i<m_NrOfRows; i++)  {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                is>>ptr[i][i];
+                is>>m_pMatrix[i][i];
             }
             return;
         case 17:
-            for (i=line-1; i>=0; i--) {
+            for (i=m_NrOfRows-1; i>=0; i--) {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                is>>ptr[i][line-1-i];
+                is>>m_pMatrix[i][m_NrOfRows-1-i];
             }
     }
 }
@@ -1195,9 +1195,9 @@ template<typename DataType> int Matrix<DataType>:: _createSortingPartition(int f
             i=first-1; j=last;
             while (i<j) {
                 do i++;
-                    while ((i!=j) && (ptr[pos][i]<ptr[pos][last]));
+                    while ((i!=j) && (m_pMatrix[pos][i]<m_pMatrix[pos][last]));
                 do j--;
-                    while ((i!=j) && (ptr[pos][j]>ptr[pos][last]));
+                    while ((i!=j) && (m_pMatrix[pos][j]>m_pMatrix[pos][last]));
                 if (i<j)
                     swapItem(pos,i,pos,j);
             }
@@ -1210,9 +1210,9 @@ template<typename DataType> int Matrix<DataType>:: _createSortingPartition(int f
             i=first-1; j=last;
             while (i<j) {
                 do i++;
-                    while ((i!=j) && (ptr[pos][i]>ptr[pos][last]));
+                    while ((i!=j) && (m_pMatrix[pos][i]>m_pMatrix[pos][last]));
                 do j--;
-                    while ((i!=j) && (ptr[pos][j]<ptr[pos][last]));
+                    while ((i!=j) && (m_pMatrix[pos][j]<m_pMatrix[pos][last]));
                 if (i<j)
                     swapItem(pos,i,pos,j);
             }
@@ -1225,9 +1225,9 @@ template<typename DataType> int Matrix<DataType>:: _createSortingPartition(int f
             i=first-1; j=last;
             while (i<j) {
                 do i++;
-                    while ((i!=j) && (ptr[i][pos]<ptr[last][pos]));
+                    while ((i!=j) && (m_pMatrix[i][pos]<m_pMatrix[last][pos]));
                 do j--;
-                    while ((i!=j) && (ptr[j][pos]>ptr[last][pos]));
+                    while ((i!=j) && (m_pMatrix[j][pos]>m_pMatrix[last][pos]));
                 if (i<j)
                     swapItem(i,pos,j,pos);
             }
@@ -1240,9 +1240,9 @@ template<typename DataType> int Matrix<DataType>:: _createSortingPartition(int f
             i=first-1; j=last;
             while (i<j) {
                 do i++;
-                    while ((i!=j) && (ptr[i][pos]>ptr[last][pos]));
+                    while ((i!=j) && (m_pMatrix[i][pos]>m_pMatrix[last][pos]));
                 do j--;
-                    while ((i!=j) && (ptr[j][pos]<ptr[last][pos]));
+                    while ((i!=j) && (m_pMatrix[j][pos]<m_pMatrix[last][pos]));
                 if (i<j)
                     swapItem(i,pos,j,pos);
             }
