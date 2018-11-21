@@ -9,148 +9,148 @@
 #define div false
 using namespace std; 
 
-template <typename mytype> class Matrix {
+template <typename DataType> class Matrix {
 
 public: 
     Matrix();
-    Matrix(int m, int n);
-    Matrix(int n);
-    Matrix(mytype** m, int ln, int cl);
-    Matrix(mytype* m, int ln, int cl);
-    Matrix(int m, int n, istream &is);
-    Matrix(const Matrix &m);
+    Matrix(int nrOfRows, int nrOfColumns);
+    Matrix(int nrOfRowsColumns);
+    Matrix(DataType** matrixPtr, int nrOfRows, int nrOfColumns);
+    Matrix(DataType* matrixPtr, int nrOfRows, int nrOfColumns);
+    Matrix(int nrOfRows, int nrOfColumns, istream &in);
+    Matrix(const Matrix<DataType>& matrix);
     ~Matrix() {dealloc_matrix();}
 
-	mytype& get(int i,int j); 
-	mytype **getp() {return ptr; }
-	mytype *getp(int i) {
-		if (i<0) handle_exception(16, "template<typename mytype> mytype* Matrix<mytype>::getp(int i)"); 
+    DataType& get(int i,int j);
+    DataType** getp() {return ptr; }
+    DataType* getp(int i) {
+        if (i<0) handle_exception(16, "template<typename dataType> dataType* Matrix<dataType>::getp(int i)");
 		return ptr[i%line];
 	} 
 	
-	int get_lines() {return line;}
-	int get_columns() {return column; }
-	int get_x() {return pos_x; }
-	int get_y() {return pos_y; }
-	int get_fx() {return f_x; }
-	int get_fy() {return f_y; }
-	void set_x(int m) {pos_x = abs(m)%line; }
-	void set_y(int n) {pos_y = abs(n)%column; }
-	void set_fx(int m) {f_x = abs(m); }
-	void set_fy(int n) {f_y = abs(n); }
-    void set_entdat(int m) {entdat=abs(m)%18; }
-    void set_mprint(int m) {mprint=abs(m)%6; }
-    void set_zero();
+    int getNrOfRows() {return line;}
+    int getNrOfColumns() {return column; }
+    int getPosX() {return pos_x; }
+    int getPosY() {return pos_y; }
+    int getFilePosX() {return f_x; }
+    int getFilePosY() {return f_y; }
+    void setPosX(int m) {pos_x = abs(m)%line; }
+    void setPosY(int n) {pos_y = abs(n)%column; }
+    void setFilePosX(int m) {f_x = abs(m); }
+    void setFilePosY(int n) {f_y = abs(n); }
+    void setMatrixEntryMode(int matrixEntryMode) {entdat=abs(matrixEntryMode)%18; }
+    void setMatrixPrintMode(int matrixPrintMode) {mprint=abs(matrixPrintMode)%6; }
+    void setItemsToZero();
 
-	void inc_x() {if (pos_x<line-1) pos_x++; else pos_x=0; }
-	void dec_x() {if (pos_x>0) pos_x--; else pos_x=line-1; }
-	void inc_y() {if (pos_y<column-1) pos_y++; else pos_y=0; }
-	void dec_y() {if (pos_y>0) pos_y--; else pos_y=column-1; }
+    void incrPosX() {if (pos_x<line-1) pos_x++; else pos_x=0; }
+    void decrPosX() {if (pos_x>0) pos_x--; else pos_x=line-1; }
+    void incrPosY() {if (pos_y<column-1) pos_y++; else pos_y=0; }
+    void decrPosY() {if (pos_y>0) pos_y--; else pos_y=column-1; }
 
-	void reset_xy() {pos_x=pos_y=0; }
-	void reset_fxy() {f_x=0; f_y=0; }
+    void resetCurrentPos() {pos_x=pos_y=0; }
+    void resetCurrentPosInFile() {f_x=0; f_y=0; }
 
-    void resize(int m, int n) {
+    void resizeNoInit(int m, int n) {
 		if ((m<=0) || (n<=0)) 
-			handle_exception(3,"template <typename mytype> void Matrix<mytype>::resize(int m, int n)"); 
+            handle_exception(3,"template <typename dataType> void Matrix<dataType>::resize(int m, int n)");
 		dealloc_matrix(); alloc_matrix(m, n);
 	}
-	void resize_m(int m, int n);
+    void resize(int m, int n);
 
-	void unit(int m);
-	void null_matrix(int m, int n);
+    void transformToUnitMatrix(int nrOfRowsColumns);
+    void transformToZeroMatrix(int nrOfRows, int nrOfColumns);
 
-    void swap_i(int r1, int c1, Matrix &m2, int r2, int c2);
-	void swap_r(int r1, Matrix &m2, int r2);
-	void swap_c(int c1, Matrix &m2, int c2);
-	void swap_rc(int r1, Matrix &m2, int c2);
-	void swap_i(int r1, int c1, int r2, int c2);
-	void swap_r(int r1, int r2);
-	void swap_c(int c1, int c2);
-	void swap_rc(int rc1);
+    void swapItem(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr);
+    void swapRow(int rowNr, Matrix<DataType>& matrix, int matrixRowNr);
+    void swapColumn(int columnNr, Matrix<DataType>& matrix, int matrixColumnNr);
+    void swapRowColumn(int rowNr, Matrix<DataType>& matrix, int matrixColumnNr);
+    void swapItem(int firstRowNr, int firstColumnNr, int secondRowNr, int secondColumnNr);
+    void swapRow(int firstRowNr, int secondRowNr);
+    void swapColumn(int firstColumnNr, int secondColumnNr);
+    void swapRowColumn(int rowColumnNr);
 
-    void rv_mat(Matrix &m);
+    void swapWithMatrix(Matrix<DataType> &m);
 
-    void sort_lc(int pos, int mode);
-	void sort_matr(int mode);
+    void sortLineColumn(int lineColumnNr, int mode);
+    void sortAllElements(int mode);
 
-    void insert_col(int n);
-	void insert_row (int m);
-	void delete_col(int n);
-	void delete_row (int m);
+    void insertColumn(int columnNr);
+    void insertRow (int rowNr);
+    void deleteColumn(int columnNr);
+    void deleteRow (int rowNr);
 
-    void add_rc(int n1, mytype &m1, Matrix &src, int n2, mytype &m2, Matrix &dest, int p1);
-	void add_cr(int n1, mytype &m1, Matrix &src, int n2, mytype &m2, Matrix &dest, int p1);
-	void add_rr(int n1, mytype &m1, Matrix &src, int n2, mytype &m2, Matrix &dest, int p1);
-	void add_cc(int n1, mytype &m1, Matrix &src, int n2, mytype &m2, Matrix &dest, int p1);
+    void addRowToColumn(int rowNr, DataType& coeff, Matrix<DataType>& src, int srcColumnNr, DataType& srcCoeff, Matrix<DataType>& dest, int destColumnNr);
+    void addColumnToRow(int columnNr, DataType& coeff, Matrix<DataType>& src, int srcRowNr, DataType& srcCoeff, Matrix<DataType>& dest, int destRowNr);
+    void addRowToRow(int rowNr, DataType& coeff, Matrix<DataType>& src, int srcRowNr, DataType& srcCoeff, Matrix<DataType>& dest, int destRowNr);
+    void addColumnToColumn(int columnNr, DataType& coeff, Matrix<DataType>& src, int srcColumnNr, DataType& srcCoeff, Matrix<DataType> &dest, int destColumnNr);
 
-    void cat(Matrix &m1, Matrix &m2);
-	void split(Matrix &m1, Matrix &m2, int m);
+    void concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
+    void split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr);
 
-    void copy(const Matrix &m, int step1, int step2);
-	void copy(mytype **m, int ln, int cl);
-	void copy(mytype *m, int ln, int cl);
+    void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns);
+    void copy(DataType** src, int nrOfRows, int nrOfColumns);
+    void copy(DataType* src, int nrOfRows, int nrOfColumns);
 
-    void coef_row (const Matrix &coeff, Matrix &src, bool multiply);
-	void coef_col (const Matrix &coeff, Matrix &src, bool multiply);
+    void applyCoefficientsToRow (const Matrix<DataType>& coeff, Matrix<DataType>& src, bool multiply);
+    void applyCoefficientsToColumn (const Matrix<DataType>& coeff, Matrix<DataType>& src, bool multiply);
 
-    Matrix operator+ (const Matrix &m);
-	Matrix operator- (const Matrix &m);
-	Matrix operator* (const Matrix &m);
-	friend Matrix operator*(const mytype &typ, Matrix &m) {return m.multiply(typ);}
-	Matrix operator*(const mytype &typ) {return multiply(typ);}
-	Matrix operator^ (int n);
-	Matrix& operator= (const Matrix &m);
-	bool operator== (const Matrix &m);
-	bool operator != (Matrix &m) { if(ptr==m.ptr) return false; if (rank()!=m.rank()) return true; return false; }
-	bool operator < (Matrix &m) { if (ptr==m.ptr) return false; if (rank()<m.rank()) return true; return false; }
-	bool operator <= (Matrix &m) { if (ptr==m.ptr) return true; if (rank()<=m.rank()) return true; return false; }
-	bool operator > (Matrix &m) { if (ptr==m.ptr) return false; if (rank()>m.rank()) return true; return false; }
-	bool operator >= (Matrix &m) { if (ptr==m.ptr) return true; if (rank()>=m.rank()) return true; return false; }
+    Matrix<DataType> operator+ (const Matrix<DataType>& matrix);
+    Matrix<DataType> operator- (const Matrix<DataType>& matrix);
+    Matrix<DataType> operator* (const Matrix<DataType>& matrix);
+    friend Matrix<DataType> operator*(const DataType& data, Matrix<DataType>& matrix) {return matrix.multiply(data);}
+    Matrix<DataType> operator*(const DataType& data) {return multiply(data);}
+    Matrix<DataType> operator^ (int exp);
+    Matrix<DataType>& operator= (const Matrix<DataType>& matrix);
+    bool operator== (const Matrix<DataType>& matrix);
+    bool operator != (Matrix<DataType>& matrix) { if(ptr==matrix.ptr) return false; if (rank()!=matrix.rank()) return true; return false; }
+    bool operator < (Matrix<DataType>& matrix) { if (ptr==matrix.ptr) return false; if (rank()<matrix.rank()) return true; return false; }
+    bool operator <= (Matrix<DataType>& matrix) { if (ptr==matrix.ptr) return true; if (rank()<=matrix.rank()) return true; return false; }
+    bool operator > (Matrix<DataType>& matrix) { if (ptr==matrix.ptr) return false; if (rank()>matrix.rank()) return true; return false; }
+    bool operator >= (Matrix<DataType>& matrix) { if (ptr==matrix.ptr) return true; if (rank()>=matrix.rank()) return true; return false; }
 
-    friend ostream &operator<<(ostream &os, Matrix &m) {
-		if(((m.mprint==4) || (m.mprint==5))&&(m.line!=m.column))
+    friend ostream &operator<<(ostream& out, Matrix<DataType>& matrix) {
+        if(((matrix.mprint==4) || (matrix.mprint==5))&&(matrix.line!=matrix.column))
 			handle_exception(1, "friend ostream &operator<<(ostream &os, Matrix &m)"); 
-		m.output(os, m.mprint); 
-		return os; 
+        matrix.output(out, matrix.mprint);
+        return out;
 	} 
-	friend istream &operator>> (istream &is, Matrix &m){
-		if(((m.entdat==4) || (m.entdat==5) || (m.entdat==10) || (m.entdat==11) || (m.entdat==16) || (m.entdat==17))&&(m.line!=m.column))
+    friend istream &operator>> (istream& in, Matrix<DataType>& matrix){
+        if(((matrix.entdat==4) || (matrix.entdat==5) || (matrix.entdat==10) || (matrix.entdat==11) || (matrix.entdat==16) || (matrix.entdat==17))&&(matrix.line!=matrix.column))
 			handle_exception(1, "friend istream &operator>> (istream &is, Matrix &m)");
-		m.input(is, m.entdat); 
-		return is;  
+        matrix.input(in, matrix.entdat);
+        return in;
 	}
 
-	mytype& operator[] (int i) {
-	 	if (i<0) handle_exception(16, "template <typename mytype> mytype& Matrix<mytype>::operator[] (int i)") ;
-		if (i>=line*column) handle_exception(18, "template <typename mytype> mytype& Matrix<mytype>::operator[] (int i)");
-		if (by_row) return item_l(i);
-		return item_c(i);
+    DataType& operator[] (int index) {
+        if (index<0) handle_exception(16, "template <typename dataType> dataType& Matrix<dataType>::operator[] (int i)") ;
+        if (index>=line*column) handle_exception(18, "template <typename dataType> dataType& Matrix<dataType>::operator[] (int i)");
+        if (by_row) return item_l(index);
+        return item_c(index);
 	}
 
 	int rank();
-	void inversion(Matrix &coeff, Matrix &pseudo_inv);
-	void transpose(Matrix &m);
-	mytype det();
+    void getInverseMatrix(Matrix<DataType> &coeff, Matrix<DataType>& pseudoInverse);
+    void getTransposedMatrix(Matrix<DataType>& result);
+    DataType determinant();
 
-	void sums(Matrix &m, int sum_type);
-	void products(Matrix &m, int prod);
+    void sums(Matrix<DataType>& result, int mode);
+    void products(Matrix<DataType>& result, int mode);
 
-	void neg_matrix(Matrix &m);
-	void inv_matrix(Matrix &m);
+    void getNegativeMatrix(Matrix<DataType>& result);
+    void getInverseElementsMatrix(Matrix<DataType>& result);
 
 private:
 	void alloc_matrix(int m, int n){
 		int i;
-		reset_xy();
+        resetCurrentPos();
 		line=abs(m); column=abs(n); 
-		ptr=new mytype*[m];
+        ptr=new DataType*[m];
 		for (i=0; i<m; i++)  
-			ptr[i]=new mytype[n];
+            ptr[i]=new DataType[n];
 	}
 	
 	void dealloc_matrix() {
-		reset_xy();
+        resetCurrentPos();
 		for (int i=0; i<line; i++) 
 			delete ptr[i]; 
 		delete []ptr;
@@ -253,8 +253,8 @@ private:
 
 	int partition(int first, int last, int pivot, int mode, int pos);
 	int partition(int first, int last, int pivot, int mode);
-	mytype &item_l(int i) { return ptr[i/column][i%column]; }
-	mytype &item_c(int i) { return ptr[i%line][i/line]; }
+    DataType &item_l(int i) { return ptr[i/column][i%column]; }
+    DataType &item_c(int i) { return ptr[i%line][i/line]; }
 
 	static void handle_exception(int error_code, char *nume_functie);
 	
@@ -271,9 +271,9 @@ private:
 		}
 	}   
 	
-	Matrix multiply(const mytype &typ){
+    Matrix multiply(const DataType &typ){
 		Matrix a;
-		a.resize(line,column);
+        a.resizeNoInit(line,column);
 		for (int i=0; i<line; i++) 
 			for (int j=0; j<column; j++) 
 				a.ptr[i][j]=typ*ptr[i][j]; 
@@ -303,10 +303,10 @@ private:
 			m2.ptr[i][j-m]=ptr[i][j];
 	}
 
-	void cat_matr(Matrix<mytype> &m1,Matrix<mytype> &m2) {
+    void cat_matr(Matrix<DataType> &m1,Matrix<DataType> &m2) {
 		int i,j;
 		if (by_row) {
-			resize(m1.line+m2.line, m1.column);
+            resizeNoInit(m1.line+m2.line, m1.column);
 			for (i=0; i<m1.line; i++) 
 				for (j=0; j<column; j++)
 					ptr[i][j]=m1.ptr[i][j];
@@ -315,7 +315,7 @@ private:
 					ptr[i][j]=m2.ptr[i-m1.line][j];
 			return; 
 		} 
-		resize(m1.line, m1.column+m2.column);
+        resizeNoInit(m1.line, m1.column+m2.column);
 		for(i=0; i<line; i++) 
 			for (j=0; j<m1.column; j++) 
 				ptr[i][j]=m1.ptr[i][j];
@@ -324,7 +324,7 @@ private:
 				ptr[i][j]=m2.ptr[i][j-m1.column];
 	}
 
-    mytype **ptr;
+    DataType **ptr;
     int line,column;
     int pos_x;
     int pos_y;
