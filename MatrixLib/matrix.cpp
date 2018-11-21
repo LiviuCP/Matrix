@@ -1944,105 +1944,168 @@ void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
 template <typename DataType>
 void Matrix<DataType>::sums(Matrix& result, int mode)
 {
-    int i,j;
-    DataType sum=0;
     if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
-        _handleException(25, "template <typename DataType> void Matrix<DataType>::sums(Matrix &m, int sum_type)");
+    {
+        _handleException(25, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
+    }
+
     if (mode>4)
-        _handleException(21, "template <typename DataType> void Matrix<DataType>::sums(Matrix &m, int sum_type)");
+    {
+        _handleException(21, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
+    }
+
     if (mode<0)
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::sums(Matrix &m, int sum_type)");
-    switch (mode) {
-        case 0:
-            result.resizeNoInit(1,1);
-            for (i=0; i<m_NrOfRows; i++)
-                for (j=0; j<m_NrOfColumns; j++)
-                    sum=sum + m_pBaseArrayPtr[i][j];
-            result.m_pBaseArrayPtr[0][0]=sum;
-            return;
-        case 1:
-            result.resizeNoInit(1,1);
-            for (j=0; j<m_NrOfColumns; j++)
-                sum=sum+m_pBaseArrayPtr[m_PosX][j];
-            result.m_pBaseArrayPtr[0][0]=sum;
-            return;
-        case 2:
-            result.resizeNoInit(m_NrOfRows,1);
-            for (i=0; i<m_NrOfRows; i++) {
-                result.m_pBaseArrayPtr[i][0]=0;
-                for (j=0; j<m_NrOfColumns; j++)
-                    result.m_pBaseArrayPtr[i][0]=result.m_pBaseArrayPtr[i][0]+m_pBaseArrayPtr[i][j];
+    {
+        _handleException(16, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
+    }
+
+    switch (mode)
+    {
+    case 0:
+    {
+        DataType allItemsSum{0};
+        result.resizeNoInit(1,1);
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                allItemsSum *= m_pBaseArrayPtr[row][col];
             }
-            return;
-        case 3:
-            result.resizeNoInit(1,1);
-            for (i=0; i<m_NrOfRows; i++)
-                sum=sum+m_pBaseArrayPtr[i][m_PosY];
-            result.m_pBaseArrayPtr[0][0]=sum;
-            return;
-        case 4:
-            result.resizeNoInit(1,m_NrOfColumns);
-            for (j=0; j<m_NrOfColumns; j++) {
-                result.m_pBaseArrayPtr[0][j]=0;
-                for (int i=0; i<m_NrOfRows; i++)
-                    result.m_pBaseArrayPtr[0][j]=result.m_pBaseArrayPtr[0][j]+m_pBaseArrayPtr[i][j];
+        }
+        result.m_pBaseArrayPtr[0][0] = allItemsSum;
+        break;
+    }
+    case 1:
+    {
+        DataType currentRowItemsSum{0};
+        result.resizeNoInit(1,1);
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            currentRowItemsSum *= m_pBaseArrayPtr[m_PosX][col];
+        }
+        result.m_pBaseArrayPtr[0][0] = currentRowItemsSum;
+        break;
+    }
+    case 2:
+    {
+        result.resizeNoInit(m_NrOfRows,1);
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            DataType eachRowItemsSum{0};
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                eachRowItemsSum *= m_pBaseArrayPtr[row][col];
             }
-            return;
+            result.m_pBaseArrayPtr[row][0] = eachRowItemsSum;
+        }
+        break;
+    }
+    case 3:
+    {
+        DataType currentColumnItemsSum{0};
+        result.resizeNoInit(1,1);
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            currentColumnItemsSum *= m_pBaseArrayPtr[row][m_PosY];
+        }
+        result.m_pBaseArrayPtr[0][0] = currentColumnItemsSum;
+        break;
+    }
+    case 4:
+        result.resizeNoInit(1, m_NrOfColumns);
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            DataType eachColumnItemsSum{0};
+            for (int row{0}; row<m_NrOfRows; ++row)
+            {
+                eachColumnItemsSum *= m_pBaseArrayPtr[row][col];
+            }
+            result.m_pBaseArrayPtr[0][col] = eachColumnItemsSum;
+        }
     }
 }
 
 template <typename DataType>
 void Matrix<DataType>::products(Matrix& result, int mode)
 {
-    int i,j;
-    DataType product;
     if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
+    {
         _handleException(25, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
+    }
+
     if (mode>4)
+    {
         _handleException(21, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
+    }
+
     if (mode<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
-    switch (mode) {
-        case 0:
-            product=1;
-            result.resizeNoInit(1,1);
-            for (i=0; i<m_NrOfRows; i++)
-                for (j=0; j<m_NrOfColumns; j++)
-                    product = product * m_pBaseArrayPtr[i][j];
-            result.m_pBaseArrayPtr[0][0]=product;
-            return;
-        case 1:
-            product=1;
-            result.resizeNoInit(1,1);
-            for (j=0; j<m_NrOfColumns; j++)
-                product=product*m_pBaseArrayPtr[m_PosX][j];
-            result.m_pBaseArrayPtr[0][0]=product;
-            return;
-        case 2:
-            result.resizeNoInit(m_NrOfRows,1);
-            for (i=0; i<m_NrOfRows; i++) {
-                product=1;
-                for (int j=0; j<m_NrOfColumns; j++)
-                    product=product*m_pBaseArrayPtr[i][j];
-                result.m_pBaseArrayPtr[i][0]=product;
+    }
+
+    switch (mode)
+    {
+    case 0:
+    {
+        DataType allItemsProduct{1};
+        result.resizeNoInit(1,1);
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                allItemsProduct *= m_pBaseArrayPtr[row][col];
             }
-            return;
-        case 3:
-            result.resizeNoInit(1,1);
-            product=1;
-            for (i=0; i<m_NrOfRows; i++)
-                product=product*m_pBaseArrayPtr[i][m_PosY];
-            result.m_pBaseArrayPtr[0][0]=product;
-            return;
-        case 4:
-            result.resizeNoInit(1,m_NrOfColumns);
-            for (j=0; j<m_NrOfColumns; j++) {
-                product=1;
-                for (int i=0; i<m_NrOfRows; i++)
-                    product=product*m_pBaseArrayPtr[i][j];
-                result.m_pBaseArrayPtr[0][j]=product;
+        }
+        result.m_pBaseArrayPtr[0][0] = allItemsProduct;
+        break;
+    }
+    case 1:
+    {
+        DataType currentRowItemsProduct{1};
+        result.resizeNoInit(1,1);
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            currentRowItemsProduct *= m_pBaseArrayPtr[m_PosX][col];
+        }
+        result.m_pBaseArrayPtr[0][0] = currentRowItemsProduct;
+        break;
+    }
+    case 2:
+    {
+        result.resizeNoInit(m_NrOfRows,1);
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            DataType eachRowItemsProduct{1};
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                eachRowItemsProduct *= m_pBaseArrayPtr[row][col];
             }
-            return;
+            result.m_pBaseArrayPtr[row][0] = eachRowItemsProduct;
+        }
+        break;
+    }
+    case 3:
+    {
+        DataType currentColumnItemsProduct{1};
+        result.resizeNoInit(1,1);
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            currentColumnItemsProduct *= m_pBaseArrayPtr[row][m_PosY];
+        }
+        result.m_pBaseArrayPtr[0][0] = currentColumnItemsProduct;
+        break;
+    }
+    case 4:
+        result.resizeNoInit(1, m_NrOfColumns);
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            DataType eachColumnItemsProduct{1};
+            for (int row{0}; row<m_NrOfRows; ++row)
+            {
+                eachColumnItemsProduct *= m_pBaseArrayPtr[row][col];
+            }
+            result.m_pBaseArrayPtr[0][col] = eachColumnItemsProduct;
+        }
     }
 }
 
