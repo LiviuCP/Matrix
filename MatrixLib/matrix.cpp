@@ -1654,10 +1654,17 @@ istream& operator>>(istream &in, Matrix<DataType> &matrix)
 template<typename DataType>
 DataType& Matrix<DataType>::operator[](int index)
 {
-    if (index<0) _handleException(16, "template <typename dataType> dataType& Matrix<dataType>::operator[] (int i)") ;
-    if (index>=m_NrOfRows*m_NrOfColumns) _handleException(18, "template <typename dataType> dataType& Matrix<dataType>::operator[] (int i)");
-    if (m_WrapMatrixByRow) return _getItemForLineWrap(index);
-    return _getItemForColumnWrap(index);
+    if (index<0)
+    {
+        _handleException(16, "template <typename dataType> dataType& Matrix<dataType>::operator[] (int i)");
+    }
+
+    if (index>=m_NrOfRows*m_NrOfColumns)
+    {
+        _handleException(18, "template <typename dataType> dataType& Matrix<dataType>::operator[] (int i)");
+    }
+
+    return m_WrapMatrixByRow ? _getItemForLineWrap(index) : _getItemForColumnWrap(index);
 }
 
 template <typename DataType>
