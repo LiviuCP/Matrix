@@ -2157,16 +2157,16 @@ void Matrix<DataType>::getInverseElementsMatrix(Matrix<DataType>& result)
 template<typename DataType>
 void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns)
 {
-    m_NrOfRows=nrOfRows;
-    m_NrOfColumns=nrOfColumns;
-    m_pBaseArrayPtr=new DataType*[nrOfRows];
+    m_NrOfRows = nrOfRows;
+    m_NrOfColumns = nrOfColumns;
+    m_pBaseArrayPtr = new DataType*[nrOfRows];
 
     for (int row{0}; row<nrOfRows; ++row)
     {
-        m_pBaseArrayPtr[row]=new DataType[nrOfColumns];
+        m_pBaseArrayPtr[row] = new DataType[nrOfColumns];
     }
 
-    // to be clarified if this function call should be kept or better put separately after calling the _allocMemory() method
+    // this reset is required as the position indicators might get out of bound; no conditional reset as we need to have a consistent behavior
     resetCurrentPos();
 }
 
