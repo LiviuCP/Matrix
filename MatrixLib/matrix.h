@@ -73,10 +73,10 @@ public:
     void deleteColumn(int columnNr);
     void deleteRow (int rowNr);
 
-    void addRowToColumn(int rowNr, DataType& coeff, Matrix<DataType>& src, int srcColumnNr, DataType& srcCoeff, Matrix<DataType>& dest, int destColumnNr);
-    void addColumnToRow(int columnNr, DataType& coeff, Matrix<DataType>& src, int srcRowNr, DataType& srcCoeff, Matrix<DataType>& dest, int destRowNr);
-    void addRowToRow(int rowNr, DataType& coeff, Matrix<DataType>& src, int srcRowNr, DataType& srcCoeff, Matrix<DataType>& dest, int destRowNr);
-    void addColumnToColumn(int columnNr, DataType& coeff, Matrix<DataType>& src, int srcColumnNr, DataType& srcCoeff, Matrix<DataType> &dest, int destColumnNr);
+    void addRowToColumn(int rowNr, const DataType& coeff, Matrix<DataType>& src, int srcColumnNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destColumnNr);
+    void addColumnToRow(int columnNr, const DataType& coeff, Matrix<DataType>& src, int srcRowNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destRowNr);
+    void addRowToRow(int rowNr, const DataType& coeff, Matrix<DataType>& src, int srcRowNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destRowNr);
+    void addColumnToColumn(int columnNr, const DataType& coeff, Matrix<DataType>& src, int srcColumnNr, const DataType& srcCoeff, Matrix<DataType> &dest, int destColumnNr);
 
     void concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
     void split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr);

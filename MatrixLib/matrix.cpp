@@ -911,94 +911,167 @@ void Matrix<DataType>::deleteColumn(int columnNr)
 }
 
 template<typename DataType>
-void Matrix<DataType>::addRowToColumn(int rowNr, DataType& coeff, Matrix& src, int srcColumnNr, DataType& srcCoeff, Matrix& dest,int destColumnNr)
+void Matrix<DataType>::addRowToColumn(int rowNr, const DataType& coeff, Matrix& src, int srcColumnNr, const DataType& srcCoeff, Matrix& dest,int destColumnNr)
 {
-    int i;
-    if ((rowNr<0) || (srcColumnNr<0) || (destColumnNr<0))
+    if (rowNr<0 || srcColumnNr<0 || destColumnNr<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+    }
+
     if (rowNr>=m_NrOfRows)
+    {
         _handleException(4, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+    }
+
     if (srcColumnNr>=src.m_NrOfColumns)
+    {
         _handleException(7, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if (dest.m_WrapMatrixByRow) {
+    }
+
+    if (dest.m_WrapMatrixByRow)
+    {
         if (destColumnNr>=dest.m_NrOfRows)
+        {
             _handleException(5, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<m_NrOfRows; i++)
-            dest.m_pMatrix[destColumnNr][i]=coeff*m_pMatrix[rowNr][i]+srcCoeff*src.m_pMatrix[i][srcColumnNr];
+        }
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            dest.m_pMatrix[destColumnNr][row] = coeff * m_pMatrix[rowNr][row] + srcCoeff * src.m_pMatrix[row][srcColumnNr];
+        }
     }
-    else {
+    else
+    {
         if (destColumnNr>=dest.m_NrOfColumns)
+        {
             _handleException(8, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<m_NrOfRows; i++)
-            dest.m_pMatrix[i][destColumnNr]=coeff*m_pMatrix[rowNr][i]+srcCoeff*src.m_pMatrix[i][srcColumnNr];
+        }
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            dest.m_pMatrix[row][destColumnNr] = coeff * m_pMatrix[rowNr][row] + srcCoeff * src.m_pMatrix[row][srcColumnNr];
+        }
     }
 }
 
 template<typename DataType>
-void Matrix<DataType>::addColumnToRow(int columnNr, DataType& coeff, Matrix& src, int srcRowNr, DataType& srcCoeff, Matrix& dest, int destRowNr)
+void Matrix<DataType>::addColumnToRow(int columnNr, const DataType& coeff, Matrix& src, int srcRowNr, const DataType& srcCoeff, Matrix& dest, int destRowNr)
 {
-    int i;
-    if ((columnNr<0) || (srcRowNr<0) || (destRowNr<0))
+    if (columnNr<0 || srcRowNr<0 || destRowNr<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+    }
+
     if (columnNr>=m_NrOfColumns)
+    {
         _handleException(7, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+    }
+
     if (srcRowNr>=src.m_NrOfRows)
+    {
         _handleException(4, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if (dest.m_WrapMatrixByRow) {
+    }
+
+    if (dest.m_WrapMatrixByRow)
+    {
         if (destRowNr>=dest.m_NrOfRows)
+        {
             _handleException(5, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<m_NrOfRows; i++)
-            dest.m_pMatrix[destRowNr][i]=coeff*m_pMatrix[i][columnNr]+srcCoeff*src.m_pMatrix[srcRowNr][i];
+        }
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            dest.m_pMatrix[destRowNr][row] = coeff * m_pMatrix[row][columnNr] + srcCoeff * src.m_pMatrix[srcRowNr][row];
+        }
     }
-    else {
+    else
+    {
         if (destRowNr>=dest.m_NrOfColumns)
+        {
             _handleException(8, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<m_NrOfRows; i++)
-            dest.m_pMatrix[i][destRowNr]=coeff*m_pMatrix[i][columnNr]+srcCoeff*src.m_pMatrix[srcRowNr][i];
+        }
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            dest.m_pMatrix[row][destRowNr] = coeff * m_pMatrix[row][columnNr] + srcCoeff * src.m_pMatrix[srcRowNr][row];
+        }
     }
 }
 
 template<typename DataType>
-void Matrix<DataType>::addRowToRow(int rowNr, DataType& coeff, Matrix &src, int srcRowNr, DataType& srcCoeff, Matrix& dest, int destRowNr)
+void Matrix<DataType>::addRowToRow(int rowNr, const DataType& coeff, Matrix &src, int srcRowNr, const DataType& srcCoeff, Matrix& dest, int destRowNr)
 {
-    int i;
-    if ((rowNr<0) || (srcRowNr<0) || (destRowNr<0))
+    if (rowNr<0 || srcRowNr<0 || destRowNr<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::add_rr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+    }
+
     if ((rowNr>=m_NrOfRows) || (srcRowNr>=src.m_NrOfRows))
+    {
         _handleException(6, "template <typename DataType> void Matrix<DataType>::add_rr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if (dest.m_WrapMatrixByRow) {
+    }
+
+    if (dest.m_WrapMatrixByRow)
+    {
         if (destRowNr>=dest.m_NrOfRows)
+        {
             _handleException(5, "template <typename DataType> void Matrix<DataType>::add_rr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<m_NrOfRows; i++)
-            dest.m_pMatrix[destRowNr][i]=coeff*m_pMatrix[rowNr][i]+srcCoeff*src.m_pMatrix[srcRowNr][i];
+        }
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            dest.m_pMatrix[destRowNr][row] = coeff * m_pMatrix[rowNr][row] + srcCoeff * src.m_pMatrix[srcRowNr][row];
+        }
     }
     else {
         if (destRowNr>=dest.m_NrOfColumns)
+        {
             _handleException(8, "template <typename DataType> void Matrix<DataType>::add_rr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<m_NrOfRows; i++)
-            dest.m_pMatrix[i][destRowNr]=coeff*m_pMatrix[rowNr][i]+srcCoeff*src.m_pMatrix[srcRowNr][i];
+        }
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            dest.m_pMatrix[row][destRowNr] = coeff * m_pMatrix[rowNr][row] + srcCoeff * src.m_pMatrix[srcRowNr][row];
+        }
     }
 }
 
 template<typename DataType>
-void Matrix<DataType>::addColumnToColumn(int columnNr, DataType& coeff, Matrix& src, int srcColumnNr, DataType& srcCoeff, Matrix& dest, int destColumnNr)
+void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Matrix& src, int srcColumnNr, const DataType& srcCoeff, Matrix& dest, int destColumnNr)
 {
-    int i;
-    if ((columnNr<0) || (srcColumnNr<0) || (destColumnNr<0))
+    if (columnNr<0 || srcColumnNr<0 || destColumnNr<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if ((columnNr>=m_NrOfColumns) || (srcColumnNr>=src.m_NrOfColumns))
-        _handleException(9, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-    if (dest.m_WrapMatrixByRow) {
-        if (destColumnNr>=dest.m_NrOfRows)
-            _handleException(5, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<m_NrOfRows; i++)
-            dest.m_pMatrix[destColumnNr][i]=coeff*m_pMatrix[i][columnNr]+srcCoeff*src.m_pMatrix[i][srcColumnNr];
     }
-    else {
+
+    if ((columnNr>=m_NrOfColumns) || (srcColumnNr>=src.m_NrOfColumns))
+    {
+        _handleException(9, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+    }
+
+    if (dest.m_WrapMatrixByRow)
+    {
+        if (destColumnNr>=dest.m_NrOfRows)
+        {
+            _handleException(5, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+        }
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            dest.m_pMatrix[destColumnNr][row] = coeff * m_pMatrix[row][columnNr] + srcCoeff * src.m_pMatrix[row][srcColumnNr];
+        }
+    }
+    else
+    {
         if (destColumnNr>=dest.m_NrOfColumns)
+        {
             _handleException(8, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
-        for (i=0; i<m_NrOfRows; i++)
-            dest.m_pMatrix[i][destColumnNr]=coeff*m_pMatrix[i][columnNr]+srcCoeff*src.m_pMatrix[i][srcColumnNr];
+        }
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            dest.m_pMatrix[row][destColumnNr] = coeff * m_pMatrix[row][columnNr] + srcCoeff * src.m_pMatrix[row][srcColumnNr];
+        }
     }
 }
 
