@@ -102,7 +102,7 @@ public:
     bool operator > (const Matrix<DataType>& matrix) const;
     bool operator >= (const Matrix<DataType>& matrix) const;
 
-    friend ostream &operator<<(ostream& out, Matrix<DataType>& matrix);
+    friend ostream &operator<<(ostream& out, const Matrix<DataType>& matrix);
     friend istream &operator>> (istream& in, Matrix<DataType>& matrix);
 
     DataType& operator[] (int index);

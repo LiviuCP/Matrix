@@ -1620,20 +1620,34 @@ bool Matrix<DataType>::operator >=(const Matrix<DataType> &matrix) const
 }
 
 template<typename DataType>
-ostream& operator<<(ostream &out, Matrix<DataType> &matrix)
+ostream& operator<<(ostream &out, const Matrix<DataType> &matrix)
 {
-    if(((matrix.m_MatrixPrintMode==4) || (matrix.m_MatrixPrintMode==5))&&(matrix.m_NrOfRows!=matrix.m_NrOfColumns))
+    if((matrix.m_MatrixPrintMode==4 || matrix.m_MatrixPrintMode==5) && (matrix.m_NrOfRows!=matrix.m_NrOfColumns))
+    {
         Matrix<DataType>::_handleException(1, "friend ostream &operator<<(ostream &os, Matrix &m)");
+    }
+
     matrix._writeMatrix(out, matrix.m_MatrixPrintMode);
+
     return out;
 }
 
 template<typename DataType>
 istream& operator>>(istream &in, Matrix<DataType> &matrix)
 {
-    if(((matrix.m_MatrixEntryMode==4) || (matrix.m_MatrixEntryMode==5) || (matrix.m_MatrixEntryMode==10) || (matrix.m_MatrixEntryMode==11) || (matrix.m_MatrixEntryMode==16) || (matrix.m_MatrixEntryMode==17))&&(matrix.m_NrOfRows!=matrix.m_NrOfColumns))
+    if((matrix.m_MatrixEntryMode==4   ||
+        matrix.m_MatrixEntryMode==5   ||
+        matrix.m_MatrixEntryMode==10  ||
+        matrix.m_MatrixEntryMode==11  ||
+        matrix.m_MatrixEntryMode==16  ||
+        matrix.m_MatrixEntryMode==17) &&
+       (matrix.m_NrOfRows!=matrix.m_NrOfColumns))
+    {
         Matrix<DataType>::_handleException(1, "friend istream &operator>> (istream &is, Matrix &m)");
+    }
+
     matrix._readMatrix(in, matrix.m_MatrixEntryMode);
+
     return in;
 }
 
