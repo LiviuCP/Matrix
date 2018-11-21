@@ -1732,44 +1732,77 @@ DataType Matrix<DataType>::determinant()
 template<typename DataType>
 int Matrix<DataType>::rank()
 {
-    int i,j;
-    int rang=0;
-    Matrix p;
+    auto continueCalculation = [](Matrix& matrix)
+    {
+        for (int row{matrix.m_PosX+1}; row<matrix.m_NrOfRows; ++row)
+        {
+            for (int col{matrix.m_PosY+1}; col<matrix.m_NrOfColumns; ++col)
+            {
+                matrix.m_pMatrix[row][col]=(matrix.m_pMatrix[row][col]) * (matrix.m_pMatrix[matrix.m_PosX][matrix.m_PosY]) -
+                                           (matrix.m_pMatrix[matrix.m_PosX][col]) * (matrix.m_pMatrix[row][matrix.m_PosY]);
+            }
+        }
+
+        ++matrix.m_PosX;
+        ++matrix.m_PosY;
+    };
+
+    Matrix matrix;
+
     if (m_NrOfRows>m_NrOfColumns)
-        getTransposedMatrix(p);
-    else p=*this;
-    p.m_PosX=0;
-    p.m_PosY=0;
-    while (p.m_PosX<p.m_NrOfRows-1) {
-        if (p.m_pMatrix[p.m_PosX][p.m_PosY]==0) {
-            for (i=p.m_PosX+1; i<p.m_NrOfRows; i++)
-                if (p.m_pMatrix[i][p.m_PosY]!=0) {
-                    rang++;
-                    p.swapRow(i,p.m_PosX);
-                    goto Prelucrare;
+    {
+        getTransposedMatrix(matrix);
+    }
+    else
+    {
+        matrix = *this;
+    }
+
+    matrix.m_PosX=0;
+    matrix.m_PosY=0;
+
+    int matrixRank{0};
+
+    while (matrix.m_PosX < matrix.m_NrOfRows-1)
+    {
+        if (matrix.m_pMatrix[matrix.m_PosX][matrix.m_PosY]==0)
+        {
+            for (int row{matrix.m_PosX+1}; row<matrix.m_NrOfRows; ++row)
+            {
+                if (matrix.m_pMatrix[row][matrix.m_PosY]!=0)
+                {
+                    ++matrixRank;
+                    matrix.swapRow(row,matrix.m_PosX);
+                    continueCalculation(matrix);
                 }
-            for (j=p.m_PosY+1; j<p.m_NrOfColumns; j++)
-                if (p.m_pMatrix[p.m_PosX][j]!=0) {
-                    rang++;
-                    p.swapColumn(j,p.m_PosY);
-                    goto Prelucrare;
+            }
+
+            for (int col{matrix.m_PosY+1}; col<matrix.m_NrOfColumns; ++col)
+            {
+                if (matrix.m_pMatrix[matrix.m_PosX][col]!=0)
+                {
+                    ++matrixRank;
+                    matrix.swapColumn(col,matrix.m_PosY);
+                    continueCalculation(matrix);
                 }
+            }
         }
         else
-            rang++;
-Prelucrare:
-    for (i=p.m_PosX+1; i<p.m_NrOfRows; i++)
-        for (j=p.m_PosY+1; j<p.m_NrOfColumns; j++)
-            p.m_pMatrix[i][j]=(p.m_pMatrix[i][j])*(p.m_pMatrix[p.m_PosX][p.m_PosY]) - (p.m_pMatrix[p.m_PosX][j])*(p.m_pMatrix[i][p.m_PosY]);
-    (p.m_PosX)++;
-    (p.m_PosY)++;
+        {
+            ++matrixRank;
+        }
     }
-    for (j=p.m_PosY; j<p.m_NrOfColumns; j++)
-        if (p.m_pMatrix[p.m_PosX][j]!=0) {
-            rang++;
+
+    for (int col{matrix.m_PosY}; col<matrix.m_NrOfColumns; ++col)
+    {
+        if (matrix.m_pMatrix[matrix.m_PosX][col]!=0)
+        {
+            ++matrixRank;
             break;
         }
-    return rang;
+    }
+
+    return matrixRank;
 }
 
 template<typename DataType>
