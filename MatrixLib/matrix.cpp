@@ -373,11 +373,12 @@ void Matrix<DataType>::transformToZeroMatrix(int nrOfRows, int nrOfColumns)
 template <typename DataType>
 void Matrix<DataType>::resize(int m, int n)
 {
-    int i,j;
     DataType **temp;
-    if ((m==m_NrOfRows)&&(n==m_NrOfColumns)) return;
-    if ((m<=0) || (n<=0))
+    if (m==m_NrOfRows && n==m_NrOfColumns) return;
+    if (m<=0 || n<=0)
+    {
         _handleException(3, "template <typename DataType> void Matrix<DataType>::resize_m(int m, int n)");
+    }
     Matrix a;
     temp=a.m_pMatrix;
     a.m_pMatrix=m_pMatrix;
@@ -387,43 +388,78 @@ void Matrix<DataType>::resize(int m, int n)
     delete m_pMatrix[0];
     delete m_pMatrix;
     _allocMemory(m,n);
-    if ((m<a.m_NrOfRows)&&(n<a.m_NrOfColumns)) {
-        for (i=0; i<m; i++)
-            for (j=0; j<n; j++)
+    if (m<a.m_NrOfRows && n<a.m_NrOfColumns) {
+        for (int i{0}; i<m; i++)
+        {
+            for (int j{0}; j<n; j++)
+            {
                 m_pMatrix[i][j]=a.m_pMatrix[i][j];
-        return;
+            }
+        }
     }
-    if ((m<=a.m_NrOfRows)&&(n>=a.m_NrOfColumns)) {
-        for (i=0; i<m; i++)
-            for (j=0; j<a.m_NrOfColumns; j++)
+    else if (m<=a.m_NrOfRows && n>=a.m_NrOfColumns) {
+        for (int i{0}; i<m; ++i)
+        {
+            for (int j{0}; j<a.m_NrOfColumns; ++j)
+            {
                 m_pMatrix[i][j]=a.m_pMatrix[i][j];
-        for (i=0; i<m; i++)
-            for (j=a.m_NrOfColumns; j<n; j++)
+            }
+        }
+        for (int i{0}; i<m; ++i)
+        {
+            for (int j{a.m_NrOfColumns}; j<n; ++j)
+            {
                 m_pMatrix[i][j]=0;
-        return;
+            }
+        }
     }
-    if ((m>=a.m_NrOfRows) && (n<=a.m_NrOfColumns)) {
-        for (i=0; i<a.m_NrOfRows; i++)
-            for (j=0; j<n; j++)
+    else if ((m>=a.m_NrOfRows) && (n<=a.m_NrOfColumns)) {
+        for (int i{0}; i<a.m_NrOfRows; i++)
+        {
+            for (int j{0}; j<n; j++)
+            {
                 m_pMatrix[i][j]=a.m_pMatrix[i][j];
-        for (i=a.m_NrOfRows; i<m; i++)
-            for (j=0; j<n; j++)
+            }
+        }
+        for (int i{a.m_NrOfRows}; i<m; i++)
+        {
+            for (int j{0}; j<n; j++)
+            {
                 m_pMatrix[i][j]=0;
-        return;
+            }
+        }
     }
-
-    for (i=0; i<a.m_NrOfRows; i++)
-        for (j=0; j<a.m_NrOfColumns; j++)
-            m_pMatrix[i][j]=a.m_pMatrix[i][j];
-    for (i=0; i<m; i++)
-        for (j=a.m_NrOfColumns; j<n; j++)
-            m_pMatrix[i][j]=0;
-    for (i=a.m_NrOfRows; i<m; i++)
-        for (j=0; j<n; j++)
-            m_pMatrix[i][j]=0;
-    for (i=a.m_NrOfRows; i<m; i++)
-        for (j=a.m_NrOfColumns; j<n; j++)
-            m_pMatrix[i][j]=0;
+    else
+    {
+        for (int i{0}; i<a.m_NrOfRows; ++i)
+        {
+            for (int j{0}; j<a.m_NrOfColumns; ++j)
+            {
+                m_pMatrix[i][j]=a.m_pMatrix[i][j];
+            }
+        }
+        for (int i{0}; i<m; i++)
+        {
+            for (int j{a.m_NrOfColumns}; j<n; ++j)
+            {
+                m_pMatrix[i][j] = 0;
+            }
+        }
+        for (int i{a.m_NrOfRows}; i<m; ++i)
+        {
+            for (int j{0}; j<n; j++)
+            {
+                m_pMatrix[i][j] = 0;
+            }
+        }
+        for (int i{a.m_NrOfRows}; i<m; ++i)
+        {
+            for (int j{a.m_NrOfColumns}; j<n; ++j)
+            {
+                m_pMatrix[i][j] = 0;
+            }
+        }
+    }
 }
 template <typename DataType>
 void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix& matrix, int matrixRowNr, int matrixColumnNr)
