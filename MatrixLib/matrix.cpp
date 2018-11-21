@@ -1808,49 +1808,101 @@ int Matrix<DataType>::rank()
 template<typename DataType>
 void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType>& pseudoInverse)
 {
-    int i,j,k,l;
-    Matrix <DataType> temp;
-    if ((m_pBaseArrayPtr==coeff.m_pBaseArrayPtr) || (m_pBaseArrayPtr==pseudoInverse.m_pBaseArrayPtr))
+    auto continueCalculation = [](Matrix<DataType>& pseudoInverse, Matrix<DataType>& helperMatrix, int diagIndex, int nrOfRows)
+    {
+        for (int col{0}; col<nrOfRows; ++col)
+        {
+            for (int row{diagIndex+1}; row<nrOfRows; ++row)
+            {
+                if (col>diagIndex)
+                {
+                    helperMatrix.m_pBaseArrayPtr[row][col] = helperMatrix.m_pBaseArrayPtr[row][col] * helperMatrix.m_pBaseArrayPtr[diagIndex][diagIndex] -
+                                                             helperMatrix.m_pBaseArrayPtr[diagIndex][col] * helperMatrix.m_pBaseArrayPtr[row][diagIndex];
+                }
+
+                pseudoInverse.m_pBaseArrayPtr[row][col] = pseudoInverse.m_pBaseArrayPtr[row][col] * helperMatrix.m_pBaseArrayPtr[diagIndex][diagIndex] -
+                                                          pseudoInverse.m_pBaseArrayPtr[diagIndex][col] * helperMatrix.m_pBaseArrayPtr[row][diagIndex];
+            }
+        }
+    };
+
+    Matrix <DataType> matrix{};
+
+    if (m_pBaseArrayPtr == coeff.m_pBaseArrayPtr || m_pBaseArrayPtr == pseudoInverse.m_pBaseArrayPtr)
+    {
         _handleException(25, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
+    }
+
     if (m_NrOfRows!=m_NrOfColumns)
+    {
         _handleException(1, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
-    temp=*this;
+    }
+
+    matrix = *this;
     pseudoInverse.transformToUnitMatrix(m_NrOfRows);
     coeff.resizeNoInit(m_NrOfRows,1);
 
-    for (k=0; k<m_NrOfRows-1; k++) {
-        if (temp.m_pBaseArrayPtr[k][k]==0) {
-            for (l=k+1; l<m_NrOfRows; l++) {
-                if (temp.m_pBaseArrayPtr[k][l]!=0) {
-                    temp.swapRow(k,l);
-                    pseudoInverse.swapRow(k,l);
-                    goto Prelucrare;
+    for (int diag{0}; diag<m_NrOfRows-1; ++diag)
+    {
+        bool rowSwapped{false};
+
+        if (matrix.m_pBaseArrayPtr[diag][diag]==0)
+        {
+            for (int col{diag+1}; col<m_NrOfRows; ++col)
+            {
+                if (matrix.m_pBaseArrayPtr[diag][col]!=0)
+                {
+                    matrix.swapRow(diag,col);
+                    pseudoInverse.swapRow(diag,col);
+                    continueCalculation(pseudoInverse, matrix, diag, m_NrOfRows);
+                    rowSwapped = true;
                 }
             }
+
+            if (rowSwapped)
+            {
+                continue;
+            }
+
             _handleException(2, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
         }
-Prelucrare:
-        for (j=0; j<m_NrOfRows; j++)
-            for (i=k+1; i<m_NrOfRows; i++) {
-                if (j>k)
-                    temp.m_pBaseArrayPtr[i][j]=temp.m_pBaseArrayPtr[i][j]*temp.m_pBaseArrayPtr[k][k]- temp.m_pBaseArrayPtr[k][j]*temp.m_pBaseArrayPtr[i][k];
-                pseudoInverse.m_pBaseArrayPtr[i][j]=pseudoInverse.m_pBaseArrayPtr[i][j]*temp.m_pBaseArrayPtr[k][k] - pseudoInverse.m_pBaseArrayPtr[k][j]*temp.m_pBaseArrayPtr[i][k];
-            }
     }
-    for (k=0; k<m_NrOfRows; k++)
-        for (i=k+1; i<m_NrOfRows; i++)
-            temp.m_pBaseArrayPtr[i][k]=0;
-    if (temp.m_pBaseArrayPtr[m_NrOfRows-1][m_NrOfRows-1]==0)
+
+    for (int diag{0}; diag<m_NrOfRows; ++diag)
+    {
+        for (int row{diag+1}; row<m_NrOfRows; ++row)
+        {
+            matrix.m_pBaseArrayPtr[row][diag] = 0;
+        }
+    }
+
+    if (matrix.m_pBaseArrayPtr[m_NrOfRows-1][m_NrOfRows-1]==0)
+    {
         _handleException(2, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
-    for (k=m_NrOfRows-1; k>0; k--)
-        for (i=0; i<=k-1; i++)
-            for (j=0; j<=m_NrOfRows-1; j++) {
-                if (j<k)
-                    temp.m_pBaseArrayPtr[i][j]=temp.m_pBaseArrayPtr[i][j]*temp.m_pBaseArrayPtr[k][k]-temp.m_pBaseArrayPtr[k][j]*temp.m_pBaseArrayPtr[i][k];
-                pseudoInverse.m_pBaseArrayPtr[i][j]=pseudoInverse.m_pBaseArrayPtr[i][j]*temp.m_pBaseArrayPtr[k][k]-pseudoInverse.m_pBaseArrayPtr[k][j]*temp.m_pBaseArrayPtr[i][k];
+    }
+
+    for (int diag{m_NrOfRows-1}; diag>0; --diag)
+    {
+        for (int row{0}; row<=diag-1; ++row)
+        {
+            for (int col{0}; col<=m_NrOfRows-1; ++col)
+            {
+                if (col<diag)
+                {
+                    matrix.m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col] * matrix.m_pBaseArrayPtr[diag][diag] -
+                                                       matrix.m_pBaseArrayPtr[diag][col] * matrix.m_pBaseArrayPtr[row][diag];
+                }
+
+                pseudoInverse.m_pBaseArrayPtr[row][col] = pseudoInverse.m_pBaseArrayPtr[row][col] * matrix.m_pBaseArrayPtr[diag][diag] -
+                                                          pseudoInverse.m_pBaseArrayPtr[diag][col] * matrix.m_pBaseArrayPtr[row][diag];
             }
-    for (k=0; k<m_NrOfRows; k++)
-        coeff.m_pBaseArrayPtr[k][0]=temp.m_pBaseArrayPtr[k][k];
+        }
+    }
+
+    for (int diag{0}; diag<m_NrOfRows; ++diag)
+    {
+        coeff.m_pBaseArrayPtr[diag][0] = matrix.m_pBaseArrayPtr[diag][diag];
+    }
 }
 
 template <typename DataType>
