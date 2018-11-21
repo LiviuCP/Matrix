@@ -1257,48 +1257,95 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
 template <typename DataType>
 void Matrix<DataType>::applyCoefficientsToRow (const Matrix &coeff, Matrix &src, bool multiply)
 {
-    int i,j;
     if (m_pMatrix==coeff.m_pMatrix)
+    {
         _handleException(25, "template <typename DataType> void Matrix<DataType>::coef_row (const Matrix &coeff, Matrix &src, bool multiply)");
+    }
+
     if (coeff.m_NrOfRows!=src.m_NrOfRows)
+    {
         _handleException(12,"template <typename DataType> void Matrix<DataType>::coef_row (const Matrix &coeff, Matrix &src, bool multiply)");
-    if ((m_NrOfRows!=src.m_NrOfRows)||(m_NrOfColumns!=src.m_NrOfColumns))
+    }
+
+    if (m_NrOfRows != src.m_NrOfRows || m_NrOfColumns != src.m_NrOfColumns)
+    {
         resizeNoInit(src.m_NrOfRows, src.m_NrOfColumns);
-    if (multiply==true)
-        for (i=0; i<m_NrOfRows; i++)
-            for (j=0; j<m_NrOfColumns; j++)
-                m_pMatrix[i][j]=src.m_pMatrix[i][j]*coeff.m_pMatrix[i][0];
-    else {
-        for (i=0; i<m_NrOfRows; i++)
-            if (coeff.m_pMatrix[i][0]==0)
+    }
+
+    if (multiply)
+    {
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                m_pMatrix[row][col] = src.m_pMatrix[row][col] * coeff.m_pMatrix[row][0];
+            }
+        }
+    }
+    else
+    {
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            if (coeff.m_pMatrix[row][0]==0)
+            {
                 _handleException(23,"template <typename DataType> void Matrix<DataType>::coef_row (const Matrix &coeff, Matrix &src, bool multiply)");
-        for (i=0; i<m_NrOfRows; i++)
-            for (j=0; j<m_NrOfColumns; j++)
-                m_pMatrix[i][j]=src.m_pMatrix[i][j]/coeff.m_pMatrix[i][0];
+            }
+        }
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                m_pMatrix[row][col] = src.m_pMatrix[row][col] / coeff.m_pMatrix[row][0];
+            }
+        }
     }
 }
 
 template <typename DataType>
 void Matrix<DataType>::applyCoefficientsToColumn (const Matrix &coeff, Matrix &src, bool multiply)
 {
-    int i, j;
     if (coeff.m_pMatrix==m_pMatrix)
+    {
         _handleException(25,"template <typename DataType> void Matrix<DataType>::coef_col (const Matrix &coeff, Matrix &src, bool multiply)");
+    }
+
     if (coeff.m_NrOfColumns!=src.m_NrOfColumns)
+    {
         _handleException(13,"template <typename DataType> void Matrix<DataType>::coef_col (const Matrix &coeff, Matrix &src, bool multiply)");
-    if ((m_NrOfRows!=src.m_NrOfRows)||(m_NrOfColumns!=src.m_NrOfColumns))
+    }
+
+    if (m_NrOfRows != src.m_NrOfRows || m_NrOfColumns != src.m_NrOfColumns)
+    {
         resizeNoInit(src.m_NrOfRows, src.m_NrOfColumns);
-    if (multiply==true)
-        for (j=0; j<m_NrOfColumns; j++)
-            for (i=0; i<m_NrOfRows; i++)
-                m_pMatrix[i][j]=src.m_pMatrix[i][j]*coeff.m_pMatrix[0][j];
+    }
+
+    if (multiply)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            for (int row{0}; row<m_NrOfRows; ++row)
+            {
+                m_pMatrix[row][col] = src.m_pMatrix[row][col] * coeff.m_pMatrix[0][col];
+            }
+        }
+    }
     else {
-        for (j=0; j<m_NrOfColumns; j++)
-            if (coeff.m_pMatrix[0][j]==0)
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            if (coeff.m_pMatrix[0][col]==0)
+            {
                 _handleException(23,"template <typename DataType> void Matrix<DataType>::coef_col (const Matrix &coeff, Matrix &src, bool multiply)");
-        for (j=0; j<m_NrOfColumns; j++)
-            for (i=0; i<m_NrOfRows; i++)
-                m_pMatrix[i][j]=src.m_pMatrix[i][j]/coeff.m_pMatrix[0][j];
+            }
+        }
+
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            for (int i{0}; i<m_NrOfRows; ++i)
+            {
+                m_pMatrix[i][col] = src.m_pMatrix[i][col] / coeff.m_pMatrix[0][col];
+            }
+        }
     }
 }
 
