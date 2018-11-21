@@ -325,7 +325,7 @@ void Matrix<DataType>::resetCurrentPosInFile()
 template<typename DataType>
 void Matrix<DataType>::resizeNoInit(int nrOfRows, int nrOfColumns)
 {
-    if ((nrOfRows<=0) || (nrOfColumns<=0))
+    if (nrOfRows<=0 || nrOfColumns<=0)
     {
         _handleException(3,"template <typename dataType> void Matrix<dataType>::resize(int m, int n)");
     }
@@ -371,96 +371,103 @@ void Matrix<DataType>::transformToZeroMatrix(int nrOfRows, int nrOfColumns)
 }
 
 template <typename DataType>
-void Matrix<DataType>::resize(int m, int n)
+void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
 {
-    DataType **temp;
-    if (m==m_NrOfRows && n==m_NrOfColumns) return;
-    if (m<=0 || n<=0)
+    if (nrOfRows<=0 || nrOfColumns<=0)
     {
         _handleException(3, "template <typename DataType> void Matrix<DataType>::resize_m(int m, int n)");
     }
-    Matrix a;
-    temp=a.m_pMatrix;
-    a.m_pMatrix=m_pMatrix;
-    m_pMatrix=temp;
-    a.m_NrOfRows=m_NrOfRows;
-    a.m_NrOfColumns=m_NrOfColumns;
-    delete m_pMatrix[0];
-    delete m_pMatrix;
-    _allocMemory(m,n);
-    if (m<a.m_NrOfRows && n<a.m_NrOfColumns) {
-        for (int i{0}; i<m; i++)
-        {
-            for (int j{0}; j<n; j++)
-            {
-                m_pMatrix[i][j]=a.m_pMatrix[i][j];
-            }
-        }
-    }
-    else if (m<=a.m_NrOfRows && n>=a.m_NrOfColumns) {
-        for (int i{0}; i<m; ++i)
-        {
-            for (int j{0}; j<a.m_NrOfColumns; ++j)
-            {
-                m_pMatrix[i][j]=a.m_pMatrix[i][j];
-            }
-        }
-        for (int i{0}; i<m; ++i)
-        {
-            for (int j{a.m_NrOfColumns}; j<n; ++j)
-            {
-                m_pMatrix[i][j]=0;
-            }
-        }
-    }
-    else if ((m>=a.m_NrOfRows) && (n<=a.m_NrOfColumns)) {
-        for (int i{0}; i<a.m_NrOfRows; i++)
-        {
-            for (int j{0}; j<n; j++)
-            {
-                m_pMatrix[i][j]=a.m_pMatrix[i][j];
-            }
-        }
-        for (int i{a.m_NrOfRows}; i<m; i++)
-        {
-            for (int j{0}; j<n; j++)
-            {
-                m_pMatrix[i][j]=0;
-            }
-        }
-    }
-    else
+    else if (nrOfRows!=m_NrOfRows || nrOfColumns!=m_NrOfColumns)
     {
-        for (int i{0}; i<a.m_NrOfRows; ++i)
-        {
-            for (int j{0}; j<a.m_NrOfColumns; ++j)
+        DataType** temp;
+        Matrix matrix;
+
+        temp=matrix.m_pMatrix;
+        matrix.m_pMatrix=m_pMatrix;
+        m_pMatrix=temp;
+
+        matrix.m_NrOfRows=m_NrOfRows;
+        matrix.m_NrOfColumns=m_NrOfColumns;
+
+        _deallocMemory();
+        _allocMemory(nrOfRows,nrOfColumns);
+        matrix.resetCurrentPos();
+
+        if (nrOfRows<matrix.m_NrOfRows && nrOfColumns<matrix.m_NrOfColumns) {
+            for (int row{0}; row<nrOfRows; ++row)
             {
-                m_pMatrix[i][j]=a.m_pMatrix[i][j];
+                for (int col{0}; col<nrOfColumns; ++col)
+                {
+                    m_pMatrix[row][col]=matrix.m_pMatrix[row][col];
+                }
             }
         }
-        for (int i{0}; i<m; i++)
-        {
-            for (int j{a.m_NrOfColumns}; j<n; ++j)
+        else if (nrOfRows<=matrix.m_NrOfRows && nrOfColumns>=matrix.m_NrOfColumns) {
+            for (int row{0}; row<nrOfRows; ++row)
             {
-                m_pMatrix[i][j] = 0;
+                for (int col{0}; col<matrix.m_NrOfColumns; ++col)
+                {
+                    m_pMatrix[row][col]=matrix.m_pMatrix[row][col];
+                }
+            }
+            for (int row{0}; row<nrOfRows; ++row)
+            {
+                for (int col{matrix.m_NrOfColumns}; col<nrOfColumns; ++col)
+                {
+                    m_pMatrix[row][col]=0;
+                }
             }
         }
-        for (int i{a.m_NrOfRows}; i<m; ++i)
-        {
-            for (int j{0}; j<n; j++)
+        else if ((nrOfRows>=matrix.m_NrOfRows) && (nrOfColumns<=matrix.m_NrOfColumns)) {
+            for (int row{0}; row<matrix.m_NrOfRows; ++row)
             {
-                m_pMatrix[i][j] = 0;
+                for (int col{0}; col<nrOfColumns; ++col)
+                {
+                    m_pMatrix[row][col]=matrix.m_pMatrix[row][col];
+                }
+            }
+            for (int row{matrix.m_NrOfRows}; row<nrOfRows; ++row)
+            {
+                for (int col{0}; col<nrOfColumns; ++col)
+                {
+                    m_pMatrix[row][col]=0;
+                }
             }
         }
-        for (int i{a.m_NrOfRows}; i<m; ++i)
+        else
         {
-            for (int j{a.m_NrOfColumns}; j<n; ++j)
+            for (int row{0}; row<matrix.m_NrOfRows; ++row)
             {
-                m_pMatrix[i][j] = 0;
+                for (int col{0}; col<matrix.m_NrOfColumns; ++col)
+                {
+                    m_pMatrix[row][col]=matrix.m_pMatrix[row][col];
+                }
+            }
+            for (int row{0}; row<nrOfRows; row++)
+            {
+                for (int col{matrix.m_NrOfColumns}; col<nrOfColumns; ++col)
+                {
+                    m_pMatrix[row][col] = 0;
+                }
+            }
+            for (int row{matrix.m_NrOfRows}; row<nrOfRows; ++row)
+            {
+                for (int col{0}; col<nrOfColumns; col++)
+                {
+                    m_pMatrix[row][col] = 0;
+                }
+            }
+            for (int row{matrix.m_NrOfRows}; row<nrOfRows; ++row)
+            {
+                for (int col{matrix.m_NrOfColumns}; col<nrOfColumns; ++col)
+                {
+                    m_pMatrix[row][col] = 0;
+                }
             }
         }
     }
 }
+
 template <typename DataType>
 void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix& matrix, int matrixRowNr, int matrixColumnNr)
 {
