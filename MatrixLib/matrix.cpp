@@ -680,48 +680,57 @@ void Matrix<DataType>::swapWithMatrix(Matrix<DataType> &matrix)
 template <typename DataType>
 void Matrix<DataType>:: sortLineColumn(int lineColumnNr, int mode)
 {
-    if (mode<0 || mode>3)
-        _handleException(21, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
     switch (mode) {
-        case 0:
-            if (lineColumnNr<0 || lineColumnNr>m_NrOfRows-1)
-                _handleException(4, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
-            _quickSort(0,m_NrOfColumns-1,0, lineColumnNr);
-            return;
-        case 1:
-            if (lineColumnNr<0 || lineColumnNr>m_NrOfRows-1)
-                _handleException(4, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
-            _quickSort(0,m_NrOfColumns-1,1, lineColumnNr);
-            return;
-        case 2:
-            if (lineColumnNr<0 || lineColumnNr>m_NrOfColumns-1)
-                _handleException(7, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
-            _quickSort(0,m_NrOfRows-1,2, lineColumnNr);
-            return;
-        case 3:
-            if (lineColumnNr<0 || lineColumnNr>m_NrOfColumns-1)
-                _handleException(7, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
-            _quickSort(0,m_NrOfRows-1,3, lineColumnNr);
+    case 0:
+        if (lineColumnNr<0 || lineColumnNr>m_NrOfRows-1)
+        {
+            _handleException(4, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
+        }
+        _quickSort(0, m_NrOfColumns-1, 0, lineColumnNr);
+        break;
+    case 1:
+        if (lineColumnNr<0 || lineColumnNr>m_NrOfRows-1)
+        {
+            _handleException(4, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
+        }
+        _quickSort(0, m_NrOfColumns-1, 1, lineColumnNr);
+        break;
+    case 2:
+        if (lineColumnNr<0 || lineColumnNr>m_NrOfColumns-1)
+        {
+            _handleException(7, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
+        }
+        _quickSort(0, m_NrOfRows-1, 2, lineColumnNr);
+        break;
+    case 3:
+        if (lineColumnNr<0 || lineColumnNr>m_NrOfColumns-1)
+        {
+            _handleException(7, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
+        }
+        _quickSort(0, m_NrOfRows-1, 3, lineColumnNr);
+        break;
+    default:
+        _handleException(21, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
     }
 }
 
 template <typename DataType>
 void Matrix<DataType>::sortAllElements(int mode)
 {
-    if (mode<0 || mode>3)
-        _handleException(21, "template <typename DataType> void Matrix<DataType>::sort_matr(int mode)");
     switch (mode) {
-        case 0:
-            _quickSort(0,m_NrOfRows*m_NrOfColumns-1,0);
-            return;
-        case 1:
-            _quickSort(0,m_NrOfRows*m_NrOfColumns-1,1);
-            return;
-        case 2:
-            _quickSort(0,m_NrOfRows*m_NrOfColumns-1,2);
-            return;
-        case 3:
-            _quickSort(0,m_NrOfRows*m_NrOfColumns-1,3);
+    case 0:
+        _quickSort(0, m_NrOfRows*m_NrOfColumns-1, 0);
+        break;
+    case 1:
+        _quickSort(0, m_NrOfRows*m_NrOfColumns-1, 1);
+        break;
+    case 2:
+        _quickSort(0, m_NrOfRows*m_NrOfColumns-1, 2);
+        break;
+    case 3:
+        _quickSort(0, m_NrOfRows*m_NrOfColumns-1, 3);
+    default:
+        _handleException(21, "template <typename DataType> void Matrix<DataType>::sort_matr(int mode)");
     }
 }
 
