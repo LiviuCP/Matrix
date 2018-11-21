@@ -471,151 +471,210 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
 template <typename DataType>
 void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix& matrix, int matrixRowNr, int matrixColumnNr)
 {
-    DataType swap;
-    if (matrix.m_pMatrix==m_pMatrix)
+    if (matrix.m_pMatrix == m_pMatrix)
+    {
         _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, Matrix &m2, int r2, int c2)");
-    if ((rowNr<0) || (columnNr<0) || (matrixRowNr<0) || (matrixColumnNr<0))
+    }
+    else if ((rowNr<0) || (columnNr<0) || (matrixRowNr<0) || (matrixColumnNr<0))
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, Matrix &m2, int r2, int c2)");
-    if ((rowNr>=m_NrOfRows) || (columnNr>=m_NrOfColumns) || (matrixRowNr>=matrix.m_NrOfRows) || (matrixColumnNr>=matrix.m_NrOfColumns))
+    }
+    else if ((rowNr>=m_NrOfRows) || (columnNr>=m_NrOfColumns) || (matrixRowNr>=matrix.m_NrOfRows) || (matrixColumnNr>=matrix.m_NrOfColumns))
+    {
         _handleException(18, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, Matrix &m2, int r2, int c2)");
-    swap=m_pMatrix[rowNr][columnNr];
-    m_pMatrix[rowNr][columnNr]=matrix.m_pMatrix[matrixRowNr][matrixColumnNr];
-    matrix.m_pMatrix[matrixRowNr][matrixColumnNr]=swap;
+    }
+    else
+    {
+        std::swap(m_pMatrix[rowNr][columnNr], m_pMatrix[matrixRowNr][matrixColumnNr]);
+    }
 }
 
 template <typename DataType>
 void Matrix<DataType>::swapRow(int rowNr, Matrix& matrix, int matrixRowNr)
 {
-    DataType *swap;
     if (matrix.m_pMatrix==m_pMatrix)
+    {
         _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
-    if ((rowNr<0) || (matrixRowNr<0))
+    }
+    else if ((rowNr<0) || (matrixRowNr<0))
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
-    if ((rowNr>=m_NrOfRows) || (matrixRowNr>=matrix.m_NrOfRows))
+    }
+    else if (rowNr>=m_NrOfRows || matrixRowNr>=matrix.m_NrOfRows)
+    {
         _handleException(6, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
-    if (m_NrOfColumns!=matrix.m_NrOfColumns)
+    }
+    else if (m_NrOfColumns!=matrix.m_NrOfColumns)
+    {
         _handleException(13, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
-    swap=m_pMatrix[rowNr];
-    m_pMatrix[rowNr]=matrix.m_pMatrix[matrixRowNr];
-    matrix.m_pMatrix[matrixRowNr]=swap;
+    }
+    else
+    {
+        std::swap(m_pMatrix[rowNr], matrix.m_pMatrix[matrixRowNr]);
+    }
 }
 
 template <typename DataType>
 void Matrix<DataType>::swapColumn(int columnNr, Matrix& matrix, int matrixColumnNr)
 {
-    DataType swap;
-    int i;
     if (matrix.m_pMatrix==m_pMatrix)
+    {
         _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
-    if ((columnNr<0) || (matrixColumnNr<0))
+    }
+    else if ((columnNr<0) || (matrixColumnNr<0))
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
-    if ((columnNr>=m_NrOfColumns) || (matrixColumnNr>=matrix.m_NrOfColumns))
+    }
+    else if ((columnNr>=m_NrOfColumns) || (matrixColumnNr>=matrix.m_NrOfColumns))
+    {
         _handleException(9, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
-    if (m_NrOfRows!=matrix.m_NrOfRows)
+    }
+    else if (m_NrOfRows!=matrix.m_NrOfRows)
+    {
         _handleException(12, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
-    for(i=0; i<m_NrOfRows; i++) {
-        swap=m_pMatrix[i][columnNr];
-        m_pMatrix[i][columnNr]=matrix.m_pMatrix[i][matrixColumnNr];
-        matrix.m_pMatrix[i][matrixColumnNr]=swap;
+    }
+    else
+    {
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
+            DataType swap{m_pMatrix[row][columnNr]};
+            m_pMatrix[row][columnNr] = matrix.m_pMatrix[row][matrixColumnNr];
+            matrix.m_pMatrix[row][matrixColumnNr] = swap;
+        }
     }
 }
 
 template <typename DataType>
 void Matrix<DataType>::swapRowColumn(int rowNr, Matrix<DataType>& matrix, int matrixColumnNr)
 {
-    DataType swap;
-    int k;
-    if ((rowNr<0) || (matrixColumnNr<0))
+    if (rowNr<0 || matrixColumnNr<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
-    if (m_NrOfColumns!=matrix.m_NrOfRows)
+    }
+    else if (m_NrOfColumns!=matrix.m_NrOfRows)
+    {
         _handleException(11, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
-    if (rowNr>=m_NrOfRows)
+    }
+    else if (rowNr>=m_NrOfRows)
+    {
         _handleException(6, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
-    if (matrixColumnNr>=matrix.m_NrOfColumns)
+    }
+    else if (matrixColumnNr>=matrix.m_NrOfColumns)
+    {
         _handleException(9, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
-    if (m_pMatrix==matrix.m_pMatrix)
+    }
+    else if (m_pMatrix==matrix.m_pMatrix)
+    {
         _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
-    for (k=0; k<m_NrOfColumns; k++) {
-        swap=m_pMatrix[rowNr][k];
-        m_pMatrix[rowNr][k]=matrix.m_pMatrix[k][matrixColumnNr];
-        matrix.m_pMatrix[k][matrixColumnNr]=swap;
+    }
+    else
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
+            DataType swap{m_pMatrix[rowNr][col]};
+            m_pMatrix[rowNr][col] = matrix.m_pMatrix[col][matrixColumnNr];
+            matrix.m_pMatrix[col][matrixColumnNr] = swap;
+        }
     }
 }
 
 template <typename DataType>
 void Matrix<DataType>::swapItem(int firstRowNr, int firstColumnNr, int secondRowNr, int secondColumnNr)
 {
-    if ((firstRowNr<0) || (firstColumnNr<0) || (secondRowNr<0) || (secondColumnNr<0))
+    if (firstRowNr<0 || firstColumnNr<0 || secondRowNr<0 || secondColumnNr<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, int r2, int c2)");
-    if ((firstRowNr>=m_NrOfRows) || (firstColumnNr>=m_NrOfColumns) || (secondRowNr>=m_NrOfRows) || (secondColumnNr>=m_NrOfColumns))
+    }
+    else if (firstRowNr>=m_NrOfRows || firstColumnNr>=m_NrOfColumns || secondRowNr>=m_NrOfRows || secondColumnNr>=m_NrOfColumns)
+    {
         _handleException(18, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, int r2, int c2)");
-    DataType swap;
-    swap=m_pMatrix[firstRowNr][firstColumnNr];
-    m_pMatrix[firstRowNr][firstColumnNr]=m_pMatrix[secondRowNr][secondColumnNr];
-    m_pMatrix[secondRowNr][secondColumnNr]=swap;
+    }
+    else
+    {
+        std::swap(m_pMatrix[firstRowNr][firstColumnNr], m_pMatrix[secondRowNr][secondColumnNr]);
+    }
 }
 
 template <typename DataType>
 void Matrix<DataType>::swapRow(int firstRowNr, int secondRowNr)
 {
-    DataType *swap;
-    if ((firstRowNr<0) || (secondRowNr<0))
+    if (firstRowNr<0 || secondRowNr<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, int r2)");
-    if ((firstRowNr>=m_NrOfRows) || (secondRowNr>=m_NrOfRows))
+    }
+    else if ((firstRowNr>=m_NrOfRows) || (secondRowNr>=m_NrOfRows))
+    {
         _handleException(6, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, int r2)");
-    swap=m_pMatrix[firstRowNr];
-    m_pMatrix[firstRowNr]=m_pMatrix[secondRowNr];
-    m_pMatrix[secondRowNr]=swap;
+    }
+    else
+    {
+        std::swap(m_pMatrix[firstRowNr], m_pMatrix[secondRowNr]);
+    }
 }
 
 template <typename DataType>
 void Matrix<DataType>::swapColumn(int firstColumnNr, int secondColumnNr)
 {
-    DataType swap;
-    int i;
-    if ((firstColumnNr<0) || (secondColumnNr<0))
+    if (firstColumnNr<0 || secondColumnNr<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, int c2)");
-    if ((firstColumnNr>=m_NrOfColumns) || (secondColumnNr>=m_NrOfColumns))
+    }
+    else if (firstColumnNr>=m_NrOfColumns || secondColumnNr>=m_NrOfColumns)
+    {
         _handleException(9, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, int c2)");
-    for(i=0; i<m_NrOfRows; i++) {
-        swap=m_pMatrix[i][firstColumnNr];
-        m_pMatrix[i][firstColumnNr]=m_pMatrix[i][secondColumnNr];
-        m_pMatrix[i][secondColumnNr]=swap;
+    }
+    else
+    {
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
+            DataType swap{m_pMatrix[row][firstColumnNr]};
+            m_pMatrix[row][firstColumnNr] = m_pMatrix[row][secondColumnNr];
+            m_pMatrix[row][secondColumnNr] = swap;
+        }
     }
 }
 
 template<typename DataType>
 void Matrix<DataType>::swapRowColumn(int rowColumnNr)
 {
-    DataType swap;
-    int k;
     if (m_NrOfRows!=m_NrOfColumns)
+    {
         _handleException(1,"template<typename DataType> void Matrix<DataType>::swap_rc(int rc1)");
-    if (rowColumnNr<0)
+    }
+    else if (rowColumnNr<0)
+    {
         _handleException(16,"template<typename DataType> void Matrix<DataType>::swap_rc(int rc1)");
-    if (rowColumnNr>=m_NrOfRows)
+    }
+    else if (rowColumnNr>=m_NrOfRows)
+    {
         _handleException(18,"template<typename DataType> void Matrix<DataType>::swap_rc(int rc1)");
-    for (k=0; k<m_NrOfRows; k++) {
-        swap=m_pMatrix[rowColumnNr][k];
-        m_pMatrix[rowColumnNr][k]=m_pMatrix[k][rowColumnNr];
-        m_pMatrix[k][rowColumnNr]=swap;
+    }
+    else
+    {
+        for (int col{0}; col<m_NrOfRows; col++)
+        {
+            // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
+            DataType swap{m_pMatrix[rowColumnNr][col]};
+            m_pMatrix[rowColumnNr][col] = m_pMatrix[col][rowColumnNr];
+            m_pMatrix[col][rowColumnNr] = swap;
+        }
     }
 }
 
 template<typename DataType>
-void Matrix<DataType>::swapWithMatrix(Matrix<DataType> &m)
+void Matrix<DataType>::swapWithMatrix(Matrix<DataType> &matrix)
 {
-    DataType** temp;
-    int mtemp;
-    bool br;
-    mtemp=m_NrOfRows; m_NrOfRows=m.m_NrOfRows; m.m_NrOfRows=mtemp;
-    mtemp=m_NrOfColumns; m_NrOfColumns=m.m_NrOfColumns; m.m_NrOfColumns=mtemp;
-    mtemp=m_MatrixEntryMode; m_MatrixEntryMode=m.m_MatrixEntryMode; m.m_MatrixEntryMode=mtemp;
-    mtemp=m_MatrixPrintMode; m_MatrixPrintMode=m.m_MatrixPrintMode; m.m_MatrixPrintMode=mtemp;
-    mtemp=m_PosX; m_PosX=m.m_PosX; m.m_PosX=mtemp;
-    mtemp=m_PosY; m_PosY=m.m_PosY; m.m_PosY=mtemp;
-    br=m_WrapMatrixByRow; m_WrapMatrixByRow=m.m_WrapMatrixByRow; m.m_WrapMatrixByRow=br;
-    temp=m_pMatrix; m_pMatrix=m.m_pMatrix; m.m_pMatrix=temp;
+    std::swap(m_NrOfRows,matrix.m_NrOfRows);
+    std::swap(m_NrOfColumns,matrix.m_NrOfColumns);
+    std::swap(m_MatrixEntryMode, matrix.m_MatrixEntryMode);
+    std::swap(m_MatrixPrintMode, matrix.m_MatrixPrintMode);
+    std::swap(m_PosX, matrix.m_PosX);
+    std::swap(m_PosY, matrix.m_PosY);
+    std::swap(m_WrapMatrixByRow, matrix.m_WrapMatrixByRow);
+    std::swap(m_pMatrix, matrix.m_pMatrix);
 }
 
 template <typename DataType>
