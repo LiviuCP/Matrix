@@ -1352,27 +1352,43 @@ void Matrix<DataType>::applyCoefficientsToColumn (const Matrix &coeff, Matrix &s
 template <typename DataType>
 Matrix<DataType> Matrix<DataType>::operator+ (const Matrix<DataType>& matrix)
 {
-    int i,j;
-    if ((m_NrOfRows!=matrix.m_NrOfRows) || (m_NrOfColumns!=matrix.m_NrOfColumns))
+    if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
+    {
         _handleException(10, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator+ (const Matrix<DataType> &m)");
-    Matrix a(m_NrOfRows,m_NrOfColumns);
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<m_NrOfColumns; j++)
-            a.m_pMatrix[i][j]=m_pMatrix[i][j]+matrix.m_pMatrix[i][j];
-    return a;
+    }
+
+    Matrix result{m_NrOfRows,m_NrOfColumns};
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            result.m_pMatrix[row][col] = m_pMatrix[row][col] + matrix.m_pMatrix[row][col];
+        }
+    }
+
+    return result;
 }
 
 template <typename DataType>
 Matrix<DataType> Matrix<DataType>::operator- (const Matrix<DataType>& matrix)
 {
-    int i,j;
-    if ((m_NrOfRows!=matrix.m_NrOfRows) || (m_NrOfColumns!=matrix.m_NrOfColumns))
+    if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
+    {
         _handleException(10, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator- (const Matrix<DataType> &m)");
-    Matrix a(m_NrOfRows,m_NrOfColumns);
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<m_NrOfColumns; j++)
-            a.m_pMatrix[i][j]=m_pMatrix[i][j]-matrix.m_pMatrix[i][j];
-    return a;
+    }
+
+    Matrix result{m_NrOfRows,m_NrOfColumns};
+
+    for (int i{0}; i<m_NrOfRows; ++i)
+    {
+        for (int j{0}; j<m_NrOfColumns; ++j)
+        {
+            result.m_pMatrix[i][j]=m_pMatrix[i][j]-matrix.m_pMatrix[i][j];
+        }
+    }
+
+    return result;
 }
 
 template<typename DataType>
@@ -1390,49 +1406,77 @@ Matrix<DataType> Matrix<DataType>::operator*(const DataType &data)
 template <typename DataType>
 Matrix<DataType> Matrix<DataType>::operator* (const Matrix<DataType>& matrix)
 {
-    int i,j,k;
     if (m_NrOfColumns!=matrix.m_NrOfRows)
+    {
         _handleException(11, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator* (const Matrix<DataType> &m)");
-    Matrix a(m_NrOfRows,matrix.m_NrOfColumns);
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<matrix.m_NrOfColumns; j++)
-            for (k=0; k<m_NrOfColumns; k++)
-                a.m_pMatrix[i][j]=a.m_pMatrix[i][j]+m_pMatrix[i][k]*matrix.m_pMatrix[k][j];
-    return a;
+    }
+
+    Matrix result{m_NrOfRows,matrix.m_NrOfColumns};
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<matrix.m_NrOfColumns; ++col)
+        {
+            for (int pivot{0}; pivot<m_NrOfColumns; ++pivot)
+            {
+                result.m_pMatrix[row][col] = result.m_pMatrix[row][col]+m_pMatrix[row][pivot] * matrix.m_pMatrix[pivot][col];
+            }
+        }
+    }
+
+    return result;
 }
 
 template <typename DataType>
 Matrix<DataType> Matrix<DataType>::operator^ (int exp)
 {
-    Matrix a;
     if (m_NrOfRows!=m_NrOfColumns)
+    {
         _handleException(1, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator^ (int m)");
-    if (exp<0)
-        _handleException(16, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator^ (int m)");
-    if (exp==0) {
-        a.transformToUnitMatrix(m_NrOfRows);
-        return a;
     }
 
-    a=(*this);
-    return a._power(exp);
+    if (exp<0)
+    {
+        _handleException(16, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator^ (int m)");
+    }
+
+    Matrix result;
+
+    if (exp==0)
+    {
+        result.transformToUnitMatrix(m_NrOfRows);
+        return result;
+    }
+
+    result=(*this);
+
+    return result._power(exp);
 }
 
 template <typename DataType>
 Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
 {
-    if (matrix.m_pMatrix==m_pMatrix) goto is_current_matrix;
-    if ((m_NrOfRows==matrix.m_NrOfRows)&&(m_NrOfColumns==matrix.m_NrOfColumns)) goto is_equal;
-    _deallocMemory();
-    _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
-is_equal:
-    for (int i=0; i<m_NrOfRows; i++)
-        for (int j=0; j<m_NrOfColumns; j++)
-            m_pMatrix[i][j]=matrix.m_pMatrix[i][j];
-    m_PosX=matrix.m_PosX;
-    m_PosY=matrix.m_PosY;
-    m_WrapMatrixByRow=matrix.m_WrapMatrixByRow;
-is_current_matrix:
+    if (!(matrix.m_pMatrix == m_pMatrix))
+    {
+        if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
+        {
+            _deallocMemory();
+            _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
+        }
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                m_pMatrix[row][col] = matrix.m_pMatrix[row][col];
+            }
+        }
+    }
+
+    m_PosX = matrix.m_PosX;
+    m_PosY = matrix.m_PosY;
+    m_WrapMatrixByRow = matrix.m_WrapMatrixByRow;
+
     return *this;
 }
 
