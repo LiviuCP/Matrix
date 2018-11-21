@@ -19,12 +19,12 @@ public:
     Matrix(DataType* matrixPtr, int nrOfRows, int nrOfColumns);
     Matrix(int nrOfRows, int nrOfColumns, istream &in);
     Matrix(const Matrix<DataType>& matrix);
-    ~Matrix() {dealloc_matrix();}
+    ~Matrix() {_deallocMemory();}
 
     DataType& get(int i,int j);
     DataType** getp() {return ptr; }
     DataType* getp(int i) {
-        if (i<0) handle_exception(16, "template<typename dataType> dataType* Matrix<dataType>::getp(int i)");
+        if (i<0) _handleException(16, "template<typename dataType> dataType* Matrix<dataType>::getp(int i)");
 		return ptr[i%line];
 	} 
 	
@@ -52,8 +52,8 @@ public:
 
     void resizeNoInit(int m, int n) {
 		if ((m<=0) || (n<=0)) 
-            handle_exception(3,"template <typename dataType> void Matrix<dataType>::resize(int m, int n)");
-		dealloc_matrix(); alloc_matrix(m, n);
+            _handleException(3,"template <typename dataType> void Matrix<dataType>::resize(int m, int n)");
+        _deallocMemory(); _allocMemory(m, n);
 	}
     void resize(int m, int n);
 
@@ -91,14 +91,14 @@ public:
     void copy(DataType** src, int nrOfRows, int nrOfColumns);
     void copy(DataType* src, int nrOfRows, int nrOfColumns);
 
-    void applyCoefficientsToRow (const Matrix<DataType>& coeff, Matrix<DataType>& src, bool multiply);
-    void applyCoefficientsToColumn (const Matrix<DataType>& coeff, Matrix<DataType>& src, bool multiply);
+    void applyCoefficientsToRow (const Matrix<DataType>& coeff, Matrix<DataType>& src, bool _multiply);
+    void applyCoefficientsToColumn (const Matrix<DataType>& coeff, Matrix<DataType>& src, bool _multiply);
 
     Matrix<DataType> operator+ (const Matrix<DataType>& matrix);
     Matrix<DataType> operator- (const Matrix<DataType>& matrix);
     Matrix<DataType> operator* (const Matrix<DataType>& matrix);
-    friend Matrix<DataType> operator*(const DataType& data, Matrix<DataType>& matrix) {return matrix.multiply(data);}
-    Matrix<DataType> operator*(const DataType& data) {return multiply(data);}
+    friend Matrix<DataType> operator*(const DataType& data, Matrix<DataType>& matrix) {return matrix._multiply(data);}
+    Matrix<DataType> operator*(const DataType& data) {return _multiply(data);}
     Matrix<DataType> operator^ (int exp);
     Matrix<DataType>& operator= (const Matrix<DataType>& matrix);
     bool operator== (const Matrix<DataType>& matrix);
@@ -110,22 +110,22 @@ public:
 
     friend ostream &operator<<(ostream& out, Matrix<DataType>& matrix) {
         if(((matrix.mprint==4) || (matrix.mprint==5))&&(matrix.line!=matrix.column))
-			handle_exception(1, "friend ostream &operator<<(ostream &os, Matrix &m)"); 
-        matrix.output(out, matrix.mprint);
+            _handleException(1, "friend ostream &operator<<(ostream &os, Matrix &m)");
+        matrix._writeMatrix(out, matrix.mprint);
         return out;
 	} 
     friend istream &operator>> (istream& in, Matrix<DataType>& matrix){
         if(((matrix.entdat==4) || (matrix.entdat==5) || (matrix.entdat==10) || (matrix.entdat==11) || (matrix.entdat==16) || (matrix.entdat==17))&&(matrix.line!=matrix.column))
-			handle_exception(1, "friend istream &operator>> (istream &is, Matrix &m)");
-        matrix.input(in, matrix.entdat);
+            _handleException(1, "friend istream &operator>> (istream &is, Matrix &m)");
+        matrix._readMatrix(in, matrix.entdat);
         return in;
 	}
 
     DataType& operator[] (int index) {
-        if (index<0) handle_exception(16, "template <typename dataType> dataType& Matrix<dataType>::operator[] (int i)") ;
-        if (index>=line*column) handle_exception(18, "template <typename dataType> dataType& Matrix<dataType>::operator[] (int i)");
-        if (by_row) return item_l(index);
-        return item_c(index);
+        if (index<0) _handleException(16, "template <typename dataType> dataType& Matrix<dataType>::operator[] (int i)") ;
+        if (index>=line*column) _handleException(18, "template <typename dataType> dataType& Matrix<dataType>::operator[] (int i)");
+        if (by_row) return _getItemForLineWrap(index);
+        return _getItemForColumnWrap(index);
 	}
 
 	int rank();
@@ -140,42 +140,42 @@ public:
     void getInverseElementsMatrix(Matrix<DataType>& result);
 
 private:
-	void alloc_matrix(int m, int n){
+    void _allocMemory(int nrOfRows, int nrOfColumns){
 		int i;
         resetCurrentPos();
-		line=abs(m); column=abs(n); 
-        ptr=new DataType*[m];
-		for (i=0; i<m; i++)  
-            ptr[i]=new DataType[n];
+        line=abs(nrOfRows); column=abs(nrOfColumns);
+        ptr=new DataType*[nrOfRows];
+        for (i=0; i<nrOfRows; i++)
+            ptr[i]=new DataType[nrOfColumns];
 	}
 	
-	void dealloc_matrix() {
+    void _deallocMemory() {
         resetCurrentPos();
 		for (int i=0; i<line; i++) 
 			delete ptr[i]; 
 		delete []ptr;
 	}
 	
-	void output(ostream &os, int n);
-	void input(istream &is, int n);
+    void _writeMatrix(ostream& os, int mode);
+    void _readMatrix(istream& is, int mode);
 
-	void read_text_line(istream &is) { 
+    void _readTextLine(istream &in) {
 		string s;
 		int j;
 		int k=0;
 		int l;
 		stringstream str_st;
-		if (is.eof())
-			handle_exception (26, "friend istream &operator>> (istream &is, Matrix &m)");
-		getline(is,s);
+        if (in.eof())
+            _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+        getline(in,s);
 		l=s.size();
 		if (l==0)
-			handle_exception (28, "friend istream &operator>> (istream &is, Matrix &m)");
+            _handleException (28, "friend istream &operator>> (istream &is, Matrix &m)");
 		for (j=0; j<column; j++) { 
 			while(s[k]==' ' && k<l) 
 				k++;
 			if (k==l) 
-				handle_exception(27, "friend istream &operator>> (istream &is, Matrix &m)");
+                _handleException(27, "friend istream &operator>> (istream &is, Matrix &m)");
 			do 
 				str_st.put(s[k++]);
 			while(s[k]!=' ' && k<l);
@@ -185,33 +185,33 @@ private:
 		}
 	}		
 
-	void read_single_item(istream &is) { 
+    void _readSingleItem(istream &in) {
 		string s; 
 		int j;
 		int k=0;
 		int l;
 		stringstream str_st;
-		if (is.eof())
-			handle_exception (26, "friend istream &operator>> (istream &is, Matrix &m)");
-		getline(is,s);
+        if (in.eof())
+            _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+        getline(in,s);
 		l=s.size();
 		if (l==0)
-			handle_exception (28, "friend istream &operator>> (istream &is, Matrix &m)");
+            _handleException (28, "friend istream &operator>> (istream &is, Matrix &m)");
 		for (j=0; j<f_y; j++) {
 			while (s[k]==' ' && k<l)
 				k++;
 			if (k==l) 
-				handle_exception(27, "friend istream &operator>> (istream &is, Matrix &m)");
+                _handleException(27, "friend istream &operator>> (istream &is, Matrix &m)");
 			do
 				k++; 
 			while(s[k]!=' ' && k<l);
 		}
 		if (k==l) 
-			handle_exception(27, "friend istream &operator>> (istream &is, Matrix &m)");
+            _handleException(27, "friend istream &operator>> (istream &is, Matrix &m)");
 		while(s[k]==' ' && k<l)
 			k++;
 		if (k==l) 
-			handle_exception(27, "friend istream &operator>> (istream &is, Matrix &m)");
+            _handleException(27, "friend istream &operator>> (istream &is, Matrix &m)");
 		do 
 			str_st.put(s[k++]);
 		while(s[k]!=' ' && k<l);
@@ -220,108 +220,108 @@ private:
 		str_st.clear();
 	}
 
-	void read_discard(istream &is) { 
+    void _readDiscard(istream &in) {
 		string s;
 		int i;
-		is.clear();
-		is.seekg(0);
+        in.clear();
+        in.seekg(0);
 		for (i=0; i<f_x; i++) { 
-			if (is.eof())
-				handle_exception (26, "friend istream &operator>> (istream &is, Matrix &m)");
-			getline(is,s);
+            if (in.eof())
+                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+            getline(in,s);
 			s="";
 			s.clear();
 		}
 	}
 
-	void q_sort(int first, int last, int mode, int pos){
+    void _quickSort(int first, int last, int mode, int pos){
 		if (last>first) {
 			int pivot=(first+last)/2;
-			int k=partition(first,last,pivot,mode,pos);
-			q_sort(first,k-1,mode,pos);
-			q_sort(k+1,last,mode,pos);
+            int k=_createSortingPartition(first,last,pivot,mode,pos);
+            _quickSort(first,k-1,mode,pos);
+            _quickSort(k+1,last,mode,pos);
 		}
 	} 
-	void q_sort(int first, int last, int mode){
+    void _quickSort(int first, int last, int mode){
 		if (last>first) {
 			int pivot=(first+last)/2;
-			int k=partition(first,last,pivot,mode);
-			q_sort(first,k-1,mode);
-			q_sort(k+1,last,mode);
+            int k=_createSortingPartition(first,last,pivot,mode);
+            _quickSort(first,k-1,mode);
+            _quickSort(k+1,last,mode);
 		}
 	}
 
-	int partition(int first, int last, int pivot, int mode, int pos);
-	int partition(int first, int last, int pivot, int mode);
-    DataType &item_l(int i) { return ptr[i/column][i%column]; }
-    DataType &item_c(int i) { return ptr[i%line][i/line]; }
+    int _createSortingPartition(int first, int last, int pivot, int mode, int pos);
+    int _createSortingPartition(int first, int last, int pivot, int mode);
+    DataType& _getItemForLineWrap(int oneDimensionalIndex) { return ptr[oneDimensionalIndex/column][oneDimensionalIndex%column]; }
+    DataType& _getItemForColumnWrap(int oneDimensionalIndex) { return ptr[oneDimensionalIndex%line][oneDimensionalIndex/line]; }
 
-	static void handle_exception(int error_code, char *nume_functie);
+    static void _handleException(int errorType, char* function);
 	
-	Matrix power(int n){
-		Matrix b; 
-		if (n==1) 
+    Matrix<DataType> _power(int exp){
+        Matrix<DataType> b;
+        if (exp==1)
 			return *this; 
 		else {
-			b=power(n/2);
-			if (n%2==0)
+            b=_power(exp/2);
+            if (exp%2==0)
 				return b*b;
 			else 
 				return b*b*(*this);
 		}
 	}   
 	
-    Matrix multiply(const DataType &typ){
+    Matrix _multiply(const DataType& scalar){
 		Matrix a;
         a.resizeNoInit(line,column);
 		for (int i=0; i<line; i++) 
 			for (int j=0; j<column; j++) 
-				a.ptr[i][j]=typ*ptr[i][j]; 
+                a.ptr[i][j]=scalar*ptr[i][j];
 		return a; 
 	} 
 	
-	void split_matr(Matrix &m1, Matrix &m2, int m) { 
+    void _split(Matrix<DataType>& m1, Matrix<DataType>& m2, int splitRowColumnNr) {
 		int i,j;
-		m1.dealloc_matrix(); m2.dealloc_matrix(); 
+        m1._deallocMemory(); m2._deallocMemory();
 		if (by_row) {
-			m1.alloc_matrix(m,column); m2.alloc_matrix(line-m, column); 
-			for (i=0; i<m; i++) 
+            m1._allocMemory(splitRowColumnNr,column); m2._allocMemory(line-splitRowColumnNr, column);
+            for (i=0; i<splitRowColumnNr; i++)
 				for (j=0; j<column; j++)
 					m1.ptr[i][j]=ptr[i][j];
-			for (i=m; i<line; i++) 
+            for (i=splitRowColumnNr; i<line; i++)
 				for (j=0; j<column; j++) 
-					m2.ptr[i-m][j]=ptr[i][j];
+                    m2.ptr[i-splitRowColumnNr][j]=ptr[i][j];
 			return; 
 		}
 
-	m1.alloc_matrix(line,m); m2.alloc_matrix(line,column-m); 
+    m1._allocMemory(line,splitRowColumnNr); m2._allocMemory(line,column-splitRowColumnNr);
 	for (i=0; i<line; i++)
-		for (j=0; j<m; j++)
+        for (j=0; j<splitRowColumnNr; j++)
 			m1.ptr[i][j]=ptr[i][j];
 	for (i=0; i<line; i++) 
-		for (j=m; j<column; j++)
-			m2.ptr[i][j-m]=ptr[i][j];
+        for (j=splitRowColumnNr; j<column; j++)
+            m2.ptr[i][j-splitRowColumnNr]=ptr[i][j];
 	}
 
-    void cat_matr(Matrix<DataType> &m1,Matrix<DataType> &m2) {
+    void _concatenate(Matrix<DataType>& firstSrcMatrix,Matrix<DataType>& secondSrcMatrix) {
 		int i,j;
 		if (by_row) {
-            resizeNoInit(m1.line+m2.line, m1.column);
-			for (i=0; i<m1.line; i++) 
+            resizeNoInit(firstSrcMatrix.line+secondSrcMatrix.line, firstSrcMatrix.column);
+            for (i=0; i<firstSrcMatrix.line; i++)
 				for (j=0; j<column; j++)
-					ptr[i][j]=m1.ptr[i][j];
-			for (i=m1.line; i<line; i++)
+                    ptr[i][j]=firstSrcMatrix.ptr[i][j];
+            for (i=firstSrcMatrix.line; i<line; i++)
 				for (j=0; j<column; j++)
-					ptr[i][j]=m2.ptr[i-m1.line][j];
+                    ptr[i][j]=secondSrcMatrix.ptr[i-firstSrcMatrix.line][j];
 			return; 
 		} 
-        resizeNoInit(m1.line, m1.column+m2.column);
+        resizeNoInit(firstSrcMatrix.line, firstSrcMatrix.column+secondSrcMatrix.column);
 		for(i=0; i<line; i++) 
-			for (j=0; j<m1.column; j++) 
-				ptr[i][j]=m1.ptr[i][j];
+            for (j=0; j<firstSrcMatrix.column; j++)
+                ptr[i][j]=firstSrcMatrix.ptr[i][j];
 		for(i=0; i<line; i++)
-			for (j=m1.column; j<column; j++) 
-				ptr[i][j]=m2.ptr[i][j-m1.column];
+            for (j=firstSrcMatrix.column; j<column; j++)
+                ptr[i][j]=secondSrcMatrix.ptr[i][j-firstSrcMatrix.column];
 	}
 
     DataType **ptr;
