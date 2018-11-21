@@ -2112,29 +2112,46 @@ void Matrix<DataType>::products(Matrix& result, int mode)
 template <typename DataType>
 void Matrix<DataType>::getNegativeMatrix(Matrix<DataType>& result)
 {
-    int i,j;
-    if (result.m_pBaseArrayPtr==m_pBaseArrayPtr) goto negativation;
-    result.resizeNoInit(m_NrOfRows,m_NrOfColumns);
-negativation:
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<m_NrOfColumns; j++)
-            result.m_pBaseArrayPtr[i][j]=(-1)*m_pBaseArrayPtr[i][j];
+    if (this != &result)
+    {
+        result.resizeNoInit(m_NrOfRows,m_NrOfColumns);
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            result.m_pBaseArrayPtr[row][col] = (-1) * m_pBaseArrayPtr[row][col];
+        }
+    }
 }
 
 template <typename DataType>
 void Matrix<DataType>::getInverseElementsMatrix(Matrix<DataType>& result)
 {
-    int i,j;
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<m_NrOfColumns; j++)
-            if (m_pBaseArrayPtr[i][j]==0)
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            if (m_pBaseArrayPtr[row][col]==0)
+            {
                 _handleException(23,"template <typename DataType> void Matrix<DataType>::inv_matrix(Matrix<DataType> &m)");
-    if (result.m_pBaseArrayPtr==m_pBaseArrayPtr) goto inversion;
-    result.resizeNoInit(m_NrOfRows,m_NrOfColumns);
-inversion:
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<m_NrOfColumns; j++)
-            result.m_pBaseArrayPtr[i][j]=1/m_pBaseArrayPtr[i][j];
+            }
+        }
+    }
+
+    if (this != &result)
+    {
+        result.resizeNoInit(m_NrOfRows,m_NrOfColumns);
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            result.m_pBaseArrayPtr[row][col]= 1 / m_pBaseArrayPtr[row][col];
+        }
+    }
 }
 
 template<typename DataType>
