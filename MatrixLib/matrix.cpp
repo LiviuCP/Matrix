@@ -1856,25 +1856,37 @@ Prelucrare:
 template <typename DataType>
 void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
 {
-    int i,j;
-    Matrix temp;
-    DataType **temp_ptr;
-    if (m_pBaseArrayPtr==result.m_pBaseArrayPtr) {
-        temp_ptr=temp.m_pBaseArrayPtr;
-        temp.m_pBaseArrayPtr=m_pBaseArrayPtr;
-        m_pBaseArrayPtr=temp_ptr;
-        temp.m_NrOfRows=m_NrOfRows;
-        temp.m_NrOfColumns=m_NrOfColumns;
+    Matrix matrix;
+
+    if (m_pBaseArrayPtr==result.m_pBaseArrayPtr)
+    {
+        std::swap(m_pBaseArrayPtr, matrix.m_pBaseArrayPtr);
+
+        matrix.m_NrOfRows = m_NrOfRows;
+        matrix.m_NrOfColumns = m_NrOfColumns;
+
         resizeNoInit(m_NrOfColumns, m_NrOfRows);
-        for (i=0; i<m_NrOfRows; i++)
-            for (j=0; j<m_NrOfColumns; j++)
-                m_pBaseArrayPtr[i][j]=temp.m_pBaseArrayPtr[j][i];
-        return;
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[col][row];
+            }
+        }
     }
-    result.resizeNoInit(m_NrOfColumns,m_NrOfRows);
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<m_NrOfColumns; j++)
-            result.m_pBaseArrayPtr[j][i]=m_pBaseArrayPtr[i][j];
+    else
+    {
+        result.resizeNoInit(m_NrOfColumns,m_NrOfRows);
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                result.m_pBaseArrayPtr[col][row]=m_pBaseArrayPtr[row][col];
+            }
+        }
+    }
 }
 
 template <typename DataType>
