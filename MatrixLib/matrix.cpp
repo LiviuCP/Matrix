@@ -1155,53 +1155,103 @@ void Matrix<DataType>::copy(DataType* src, int nrOfRows, int nrOfColumns)
 template <typename DataType>
 void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix)
 {
-    Matrix m3;
-    if (m_WrapMatrixByRow && (firstSrcMatrix.m_NrOfColumns!=secondSrcMatrix.m_NrOfColumns))
+    if (m_WrapMatrixByRow && (firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns))
+    {
         _handleException(13,"template <typename DataType> void Matrix<DataType>::cat(const Matrix<DataType> &m1, const Matrix<DataType> &m2)");
-    if ((!m_WrapMatrixByRow) && (firstSrcMatrix.m_NrOfRows!=secondSrcMatrix.m_NrOfRows))
+    }
+
+    if ((!m_WrapMatrixByRow) && (firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows))
+    {
         _handleException(12, "template <typename DataType> void Matrix<DataType>::cat(const Matrix<DataType> &m1, const Matrix<DataType> &m2)");
-    if ((firstSrcMatrix.m_pMatrix==m_pMatrix) || (secondSrcMatrix.m_pMatrix==m_pMatrix)) {
-        m3.m_pMatrix=m_pMatrix;
-        m3.m_NrOfRows=m_NrOfRows;
-        m3.m_NrOfColumns=m_NrOfColumns;
+    }
+
+    Matrix thirdMatrix;
+
+    if ((firstSrcMatrix.m_pMatrix==m_pMatrix) || (secondSrcMatrix.m_pMatrix==m_pMatrix))
+    {
+        thirdMatrix.m_pMatrix = m_pMatrix;
+        thirdMatrix.m_NrOfRows = m_NrOfRows;
+        thirdMatrix.m_NrOfColumns = m_NrOfColumns;
+
         _allocMemory(1,1);
     }
-    if ((firstSrcMatrix.m_pMatrix==m_pMatrix) && (secondSrcMatrix.m_pMatrix!=m_pMatrix)) { _concatenate(m3, secondSrcMatrix); return; }
-    if ((firstSrcMatrix.m_pMatrix!=m_pMatrix) && (secondSrcMatrix.m_pMatrix==m_pMatrix)) { _concatenate(firstSrcMatrix, m3); return; }
-    if ((firstSrcMatrix.m_pMatrix==m_pMatrix) && (secondSrcMatrix.m_pMatrix==m_pMatrix)) { _concatenate(m3, m3); return; }
-    _concatenate(firstSrcMatrix, secondSrcMatrix);
+
+    if ((firstSrcMatrix.m_pMatrix == m_pMatrix) && (secondSrcMatrix.m_pMatrix!=m_pMatrix))
+    {
+        _concatenate(thirdMatrix, secondSrcMatrix);
+    }
+    else if ((firstSrcMatrix.m_pMatrix != m_pMatrix) && (secondSrcMatrix.m_pMatrix == m_pMatrix))
+    {
+        _concatenate(firstSrcMatrix, thirdMatrix);
+    }
+    else if ((firstSrcMatrix.m_pMatrix == m_pMatrix) && (secondSrcMatrix.m_pMatrix == m_pMatrix))
+    {
+        _concatenate(thirdMatrix, thirdMatrix);
+    }
+    else
+    {
+        _concatenate(firstSrcMatrix, secondSrcMatrix);
+    }
 }
 
 template <typename DataType>
 void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix,int splitRowColumnNr)
 {
-    Matrix m3;
     if (firstDestMatrix.m_pMatrix==secondDestMatrix.m_pMatrix)
+    {
         _handleException(24, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
+    }
+
     if (splitRowColumnNr<0)
+    {
         _handleException(16, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
-    if (m_WrapMatrixByRow) {
+    }
+
+    if (m_WrapMatrixByRow)
+    {
         if (splitRowColumnNr>m_NrOfRows)
+        {
             _handleException(4, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
-        if ((splitRowColumnNr==0)||(splitRowColumnNr==m_NrOfRows))
+        }
+        if ((splitRowColumnNr == 0) || (splitRowColumnNr == m_NrOfRows))
+        {
             _handleException(19, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
+        }
     }
     else {
         if (splitRowColumnNr>m_NrOfColumns)
+        {
             _handleException(7, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
-        if ((splitRowColumnNr==0)||(splitRowColumnNr==m_NrOfColumns))
+        }
+        if ((splitRowColumnNr == 0) || (splitRowColumnNr == m_NrOfColumns))
+        {
             _handleException(20, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
+        }
     }
-    if ((firstDestMatrix.m_pMatrix==m_pMatrix) || (secondDestMatrix.m_pMatrix==m_pMatrix)) {
-        m3.m_pMatrix=m_pMatrix;
-        m3.m_NrOfRows=m_NrOfRows;
-        m3.m_NrOfColumns=m_NrOfColumns;
-        m3.m_WrapMatrixByRow=m_WrapMatrixByRow;
+
+    Matrix thirdMatrix;
+
+    if ((firstDestMatrix.m_pMatrix == m_pMatrix) || (secondDestMatrix.m_pMatrix == m_pMatrix)) {
+        thirdMatrix.m_pMatrix = m_pMatrix;
+        thirdMatrix.m_NrOfRows = m_NrOfRows;
+        thirdMatrix.m_NrOfColumns = m_NrOfColumns;
+        thirdMatrix.m_WrapMatrixByRow = m_WrapMatrixByRow;
+
         _allocMemory(1,1);
     }
-    if ((firstDestMatrix.m_pMatrix==m_pMatrix) && (secondDestMatrix.m_pMatrix!=m_pMatrix)) { m3._split(*this, secondDestMatrix, splitRowColumnNr); return; }
-    if ((firstDestMatrix.m_pMatrix!=m_pMatrix) && (secondDestMatrix.m_pMatrix==m_pMatrix)) { m3._split(firstDestMatrix, *this, splitRowColumnNr); return; }
-    _split(firstDestMatrix, secondDestMatrix, splitRowColumnNr);
+
+    if ((firstDestMatrix.m_pMatrix == m_pMatrix) && (secondDestMatrix.m_pMatrix != m_pMatrix))
+    {
+        thirdMatrix._split(*this, secondDestMatrix, splitRowColumnNr);
+    }
+    else if ((firstDestMatrix.m_pMatrix != m_pMatrix) && (secondDestMatrix.m_pMatrix == m_pMatrix))
+    {
+        thirdMatrix._split(firstDestMatrix, *this, splitRowColumnNr);
+    }
+    else
+    {
+        _split(firstDestMatrix, secondDestMatrix, splitRowColumnNr);
+    }
 }
 
 template <typename DataType>
