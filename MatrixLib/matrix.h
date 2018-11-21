@@ -48,8 +48,8 @@ public:
     void resetCurrentPos();
     void resetCurrentPosInFile();
 
-    void resizeNoInit(int m, int n);
-    void resize(int m, int n);
+    void resizeNoInit(int nrOfRows, int nrOfColumns);
+    void resize(int nrOfRows, int nrOfColumns);
 
     void transformToUnitMatrix(int nrOfRowsColumns);
     void transformToZeroMatrix(int nrOfRows, int nrOfColumns);

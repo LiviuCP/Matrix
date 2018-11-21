@@ -153,8 +153,14 @@ Matrix<DataType>::~Matrix()
 template<typename DataType>
 DataType& Matrix<DataType>:: get(int i,int j)
 {
-    if ((i<0) || (j<0)) _handleException(16, "template<typename DataType> DataType& Matrix<DataType>::get(int i,int j)");
-    if ((i>=m_NrOfRows) || (j>=m_NrOfColumns)) _handleException(18, "template<typename DataType> DataType& Matrix<DataType>::get(int i,int j)");
+    if (i<0 || j<0)
+    {
+        _handleException(16, "template<typename DataType> DataType& Matrix<DataType>::get(int i,int j)");
+    }
+    if (i>=m_NrOfRows || j>=m_NrOfColumns)
+    {
+        _handleException(18, "template<typename DataType> DataType& Matrix<DataType>::get(int i,int j)");
+    }
     return m_pMatrix[i][j];
 }
 
@@ -167,7 +173,10 @@ DataType** Matrix<DataType>::getp()
 template<typename DataType>
 DataType* Matrix<DataType>::getp(int i)
 {
-    if (i<0) _handleException(16, "template<typename dataType> dataType* Matrix<dataType>::getp(int i)");
+    if (i<0)
+    {
+        _handleException(16, "template<typename dataType> dataType* Matrix<dataType>::getp(int i)");
+    }
     return m_pMatrix[i%m_NrOfRows];
 }
 
@@ -210,13 +219,13 @@ int Matrix<DataType>::getFilePosY()
 template<typename DataType>
 void Matrix<DataType>::setPosX(int m)
 {
-    m_PosX = abs(m)%m_NrOfRows;
+    m_PosX = abs(m) % m_NrOfRows;
 }
 
 template<typename DataType>
 void Matrix<DataType>::setPosY(int n)
 {
-    m_PosY = abs(n)%m_NrOfColumns;
+    m_PosY = abs(n) % m_NrOfColumns;
 }
 
 template<typename DataType>
@@ -234,26 +243,37 @@ void Matrix<DataType>::setFilePosY(int filePosY)
 template<typename DataType>
 void Matrix<DataType>::setMatrixEntryMode(int matrixEntryMode)
 {
-    m_MatrixEntryMode=abs(matrixEntryMode)%18;
+    m_MatrixEntryMode = abs(matrixEntryMode) % 18;
 }
 
 template<typename DataType>
 void Matrix<DataType>::setMatrixPrintMode(int matrixPrintMode)
 {
-    m_MatrixPrintMode=abs(matrixPrintMode)%6;
+    m_MatrixPrintMode=abs(matrixPrintMode) % 6;
 }
 
 template <typename DataType> void Matrix<DataType>::setItemsToZero()
 {
-    for (int i=0; i<m_NrOfRows; i++)
-        for (int j=0; j<m_NrOfColumns; j++)
-            m_pMatrix[i][j]=0;
+    for (int row=0; row<m_NrOfRows; ++row)
+    {
+        for (int col=0; col<m_NrOfColumns; ++col)
+        {
+            m_pMatrix[row][col]=0;
+        }
+    }
 }
 
 template<typename DataType>
 void Matrix<DataType>::incrPosX()
 {
-    if (m_PosX<m_NrOfRows-1) m_PosX++; else m_PosX=0;
+    if (m_PosX<m_NrOfRows-1)
+    {
+        ++m_PosX;
+    }
+    else
+    {
+        m_PosX = 0;
+    }
 }
 
 template<typename DataType>
@@ -265,56 +285,89 @@ void Matrix<DataType>::decrPosX()
 template<typename DataType>
 void Matrix<DataType>::incrPosY()
 {
-    if (m_PosY<m_NrOfColumns-1) m_PosY++; else m_PosY=0;
+    if (m_PosY<m_NrOfColumns-1)
+    {
+        ++m_PosY;
+    }
+    else
+    {
+        m_PosY = 0;
+    }
 }
 
 template<typename DataType>
 void Matrix<DataType>::decrPosY()
 {
-    if (m_PosY>0) m_PosY--; else m_PosY=m_NrOfColumns-1;
+    if (m_PosY>0)
+    {
+        --m_PosY;
+    }
+    else
+    {
+        m_PosY = m_NrOfColumns-1;
+    }
 }
 
 template<typename DataType>
 void Matrix<DataType>::resetCurrentPos()
 {
-    m_PosX=0;
-    m_PosY=0;
+    m_PosX = 0;
+    m_PosY = 0;
 }
 
 template<typename DataType>
 void Matrix<DataType>::resetCurrentPosInFile()
 {
-    s_FilePosX=0;
-    s_FilePosY=0;
+    s_FilePosX = 0;
+    s_FilePosY = 0;
 }
 
 template<typename DataType>
-void Matrix<DataType>::resizeNoInit(int m, int n)
+void Matrix<DataType>::resizeNoInit(int nrOfRows, int nrOfColumns)
 {
-    if ((m<=0) || (n<=0))
+    if ((nrOfRows<=0) || (nrOfColumns<=0))
+    {
         _handleException(3,"template <typename dataType> void Matrix<dataType>::resize(int m, int n)");
-    _deallocMemory(); _allocMemory(m, n);
+    }
+    else
+    {
+        _deallocMemory();
+        _allocMemory(nrOfRows, nrOfColumns);
+    }
 }
 
 template <typename DataType>
 void Matrix<DataType>::transformToUnitMatrix(int nrOfRowsColumns)
 {
-    if (nrOfRowsColumns<=0) _handleException(3,"template <typename DataType> void Matrix<DataType>::unit(int m)");
-    _deallocMemory();
-    _allocMemory(nrOfRowsColumns,nrOfRowsColumns);
-    setItemsToZero();
-    for (int i=0; i<nrOfRowsColumns; i++)
-        m_pMatrix[i][i]=1;
+    if (nrOfRowsColumns<=0)
+    {
+        _handleException(3,"template <typename DataType> void Matrix<DataType>::unit(int m)");
+    }
+    else
+    {
+        _deallocMemory();
+        _allocMemory(nrOfRowsColumns, nrOfRowsColumns);
+        setItemsToZero();
+        for (int diagIndex{0}; diagIndex<nrOfRowsColumns; diagIndex++)
+        {
+            m_pMatrix[diagIndex][diagIndex] = 1;
+        }
+    }
 }
 
 template <typename DataType>
 void Matrix<DataType>::transformToZeroMatrix(int nrOfRows, int nrOfColumns)
 {
     if (nrOfRows<=0 || nrOfColumns<=0)
+    {
         _handleException(3, "template <typename DataType> void Matrix<DataType>::null_matrix(int m, int n)");
-    _deallocMemory();
-    _allocMemory(nrOfRows,nrOfColumns);
-    setItemsToZero();
+    }
+    else
+    {
+        _deallocMemory();
+        _allocMemory(nrOfRows, nrOfColumns);
+        setItemsToZero();
+    }
 }
 
 template <typename DataType>
