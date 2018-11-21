@@ -1670,32 +1670,63 @@ DataType& Matrix<DataType>::operator[](int index)
 template <typename DataType>
 DataType Matrix<DataType>::determinant()
 {
-    int i,j,k,l,temp=1;
     if (m_NrOfRows!=m_NrOfColumns)
+    {
         _handleException(1, "template <typename DataType> DataType Matrix<DataType>::det()");
-    Matrix m = *this;
-    DataType det=1;
-    int semn=1;
-    for (k=0; k<m_NrOfRows-1; k++) {
-        if (m.m_pMatrix[k][k]==0) {
-            for (l=k+1; l<m_NrOfRows; l++)
-                if (m.m_pMatrix[l][k]!=0) {
-                    m.swapRow(k,l);
-                    semn = semn*(-1);
-                    goto Prelucrare;
-                }
-            return 0;
-        }
-Prelucrare:
-        for (j=k+1; j<m_NrOfColumns; j++)
-            for (i=k+1; i<m_NrOfRows; i++) {
-                m.m_pMatrix[i][j]=m.m_pMatrix[i][j]*(m.m_pMatrix[k][k])-m.m_pMatrix[k][j]*(m.m_pMatrix[i][k]);
-                temp=temp*(m.m_pMatrix[k][k]*m.m_pMatrix[i][k]);
-            }
     }
-    for (k=0; k<m_NrOfRows; k++)
-        det=det*m.m_pMatrix[k][k];
-    return (det/temp)*semn;
+
+    Matrix matrix{*this};
+    int sign{1};
+    int temp{1};
+    bool isZeroDet{false};
+
+    // convert to triangle matrix using Gauss-Jordan algorithm
+    for (int diagIndex{0}; diagIndex<m_NrOfRows-1; ++diagIndex)
+    {
+        if (matrix.m_pMatrix[diagIndex][diagIndex]==0)
+        {
+            isZeroDet = true;
+            for (int firstRowIndex{diagIndex+1}; firstRowIndex<m_NrOfRows; ++firstRowIndex)
+            {
+                if (matrix.m_pMatrix[firstRowIndex][diagIndex]!=0)
+                {
+                    matrix.swapRow(diagIndex,firstRowIndex);
+                    sign = sign * (-1);
+
+                    for (int colIndex{diagIndex+1}; colIndex<m_NrOfColumns; ++colIndex)
+                    {
+                        for (int secondRowIndex{diagIndex+1}; secondRowIndex<m_NrOfRows; ++secondRowIndex)
+                        {
+                            matrix.m_pMatrix[secondRowIndex][colIndex] = matrix.m_pMatrix[secondRowIndex][colIndex] * (matrix.m_pMatrix[diagIndex][diagIndex]) -
+                                                                         matrix.m_pMatrix[diagIndex][colIndex] * (matrix.m_pMatrix[secondRowIndex][diagIndex]);
+                            temp = temp * (matrix.m_pMatrix[diagIndex][diagIndex] * matrix.m_pMatrix[secondRowIndex][diagIndex]);
+                        }
+                    }
+
+                    isZeroDet = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    DataType det{1};
+
+    // multiply elements from main diagonal to get the determinant
+    if (isZeroDet)
+    {
+        det = 0;
+    }
+    else
+    {
+        for (int diag{0}; diag<m_NrOfRows; ++diag)
+        {
+            det  =det * matrix.m_pMatrix[diag][diag];
+        }
+        det = (det/temp) * sign;
+    }
+
+    return det;
 }
 
 template<typename DataType>
