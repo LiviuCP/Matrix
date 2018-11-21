@@ -5,15 +5,15 @@ template<typename DataType> int Matrix<DataType>::s_FilePosY=0;
 
 template <typename DataType>
 Matrix<DataType>::Matrix()
-    : m_pMatrix{new DataType*[1]}
+    : m_pBaseArrayPtr{new DataType*[1]}
     , m_NrOfRows{1}
     , m_NrOfColumns{1}
     , m_MatrixPrintMode{0}
     , m_MatrixEntryMode{0}
     , m_WrapMatrixByRow{true}
 {
-    m_pMatrix[0] = new DataType;
-    m_pMatrix[0][0] = 0;
+    m_pBaseArrayPtr[0] = new DataType;
+    m_pBaseArrayPtr[0][0] = 0;
 
     resetCurrentPos();
 }
@@ -63,7 +63,7 @@ Matrix<DataType>::Matrix(DataType** matrixPtr, int nrOfRows, int nrOfColumns)
         {
             for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                m_pMatrix[row][col]=matrixPtr[row][col];
+                m_pBaseArrayPtr[row][col]=matrixPtr[row][col];
             }
         }
     }
@@ -91,7 +91,7 @@ Matrix<DataType>::Matrix(DataType* matrixPtr, int nrOfRows, int nrOfColumns)
         {
             for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                m_pMatrix[row][col]=*(matrixPtr++);
+                m_pBaseArrayPtr[row][col]=*(matrixPtr++);
             }
         }
     }
@@ -136,7 +136,7 @@ Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
     {
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
-            m_pMatrix[row][col]=matrix.m_pMatrix[row][col];
+            m_pBaseArrayPtr[row][col]=matrix.m_pBaseArrayPtr[row][col];
         }
     }
 
@@ -161,13 +161,13 @@ DataType& Matrix<DataType>:: get(int i,int j)
     {
         _handleException(18, "template<typename DataType> DataType& Matrix<DataType>::get(int i,int j)");
     }
-    return m_pMatrix[i][j];
+    return m_pBaseArrayPtr[i][j];
 }
 
 template<typename DataType>
 DataType** Matrix<DataType>::getp()
 {
-    return m_pMatrix;
+    return m_pBaseArrayPtr;
 }
 
 template<typename DataType>
@@ -177,7 +177,7 @@ DataType* Matrix<DataType>::getp(int i)
     {
         _handleException(16, "template<typename dataType> dataType* Matrix<dataType>::getp(int i)");
     }
-    return m_pMatrix[i%m_NrOfRows];
+    return m_pBaseArrayPtr[i%m_NrOfRows];
 }
 
 template<typename DataType>
@@ -258,7 +258,7 @@ template <typename DataType> void Matrix<DataType>::setItemsToZero()
     {
         for (int col=0; col<m_NrOfColumns; ++col)
         {
-            m_pMatrix[row][col]=0;
+            m_pBaseArrayPtr[row][col]=0;
         }
     }
 }
@@ -350,7 +350,7 @@ void Matrix<DataType>::transformToUnitMatrix(int nrOfRowsColumns)
         setItemsToZero();
         for (int diagIndex{0}; diagIndex<nrOfRowsColumns; diagIndex++)
         {
-            m_pMatrix[diagIndex][diagIndex] = 1;
+            m_pBaseArrayPtr[diagIndex][diagIndex] = 1;
         }
     }
 }
@@ -382,9 +382,9 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
         DataType** temp;
         Matrix matrix;
 
-        temp=matrix.m_pMatrix;
-        matrix.m_pMatrix=m_pMatrix;
-        m_pMatrix=temp;
+        temp=matrix.m_pBaseArrayPtr;
+        matrix.m_pBaseArrayPtr=m_pBaseArrayPtr;
+        m_pBaseArrayPtr=temp;
 
         matrix.m_NrOfRows=m_NrOfRows;
         matrix.m_NrOfColumns=m_NrOfColumns;
@@ -398,7 +398,7 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
             {
                 for (int col{0}; col<nrOfColumns; ++col)
                 {
-                    m_pMatrix[row][col]=matrix.m_pMatrix[row][col];
+                    m_pBaseArrayPtr[row][col]=matrix.m_pBaseArrayPtr[row][col];
                 }
             }
         }
@@ -407,14 +407,14 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
             {
                 for (int col{0}; col<matrix.m_NrOfColumns; ++col)
                 {
-                    m_pMatrix[row][col]=matrix.m_pMatrix[row][col];
+                    m_pBaseArrayPtr[row][col]=matrix.m_pBaseArrayPtr[row][col];
                 }
             }
             for (int row{0}; row<nrOfRows; ++row)
             {
                 for (int col{matrix.m_NrOfColumns}; col<nrOfColumns; ++col)
                 {
-                    m_pMatrix[row][col]=0;
+                    m_pBaseArrayPtr[row][col]=0;
                 }
             }
         }
@@ -423,14 +423,14 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
             {
                 for (int col{0}; col<nrOfColumns; ++col)
                 {
-                    m_pMatrix[row][col]=matrix.m_pMatrix[row][col];
+                    m_pBaseArrayPtr[row][col]=matrix.m_pBaseArrayPtr[row][col];
                 }
             }
             for (int row{matrix.m_NrOfRows}; row<nrOfRows; ++row)
             {
                 for (int col{0}; col<nrOfColumns; ++col)
                 {
-                    m_pMatrix[row][col]=0;
+                    m_pBaseArrayPtr[row][col]=0;
                 }
             }
         }
@@ -440,28 +440,28 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
             {
                 for (int col{0}; col<matrix.m_NrOfColumns; ++col)
                 {
-                    m_pMatrix[row][col]=matrix.m_pMatrix[row][col];
+                    m_pBaseArrayPtr[row][col]=matrix.m_pBaseArrayPtr[row][col];
                 }
             }
             for (int row{0}; row<nrOfRows; row++)
             {
                 for (int col{matrix.m_NrOfColumns}; col<nrOfColumns; ++col)
                 {
-                    m_pMatrix[row][col] = 0;
+                    m_pBaseArrayPtr[row][col] = 0;
                 }
             }
             for (int row{matrix.m_NrOfRows}; row<nrOfRows; ++row)
             {
                 for (int col{0}; col<nrOfColumns; col++)
                 {
-                    m_pMatrix[row][col] = 0;
+                    m_pBaseArrayPtr[row][col] = 0;
                 }
             }
             for (int row{matrix.m_NrOfRows}; row<nrOfRows; ++row)
             {
                 for (int col{matrix.m_NrOfColumns}; col<nrOfColumns; ++col)
                 {
-                    m_pMatrix[row][col] = 0;
+                    m_pBaseArrayPtr[row][col] = 0;
                 }
             }
         }
@@ -471,7 +471,7 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
 template <typename DataType>
 void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix& matrix, int matrixRowNr, int matrixColumnNr)
 {
-    if (matrix.m_pMatrix == m_pMatrix)
+    if (matrix.m_pBaseArrayPtr == m_pBaseArrayPtr)
     {
         _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, Matrix &m2, int r2, int c2)");
     }
@@ -485,14 +485,14 @@ void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix& matrix, int mat
     }
     else
     {
-        std::swap(m_pMatrix[rowNr][columnNr], m_pMatrix[matrixRowNr][matrixColumnNr]);
+        std::swap(m_pBaseArrayPtr[rowNr][columnNr], m_pBaseArrayPtr[matrixRowNr][matrixColumnNr]);
     }
 }
 
 template <typename DataType>
 void Matrix<DataType>::swapRow(int rowNr, Matrix& matrix, int matrixRowNr)
 {
-    if (matrix.m_pMatrix==m_pMatrix)
+    if (matrix.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
         _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
     }
@@ -510,14 +510,14 @@ void Matrix<DataType>::swapRow(int rowNr, Matrix& matrix, int matrixRowNr)
     }
     else
     {
-        std::swap(m_pMatrix[rowNr], matrix.m_pMatrix[matrixRowNr]);
+        std::swap(m_pBaseArrayPtr[rowNr], matrix.m_pBaseArrayPtr[matrixRowNr]);
     }
 }
 
 template <typename DataType>
 void Matrix<DataType>::swapColumn(int columnNr, Matrix& matrix, int matrixColumnNr)
 {
-    if (matrix.m_pMatrix==m_pMatrix)
+    if (matrix.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
         _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
     }
@@ -538,9 +538,9 @@ void Matrix<DataType>::swapColumn(int columnNr, Matrix& matrix, int matrixColumn
         for(int row{0}; row<m_NrOfRows; ++row)
         {
             // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
-            DataType swap{m_pMatrix[row][columnNr]};
-            m_pMatrix[row][columnNr] = matrix.m_pMatrix[row][matrixColumnNr];
-            matrix.m_pMatrix[row][matrixColumnNr] = swap;
+            DataType swap{m_pBaseArrayPtr[row][columnNr]};
+            m_pBaseArrayPtr[row][columnNr] = matrix.m_pBaseArrayPtr[row][matrixColumnNr];
+            matrix.m_pBaseArrayPtr[row][matrixColumnNr] = swap;
         }
     }
 }
@@ -564,7 +564,7 @@ void Matrix<DataType>::swapRowColumn(int rowNr, Matrix<DataType>& matrix, int ma
     {
         _handleException(9, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
     }
-    else if (m_pMatrix==matrix.m_pMatrix)
+    else if (m_pBaseArrayPtr==matrix.m_pBaseArrayPtr)
     {
         _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
     }
@@ -573,9 +573,9 @@ void Matrix<DataType>::swapRowColumn(int rowNr, Matrix<DataType>& matrix, int ma
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
             // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
-            DataType swap{m_pMatrix[rowNr][col]};
-            m_pMatrix[rowNr][col] = matrix.m_pMatrix[col][matrixColumnNr];
-            matrix.m_pMatrix[col][matrixColumnNr] = swap;
+            DataType swap{m_pBaseArrayPtr[rowNr][col]};
+            m_pBaseArrayPtr[rowNr][col] = matrix.m_pBaseArrayPtr[col][matrixColumnNr];
+            matrix.m_pBaseArrayPtr[col][matrixColumnNr] = swap;
         }
     }
 }
@@ -593,7 +593,7 @@ void Matrix<DataType>::swapItem(int firstRowNr, int firstColumnNr, int secondRow
     }
     else
     {
-        std::swap(m_pMatrix[firstRowNr][firstColumnNr], m_pMatrix[secondRowNr][secondColumnNr]);
+        std::swap(m_pBaseArrayPtr[firstRowNr][firstColumnNr], m_pBaseArrayPtr[secondRowNr][secondColumnNr]);
     }
 }
 
@@ -610,7 +610,7 @@ void Matrix<DataType>::swapRow(int firstRowNr, int secondRowNr)
     }
     else
     {
-        std::swap(m_pMatrix[firstRowNr], m_pMatrix[secondRowNr]);
+        std::swap(m_pBaseArrayPtr[firstRowNr], m_pBaseArrayPtr[secondRowNr]);
     }
 }
 
@@ -630,9 +630,9 @@ void Matrix<DataType>::swapColumn(int firstColumnNr, int secondColumnNr)
         for(int row{0}; row<m_NrOfRows; ++row)
         {
             // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
-            DataType swap{m_pMatrix[row][firstColumnNr]};
-            m_pMatrix[row][firstColumnNr] = m_pMatrix[row][secondColumnNr];
-            m_pMatrix[row][secondColumnNr] = swap;
+            DataType swap{m_pBaseArrayPtr[row][firstColumnNr]};
+            m_pBaseArrayPtr[row][firstColumnNr] = m_pBaseArrayPtr[row][secondColumnNr];
+            m_pBaseArrayPtr[row][secondColumnNr] = swap;
         }
     }
 }
@@ -657,9 +657,9 @@ void Matrix<DataType>::swapRowColumn(int rowColumnNr)
         for (int col{0}; col<m_NrOfRows; col++)
         {
             // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
-            DataType swap{m_pMatrix[rowColumnNr][col]};
-            m_pMatrix[rowColumnNr][col] = m_pMatrix[col][rowColumnNr];
-            m_pMatrix[col][rowColumnNr] = swap;
+            DataType swap{m_pBaseArrayPtr[rowColumnNr][col]};
+            m_pBaseArrayPtr[rowColumnNr][col] = m_pBaseArrayPtr[col][rowColumnNr];
+            m_pBaseArrayPtr[col][rowColumnNr] = swap;
         }
     }
 }
@@ -674,7 +674,7 @@ void Matrix<DataType>::swapWithMatrix(Matrix<DataType> &matrix)
     std::swap(m_PosX, matrix.m_PosX);
     std::swap(m_PosY, matrix.m_PosY);
     std::swap(m_WrapMatrixByRow, matrix.m_WrapMatrixByRow);
-    std::swap(m_pMatrix, matrix.m_pMatrix);
+    std::swap(m_pBaseArrayPtr, matrix.m_pBaseArrayPtr);
 }
 
 template <typename DataType>
@@ -751,7 +751,7 @@ void Matrix<DataType>::insertRow (int rowNr)
 
     for (int row{0}; row<rowNr; ++row)
     {
-        insert_ptr[row] = m_pMatrix[row];
+        insert_ptr[row] = m_pBaseArrayPtr[row];
     }
 
     insert_ptr[rowNr]=new DataType[m_NrOfColumns];
@@ -763,11 +763,11 @@ void Matrix<DataType>::insertRow (int rowNr)
 
     for (int row{rowNr}; row<m_NrOfRows; ++row)
     {
-        insert_ptr[row+1] = m_pMatrix[row];
+        insert_ptr[row+1] = m_pBaseArrayPtr[row];
     }
 
-    delete []m_pMatrix;
-    m_pMatrix = insert_ptr;
+    delete []m_pBaseArrayPtr;
+    m_pBaseArrayPtr = insert_ptr;
     ++m_NrOfRows;
 }
 
@@ -793,18 +793,18 @@ void Matrix<DataType>::deleteRow (int rowNr)
 
     for (int row{0}; row<rowNr; ++row)
     {
-        insert_ptr[row] = m_pMatrix[row];
+        insert_ptr[row] = m_pBaseArrayPtr[row];
     }
 
-    delete []m_pMatrix[rowNr];
+    delete []m_pBaseArrayPtr[rowNr];
 
     for (int row{rowNr}; row<m_NrOfRows-1; ++row)
     {
-        insert_ptr[row] = m_pMatrix[row+1];
+        insert_ptr[row] = m_pBaseArrayPtr[row+1];
     }
 
-    delete []m_pMatrix;
-    m_pMatrix = insert_ptr;
+    delete []m_pBaseArrayPtr;
+    m_pBaseArrayPtr = insert_ptr;
     --m_NrOfRows;
 }
 
@@ -832,7 +832,7 @@ void Matrix<DataType>::insertColumn(int columnNr)
     {
         for (int col=0; col<columnNr; ++col)
         {
-            insert_ptr[row][col]=m_pMatrix[row][col];
+            insert_ptr[row][col]=m_pBaseArrayPtr[row][col];
         }
     }
 
@@ -840,7 +840,7 @@ void Matrix<DataType>::insertColumn(int columnNr)
     {
         for(int col=columnNr+1; col<m_NrOfColumns+1; ++col)
         {
-            insert_ptr[row][col]=m_pMatrix[row][col-1];
+            insert_ptr[row][col]=m_pBaseArrayPtr[row][col-1];
         }
     }
 
@@ -851,11 +851,11 @@ void Matrix<DataType>::insertColumn(int columnNr)
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
-        delete []m_pMatrix[row];
+        delete []m_pBaseArrayPtr[row];
     }
 
-    delete []m_pMatrix;
-    m_pMatrix = insert_ptr;
+    delete []m_pBaseArrayPtr;
+    m_pBaseArrayPtr = insert_ptr;
     ++m_NrOfColumns;
 }
 
@@ -888,7 +888,7 @@ void Matrix<DataType>::deleteColumn(int columnNr)
     {
         for (int col{0}; col<columnNr; ++col)
         {
-            insert_ptr[row][col]=m_pMatrix[row][col];
+            insert_ptr[row][col]=m_pBaseArrayPtr[row][col];
         }
     }
 
@@ -896,17 +896,17 @@ void Matrix<DataType>::deleteColumn(int columnNr)
     {
         for(int col{columnNr}; col<m_NrOfColumns-1; ++col)
         {
-            insert_ptr[row][col]=m_pMatrix[row][col+1];
+            insert_ptr[row][col]=m_pBaseArrayPtr[row][col+1];
         }
     }
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
-        delete []m_pMatrix[row];
+        delete []m_pBaseArrayPtr[row];
     }
 
-    delete []m_pMatrix;
-    m_pMatrix = insert_ptr;
+    delete []m_pBaseArrayPtr;
+    m_pBaseArrayPtr = insert_ptr;
     --m_NrOfColumns;
 }
 
@@ -937,7 +937,7 @@ void Matrix<DataType>::addRowToColumn(int rowNr, const DataType& coeff, Matrix& 
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pMatrix[destColumnNr][row] = coeff * m_pMatrix[rowNr][row] + srcCoeff * src.m_pMatrix[row][srcColumnNr];
+            dest.m_pBaseArrayPtr[destColumnNr][row] = coeff * m_pBaseArrayPtr[rowNr][row] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
         }
     }
     else
@@ -949,7 +949,7 @@ void Matrix<DataType>::addRowToColumn(int rowNr, const DataType& coeff, Matrix& 
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pMatrix[row][destColumnNr] = coeff * m_pMatrix[rowNr][row] + srcCoeff * src.m_pMatrix[row][srcColumnNr];
+            dest.m_pBaseArrayPtr[row][destColumnNr] = coeff * m_pBaseArrayPtr[rowNr][row] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
         }
     }
 }
@@ -981,7 +981,7 @@ void Matrix<DataType>::addColumnToRow(int columnNr, const DataType& coeff, Matri
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pMatrix[destRowNr][row] = coeff * m_pMatrix[row][columnNr] + srcCoeff * src.m_pMatrix[srcRowNr][row];
+            dest.m_pBaseArrayPtr[destRowNr][row] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[srcRowNr][row];
         }
     }
     else
@@ -993,7 +993,7 @@ void Matrix<DataType>::addColumnToRow(int columnNr, const DataType& coeff, Matri
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pMatrix[row][destRowNr] = coeff * m_pMatrix[row][columnNr] + srcCoeff * src.m_pMatrix[srcRowNr][row];
+            dest.m_pBaseArrayPtr[row][destRowNr] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[srcRowNr][row];
         }
     }
 }
@@ -1020,7 +1020,7 @@ void Matrix<DataType>::addRowToRow(int rowNr, const DataType& coeff, Matrix &src
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pMatrix[destRowNr][row] = coeff * m_pMatrix[rowNr][row] + srcCoeff * src.m_pMatrix[srcRowNr][row];
+            dest.m_pBaseArrayPtr[destRowNr][row] = coeff * m_pBaseArrayPtr[rowNr][row] + srcCoeff * src.m_pBaseArrayPtr[srcRowNr][row];
         }
     }
     else {
@@ -1031,7 +1031,7 @@ void Matrix<DataType>::addRowToRow(int rowNr, const DataType& coeff, Matrix &src
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pMatrix[row][destRowNr] = coeff * m_pMatrix[rowNr][row] + srcCoeff * src.m_pMatrix[srcRowNr][row];
+            dest.m_pBaseArrayPtr[row][destRowNr] = coeff * m_pBaseArrayPtr[rowNr][row] + srcCoeff * src.m_pBaseArrayPtr[srcRowNr][row];
         }
     }
 }
@@ -1058,7 +1058,7 @@ void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Ma
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pMatrix[destColumnNr][row] = coeff * m_pMatrix[row][columnNr] + srcCoeff * src.m_pMatrix[row][srcColumnNr];
+            dest.m_pBaseArrayPtr[destColumnNr][row] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
         }
     }
     else
@@ -1070,7 +1070,7 @@ void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Ma
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pMatrix[row][destColumnNr] = coeff * m_pMatrix[row][columnNr] + srcCoeff * src.m_pMatrix[row][srcColumnNr];
+            dest.m_pBaseArrayPtr[row][destColumnNr] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
         }
     }
 }
@@ -1078,7 +1078,7 @@ void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Ma
 template <typename DataType>
 void Matrix<DataType>:: copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns)
 {
-    if (src.m_pMatrix==m_pMatrix)
+    if (src.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
         _handleException(25, "template <typename DataType> void Matrix<DataType>:: copy(const Matrix<DataType> &m, int step1, int step2)");
     }
@@ -1097,7 +1097,7 @@ void Matrix<DataType>:: copy(const Matrix<DataType>& src, int nrOfRows, int nrOf
     {
         for (int col{0}; col<nrOfColumns; ++col)
         {
-            m_pMatrix[m_PosX+row][m_PosY+col] = src.m_pMatrix[src.m_PosX+row][src.m_PosY+col];
+            m_pBaseArrayPtr[m_PosX+row][m_PosY+col] = src.m_pBaseArrayPtr[src.m_PosX+row][src.m_PosY+col];
         }
     }
 }
@@ -1122,7 +1122,7 @@ void Matrix<DataType>::copy(DataType** src, int nrOfRows, int nrOfColumns)
     {
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
-            m_pMatrix[row][col] = src[row][col];
+            m_pBaseArrayPtr[row][col] = src[row][col];
         }
     }
 }
@@ -1147,7 +1147,7 @@ void Matrix<DataType>::copy(DataType* src, int nrOfRows, int nrOfColumns)
     {
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
-            m_pMatrix[row][col] = *(src++);
+            m_pBaseArrayPtr[row][col] = *(src++);
         }
     }
 }
@@ -1167,24 +1167,24 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
 
     Matrix thirdMatrix;
 
-    if ((firstSrcMatrix.m_pMatrix==m_pMatrix) || (secondSrcMatrix.m_pMatrix==m_pMatrix))
+    if ((firstSrcMatrix.m_pBaseArrayPtr==m_pBaseArrayPtr) || (secondSrcMatrix.m_pBaseArrayPtr==m_pBaseArrayPtr))
     {
-        thirdMatrix.m_pMatrix = m_pMatrix;
+        thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
         thirdMatrix.m_NrOfRows = m_NrOfRows;
         thirdMatrix.m_NrOfColumns = m_NrOfColumns;
 
         _allocMemory(1,1);
     }
 
-    if ((firstSrcMatrix.m_pMatrix == m_pMatrix) && (secondSrcMatrix.m_pMatrix!=m_pMatrix))
+    if ((firstSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr!=m_pBaseArrayPtr))
     {
         _concatenate(thirdMatrix, secondSrcMatrix);
     }
-    else if ((firstSrcMatrix.m_pMatrix != m_pMatrix) && (secondSrcMatrix.m_pMatrix == m_pMatrix))
+    else if ((firstSrcMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
     {
         _concatenate(firstSrcMatrix, thirdMatrix);
     }
-    else if ((firstSrcMatrix.m_pMatrix == m_pMatrix) && (secondSrcMatrix.m_pMatrix == m_pMatrix))
+    else if ((firstSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
     {
         _concatenate(thirdMatrix, thirdMatrix);
     }
@@ -1197,7 +1197,7 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
 template <typename DataType>
 void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix,int splitRowColumnNr)
 {
-    if (firstDestMatrix.m_pMatrix==secondDestMatrix.m_pMatrix)
+    if (firstDestMatrix.m_pBaseArrayPtr==secondDestMatrix.m_pBaseArrayPtr)
     {
         _handleException(24, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
     }
@@ -1231,8 +1231,8 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
 
     Matrix thirdMatrix;
 
-    if ((firstDestMatrix.m_pMatrix == m_pMatrix) || (secondDestMatrix.m_pMatrix == m_pMatrix)) {
-        thirdMatrix.m_pMatrix = m_pMatrix;
+    if ((firstDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) || (secondDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr)) {
+        thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
         thirdMatrix.m_NrOfRows = m_NrOfRows;
         thirdMatrix.m_NrOfColumns = m_NrOfColumns;
         thirdMatrix.m_WrapMatrixByRow = m_WrapMatrixByRow;
@@ -1240,11 +1240,11 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
         _allocMemory(1,1);
     }
 
-    if ((firstDestMatrix.m_pMatrix == m_pMatrix) && (secondDestMatrix.m_pMatrix != m_pMatrix))
+    if ((firstDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondDestMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr))
     {
         thirdMatrix._split(*this, secondDestMatrix, splitRowColumnNr);
     }
-    else if ((firstDestMatrix.m_pMatrix != m_pMatrix) && (secondDestMatrix.m_pMatrix == m_pMatrix))
+    else if ((firstDestMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr) && (secondDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
     {
         thirdMatrix._split(firstDestMatrix, *this, splitRowColumnNr);
     }
@@ -1257,7 +1257,7 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
 template <typename DataType>
 void Matrix<DataType>::applyCoefficientsToRow (const Matrix &coeff, Matrix &src, bool multiply)
 {
-    if (m_pMatrix==coeff.m_pMatrix)
+    if (m_pBaseArrayPtr==coeff.m_pBaseArrayPtr)
     {
         _handleException(25, "template <typename DataType> void Matrix<DataType>::coef_row (const Matrix &coeff, Matrix &src, bool multiply)");
     }
@@ -1278,7 +1278,7 @@ void Matrix<DataType>::applyCoefficientsToRow (const Matrix &coeff, Matrix &src,
         {
             for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                m_pMatrix[row][col] = src.m_pMatrix[row][col] * coeff.m_pMatrix[row][0];
+                m_pBaseArrayPtr[row][col] = src.m_pBaseArrayPtr[row][col] * coeff.m_pBaseArrayPtr[row][0];
             }
         }
     }
@@ -1286,7 +1286,7 @@ void Matrix<DataType>::applyCoefficientsToRow (const Matrix &coeff, Matrix &src,
     {
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            if (coeff.m_pMatrix[row][0]==0)
+            if (coeff.m_pBaseArrayPtr[row][0]==0)
             {
                 _handleException(23,"template <typename DataType> void Matrix<DataType>::coef_row (const Matrix &coeff, Matrix &src, bool multiply)");
             }
@@ -1296,7 +1296,7 @@ void Matrix<DataType>::applyCoefficientsToRow (const Matrix &coeff, Matrix &src,
         {
             for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                m_pMatrix[row][col] = src.m_pMatrix[row][col] / coeff.m_pMatrix[row][0];
+                m_pBaseArrayPtr[row][col] = src.m_pBaseArrayPtr[row][col] / coeff.m_pBaseArrayPtr[row][0];
             }
         }
     }
@@ -1305,7 +1305,7 @@ void Matrix<DataType>::applyCoefficientsToRow (const Matrix &coeff, Matrix &src,
 template <typename DataType>
 void Matrix<DataType>::applyCoefficientsToColumn (const Matrix &coeff, Matrix &src, bool multiply)
 {
-    if (coeff.m_pMatrix==m_pMatrix)
+    if (coeff.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
         _handleException(25,"template <typename DataType> void Matrix<DataType>::coef_col (const Matrix &coeff, Matrix &src, bool multiply)");
     }
@@ -1326,14 +1326,14 @@ void Matrix<DataType>::applyCoefficientsToColumn (const Matrix &coeff, Matrix &s
         {
             for (int row{0}; row<m_NrOfRows; ++row)
             {
-                m_pMatrix[row][col] = src.m_pMatrix[row][col] * coeff.m_pMatrix[0][col];
+                m_pBaseArrayPtr[row][col] = src.m_pBaseArrayPtr[row][col] * coeff.m_pBaseArrayPtr[0][col];
             }
         }
     }
     else {
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
-            if (coeff.m_pMatrix[0][col]==0)
+            if (coeff.m_pBaseArrayPtr[0][col]==0)
             {
                 _handleException(23,"template <typename DataType> void Matrix<DataType>::coef_col (const Matrix &coeff, Matrix &src, bool multiply)");
             }
@@ -1343,7 +1343,7 @@ void Matrix<DataType>::applyCoefficientsToColumn (const Matrix &coeff, Matrix &s
         {
             for (int i{0}; i<m_NrOfRows; ++i)
             {
-                m_pMatrix[i][col] = src.m_pMatrix[i][col] / coeff.m_pMatrix[0][col];
+                m_pBaseArrayPtr[i][col] = src.m_pBaseArrayPtr[i][col] / coeff.m_pBaseArrayPtr[0][col];
             }
         }
     }
@@ -1363,7 +1363,7 @@ Matrix<DataType> Matrix<DataType>::operator+ (const Matrix<DataType>& matrix)
     {
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
-            result.m_pMatrix[row][col] = m_pMatrix[row][col] + matrix.m_pMatrix[row][col];
+            result.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col] + matrix.m_pBaseArrayPtr[row][col];
         }
     }
 
@@ -1384,7 +1384,7 @@ Matrix<DataType> Matrix<DataType>::operator- (const Matrix<DataType>& matrix)
     {
         for (int j{0}; j<m_NrOfColumns; ++j)
         {
-            result.m_pMatrix[i][j]=m_pMatrix[i][j]-matrix.m_pMatrix[i][j];
+            result.m_pBaseArrayPtr[i][j]=m_pBaseArrayPtr[i][j]-matrix.m_pBaseArrayPtr[i][j];
         }
     }
 
@@ -1419,7 +1419,7 @@ Matrix<DataType> Matrix<DataType>::operator* (const Matrix<DataType>& matrix)
         {
             for (int pivot{0}; pivot<m_NrOfColumns; ++pivot)
             {
-                result.m_pMatrix[row][col] = result.m_pMatrix[row][col]+m_pMatrix[row][pivot] * matrix.m_pMatrix[pivot][col];
+                result.m_pBaseArrayPtr[row][col] = result.m_pBaseArrayPtr[row][col]+m_pBaseArrayPtr[row][pivot] * matrix.m_pBaseArrayPtr[pivot][col];
             }
         }
     }
@@ -1456,7 +1456,7 @@ Matrix<DataType> Matrix<DataType>::operator^ (int exp)
 template <typename DataType>
 Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
 {
-    if (!(matrix.m_pMatrix == m_pMatrix))
+    if (!(matrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
     {
         if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
         {
@@ -1468,7 +1468,7 @@ Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
         {
             for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                m_pMatrix[row][col] = matrix.m_pMatrix[row][col];
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
             }
         }
     }
@@ -1485,7 +1485,7 @@ bool Matrix<DataType>::operator==(const Matrix<DataType>& matrix) const
 {
     bool areEqual{false};
 
-    if (matrix.m_pMatrix==m_pMatrix)
+    if (matrix.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
         areEqual = true;
     }
@@ -1497,7 +1497,7 @@ bool Matrix<DataType>::operator==(const Matrix<DataType>& matrix) const
         {
             for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                if (m_pMatrix[row][col]!=matrix.m_pMatrix[row][col])
+                if (m_pBaseArrayPtr[row][col]!=matrix.m_pBaseArrayPtr[row][col])
                 {
                     continueChecking = false;
                     break;
@@ -1683,12 +1683,12 @@ DataType Matrix<DataType>::determinant()
     // convert to triangle matrix using Gauss-Jordan algorithm
     for (int diagIndex{0}; diagIndex<m_NrOfRows-1; ++diagIndex)
     {
-        if (matrix.m_pMatrix[diagIndex][diagIndex]==0)
+        if (matrix.m_pBaseArrayPtr[diagIndex][diagIndex]==0)
         {
             isZeroDet = true;
             for (int firstRowIndex{diagIndex+1}; firstRowIndex<m_NrOfRows; ++firstRowIndex)
             {
-                if (matrix.m_pMatrix[firstRowIndex][diagIndex]!=0)
+                if (matrix.m_pBaseArrayPtr[firstRowIndex][diagIndex]!=0)
                 {
                     matrix.swapRow(diagIndex,firstRowIndex);
                     sign = sign * (-1);
@@ -1697,9 +1697,9 @@ DataType Matrix<DataType>::determinant()
                     {
                         for (int secondRowIndex{diagIndex+1}; secondRowIndex<m_NrOfRows; ++secondRowIndex)
                         {
-                            matrix.m_pMatrix[secondRowIndex][colIndex] = matrix.m_pMatrix[secondRowIndex][colIndex] * (matrix.m_pMatrix[diagIndex][diagIndex]) -
-                                                                         matrix.m_pMatrix[diagIndex][colIndex] * (matrix.m_pMatrix[secondRowIndex][diagIndex]);
-                            temp = temp * (matrix.m_pMatrix[diagIndex][diagIndex] * matrix.m_pMatrix[secondRowIndex][diagIndex]);
+                            matrix.m_pBaseArrayPtr[secondRowIndex][colIndex] = matrix.m_pBaseArrayPtr[secondRowIndex][colIndex] * (matrix.m_pBaseArrayPtr[diagIndex][diagIndex]) -
+                                                                         matrix.m_pBaseArrayPtr[diagIndex][colIndex] * (matrix.m_pBaseArrayPtr[secondRowIndex][diagIndex]);
+                            temp = temp * (matrix.m_pBaseArrayPtr[diagIndex][diagIndex] * matrix.m_pBaseArrayPtr[secondRowIndex][diagIndex]);
                         }
                     }
 
@@ -1721,7 +1721,7 @@ DataType Matrix<DataType>::determinant()
     {
         for (int diag{0}; diag<m_NrOfRows; ++diag)
         {
-            det  =det * matrix.m_pMatrix[diag][diag];
+            det  =det * matrix.m_pBaseArrayPtr[diag][diag];
         }
         det = (det/temp) * sign;
     }
@@ -1738,8 +1738,8 @@ int Matrix<DataType>::rank()
         {
             for (int col{matrix.m_PosY+1}; col<matrix.m_NrOfColumns; ++col)
             {
-                matrix.m_pMatrix[row][col]=(matrix.m_pMatrix[row][col]) * (matrix.m_pMatrix[matrix.m_PosX][matrix.m_PosY]) -
-                                           (matrix.m_pMatrix[matrix.m_PosX][col]) * (matrix.m_pMatrix[row][matrix.m_PosY]);
+                matrix.m_pBaseArrayPtr[row][col]=(matrix.m_pBaseArrayPtr[row][col]) * (matrix.m_pBaseArrayPtr[matrix.m_PosX][matrix.m_PosY]) -
+                                           (matrix.m_pBaseArrayPtr[matrix.m_PosX][col]) * (matrix.m_pBaseArrayPtr[row][matrix.m_PosY]);
             }
         }
 
@@ -1765,11 +1765,11 @@ int Matrix<DataType>::rank()
 
     while (matrix.m_PosX < matrix.m_NrOfRows-1)
     {
-        if (matrix.m_pMatrix[matrix.m_PosX][matrix.m_PosY]==0)
+        if (matrix.m_pBaseArrayPtr[matrix.m_PosX][matrix.m_PosY]==0)
         {
             for (int row{matrix.m_PosX+1}; row<matrix.m_NrOfRows; ++row)
             {
-                if (matrix.m_pMatrix[row][matrix.m_PosY]!=0)
+                if (matrix.m_pBaseArrayPtr[row][matrix.m_PosY]!=0)
                 {
                     ++matrixRank;
                     matrix.swapRow(row,matrix.m_PosX);
@@ -1779,7 +1779,7 @@ int Matrix<DataType>::rank()
 
             for (int col{matrix.m_PosY+1}; col<matrix.m_NrOfColumns; ++col)
             {
-                if (matrix.m_pMatrix[matrix.m_PosX][col]!=0)
+                if (matrix.m_pBaseArrayPtr[matrix.m_PosX][col]!=0)
                 {
                     ++matrixRank;
                     matrix.swapColumn(col,matrix.m_PosY);
@@ -1795,7 +1795,7 @@ int Matrix<DataType>::rank()
 
     for (int col{matrix.m_PosY}; col<matrix.m_NrOfColumns; ++col)
     {
-        if (matrix.m_pMatrix[matrix.m_PosX][col]!=0)
+        if (matrix.m_pBaseArrayPtr[matrix.m_PosX][col]!=0)
         {
             ++matrixRank;
             break;
@@ -1810,7 +1810,7 @@ void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType
 {
     int i,j,k,l;
     Matrix <DataType> temp;
-    if ((m_pMatrix==coeff.m_pMatrix) || (m_pMatrix==pseudoInverse.m_pMatrix))
+    if ((m_pBaseArrayPtr==coeff.m_pBaseArrayPtr) || (m_pBaseArrayPtr==pseudoInverse.m_pBaseArrayPtr))
         _handleException(25, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
     if (m_NrOfRows!=m_NrOfColumns)
         _handleException(1, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
@@ -1819,9 +1819,9 @@ void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType
     coeff.resizeNoInit(m_NrOfRows,1);
 
     for (k=0; k<m_NrOfRows-1; k++) {
-        if (temp.m_pMatrix[k][k]==0) {
+        if (temp.m_pBaseArrayPtr[k][k]==0) {
             for (l=k+1; l<m_NrOfRows; l++) {
-                if (temp.m_pMatrix[k][l]!=0) {
+                if (temp.m_pBaseArrayPtr[k][l]!=0) {
                     temp.swapRow(k,l);
                     pseudoInverse.swapRow(k,l);
                     goto Prelucrare;
@@ -1833,24 +1833,24 @@ Prelucrare:
         for (j=0; j<m_NrOfRows; j++)
             for (i=k+1; i<m_NrOfRows; i++) {
                 if (j>k)
-                    temp.m_pMatrix[i][j]=temp.m_pMatrix[i][j]*temp.m_pMatrix[k][k]- temp.m_pMatrix[k][j]*temp.m_pMatrix[i][k];
-                pseudoInverse.m_pMatrix[i][j]=pseudoInverse.m_pMatrix[i][j]*temp.m_pMatrix[k][k] - pseudoInverse.m_pMatrix[k][j]*temp.m_pMatrix[i][k];
+                    temp.m_pBaseArrayPtr[i][j]=temp.m_pBaseArrayPtr[i][j]*temp.m_pBaseArrayPtr[k][k]- temp.m_pBaseArrayPtr[k][j]*temp.m_pBaseArrayPtr[i][k];
+                pseudoInverse.m_pBaseArrayPtr[i][j]=pseudoInverse.m_pBaseArrayPtr[i][j]*temp.m_pBaseArrayPtr[k][k] - pseudoInverse.m_pBaseArrayPtr[k][j]*temp.m_pBaseArrayPtr[i][k];
             }
     }
     for (k=0; k<m_NrOfRows; k++)
         for (i=k+1; i<m_NrOfRows; i++)
-            temp.m_pMatrix[i][k]=0;
-    if (temp.m_pMatrix[m_NrOfRows-1][m_NrOfRows-1]==0)
+            temp.m_pBaseArrayPtr[i][k]=0;
+    if (temp.m_pBaseArrayPtr[m_NrOfRows-1][m_NrOfRows-1]==0)
         _handleException(2, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
     for (k=m_NrOfRows-1; k>0; k--)
         for (i=0; i<=k-1; i++)
             for (j=0; j<=m_NrOfRows-1; j++) {
                 if (j<k)
-                    temp.m_pMatrix[i][j]=temp.m_pMatrix[i][j]*temp.m_pMatrix[k][k]-temp.m_pMatrix[k][j]*temp.m_pMatrix[i][k];
-                pseudoInverse.m_pMatrix[i][j]=pseudoInverse.m_pMatrix[i][j]*temp.m_pMatrix[k][k]-pseudoInverse.m_pMatrix[k][j]*temp.m_pMatrix[i][k];
+                    temp.m_pBaseArrayPtr[i][j]=temp.m_pBaseArrayPtr[i][j]*temp.m_pBaseArrayPtr[k][k]-temp.m_pBaseArrayPtr[k][j]*temp.m_pBaseArrayPtr[i][k];
+                pseudoInverse.m_pBaseArrayPtr[i][j]=pseudoInverse.m_pBaseArrayPtr[i][j]*temp.m_pBaseArrayPtr[k][k]-pseudoInverse.m_pBaseArrayPtr[k][j]*temp.m_pBaseArrayPtr[i][k];
             }
     for (k=0; k<m_NrOfRows; k++)
-        coeff.m_pMatrix[k][0]=temp.m_pMatrix[k][k];
+        coeff.m_pBaseArrayPtr[k][0]=temp.m_pBaseArrayPtr[k][k];
 }
 
 template <typename DataType>
@@ -1859,22 +1859,22 @@ void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
     int i,j;
     Matrix temp;
     DataType **temp_ptr;
-    if (m_pMatrix==result.m_pMatrix) {
-        temp_ptr=temp.m_pMatrix;
-        temp.m_pMatrix=m_pMatrix;
-        m_pMatrix=temp_ptr;
+    if (m_pBaseArrayPtr==result.m_pBaseArrayPtr) {
+        temp_ptr=temp.m_pBaseArrayPtr;
+        temp.m_pBaseArrayPtr=m_pBaseArrayPtr;
+        m_pBaseArrayPtr=temp_ptr;
         temp.m_NrOfRows=m_NrOfRows;
         temp.m_NrOfColumns=m_NrOfColumns;
         resizeNoInit(m_NrOfColumns, m_NrOfRows);
         for (i=0; i<m_NrOfRows; i++)
             for (j=0; j<m_NrOfColumns; j++)
-                m_pMatrix[i][j]=temp.m_pMatrix[j][i];
+                m_pBaseArrayPtr[i][j]=temp.m_pBaseArrayPtr[j][i];
         return;
     }
     result.resizeNoInit(m_NrOfColumns,m_NrOfRows);
     for (i=0; i<m_NrOfRows; i++)
         for (j=0; j<m_NrOfColumns; j++)
-            result.m_pMatrix[j][i]=m_pMatrix[i][j];
+            result.m_pBaseArrayPtr[j][i]=m_pBaseArrayPtr[i][j];
 }
 
 template <typename DataType>
@@ -1882,7 +1882,7 @@ void Matrix<DataType>::sums(Matrix& result, int mode)
 {
     int i,j;
     DataType sum=0;
-    if (result.m_pMatrix==m_pMatrix)
+    if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
         _handleException(25, "template <typename DataType> void Matrix<DataType>::sums(Matrix &m, int sum_type)");
     if (mode>4)
         _handleException(21, "template <typename DataType> void Matrix<DataType>::sums(Matrix &m, int sum_type)");
@@ -1893,35 +1893,35 @@ void Matrix<DataType>::sums(Matrix& result, int mode)
             result.resizeNoInit(1,1);
             for (i=0; i<m_NrOfRows; i++)
                 for (j=0; j<m_NrOfColumns; j++)
-                    sum=sum + m_pMatrix[i][j];
-            result.m_pMatrix[0][0]=sum;
+                    sum=sum + m_pBaseArrayPtr[i][j];
+            result.m_pBaseArrayPtr[0][0]=sum;
             return;
         case 1:
             result.resizeNoInit(1,1);
             for (j=0; j<m_NrOfColumns; j++)
-                sum=sum+m_pMatrix[m_PosX][j];
-            result.m_pMatrix[0][0]=sum;
+                sum=sum+m_pBaseArrayPtr[m_PosX][j];
+            result.m_pBaseArrayPtr[0][0]=sum;
             return;
         case 2:
             result.resizeNoInit(m_NrOfRows,1);
             for (i=0; i<m_NrOfRows; i++) {
-                result.m_pMatrix[i][0]=0;
+                result.m_pBaseArrayPtr[i][0]=0;
                 for (j=0; j<m_NrOfColumns; j++)
-                    result.m_pMatrix[i][0]=result.m_pMatrix[i][0]+m_pMatrix[i][j];
+                    result.m_pBaseArrayPtr[i][0]=result.m_pBaseArrayPtr[i][0]+m_pBaseArrayPtr[i][j];
             }
             return;
         case 3:
             result.resizeNoInit(1,1);
             for (i=0; i<m_NrOfRows; i++)
-                sum=sum+m_pMatrix[i][m_PosY];
-            result.m_pMatrix[0][0]=sum;
+                sum=sum+m_pBaseArrayPtr[i][m_PosY];
+            result.m_pBaseArrayPtr[0][0]=sum;
             return;
         case 4:
             result.resizeNoInit(1,m_NrOfColumns);
             for (j=0; j<m_NrOfColumns; j++) {
-                result.m_pMatrix[0][j]=0;
+                result.m_pBaseArrayPtr[0][j]=0;
                 for (int i=0; i<m_NrOfRows; i++)
-                    result.m_pMatrix[0][j]=result.m_pMatrix[0][j]+m_pMatrix[i][j];
+                    result.m_pBaseArrayPtr[0][j]=result.m_pBaseArrayPtr[0][j]+m_pBaseArrayPtr[i][j];
             }
             return;
     }
@@ -1932,7 +1932,7 @@ void Matrix<DataType>::products(Matrix& result, int mode)
 {
     int i,j;
     DataType product;
-    if (result.m_pMatrix==m_pMatrix)
+    if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
         _handleException(25, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
     if (mode>4)
         _handleException(21, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
@@ -1944,39 +1944,39 @@ void Matrix<DataType>::products(Matrix& result, int mode)
             result.resizeNoInit(1,1);
             for (i=0; i<m_NrOfRows; i++)
                 for (j=0; j<m_NrOfColumns; j++)
-                    product = product * m_pMatrix[i][j];
-            result.m_pMatrix[0][0]=product;
+                    product = product * m_pBaseArrayPtr[i][j];
+            result.m_pBaseArrayPtr[0][0]=product;
             return;
         case 1:
             product=1;
             result.resizeNoInit(1,1);
             for (j=0; j<m_NrOfColumns; j++)
-                product=product*m_pMatrix[m_PosX][j];
-            result.m_pMatrix[0][0]=product;
+                product=product*m_pBaseArrayPtr[m_PosX][j];
+            result.m_pBaseArrayPtr[0][0]=product;
             return;
         case 2:
             result.resizeNoInit(m_NrOfRows,1);
             for (i=0; i<m_NrOfRows; i++) {
                 product=1;
                 for (int j=0; j<m_NrOfColumns; j++)
-                    product=product*m_pMatrix[i][j];
-                result.m_pMatrix[i][0]=product;
+                    product=product*m_pBaseArrayPtr[i][j];
+                result.m_pBaseArrayPtr[i][0]=product;
             }
             return;
         case 3:
             result.resizeNoInit(1,1);
             product=1;
             for (i=0; i<m_NrOfRows; i++)
-                product=product*m_pMatrix[i][m_PosY];
-            result.m_pMatrix[0][0]=product;
+                product=product*m_pBaseArrayPtr[i][m_PosY];
+            result.m_pBaseArrayPtr[0][0]=product;
             return;
         case 4:
             result.resizeNoInit(1,m_NrOfColumns);
             for (j=0; j<m_NrOfColumns; j++) {
                 product=1;
                 for (int i=0; i<m_NrOfRows; i++)
-                    product=product*m_pMatrix[i][j];
-                result.m_pMatrix[0][j]=product;
+                    product=product*m_pBaseArrayPtr[i][j];
+                result.m_pBaseArrayPtr[0][j]=product;
             }
             return;
     }
@@ -1986,12 +1986,12 @@ template <typename DataType>
 void Matrix<DataType>::getNegativeMatrix(Matrix<DataType>& result)
 {
     int i,j;
-    if (result.m_pMatrix==m_pMatrix) goto negativation;
+    if (result.m_pBaseArrayPtr==m_pBaseArrayPtr) goto negativation;
     result.resizeNoInit(m_NrOfRows,m_NrOfColumns);
 negativation:
     for (i=0; i<m_NrOfRows; i++)
         for (j=0; j<m_NrOfColumns; j++)
-            result.m_pMatrix[i][j]=(-1)*m_pMatrix[i][j];
+            result.m_pBaseArrayPtr[i][j]=(-1)*m_pBaseArrayPtr[i][j];
 }
 
 template <typename DataType>
@@ -2000,14 +2000,14 @@ void Matrix<DataType>::getInverseElementsMatrix(Matrix<DataType>& result)
     int i,j;
     for (i=0; i<m_NrOfRows; i++)
         for (j=0; j<m_NrOfColumns; j++)
-            if (m_pMatrix[i][j]==0)
+            if (m_pBaseArrayPtr[i][j]==0)
                 _handleException(23,"template <typename DataType> void Matrix<DataType>::inv_matrix(Matrix<DataType> &m)");
-    if (result.m_pMatrix==m_pMatrix) goto inversion;
+    if (result.m_pBaseArrayPtr==m_pBaseArrayPtr) goto inversion;
     result.resizeNoInit(m_NrOfRows,m_NrOfColumns);
 inversion:
     for (i=0; i<m_NrOfRows; i++)
         for (j=0; j<m_NrOfColumns; j++)
-            result.m_pMatrix[i][j]=1/m_pMatrix[i][j];
+            result.m_pBaseArrayPtr[i][j]=1/m_pBaseArrayPtr[i][j];
 }
 
 template<typename DataType>
@@ -2015,11 +2015,11 @@ void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns)
 {
     m_NrOfRows=nrOfRows;
     m_NrOfColumns=nrOfColumns;
-    m_pMatrix=new DataType*[nrOfRows];
+    m_pBaseArrayPtr=new DataType*[nrOfRows];
 
     for (int row{0}; row<nrOfRows; ++row)
     {
-        m_pMatrix[row]=new DataType[nrOfColumns];
+        m_pBaseArrayPtr[row]=new DataType[nrOfColumns];
     }
 
     // to be clarified if this function call should be kept or better put separately after calling the _allocMemory() method
@@ -2031,8 +2031,8 @@ void Matrix<DataType>::_deallocMemory()
 {
     resetCurrentPos();
     for (int i=0; i<m_NrOfRows; i++)
-        delete m_pMatrix[i];
-    delete []m_pMatrix;
+        delete m_pBaseArrayPtr[i];
+    delete []m_pBaseArrayPtr;
 }
 
 template <typename DataType>
@@ -2043,28 +2043,28 @@ void Matrix<DataType>::_writeMatrix(ostream& os, int mode)
     case 0:
         for (i=0; i<m_NrOfRows; i++) {
             for (j=0; j<m_NrOfColumns; j++)
-                    os<<m_pMatrix[i][j]<<" ";
+                    os<<m_pBaseArrayPtr[i][j]<<" ";
                 os<<endl;
             }
             return;
         case 1:
             for (j=0; j<m_NrOfColumns; j++)
-                os<<m_pMatrix[m_PosX][j]<<" ";
+                os<<m_pBaseArrayPtr[m_PosX][j]<<" ";
             return;
         case 2:
             for (i=0; i<m_NrOfRows; i++)
-                os<<m_pMatrix[i][m_PosY]<<endl;
+                os<<m_pBaseArrayPtr[i][m_PosY]<<endl;
             return;
         case 3:
-            os<<m_pMatrix[m_PosX][m_PosY];
+            os<<m_pBaseArrayPtr[m_PosX][m_PosY];
             return;
         case 4:
             for (i=0; i<m_NrOfRows; i++)
-                os<<m_pMatrix[i][i]<<" ";
+                os<<m_pBaseArrayPtr[i][i]<<" ";
             return;
         case 5:
             for (i=m_NrOfRows-1; i>=0; i--)
-                os<<m_pMatrix[i][m_NrOfRows-1-i]<<" ";
+                os<<m_pBaseArrayPtr[i][m_NrOfRows-1-i]<<" ";
             return;
     }
 }
@@ -2082,19 +2082,19 @@ void Matrix<DataType>::_readMatrix(istream &is, int mode)
                     if (is.eof())
                         _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
                     cout<<"["<<i<<"]["<<j<<"]= ";
-                    is>>m_pMatrix[i][j];
+                    is>>m_pBaseArrayPtr[i][j];
                 }
             return;
         case 1:
             cout<<"["<<m_PosX<<"]["<<m_PosY<<"]= ";
-            is>>m_pMatrix[m_PosX][m_PosY];
+            is>>m_pBaseArrayPtr[m_PosX][m_PosY];
             return;
         case 2:
             for (j=0; j<m_NrOfColumns; j++) {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
                 cout<<"["<<m_PosX<<"]["<<j<<"]= ";
-                is>>m_pMatrix[m_PosX][j];
+                is>>m_pBaseArrayPtr[m_PosX][j];
             }
             return;
         case 3:
@@ -2102,7 +2102,7 @@ void Matrix<DataType>::_readMatrix(istream &is, int mode)
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
                 cout<<"["<<i<<"]["<<m_PosY<<"]= ";
-                is>>m_pMatrix[i][m_PosY];
+                is>>m_pBaseArrayPtr[i][m_PosY];
             }
             return;
         case 4:
@@ -2110,7 +2110,7 @@ void Matrix<DataType>::_readMatrix(istream &is, int mode)
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
                 cout<<"["<<i<<"]["<<i<<"]= ";
-                is>>m_pMatrix[i][i];
+                is>>m_pBaseArrayPtr[i][i];
             }
             return;
         case 5:
@@ -2118,7 +2118,7 @@ void Matrix<DataType>::_readMatrix(istream &is, int mode)
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
                 cout<<"["<<i<<"]["<<m_NrOfRows-1-i<<"]= ";
-                is>>m_pMatrix[i][m_NrOfRows-1-i];
+                is>>m_pBaseArrayPtr[i][m_NrOfRows-1-i];
             }
             return;
         case 6:
@@ -2176,40 +2176,40 @@ void Matrix<DataType>::_readMatrix(istream &is, int mode)
                 for (j=0; j<m_NrOfColumns; j++) {
                     if (is.eof())
                         _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                    is>>m_pMatrix[i][j];
+                    is>>m_pBaseArrayPtr[i][j];
                 }
             return;
         case 13:
             if (is.eof())
                 _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-            is>>m_pMatrix[m_PosX][m_PosY];
+            is>>m_pBaseArrayPtr[m_PosX][m_PosY];
             return;
         case 14:
             for (j=0; j<m_NrOfColumns; j++) {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                is>>m_pMatrix[m_PosX][j];
+                is>>m_pBaseArrayPtr[m_PosX][j];
             }
             return;
         case 15:
             for (i=0; i<m_NrOfRows; i++) {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                is>>m_pMatrix[i][m_PosY];
+                is>>m_pBaseArrayPtr[i][m_PosY];
             }
             return;
         case 16:
             for (i=0; i<m_NrOfRows; i++)  {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                is>>m_pMatrix[i][i];
+                is>>m_pBaseArrayPtr[i][i];
             }
             return;
         case 17:
             for (i=m_NrOfRows-1; i>=0; i--) {
                 if (is.eof())
                     _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                is>>m_pMatrix[i][m_NrOfRows-1-i];
+                is>>m_pBaseArrayPtr[i][m_NrOfRows-1-i];
             }
     }
 }
@@ -2236,7 +2236,7 @@ void Matrix<DataType>::_readTextLine(istream &in)
         do
             str_st.put(s[k++]);
         while(s[k]!=' ' && k<l);
-        str_st>>m_pMatrix[m_PosX][j];
+        str_st>>m_pBaseArrayPtr[m_PosX][j];
         str_st.str("");
         str_st.clear();
     }
@@ -2274,7 +2274,7 @@ void Matrix<DataType>::_readSingleItem(istream &in)
     do
         str_st.put(s[k++]);
     while(s[k]!=' ' && k<l);
-    str_st>>m_pMatrix[m_PosX][m_PosY];
+    str_st>>m_pBaseArrayPtr[m_PosX][m_PosY];
     str_st.str("");
     str_st.clear();
 }
@@ -2328,9 +2328,9 @@ int Matrix<DataType>:: _createSortingPartition(int first,int last,int pivot,int 
         i=first-1; j=last;
         while (i<j) {
             do i++;
-                    while ((i!=j) && (m_pMatrix[pos][i]<m_pMatrix[pos][last]));
+                    while ((i!=j) && (m_pBaseArrayPtr[pos][i]<m_pBaseArrayPtr[pos][last]));
                 do j--;
-                    while ((i!=j) && (m_pMatrix[pos][j]>m_pMatrix[pos][last]));
+                    while ((i!=j) && (m_pBaseArrayPtr[pos][j]>m_pBaseArrayPtr[pos][last]));
                 if (i<j)
                     swapItem(pos,i,pos,j);
             }
@@ -2343,9 +2343,9 @@ int Matrix<DataType>:: _createSortingPartition(int first,int last,int pivot,int 
             i=first-1; j=last;
             while (i<j) {
                 do i++;
-                    while ((i!=j) && (m_pMatrix[pos][i]>m_pMatrix[pos][last]));
+                    while ((i!=j) && (m_pBaseArrayPtr[pos][i]>m_pBaseArrayPtr[pos][last]));
                 do j--;
-                    while ((i!=j) && (m_pMatrix[pos][j]<m_pMatrix[pos][last]));
+                    while ((i!=j) && (m_pBaseArrayPtr[pos][j]<m_pBaseArrayPtr[pos][last]));
                 if (i<j)
                     swapItem(pos,i,pos,j);
             }
@@ -2358,9 +2358,9 @@ int Matrix<DataType>:: _createSortingPartition(int first,int last,int pivot,int 
             i=first-1; j=last;
             while (i<j) {
                 do i++;
-                    while ((i!=j) && (m_pMatrix[i][pos]<m_pMatrix[last][pos]));
+                    while ((i!=j) && (m_pBaseArrayPtr[i][pos]<m_pBaseArrayPtr[last][pos]));
                 do j--;
-                    while ((i!=j) && (m_pMatrix[j][pos]>m_pMatrix[last][pos]));
+                    while ((i!=j) && (m_pBaseArrayPtr[j][pos]>m_pBaseArrayPtr[last][pos]));
                 if (i<j)
                     swapItem(i,pos,j,pos);
             }
@@ -2373,9 +2373,9 @@ int Matrix<DataType>:: _createSortingPartition(int first,int last,int pivot,int 
             i=first-1; j=last;
             while (i<j) {
                 do i++;
-                    while ((i!=j) && (m_pMatrix[i][pos]>m_pMatrix[last][pos]));
+                    while ((i!=j) && (m_pBaseArrayPtr[i][pos]>m_pBaseArrayPtr[last][pos]));
                 do j--;
-                    while ((i!=j) && (m_pMatrix[j][pos]<m_pMatrix[last][pos]));
+                    while ((i!=j) && (m_pBaseArrayPtr[j][pos]<m_pBaseArrayPtr[last][pos]));
                 if (i<j)
                     swapItem(i,pos,j,pos);
             }
@@ -2493,13 +2493,13 @@ int Matrix<DataType>:: _createSortingPartition(int first,int last,int pivot,int 
 template<typename DataType>
 DataType& Matrix<DataType>::_getItemForLineWrap(int oneDimensionalIndex)
 {
-    return m_pMatrix[oneDimensionalIndex/m_NrOfColumns][oneDimensionalIndex%m_NrOfColumns];
+    return m_pBaseArrayPtr[oneDimensionalIndex/m_NrOfColumns][oneDimensionalIndex%m_NrOfColumns];
 }
 
 template<typename DataType>
 DataType& Matrix<DataType>::_getItemForColumnWrap(int oneDimensionalIndex)
 {
-    return m_pMatrix[oneDimensionalIndex%m_NrOfRows][oneDimensionalIndex/m_NrOfRows];
+    return m_pBaseArrayPtr[oneDimensionalIndex%m_NrOfRows][oneDimensionalIndex/m_NrOfRows];
 }
 
 template<typename DataType>
@@ -2629,7 +2629,7 @@ Matrix<DataType> Matrix<DataType>::_multiply(const DataType &scalar)
     a.resizeNoInit(m_NrOfRows,m_NrOfColumns);
     for (int i=0; i<m_NrOfRows; i++)
         for (int j=0; j<m_NrOfColumns; j++)
-            a.m_pMatrix[i][j]=scalar*m_pMatrix[i][j];
+            a.m_pBaseArrayPtr[i][j]=scalar*m_pBaseArrayPtr[i][j];
     return a;
 }
 
@@ -2642,20 +2642,20 @@ void Matrix<DataType>::_split(Matrix<DataType> &m1, Matrix<DataType> &m2, int sp
         m1._allocMemory(splitRowColumnNr,m_NrOfColumns); m2._allocMemory(m_NrOfRows-splitRowColumnNr, m_NrOfColumns);
         for (i=0; i<splitRowColumnNr; i++)
             for (j=0; j<m_NrOfColumns; j++)
-                m1.m_pMatrix[i][j]=m_pMatrix[i][j];
+                m1.m_pBaseArrayPtr[i][j]=m_pBaseArrayPtr[i][j];
         for (i=splitRowColumnNr; i<m_NrOfRows; i++)
             for (j=0; j<m_NrOfColumns; j++)
-                m2.m_pMatrix[i-splitRowColumnNr][j]=m_pMatrix[i][j];
+                m2.m_pBaseArrayPtr[i-splitRowColumnNr][j]=m_pBaseArrayPtr[i][j];
         return;
     }
 
     m1._allocMemory(m_NrOfRows,splitRowColumnNr); m2._allocMemory(m_NrOfRows,m_NrOfColumns-splitRowColumnNr);
     for (i=0; i<m_NrOfRows; i++)
         for (j=0; j<splitRowColumnNr; j++)
-            m1.m_pMatrix[i][j]=m_pMatrix[i][j];
+            m1.m_pBaseArrayPtr[i][j]=m_pBaseArrayPtr[i][j];
     for (i=0; i<m_NrOfRows; i++)
         for (j=splitRowColumnNr; j<m_NrOfColumns; j++)
-            m2.m_pMatrix[i][j-splitRowColumnNr]=m_pMatrix[i][j];
+            m2.m_pBaseArrayPtr[i][j-splitRowColumnNr]=m_pBaseArrayPtr[i][j];
 }
 
 template<typename DataType>
@@ -2666,19 +2666,19 @@ void Matrix<DataType>::_concatenate(Matrix<DataType> &firstSrcMatrix, Matrix<Dat
         resizeNoInit(firstSrcMatrix.m_NrOfRows+secondSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns);
         for (i=0; i<firstSrcMatrix.m_NrOfRows; i++)
             for (j=0; j<m_NrOfColumns; j++)
-                m_pMatrix[i][j]=firstSrcMatrix.m_pMatrix[i][j];
+                m_pBaseArrayPtr[i][j]=firstSrcMatrix.m_pBaseArrayPtr[i][j];
         for (i=firstSrcMatrix.m_NrOfRows; i<m_NrOfRows; i++)
             for (j=0; j<m_NrOfColumns; j++)
-                m_pMatrix[i][j]=secondSrcMatrix.m_pMatrix[i-firstSrcMatrix.m_NrOfRows][j];
+                m_pBaseArrayPtr[i][j]=secondSrcMatrix.m_pBaseArrayPtr[i-firstSrcMatrix.m_NrOfRows][j];
         return;
     }
     resizeNoInit(firstSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns+secondSrcMatrix.m_NrOfColumns);
     for(i=0; i<m_NrOfRows; i++)
         for (j=0; j<firstSrcMatrix.m_NrOfColumns; j++)
-            m_pMatrix[i][j]=firstSrcMatrix.m_pMatrix[i][j];
+            m_pBaseArrayPtr[i][j]=firstSrcMatrix.m_pBaseArrayPtr[i][j];
     for(i=0; i<m_NrOfRows; i++)
         for (j=firstSrcMatrix.m_NrOfColumns; j<m_NrOfColumns; j++)
-            m_pMatrix[i][j]=secondSrcMatrix.m_pMatrix[i][j-firstSrcMatrix.m_NrOfColumns];
+            m_pBaseArrayPtr[i][j]=secondSrcMatrix.m_pBaseArrayPtr[i][j-firstSrcMatrix.m_NrOfColumns];
 }
 
 

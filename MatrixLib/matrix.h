@@ -153,7 +153,7 @@ private:
     static int s_FilePosX;
     static int s_FilePosY;
 
-    DataType** m_pMatrix;
+    DataType** m_pBaseArrayPtr;
     int m_NrOfRows;
     int m_NrOfColumns;
     int m_PosX;
