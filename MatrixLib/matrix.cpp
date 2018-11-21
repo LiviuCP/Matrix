@@ -5,118 +5,143 @@ template<typename DataType> int Matrix<DataType>::s_FilePosY=0;
 
 template <typename DataType>
 Matrix<DataType>::Matrix()
+    : m_pMatrix{new DataType*[1]}
+    , m_NrOfRows{1}
+    , m_NrOfColumns{1}
+    , m_MatrixPrintMode{0}
+    , m_MatrixEntryMode{0}
+    , m_WrapMatrixByRow{true}
 {
-    m_WrapMatrixByRow=true;
-    m_NrOfRows=1;
-    m_NrOfColumns=1;
-    m_MatrixPrintMode=0;
-    m_MatrixEntryMode=0;
-    m_pMatrix=new DataType*[1];
-    m_pMatrix[0]=new DataType;
-    m_pMatrix[0][0]=0;
+    m_pMatrix[0] = new DataType;
+    m_pMatrix[0][0] = 0;
+
     resetCurrentPos();
 }
 
 template <typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns)
+    : m_MatrixPrintMode{0}
+    , m_MatrixEntryMode{0}
+    , m_WrapMatrixByRow{true}
 {
-    if (nrOfRows<=0 || nrOfColumns<=0) _handleException(3, "template <typename DataType> Matrix<DataType>::Matrix(int m, int n)");
-    m_WrapMatrixByRow=true;
-    m_NrOfRows=nrOfRows;
-    m_NrOfColumns=nrOfColumns;
-    m_MatrixEntryMode=0;
-    m_MatrixPrintMode=0;
-    resetCurrentPos();
-    _allocMemory(nrOfRows,nrOfColumns);
-    setItemsToZero();
+    if (nrOfRows <= 0 || nrOfColumns <= 0)
+    {
+        _handleException(3, "template <typename DataType> Matrix<DataType>::Matrix(int m, int n)");
+    }
+    else
+    {
+        _allocMemory(nrOfRows,nrOfColumns);
+        setItemsToZero();
+    }
 }
 
 template <typename DataType>
 Matrix<DataType>::Matrix(int nrOfRowsColumns)
+    : Matrix{nrOfRowsColumns, nrOfRowsColumns}
 {
-    if (nrOfRowsColumns<=0) _handleException(3, "template <typename DataType> Matrix<DataType>::Matrix(int n)");
-    m_WrapMatrixByRow=true;
-    m_NrOfRows = nrOfRowsColumns;
-    m_NrOfColumns = nrOfRowsColumns;
-    m_MatrixPrintMode=0;
-    m_MatrixEntryMode=0;
-    resetCurrentPos();
-    _allocMemory(m_NrOfRows,m_NrOfColumns);
-    setItemsToZero();
-    for (int i=0; i<nrOfRowsColumns; i++)
-        m_pMatrix[i][i]=1;
 }
 
 template <typename DataType>
 Matrix<DataType>::Matrix(DataType** matrixPtr, int nrOfRows, int nrOfColumns)
+    : m_MatrixPrintMode{0}
+    , m_MatrixEntryMode{0}
+    , m_WrapMatrixByRow{true}
 {
-    int i,j;
-    if (matrixPtr==0)
+    if (matrixPtr==nullptr)
+    {
         _handleException(22,"template <typename DataType> Matrix<DataType>::Matrix(DataType** m, int ln, int cl)");
-    if ((nrOfRows<=0) || (nrOfColumns<=0))
+    }
+    else if (nrOfRows <= 0 || nrOfColumns <= 0)
+    {
         _handleException(3,"template <typename DataType> Matrix<DataType>::Matrix(DataType** m, int ln, int cl)");
-    m_WrapMatrixByRow=true;
-    m_MatrixPrintMode=0;
-    m_MatrixEntryMode=0;
-    resetCurrentPos();
-    _allocMemory(nrOfRows, nrOfColumns);
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<m_NrOfColumns; j++)
-                m_pMatrix[i][j]=matrixPtr[i][j];
+    }
+    else
+    {
+        _allocMemory(nrOfRows, nrOfColumns);
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                m_pMatrix[row][col]=matrixPtr[row][col];
+            }
+        }
+    }
 }
 
 template <typename DataType>
 Matrix<DataType>::Matrix(DataType* matrixPtr, int nrOfRows, int nrOfColumns)
+    : m_MatrixPrintMode{0}
+    , m_MatrixEntryMode{0}
+    , m_WrapMatrixByRow{true}
 {
-    int i,j;
     if (matrixPtr==0)
+    {
         _handleException(22,"template <typename DataType> Matrix<DataType>::Matrix(DataType* m, int ln, int cl)");
-    if ((nrOfRows<=0) || (nrOfColumns<=0))
+    }
+    else if ((nrOfRows<=0) || (nrOfColumns<=0))
+    {
         _handleException(3,"template <typename DataType> Matrix<DataType>::Matrix(DataType* m, int ln, int cl)");
-    m_WrapMatrixByRow=true;
-    m_NrOfRows=nrOfRows;
-    m_NrOfColumns=nrOfColumns;
-    m_MatrixPrintMode=0;
-    m_MatrixEntryMode=0;
-    resetCurrentPos();
-    _allocMemory(nrOfRows, nrOfColumns);
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<m_NrOfColumns; j++)
-                m_pMatrix[i][j]=*(matrixPtr++);
+    }
+    else
+    {
+        _allocMemory(nrOfRows, nrOfColumns);
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                m_pMatrix[row][col]=*(matrixPtr++);
+            }
+        }
+    }
 }
 
 template<typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, istream &in)
+    : m_MatrixPrintMode{0}
+    , m_MatrixEntryMode{0}
+    , m_WrapMatrixByRow{true}
 {
-    int i;
-    m_WrapMatrixByRow=true;
-    m_MatrixPrintMode=0;
-    m_MatrixEntryMode=0;
-    m_NrOfRows=nrOfRows; m_NrOfColumns=nrOfColumns;
-    _allocMemory(nrOfRows,nrOfColumns);
-    _readDiscard(in);
-    m_PosX=0;
-    for (i=0; i<m_NrOfRows; i++) {
-        _readTextLine(in);
-        m_PosX++;
-        s_FilePosX++;
+    if ((nrOfRows<=0) || (nrOfColumns<=0))
+    {
+        _handleException(3,"template <typename DataType> Matrix<DataType>::Matrix(DataType* m, int ln, int cl)");
     }
-    m_PosX=0;
-    m_PosY=0;
+    else
+    {
+        _allocMemory(nrOfRows,nrOfColumns);
+        _readDiscard(in);
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            _readTextLine(in);
+            ++m_PosX;
+            ++s_FilePosX; // should this be reset to 0 after matrix is initialized?
+        }
+
+        // back to position 0 as when set by _allocMemory()
+        m_PosX = 0;
+    }
 }
 
 template <typename DataType>
-Matrix<DataType>::Matrix(const Matrix<DataType> &matrix)
+Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
+    : m_MatrixPrintMode{matrix.m_MatrixPrintMode}
+    , m_MatrixEntryMode{matrix.m_MatrixEntryMode}
+    , m_WrapMatrixByRow{matrix.m_WrapMatrixByRow}
 {
     _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
-    for (int i=0; i<m_NrOfRows; i++)
-        for (int j=0; j<m_NrOfColumns; j++)
-            m_pMatrix[i][j]=matrix.m_pMatrix[i][j];
-    m_PosX=matrix.m_PosX;
-    m_PosY=matrix.m_PosY;
-    m_WrapMatrixByRow=matrix.m_WrapMatrixByRow;
-    m_MatrixEntryMode=matrix.m_MatrixEntryMode;
-    m_MatrixPrintMode=matrix.m_MatrixPrintMode;
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            m_pMatrix[row][col]=matrix.m_pMatrix[row][col];
+        }
+    }
+
+    setPosX(matrix.m_PosX);
+    setPosY(matrix.m_PosY);
 }
 
 template<typename DataType>
@@ -1323,12 +1348,17 @@ inversion:
 template<typename DataType>
 void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns)
 {
-    int i;
-    resetCurrentPos();
-    m_NrOfRows=abs(nrOfRows); m_NrOfColumns=abs(nrOfColumns);
+    m_NrOfRows=nrOfRows;
+    m_NrOfColumns=nrOfColumns;
     m_pMatrix=new DataType*[nrOfRows];
-    for (i=0; i<nrOfRows; i++)
-        m_pMatrix[i]=new DataType[nrOfColumns];
+
+    for (int row{0}; row<nrOfRows; ++row)
+    {
+        m_pMatrix[row]=new DataType[nrOfColumns];
+    }
+
+    // to be clarified if this function call should be kept or better put separately after calling the _allocMemory() method
+    resetCurrentPos();
 }
 
 template<typename DataType>
