@@ -2187,34 +2187,44 @@ void Matrix<DataType>::_deallocMemory()
 template <typename DataType>
 void Matrix<DataType>::_writeMatrix(ostream& os, int mode)
 {
-    int i,j;
-    switch (mode) {
+    switch (mode)
+    {
     case 0:
-        for (i=0; i<m_NrOfRows; i++) {
-            for (j=0; j<m_NrOfColumns; j++)
-                    os<<m_pBaseArrayPtr[i][j]<<" ";
-                os<<endl;
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                os<<m_pBaseArrayPtr[row][col]<<" ";
             }
-            return;
-        case 1:
-            for (j=0; j<m_NrOfColumns; j++)
-                os<<m_pBaseArrayPtr[m_PosX][j]<<" ";
-            return;
-        case 2:
-            for (i=0; i<m_NrOfRows; i++)
-                os<<m_pBaseArrayPtr[i][m_PosY]<<endl;
-            return;
-        case 3:
-            os<<m_pBaseArrayPtr[m_PosX][m_PosY];
-            return;
-        case 4:
-            for (i=0; i<m_NrOfRows; i++)
-                os<<m_pBaseArrayPtr[i][i]<<" ";
-            return;
-        case 5:
-            for (i=m_NrOfRows-1; i>=0; i--)
-                os<<m_pBaseArrayPtr[i][m_NrOfRows-1-i]<<" ";
-            return;
+            os<<endl;
+        }
+        break;
+    case 1:
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            os<<m_pBaseArrayPtr[m_PosX][col]<<" ";
+        }
+        break;
+    case 2:
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            os<<m_pBaseArrayPtr[row][m_PosY]<<endl;
+        }
+        break;
+    case 3:
+        os<<m_pBaseArrayPtr[m_PosX][m_PosY];
+        break;
+    case 4:
+        for (int diag{0}; diag<m_NrOfRows; ++diag)
+        {
+            os<<m_pBaseArrayPtr[diag][diag]<<" ";
+        }
+        break;
+    case 5:
+        for (int diag{m_NrOfRows-1}; diag>=0; --diag)
+        {
+            os<<m_pBaseArrayPtr[diag][m_NrOfRows-1-diag]<<" ";
+        }
     }
 }
 
