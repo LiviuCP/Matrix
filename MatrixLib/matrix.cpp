@@ -2412,28 +2412,44 @@ void Matrix<DataType>::_readMatrix(istream &in, int mode)
 template<typename DataType>
 void Matrix<DataType>::_readTextLine(istream &in)
 {
-    string s;
-    int j;
-    int k=0;
-    int l;
-    stringstream str_st;
+    string str;
+    stringstream stream;
+
     if (in.eof())
+    {
         _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-    getline(in,s);
-    l=s.size();
-    if (l==0)
+    }
+
+    getline(in,str);
+
+    int strSize=str.size();
+    if (strSize==0)
+    {
         _handleException (28, "friend istream &operator>> (istream &is, Matrix &m)");
-    for (j=0; j<m_NrOfColumns; j++) {
-        while(s[k]==' ' && k<l)
-            k++;
-        if (k==l)
+    }
+
+    unsigned int strIndex{0};
+    for (int col{0}; col<m_NrOfColumns; ++col)
+    {
+        while(str[strIndex]==' ' && strIndex<strSize)
+        {
+            ++strIndex;
+        }
+
+        if (strIndex==strSize)
+        {
             _handleException(27, "friend istream &operator>> (istream &is, Matrix &m)");
+        }
+
         do
-            str_st.put(s[k++]);
-        while(s[k]!=' ' && k<l);
-        str_st>>m_pBaseArrayPtr[m_PosX][j];
-        str_st.str("");
-        str_st.clear();
+        {
+            stream.put(str[strIndex++]);
+        }
+        while(str[strIndex]!=' ' && strIndex<strSize);
+
+        stream>>m_pBaseArrayPtr[m_PosX][col];
+        stream.str("");
+        stream.clear();
     }
 }
 
