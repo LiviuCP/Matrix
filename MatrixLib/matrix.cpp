@@ -2521,16 +2521,21 @@ void Matrix<DataType>::_readSingleItem(istream &in)
 template<typename DataType>
 void Matrix<DataType>::_readDiscard(istream &in)
 {
-    string s;
-    int i;
+    string str;
+
     in.clear();
     in.seekg(0);
-    for (i=0; i<s_FilePosX; i++) {
+
+    for (int row{0}; row<s_FilePosX; ++row)
+    {
         if (in.eof())
+        {
             _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-        getline(in,s);
-        s="";
-        s.clear();
+        }
+
+        getline(in,str);
+        str="";
+        str.clear();
     }
 }
 
