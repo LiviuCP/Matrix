@@ -146,7 +146,7 @@ private:
 	
     Matrix<DataType> _multiply(const DataType& scalar);
 	
-    void _split(Matrix<DataType>& m1, Matrix<DataType>& m2, int splitRowColumnNr);
+    void _split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestmatrix, int splitRowColumnNr);
 
     void _concatenate(Matrix<DataType>& firstSrcMatrix,Matrix<DataType>& secondSrcMatrix);
 

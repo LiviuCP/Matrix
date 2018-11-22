@@ -2901,51 +2901,95 @@ Matrix<DataType> Matrix<DataType>::_multiply(const DataType &scalar)
 }
 
 template<typename DataType>
-void Matrix<DataType>::_split(Matrix<DataType> &m1, Matrix<DataType> &m2, int splitRowColumnNr)
+void Matrix<DataType>::_split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr)
 {
-    int i,j;
-    m1._deallocMemory(); m2._deallocMemory();
-    if (m_WrapMatrixByRow) {
-        m1._allocMemory(splitRowColumnNr,m_NrOfColumns); m2._allocMemory(m_NrOfRows-splitRowColumnNr, m_NrOfColumns);
-        for (i=0; i<splitRowColumnNr; i++)
-            for (j=0; j<m_NrOfColumns; j++)
-                m1.m_pBaseArrayPtr[i][j]=m_pBaseArrayPtr[i][j];
-        for (i=splitRowColumnNr; i<m_NrOfRows; i++)
-            for (j=0; j<m_NrOfColumns; j++)
-                m2.m_pBaseArrayPtr[i-splitRowColumnNr][j]=m_pBaseArrayPtr[i][j];
-        return;
-    }
+    firstDestMatrix._deallocMemory();
+    secondDestMatrix._deallocMemory();
 
-    m1._allocMemory(m_NrOfRows,splitRowColumnNr); m2._allocMemory(m_NrOfRows,m_NrOfColumns-splitRowColumnNr);
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=0; j<splitRowColumnNr; j++)
-            m1.m_pBaseArrayPtr[i][j]=m_pBaseArrayPtr[i][j];
-    for (i=0; i<m_NrOfRows; i++)
-        for (j=splitRowColumnNr; j<m_NrOfColumns; j++)
-            m2.m_pBaseArrayPtr[i][j-splitRowColumnNr]=m_pBaseArrayPtr[i][j];
+    if (m_WrapMatrixByRow) {
+        firstDestMatrix._allocMemory(splitRowColumnNr, m_NrOfColumns);
+        secondDestMatrix._allocMemory(m_NrOfRows-splitRowColumnNr, m_NrOfColumns);
+
+        for (int row{0}; row<splitRowColumnNr; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
+            }
+        }
+
+        for (int row{splitRowColumnNr}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                secondDestMatrix.m_pBaseArrayPtr[row-splitRowColumnNr][col] = m_pBaseArrayPtr[row][col];
+            }
+        }
+    }
+    else
+    {
+        firstDestMatrix._allocMemory(m_NrOfRows, splitRowColumnNr);
+        secondDestMatrix._allocMemory(m_NrOfRows, m_NrOfColumns-splitRowColumnNr);
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<splitRowColumnNr; ++col)
+            {
+                firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
+            }
+        }
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{splitRowColumnNr}; col<m_NrOfColumns; ++col)
+            {
+                secondDestMatrix.m_pBaseArrayPtr[row][col-splitRowColumnNr] = m_pBaseArrayPtr[row][col];
+            }
+        }
+    }
 }
 
 template<typename DataType>
 void Matrix<DataType>::_concatenate(Matrix<DataType> &firstSrcMatrix, Matrix<DataType> &secondSrcMatrix)
 {
-    int i,j;
     if (m_WrapMatrixByRow) {
         resizeNoInit(firstSrcMatrix.m_NrOfRows+secondSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns);
-        for (i=0; i<firstSrcMatrix.m_NrOfRows; i++)
-            for (j=0; j<m_NrOfColumns; j++)
-                m_pBaseArrayPtr[i][j]=firstSrcMatrix.m_pBaseArrayPtr[i][j];
-        for (i=firstSrcMatrix.m_NrOfRows; i<m_NrOfRows; i++)
-            for (j=0; j<m_NrOfColumns; j++)
-                m_pBaseArrayPtr[i][j]=secondSrcMatrix.m_pBaseArrayPtr[i-firstSrcMatrix.m_NrOfRows][j];
-        return;
+
+        for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
+            }
+        }
+
+        for (int row{firstSrcMatrix.m_NrOfRows}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows][col];
+            }
+        }
     }
-    resizeNoInit(firstSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns+secondSrcMatrix.m_NrOfColumns);
-    for(i=0; i<m_NrOfRows; i++)
-        for (j=0; j<firstSrcMatrix.m_NrOfColumns; j++)
-            m_pBaseArrayPtr[i][j]=firstSrcMatrix.m_pBaseArrayPtr[i][j];
-    for(i=0; i<m_NrOfRows; i++)
-        for (j=firstSrcMatrix.m_NrOfColumns; j<m_NrOfColumns; j++)
-            m_pBaseArrayPtr[i][j]=secondSrcMatrix.m_pBaseArrayPtr[i][j-firstSrcMatrix.m_NrOfColumns];
+    else
+    {
+        resizeNoInit(firstSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns+secondSrcMatrix.m_NrOfColumns);
+
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
+            }
+        }
+
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
+            }
+        }
+    }
 }
 
 
