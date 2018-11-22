@@ -1,4 +1,5 @@
 #include "matrix.h"
+#include <vector>
 
 template<typename DataType> int Matrix<DataType>::s_FilePosX=0;
 template<typename DataType> int Matrix<DataType>::s_FilePosY=0;
@@ -2856,18 +2857,30 @@ void Matrix<DataType>::_handleException(int errorType, char* function)
 }
 
 template<typename DataType>
-Matrix<DataType> Matrix<DataType>::_power(int exp)
+Matrix<DataType> Matrix<DataType>::_power(int exponent)
 {
-    Matrix<DataType> b;
-    if (exp==1)
-        return *this;
-    else {
-        b=_power(exp/2);
-        if (exp%2==0)
-            return b*b;
-        else
-            return b*b*(*this);
+    Matrix<DataType> result{*this};
+    vector<bool> remainders;
+
+    int quotient{exponent};
+
+    while (quotient > 1)
+    {
+        remainders.push_back(static_cast<bool>(quotient%2));
+        quotient /= 2;
     }
+
+    for (std::vector<bool>::const_iterator it = remainders.cend(); it != remainders.cbegin(); --it)
+    {
+        result *= result;
+
+        if (*it)
+        {
+            result *= this;
+        }
+    }
+
+    return result;
 }
 
 template<typename DataType>
