@@ -2540,24 +2540,28 @@ void Matrix<DataType>::_readDiscard(istream &in)
 }
 
 template<typename DataType>
-void Matrix<DataType>::_quickSort(int first, int last, int mode, int pos)
+void Matrix<DataType>::_quickSort(int firstIndex, int lastIndex, int mode, int rowColumnNr)
 {
-    if (last>first) {
-        int pivot=(first+last)/2;
-        int k=_createSortingPartition(first,last,pivot,mode,pos);
-        _quickSort(first,k-1,mode,pos);
-        _quickSort(k+1,last,mode,pos);
+    if (lastIndex>firstIndex)
+    {
+        int pivot{(firstIndex+lastIndex)/2};
+        int splittingIndex{_createSortingPartition(firstIndex,lastIndex,pivot,mode,rowColumnNr)};
+
+        _quickSort(firstIndex, splittingIndex-1, mode, rowColumnNr);
+        _quickSort(splittingIndex+1, lastIndex, mode, rowColumnNr);
     }
 }
 
 template<typename DataType>
-void Matrix<DataType>::_quickSort(int first, int last, int mode)
+void Matrix<DataType>::_quickSort(int firstIndex, int lastIndex, int mode)
 {
-    if (last>first) {
-        int pivot=(first+last)/2;
-        int k=_createSortingPartition(first,last,pivot,mode);
-        _quickSort(first,k-1,mode);
-        _quickSort(k+1,last,mode);
+    if (lastIndex>firstIndex)
+    {
+        int pivot{(firstIndex+lastIndex)/2};
+        int splittingIndex{_createSortingPartition(firstIndex,lastIndex,pivot,mode)};
+
+        _quickSort(firstIndex, splittingIndex-1, mode);
+        _quickSort(splittingIndex+1, lastIndex, mode);
     }
 }
 
