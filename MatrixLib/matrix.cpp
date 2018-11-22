@@ -2873,12 +2873,18 @@ Matrix<DataType> Matrix<DataType>::_power(int exp)
 template<typename DataType>
 Matrix<DataType> Matrix<DataType>::_multiply(const DataType &scalar)
 {
-    Matrix a;
-    a.resizeNoInit(m_NrOfRows,m_NrOfColumns);
-    for (int i=0; i<m_NrOfRows; i++)
-        for (int j=0; j<m_NrOfColumns; j++)
-            a.m_pBaseArrayPtr[i][j]=scalar*m_pBaseArrayPtr[i][j];
-    return a;
+    Matrix matrix{};
+    matrix.resizeNoInit(m_NrOfRows, m_NrOfColumns);
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            matrix.m_pBaseArrayPtr[row][col] = scalar * m_pBaseArrayPtr[row][col];
+        }
+    }
+
+    return matrix;
 }
 
 template<typename DataType>
