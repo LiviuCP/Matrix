@@ -2229,147 +2229,183 @@ void Matrix<DataType>::_writeMatrix(ostream& os, int mode)
 }
 
 template <typename DataType>
-void Matrix<DataType>::_readMatrix(istream &is, int mode)
+void Matrix<DataType>::_readMatrix(istream &in, int mode)
 {
-    string s;
-    int i,j;
-    stringstream str_st(ios::in|ios::out);
-    switch (mode) {
-        case 0:
-            for (i=0; i<m_NrOfRows; i++)
-                for (j=0; j<m_NrOfColumns; j++) {
-                    if (is.eof())
-                        _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                    cout<<"["<<i<<"]["<<j<<"]= ";
-                    is>>m_pBaseArrayPtr[i][j];
+    string str;
+    stringstream stream(ios::in | ios::out);
+
+    switch (mode)
+    {
+    case 0:
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                if (in.eof())
+                {
+                    _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
                 }
-            return;
-        case 1:
-            cout<<"["<<m_PosX<<"]["<<m_PosY<<"]= ";
-            is>>m_pBaseArrayPtr[m_PosX][m_PosY];
-            return;
-        case 2:
-            for (j=0; j<m_NrOfColumns; j++) {
-                if (is.eof())
-                    _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                cout<<"["<<m_PosX<<"]["<<j<<"]= ";
-                is>>m_pBaseArrayPtr[m_PosX][j];
+                cout<<"["<<row<<"]["<<col<<"]= ";
+                in>>m_pBaseArrayPtr[row][col];
             }
-            return;
-        case 3:
-            for (i=0; i<m_NrOfRows; i++) {
-                if (is.eof())
-                    _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                cout<<"["<<i<<"]["<<m_PosY<<"]= ";
-                is>>m_pBaseArrayPtr[i][m_PosY];
-            }
-            return;
-        case 4:
-            for(i=0; i<m_NrOfRows; i++) {
-                if (is.eof())
-                    _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                cout<<"["<<i<<"]["<<i<<"]= ";
-                is>>m_pBaseArrayPtr[i][i];
-            }
-            return;
-        case 5:
-            for(i=m_NrOfRows-1; i>=0; i--) {
-                if (is.eof())
-                    _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                cout<<"["<<i<<"]["<<m_NrOfRows-1-i<<"]= ";
-                is>>m_pBaseArrayPtr[i][m_NrOfRows-1-i];
-            }
-            return;
-        case 6:
-            _readDiscard(is);
-            m_PosX=0;
-            for (i=0; i<m_NrOfRows; i++) {
-                _readTextLine(is);
-                m_PosX++;
-                s_FilePosX++;
-            }
-            return;
-        case 7:
-            _readDiscard(is);
-            _readSingleItem(is);
-            return;
-        case 8:
-            _readDiscard(is);
-            _readTextLine(is);
-            return;
-        case 9:
-            _readDiscard(is);
-            m_PosX=0;
-            for(i=0; i<m_NrOfRows; i++) {
-                _readSingleItem(is);
-                m_PosX++;
-                s_FilePosX++;
-            }
-            return;
-        case 10:
-            _readDiscard(is);
-            resetCurrentPos();
-            s_FilePosY=0;
-            for (i=0; i<m_NrOfRows; i++) {
-                _readSingleItem(is);
-                s_FilePosX++;
-                m_PosY=++m_PosX;
-                s_FilePosY++;
-            }
-            return;
-        case 11:
-            _readDiscard(is);
-            s_FilePosY=m_NrOfRows-1;
-            m_PosX=0;
-            m_PosY=m_NrOfRows-1;
-            for(i=0; i<m_NrOfRows; i++) {
-                _readSingleItem(is);
-                s_FilePosX++;
-                s_FilePosY--;
-                m_PosX++;
-                m_PosY--;
-            }
-            return;
-        case 12:
-            for (i=0; i<m_NrOfRows; i++)
-                for (j=0; j<m_NrOfColumns; j++) {
-                    if (is.eof())
-                        _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                    is>>m_pBaseArrayPtr[i][j];
-                }
-            return;
-        case 13:
-            if (is.eof())
+        }
+        break;
+    case 1:
+        cout<<"["<<m_PosX<<"]["<<m_PosY<<"]= ";
+        in>>m_pBaseArrayPtr[m_PosX][m_PosY];
+        break;
+    case 2:
+        for (int col{0}; col<m_NrOfColumns; ++col) {
+            if (in.eof())
+            {
                 _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-            is>>m_pBaseArrayPtr[m_PosX][m_PosY];
-            return;
-        case 14:
-            for (j=0; j<m_NrOfColumns; j++) {
-                if (is.eof())
-                    _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                is>>m_pBaseArrayPtr[m_PosX][j];
             }
-            return;
-        case 15:
-            for (i=0; i<m_NrOfRows; i++) {
-                if (is.eof())
-                    _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                is>>m_pBaseArrayPtr[i][m_PosY];
+            cout<<"["<<m_PosX<<"]["<<col<<"]= ";
+            in>>m_pBaseArrayPtr[m_PosX][col];
+        }
+        break;
+    case 3:
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            if (in.eof())
+            {
+                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
             }
-            return;
-        case 16:
-            for (i=0; i<m_NrOfRows; i++)  {
-                if (is.eof())
-                    _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                is>>m_pBaseArrayPtr[i][i];
+            cout<<"["<<row<<"]["<<m_PosY<<"]= ";
+            in>>m_pBaseArrayPtr[row][m_PosY];
+        }
+        break;
+    case 4:
+        for(int diag{0}; diag<m_NrOfRows; ++diag){
+            if (in.eof())
+            {
+                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
             }
-            return;
-        case 17:
-            for (i=m_NrOfRows-1; i>=0; i--) {
-                if (is.eof())
-                    _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
-                is>>m_pBaseArrayPtr[i][m_NrOfRows-1-i];
+            cout<<"["<<diag<<"]["<<diag<<"]= ";
+            in>>m_pBaseArrayPtr[diag][diag];
+        }
+        break;
+    case 5:
+        for(int diag{m_NrOfRows-1}; diag>=0; --diag) {
+            if (in.eof())
+            {
+                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
             }
+            cout<<"["<<diag<<"]["<<m_NrOfRows-1-diag<<"]= ";
+            in>>m_pBaseArrayPtr[diag][m_NrOfRows-1-diag];
+        }
+        break;
+    case 6:
+        _readDiscard(in);
+        m_PosX = 0;
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            _readTextLine(in);
+            ++m_PosX;
+            ++s_FilePosX;
+        }
+        break;
+    case 7:
+        _readDiscard(in);
+        _readSingleItem(in);
+        break;
+    case 8:
+        _readDiscard(in);
+        _readTextLine(in);
+        break;
+    case 9:
+        _readDiscard(in);
+        m_PosX = 0;
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            _readSingleItem(in);
+            ++m_PosX;
+            ++s_FilePosX;
+        }
+        break;
+    case 10:
+        _readDiscard(in);
+        resetCurrentPos();
+        s_FilePosY=0;
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            _readSingleItem(in);
+            s_FilePosX++;
+            m_PosY = ++m_PosX;
+            s_FilePosY++;
+        }
+        break;
+    case 11:
+        _readDiscard(in);
+        s_FilePosY = m_NrOfRows-1;
+        m_PosX = 0;
+        m_PosY = m_NrOfRows-1;
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            _readSingleItem(in);
+            ++s_FilePosX;
+            --s_FilePosY;
+            ++m_PosX;
+            --m_PosY;
+        }
+        break;
+    case 12:
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                if (in.eof())
+                {
+                    _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+                }
+                in>>m_pBaseArrayPtr[row][col];
+            }
+        }
+        break;
+    case 13:
+        if (in.eof())
+        {
+            _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+        }
+        in>>m_pBaseArrayPtr[m_PosX][m_PosY];
+        break;
+    case 14:
+        for (int col{0}; col<m_NrOfColumns; ++col) {
+            if (in.eof())
+            {
+                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+            }
+            in>>m_pBaseArrayPtr[m_PosX][col];
+        }
+        break;
+    case 15:
+        for (int row{0}; row<m_NrOfRows; ++row) {
+            if (in.eof())
+            {
+                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+            }
+            in>>m_pBaseArrayPtr[row][m_PosY];
+        }
+        break;
+    case 16:
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            if (in.eof())
+            {
+                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+            }
+            in>>m_pBaseArrayPtr[row][row];
+        }
+        break;
+    case 17:
+        for (int row{m_NrOfRows-1}; row>=0; --row)
+        {
+            if (in.eof())
+            {
+                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+            }
+            in>>m_pBaseArrayPtr[row][m_NrOfRows-1-row];
+        }
     }
 }
 
