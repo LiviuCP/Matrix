@@ -99,7 +99,7 @@ Matrix<DataType>::Matrix(DataType* matrixPtr, int nrOfRows, int nrOfColumns)
 }
 
 template<typename DataType>
-Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, istream &in)
+Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::istream &in)
     : m_MatrixPrintMode{0}
     , m_MatrixEntryMode{0}
     , m_WrapMatrixByRow{true}
@@ -1621,7 +1621,7 @@ bool Matrix<DataType>::operator >=(const Matrix<DataType> &matrix) const
 }
 
 template<typename DataType>
-ostream& operator<<(ostream &out, const Matrix<DataType> &matrix)
+std::ostream& operator<<(std::ostream &out, const Matrix<DataType> &matrix)
 {
     if((matrix.m_MatrixPrintMode==4 || matrix.m_MatrixPrintMode==5) && (matrix.m_NrOfRows!=matrix.m_NrOfColumns))
     {
@@ -1634,7 +1634,7 @@ ostream& operator<<(ostream &out, const Matrix<DataType> &matrix)
 }
 
 template<typename DataType>
-istream& operator>>(istream &in, Matrix<DataType> &matrix)
+std::istream& operator>>(std::istream &in, Matrix<DataType> &matrix)
 {
     if((matrix.m_MatrixEntryMode==4   ||
         matrix.m_MatrixEntryMode==5   ||
@@ -2186,8 +2186,10 @@ void Matrix<DataType>::_deallocMemory()
 }
 
 template <typename DataType>
-void Matrix<DataType>::_writeMatrix(ostream& os, int mode)
+void Matrix<DataType>::_writeMatrix(std::ostream& os, int mode)
 {
+    using namespace std;
+
     switch (mode)
     {
     case 0:
@@ -2230,8 +2232,10 @@ void Matrix<DataType>::_writeMatrix(ostream& os, int mode)
 }
 
 template <typename DataType>
-void Matrix<DataType>::_readMatrix(istream &in, int mode)
+void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
 {
+    using namespace std;
+
     string str;
     stringstream stream(ios::in | ios::out);
 
@@ -2411,10 +2415,10 @@ void Matrix<DataType>::_readMatrix(istream &in, int mode)
 }
 
 template<typename DataType>
-void Matrix<DataType>::_readTextLine(istream &in)
+void Matrix<DataType>::_readTextLine(std::istream &in)
 {
-    string str;
-    stringstream stream;
+    std::string str;
+    std::stringstream stream;
 
     if (in.eof())
     {
@@ -2455,10 +2459,10 @@ void Matrix<DataType>::_readTextLine(istream &in)
 }
 
 template<typename DataType>
-void Matrix<DataType>::_readSingleItem(istream &in)
+void Matrix<DataType>::_readSingleItem(std::istream &in)
 {
-    string str;
-    stringstream stream;
+    std::string str;
+    std::stringstream stream;
 
     if (in.eof())
     {
@@ -2520,9 +2524,9 @@ void Matrix<DataType>::_readSingleItem(istream &in)
 }
 
 template<typename DataType>
-void Matrix<DataType>::_readDiscard(istream &in)
+void Matrix<DataType>::_readDiscard(std::istream &in)
 {
-    string str;
+    std::string str;
 
     in.clear();
     in.seekg(0);
@@ -2843,14 +2847,13 @@ DataType& Matrix<DataType>::_getItemForColumnWrap(int oneDimensionalIndex)
 template<typename DataType>
 void Matrix<DataType>::_handleException(int errorType, char* function)
 {
+    using namespace std;
     try {
         cerr<<"Exceptie in functia: "<<function<<endl;
         throw errorType;
     }
     catch (int k) {
         switch (k) {
-
-
             case 1:
                 cerr<<"Eroarea 1: Dimensiunile matricei nu sunt egale."<<endl;
                 exit(1);
@@ -2901,9 +2904,6 @@ void Matrix<DataType>::_handleException(int errorType, char* function)
                 exit(1);
             case 17:
                 cerr<<"Eroarea 17: linia sau coloana inserate in matrice nu sunt inserate pe o pozitie contigua"<<endl;
-
-
-
                 exit(1);
             case 18:
                 cerr<<"Eroarea 18: S-a incercat accesarea unui element inexistent intr-una dintre matrici"<<endl;
@@ -2949,7 +2949,7 @@ template<typename DataType>
 Matrix<DataType> Matrix<DataType>::_power(int exponent)
 {
     Matrix<DataType> result{*this};
-    vector<bool> remainders;
+    std::vector<bool> remainders;
 
     int quotient{exponent};
 

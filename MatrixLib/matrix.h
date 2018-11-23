@@ -2,12 +2,9 @@
 #include <fstream>
 #include <sstream> 
 #include <strstream>
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include <string> 
-#define mul true 
-#define div false
-using namespace std;
 
 template <typename DataType>
 class Matrix
@@ -18,7 +15,7 @@ public:
     Matrix(int nrOfRowsColumns);
     Matrix(DataType** matrixPtr, int nrOfRows, int nrOfColumns);
     Matrix(DataType* matrixPtr, int nrOfRows, int nrOfColumns);
-    Matrix(int nrOfRows, int nrOfColumns, istream &in);
+    Matrix(int nrOfRows, int nrOfColumns, std::istream &in);
     Matrix(const Matrix<DataType>& matrix);
     ~Matrix();
 
@@ -102,8 +99,8 @@ public:
     bool operator > (const Matrix<DataType>& matrix) const;
     bool operator >= (const Matrix<DataType>& matrix) const;
 
-    friend ostream &operator<<(ostream& out, const Matrix<DataType>& matrix);
-    friend istream &operator>> (istream& in, Matrix<DataType>& matrix);
+    friend std::ostream &operator<<(std::ostream& out, const Matrix<DataType>& matrix);
+    friend std::istream &operator>> (std::istream& in, Matrix<DataType>& matrix);
 
     DataType& operator[] (int index);
 
@@ -123,14 +120,14 @@ private:
 	
     void _deallocMemory();
 	
-    void _writeMatrix(ostream& os, int mode);
-    void _readMatrix(istream& is, int mode);
+    void _writeMatrix(std::ostream& os, int mode);
+    void _readMatrix(std::istream& is, int mode);
 
-    void _readTextLine(istream &in);
+    void _readTextLine(std::istream &in);
 
-    void _readSingleItem(istream &in);
+    void _readSingleItem(std::istream &in);
 
-    void _readDiscard(istream &in);
+    void _readDiscard(std::istream &in);
 
     void _quickSort(int first, int last, int mode, int pos);
     void _quickSort(int first, int last, int mode);
