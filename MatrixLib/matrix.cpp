@@ -1,5 +1,6 @@
-#include "matrix.h"
 #include <vector>
+
+#include "matrix.h"
 
 template<typename DataType> int Matrix<DataType>::s_FilePosX=0;
 template<typename DataType> int Matrix<DataType>::s_FilePosY=0;
@@ -381,7 +382,7 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
     else if (nrOfRows!=m_NrOfRows || nrOfColumns!=m_NrOfColumns)
     {
         DataType** temp;
-        Matrix matrix;
+        Matrix<DataType> matrix{};
 
         temp=matrix.m_pBaseArrayPtr;
         matrix.m_pBaseArrayPtr=m_pBaseArrayPtr;
@@ -1166,7 +1167,7 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
         _handleException(12, "template <typename DataType> void Matrix<DataType>::cat(const Matrix<DataType> &m1, const Matrix<DataType> &m2)");
     }
 
-    Matrix thirdMatrix;
+    Matrix<DataType> thirdMatrix{};
 
     if ((firstSrcMatrix.m_pBaseArrayPtr==m_pBaseArrayPtr) || (secondSrcMatrix.m_pBaseArrayPtr==m_pBaseArrayPtr))
     {
@@ -1230,7 +1231,7 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
         }
     }
 
-    Matrix thirdMatrix;
+    Matrix<DataType> thirdMatrix{};
 
     if ((firstDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) || (secondDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr)) {
         thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
@@ -1358,7 +1359,7 @@ Matrix<DataType> Matrix<DataType>::operator+ (const Matrix<DataType>& matrix)
         _handleException(10, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator+ (const Matrix<DataType> &m)");
     }
 
-    Matrix result{m_NrOfRows,m_NrOfColumns};
+    Matrix<DataType> result{m_NrOfRows,m_NrOfColumns};
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
@@ -1379,7 +1380,7 @@ Matrix<DataType> Matrix<DataType>::operator- (const Matrix<DataType>& matrix)
         _handleException(10, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator- (const Matrix<DataType> &m)");
     }
 
-    Matrix result{m_NrOfRows,m_NrOfColumns};
+    Matrix<DataType> result{m_NrOfRows,m_NrOfColumns};
 
     for (int i{0}; i<m_NrOfRows; ++i)
     {
@@ -1412,7 +1413,7 @@ Matrix<DataType> Matrix<DataType>::operator* (const Matrix<DataType>& matrix)
         _handleException(11, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator* (const Matrix<DataType> &m)");
     }
 
-    Matrix result{m_NrOfRows,matrix.m_NrOfColumns};
+    Matrix<DataType> result{m_NrOfRows,matrix.m_NrOfColumns};
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
@@ -1441,7 +1442,7 @@ Matrix<DataType> Matrix<DataType>::operator^ (int exp)
         _handleException(16, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator^ (int m)");
     }
 
-    Matrix result;
+    Matrix<DataType> result{};
 
     if (exp==0)
     {
@@ -1676,7 +1677,7 @@ DataType Matrix<DataType>::determinant()
         _handleException(1, "template <typename DataType> DataType Matrix<DataType>::det()");
     }
 
-    Matrix matrix{*this};
+    Matrix<DataType> matrix{*this};
     int sign{1};
     int temp{1};
     bool isZeroDet{false};
@@ -1748,7 +1749,7 @@ int Matrix<DataType>::rank()
         ++matrix.m_PosY;
     };
 
-    Matrix matrix;
+    Matrix<DataType> matrix{};
 
     if (m_NrOfRows>m_NrOfColumns)
     {
@@ -1909,7 +1910,7 @@ void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType
 template <typename DataType>
 void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
 {
-    Matrix matrix;
+    Matrix<DataType> matrix{};
 
     if (m_pBaseArrayPtr==result.m_pBaseArrayPtr)
     {
@@ -2975,7 +2976,7 @@ Matrix<DataType> Matrix<DataType>::_power(int exponent)
 template<typename DataType>
 Matrix<DataType> Matrix<DataType>::_multiply(const DataType &scalar)
 {
-    Matrix matrix{};
+    Matrix<DataType> matrix{};
     matrix.resizeNoInit(m_NrOfRows, m_NrOfColumns);
 
     for (int row{0}; row<m_NrOfRows; ++row)

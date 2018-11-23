@@ -29,6 +29,7 @@ public:
     int getPosY();
     int getFilePosX();
     int getFilePosY();
+
     void setPosX(int m);
     void setPosY(int n);
     void setFilePosX(int filePosX);
@@ -59,7 +60,6 @@ public:
     void swapRow(int firstRowNr, int secondRowNr);
     void swapColumn(int firstColumnNr, int secondColumnNr);
     void swapRowColumn(int rowColumnNr);
-
     void swapWithMatrix(Matrix<DataType> &m);
 
     void sortLineColumn(int lineColumnNr, int mode);
@@ -92,6 +92,7 @@ public:
     Matrix<DataType> operator*(const DataType& data);
     Matrix<DataType> operator^ (int exp);
     Matrix<DataType>& operator= (const Matrix<DataType>& matrix);
+
     bool operator== (const Matrix<DataType>& matrix) const;
     bool operator != (const Matrix<DataType>& matrix) const;
     bool operator < (const Matrix<DataType>& matrix) const;
@@ -117,16 +118,13 @@ public:
 
 private:
     void _allocMemory(int nrOfRows, int nrOfColumns);
-	
     void _deallocMemory();
-	
+
     void _writeMatrix(std::ostream& os, int mode);
     void _readMatrix(std::istream& is, int mode);
 
     void _readTextLine(std::istream &in);
-
     void _readSingleItem(std::istream &in);
-
     void _readDiscard(std::istream &in);
 
     void _quickSort(int first, int last, int mode, int pos);
@@ -138,13 +136,11 @@ private:
     DataType& _getItemForColumnWrap(int oneDimensionalIndex);
 
     static void _handleException(int errorType, char* function);
-	
-    Matrix<DataType> _power(int exp);
-	
-    Matrix<DataType> _multiply(const DataType& scalar);
-	
-    void _split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestmatrix, int splitRowColumnNr);
 
+    Matrix<DataType> _power(int exp);
+    Matrix<DataType> _multiply(const DataType& scalar);
+
+    void _split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestmatrix, int splitRowColumnNr);
     void _concatenate(Matrix<DataType>& firstSrcMatrix,Matrix<DataType>& secondSrcMatrix);
 
     static int s_FilePosX;
