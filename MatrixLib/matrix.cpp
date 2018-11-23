@@ -2546,7 +2546,7 @@ void Matrix<DataType>::_quickSort(int firstIndex, int lastIndex, int mode, int r
     if (lastIndex>firstIndex)
     {
         int pivot{(firstIndex+lastIndex)/2};
-        int splittingIndex{_createSortingPartition(firstIndex,lastIndex,pivot,mode,rowColumnNr)};
+        int splittingIndex{_createSortingPartition(firstIndex, lastIndex, pivot, mode, rowColumnNr)};
 
         _quickSort(firstIndex, splittingIndex-1, mode, rowColumnNr);
         _quickSort(splittingIndex+1, lastIndex, mode, rowColumnNr);
@@ -2559,7 +2559,7 @@ void Matrix<DataType>::_quickSort(int firstIndex, int lastIndex, int mode)
     if (lastIndex>firstIndex)
     {
         int pivot{(firstIndex+lastIndex)/2};
-        int splittingIndex{_createSortingPartition(firstIndex,lastIndex,pivot,mode)};
+        int splittingIndex{_createSortingPartition(firstIndex, lastIndex, pivot, mode)};
 
         _quickSort(firstIndex, splittingIndex-1, mode);
         _quickSort(splittingIndex+1, lastIndex, mode);
@@ -2567,176 +2567,265 @@ void Matrix<DataType>::_quickSort(int firstIndex, int lastIndex, int mode)
 }
 
 template<typename DataType>
-int Matrix<DataType>:: _createSortingPartition(int first,int last,int pivot,int mode,int pos)
+int Matrix<DataType>:: _createSortingPartition(int firstIndex, int lastIndex, int pivot, int mode, int rowColumnNr)
 {
-    int i,j;
-    switch(mode) {
+    int leftIndex{firstIndex-1};
+    int rightIndex{lastIndex};
+
+    switch(mode)
+    {
     case 0:
-        if (pivot!=last)
-            swapItem(pos,pivot,pos,last);
-        i=first-1; j=last;
-        while (i<j) {
-            do i++;
-                    while ((i!=j) && (m_pBaseArrayPtr[pos][i]<m_pBaseArrayPtr[pos][last]));
-                do j--;
-                    while ((i!=j) && (m_pBaseArrayPtr[pos][j]>m_pBaseArrayPtr[pos][last]));
-                if (i<j)
-                    swapItem(pos,i,pos,j);
+        if (pivot!=lastIndex)
+        {
+            swapItem(rowColumnNr, pivot, rowColumnNr, lastIndex);
+        }
+
+        while (leftIndex<rightIndex)
+        {
+            do
+            {
+                ++leftIndex;
             }
-            if (i!=last)
-                swapItem(pos,i,pos,last);
-            return i;
-        case 1:
-            if (pivot!=last)
-                swapItem(pos, pivot, pos,last);
-            i=first-1; j=last;
-            while (i<j) {
-                do i++;
-                    while ((i!=j) && (m_pBaseArrayPtr[pos][i]>m_pBaseArrayPtr[pos][last]));
-                do j--;
-                    while ((i!=j) && (m_pBaseArrayPtr[pos][j]<m_pBaseArrayPtr[pos][last]));
-                if (i<j)
-                    swapItem(pos,i,pos,j);
+            while ((leftIndex!=rightIndex) && (m_pBaseArrayPtr[rowColumnNr][leftIndex] < m_pBaseArrayPtr[rowColumnNr][lastIndex]));
+
+            do
+            {
+                --rightIndex;
             }
-            if (i!=last)
-                swapItem(pos,i,pos,last);
-            return i;
-        case 2:
-            if (pivot!=last)
-                swapItem(pivot,pos,last,pos);
-            i=first-1; j=last;
-            while (i<j) {
-                do i++;
-                    while ((i!=j) && (m_pBaseArrayPtr[i][pos]<m_pBaseArrayPtr[last][pos]));
-                do j--;
-                    while ((i!=j) && (m_pBaseArrayPtr[j][pos]>m_pBaseArrayPtr[last][pos]));
-                if (i<j)
-                    swapItem(i,pos,j,pos);
+            while ((leftIndex!=rightIndex) && (m_pBaseArrayPtr[rowColumnNr][rightIndex] > m_pBaseArrayPtr[rowColumnNr][lastIndex]));
+
+            if (leftIndex<rightIndex)
+            {
+                swapItem(rowColumnNr, leftIndex, rowColumnNr, rightIndex);
             }
-            if (i!=last)
-                swapItem(i,pos,last,pos);
-            return i;
-        case 3:
-            if (pivot!=last)
-                swapItem(pivot,pos,last,pos);
-            i=first-1; j=last;
-            while (i<j) {
-                do i++;
-                    while ((i!=j) && (m_pBaseArrayPtr[i][pos]>m_pBaseArrayPtr[last][pos]));
-                do j--;
-                    while ((i!=j) && (m_pBaseArrayPtr[j][pos]<m_pBaseArrayPtr[last][pos]));
-                if (i<j)
-                    swapItem(i,pos,j,pos);
+        }
+
+        if (leftIndex!=lastIndex)
+        {
+            swapItem(rowColumnNr, leftIndex, rowColumnNr, lastIndex);
+        }
+    case 1:
+        if (pivot!=lastIndex)
+        {
+            swapItem(rowColumnNr, pivot, rowColumnNr, lastIndex);
+        }
+
+        while (leftIndex<rightIndex)
+        {
+            do
+            {
+                ++leftIndex;
             }
-            if (i!=last)
-                swapItem(i,pos,last,pos);
-            return i;
+            while ((leftIndex!=rightIndex) && (m_pBaseArrayPtr[rowColumnNr][leftIndex] > m_pBaseArrayPtr[rowColumnNr][lastIndex]));
+
+            do
+            {
+                --rightIndex;
+            }
+            while ((leftIndex!=rightIndex) && (m_pBaseArrayPtr[rowColumnNr][rightIndex] < m_pBaseArrayPtr[rowColumnNr][lastIndex]));
+
+            if (leftIndex<rightIndex)
+            {
+                swapItem(rowColumnNr, leftIndex, rowColumnNr, rightIndex);
+            }
+        }
+
+        if (leftIndex!=lastIndex)
+        {
+            swapItem(rowColumnNr, leftIndex, rowColumnNr, lastIndex);
+        }
+    case 2:
+        if (pivot!=lastIndex)
+        {
+            swapItem(pivot, rowColumnNr, lastIndex, rowColumnNr);
+        }
+
+        while (leftIndex<rightIndex)
+        {
+            do
+            {
+                ++leftIndex;
+            }
+            while ((leftIndex!=rightIndex) && (m_pBaseArrayPtr[leftIndex][rowColumnNr] < m_pBaseArrayPtr[lastIndex][rowColumnNr]));
+
+            do
+            {
+                --rightIndex;
+            }
+            while ((leftIndex!=rightIndex) && (m_pBaseArrayPtr[rightIndex][rowColumnNr] > m_pBaseArrayPtr[lastIndex][rowColumnNr]));
+
+            if (leftIndex<rightIndex)
+            {
+                swapItem(leftIndex, rowColumnNr, rightIndex, rowColumnNr);
+            }
+        }
+
+        if (leftIndex!=lastIndex)
+        {
+            swapItem(leftIndex, rowColumnNr, lastIndex, rowColumnNr);
+        }
+    case 3:
+        if (pivot!=lastIndex)
+        {
+            swapItem(pivot, rowColumnNr, lastIndex, rowColumnNr);
+        }
+
+        while (leftIndex<rightIndex)
+        {
+            do
+            {
+                ++leftIndex;
+            }
+            while ((leftIndex!=rightIndex) && (m_pBaseArrayPtr[leftIndex][rowColumnNr] > m_pBaseArrayPtr[lastIndex][rowColumnNr]));
+
+            do
+            {
+                --rightIndex;
+            }
+            while ((leftIndex!=rightIndex) && (m_pBaseArrayPtr[rightIndex][rowColumnNr] < m_pBaseArrayPtr[lastIndex][rowColumnNr]));
+
+            if (leftIndex<rightIndex)
+            {
+                swapItem(leftIndex, rowColumnNr, rightIndex, rowColumnNr);
+            }
+        }
+
+        if (leftIndex!=lastIndex)
+        {
+            swapItem(leftIndex, rowColumnNr, lastIndex, rowColumnNr);
+        }
     }
+
+    return leftIndex;
 }
 
 template<typename DataType>
-int Matrix<DataType>:: _createSortingPartition(int first,int last,int pivot,int mode)
+int Matrix<DataType>:: _createSortingPartition(int firstIndex,int lastIndex,int pivot,int mode)
 {
-    int i,j;
-    DataType swap;
-    switch(mode) {
-        case 0:
-            if (pivot!=last) {
-                swap=_getItemForLineWrap(pivot);
-                _getItemForLineWrap(pivot)=_getItemForLineWrap(last);
-                _getItemForLineWrap(last)=swap;
+    int leftIndex{firstIndex-1};
+    int rightIndex{lastIndex};
+
+    switch(mode)
+    {
+    case 0:
+        if (pivot!=lastIndex)
+        {
+            std::swap(_getItemForLineWrap(pivot), _getItemForLineWrap(lastIndex));
+        }
+
+        while (leftIndex<rightIndex)
+        {
+            do
+            {
+                ++leftIndex;
             }
-            i=first-1; j=last;
-            while (i<j) {
-                do i++;
-                    while ((i!=j) && (_getItemForLineWrap(i)<_getItemForLineWrap(last)));
-                do j--;
-                    while ((i!=j) && (_getItemForLineWrap(j)>_getItemForLineWrap(last)));
-                if (i<j) {
-                    swap=_getItemForLineWrap(i);
-                    _getItemForLineWrap(i)=_getItemForLineWrap(j);
-                    _getItemForLineWrap(j)=swap;
-                }
+            while ((leftIndex!=rightIndex) && (_getItemForLineWrap(leftIndex) < _getItemForLineWrap(lastIndex)));
+
+            do
+            {
+                --rightIndex;
             }
-            if (i!=(last)) {
-                swap=_getItemForLineWrap(i);
-                _getItemForLineWrap(i)=_getItemForLineWrap(last);
-                _getItemForLineWrap(last)=swap;
+            while ((leftIndex!=rightIndex) && (_getItemForLineWrap(rightIndex) > _getItemForLineWrap(lastIndex)));
+
+            if (leftIndex<rightIndex)
+            {
+                std::swap(_getItemForLineWrap(leftIndex), _getItemForLineWrap(rightIndex));
             }
-            return i;
-        case 1:
-            if (pivot!=last) {
-                swap=_getItemForLineWrap(pivot);
-                _getItemForLineWrap(pivot)=_getItemForLineWrap(last);
-                _getItemForLineWrap(last)=swap;
+        }
+
+        if (leftIndex!=(lastIndex))
+        {
+            std::swap(_getItemForLineWrap(leftIndex), _getItemForLineWrap(lastIndex));
+        }
+    case 1:
+        if (pivot!=lastIndex)
+        {
+            std::swap(_getItemForLineWrap(pivot), _getItemForLineWrap(lastIndex));
+        }
+        while (leftIndex<rightIndex)
+        {
+            do
+            {
+                ++leftIndex;
             }
-            i=first-1; j=last;
-            while (i<j) {
-                do i++;
-                    while ((i!=j) && (_getItemForLineWrap(i)>_getItemForLineWrap(last)));
-                do j--;
-                    while ((i!=j) && (_getItemForLineWrap(j)<_getItemForLineWrap(last)));
-                if (i<j) {
-                    swap=_getItemForLineWrap(i);
-                    _getItemForLineWrap(i)=_getItemForLineWrap(j);
-                    _getItemForLineWrap(j)=swap;
-                }
+            while ((leftIndex!=rightIndex) && (_getItemForLineWrap(leftIndex) > _getItemForLineWrap(lastIndex)));
+
+            do
+            {
+                --rightIndex;
             }
-            if (i!=(last)) {
-                swap=_getItemForLineWrap(i);
-                _getItemForLineWrap(i)=_getItemForLineWrap(last);
-                _getItemForLineWrap(last)=swap;
+            while ((leftIndex!=rightIndex) && (_getItemForLineWrap(rightIndex) < _getItemForLineWrap(lastIndex)));
+
+            if (leftIndex<rightIndex)
+            {
+                std::swap(_getItemForLineWrap(leftIndex), _getItemForLineWrap(rightIndex));
             }
-            return i;
-        case 2:
-            if (pivot!=last) {
-                swap=_getItemForColumnWrap(pivot);
-                _getItemForColumnWrap(pivot)=_getItemForColumnWrap(last);
-                _getItemForColumnWrap(last)=swap;
+        }
+        if (leftIndex!=(lastIndex))
+        {
+            std::swap(_getItemForLineWrap(leftIndex), _getItemForLineWrap(lastIndex));
+        }
+    case 2:
+        if (pivot!=lastIndex)
+        {
+            std::swap(_getItemForLineWrap(pivot), _getItemForLineWrap(lastIndex));
+        }
+        while (leftIndex<rightIndex)
+        {
+            do
+            {
+                ++leftIndex;
             }
-            i=first-1; j=last;
-            while (i<j) {
-                do i++;
-                    while ((i!=j) && (_getItemForColumnWrap(i)<_getItemForColumnWrap(last)));
-                do j--;
-                    while ((i!=j) && (_getItemForColumnWrap(j)>_getItemForColumnWrap(last)));
-                if (i<j) {
-                    swap=_getItemForColumnWrap(i);
-                    _getItemForColumnWrap(i)=_getItemForColumnWrap(j);
-                    _getItemForColumnWrap(j)=swap;
-                }
+            while ((leftIndex!=rightIndex) && (_getItemForColumnWrap(leftIndex) < _getItemForColumnWrap(lastIndex)));
+
+            do
+            {
+                --rightIndex;
             }
-            if (i!=last) {
-                swap=_getItemForColumnWrap(i);
-                _getItemForColumnWrap(i)=_getItemForColumnWrap(last);
-                _getItemForColumnWrap(last)=swap;
+            while ((leftIndex!=rightIndex) && (_getItemForColumnWrap(rightIndex) > _getItemForColumnWrap(lastIndex)));
+
+            if (leftIndex<rightIndex)
+            {
+                std::swap(_getItemForLineWrap(leftIndex), _getItemForLineWrap(rightIndex));
             }
-            return i;
-        case 3:
-            if (pivot!=last) {
-                swap=_getItemForColumnWrap(pivot);
-                _getItemForColumnWrap(pivot)=_getItemForColumnWrap(last);
-                _getItemForColumnWrap(last)=swap;
+        }
+
+        if (leftIndex!=lastIndex)
+        {
+            std::swap(_getItemForLineWrap(leftIndex), _getItemForLineWrap(lastIndex));
+        }
+    case 3:
+        if (pivot!=lastIndex)
+        {
+            std::swap(_getItemForLineWrap(pivot), _getItemForLineWrap(lastIndex));
+        }
+        while (leftIndex<rightIndex)
+        {
+            do
+            {
+                ++leftIndex;
             }
-            i=first-1; j=last;
-            while (i<j) {
-                do i++;
-                    while ((i!=j) && (_getItemForColumnWrap(i)>_getItemForColumnWrap(last)));
-                do j--;
-                    while ((i!=j) && (_getItemForColumnWrap(j)<_getItemForColumnWrap(last)));
-                if (i<j) {
-                    swap=_getItemForColumnWrap(i);
-                    _getItemForColumnWrap(i)=_getItemForColumnWrap(j);
-                    _getItemForColumnWrap(j)=swap;
-                }
+            while ((leftIndex!=rightIndex) && (_getItemForColumnWrap(leftIndex) > _getItemForColumnWrap(lastIndex)));
+
+            do
+            {
+                --rightIndex;
             }
-            if (i!=last) {
-                swap=_getItemForColumnWrap(i);
-                _getItemForColumnWrap(i)=_getItemForColumnWrap(last);
-                _getItemForColumnWrap(last)=swap;
+            while ((leftIndex!=rightIndex) && (_getItemForColumnWrap(rightIndex) < _getItemForColumnWrap(lastIndex)));
+
+            if (leftIndex<rightIndex)
+            {
+                std::swap(_getItemForLineWrap(leftIndex), _getItemForLineWrap(rightIndex));
             }
-            return i;
+        }
+
+        if (leftIndex!=lastIndex)
+        {
+            std::swap(_getItemForLineWrap(leftIndex), _getItemForLineWrap(lastIndex));
+        }
     }
+
+    return leftIndex;
 }
 
 template<typename DataType>
