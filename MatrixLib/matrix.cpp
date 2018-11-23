@@ -2850,99 +2850,99 @@ void Matrix<DataType>::_handleException(int errorType, char* function)
 {
     using namespace std;
     try {
-        cerr<<"Exceptie in functia: "<<function<<endl;
+        cerr<<"Exception in function: "<<function<<endl;
         throw errorType;
     }
     catch (int k) {
         switch (k) {
-            case 1:
-                cerr<<"Eroarea 1: Dimensiunile matricei nu sunt egale."<<endl;
-                exit(1);
-            case 2:
-                cerr<<"Eroarea 2: Determinantul matricei este nul, matricea este neinversabila."<<endl;
-                exit(1);
-            case 3:
-                cerr<<"Eroarea 3: S-a introdus cel putin o dimensiune nula sau negativa a unei matrici."<<endl;
-                exit(1);
-            case 4:
-                cerr<<"Eroarea 4: Rand inexistent al matricei sursa."<<endl;
-                exit(1);
-            case 5:
-                cerr<<"Eroarea 5: Rand inexistent al matricei destinatie."<<endl;
-                exit(1);
-            case 6:
-                cerr<<"Eroarea 6: Cel putzin un rand inexistent al cel putzin unei matrici."<<endl;
-                exit(1);
-            case 7:
-                cerr<<"Eroarea 7: Coloana inexistenta a matricei sursa"<<endl;
-                exit(1);
-            case 8:
-                cerr<<"Eroarea 8: Coloana inexistenta a matricei destinatie"<<endl;
-                exit(1);
-            case 9:
-                cerr<<"Eroarea 9: Cel putzin o coloana inexistenta a cel putzin unei matrici"<<endl;
-                exit(1);
-            case 10:
-                cerr<<"Eroarea 10: Cele 2 matrici nu au aceleasi dimensiuni"<<endl;
-                exit(1);
-            case 11:
-                cerr<<"Eroarea 11: Numarul de coloane ale primei matrici este diferit de numarul de linii ale celei de-a doua matrici"<<endl;
-                exit(1);
-            case 12:
-                cerr<<"Eroarea 12: Coloanele celor 2 matrici nu au aceeasi lungime. Numarul de linii difera."<<endl;
-                exit(1);
-            case 13:
-                cerr<<"Eroarea 13: Liniile celor 2 matrici nu au aceeasi lungime. Numarul de coloane difera."<<endl;
-                exit(1);
-            case 14:
-                cerr<<"Eroarea 14: S-a incercat stergerea singurei coloane a matricei. Acest lucru nu este permis."<<endl;
-                exit(1);
-            case 15:
-                cerr<<"Eroarea 15: S-a incercat stergerea singurei linii a matricei. Acest lucru nu este permis."<<endl;
-                exit(1);
-            case 16:
-                cerr<<"Eroarea 16: Argument negativ al functiei. Se astepta un argument nenegativ."<<endl;
-                exit(1);
-            case 17:
-                cerr<<"Eroarea 17: linia sau coloana inserate in matrice nu sunt inserate pe o pozitie contigua"<<endl;
-                exit(1);
-            case 18:
-                cerr<<"Eroarea 18: S-a incercat accesarea unui element inexistent intr-una dintre matrici"<<endl;
-                exit(1);
-            case 19:
-                cerr<<"Eroarea 19: Din calcule rezulta o matrice cu un numar nul de linii"<<endl;
-                exit(1);
-            case 20:
-                cerr<<"Eroarea 20: Din calcule rezulta o matrice cu un numar nul de coloane"<<endl;
-                exit(1);
-            case 21:
-                cerr<<"Eroarea 21: Argument incorect. Instructiunea switch a functiei nu include aceasta valoare."<<endl;
-                exit(1);
-            case 22:
-                cerr<<"Eroarea 22: Pointer nul. Se cere un pointer nenul."<<endl;
-                exit(1);
-            case 23:
-                cerr<<"Eroarea 23: S-a incercat o impartire la 0. Acest lucru nu este permis."<<endl;
-                exit(1);
-            case 24:
-                cerr<<"Eroarea 24: Aceeasi variabila este folosita in 2 argumente ale functiei. Acest lucru nu este permis."<<endl;
-                exit(1);
-            case 25:
-                cerr<<"Eroarea 25: Matricea curenta a fost folosita in acelasi timp ca argument al functiei. Acest lucru nu este permis pentru aceasta functie."<<endl;
-                exit(1);
-            case 26:
-                cerr<<"Eroarea 26: sfarsit de fisier, operatie intrerupta"<<endl;
-                exit(1);
-            case 27:
-                cerr<<"Eroarea 27: linia citita din fisierul text contine mai putine elemente decat linia matricei curente"<<endl;
-                exit(1);
-            case 28:
-                cerr<<"Eroarea 28: nu s-a gasit nici un caracter pe randul curent al fisierului text."<<endl;
-                exit(1);
-            default:
-                cout<<"Eroare necunoscuta. Programul s-a incheiat"<<endl;
-                exit(1);
+        case 1:
+            cerr<<"The dimensions of the matrix are not equal."<<endl;
+            break;
+        case 2:
+            cerr<<"The matrix determinant is null. The inverse cannot be calculated."<<endl;
+            break;
+        case 3:
+            cerr<<"At least one null or negative matrix dimension has been entered."<<endl;
+            break;
+        case 4:
+            cerr<<"A referenced source matrix row does not exist"<<endl;
+            break;
+        case 5:
+            cerr<<"A referenced destination matrix row does not exist"<<endl;
+            break;
+        case 6:
+            cerr<<"For one or more matrixes at least one referenced row does not exist"<<endl;
+            break;
+        case 7:
+            cerr<<"A referenced column of the source matrix does not exist"<<endl;
+            break;
+        case 8:
+            cerr<<"A referenced column of the destination matrix does not exist"<<endl;
+            break;
+        case 9:
+            cerr<<"For one or more matrixes at least one referenced column does not exist"<<endl;
+            break;
+        case 10:
+            cerr<<"The two matrixes have different dimensions"<<endl;
+            break;
+        case 11:
+            cerr<<"The number of columns of the first matrix is different from the number of lines of the second one"<<endl;
+            break;
+        case 12:
+            cerr<<"The columns of the two matrixes have different lengths. The number of lines is different."<<endl;
+            break;
+        case 13:
+            cerr<<"The rows of the two matrixes have different lengths. The number of columns is different."<<endl;
+            break;
+        case 14:
+            cerr<<"Attempt to erase the only column of the matrix. This is not allowed."<<endl;
+            break;
+        case 15:
+            cerr<<"Attempt to erase the only row of the matrix. This is not allowed."<<endl;
+            break;
+        case 16:
+            cerr<<"The function received a negative argument. A non-negative arg is expected."<<endl;
+            break;
+        case 17:
+            cerr<<"Attempt to insert a line or a column on a non-contiguous position"<<endl;
+            break;
+        case 18:
+            cerr<<"Attempt to reference a matrix element with invalid index"<<endl;
+            break;
+        case 19:
+            cerr<<"The resulting matrix has 0 rows"<<endl;
+            break;
+        case 20:
+            cerr<<"The resulting matrix has 0 columns"<<endl;
+            break;
+        case 21:
+            cerr<<"Invalid numeric argument"<<endl;
+            break;
+        case 22:
+            cerr<<"Null pointer"<<endl;
+            break;
+        case 23:
+            cerr<<"Attempt to divide by 0"<<endl;
+            break;
+        case 24:
+            cerr<<"Same variable passed into two function arguments. This is not allowed."<<endl;
+            break;
+        case 25:
+            cerr<<"Current matrix (this) has been passed as argument into the function. This is not allowed for this method."<<endl;
+            break;
+        case 26:
+            cerr<<"End of file. Operation aborted."<<endl;
+            break;
+        case 27:
+            cerr<<"The row read from the file contains less items than the current matrix row"<<endl;
+            break;
+        case 28:
+            cerr<<"The current row of the text file is empty"<<endl;
+            break;
+        default:
+            cout<<"Unknown exception"<<endl;
         }
+        exit(1);
     }
 }
 
