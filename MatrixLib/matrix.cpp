@@ -375,6 +375,28 @@ void Matrix<DataType>::transformToZeroMatrix(int nrOfRows, int nrOfColumns)
 template <typename DataType>
 void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
 {
+    auto copyMatrix = [](Matrix<DataType>& dest, Matrix<DataType>& src, int beginRowIndex, int endRowIndex, int beginColumnIndex, int endColumnIndex)
+    {
+        for (int row{beginRowIndex}; row<endRowIndex; ++row)
+        {
+            for (int col{beginColumnIndex}; col<endColumnIndex; ++col)
+            {
+                dest.m_pBaseArrayPtr[row][col]=src.m_pBaseArrayPtr[row][col];
+            }
+        }
+    };
+
+    auto setZeroes = [](Matrix<DataType>& dest, int beginRowIndex, int endRowIndex, int beginColumnIndex, int endColumnIndex)
+    {
+        for (int row{beginRowIndex}; row<endRowIndex; ++row)
+        {
+            for (int col{beginColumnIndex}; col<endColumnIndex; ++col)
+            {
+                dest.m_pBaseArrayPtr[row][col] = 0;
+            }
+        }
+    };
+
     if (nrOfRows<=0 || nrOfColumns<=0)
     {
         _handleException(3, "template <typename DataType> void Matrix<DataType>::resize_m(int m, int n)");
@@ -395,77 +417,26 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
         _allocMemory(nrOfRows,nrOfColumns);
         matrix.resetCurrentPos();
 
-        if (nrOfRows<matrix.m_NrOfRows && nrOfColumns<matrix.m_NrOfColumns) {
-            for (int row{0}; row<nrOfRows; ++row)
-            {
-                for (int col{0}; col<nrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col]=matrix.m_pBaseArrayPtr[row][col];
-                }
-            }
+        if (nrOfRows<matrix.m_NrOfRows && nrOfColumns<matrix.m_NrOfColumns)
+        {
+            copyMatrix(*this, matrix, 0, nrOfRows, 0, nrOfColumns);
         }
-        else if (nrOfRows<=matrix.m_NrOfRows && nrOfColumns>=matrix.m_NrOfColumns) {
-            for (int row{0}; row<nrOfRows; ++row)
-            {
-                for (int col{0}; col<matrix.m_NrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col]=matrix.m_pBaseArrayPtr[row][col];
-                }
-            }
-            for (int row{0}; row<nrOfRows; ++row)
-            {
-                for (int col{matrix.m_NrOfColumns}; col<nrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col]=0;
-                }
-            }
+        else if (nrOfRows<=matrix.m_NrOfRows && nrOfColumns>=matrix.m_NrOfColumns)
+        {
+            copyMatrix(*this, matrix, 0, nrOfRows, 0, matrix.m_NrOfColumns);
+            setZeroes(*this, 0, nrOfRows, matrix.m_NrOfColumns, nrOfColumns);
         }
-        else if ((nrOfRows>=matrix.m_NrOfRows) && (nrOfColumns<=matrix.m_NrOfColumns)) {
-            for (int row{0}; row<matrix.m_NrOfRows; ++row)
-            {
-                for (int col{0}; col<nrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col]=matrix.m_pBaseArrayPtr[row][col];
-                }
-            }
-            for (int row{matrix.m_NrOfRows}; row<nrOfRows; ++row)
-            {
-                for (int col{0}; col<nrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col]=0;
-                }
-            }
+        else if ((nrOfRows>=matrix.m_NrOfRows) && (nrOfColumns<=matrix.m_NrOfColumns))
+        {
+            copyMatrix(*this, matrix, 0, matrix.m_NrOfRows, 0, nrOfColumns);
+            setZeroes(*this, matrix.m_NrOfRows, nrOfRows, 0, nrOfColumns);
         }
         else
         {
-            for (int row{0}; row<matrix.m_NrOfRows; ++row)
-            {
-                for (int col{0}; col<matrix.m_NrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col]=matrix.m_pBaseArrayPtr[row][col];
-                }
-            }
-            for (int row{0}; row<nrOfRows; row++)
-            {
-                for (int col{matrix.m_NrOfColumns}; col<nrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = 0;
-                }
-            }
-            for (int row{matrix.m_NrOfRows}; row<nrOfRows; ++row)
-            {
-                for (int col{0}; col<nrOfColumns; col++)
-                {
-                    m_pBaseArrayPtr[row][col] = 0;
-                }
-            }
-            for (int row{matrix.m_NrOfRows}; row<nrOfRows; ++row)
-            {
-                for (int col{matrix.m_NrOfColumns}; col<nrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = 0;
-                }
-            }
+            copyMatrix(*this, matrix, 0, matrix.m_NrOfRows, 0, matrix.m_NrOfColumns);
+            setZeroes(*this, 0, nrOfRows, matrix.m_NrOfColumns, nrOfColumns);
+            setZeroes(*this, matrix.m_NrOfRows, nrOfRows, 0, nrOfColumns);
+            setZeroes(*this, matrix.m_NrOfRows, nrOfRows, matrix.m_NrOfColumns, nrOfColumns);
         }
     }
 }
