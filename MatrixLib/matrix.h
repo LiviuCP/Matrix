@@ -4,17 +4,19 @@
 #include <strstream>
 #include <cstdlib>
 #include <cmath>
-#include <string> 
+#include <string>
+#include <initializer_list>
 
 template <typename DataType>
 class Matrix
 {
 public: 
     Matrix();
-    Matrix(int nrOfRows, int nrOfColumns);
-    Matrix(int nrOfRowsColumns);
-    Matrix(DataType** matrixPtr, int nrOfRows, int nrOfColumns);
-    Matrix(DataType* matrixPtr, int nrOfRows, int nrOfColumns);
+    Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
+    Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
+    Matrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType);
+    Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr);
+    Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr);
     Matrix(int nrOfRows, int nrOfColumns, std::istream &in);
     Matrix(const Matrix<DataType>& matrix);
     ~Matrix();

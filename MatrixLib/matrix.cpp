@@ -7,21 +7,19 @@ template<typename DataType> int Matrix<DataType>::s_FilePosY=0;
 
 template <typename DataType>
 Matrix<DataType>::Matrix()
-    : m_pBaseArrayPtr{new DataType*[1]}
-    , m_NrOfRows{1}
-    , m_NrOfColumns{1}
+    : m_pBaseArrayPtr{nullptr}
+    , m_NrOfRows{0}
+    , m_NrOfColumns{0}
+    , m_PosX{-1}
+    , m_PosY{-1}
     , m_MatrixPrintMode{0}
     , m_MatrixEntryMode{0}
     , m_WrapMatrixByRow{true}
 {
-    m_pBaseArrayPtr[0] = new DataType;
-    m_pBaseArrayPtr[0][0] = 0;
-
-    resetCurrentPos();
 }
 
 template <typename DataType>
-Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns)
+Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType)
     : m_MatrixPrintMode{0}
     , m_MatrixEntryMode{0}
     , m_WrapMatrixByRow{true}
@@ -30,71 +28,109 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns)
     {
         _handleException(3, "template <typename DataType> Matrix<DataType>::Matrix(int m, int n)");
     }
-    else
+
+    _allocMemory(nrOfRows,nrOfColumns);
+
+    for (int row{0}; row < nrOfRows; ++row)
     {
-        _allocMemory(nrOfRows,nrOfColumns);
-        setItemsToZero();
+        for (int col{0}; col < nrOfColumns; ++col)
+        {
+            m_pBaseArrayPtr[row][col] = dataType;
+        }
     }
 }
 
-template <typename DataType>
-Matrix<DataType>::Matrix(int nrOfRowsColumns)
-    : Matrix{nrOfRowsColumns, nrOfRowsColumns}
-{
-}
-
-template <typename DataType>
-Matrix<DataType>::Matrix(DataType** matrixPtr, int nrOfRows, int nrOfColumns)
+template<typename DataType>
+Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList)
     : m_MatrixPrintMode{0}
     , m_MatrixEntryMode{0}
     , m_WrapMatrixByRow{true}
 {
-    if (matrixPtr==nullptr)
+    if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
-        _handleException(22,"template <typename DataType> Matrix<DataType>::Matrix(DataType** m, int ln, int cl)");
+        _handleException(3, "template<typename DataType>Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeList)");
     }
-    else if (nrOfRows <= 0 || nrOfColumns <= 0)
-    {
-        _handleException(3,"template <typename DataType> Matrix<DataType>::Matrix(DataType** m, int ln, int cl)");
-    }
-    else
-    {
-        _allocMemory(nrOfRows, nrOfColumns);
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+    if (nrOfRows * nrOfColumns < dataTypeInitList.size())
+    {
+        _handleException(0, "template<typename DataType>Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeList)");
+    }
+
+    _allocMemory(nrOfRows, nrOfColumns);
+
+    int initListIndex{0};
+    for (int row{0}; row < nrOfRows; ++row)
+    {
+        for (int col{0}; col < nrOfColumns; ++col)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col]=matrixPtr[row][col];
-            }
+            m_pBaseArrayPtr[row][col] = dataTypeInitList[initListIndex];
+            ++initListIndex;
         }
     }
 }
 
 template <typename DataType>
-Matrix<DataType>::Matrix(DataType* matrixPtr, int nrOfRows, int nrOfColumns)
+Matrix<DataType>::Matrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType)
+    : Matrix<DataType>{nrOfRowsColumns, nrOfRowsColumns, dataType}
+{
+    for (int diag{0}; diag<m_NrOfRows; ++diag)
+    {
+        m_pBaseArrayPtr[diag][diag] = diagDataType;
+    }
+}
+
+// for converting static matrixes from legacy code to object (dynamic) matrixes only (user is responsible to ensure the static matrix is not read "out-of-bounds")
+template <typename DataType>
+Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr)
     : m_MatrixPrintMode{0}
     , m_MatrixEntryMode{0}
     , m_WrapMatrixByRow{true}
 {
-    if (matrixPtr==0)
+    if (!matrixPtr)
+    {
+        _handleException(22,"template <typename DataType> Matrix<DataType>::Matrix(DataType** m, int ln, int cl)");
+    }
+
+    if (nrOfRows <= 0 || nrOfColumns <= 0)
+    {
+        _handleException(3,"template <typename DataType> Matrix<DataType>::Matrix(DataType** m, int ln, int cl)");
+    }
+
+    _allocMemory(nrOfRows, nrOfColumns);
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            m_pBaseArrayPtr[row][col] = matrixPtr[row][col];
+        }
+    }
+}
+
+// for converting one-dimensional arrays from legacy code to bidimensional dynamic matrixes only (user is responsible to ensure the static array is not read "out-of-bounds")
+template <typename DataType>
+Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr)
+    : m_MatrixPrintMode{0}
+    , m_MatrixEntryMode{0}
+    , m_WrapMatrixByRow{true}
+{
+    if (!matrixPtr)
     {
         _handleException(22,"template <typename DataType> Matrix<DataType>::Matrix(DataType* m, int ln, int cl)");
     }
-    else if ((nrOfRows<=0) || (nrOfColumns<=0))
+
+    if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
         _handleException(3,"template <typename DataType> Matrix<DataType>::Matrix(DataType* m, int ln, int cl)");
     }
-    else
-    {
-        _allocMemory(nrOfRows, nrOfColumns);
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+    _allocMemory(nrOfRows, nrOfColumns);
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col]=*(matrixPtr++);
-            }
+            m_pBaseArrayPtr[row][col] = *(matrixPtr++);
         }
     }
 }
@@ -105,25 +141,23 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::istream &in)
     , m_MatrixEntryMode{0}
     , m_WrapMatrixByRow{true}
 {
-    if ((nrOfRows<=0) || (nrOfColumns<=0))
+    if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
         _handleException(3,"template <typename DataType> Matrix<DataType>::Matrix(DataType* m, int ln, int cl)");
     }
-    else
+
+    _allocMemory(nrOfRows,nrOfColumns);
+    _readDiscard(in);
+
+    for (int row{0}; row<m_NrOfRows; ++row)
     {
-        _allocMemory(nrOfRows,nrOfColumns);
-        _readDiscard(in);
-
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            _readTextLine(in);
-            ++m_PosX;
-            ++s_FilePosX; // should this be reset to 0 after matrix is initialized?
-        }
-
-        // back to position 0 as when set by _allocMemory()
-        m_PosX = 0;
+        _readTextLine(in);
+        ++m_PosX;
+        ++s_FilePosX; // should this be reset to 0 after matrix is initialized?
     }
+
+    // back to position 0 as when set by _allocMemory()
+    m_PosX = 0;
 }
 
 template <typename DataType>
@@ -138,7 +172,7 @@ Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
     {
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
-            m_pBaseArrayPtr[row][col]=matrix.m_pBaseArrayPtr[row][col];
+            m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
         }
     }
 
@@ -1330,7 +1364,8 @@ Matrix<DataType> Matrix<DataType>::operator+ (const Matrix<DataType>& matrix)
         _handleException(10, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator+ (const Matrix<DataType> &m)");
     }
 
-    Matrix<DataType> result{m_NrOfRows,m_NrOfColumns};
+    Matrix<DataType> result{};
+    result.resizeNoInit(m_NrOfRows, m_NrOfColumns);
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
@@ -1351,13 +1386,14 @@ Matrix<DataType> Matrix<DataType>::operator- (const Matrix<DataType>& matrix)
         _handleException(10, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator- (const Matrix<DataType> &m)");
     }
 
-    Matrix<DataType> result{m_NrOfRows,m_NrOfColumns};
+    Matrix<DataType> result{};
+    result.resizeNoInit(m_NrOfRows, m_NrOfColumns);
 
     for (int i{0}; i<m_NrOfRows; ++i)
     {
         for (int j{0}; j<m_NrOfColumns; ++j)
         {
-            result.m_pBaseArrayPtr[i][j]=m_pBaseArrayPtr[i][j]-matrix.m_pBaseArrayPtr[i][j];
+            result.m_pBaseArrayPtr[i][j] = m_pBaseArrayPtr[i][j] - matrix.m_pBaseArrayPtr[i][j];
         }
     }
 
@@ -1384,7 +1420,8 @@ Matrix<DataType> Matrix<DataType>::operator* (const Matrix<DataType>& matrix)
         _handleException(11, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator* (const Matrix<DataType> &m)");
     }
 
-    Matrix<DataType> result{m_NrOfRows,matrix.m_NrOfColumns};
+    Matrix<DataType> result{};
+    result.resize(m_NrOfRows,matrix.m_NrOfColumns);
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
@@ -2826,6 +2863,9 @@ void Matrix<DataType>::_handleException(int errorType, char* function)
     }
     catch (int k) {
         switch (k) {
+        case 0:
+            cerr<<"Not enough elements to initialize the matrix"<<endl;
+            break;
         case 1:
             cerr<<"The dimensions of the matrix are not equal."<<endl;
             break;
