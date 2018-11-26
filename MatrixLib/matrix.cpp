@@ -587,90 +587,6 @@ void Matrix<DataType>::swapRowColumn(int rowNr, Matrix<DataType>& matrix, int ma
     }
 }
 
-template <typename DataType>
-void Matrix<DataType>::swapItem(int firstRowNr, int firstColumnNr, int secondRowNr, int secondColumnNr)
-{
-    if (firstRowNr<0 || firstColumnNr<0 || secondRowNr<0 || secondColumnNr<0)
-    {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, int r2, int c2)");
-    }
-    else if (firstRowNr>=m_NrOfRows || firstColumnNr>=m_NrOfColumns || secondRowNr>=m_NrOfRows || secondColumnNr>=m_NrOfColumns)
-    {
-        _handleException(18, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, int r2, int c2)");
-    }
-    else
-    {
-        std::swap(m_pBaseArrayPtr[firstRowNr][firstColumnNr], m_pBaseArrayPtr[secondRowNr][secondColumnNr]);
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::swapRow(int firstRowNr, int secondRowNr)
-{
-    if (firstRowNr<0 || secondRowNr<0)
-    {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, int r2)");
-    }
-    else if ((firstRowNr>=m_NrOfRows) || (secondRowNr>=m_NrOfRows))
-    {
-        _handleException(6, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, int r2)");
-    }
-    else
-    {
-        std::swap(m_pBaseArrayPtr[firstRowNr], m_pBaseArrayPtr[secondRowNr]);
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::swapColumn(int firstColumnNr, int secondColumnNr)
-{
-    if (firstColumnNr<0 || secondColumnNr<0)
-    {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, int c2)");
-    }
-    else if (firstColumnNr>=m_NrOfColumns || secondColumnNr>=m_NrOfColumns)
-    {
-        _handleException(9, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, int c2)");
-    }
-    else
-    {
-        for(int row{0}; row<m_NrOfRows; ++row)
-        {
-            // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
-            DataType swap{m_pBaseArrayPtr[row][firstColumnNr]};
-            m_pBaseArrayPtr[row][firstColumnNr] = m_pBaseArrayPtr[row][secondColumnNr];
-            m_pBaseArrayPtr[row][secondColumnNr] = swap;
-        }
-    }
-}
-
-template<typename DataType>
-void Matrix<DataType>::swapRowColumn(int rowColumnNr)
-{
-    if (m_NrOfRows!=m_NrOfColumns)
-    {
-        _handleException(1,"template<typename DataType> void Matrix<DataType>::swap_rc(int rc1)");
-    }
-    else if (rowColumnNr<0)
-    {
-        _handleException(16,"template<typename DataType> void Matrix<DataType>::swap_rc(int rc1)");
-    }
-    else if (rowColumnNr>=m_NrOfRows)
-    {
-        _handleException(18,"template<typename DataType> void Matrix<DataType>::swap_rc(int rc1)");
-    }
-    else
-    {
-        for (int col{0}; col<m_NrOfRows; col++)
-        {
-            // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
-            DataType swap{m_pBaseArrayPtr[rowColumnNr][col]};
-            m_pBaseArrayPtr[rowColumnNr][col] = m_pBaseArrayPtr[col][rowColumnNr];
-            m_pBaseArrayPtr[col][rowColumnNr] = swap;
-        }
-    }
-}
-
 template<typename DataType>
 void Matrix<DataType>::swapWithMatrix(Matrix<DataType> &matrix)
 {
@@ -2590,7 +2506,7 @@ int Matrix<DataType>:: _createSortingPartition(int firstIndex, int lastIndex, in
     case 0:
         if (pivot!=lastIndex)
         {
-            swapItem(rowColumnNr, pivot, rowColumnNr, lastIndex);
+            swapItem(rowColumnNr, pivot, *this, rowColumnNr, lastIndex);
         }
 
         while (leftIndex<rightIndex)
@@ -2609,18 +2525,18 @@ int Matrix<DataType>:: _createSortingPartition(int firstIndex, int lastIndex, in
 
             if (leftIndex<rightIndex)
             {
-                swapItem(rowColumnNr, leftIndex, rowColumnNr, rightIndex);
+                swapItem(rowColumnNr, leftIndex, *this, rowColumnNr, rightIndex);
             }
         }
 
         if (leftIndex!=lastIndex)
         {
-            swapItem(rowColumnNr, leftIndex, rowColumnNr, lastIndex);
+            swapItem(rowColumnNr, leftIndex, *this, rowColumnNr, lastIndex);
         }
     case 1:
         if (pivot!=lastIndex)
         {
-            swapItem(rowColumnNr, pivot, rowColumnNr, lastIndex);
+            swapItem(rowColumnNr, pivot, *this, rowColumnNr, lastIndex);
         }
 
         while (leftIndex<rightIndex)
@@ -2639,18 +2555,18 @@ int Matrix<DataType>:: _createSortingPartition(int firstIndex, int lastIndex, in
 
             if (leftIndex<rightIndex)
             {
-                swapItem(rowColumnNr, leftIndex, rowColumnNr, rightIndex);
+                swapItem(rowColumnNr, leftIndex, *this, rowColumnNr, rightIndex);
             }
         }
 
         if (leftIndex!=lastIndex)
         {
-            swapItem(rowColumnNr, leftIndex, rowColumnNr, lastIndex);
+            swapItem(rowColumnNr, leftIndex, *this, rowColumnNr, lastIndex);
         }
     case 2:
         if (pivot!=lastIndex)
         {
-            swapItem(pivot, rowColumnNr, lastIndex, rowColumnNr);
+            swapItem(pivot, rowColumnNr, *this, lastIndex, rowColumnNr);
         }
 
         while (leftIndex<rightIndex)
@@ -2669,18 +2585,18 @@ int Matrix<DataType>:: _createSortingPartition(int firstIndex, int lastIndex, in
 
             if (leftIndex<rightIndex)
             {
-                swapItem(leftIndex, rowColumnNr, rightIndex, rowColumnNr);
+                swapItem(leftIndex, rowColumnNr, *this, rightIndex, rowColumnNr);
             }
         }
 
         if (leftIndex!=lastIndex)
         {
-            swapItem(leftIndex, rowColumnNr, lastIndex, rowColumnNr);
+            swapItem(leftIndex, rowColumnNr, *this, lastIndex, rowColumnNr);
         }
     case 3:
         if (pivot!=lastIndex)
         {
-            swapItem(pivot, rowColumnNr, lastIndex, rowColumnNr);
+            swapItem(pivot, rowColumnNr, *this, lastIndex, rowColumnNr);
         }
 
         while (leftIndex<rightIndex)
@@ -2699,13 +2615,13 @@ int Matrix<DataType>:: _createSortingPartition(int firstIndex, int lastIndex, in
 
             if (leftIndex<rightIndex)
             {
-                swapItem(leftIndex, rowColumnNr, rightIndex, rowColumnNr);
+                swapItem(leftIndex, rowColumnNr, *this, rightIndex, rowColumnNr);
             }
         }
 
         if (leftIndex!=lastIndex)
         {
-            swapItem(leftIndex, rowColumnNr, lastIndex, rowColumnNr);
+            swapItem(leftIndex, rowColumnNr, *this, lastIndex, rowColumnNr);
         }
     }
 

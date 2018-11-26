@@ -58,10 +58,6 @@ public:
     void swapRow(int rowNr, Matrix<DataType>& matrix, int matrixRowNr);
     void swapColumn(int columnNr, Matrix<DataType>& matrix, int matrixColumnNr);
     void swapRowColumn(int rowNr, Matrix<DataType>& matrix, int matrixColumnNr);
-    void swapItem(int firstRowNr, int firstColumnNr, int secondRowNr, int secondColumnNr);
-    void swapRow(int firstRowNr, int secondRowNr);
-    void swapColumn(int firstColumnNr, int secondColumnNr);
-    void swapRowColumn(int rowColumnNr);
     void swapWithMatrix(Matrix<DataType> &m);
 
     void sortLineColumn(int lineColumnNr, int mode);
