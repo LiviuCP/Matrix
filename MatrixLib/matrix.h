@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream> 
-#include <strstream>
 #include <cstdlib>
 #include <cmath>
 #include <string>
@@ -132,8 +131,6 @@ private:
     int _createSortingPartition(int first, int last, int pivot, int mode);
     DataType& _getItemForLineWrap(int oneDimensionalIndex);
     DataType& _getItemForColumnWrap(int oneDimensionalIndex);
-
-    static void _handleException(int errorType, char* function);
 
     Matrix<DataType> _power(int exp);
     Matrix<DataType> _multiply(const DataType& scalar);

@@ -29,7 +29,8 @@ SOURCES += \
 
 HEADERS += \
         matrix.h \
-        matrixlib_global.h 
+        matrixlib_global.h \
+        matrix_exceptions.h
 
 unix {
     target.path = /usr/lib

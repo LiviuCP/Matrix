@@ -1,5 +1,7 @@
 #include <vector>
+#include <exception>
 
+#include "matrix_exceptions.h"
 #include "matrix.h"
 
 template<typename DataType> int Matrix<DataType>::s_FilePosX=0;
@@ -26,7 +28,7 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType
 {
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
-        _handleException(3, "template <typename DataType> Matrix<DataType>::Matrix(int m, int n)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
     _allocMemory(nrOfRows,nrOfColumns);
@@ -48,12 +50,12 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<Da
 {
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
-        _handleException(3, "template<typename DataType>Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeList)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
     if (nrOfRows * nrOfColumns < dataTypeInitList.size())
     {
-        _handleException(0, "template<typename DataType>Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeList)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INSUFFICIENT_ELEMENTS_FOR_INIT]};
     }
 
     _allocMemory(nrOfRows, nrOfColumns);
@@ -88,12 +90,12 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr)
 {
     if (!matrixPtr)
     {
-        _handleException(22,"template <typename DataType> Matrix<DataType>::Matrix(DataType** m, int ln, int cl)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_PTR]};
     }
 
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
-        _handleException(3,"template <typename DataType> Matrix<DataType>::Matrix(DataType** m, int ln, int cl)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
     _allocMemory(nrOfRows, nrOfColumns);
@@ -116,12 +118,12 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr)
 {
     if (!matrixPtr)
     {
-        _handleException(22,"template <typename DataType> Matrix<DataType>::Matrix(DataType* m, int ln, int cl)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_PTR]};
     }
 
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
-        _handleException(3,"template <typename DataType> Matrix<DataType>::Matrix(DataType* m, int ln, int cl)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
     _allocMemory(nrOfRows, nrOfColumns);
@@ -143,7 +145,7 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::istream &in)
 {
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
-        _handleException(3,"template <typename DataType> Matrix<DataType>::Matrix(DataType* m, int ln, int cl)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
     _allocMemory(nrOfRows,nrOfColumns);
@@ -191,11 +193,11 @@ DataType& Matrix<DataType>:: get(int i,int j)
 {
     if (i<0 || j<0)
     {
-        _handleException(16, "template<typename DataType> DataType& Matrix<DataType>::get(int i,int j)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
     if (i>=m_NrOfRows || j>=m_NrOfColumns)
     {
-        _handleException(18, "template<typename DataType> DataType& Matrix<DataType>::get(int i,int j)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
     return m_pBaseArrayPtr[i][j];
 }
@@ -211,7 +213,7 @@ DataType* Matrix<DataType>::getp(int i)
 {
     if (i<0)
     {
-        _handleException(16, "template<typename dataType> dataType* Matrix<dataType>::getp(int i)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
     return m_pBaseArrayPtr[i%m_NrOfRows];
 }
@@ -363,7 +365,7 @@ void Matrix<DataType>::resizeNoInit(int nrOfRows, int nrOfColumns)
 {
     if (nrOfRows<=0 || nrOfColumns<=0)
     {
-        _handleException(3,"template <typename dataType> void Matrix<dataType>::resize(int m, int n)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
     else
     {
@@ -377,7 +379,7 @@ void Matrix<DataType>::transformToUnitMatrix(int nrOfRowsColumns)
 {
     if (nrOfRowsColumns<=0)
     {
-        _handleException(3,"template <typename DataType> void Matrix<DataType>::unit(int m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
     else
     {
@@ -396,7 +398,7 @@ void Matrix<DataType>::transformToZeroMatrix(int nrOfRows, int nrOfColumns)
 {
     if (nrOfRows<=0 || nrOfColumns<=0)
     {
-        _handleException(3, "template <typename DataType> void Matrix<DataType>::null_matrix(int m, int n)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
     else
     {
@@ -433,7 +435,7 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
 
     if (nrOfRows<=0 || nrOfColumns<=0)
     {
-        _handleException(3, "template <typename DataType> void Matrix<DataType>::resize_m(int m, int n)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
     else if (nrOfRows!=m_NrOfRows || nrOfColumns!=m_NrOfColumns)
     {
@@ -478,19 +480,17 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
 template <typename DataType>
 void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix& matrix, int matrixRowNr, int matrixColumnNr)
 {
-    if (matrix.m_pBaseArrayPtr == m_pBaseArrayPtr)
+    if (rowNr<0 || columnNr<0 || matrixRowNr<0 || matrixColumnNr<0)
     {
-        _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, Matrix &m2, int r2, int c2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
-    else if ((rowNr<0) || (columnNr<0) || (matrixRowNr<0) || (matrixColumnNr<0))
+
+    if (rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns || matrixRowNr>=matrix.m_NrOfRows || matrixColumnNr>=matrix.m_NrOfColumns)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, Matrix &m2, int r2, int c2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
-    else if ((rowNr>=m_NrOfRows) || (columnNr>=m_NrOfColumns) || (matrixRowNr>=matrix.m_NrOfRows) || (matrixColumnNr>=matrix.m_NrOfColumns))
-    {
-        _handleException(18, "template <typename DataType> void Matrix<DataType>::swap_i(int r1, int c1, Matrix &m2, int r2, int c2)");
-    }
-    else
+
+    if (rowNr!=matrixRowNr || columnNr!=matrixColumnNr || &matrix != this)
     {
         std::swap(m_pBaseArrayPtr[rowNr][columnNr], m_pBaseArrayPtr[matrixRowNr][matrixColumnNr]);
     }
@@ -499,23 +499,22 @@ void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix& matrix, int mat
 template <typename DataType>
 void Matrix<DataType>::swapRow(int rowNr, Matrix& matrix, int matrixRowNr)
 {
-    if (matrix.m_pBaseArrayPtr==m_pBaseArrayPtr)
+    if (rowNr<0 || matrixRowNr<0)
     {
-        _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
-    else if ((rowNr<0) || (matrixRowNr<0))
+
+    if (rowNr>=m_NrOfRows || matrixRowNr>=matrix.m_NrOfRows)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
     }
-    else if (rowNr>=m_NrOfRows || matrixRowNr>=matrix.m_NrOfRows)
+
+    if (m_NrOfColumns!=matrix.m_NrOfColumns)
     {
-        _handleException(6, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_ROW_LENGTH]};
     }
-    else if (m_NrOfColumns!=matrix.m_NrOfColumns)
-    {
-        _handleException(13, "template <typename DataType> void Matrix<DataType>::swap_r(int r1, Matrix &m2, int r2)");
-    }
-    else
+
+    if (rowNr!=matrixRowNr || &matrix!=this)
     {
         std::swap(m_pBaseArrayPtr[rowNr], matrix.m_pBaseArrayPtr[matrixRowNr]);
     }
@@ -524,23 +523,22 @@ void Matrix<DataType>::swapRow(int rowNr, Matrix& matrix, int matrixRowNr)
 template <typename DataType>
 void Matrix<DataType>::swapColumn(int columnNr, Matrix& matrix, int matrixColumnNr)
 {
-    if (matrix.m_pBaseArrayPtr==m_pBaseArrayPtr)
+    if (columnNr<0 || matrixColumnNr<0)
     {
-        _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
-    else if ((columnNr<0) || (matrixColumnNr<0))
+
+    if (columnNr>=m_NrOfColumns || matrixColumnNr>=matrix.m_NrOfColumns)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
     }
-    else if ((columnNr>=m_NrOfColumns) || (matrixColumnNr>=matrix.m_NrOfColumns))
+
+    if (m_NrOfRows!=matrix.m_NrOfRows)
     {
-        _handleException(9, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
     }
-    else if (m_NrOfRows!=matrix.m_NrOfRows)
-    {
-        _handleException(12, "template <typename DataType> void Matrix<DataType>::swap_c(int c1, Matrix &m2, int c2)");
-    }
-    else
+
+    if (columnNr!=matrixColumnNr || &matrix!=this)
     {
         for(int row{0}; row<m_NrOfRows; ++row)
         {
@@ -557,33 +555,30 @@ void Matrix<DataType>::swapRowColumn(int rowNr, Matrix<DataType>& matrix, int ma
 {
     if (rowNr<0 || matrixColumnNr<0)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
-    else if (m_NrOfColumns!=matrix.m_NrOfRows)
+
+    if (m_NrOfColumns!=matrix.m_NrOfRows)
     {
-        _handleException(11, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_ROWS_UNEQUAL_COLUMNS]};
     }
-    else if (rowNr>=m_NrOfRows)
+
+    if (rowNr>=m_NrOfRows)
     {
-        _handleException(6, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
     }
-    else if (matrixColumnNr>=matrix.m_NrOfColumns)
+
+    if (matrixColumnNr>=matrix.m_NrOfColumns)
     {
-        _handleException(9, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
     }
-    else if (m_pBaseArrayPtr==matrix.m_pBaseArrayPtr)
+
+    for (int col{0}; col<m_NrOfColumns; ++col)
     {
-        _handleException(25, "template <typename DataType> void Matrix<DataType>::swap_rc(int r1, Matrix<DataType> &m2, int c2)");
-    }
-    else
-    {
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
-            DataType swap{m_pBaseArrayPtr[rowNr][col]};
-            m_pBaseArrayPtr[rowNr][col] = matrix.m_pBaseArrayPtr[col][matrixColumnNr];
-            matrix.m_pBaseArrayPtr[col][matrixColumnNr] = swap;
-        }
+        // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
+        DataType swap{m_pBaseArrayPtr[rowNr][col]};
+        m_pBaseArrayPtr[rowNr][col] = matrix.m_pBaseArrayPtr[col][matrixColumnNr];
+        matrix.m_pBaseArrayPtr[col][matrixColumnNr] = swap;
     }
 }
 
@@ -607,33 +602,33 @@ void Matrix<DataType>:: sortLineColumn(int lineColumnNr, int mode)
     case 0:
         if (lineColumnNr<0 || lineColumnNr>m_NrOfRows-1)
         {
-            _handleException(4, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
         }
         _quickSort(0, m_NrOfColumns-1, 0, lineColumnNr);
         break;
     case 1:
         if (lineColumnNr<0 || lineColumnNr>m_NrOfRows-1)
         {
-            _handleException(4, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
         }
         _quickSort(0, m_NrOfColumns-1, 1, lineColumnNr);
         break;
     case 2:
         if (lineColumnNr<0 || lineColumnNr>m_NrOfColumns-1)
         {
-            _handleException(7, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
         }
         _quickSort(0, m_NrOfRows-1, 2, lineColumnNr);
         break;
     case 3:
         if (lineColumnNr<0 || lineColumnNr>m_NrOfColumns-1)
         {
-            _handleException(7, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
         }
         _quickSort(0, m_NrOfRows-1, 3, lineColumnNr);
         break;
     default:
-        _handleException(21, "template <typename DataType> void Matrix<DataType>:: sort_lc(int pos, int mode)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_NUMERIC_ARG]};
     }
 }
 
@@ -653,7 +648,7 @@ void Matrix<DataType>::sortAllElements(int mode)
     case 3:
         _quickSort(0, m_NrOfRows*m_NrOfColumns-1, 3);
     default:
-        _handleException(21, "template <typename DataType> void Matrix<DataType>::sort_matr(int mode)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_NUMERIC_ARG]};
     }
 }
 
@@ -662,12 +657,12 @@ void Matrix<DataType>::insertRow (int rowNr)
 {
     if (rowNr<0)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::insert_row (int m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     if (rowNr>m_NrOfRows)
     {
-        _handleException(17, "template <typename DataType> void Matrix<DataType>::insert_row (int m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INSERT_ROW_NONCONTIGUOUS]};
     }
 
     DataType** insert_ptr=new DataType*[m_NrOfRows+1];
@@ -699,17 +694,17 @@ void Matrix<DataType>::deleteRow (int rowNr)
 {
     if (m_NrOfRows==1)
     {
-        _handleException(15, "template <typename DataType> void Matrix<DataType>::delete_row (int m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ERASE_THE_ONLY_ROW]};
     }
 
     if (rowNr>=m_NrOfRows)
     {
-        _handleException(4, "template <typename DataType> void Matrix<DataType>::delete_row (int m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
     }
 
     if (rowNr<0)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::delete_row (int m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     DataType** insert_ptr{new DataType*[m_NrOfRows-1]};
@@ -736,12 +731,12 @@ void Matrix<DataType>::insertColumn(int columnNr)
 {
     if (columnNr<0)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::insert_col(int n)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     if (columnNr>m_NrOfColumns)
     {
-        _handleException(17, "template <typename DataType> void Matrix<DataType>::insert_col(int n)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INSERT_COLUMN_NONCONTIGUOUS]};
     }
 
     DataType** insert_ptr{new DataType*[m_NrOfRows]};
@@ -787,17 +782,17 @@ void Matrix<DataType>::deleteColumn(int columnNr)
 {
     if (m_NrOfColumns==1)
     {
-        _handleException(14, "template <typename DataType> void Matrix<DataType>::delete_col(int n)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ERASE_THE_ONLY_COLUMN]};
     }
 
     if (columnNr<0)
     {
-        _handleException (16, "template <typename DataType> void Matrix<DataType>::delete_col(int n)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     if (columnNr>=m_NrOfColumns)
     {
-        _handleException (7, "template <typename DataType> void Matrix<DataType>::delete_col(int n)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
     }
 
     DataType** insert_ptr{new DataType*[m_NrOfRows]};
@@ -838,24 +833,24 @@ void Matrix<DataType>::addRowToColumn(int rowNr, const DataType& coeff, Matrix& 
 {
     if (rowNr<0 || srcColumnNr<0 || destColumnNr<0)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     if (rowNr>=m_NrOfRows)
     {
-        _handleException(4, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
     }
 
     if (srcColumnNr>=src.m_NrOfColumns)
     {
-        _handleException(7, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
     }
 
     if (dest.m_WrapMatrixByRow)
     {
         if (destColumnNr>=dest.m_NrOfRows)
         {
-            _handleException(5, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_ROW_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
@@ -867,7 +862,7 @@ void Matrix<DataType>::addRowToColumn(int rowNr, const DataType& coeff, Matrix& 
     {
         if (destColumnNr>=dest.m_NrOfColumns)
         {
-            _handleException(8, "template <typename DataType> void Matrix<DataType>::add_rc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_COLUMN_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
@@ -882,24 +877,24 @@ void Matrix<DataType>::addColumnToRow(int columnNr, const DataType& coeff, Matri
 {
     if (columnNr<0 || srcRowNr<0 || destRowNr<0)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     if (columnNr>=m_NrOfColumns)
     {
-        _handleException(7, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
     }
 
     if (srcRowNr>=src.m_NrOfRows)
     {
-        _handleException(4, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
     }
 
     if (dest.m_WrapMatrixByRow)
     {
         if (destRowNr>=dest.m_NrOfRows)
         {
-            _handleException(5, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_ROW_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
@@ -911,7 +906,7 @@ void Matrix<DataType>::addColumnToRow(int columnNr, const DataType& coeff, Matri
     {
         if (destRowNr>=dest.m_NrOfColumns)
         {
-            _handleException(8, "template <typename DataType> void Matrix<DataType>::add_cr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_COLUMN_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
@@ -926,19 +921,19 @@ void Matrix<DataType>::addRowToRow(int rowNr, const DataType& coeff, Matrix &src
 {
     if (rowNr<0 || srcRowNr<0 || destRowNr<0)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::add_rr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     if ((rowNr>=m_NrOfRows) || (srcRowNr>=src.m_NrOfRows))
     {
-        _handleException(6, "template <typename DataType> void Matrix<DataType>::add_rr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
     }
 
     if (dest.m_WrapMatrixByRow)
     {
         if (destRowNr>=dest.m_NrOfRows)
         {
-            _handleException(5, "template <typename DataType> void Matrix<DataType>::add_rr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_ROW_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
@@ -949,7 +944,7 @@ void Matrix<DataType>::addRowToRow(int rowNr, const DataType& coeff, Matrix &src
     else {
         if (destRowNr>=dest.m_NrOfColumns)
         {
-            _handleException(8, "template <typename DataType> void Matrix<DataType>::add_rr(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_COLUMN_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
@@ -964,19 +959,19 @@ void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Ma
 {
     if (columnNr<0 || srcColumnNr<0 || destColumnNr<0)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     if ((columnNr>=m_NrOfColumns) || (srcColumnNr>=src.m_NrOfColumns))
     {
-        _handleException(9, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
     }
 
     if (dest.m_WrapMatrixByRow)
     {
         if (destColumnNr>=dest.m_NrOfRows)
         {
-            _handleException(5, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_ROW_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
@@ -988,7 +983,7 @@ void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Ma
     {
         if (destColumnNr>=dest.m_NrOfColumns)
         {
-            _handleException(8, "template <typename DataType> void Matrix<DataType>::add_cc(int n1, DataType &m1, Matrix &src, int n2, DataType &m2, Matrix &dest, int p1)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_COLUMN_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
@@ -1003,17 +998,17 @@ void Matrix<DataType>:: copy(const Matrix<DataType>& src, int nrOfRows, int nrOf
 {
     if (src.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
-        _handleException(25, "template <typename DataType> void Matrix<DataType>:: copy(const Matrix<DataType> &m, int step1, int step2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
     }
 
     if (nrOfRows<0 || nrOfColumns<0)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>:: copy(const Matrix<DataType> &m, int step1, int step2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     if ((src.m_PosX+nrOfRows>src.m_NrOfRows) || (src.m_PosY+nrOfColumns>src.m_NrOfColumns) || (m_PosX+nrOfRows>m_NrOfRows) || (m_PosY+nrOfColumns>m_NrOfColumns))
     {
-        _handleException(18, "template <typename DataType> void Matrix<DataType>:: copy(const Matrix<DataType> &m, int step1, int step2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
 
     for (int row{0}; row<nrOfRows; ++row)
@@ -1030,12 +1025,12 @@ void Matrix<DataType>::copy(DataType** src, int nrOfRows, int nrOfColumns)
 {
     if (src==nullptr)
     {
-        _handleException(22, "template <typename DataType> void Matrix<DataType>::copy(DataType** m, int ln, int cl)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_PTR]};
     }
 
     if ((nrOfRows<=0)||(nrOfColumns<=0))
     {
-        _handleException(3, "template <typename DataType> void Matrix<DataType>::copy(DataType** m, int ln, int cl)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
     _deallocMemory();
@@ -1055,12 +1050,12 @@ void Matrix<DataType>::copy(DataType* src, int nrOfRows, int nrOfColumns)
 {
     if (src==nullptr)
     {
-        _handleException(22, "template <typename DataType> void Matrix<DataType>::copy(DataType* m, int ln, int cl)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_PTR]};
     }
 
     if ((nrOfRows<=0)||(nrOfColumns<=0))
     {
-        _handleException(3, "template <typename DataType> void Matrix<DataType>::copy(DataType* m, int ln, int cl)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
     _deallocMemory();
@@ -1080,12 +1075,12 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
 {
     if (m_WrapMatrixByRow && (firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns))
     {
-        _handleException(13,"template <typename DataType> void Matrix<DataType>::cat(const Matrix<DataType> &m1, const Matrix<DataType> &m2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_ROW_LENGTH]};
     }
 
     if ((!m_WrapMatrixByRow) && (firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows))
     {
-        _handleException(12, "template <typename DataType> void Matrix<DataType>::cat(const Matrix<DataType> &m1, const Matrix<DataType> &m2)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
     }
 
     Matrix<DataType> thirdMatrix{};
@@ -1122,33 +1117,33 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
 {
     if (firstDestMatrix.m_pBaseArrayPtr==secondDestMatrix.m_pBaseArrayPtr)
     {
-        _handleException(24, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::SAME_VARIABLE_TWO_ARGS]};
     }
 
     if (splitRowColumnNr<0)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     if (m_WrapMatrixByRow)
     {
         if (splitRowColumnNr>m_NrOfRows)
         {
-            _handleException(4, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
         }
         if ((splitRowColumnNr == 0) || (splitRowColumnNr == m_NrOfRows))
         {
-            _handleException(19, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_ROWS]};
         }
     }
     else {
         if (splitRowColumnNr>m_NrOfColumns)
         {
-            _handleException(7, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
         }
         if ((splitRowColumnNr == 0) || (splitRowColumnNr == m_NrOfColumns))
         {
-            _handleException(20, "template <typename DataType> void Matrix<DataType>::split(Matrix<DataType> &m1, Matrix<DataType> &m2,int m)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_COLUMNS]};
         }
     }
 
@@ -1182,12 +1177,12 @@ void Matrix<DataType>::applyCoefficientsToRow (const Matrix &coeff, Matrix &src,
 {
     if (m_pBaseArrayPtr==coeff.m_pBaseArrayPtr)
     {
-        _handleException(25, "template <typename DataType> void Matrix<DataType>::coef_row (const Matrix &coeff, Matrix &src, bool multiply)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
     }
 
     if (coeff.m_NrOfRows!=src.m_NrOfRows)
     {
-        _handleException(12,"template <typename DataType> void Matrix<DataType>::coef_row (const Matrix &coeff, Matrix &src, bool multiply)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
     }
 
     if (m_NrOfRows != src.m_NrOfRows || m_NrOfColumns != src.m_NrOfColumns)
@@ -1211,7 +1206,7 @@ void Matrix<DataType>::applyCoefficientsToRow (const Matrix &coeff, Matrix &src,
         {
             if (coeff.m_pBaseArrayPtr[row][0]==0)
             {
-                _handleException(23,"template <typename DataType> void Matrix<DataType>::coef_row (const Matrix &coeff, Matrix &src, bool multiply)");
+                throw std::runtime_error{Matr::exceptions[Matr::Error::DIVISION_BY_ZERO]};
             }
         }
 
@@ -1230,12 +1225,12 @@ void Matrix<DataType>::applyCoefficientsToColumn (const Matrix &coeff, Matrix &s
 {
     if (coeff.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
-        _handleException(25,"template <typename DataType> void Matrix<DataType>::coef_col (const Matrix &coeff, Matrix &src, bool multiply)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
     }
 
     if (coeff.m_NrOfColumns!=src.m_NrOfColumns)
     {
-        _handleException(13,"template <typename DataType> void Matrix<DataType>::coef_col (const Matrix &coeff, Matrix &src, bool multiply)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_ROW_LENGTH]};
     }
 
     if (m_NrOfRows != src.m_NrOfRows || m_NrOfColumns != src.m_NrOfColumns)
@@ -1258,7 +1253,7 @@ void Matrix<DataType>::applyCoefficientsToColumn (const Matrix &coeff, Matrix &s
         {
             if (coeff.m_pBaseArrayPtr[0][col]==0)
             {
-                _handleException(23,"template <typename DataType> void Matrix<DataType>::coef_col (const Matrix &coeff, Matrix &src, bool multiply)");
+                throw std::runtime_error{Matr::exceptions[Matr::Error::DIVISION_BY_ZERO]};
             }
         }
 
@@ -1277,7 +1272,7 @@ Matrix<DataType> Matrix<DataType>::operator+ (const Matrix<DataType>& matrix)
 {
     if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
     {
-        _handleException(10, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator+ (const Matrix<DataType> &m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_DIMENSIONS]};
     }
 
     Matrix<DataType> result{};
@@ -1299,7 +1294,7 @@ Matrix<DataType> Matrix<DataType>::operator- (const Matrix<DataType>& matrix)
 {
     if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
     {
-        _handleException(10, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator- (const Matrix<DataType> &m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_DIMENSIONS]};
     }
 
     Matrix<DataType> result{};
@@ -1333,7 +1328,7 @@ Matrix<DataType> Matrix<DataType>::operator* (const Matrix<DataType>& matrix)
 {
     if (m_NrOfColumns!=matrix.m_NrOfRows)
     {
-        _handleException(11, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator* (const Matrix<DataType> &m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_ROWS_UNEQUAL_COLUMNS]};
     }
 
     Matrix<DataType> result{};
@@ -1358,12 +1353,12 @@ Matrix<DataType> Matrix<DataType>::operator^ (int exp)
 {
     if (m_NrOfRows!=m_NrOfColumns)
     {
-        _handleException(1, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator^ (int m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_DIMENSIONS]};
     }
 
     if (exp<0)
     {
-        _handleException(16, "template <typename DataType> Matrix<DataType> Matrix<DataType> :: operator^ (int m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     Matrix<DataType> result{};
@@ -1582,12 +1577,12 @@ DataType& Matrix<DataType>::operator[](int index)
 {
     if (index<0)
     {
-        _handleException(16, "template <typename dataType> dataType& Matrix<dataType>::operator[] (int i)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     if (index>=m_NrOfRows*m_NrOfColumns)
     {
-        _handleException(18, "template <typename dataType> dataType& Matrix<dataType>::operator[] (int i)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
 
     return m_WrapMatrixByRow ? _getItemForLineWrap(index) : _getItemForColumnWrap(index);
@@ -1598,7 +1593,7 @@ DataType Matrix<DataType>::determinant()
 {
     if (m_NrOfRows!=m_NrOfColumns)
     {
-        _handleException(1, "template <typename DataType> DataType Matrix<DataType>::det()");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_DIMENSIONS]};
     }
 
     Matrix<DataType> matrix{*this};
@@ -1756,12 +1751,12 @@ void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType
 
     if (m_pBaseArrayPtr == coeff.m_pBaseArrayPtr || m_pBaseArrayPtr == pseudoInverse.m_pBaseArrayPtr)
     {
-        _handleException(25, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
     }
 
     if (m_NrOfRows!=m_NrOfColumns)
     {
-        _handleException(1, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_DIMENSIONS]};
     }
 
     matrix = *this;
@@ -1790,7 +1785,7 @@ void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType
                 continue;
             }
 
-            _handleException(2, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_DETERMINANT]};
         }
     }
 
@@ -1804,7 +1799,7 @@ void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType
 
     if (matrix.m_pBaseArrayPtr[m_NrOfRows-1][m_NrOfRows-1]==0)
     {
-        _handleException(2, "template<typename DataType> void Matrix<DataType>::inversion(Matrix<DataType> &coeff, Matrix<DataType> &pseudo_inv)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_DETERMINANT]};
     }
 
     for (int diag{m_NrOfRows-1}; diag>0; --diag)
@@ -1872,17 +1867,17 @@ void Matrix<DataType>::sums(Matrix& result, int mode)
 {
     if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
-        _handleException(25, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
     }
 
     if (mode>4)
     {
-        _handleException(21, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_NUMERIC_ARG]};
     }
 
     if (mode<0)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     switch (mode)
@@ -1956,17 +1951,17 @@ void Matrix<DataType>::products(Matrix& result, int mode)
 {
     if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
-        _handleException(25, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
     }
 
     if (mode>4)
     {
-        _handleException(21, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_NUMERIC_ARG]};
     }
 
     if (mode<0)
     {
-        _handleException(16, "template <typename DataType> void Matrix<DataType>::products(Matrix &m, int prod)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     switch (mode)
@@ -2061,7 +2056,7 @@ void Matrix<DataType>::getInverseElementsMatrix(Matrix<DataType>& result)
         {
             if (m_pBaseArrayPtr[row][col]==0)
             {
-                _handleException(23,"template <typename DataType> void Matrix<DataType>::inv_matrix(Matrix<DataType> &m)");
+                throw std::runtime_error{Matr::exceptions[Matr::Error::DIVISION_BY_ZERO]};
             }
         }
     }
@@ -2173,7 +2168,7 @@ void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
             {
                 if (in.eof())
                 {
-                    _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+                    throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
                 }
                 cout<<"["<<row<<"]["<<col<<"]= ";
                 in>>m_pBaseArrayPtr[row][col];
@@ -2188,7 +2183,7 @@ void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
         for (int col{0}; col<m_NrOfColumns; ++col) {
             if (in.eof())
             {
-                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
             }
             cout<<"["<<m_PosX<<"]["<<col<<"]= ";
             in>>m_pBaseArrayPtr[m_PosX][col];
@@ -2199,7 +2194,7 @@ void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
         {
             if (in.eof())
             {
-                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
             }
             cout<<"["<<row<<"]["<<m_PosY<<"]= ";
             in>>m_pBaseArrayPtr[row][m_PosY];
@@ -2209,7 +2204,7 @@ void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
         for(int diag{0}; diag<m_NrOfRows; ++diag){
             if (in.eof())
             {
-                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
             }
             cout<<"["<<diag<<"]["<<diag<<"]= ";
             in>>m_pBaseArrayPtr[diag][diag];
@@ -2219,7 +2214,7 @@ void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
         for(int diag{m_NrOfRows-1}; diag>=0; --diag) {
             if (in.eof())
             {
-                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
             }
             cout<<"["<<diag<<"]["<<m_NrOfRows-1-diag<<"]= ";
             in>>m_pBaseArrayPtr[diag][m_NrOfRows-1-diag];
@@ -2286,7 +2281,7 @@ void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
             {
                 if (in.eof())
                 {
-                    _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+                    throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
                 }
                 in>>m_pBaseArrayPtr[row][col];
             }
@@ -2295,7 +2290,7 @@ void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
     case 13:
         if (in.eof())
         {
-            _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
         }
         in>>m_pBaseArrayPtr[m_PosX][m_PosY];
         break;
@@ -2303,7 +2298,7 @@ void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
         for (int col{0}; col<m_NrOfColumns; ++col) {
             if (in.eof())
             {
-                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
             }
             in>>m_pBaseArrayPtr[m_PosX][col];
         }
@@ -2312,7 +2307,7 @@ void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
         for (int row{0}; row<m_NrOfRows; ++row) {
             if (in.eof())
             {
-                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
             }
             in>>m_pBaseArrayPtr[row][m_PosY];
         }
@@ -2322,7 +2317,7 @@ void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
         {
             if (in.eof())
             {
-                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
             }
             in>>m_pBaseArrayPtr[row][row];
         }
@@ -2332,7 +2327,7 @@ void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
         {
             if (in.eof())
             {
-                _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
             }
             in>>m_pBaseArrayPtr[row][m_NrOfRows-1-row];
         }
@@ -2347,7 +2342,7 @@ void Matrix<DataType>::_readTextLine(std::istream &in)
 
     if (in.eof())
     {
-        _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
     }
 
     getline(in,str);
@@ -2355,7 +2350,7 @@ void Matrix<DataType>::_readTextLine(std::istream &in)
     int strSize=str.size();
     if (strSize==0)
     {
-        _handleException (28, "friend istream &operator>> (istream &is, Matrix &m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::EMPTY_FILE_ROW]};
     }
 
     unsigned int strIndex{0};
@@ -2368,7 +2363,7 @@ void Matrix<DataType>::_readTextLine(std::istream &in)
 
         if (strIndex==strSize)
         {
-            _handleException(27, "friend istream &operator>> (istream &is, Matrix &m)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::INSUFFICIENT_ELEMENTS_FILE_ROW]};
         }
 
         do
@@ -2391,7 +2386,7 @@ void Matrix<DataType>::_readSingleItem(std::istream &in)
 
     if (in.eof())
     {
-        _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
     }
 
     getline(in,str);
@@ -2399,7 +2394,7 @@ void Matrix<DataType>::_readSingleItem(std::istream &in)
     int strSize = str.size();
     if (strSize==0)
     {
-        _handleException (28, "friend istream &operator>> (istream &is, Matrix &m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::EMPTY_FILE_ROW]};
     }
 
     unsigned int strIndex{0};
@@ -2412,7 +2407,7 @@ void Matrix<DataType>::_readSingleItem(std::istream &in)
 
         if (strIndex==strSize)
         {
-            _handleException(27, "friend istream &operator>> (istream &is, Matrix &m)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::INSUFFICIENT_ELEMENTS_FILE_ROW]};
         }
 
         do
@@ -2424,7 +2419,7 @@ void Matrix<DataType>::_readSingleItem(std::istream &in)
 
     if (strIndex==strSize)
     {
-        _handleException(27, "friend istream &operator>> (istream &is, Matrix &m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INSUFFICIENT_ELEMENTS_FILE_ROW]};
     }
 
     while(str[strIndex]==' ' && strIndex<strSize)
@@ -2434,7 +2429,7 @@ void Matrix<DataType>::_readSingleItem(std::istream &in)
 
     if (strIndex==strSize)
     {
-        _handleException(27, "friend istream &operator>> (istream &is, Matrix &m)");
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INSUFFICIENT_ELEMENTS_FILE_ROW]};
     }
 
     do
@@ -2460,7 +2455,7 @@ void Matrix<DataType>::_readDiscard(std::istream &in)
     {
         if (in.eof())
         {
-            _handleException (26, "friend istream &operator>> (istream &is, Matrix &m)");
+            throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
         }
 
         getline(in,str);
@@ -2767,110 +2762,6 @@ template<typename DataType>
 DataType& Matrix<DataType>::_getItemForColumnWrap(int oneDimensionalIndex)
 {
     return m_pBaseArrayPtr[oneDimensionalIndex%m_NrOfRows][oneDimensionalIndex/m_NrOfRows];
-}
-
-template<typename DataType>
-void Matrix<DataType>::_handleException(int errorType, char* function)
-{
-    using namespace std;
-    try {
-        cerr<<"Exception in function: "<<function<<endl;
-        throw errorType;
-    }
-    catch (int k) {
-        switch (k) {
-        case 0:
-            cerr<<"Not enough elements to initialize the matrix"<<endl;
-            break;
-        case 1:
-            cerr<<"The dimensions of the matrix are not equal."<<endl;
-            break;
-        case 2:
-            cerr<<"The matrix determinant is null. The inverse cannot be calculated."<<endl;
-            break;
-        case 3:
-            cerr<<"At least one null or negative matrix dimension has been entered."<<endl;
-            break;
-        case 4:
-            cerr<<"A referenced source matrix row does not exist"<<endl;
-            break;
-        case 5:
-            cerr<<"A referenced destination matrix row does not exist"<<endl;
-            break;
-        case 6:
-            cerr<<"For one or more matrixes at least one referenced row does not exist"<<endl;
-            break;
-        case 7:
-            cerr<<"A referenced column of the source matrix does not exist"<<endl;
-            break;
-        case 8:
-            cerr<<"A referenced column of the destination matrix does not exist"<<endl;
-            break;
-        case 9:
-            cerr<<"For one or more matrixes at least one referenced column does not exist"<<endl;
-            break;
-        case 10:
-            cerr<<"The two matrixes have different dimensions"<<endl;
-            break;
-        case 11:
-            cerr<<"The number of columns of the first matrix is different from the number of lines of the second one"<<endl;
-            break;
-        case 12:
-            cerr<<"The columns of the two matrixes have different lengths. The number of lines is different."<<endl;
-            break;
-        case 13:
-            cerr<<"The rows of the two matrixes have different lengths. The number of columns is different."<<endl;
-            break;
-        case 14:
-            cerr<<"Attempt to erase the only column of the matrix. This is not allowed."<<endl;
-            break;
-        case 15:
-            cerr<<"Attempt to erase the only row of the matrix. This is not allowed."<<endl;
-            break;
-        case 16:
-            cerr<<"The function received a negative argument. A non-negative arg is expected."<<endl;
-            break;
-        case 17:
-            cerr<<"Attempt to insert a line or a column on a non-contiguous position"<<endl;
-            break;
-        case 18:
-            cerr<<"Attempt to reference a matrix element with invalid index"<<endl;
-            break;
-        case 19:
-            cerr<<"The resulting matrix has 0 rows"<<endl;
-            break;
-        case 20:
-            cerr<<"The resulting matrix has 0 columns"<<endl;
-            break;
-        case 21:
-            cerr<<"Invalid numeric argument"<<endl;
-            break;
-        case 22:
-            cerr<<"Null pointer"<<endl;
-            break;
-        case 23:
-            cerr<<"Attempt to divide by 0"<<endl;
-            break;
-        case 24:
-            cerr<<"Same variable passed into two function arguments. This is not allowed."<<endl;
-            break;
-        case 25:
-            cerr<<"Current matrix (this) has been passed as argument into the function. This is not allowed for this method."<<endl;
-            break;
-        case 26:
-            cerr<<"End of file. Operation aborted."<<endl;
-            break;
-        case 27:
-            cerr<<"The row read from the file contains less items than the current matrix row"<<endl;
-            break;
-        case 28:
-            cerr<<"The current row of the text file is empty"<<endl;
-            break;
-        default:
-            cout<<"Unknown exception"<<endl;
-        }
-        exit(1);
-    }
 }
 
 template<typename DataType>
