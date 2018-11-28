@@ -1,6 +1,6 @@
 #include <QtTest>
 
-// add necessary includes here
+#include "../MatrixLib/matrix.h"
 
 class MatrixTest : public QObject
 {
@@ -27,7 +27,8 @@ MatrixTest::~MatrixTest()
 
 void MatrixTest::test_case1()
 {
-
+    Matrix<int> matrix{};
+    matrix.resize(1,1);
 }
 
 QTEST_APPLESS_MAIN(MatrixTest)

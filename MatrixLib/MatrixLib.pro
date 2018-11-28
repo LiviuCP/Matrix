@@ -9,7 +9,7 @@ QT       -= core gui
 TARGET = MatrixLib
 TEMPLATE = lib
 
-CONFIG += c++11
+CONFIG += c++11 staticlib
 
 DEFINES += MATRIXLIB_LIBRARY
 
@@ -25,11 +25,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        matrix.cpp
 
 HEADERS += \
         matrix.h \
-        matrixlib_global.h \
         matrix_exceptions.h
 
 unix {
