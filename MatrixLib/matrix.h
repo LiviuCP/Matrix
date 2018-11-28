@@ -24,9 +24,10 @@ public:
     Matrix(const Matrix<DataType>& matrix);
     ~Matrix();
 
-    DataType& get(int i,int j);
-    DataType** getp();
-    DataType* getp(int i);
+    DataType& at(int i,int j);
+
+    // transfers ownership of the data to the user (object becomes empty and user becomes responsible for de-allocating the data properly)
+    DataType** getBaseArrayPtr(int& nrOfRows, int& nrOfColumns);
 	
     int getNrOfRows();
     int getNrOfColumns();
@@ -340,7 +341,7 @@ Matrix<DataType>::~Matrix()
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>:: get(int i,int j)
+DataType& Matrix<DataType>:: at(int i,int j)
 {
     if (i<0 || j<0)
     {
@@ -354,19 +355,30 @@ DataType& Matrix<DataType>:: get(int i,int j)
 }
 
 template<typename DataType>
-DataType** Matrix<DataType>::getp()
+DataType** Matrix<DataType>::getBaseArrayPtr(int& nrOfRows, int& nrOfColumns)
 {
-    return m_pBaseArrayPtr;
-}
+    DataType** pBaseArrayPtr{nullptr};
 
-template<typename DataType>
-DataType* Matrix<DataType>::getp(int i)
-{
-    if (i<0)
+    if (!m_pBaseArrayPtr && (m_NrOfRows != 0) && (m_NrOfColumns != 0))
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+        nrOfRows = m_NrOfRows;
+        nrOfColumns = m_NrOfColumns;
+        pBaseArrayPtr = m_pBaseArrayPtr;
+
+        m_pBaseArrayPtr = nullptr;
+        m_NrOfRows = 0;
+        m_NrOfColumns = 0;
+
+        m_PosX = -1;
+        m_PosY = -1;
     }
-    return m_pBaseArrayPtr[i%m_NrOfRows];
+    else
+    {
+        nrOfRows = 0;
+        nrOfColumns = 0;
+    }
+
+    return m_pBaseArrayPtr;
 }
 
 template<typename DataType>
