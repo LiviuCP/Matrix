@@ -37,6 +37,7 @@ namespace Matr
         END_OF_FILE,
         INSUFFICIENT_ELEMENTS_FILE_ROW,
         EMPTY_FILE_ROW,
+        INVALID_MODE,
         UNKNOWN_ERROR
     };
 
@@ -74,7 +75,8 @@ namespace Matr
         {    Error::END_OF_FILE,                                        string{"End of file. Operation aborted."}                                                                                               },
         {    Error::INSUFFICIENT_ELEMENTS_FILE_ROW,                     string{"The row read from the file contains less items than required for the current matrix row"}                                       },
         {    Error::EMPTY_FILE_ROW,                                     string{"The current row of the text file is empty"}                                                                                     },
-        {    Error::UNKNOWN_ERROR,                                      string{"Unknown error"}                                                                                                                 },
+        {    Error::INVALID_MODE,                                       string{"The chosen operation mode is invalid"}                                                                                          },
+        {    Error::UNKNOWN_ERROR,                                      string{"Unknown error"}                                                                                                                 }
     };
 }
 

@@ -19,6 +19,16 @@ public:
     Matrix(const Matrix<DataType>& matrix);
     ~Matrix();
 
+    enum class ArithmeticMode
+    {
+        ALL_ITEMS,
+        ONE_ROW,
+        EACH_ROW,
+        ONE_COLUMN,
+        EACH_COLUMN,
+        ModesCount
+    };
+
     DataType& at(int i,int j);
 
     // transfers ownership of the data to the user (object becomes empty and user becomes responsible for de-allocating the data properly)
@@ -84,8 +94,8 @@ public:
     void getTransposedMatrix(Matrix<DataType>& result);
     DataType determinant();
 
-    void sums(Matrix<DataType>& result, int mode, int pos=-1);
-    void products(Matrix<DataType>& result, int mode, int pos=-1);
+    void sums(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1);
+    void products(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1);
 
     void getNegativeMatrix(Matrix<DataType>& result);
     void getInverseElementsMatrix(Matrix<DataType>& result);
@@ -1728,26 +1738,16 @@ void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
 }
 
 template <typename DataType>
-void Matrix<DataType>::sums(Matrix& result, int mode, int pos)
+void Matrix<DataType>::sums(Matrix& result, ArithmeticMode mode, int pos)
 {
     if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
     }
 
-    if (mode>4)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_NUMERIC_ARG]};
-    }
-
-    if (mode<0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
-    }
-
     switch (mode)
     {
-    case 0:
+    case ArithmeticMode::ALL_ITEMS:
     {
         DataType allItemsSum{0};
         result.resizeNoInit(1,1);
@@ -1761,7 +1761,7 @@ void Matrix<DataType>::sums(Matrix& result, int mode, int pos)
         result.m_pBaseArrayPtr[0][0] = allItemsSum;
         break;
     }
-    case 1:
+    case ArithmeticMode::ONE_ROW:
     {
         if (pos<0)
         {
@@ -1783,7 +1783,7 @@ void Matrix<DataType>::sums(Matrix& result, int mode, int pos)
         result.m_pBaseArrayPtr[0][0] = currentRowItemsSum;
         break;
     }
-    case 2:
+    case ArithmeticMode::EACH_ROW:
     {
         result.resizeNoInit(m_NrOfRows,1);
         for (int row{0}; row<m_NrOfRows; ++row)
@@ -1797,7 +1797,7 @@ void Matrix<DataType>::sums(Matrix& result, int mode, int pos)
         }
         break;
     }
-    case 3:
+    case ArithmeticMode::ONE_COLUMN:
     {
         if (pos<0)
         {
@@ -1818,7 +1818,7 @@ void Matrix<DataType>::sums(Matrix& result, int mode, int pos)
         result.m_pBaseArrayPtr[0][0] = currentColumnItemsSum;
         break;
     }
-    case 4:
+    case ArithmeticMode::EACH_COLUMN:
         result.resizeNoInit(1, m_NrOfColumns);
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
@@ -1829,30 +1829,22 @@ void Matrix<DataType>::sums(Matrix& result, int mode, int pos)
             }
             result.m_pBaseArrayPtr[0][col] = eachColumnItemsSum;
         }
+    default:
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_MODE]};
     }
 }
 
 template <typename DataType>
-void Matrix<DataType>::products(Matrix& result, int mode, int pos)
+void Matrix<DataType>::products(Matrix& result, ArithmeticMode mode, int pos)
 {
     if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
     }
 
-    if (mode>4)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_NUMERIC_ARG]};
-    }
-
-    if (mode<0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
-    }
-
     switch (mode)
     {
-    case 0:
+    case ArithmeticMode::ALL_ITEMS:
     {
         DataType allItemsProduct{1};
         result.resizeNoInit(1,1);
@@ -1866,7 +1858,7 @@ void Matrix<DataType>::products(Matrix& result, int mode, int pos)
         result.m_pBaseArrayPtr[0][0] = allItemsProduct;
         break;
     }
-    case 1:
+    case ArithmeticMode::ONE_ROW:
     {
         if (pos<0)
         {
@@ -1887,7 +1879,7 @@ void Matrix<DataType>::products(Matrix& result, int mode, int pos)
         result.m_pBaseArrayPtr[0][0] = currentRowItemsProduct;
         break;
     }
-    case 2:
+    case ArithmeticMode::EACH_ROW:
     {
         result.resizeNoInit(m_NrOfRows,1);
         for (int row{0}; row<m_NrOfRows; ++row)
@@ -1901,7 +1893,7 @@ void Matrix<DataType>::products(Matrix& result, int mode, int pos)
         }
         break;
     }
-    case 3:
+    case ArithmeticMode::ONE_COLUMN:
     {
         if (pos<0)
         {
@@ -1922,7 +1914,7 @@ void Matrix<DataType>::products(Matrix& result, int mode, int pos)
         result.m_pBaseArrayPtr[0][0] = currentColumnItemsProduct;
         break;
     }
-    case 4:
+    case ArithmeticMode::EACH_COLUMN:
         result.resizeNoInit(1, m_NrOfColumns);
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
@@ -1933,6 +1925,8 @@ void Matrix<DataType>::products(Matrix& result, int mode, int pos)
             }
             result.m_pBaseArrayPtr[0][col] = eachColumnItemsProduct;
         }
+    default:
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_MODE]};
     }
 }
 
