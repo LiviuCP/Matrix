@@ -99,7 +99,7 @@ public:
 
     DataType& operator[] (int index);
 
-	int rank();
+    int rank() const;
     void getInverseMatrix(Matrix<DataType> &coeff, Matrix<DataType>& pseudoInverse);
     void getTransposedMatrix(Matrix<DataType>& result);
     DataType determinant();
@@ -1738,21 +1738,21 @@ DataType Matrix<DataType>::determinant()
 }
 
 template<typename DataType>
-int Matrix<DataType>::rank()
+int Matrix<DataType>::rank() const
 {
-    auto continueCalculation = [](Matrix& matrix)
+    auto continueCalculation = [](Matrix& matrix, int& posX, int& posY)
     {
-        for (int row{matrix.m_PosX+1}; row<matrix.m_NrOfRows; ++row)
+        for (int row{posX+1}; row<matrix.m_NrOfRows; ++row)
         {
-            for (int col{matrix.m_PosY+1}; col<matrix.m_NrOfColumns; ++col)
+            for (int col{posY+1}; col<matrix.m_NrOfColumns; ++col)
             {
-                matrix.m_pBaseArrayPtr[row][col]=(matrix.m_pBaseArrayPtr[row][col]) * (matrix.m_pBaseArrayPtr[matrix.m_PosX][matrix.m_PosY]) -
-                                           (matrix.m_pBaseArrayPtr[matrix.m_PosX][col]) * (matrix.m_pBaseArrayPtr[row][matrix.m_PosY]);
+                matrix.m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col] * matrix.m_pBaseArrayPtr[posX][posY] -
+                                                   matrix.m_pBaseArrayPtr[posX][col] * matrix.m_pBaseArrayPtr[row][posY];
             }
         }
 
-        ++matrix.m_PosX;
-        ++matrix.m_PosY;
+        ++posX;
+        ++posY;
     };
 
     Matrix<DataType> matrix{};
@@ -1766,32 +1766,31 @@ int Matrix<DataType>::rank()
         matrix = *this;
     }
 
-    matrix.m_PosX=0;
-    matrix.m_PosY=0;
-
+    int posX{0};
+    int posY{0};
     int matrixRank{0};
 
-    while (matrix.m_PosX < matrix.m_NrOfRows-1)
+    while (posX < matrix.m_NrOfRows-1)
     {
-        if (matrix.m_pBaseArrayPtr[matrix.m_PosX][matrix.m_PosY]==0)
+        if (matrix.m_pBaseArrayPtr[posX][posY]==0)
         {
-            for (int row{matrix.m_PosX+1}; row<matrix.m_NrOfRows; ++row)
+            for (int row{posX+1}; row<matrix.m_NrOfRows; ++row)
             {
-                if (matrix.m_pBaseArrayPtr[row][matrix.m_PosY]!=0)
+                if (matrix.m_pBaseArrayPtr[row][posY]!=0)
                 {
                     ++matrixRank;
-                    matrix.swapRow(row,matrix.m_PosX);
-                    continueCalculation(matrix);
+                    matrix.swapRow(row, posX);
+                    continueCalculation(matrix, posX, posY);
                 }
             }
 
-            for (int col{matrix.m_PosY+1}; col<matrix.m_NrOfColumns; ++col)
+            for (int col{posY+1}; col<matrix.m_NrOfColumns; ++col)
             {
-                if (matrix.m_pBaseArrayPtr[matrix.m_PosX][col]!=0)
+                if (matrix.m_pBaseArrayPtr[posX][col]!=0)
                 {
                     ++matrixRank;
-                    matrix.swapColumn(col,matrix.m_PosY);
-                    continueCalculation(matrix);
+                    matrix.swapColumn(col,posY);
+                    continueCalculation(matrix, posX, posY);
                 }
             }
         }
@@ -1801,9 +1800,9 @@ int Matrix<DataType>::rank()
         }
     }
 
-    for (int col{matrix.m_PosY}; col<matrix.m_NrOfColumns; ++col)
+    for (int col{posY}; col<matrix.m_NrOfColumns; ++col)
     {
-        if (matrix.m_pBaseArrayPtr[matrix.m_PosX][col]!=0)
+        if (matrix.m_pBaseArrayPtr[posX][col]!=0)
         {
             ++matrixRank;
             break;
