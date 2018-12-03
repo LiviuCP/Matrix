@@ -35,8 +35,6 @@ public:
     void setPosY(int n);
     void setFilePosX(int filePosX);
     void setFilePosY(int filePosY);
-    void setMatrixEntryMode(int matrixEntryMode);
-    void setMatrixPrintMode(int matrixPrintMode);
     void setItemsToZero();
 
     void incrPosX();
@@ -134,8 +132,6 @@ private:
     int m_NrOfColumns;
     int m_PosX;
     int m_PosY;
-    int m_MatrixPrintMode;
-    int m_MatrixEntryMode;
     bool m_WrapMatrixByRow;
 };
 
@@ -149,17 +145,13 @@ Matrix<DataType>::Matrix()
     , m_NrOfColumns{0}
     , m_PosX{-1}
     , m_PosY{-1}
-    , m_MatrixPrintMode{0}
-    , m_MatrixEntryMode{0}
     , m_WrapMatrixByRow{true}
 {
 }
 
 template <typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType)
-    : m_MatrixPrintMode{0}
-    , m_MatrixEntryMode{0}
-    , m_WrapMatrixByRow{true}
+    : m_WrapMatrixByRow{true}
 {
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
@@ -179,9 +171,7 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType
 
 template<typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList)
-    : m_MatrixPrintMode{0}
-    , m_MatrixEntryMode{0}
-    , m_WrapMatrixByRow{true}
+    : m_WrapMatrixByRow{true}
 {
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
@@ -219,9 +209,7 @@ Matrix<DataType>::Matrix(int nrOfRowsColumns, const DataType& dataType, const Da
 // for converting static matrixes from legacy code to object (dynamic) matrixes only (user is responsible to ensure the static matrix is not read "out-of-bounds")
 template <typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr)
-    : m_MatrixPrintMode{0}
-    , m_MatrixEntryMode{0}
-    , m_WrapMatrixByRow{true}
+    : m_WrapMatrixByRow{true}
 {
     if (!matrixPtr)
     {
@@ -247,9 +235,7 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr)
 // for converting one-dimensional arrays from legacy code to bidimensional dynamic matrixes only (user is responsible to ensure the static array is not read "out-of-bounds")
 template <typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr)
-    : m_MatrixPrintMode{0}
-    , m_MatrixEntryMode{0}
-    , m_WrapMatrixByRow{true}
+    : m_WrapMatrixByRow{true}
 {
     if (!matrixPtr)
     {
@@ -274,9 +260,7 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr)
 
 template <typename DataType>
 Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
-    : m_MatrixPrintMode{matrix.m_MatrixPrintMode}
-    , m_MatrixEntryMode{matrix.m_MatrixEntryMode}
-    , m_WrapMatrixByRow{matrix.m_WrapMatrixByRow}
+    : m_WrapMatrixByRow{matrix.m_WrapMatrixByRow}
 {
     _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
 
@@ -397,18 +381,6 @@ template<typename DataType>
 void Matrix<DataType>::setFilePosY(int filePosY)
 {
     s_FilePosY = abs(filePosY);
-}
-
-template<typename DataType>
-void Matrix<DataType>::setMatrixEntryMode(int matrixEntryMode)
-{
-    m_MatrixEntryMode = abs(matrixEntryMode) % 18;
-}
-
-template<typename DataType>
-void Matrix<DataType>::setMatrixPrintMode(int matrixPrintMode)
-{
-    m_MatrixPrintMode=abs(matrixPrintMode) % 6;
 }
 
 template <typename DataType> void Matrix<DataType>::setItemsToZero()
@@ -704,8 +676,6 @@ void Matrix<DataType>::swapWithMatrix(Matrix<DataType> &matrix)
 {
     std::swap(m_NrOfRows,matrix.m_NrOfRows);
     std::swap(m_NrOfColumns,matrix.m_NrOfColumns);
-    std::swap(m_MatrixEntryMode, matrix.m_MatrixEntryMode);
-    std::swap(m_MatrixPrintMode, matrix.m_MatrixPrintMode);
     std::swap(m_PosX, matrix.m_PosX);
     std::swap(m_PosY, matrix.m_PosY);
     std::swap(m_WrapMatrixByRow, matrix.m_WrapMatrixByRow);
