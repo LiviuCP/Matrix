@@ -75,9 +75,7 @@ public:
     void concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
     void split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr);
 
-    void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns);
-    void copy(DataType** src, int nrOfRows, int nrOfColumns);
-    void copy(DataType* src, int nrOfRows, int nrOfColumns);
+    void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX=0, int srcY=0, int destX=0, int destY=0);
 
     void applyCoefficientsToRow (const Matrix<DataType>& coeff, Matrix<DataType>& src, bool _multiply);
     void applyCoefficientsToColumn (const Matrix<DataType>& coeff, Matrix<DataType>& src, bool _multiply);
@@ -1113,19 +1111,24 @@ void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Ma
 }
 
 template <typename DataType>
-void Matrix<DataType>:: copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns)
+void Matrix<DataType>::copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX, int srcY, int destX, int destY)
 {
+    if(m_pBaseArrayPtr || !src.m_pBaseArrayPtr)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_PTR]};
+    }
+
     if (src.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
     }
 
-    if (nrOfRows<0 || nrOfColumns<0)
+    if (nrOfRows<0 || nrOfColumns<0 || srcX<0 || srcY<0 || destX<0 || destY<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    if ((src.m_PosX+nrOfRows>src.m_NrOfRows) || (src.m_PosY+nrOfColumns>src.m_NrOfColumns) || (m_PosX+nrOfRows>m_NrOfRows) || (m_PosY+nrOfColumns>m_NrOfColumns))
+    if (srcX+nrOfRows>src.m_NrOfRows || srcY+nrOfColumns>src.m_NrOfColumns || destX+nrOfRows>m_NrOfRows || destY+nrOfColumns>m_NrOfColumns)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
@@ -1134,57 +1137,7 @@ void Matrix<DataType>:: copy(const Matrix<DataType>& src, int nrOfRows, int nrOf
     {
         for (int col{0}; col<nrOfColumns; ++col)
         {
-            m_pBaseArrayPtr[m_PosX+row][m_PosY+col] = src.m_pBaseArrayPtr[src.m_PosX+row][src.m_PosY+col];
-        }
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::copy(DataType** src, int nrOfRows, int nrOfColumns)
-{
-    if (src==nullptr)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_PTR]};
-    }
-
-    if ((nrOfRows<=0)||(nrOfColumns<=0))
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
-    }
-
-    _deallocMemory();
-    _allocMemory(nrOfRows, nrOfColumns);
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            m_pBaseArrayPtr[row][col] = src[row][col];
-        }
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::copy(DataType* src, int nrOfRows, int nrOfColumns)
-{
-    if (src==nullptr)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_PTR]};
-    }
-
-    if ((nrOfRows<=0)||(nrOfColumns<=0))
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
-    }
-
-    _deallocMemory();
-    _allocMemory(nrOfRows, nrOfColumns);
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            m_pBaseArrayPtr[row][col] = *(src++);
+            m_pBaseArrayPtr[destX+row][destY+col] = src.m_pBaseArrayPtr[srcX+row][srcY+col];
         }
     }
 }
