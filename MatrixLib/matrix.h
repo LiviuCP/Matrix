@@ -1,9 +1,5 @@
-#include <iostream>
-#include <fstream>
-#include <sstream> 
 #include <cstdlib>
 #include <cmath>
-#include <string>
 #include <initializer_list>
 #include <vector>
 #include <exception>
@@ -20,7 +16,6 @@ public:
     Matrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType);
     Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr);
     Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr);
-    Matrix(int nrOfRows, int nrOfColumns, std::istream &in);
     Matrix(const Matrix<DataType>& matrix);
     ~Matrix();
 
@@ -102,9 +97,6 @@ public:
     bool operator > (const Matrix<DataType>& matrix) const;
     bool operator >= (const Matrix<DataType>& matrix) const;
 
-    friend std::ostream &operator<<(std::ostream& out, const Matrix<DataType>& matrix);
-    friend std::istream &operator>> (std::istream& in, Matrix<DataType>& matrix);
-
     DataType& operator[] (int index);
 
 	int rank();
@@ -121,13 +113,6 @@ public:
 private:
     void _allocMemory(int nrOfRows, int nrOfColumns);
     void _deallocMemory();
-
-    void _writeMatrix(std::ostream& os, int mode);
-    void _readMatrix(std::istream& is, int mode);
-
-    void _readTextLine(std::istream &in);
-    void _readSingleItem(std::istream &in);
-    void _readDiscard(std::istream &in);
 
     void _quickSort(int first, int last, int mode, int pos);
     void _quickSort(int first, int last, int mode);
@@ -287,31 +272,6 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr)
             m_pBaseArrayPtr[row][col] = *(matrixPtr++);
         }
     }
-}
-
-template<typename DataType>
-Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::istream &in)
-    : m_MatrixPrintMode{0}
-    , m_MatrixEntryMode{0}
-    , m_WrapMatrixByRow{true}
-{
-    if (nrOfRows <= 0 || nrOfColumns <= 0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
-    }
-
-    _allocMemory(nrOfRows,nrOfColumns);
-    _readDiscard(in);
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        _readTextLine(in);
-        ++m_PosX;
-        ++s_FilePosX; // should this be reset to 0 after matrix is initialized?
-    }
-
-    // back to position 0 as when set by _allocMemory()
-    m_PosX = 0;
 }
 
 template <typename DataType>
@@ -1700,38 +1660,6 @@ bool Matrix<DataType>::operator >=(const Matrix<DataType> &matrix) const
 }
 
 template<typename DataType>
-std::ostream& operator<<(std::ostream &out, const Matrix<DataType> &matrix)
-{
-    if((matrix.m_MatrixPrintMode==4 || matrix.m_MatrixPrintMode==5) && (matrix.m_NrOfRows!=matrix.m_NrOfColumns))
-    {
-        Matrix<DataType>::_handleException(1, "friend ostream &operator<<(ostream &os, Matrix &m)");
-    }
-
-    matrix._writeMatrix(out, matrix.m_MatrixPrintMode);
-
-    return out;
-}
-
-template<typename DataType>
-std::istream& operator>>(std::istream &in, Matrix<DataType> &matrix)
-{
-    if((matrix.m_MatrixEntryMode==4   ||
-        matrix.m_MatrixEntryMode==5   ||
-        matrix.m_MatrixEntryMode==10  ||
-        matrix.m_MatrixEntryMode==11  ||
-        matrix.m_MatrixEntryMode==16  ||
-        matrix.m_MatrixEntryMode==17) &&
-       (matrix.m_NrOfRows!=matrix.m_NrOfColumns))
-    {
-        Matrix<DataType>::_handleException(1, "friend istream &operator>> (istream &is, Matrix &m)");
-    }
-
-    matrix._readMatrix(in, matrix.m_MatrixEntryMode);
-
-    return in;
-}
-
-template<typename DataType>
 DataType& Matrix<DataType>::operator[](int index)
 {
     if (index<0)
@@ -2262,365 +2190,6 @@ void Matrix<DataType>::_deallocMemory()
     m_pBaseArrayPtr = nullptr;
 
     resetCurrentPos();
-}
-
-template <typename DataType>
-void Matrix<DataType>::_writeMatrix(std::ostream& os, int mode)
-{
-    using namespace std;
-
-    switch (mode)
-    {
-    case 0:
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                os<<m_pBaseArrayPtr[row][col]<<" ";
-            }
-            os<<endl;
-        }
-        break;
-    case 1:
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            os<<m_pBaseArrayPtr[m_PosX][col]<<" ";
-        }
-        break;
-    case 2:
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            os<<m_pBaseArrayPtr[row][m_PosY]<<endl;
-        }
-        break;
-    case 3:
-        os<<m_pBaseArrayPtr[m_PosX][m_PosY];
-        break;
-    case 4:
-        for (int diag{0}; diag<m_NrOfRows; ++diag)
-        {
-            os<<m_pBaseArrayPtr[diag][diag]<<" ";
-        }
-        break;
-    case 5:
-        for (int diag{m_NrOfRows-1}; diag>=0; --diag)
-        {
-            os<<m_pBaseArrayPtr[diag][m_NrOfRows-1-diag]<<" ";
-        }
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::_readMatrix(std::istream &in, int mode)
-{
-    using namespace std;
-
-    string str;
-    stringstream stream(ios::in | ios::out);
-
-    switch (mode)
-    {
-    case 0:
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                if (in.eof())
-                {
-                    throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-                }
-                cout<<"["<<row<<"]["<<col<<"]= ";
-                in>>m_pBaseArrayPtr[row][col];
-            }
-        }
-        break;
-    case 1:
-        cout<<"["<<m_PosX<<"]["<<m_PosY<<"]= ";
-        in>>m_pBaseArrayPtr[m_PosX][m_PosY];
-        break;
-    case 2:
-        for (int col{0}; col<m_NrOfColumns; ++col) {
-            if (in.eof())
-            {
-                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-            }
-            cout<<"["<<m_PosX<<"]["<<col<<"]= ";
-            in>>m_pBaseArrayPtr[m_PosX][col];
-        }
-        break;
-    case 3:
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            if (in.eof())
-            {
-                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-            }
-            cout<<"["<<row<<"]["<<m_PosY<<"]= ";
-            in>>m_pBaseArrayPtr[row][m_PosY];
-        }
-        break;
-    case 4:
-        for(int diag{0}; diag<m_NrOfRows; ++diag){
-            if (in.eof())
-            {
-                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-            }
-            cout<<"["<<diag<<"]["<<diag<<"]= ";
-            in>>m_pBaseArrayPtr[diag][diag];
-        }
-        break;
-    case 5:
-        for(int diag{m_NrOfRows-1}; diag>=0; --diag) {
-            if (in.eof())
-            {
-                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-            }
-            cout<<"["<<diag<<"]["<<m_NrOfRows-1-diag<<"]= ";
-            in>>m_pBaseArrayPtr[diag][m_NrOfRows-1-diag];
-        }
-        break;
-    case 6:
-        _readDiscard(in);
-        m_PosX = 0;
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            _readTextLine(in);
-            ++m_PosX;
-            ++s_FilePosX;
-        }
-        break;
-    case 7:
-        _readDiscard(in);
-        _readSingleItem(in);
-        break;
-    case 8:
-        _readDiscard(in);
-        _readTextLine(in);
-        break;
-    case 9:
-        _readDiscard(in);
-        m_PosX = 0;
-        for(int row{0}; row<m_NrOfRows; ++row)
-        {
-            _readSingleItem(in);
-            ++m_PosX;
-            ++s_FilePosX;
-        }
-        break;
-    case 10:
-        _readDiscard(in);
-        resetCurrentPos();
-        s_FilePosY=0;
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            _readSingleItem(in);
-            s_FilePosX++;
-            m_PosY = ++m_PosX;
-            s_FilePosY++;
-        }
-        break;
-    case 11:
-        _readDiscard(in);
-        s_FilePosY = m_NrOfRows-1;
-        m_PosX = 0;
-        m_PosY = m_NrOfRows-1;
-        for(int row{0}; row<m_NrOfRows; ++row)
-        {
-            _readSingleItem(in);
-            ++s_FilePosX;
-            --s_FilePosY;
-            ++m_PosX;
-            --m_PosY;
-        }
-        break;
-    case 12:
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                if (in.eof())
-                {
-                    throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-                }
-                in>>m_pBaseArrayPtr[row][col];
-            }
-        }
-        break;
-    case 13:
-        if (in.eof())
-        {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-        }
-        in>>m_pBaseArrayPtr[m_PosX][m_PosY];
-        break;
-    case 14:
-        for (int col{0}; col<m_NrOfColumns; ++col) {
-            if (in.eof())
-            {
-                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-            }
-            in>>m_pBaseArrayPtr[m_PosX][col];
-        }
-        break;
-    case 15:
-        for (int row{0}; row<m_NrOfRows; ++row) {
-            if (in.eof())
-            {
-                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-            }
-            in>>m_pBaseArrayPtr[row][m_PosY];
-        }
-        break;
-    case 16:
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            if (in.eof())
-            {
-                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-            }
-            in>>m_pBaseArrayPtr[row][row];
-        }
-        break;
-    case 17:
-        for (int row{m_NrOfRows-1}; row>=0; --row)
-        {
-            if (in.eof())
-            {
-                throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-            }
-            in>>m_pBaseArrayPtr[row][m_NrOfRows-1-row];
-        }
-    }
-}
-
-template<typename DataType>
-void Matrix<DataType>::_readTextLine(std::istream &in)
-{
-    std::string str;
-    std::stringstream stream;
-
-    if (in.eof())
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-    }
-
-    getline(in,str);
-
-    int strSize=str.size();
-    if (strSize==0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::EMPTY_FILE_ROW]};
-    }
-
-    unsigned int strIndex{0};
-    for (int col{0}; col<m_NrOfColumns; ++col)
-    {
-        while(str[strIndex]==' ' && strIndex<strSize)
-        {
-            ++strIndex;
-        }
-
-        if (strIndex==strSize)
-        {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::INSUFFICIENT_ELEMENTS_FILE_ROW]};
-        }
-
-        do
-        {
-            stream.put(str[strIndex++]);
-        }
-        while(str[strIndex]!=' ' && strIndex<strSize);
-
-        stream>>m_pBaseArrayPtr[m_PosX][col];
-        stream.str("");
-        stream.clear();
-    }
-}
-
-template<typename DataType>
-void Matrix<DataType>::_readSingleItem(std::istream &in)
-{
-    std::string str;
-    std::stringstream stream;
-
-    if (in.eof())
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-    }
-
-    getline(in,str);
-
-    int strSize = str.size();
-    if (strSize==0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::EMPTY_FILE_ROW]};
-    }
-
-    unsigned int strIndex{0};
-    for (int col{0}; col<s_FilePosY; ++col)
-    {
-        while (str[strIndex]==' ' && strIndex<strSize)
-        {
-           ++strIndex;
-        }
-
-        if (strIndex==strSize)
-        {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::INSUFFICIENT_ELEMENTS_FILE_ROW]};
-        }
-
-        do
-        {
-            ++strIndex;
-        }
-        while(str[strIndex]!=' ' && strIndex<strSize);
-    }
-
-    if (strIndex==strSize)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::INSUFFICIENT_ELEMENTS_FILE_ROW]};
-    }
-
-    while(str[strIndex]==' ' && strIndex<strSize)
-    {
-        ++strIndex;
-    }
-
-    if (strIndex==strSize)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::INSUFFICIENT_ELEMENTS_FILE_ROW]};
-    }
-
-    do
-    {
-        stream.put(str[strIndex++]);
-    }
-    while(str[strIndex]!=' ' && strIndex<strSize);
-
-    stream>>m_pBaseArrayPtr[m_PosX][m_PosY];
-    stream.str("");
-    stream.clear();
-}
-
-template<typename DataType>
-void Matrix<DataType>::_readDiscard(std::istream &in)
-{
-    std::string str;
-
-    in.clear();
-    in.seekg(0);
-
-    for (int row{0}; row<s_FilePosX; ++row)
-    {
-        if (in.eof())
-        {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::END_OF_FILE]};
-        }
-
-        getline(in,str);
-        str="";
-        str.clear();
-    }
 }
 
 template<typename DataType>
