@@ -55,8 +55,8 @@ public:
     void resizeNoInit(int nrOfRows, int nrOfColumns);
     void resize(int nrOfRows, int nrOfColumns);
 
-    void transformToUnitMatrix(int nrOfRowsColumns);
-    void transformToZeroMatrix(int nrOfRows, int nrOfColumns);
+    void transformToDiagMatrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType);
+    void transformToEqualElementsMatrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
 
     void swapItem(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr);
     void swapRow(int rowNr, Matrix<DataType>& matrix, int matrixRowNr);
@@ -538,7 +538,7 @@ void Matrix<DataType>::resizeNoInit(int nrOfRows, int nrOfColumns)
 }
 
 template <typename DataType>
-void Matrix<DataType>::transformToUnitMatrix(int nrOfRowsColumns)
+void Matrix<DataType>::transformToDiagMatrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType)
 {
     if (nrOfRowsColumns<=0)
     {
@@ -547,17 +547,13 @@ void Matrix<DataType>::transformToUnitMatrix(int nrOfRowsColumns)
     else
     {
         _deallocMemory();
-        _allocMemory(nrOfRowsColumns, nrOfRowsColumns);
-        setItemsToZero();
-        for (int diagIndex{0}; diagIndex<nrOfRowsColumns; diagIndex++)
-        {
-            m_pBaseArrayPtr[diagIndex][diagIndex] = 1;
-        }
+        Matrix matrix{nrOfRowsColumns, dataType, diagDataType};
+        swapWithMatrix(matrix);
     }
 }
 
 template <typename DataType>
-void Matrix<DataType>::transformToZeroMatrix(int nrOfRows, int nrOfColumns)
+void Matrix<DataType>::transformToEqualElementsMatrix(int nrOfRows, int nrOfColumns, const DataType& dataType)
 {
     if (nrOfRows<=0 || nrOfColumns<=0)
     {
@@ -566,8 +562,8 @@ void Matrix<DataType>::transformToZeroMatrix(int nrOfRows, int nrOfColumns)
     else
     {
         _deallocMemory();
-        _allocMemory(nrOfRows, nrOfColumns);
-        setItemsToZero();
+        Matrix matrix{nrOfRows, nrOfColumns, dataType};
+        swapWithMatrix(matrix);
     }
 }
 
@@ -1528,7 +1524,7 @@ Matrix<DataType> Matrix<DataType>::operator^ (int exp)
 
     if (exp==0)
     {
-        result.transformToUnitMatrix(m_NrOfRows);
+        result.transformToDiagMatrix(m_NrOfRows, 0, 1);
         return result;
     }
 
@@ -1923,7 +1919,7 @@ void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType
     }
 
     matrix = *this;
-    pseudoInverse.transformToUnitMatrix(m_NrOfRows);
+    pseudoInverse.transformToDiagMatrix(m_NrOfRows, 0, 1);
     coeff.resizeNoInit(m_NrOfRows,1);
 
     for (int diag{0}; diag<m_NrOfRows-1; ++diag)
