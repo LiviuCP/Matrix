@@ -26,24 +26,8 @@ public:
 	
     int getNrOfRows();
     int getNrOfColumns();
-    int getPosX();
-    int getPosY();
-    int getFilePosX();
-    int getFilePosY();
 
-    void setPosX(int m);
-    void setPosY(int n);
-    void setFilePosX(int filePosX);
-    void setFilePosY(int filePosY);
     void setItemsToZero();
-
-    void incrPosX();
-    void decrPosX();
-    void incrPosY();
-    void decrPosY();
-
-    void resetCurrentPos();
-    void resetCurrentPosInFile();
 
     void resizeNoInit(int nrOfRows, int nrOfColumns);
     void resize(int nrOfRows, int nrOfColumns);
@@ -100,8 +84,8 @@ public:
     void getTransposedMatrix(Matrix<DataType>& result);
     DataType determinant();
 
-    void sums(Matrix<DataType>& result, int mode);
-    void products(Matrix<DataType>& result, int mode);
+    void sums(Matrix<DataType>& result, int mode, int pos=-1);
+    void products(Matrix<DataType>& result, int mode, int pos=-1);
 
     void getNegativeMatrix(Matrix<DataType>& result);
     void getInverseElementsMatrix(Matrix<DataType>& result);
@@ -124,27 +108,17 @@ private:
     void _split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestmatrix, int splitRowColumnNr);
     void _concatenate(Matrix<DataType>& firstSrcMatrix,Matrix<DataType>& secondSrcMatrix);
 
-    static int s_FilePosX;
-    static int s_FilePosY;
-
     DataType** m_pBaseArrayPtr;
     int m_NrOfRows;
     int m_NrOfColumns;
-    int m_PosX;
-    int m_PosY;
     bool m_WrapMatrixByRow;
 };
-
-template<typename DataType> int Matrix<DataType>::s_FilePosX=0;
-template<typename DataType> int Matrix<DataType>::s_FilePosY=0;
 
 template <typename DataType>
 Matrix<DataType>::Matrix()
     : m_pBaseArrayPtr{nullptr}
     , m_NrOfRows{0}
     , m_NrOfColumns{0}
-    , m_PosX{-1}
-    , m_PosY{-1}
     , m_WrapMatrixByRow{true}
 {
 }
@@ -271,9 +245,6 @@ Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
             m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
         }
     }
-
-    setPosX(matrix.m_PosX);
-    setPosY(matrix.m_PosY);
 }
 
 template<typename DataType>
@@ -310,9 +281,6 @@ DataType** Matrix<DataType>::getBaseArrayPtr(int& nrOfRows, int& nrOfColumns)
         m_pBaseArrayPtr = nullptr;
         m_NrOfRows = 0;
         m_NrOfColumns = 0;
-
-        m_PosX = -1;
-        m_PosY = -1;
     }
     else
     {
@@ -335,54 +303,6 @@ int Matrix<DataType>::getNrOfColumns()
     return m_NrOfColumns;
 }
 
-template<typename DataType>
-int Matrix<DataType>::getPosX()
-{
-    return m_PosX;
-}
-
-template<typename DataType>
-int Matrix<DataType>::getPosY()
-{
-    return m_PosY;
-}
-
-template<typename DataType>
-int Matrix<DataType>::getFilePosX()
-{
-    return s_FilePosX;
-}
-
-template<typename DataType>
-int Matrix<DataType>::getFilePosY()
-{
-    return s_FilePosY;
-}
-
-template<typename DataType>
-void Matrix<DataType>::setPosX(int m)
-{
-    m_PosX = abs(m) % m_NrOfRows;
-}
-
-template<typename DataType>
-void Matrix<DataType>::setPosY(int n)
-{
-    m_PosY = abs(n) % m_NrOfColumns;
-}
-
-template<typename DataType>
-void Matrix<DataType>::setFilePosX(int filePosX)
-{
-    s_FilePosX = abs(filePosX);
-}
-
-template<typename DataType>
-void Matrix<DataType>::setFilePosY(int filePosY)
-{
-    s_FilePosY = abs(filePosY);
-}
-
 template <typename DataType> void Matrix<DataType>::setItemsToZero()
 {
     for (int row=0; row<m_NrOfRows; ++row)
@@ -392,65 +312,6 @@ template <typename DataType> void Matrix<DataType>::setItemsToZero()
             m_pBaseArrayPtr[row][col]=0;
         }
     }
-}
-
-template<typename DataType>
-void Matrix<DataType>::incrPosX()
-{
-    if (m_PosX<m_NrOfRows-1)
-    {
-        ++m_PosX;
-    }
-    else
-    {
-        m_PosX = 0;
-    }
-}
-
-template<typename DataType>
-void Matrix<DataType>::decrPosX()
-{
-    if (m_PosX>0) m_PosX--; else m_PosX=m_NrOfRows-1;
-}
-
-template<typename DataType>
-void Matrix<DataType>::incrPosY()
-{
-    if (m_PosY<m_NrOfColumns-1)
-    {
-        ++m_PosY;
-    }
-    else
-    {
-        m_PosY = 0;
-    }
-}
-
-template<typename DataType>
-void Matrix<DataType>::decrPosY()
-{
-    if (m_PosY>0)
-    {
-        --m_PosY;
-    }
-    else
-    {
-        m_PosY = m_NrOfColumns-1;
-    }
-}
-
-template<typename DataType>
-void Matrix<DataType>::resetCurrentPos()
-{
-    m_PosX = 0;
-    m_PosY = 0;
-}
-
-template<typename DataType>
-void Matrix<DataType>::resetCurrentPosInFile()
-{
-    s_FilePosX = 0;
-    s_FilePosY = 0;
 }
 
 template<typename DataType>
@@ -540,7 +401,6 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
 
         _deallocMemory();
         _allocMemory(nrOfRows,nrOfColumns);
-        matrix.resetCurrentPos();
 
         if (nrOfRows<matrix.m_NrOfRows && nrOfColumns<matrix.m_NrOfColumns)
         {
@@ -676,8 +536,6 @@ void Matrix<DataType>::swapWithMatrix(Matrix<DataType> &matrix)
 {
     std::swap(m_NrOfRows,matrix.m_NrOfRows);
     std::swap(m_NrOfColumns,matrix.m_NrOfColumns);
-    std::swap(m_PosX, matrix.m_PosX);
-    std::swap(m_PosY, matrix.m_PosY);
     std::swap(m_WrapMatrixByRow, matrix.m_WrapMatrixByRow);
     std::swap(m_pBaseArrayPtr, matrix.m_pBaseArrayPtr);
 }
@@ -1436,8 +1294,6 @@ Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
         }
     }
 
-    m_PosX = matrix.m_PosX;
-    m_PosY = matrix.m_PosY;
     m_WrapMatrixByRow = matrix.m_WrapMatrixByRow;
 
     return *this;
@@ -1872,7 +1728,7 @@ void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
 }
 
 template <typename DataType>
-void Matrix<DataType>::sums(Matrix& result, int mode)
+void Matrix<DataType>::sums(Matrix& result, int mode, int pos)
 {
     if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
@@ -1907,11 +1763,22 @@ void Matrix<DataType>::sums(Matrix& result, int mode)
     }
     case 1:
     {
+        if (pos<0)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+        }
+
+        if (pos>=m_NrOfRows)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
+        }
+
         DataType currentRowItemsSum{0};
         result.resizeNoInit(1,1);
+
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
-            currentRowItemsSum *= m_pBaseArrayPtr[m_PosX][col];
+            currentRowItemsSum *= m_pBaseArrayPtr[pos][col];
         }
         result.m_pBaseArrayPtr[0][0] = currentRowItemsSum;
         break;
@@ -1932,11 +1799,21 @@ void Matrix<DataType>::sums(Matrix& result, int mode)
     }
     case 3:
     {
+        if (pos<0)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+        }
+
+        if (pos>=m_NrOfColumns)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
+        }
+
         DataType currentColumnItemsSum{0};
         result.resizeNoInit(1,1);
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            currentColumnItemsSum *= m_pBaseArrayPtr[row][m_PosY];
+            currentColumnItemsSum *= m_pBaseArrayPtr[row][pos];
         }
         result.m_pBaseArrayPtr[0][0] = currentColumnItemsSum;
         break;
@@ -1956,7 +1833,7 @@ void Matrix<DataType>::sums(Matrix& result, int mode)
 }
 
 template <typename DataType>
-void Matrix<DataType>::products(Matrix& result, int mode)
+void Matrix<DataType>::products(Matrix& result, int mode, int pos)
 {
     if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
@@ -1991,11 +1868,21 @@ void Matrix<DataType>::products(Matrix& result, int mode)
     }
     case 1:
     {
+        if (pos<0)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+        }
+
+        if (pos>=m_NrOfRows)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
+        }
+
         DataType currentRowItemsProduct{1};
         result.resizeNoInit(1,1);
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
-            currentRowItemsProduct *= m_pBaseArrayPtr[m_PosX][col];
+            currentRowItemsProduct *= m_pBaseArrayPtr[pos][col];
         }
         result.m_pBaseArrayPtr[0][0] = currentRowItemsProduct;
         break;
@@ -2016,11 +1903,21 @@ void Matrix<DataType>::products(Matrix& result, int mode)
     }
     case 3:
     {
+        if (pos<0)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+        }
+
+        if (pos>=m_NrOfColumns)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
+        }
+
         DataType currentColumnItemsProduct{1};
         result.resizeNoInit(1,1);
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            currentColumnItemsProduct *= m_pBaseArrayPtr[row][m_PosY];
+            currentColumnItemsProduct *= m_pBaseArrayPtr[row][pos];
         }
         result.m_pBaseArrayPtr[0][0] = currentColumnItemsProduct;
         break;
@@ -2095,9 +1992,6 @@ void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns)
     {
         m_pBaseArrayPtr[row] = new DataType[nrOfColumns];
     }
-
-    // this reset is required as the position indicators might get out of bound; no conditional reset as we need to have a consistent behavior
-    resetCurrentPos();
 }
 
 template<typename DataType>
@@ -2110,8 +2004,6 @@ void Matrix<DataType>::_deallocMemory()
 
     delete []m_pBaseArrayPtr;
     m_pBaseArrayPtr = nullptr;
-
-    resetCurrentPos();
 }
 
 template<typename DataType>
