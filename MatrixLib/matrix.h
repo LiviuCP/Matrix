@@ -37,7 +37,7 @@ public:
     int getNrOfRows();
     int getNrOfColumns();
 
-    void setItemsToZero();
+    void setAllItemsToSameValue(const DataType& value);
 
     void resizeNoInit(int nrOfRows, int nrOfColumns);
     void resize(int nrOfRows, int nrOfColumns);
@@ -305,13 +305,13 @@ int Matrix<DataType>::getNrOfColumns()
     return m_NrOfColumns;
 }
 
-template <typename DataType> void Matrix<DataType>::setItemsToZero()
+template <typename DataType> void Matrix<DataType>::setAllItemsToSameValue(const DataType& value)
 {
-    for (int row=0; row<m_NrOfRows; ++row)
+    for (int row{0}; row<m_NrOfRows; ++row)
     {
-        for (int col=0; col<m_NrOfColumns; ++col)
+        for (int col{0}; col<m_NrOfColumns; ++col)
         {
-            m_pBaseArrayPtr[row][col]=0;
+            m_pBaseArrayPtr[row][col] = value;
         }
     }
 }
