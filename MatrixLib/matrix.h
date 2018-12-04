@@ -39,8 +39,10 @@ public:
 
     void setAllItemsToSameValue(const DataType& value);
 
-    void resizeNoInit(int nrOfRows, int nrOfColumns);
+    // resize and init elements with default constructor/value (DataType should be default constructible)
     void resize(int nrOfRows, int nrOfColumns);
+    // resize and fill new elements with value of dataType (init still done with default constructor/value)
+    void resize(int nrOfRows, int nrOfColumns, const DataType& dataType);
 
     void transformToDiagMatrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType);
     void transformToEqualElementsMatrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
@@ -317,7 +319,7 @@ template <typename DataType> void Matrix<DataType>::setAllItemsToSameValue(const
 }
 
 template<typename DataType>
-void Matrix<DataType>::resizeNoInit(int nrOfRows, int nrOfColumns)
+void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
 {
     if (nrOfRows<=0 || nrOfColumns<=0)
     {
@@ -327,6 +329,72 @@ void Matrix<DataType>::resizeNoInit(int nrOfRows, int nrOfColumns)
     {
         _deallocMemory();
         _allocMemory(nrOfRows, nrOfColumns);
+    }
+}
+
+template <typename DataType>
+void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns, const DataType& value)
+{
+    auto copyMatrix = [](Matrix<DataType>& dest, Matrix<DataType>& src, int beginRowIndex, int endRowIndex, int beginColumnIndex, int endColumnIndex)
+    {
+        for (int row{beginRowIndex}; row<endRowIndex; ++row)
+        {
+            for (int col{beginColumnIndex}; col<endColumnIndex; ++col)
+            {
+                dest.m_pBaseArrayPtr[row][col]=src.m_pBaseArrayPtr[row][col];
+            }
+        }
+    };
+
+    // DataType should support the assign (=) operator
+    auto fillNewItems = [](Matrix<DataType>& dest, int beginRowIndex, int endRowIndex, int beginColumnIndex, int endColumnIndex, const DataType& value)
+    {
+        for (int row{beginRowIndex}; row<endRowIndex; ++row)
+        {
+            for (int col{beginColumnIndex}; col<endColumnIndex; ++col)
+            {
+                dest.m_pBaseArrayPtr[row][col] = value;
+            }
+        }
+    };
+
+    if (nrOfRows<=0 || nrOfColumns<=0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
+    }
+    else if (nrOfRows!=m_NrOfRows || nrOfColumns!=m_NrOfColumns)
+    {
+        Matrix<DataType> matrix{};
+
+        std::swap(m_pBaseArrayPtr, matrix.m_pBaseArrayPtr);
+
+        matrix.m_NrOfRows = m_NrOfRows;
+        matrix.m_NrOfColumns = m_NrOfColumns;
+
+        _deallocMemory(); // not actually required, it's just put for the sake of good practice (first free memory, then alloc new one)
+        _allocMemory(nrOfRows, nrOfColumns);
+
+        if (nrOfRows<matrix.m_NrOfRows && nrOfColumns<matrix.m_NrOfColumns)
+        {
+            copyMatrix(*this, matrix, 0, nrOfRows, 0, nrOfColumns);
+        }
+        else if (nrOfRows<=matrix.m_NrOfRows && nrOfColumns>=matrix.m_NrOfColumns)
+        {
+            copyMatrix(*this, matrix, 0, nrOfRows, 0, matrix.m_NrOfColumns);
+            fillNewItems(*this, 0, nrOfRows, matrix.m_NrOfColumns, nrOfColumns, value);
+        }
+        else if ((nrOfRows>=matrix.m_NrOfRows) && (nrOfColumns<=matrix.m_NrOfColumns))
+        {
+            copyMatrix(*this, matrix, 0, matrix.m_NrOfRows, 0, nrOfColumns);
+            fillNewItems(*this, matrix.m_NrOfRows, nrOfRows, 0, nrOfColumns, value);
+        }
+        else
+        {
+            copyMatrix(*this, matrix, 0, matrix.m_NrOfRows, 0, matrix.m_NrOfColumns);
+            fillNewItems(*this, 0, nrOfRows, matrix.m_NrOfColumns, nrOfColumns, value);
+            fillNewItems(*this, matrix.m_NrOfRows, nrOfRows, 0, nrOfColumns, value);
+            fillNewItems(*this, matrix.m_NrOfRows, nrOfRows, matrix.m_NrOfColumns, nrOfColumns, value);
+        }
     }
 }
 
@@ -357,74 +425,6 @@ void Matrix<DataType>::transformToEqualElementsMatrix(int nrOfRows, int nrOfColu
         _deallocMemory();
         Matrix matrix{nrOfRows, nrOfColumns, dataType};
         swapWithMatrix(matrix);
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
-{
-    auto copyMatrix = [](Matrix<DataType>& dest, Matrix<DataType>& src, int beginRowIndex, int endRowIndex, int beginColumnIndex, int endColumnIndex)
-    {
-        for (int row{beginRowIndex}; row<endRowIndex; ++row)
-        {
-            for (int col{beginColumnIndex}; col<endColumnIndex; ++col)
-            {
-                dest.m_pBaseArrayPtr[row][col]=src.m_pBaseArrayPtr[row][col];
-            }
-        }
-    };
-
-    auto setZeroes = [](Matrix<DataType>& dest, int beginRowIndex, int endRowIndex, int beginColumnIndex, int endColumnIndex)
-    {
-        for (int row{beginRowIndex}; row<endRowIndex; ++row)
-        {
-            for (int col{beginColumnIndex}; col<endColumnIndex; ++col)
-            {
-                dest.m_pBaseArrayPtr[row][col] = 0;
-            }
-        }
-    };
-
-    if (nrOfRows<=0 || nrOfColumns<=0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
-    }
-    else if (nrOfRows!=m_NrOfRows || nrOfColumns!=m_NrOfColumns)
-    {
-        DataType** temp;
-        Matrix<DataType> matrix{};
-
-        temp=matrix.m_pBaseArrayPtr;
-        matrix.m_pBaseArrayPtr=m_pBaseArrayPtr;
-        m_pBaseArrayPtr=temp;
-
-        matrix.m_NrOfRows=m_NrOfRows;
-        matrix.m_NrOfColumns=m_NrOfColumns;
-
-        _deallocMemory();
-        _allocMemory(nrOfRows,nrOfColumns);
-
-        if (nrOfRows<matrix.m_NrOfRows && nrOfColumns<matrix.m_NrOfColumns)
-        {
-            copyMatrix(*this, matrix, 0, nrOfRows, 0, nrOfColumns);
-        }
-        else if (nrOfRows<=matrix.m_NrOfRows && nrOfColumns>=matrix.m_NrOfColumns)
-        {
-            copyMatrix(*this, matrix, 0, nrOfRows, 0, matrix.m_NrOfColumns);
-            setZeroes(*this, 0, nrOfRows, matrix.m_NrOfColumns, nrOfColumns);
-        }
-        else if ((nrOfRows>=matrix.m_NrOfRows) && (nrOfColumns<=matrix.m_NrOfColumns))
-        {
-            copyMatrix(*this, matrix, 0, matrix.m_NrOfRows, 0, nrOfColumns);
-            setZeroes(*this, matrix.m_NrOfRows, nrOfRows, 0, nrOfColumns);
-        }
-        else
-        {
-            copyMatrix(*this, matrix, 0, matrix.m_NrOfRows, 0, matrix.m_NrOfColumns);
-            setZeroes(*this, 0, nrOfRows, matrix.m_NrOfColumns, nrOfColumns);
-            setZeroes(*this, matrix.m_NrOfRows, nrOfRows, 0, nrOfColumns);
-            setZeroes(*this, matrix.m_NrOfRows, nrOfRows, matrix.m_NrOfColumns, nrOfColumns);
-        }
     }
 }
 
@@ -1032,7 +1032,7 @@ void Matrix<DataType>::applyCoefficientsToRow (const Matrix &coeff, Matrix &src,
 
     if (m_NrOfRows != src.m_NrOfRows || m_NrOfColumns != src.m_NrOfColumns)
     {
-        resizeNoInit(src.m_NrOfRows, src.m_NrOfColumns);
+        resize(src.m_NrOfRows, src.m_NrOfColumns);
     }
 
     if (multiply)
@@ -1080,7 +1080,7 @@ void Matrix<DataType>::applyCoefficientsToColumn (const Matrix &coeff, Matrix &s
 
     if (m_NrOfRows != src.m_NrOfRows || m_NrOfColumns != src.m_NrOfColumns)
     {
-        resizeNoInit(src.m_NrOfRows, src.m_NrOfColumns);
+        resize(src.m_NrOfRows, src.m_NrOfColumns);
     }
 
     if (multiply)
@@ -1121,7 +1121,7 @@ Matrix<DataType> Matrix<DataType>::operator+ (const Matrix<DataType>& matrix)
     }
 
     Matrix<DataType> result{};
-    result.resizeNoInit(m_NrOfRows, m_NrOfColumns);
+    result.resize(m_NrOfRows, m_NrOfColumns);
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
@@ -1143,7 +1143,7 @@ Matrix<DataType> Matrix<DataType>::operator- (const Matrix<DataType>& matrix)
     }
 
     Matrix<DataType> result{};
-    result.resizeNoInit(m_NrOfRows, m_NrOfColumns);
+    result.resize(m_NrOfRows, m_NrOfColumns);
 
     for (int i{0}; i<m_NrOfRows; ++i)
     {
@@ -1571,7 +1571,7 @@ void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType
 
     matrix = *this;
     pseudoInverse.transformToDiagMatrix(m_NrOfRows, 0, 1);
-    coeff.resizeNoInit(m_NrOfRows,1);
+    coeff.resize(m_NrOfRows,1);
 
     for (int diag{0}; diag<m_NrOfRows-1; ++diag)
     {
@@ -1648,7 +1648,7 @@ void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
         matrix.m_NrOfRows = m_NrOfRows;
         matrix.m_NrOfColumns = m_NrOfColumns;
 
-        resizeNoInit(m_NrOfColumns, m_NrOfRows);
+        resize(m_NrOfColumns, m_NrOfRows);
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
@@ -1660,7 +1660,7 @@ void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
     }
     else
     {
-        result.resizeNoInit(m_NrOfColumns,m_NrOfRows);
+        result.resize(m_NrOfColumns,m_NrOfRows);
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
@@ -1685,7 +1685,7 @@ void Matrix<DataType>::sums(Matrix& result, ArithmeticMode mode, int pos)
     case ArithmeticMode::ALL_ITEMS:
     {
         DataType allItemsSum{0};
-        result.resizeNoInit(1,1);
+        result.resize(1,1);
         for (int row{0}; row<m_NrOfRows; ++row)
         {
             for (int col{0}; col<m_NrOfColumns; ++col)
@@ -1709,7 +1709,7 @@ void Matrix<DataType>::sums(Matrix& result, ArithmeticMode mode, int pos)
         }
 
         DataType currentRowItemsSum{0};
-        result.resizeNoInit(1,1);
+        result.resize(1,1);
 
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
@@ -1720,7 +1720,7 @@ void Matrix<DataType>::sums(Matrix& result, ArithmeticMode mode, int pos)
     }
     case ArithmeticMode::EACH_ROW:
     {
-        result.resizeNoInit(m_NrOfRows,1);
+        result.resize(m_NrOfRows,1);
         for (int row{0}; row<m_NrOfRows; ++row)
         {
             DataType eachRowItemsSum{0};
@@ -1745,7 +1745,7 @@ void Matrix<DataType>::sums(Matrix& result, ArithmeticMode mode, int pos)
         }
 
         DataType currentColumnItemsSum{0};
-        result.resizeNoInit(1,1);
+        result.resize(1,1);
         for (int row{0}; row<m_NrOfRows; ++row)
         {
             currentColumnItemsSum *= m_pBaseArrayPtr[row][pos];
@@ -1754,7 +1754,7 @@ void Matrix<DataType>::sums(Matrix& result, ArithmeticMode mode, int pos)
         break;
     }
     case ArithmeticMode::EACH_COLUMN:
-        result.resizeNoInit(1, m_NrOfColumns);
+        result.resize(1, m_NrOfColumns);
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
             DataType eachColumnItemsSum{0};
@@ -1782,7 +1782,7 @@ void Matrix<DataType>::products(Matrix& result, ArithmeticMode mode, int pos)
     case ArithmeticMode::ALL_ITEMS:
     {
         DataType allItemsProduct{1};
-        result.resizeNoInit(1,1);
+        result.resize(1,1);
         for (int row{0}; row<m_NrOfRows; ++row)
         {
             for (int col{0}; col<m_NrOfColumns; ++col)
@@ -1806,7 +1806,7 @@ void Matrix<DataType>::products(Matrix& result, ArithmeticMode mode, int pos)
         }
 
         DataType currentRowItemsProduct{1};
-        result.resizeNoInit(1,1);
+        result.resize(1,1);
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
             currentRowItemsProduct *= m_pBaseArrayPtr[pos][col];
@@ -1816,7 +1816,7 @@ void Matrix<DataType>::products(Matrix& result, ArithmeticMode mode, int pos)
     }
     case ArithmeticMode::EACH_ROW:
     {
-        result.resizeNoInit(m_NrOfRows,1);
+        result.resize(m_NrOfRows,1);
         for (int row{0}; row<m_NrOfRows; ++row)
         {
             DataType eachRowItemsProduct{1};
@@ -1841,7 +1841,7 @@ void Matrix<DataType>::products(Matrix& result, ArithmeticMode mode, int pos)
         }
 
         DataType currentColumnItemsProduct{1};
-        result.resizeNoInit(1,1);
+        result.resize(1,1);
         for (int row{0}; row<m_NrOfRows; ++row)
         {
             currentColumnItemsProduct *= m_pBaseArrayPtr[row][pos];
@@ -1850,7 +1850,7 @@ void Matrix<DataType>::products(Matrix& result, ArithmeticMode mode, int pos)
         break;
     }
     case ArithmeticMode::EACH_COLUMN:
-        result.resizeNoInit(1, m_NrOfColumns);
+        result.resize(1, m_NrOfColumns);
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
             DataType eachColumnItemsProduct{1};
@@ -1870,7 +1870,7 @@ void Matrix<DataType>::getNegativeMatrix(Matrix<DataType>& result)
 {
     if (this != &result)
     {
-        result.resizeNoInit(m_NrOfRows,m_NrOfColumns);
+        result.resize(m_NrOfRows,m_NrOfColumns);
     }
 
     for (int row{0}; row<m_NrOfRows; ++row)
@@ -1898,7 +1898,7 @@ void Matrix<DataType>::getInverseElementsMatrix(Matrix<DataType>& result)
 
     if (this != &result)
     {
-        result.resizeNoInit(m_NrOfRows,m_NrOfColumns);
+        result.resize(m_NrOfRows,m_NrOfColumns);
     }
 
     for (int row{0}; row<m_NrOfRows; ++row)
@@ -1978,7 +1978,7 @@ template<typename DataType>
 Matrix<DataType> Matrix<DataType>::_multiply(const DataType &scalar)
 {
     Matrix<DataType> matrix{};
-    matrix.resizeNoInit(m_NrOfRows, m_NrOfColumns);
+    matrix.resize(m_NrOfRows, m_NrOfColumns);
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
@@ -2043,7 +2043,7 @@ template<typename DataType>
 void Matrix<DataType>::_concatenate(Matrix<DataType> &firstSrcMatrix, Matrix<DataType> &secondSrcMatrix)
 {
     if (m_WrapMatrixByRow) {
-        resizeNoInit(firstSrcMatrix.m_NrOfRows+secondSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns);
+        resize(firstSrcMatrix.m_NrOfRows+secondSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns);
 
         for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
         {
@@ -2063,7 +2063,7 @@ void Matrix<DataType>::_concatenate(Matrix<DataType> &firstSrcMatrix, Matrix<Dat
     }
     else
     {
-        resizeNoInit(firstSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns+secondSrcMatrix.m_NrOfColumns);
+        resize(firstSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns+secondSrcMatrix.m_NrOfColumns);
 
         for(int row{0}; row<m_NrOfRows; ++row)
         {
