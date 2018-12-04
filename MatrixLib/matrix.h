@@ -68,9 +68,6 @@ public:
 
     void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX=0, int srcY=0, int destX=0, int destY=0);
 
-    void applyCoefficientsToRow (const Matrix<DataType>& coeff, Matrix<DataType>& src, bool _multiply);
-    void applyCoefficientsToColumn (const Matrix<DataType>& coeff, Matrix<DataType>& src, bool _multiply);
-
     Matrix<DataType> operator+ (const Matrix<DataType>& matrix);
     Matrix<DataType> operator- (const Matrix<DataType>& matrix);
     Matrix<DataType> operator* (const Matrix<DataType>& matrix);
@@ -1014,101 +1011,6 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
     else
     {
         _split(firstDestMatrix, secondDestMatrix, splitRowColumnNr);
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::applyCoefficientsToRow (const Matrix &coeff, Matrix &src, bool multiply)
-{
-    if (m_pBaseArrayPtr==coeff.m_pBaseArrayPtr)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
-    }
-
-    if (coeff.m_NrOfRows!=src.m_NrOfRows)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
-    }
-
-    if (m_NrOfRows != src.m_NrOfRows || m_NrOfColumns != src.m_NrOfColumns)
-    {
-        resize(src.m_NrOfRows, src.m_NrOfColumns);
-    }
-
-    if (multiply)
-    {
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = src.m_pBaseArrayPtr[row][col] * coeff.m_pBaseArrayPtr[row][0];
-            }
-        }
-    }
-    else
-    {
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            if (coeff.m_pBaseArrayPtr[row][0]==0)
-            {
-                throw std::runtime_error{Matr::exceptions[Matr::Error::DIVISION_BY_ZERO]};
-            }
-        }
-
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = src.m_pBaseArrayPtr[row][col] / coeff.m_pBaseArrayPtr[row][0];
-            }
-        }
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::applyCoefficientsToColumn (const Matrix &coeff, Matrix &src, bool multiply)
-{
-    if (coeff.m_pBaseArrayPtr==m_pBaseArrayPtr)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
-    }
-
-    if (coeff.m_NrOfColumns!=src.m_NrOfColumns)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_ROW_LENGTH]};
-    }
-
-    if (m_NrOfRows != src.m_NrOfRows || m_NrOfColumns != src.m_NrOfColumns)
-    {
-        resize(src.m_NrOfRows, src.m_NrOfColumns);
-    }
-
-    if (multiply)
-    {
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            for (int row{0}; row<m_NrOfRows; ++row)
-            {
-                m_pBaseArrayPtr[row][col] = src.m_pBaseArrayPtr[row][col] * coeff.m_pBaseArrayPtr[0][col];
-            }
-        }
-    }
-    else {
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            if (coeff.m_pBaseArrayPtr[0][col]==0)
-            {
-                throw std::runtime_error{Matr::exceptions[Matr::Error::DIVISION_BY_ZERO]};
-            }
-        }
-
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            for (int i{0}; i<m_NrOfRows; ++i)
-            {
-                m_pBaseArrayPtr[i][col] = src.m_pBaseArrayPtr[i][col] / coeff.m_pBaseArrayPtr[0][col];
-            }
-        }
     }
 }
 
