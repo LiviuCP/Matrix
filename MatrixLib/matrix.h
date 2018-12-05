@@ -27,6 +27,7 @@ public:
     Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr);
     Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr);
     Matrix(const Matrix<DataType>& matrix);
+    Matrix(Matrix<DataType>&& matrix);
     ~Matrix();
 
     DataType& at(int i,int j);
@@ -87,6 +88,7 @@ public:
     Matrix<DataType> operator*(const DataType& data);
     Matrix<DataType> operator^ (int exp);
     Matrix<DataType>& operator= (const Matrix<DataType>& matrix);
+    Matrix<DataType>& operator= (Matrix<DataType>&& matrix);
 
     bool operator== (const Matrix<DataType>& matrix) const;
     bool operator != (const Matrix<DataType>& matrix) const;
@@ -244,6 +246,19 @@ Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
             m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
         }
     }
+}
+
+template<typename DataType>
+Matrix<DataType>::Matrix(Matrix<DataType> &&matrix)
+    : m_pBaseArrayPtr{matrix.m_pBaseArrayPtr}
+    , m_NrOfRows{matrix.m_NrOfRows}
+    , m_NrOfColumns{matrix.m_NrOfColumns}
+    , m_WrapMatrixByRow{matrix.m_WrapMatrixByRow}
+{
+    // same wrap value for the source matrix (matrix.m_WrapMatrixByRow)
+    matrix.m_pBaseArrayPtr = nullptr;
+    matrix.m_NrOfRows = 0;
+    matrix.m_NrOfColumns = 0;
 }
 
 template<typename DataType>
@@ -1669,6 +1684,20 @@ Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
     }
 
     m_WrapMatrixByRow = matrix.m_WrapMatrixByRow;
+
+    return *this;
+}
+
+template<typename DataType>
+Matrix<DataType>& Matrix<DataType>::operator=(Matrix<DataType> &&matrix)
+{
+    m_pBaseArrayPtr = matrix.m_pBaseArrayPtr;
+    m_NrOfRows = matrix.m_NrOfRows;
+    m_NrOfColumns = matrix.m_NrOfColumns;
+
+    matrix.m_pBaseArrayPtr = nullptr;
+    matrix.m_NrOfRows = 0;
+    matrix.m_NrOfColumns = 0;
 
     return *this;
 }
