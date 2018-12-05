@@ -10,15 +10,6 @@ template <typename DataType>
 class Matrix
 {
 public: 
-    Matrix();
-    Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
-    Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
-    Matrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType);
-    Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr);
-    Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr);
-    Matrix(const Matrix<DataType>& matrix);
-    ~Matrix();
-
     enum class ArithmeticMode
     {
         ALL_ITEMS,
@@ -29,15 +20,23 @@ public:
         ModesCount
     };
 
+    Matrix();
+    Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
+    Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
+    Matrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType);
+    Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr);
+    Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr);
+    Matrix(const Matrix<DataType>& matrix);
+    ~Matrix();
+
     DataType& at(int i,int j);
+    DataType& operator[] (int index);
 
     // transfers ownership of the data to the user (object becomes empty and user becomes responsible for de-allocating the data properly)
     DataType** getBaseArrayPtr(int& nrOfRows, int& nrOfColumns);
 	
     int getNrOfRows();
     int getNrOfColumns();
-
-    void setAllItemsToSameValue(const DataType& value);
 
     // resize and init elements with default constructor/value (DataType should be default constructible)
     void resize(int nrOfRows, int nrOfColumns);
@@ -47,26 +46,39 @@ public:
     void transformToDiagMatrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType);
     void transformToEqualElementsMatrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
 
+    void insertRow (int rowNr);
+    void insertColumn(int columnNr);
+    void deleteRow (int rowNr);
+    void deleteColumn(int columnNr);
+
+    void concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
+    void split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr);
+
     void swapItem(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr);
     void swapRow(int rowNr, Matrix<DataType>& matrix, int matrixRowNr);
     void swapColumn(int columnNr, Matrix<DataType>& matrix, int matrixColumnNr);
     void swapRowColumn(int rowNr, Matrix<DataType>& matrix, int matrixColumnNr);
     void swapWithMatrix(Matrix<DataType> &m);
 
-    void insertColumn(int columnNr);
-    void insertRow (int rowNr);
-    void deleteColumn(int columnNr);
-    void deleteRow (int rowNr);
+    void setAllItemsToSameValue(const DataType& value);
+    void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX=0, int srcY=0, int destX=0, int destY=0);
 
+    // functions depending on operations supported by DataItem (addition, multiplication, etc)
     void addRowToColumn(int rowNr, const DataType& coeff, Matrix<DataType>& src, int srcColumnNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destColumnNr);
     void addColumnToRow(int columnNr, const DataType& coeff, Matrix<DataType>& src, int srcRowNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destRowNr);
     void addRowToRow(int rowNr, const DataType& coeff, Matrix<DataType>& src, int srcRowNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destRowNr);
     void addColumnToColumn(int columnNr, const DataType& coeff, Matrix<DataType>& src, int srcColumnNr, const DataType& srcCoeff, Matrix<DataType> &dest, int destColumnNr);
 
-    void concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
-    void split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr);
+    DataType determinant();
+    int rank() const;
 
-    void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX=0, int srcY=0, int destX=0, int destY=0);
+    void getInverseMatrix(Matrix<DataType> &coeff, Matrix<DataType>& pseudoInverse);
+    void getTransposedMatrix(Matrix<DataType>& result);
+    void getNegativeMatrix(Matrix<DataType>& result);
+    void getInverseElementsMatrix(Matrix<DataType>& result);
+
+    void sums(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1);
+    void products(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1);
 
     Matrix<DataType> operator+ (const Matrix<DataType>& matrix);
     Matrix<DataType> operator- (const Matrix<DataType>& matrix);
@@ -82,19 +94,6 @@ public:
     bool operator <= (const Matrix<DataType>& matrix) const;
     bool operator > (const Matrix<DataType>& matrix) const;
     bool operator >= (const Matrix<DataType>& matrix) const;
-
-    DataType& operator[] (int index);
-
-    int rank() const;
-    void getInverseMatrix(Matrix<DataType> &coeff, Matrix<DataType>& pseudoInverse);
-    void getTransposedMatrix(Matrix<DataType>& result);
-    DataType determinant();
-
-    void sums(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1);
-    void products(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1);
-
-    void getNegativeMatrix(Matrix<DataType>& result);
-    void getInverseElementsMatrix(Matrix<DataType>& result);
 
 private:
     void _allocMemory(int nrOfRows, int nrOfColumns);
@@ -269,6 +268,22 @@ DataType& Matrix<DataType>:: at(int i,int j)
 }
 
 template<typename DataType>
+DataType& Matrix<DataType>::operator[](int index)
+{
+    if (index<0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (index>=m_NrOfRows*m_NrOfColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
+    }
+
+    return m_WrapMatrixByRow ? _getItemForLineWrap(index) : _getItemForColumnWrap(index);
+}
+
+template<typename DataType>
 DataType** Matrix<DataType>::getBaseArrayPtr(int& nrOfRows, int& nrOfColumns)
 {
     DataType** pBaseArrayPtr{nullptr};
@@ -302,17 +317,6 @@ template<typename DataType>
 int Matrix<DataType>::getNrOfColumns()
 {
     return m_NrOfColumns;
-}
-
-template <typename DataType> void Matrix<DataType>::setAllItemsToSameValue(const DataType& value)
-{
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            m_pBaseArrayPtr[row][col] = value;
-        }
-    }
 }
 
 template<typename DataType>
@@ -422,6 +426,286 @@ void Matrix<DataType>::transformToEqualElementsMatrix(int nrOfRows, int nrOfColu
         _deallocMemory();
         Matrix matrix{nrOfRows, nrOfColumns, dataType};
         swapWithMatrix(matrix);
+    }
+}
+
+
+
+template <typename DataType>
+void Matrix<DataType>::insertRow (int rowNr)
+{
+    if (rowNr<0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (rowNr>m_NrOfRows)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INSERT_ROW_NONCONTIGUOUS]};
+    }
+
+    DataType** insert_ptr=new DataType*[m_NrOfRows+1];
+
+    for (int row{0}; row<rowNr; ++row)
+    {
+        insert_ptr[row] = m_pBaseArrayPtr[row];
+    }
+
+    insert_ptr[rowNr]=new DataType[m_NrOfColumns];
+
+    for (int col{0}; col<m_NrOfColumns; ++col)
+    {
+        insert_ptr[rowNr][col]=0;
+    }
+
+    for (int row{rowNr}; row<m_NrOfRows; ++row)
+    {
+        insert_ptr[row+1] = m_pBaseArrayPtr[row];
+    }
+
+    delete []m_pBaseArrayPtr;
+    m_pBaseArrayPtr = insert_ptr;
+    ++m_NrOfRows;
+}
+
+template <typename DataType>
+void Matrix<DataType>::insertColumn(int columnNr)
+{
+    if (columnNr<0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (columnNr>m_NrOfColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INSERT_COLUMN_NONCONTIGUOUS]};
+    }
+
+    DataType** insert_ptr{new DataType*[m_NrOfRows]};
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        insert_ptr[row]=new DataType[m_NrOfColumns+1];
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col=0; col<columnNr; ++col)
+        {
+            insert_ptr[row][col]=m_pBaseArrayPtr[row][col];
+        }
+    }
+
+    for(int row{0}; row<m_NrOfRows; ++row)
+    {
+        for(int col=columnNr+1; col<m_NrOfColumns+1; ++col)
+        {
+            insert_ptr[row][col]=m_pBaseArrayPtr[row][col-1];
+        }
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        insert_ptr[row][columnNr]=0;
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        delete []m_pBaseArrayPtr[row];
+    }
+
+    delete []m_pBaseArrayPtr;
+    m_pBaseArrayPtr = insert_ptr;
+    ++m_NrOfColumns;
+}
+
+template <typename DataType>
+void Matrix<DataType>::deleteRow (int rowNr)
+{
+    if (m_NrOfRows==1)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ERASE_THE_ONLY_ROW]};
+    }
+
+    if (rowNr>=m_NrOfRows)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
+    }
+
+    if (rowNr<0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    DataType** insert_ptr{new DataType*[m_NrOfRows-1]};
+
+    for (int row{0}; row<rowNr; ++row)
+    {
+        insert_ptr[row] = m_pBaseArrayPtr[row];
+    }
+
+    delete []m_pBaseArrayPtr[rowNr];
+
+    for (int row{rowNr}; row<m_NrOfRows-1; ++row)
+    {
+        insert_ptr[row] = m_pBaseArrayPtr[row+1];
+    }
+
+    delete []m_pBaseArrayPtr;
+    m_pBaseArrayPtr = insert_ptr;
+    --m_NrOfRows;
+}
+
+template <typename DataType>
+void Matrix<DataType>::deleteColumn(int columnNr)
+{
+    if (m_NrOfColumns==1)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ERASE_THE_ONLY_COLUMN]};
+    }
+
+    if (columnNr<0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (columnNr>=m_NrOfColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
+    }
+
+    DataType** insert_ptr{new DataType*[m_NrOfRows]};
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        insert_ptr[row]=new DataType[m_NrOfColumns-1];
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<columnNr; ++col)
+        {
+            insert_ptr[row][col]=m_pBaseArrayPtr[row][col];
+        }
+    }
+
+    for(int row{0}; row<m_NrOfRows; ++row)
+    {
+        for(int col{columnNr}; col<m_NrOfColumns-1; ++col)
+        {
+            insert_ptr[row][col]=m_pBaseArrayPtr[row][col+1];
+        }
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        delete []m_pBaseArrayPtr[row];
+    }
+
+    delete []m_pBaseArrayPtr;
+    m_pBaseArrayPtr = insert_ptr;
+    --m_NrOfColumns;
+}
+
+template <typename DataType>
+void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix)
+{
+    if (m_WrapMatrixByRow && (firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns))
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_ROW_LENGTH]};
+    }
+
+    if ((!m_WrapMatrixByRow) && (firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows))
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
+    }
+
+    Matrix<DataType> thirdMatrix{};
+
+    if ((firstSrcMatrix.m_pBaseArrayPtr==m_pBaseArrayPtr) || (secondSrcMatrix.m_pBaseArrayPtr==m_pBaseArrayPtr))
+    {
+        thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
+        thirdMatrix.m_NrOfRows = m_NrOfRows;
+        thirdMatrix.m_NrOfColumns = m_NrOfColumns;
+
+        _allocMemory(1,1);
+    }
+
+    if ((firstSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr!=m_pBaseArrayPtr))
+    {
+        _concatenate(thirdMatrix, secondSrcMatrix);
+    }
+    else if ((firstSrcMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
+    {
+        _concatenate(firstSrcMatrix, thirdMatrix);
+    }
+    else if ((firstSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
+    {
+        _concatenate(thirdMatrix, thirdMatrix);
+    }
+    else
+    {
+        _concatenate(firstSrcMatrix, secondSrcMatrix);
+    }
+}
+
+template <typename DataType>
+void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix,int splitRowColumnNr)
+{
+    if (firstDestMatrix.m_pBaseArrayPtr==secondDestMatrix.m_pBaseArrayPtr)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::SAME_VARIABLE_TWO_ARGS]};
+    }
+
+    if (splitRowColumnNr<0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (m_WrapMatrixByRow)
+    {
+        if (splitRowColumnNr>m_NrOfRows)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
+        }
+        if ((splitRowColumnNr == 0) || (splitRowColumnNr == m_NrOfRows))
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_ROWS]};
+        }
+    }
+    else {
+        if (splitRowColumnNr>m_NrOfColumns)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
+        }
+        if ((splitRowColumnNr == 0) || (splitRowColumnNr == m_NrOfColumns))
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_COLUMNS]};
+        }
+    }
+
+    Matrix<DataType> thirdMatrix{};
+
+    if ((firstDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) || (secondDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr)) {
+        thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
+        thirdMatrix.m_NrOfRows = m_NrOfRows;
+        thirdMatrix.m_NrOfColumns = m_NrOfColumns;
+        thirdMatrix.m_WrapMatrixByRow = m_WrapMatrixByRow;
+
+        _allocMemory(1,1);
+    }
+
+    if ((firstDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondDestMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr))
+    {
+        thirdMatrix._split(*this, secondDestMatrix, splitRowColumnNr);
+    }
+    else if ((firstDestMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr) && (secondDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
+    {
+        thirdMatrix._split(firstDestMatrix, *this, splitRowColumnNr);
+    }
+    else
+    {
+        _split(firstDestMatrix, secondDestMatrix, splitRowColumnNr);
     }
 }
 
@@ -539,180 +823,47 @@ void Matrix<DataType>::swapWithMatrix(Matrix<DataType> &matrix)
     std::swap(m_pBaseArrayPtr, matrix.m_pBaseArrayPtr);
 }
 
-template <typename DataType>
-void Matrix<DataType>::insertRow (int rowNr)
+template <typename DataType> void Matrix<DataType>::setAllItemsToSameValue(const DataType& value)
 {
-    if (rowNr<0)
+    for (int row{0}; row<m_NrOfRows; ++row)
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            m_pBaseArrayPtr[row][col] = value;
+        }
     }
-
-    if (rowNr>m_NrOfRows)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::INSERT_ROW_NONCONTIGUOUS]};
-    }
-
-    DataType** insert_ptr=new DataType*[m_NrOfRows+1];
-
-    for (int row{0}; row<rowNr; ++row)
-    {
-        insert_ptr[row] = m_pBaseArrayPtr[row];
-    }
-
-    insert_ptr[rowNr]=new DataType[m_NrOfColumns];
-
-    for (int col{0}; col<m_NrOfColumns; ++col)
-    {
-        insert_ptr[rowNr][col]=0;
-    }
-
-    for (int row{rowNr}; row<m_NrOfRows; ++row)
-    {
-        insert_ptr[row+1] = m_pBaseArrayPtr[row];
-    }
-
-    delete []m_pBaseArrayPtr;
-    m_pBaseArrayPtr = insert_ptr;
-    ++m_NrOfRows;
 }
 
 template <typename DataType>
-void Matrix<DataType>::deleteRow (int rowNr)
+void Matrix<DataType>::copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX, int srcY, int destX, int destY)
 {
-    if (m_NrOfRows==1)
+    if(m_pBaseArrayPtr || !src.m_pBaseArrayPtr)
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::ERASE_THE_ONLY_ROW]};
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_PTR]};
     }
 
-    if (rowNr>=m_NrOfRows)
+    if (src.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
+        throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
     }
 
-    if (rowNr<0)
+    if (nrOfRows<0 || nrOfColumns<0 || srcX<0 || srcY<0 || destX<0 || destY<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    DataType** insert_ptr{new DataType*[m_NrOfRows-1]};
-
-    for (int row{0}; row<rowNr; ++row)
+    if (srcX+nrOfRows>src.m_NrOfRows || srcY+nrOfColumns>src.m_NrOfColumns || destX+nrOfRows>m_NrOfRows || destY+nrOfColumns>m_NrOfColumns)
     {
-        insert_ptr[row] = m_pBaseArrayPtr[row];
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
 
-    delete []m_pBaseArrayPtr[rowNr];
-
-    for (int row{rowNr}; row<m_NrOfRows-1; ++row)
+    for (int row{0}; row<nrOfRows; ++row)
     {
-        insert_ptr[row] = m_pBaseArrayPtr[row+1];
-    }
-
-    delete []m_pBaseArrayPtr;
-    m_pBaseArrayPtr = insert_ptr;
-    --m_NrOfRows;
-}
-
-template <typename DataType>
-void Matrix<DataType>::insertColumn(int columnNr)
-{
-    if (columnNr<0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
-    }
-
-    if (columnNr>m_NrOfColumns)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::INSERT_COLUMN_NONCONTIGUOUS]};
-    }
-
-    DataType** insert_ptr{new DataType*[m_NrOfRows]};
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        insert_ptr[row]=new DataType[m_NrOfColumns+1];
-    }
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col=0; col<columnNr; ++col)
+        for (int col{0}; col<nrOfColumns; ++col)
         {
-            insert_ptr[row][col]=m_pBaseArrayPtr[row][col];
+            m_pBaseArrayPtr[destX+row][destY+col] = src.m_pBaseArrayPtr[srcX+row][srcY+col];
         }
     }
-
-    for(int row{0}; row<m_NrOfRows; ++row)
-    {
-        for(int col=columnNr+1; col<m_NrOfColumns+1; ++col)
-        {
-            insert_ptr[row][col]=m_pBaseArrayPtr[row][col-1];
-        }
-    }
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        insert_ptr[row][columnNr]=0;
-    }
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        delete []m_pBaseArrayPtr[row];
-    }
-
-    delete []m_pBaseArrayPtr;
-    m_pBaseArrayPtr = insert_ptr;
-    ++m_NrOfColumns;
-}
-
-template <typename DataType>
-void Matrix<DataType>::deleteColumn(int columnNr)
-{
-    if (m_NrOfColumns==1)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::ERASE_THE_ONLY_COLUMN]};
-    }
-
-    if (columnNr<0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
-    }
-
-    if (columnNr>=m_NrOfColumns)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
-    }
-
-    DataType** insert_ptr{new DataType*[m_NrOfRows]};
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        insert_ptr[row]=new DataType[m_NrOfColumns-1];
-    }
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col{0}; col<columnNr; ++col)
-        {
-            insert_ptr[row][col]=m_pBaseArrayPtr[row][col];
-        }
-    }
-
-    for(int row{0}; row<m_NrOfRows; ++row)
-    {
-        for(int col{columnNr}; col<m_NrOfColumns-1; ++col)
-        {
-            insert_ptr[row][col]=m_pBaseArrayPtr[row][col+1];
-        }
-    }
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        delete []m_pBaseArrayPtr[row];
-    }
-
-    delete []m_pBaseArrayPtr;
-    m_pBaseArrayPtr = insert_ptr;
-    --m_NrOfColumns;
 }
 
 template<typename DataType>
@@ -878,427 +1029,6 @@ void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Ma
             dest.m_pBaseArrayPtr[row][destColumnNr] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
         }
     }
-}
-
-template <typename DataType>
-void Matrix<DataType>::copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX, int srcY, int destX, int destY)
-{
-    if(m_pBaseArrayPtr || !src.m_pBaseArrayPtr)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_PTR]};
-    }
-
-    if (src.m_pBaseArrayPtr==m_pBaseArrayPtr)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
-    }
-
-    if (nrOfRows<0 || nrOfColumns<0 || srcX<0 || srcY<0 || destX<0 || destY<0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
-    }
-
-    if (srcX+nrOfRows>src.m_NrOfRows || srcY+nrOfColumns>src.m_NrOfColumns || destX+nrOfRows>m_NrOfRows || destY+nrOfColumns>m_NrOfColumns)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
-    }
-
-    for (int row{0}; row<nrOfRows; ++row)
-    {
-        for (int col{0}; col<nrOfColumns; ++col)
-        {
-            m_pBaseArrayPtr[destX+row][destY+col] = src.m_pBaseArrayPtr[srcX+row][srcY+col];
-        }
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix)
-{
-    if (m_WrapMatrixByRow && (firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns))
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_ROW_LENGTH]};
-    }
-
-    if ((!m_WrapMatrixByRow) && (firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows))
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
-    }
-
-    Matrix<DataType> thirdMatrix{};
-
-    if ((firstSrcMatrix.m_pBaseArrayPtr==m_pBaseArrayPtr) || (secondSrcMatrix.m_pBaseArrayPtr==m_pBaseArrayPtr))
-    {
-        thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
-        thirdMatrix.m_NrOfRows = m_NrOfRows;
-        thirdMatrix.m_NrOfColumns = m_NrOfColumns;
-
-        _allocMemory(1,1);
-    }
-
-    if ((firstSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr!=m_pBaseArrayPtr))
-    {
-        _concatenate(thirdMatrix, secondSrcMatrix);
-    }
-    else if ((firstSrcMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
-    {
-        _concatenate(firstSrcMatrix, thirdMatrix);
-    }
-    else if ((firstSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
-    {
-        _concatenate(thirdMatrix, thirdMatrix);
-    }
-    else
-    {
-        _concatenate(firstSrcMatrix, secondSrcMatrix);
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix,int splitRowColumnNr)
-{
-    if (firstDestMatrix.m_pBaseArrayPtr==secondDestMatrix.m_pBaseArrayPtr)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::SAME_VARIABLE_TWO_ARGS]};
-    }
-
-    if (splitRowColumnNr<0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
-    }
-
-    if (m_WrapMatrixByRow)
-    {
-        if (splitRowColumnNr>m_NrOfRows)
-        {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
-        }
-        if ((splitRowColumnNr == 0) || (splitRowColumnNr == m_NrOfRows))
-        {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_ROWS]};
-        }
-    }
-    else {
-        if (splitRowColumnNr>m_NrOfColumns)
-        {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
-        }
-        if ((splitRowColumnNr == 0) || (splitRowColumnNr == m_NrOfColumns))
-        {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_COLUMNS]};
-        }
-    }
-
-    Matrix<DataType> thirdMatrix{};
-
-    if ((firstDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) || (secondDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr)) {
-        thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
-        thirdMatrix.m_NrOfRows = m_NrOfRows;
-        thirdMatrix.m_NrOfColumns = m_NrOfColumns;
-        thirdMatrix.m_WrapMatrixByRow = m_WrapMatrixByRow;
-
-        _allocMemory(1,1);
-    }
-
-    if ((firstDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondDestMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr))
-    {
-        thirdMatrix._split(*this, secondDestMatrix, splitRowColumnNr);
-    }
-    else if ((firstDestMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr) && (secondDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
-    {
-        thirdMatrix._split(firstDestMatrix, *this, splitRowColumnNr);
-    }
-    else
-    {
-        _split(firstDestMatrix, secondDestMatrix, splitRowColumnNr);
-    }
-}
-
-template <typename DataType>
-Matrix<DataType> Matrix<DataType>::operator+ (const Matrix<DataType>& matrix)
-{
-    if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_DIMENSIONS]};
-    }
-
-    Matrix<DataType> result{};
-    result.resize(m_NrOfRows, m_NrOfColumns);
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            result.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col] + matrix.m_pBaseArrayPtr[row][col];
-        }
-    }
-
-    return result;
-}
-
-template <typename DataType>
-Matrix<DataType> Matrix<DataType>::operator- (const Matrix<DataType>& matrix)
-{
-    if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_DIMENSIONS]};
-    }
-
-    Matrix<DataType> result{};
-    result.resize(m_NrOfRows, m_NrOfColumns);
-
-    for (int i{0}; i<m_NrOfRows; ++i)
-    {
-        for (int j{0}; j<m_NrOfColumns; ++j)
-        {
-            result.m_pBaseArrayPtr[i][j] = m_pBaseArrayPtr[i][j] - matrix.m_pBaseArrayPtr[i][j];
-        }
-    }
-
-    return result;
-}
-
-template<typename DataType>
-Matrix<DataType> operator*(const DataType &data, Matrix<DataType> &matrix)
-{
-    return matrix._multiply(data);
-}
-
-template<typename DataType>
-Matrix<DataType> Matrix<DataType>::operator*(const DataType &data)
-{
-    return _multiply(data);
-}
-
-template <typename DataType>
-Matrix<DataType> Matrix<DataType>::operator* (const Matrix<DataType>& matrix)
-{
-    if (m_NrOfColumns!=matrix.m_NrOfRows)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_ROWS_UNEQUAL_COLUMNS]};
-    }
-
-    Matrix<DataType> result{};
-    result.resize(m_NrOfRows,matrix.m_NrOfColumns);
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col{0}; col<matrix.m_NrOfColumns; ++col)
-        {
-            for (int pivot{0}; pivot<m_NrOfColumns; ++pivot)
-            {
-                result.m_pBaseArrayPtr[row][col] = result.m_pBaseArrayPtr[row][col]+m_pBaseArrayPtr[row][pivot] * matrix.m_pBaseArrayPtr[pivot][col];
-            }
-        }
-    }
-
-    return result;
-}
-
-template <typename DataType>
-Matrix<DataType> Matrix<DataType>::operator^ (int exp)
-{
-    if (m_NrOfRows!=m_NrOfColumns)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_DIMENSIONS]};
-    }
-
-    if (exp<0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
-    }
-
-    Matrix<DataType> result{};
-
-    if (exp==0)
-    {
-        result.transformToDiagMatrix(m_NrOfRows, 0, 1);
-        return result;
-    }
-
-    result=(*this);
-
-    return result._power(exp);
-}
-
-template <typename DataType>
-Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
-{
-    if (!(matrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
-    {
-        if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
-        {
-            _deallocMemory();
-            _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
-        }
-
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
-            }
-        }
-    }
-
-    m_WrapMatrixByRow = matrix.m_WrapMatrixByRow;
-
-    return *this;
-}
-
-template <typename DataType>
-bool Matrix<DataType>::operator==(const Matrix<DataType>& matrix) const
-{
-    bool areEqual{false};
-
-    if (matrix.m_pBaseArrayPtr==m_pBaseArrayPtr)
-    {
-        areEqual = true;
-    }
-    else if (m_NrOfRows == matrix.m_NrOfRows && m_NrOfColumns == matrix.m_NrOfColumns)
-    {
-        bool continueChecking{true};
-
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                if (m_pBaseArrayPtr[row][col]!=matrix.m_pBaseArrayPtr[row][col])
-                {
-                    continueChecking = false;
-                    break;
-                }
-            }
-
-            if (!continueChecking)
-            {
-                break;
-            }
-        }
-    }
-
-    return areEqual;
-}
-
-template<typename DataType>
-bool Matrix<DataType>::operator !=(const Matrix<DataType>& matrix) const
-{
-    bool areRanksDifferent{true};
-
-    if (&matrix != this)
-    {
-        // avoid calling the rank() method if same matrix (too costly)
-        if (rank() == matrix.rank())
-        {
-            areRanksDifferent = false;
-        }
-    }
-    else
-    {
-        areRanksDifferent = false;
-    }
-
-    return areRanksDifferent;
-}
-
-template<typename DataType>
-bool Matrix<DataType>::operator <(const Matrix<DataType> &matrix) const
-{
-    bool isRankSmaller{true};
-
-    if (&matrix !=this)
-    {
-        // avoid calling the rank() method if same matrix (too costly)
-        if (rank()>=matrix.rank())
-        {
-            isRankSmaller = false;
-        }
-    }
-    else
-    {
-        isRankSmaller = false;
-    }
-
-    return isRankSmaller;
-}
-
-template<typename DataType>
-bool Matrix<DataType>::operator <=(const Matrix<DataType> &matrix) const
-{
-    bool isRankSmallerOrEqual{true};
-
-    if (&matrix !=this)
-    {
-        // avoid calling the rank() method if same matrix (too costly)
-        if (rank()>matrix.rank())
-        {
-            isRankSmallerOrEqual = false;
-        }
-    }
-    else
-    {
-        isRankSmallerOrEqual = false;
-    }
-
-    return isRankSmallerOrEqual;
-}
-
-template<typename DataType>
-bool Matrix<DataType>::operator >(const Matrix<DataType> &matrix) const
-{
-    bool isRankHigher{true};
-
-    if (&matrix !=this)
-    {
-        // avoid calling the rank() method if same matrix (too costly)
-        if (rank()<=matrix.rank())
-        {
-            isRankHigher = false;
-        }
-    }
-    else
-    {
-        isRankHigher = false;
-    }
-
-    return isRankHigher;
-}
-
-template<typename DataType>
-bool Matrix<DataType>::operator >=(const Matrix<DataType> &matrix) const
-{
-    bool isRankHigherOrEqual{true};
-
-    if (&matrix !=this)
-    {
-        // avoid calling the rank() method if same matrix (too costly)
-        if (rank()<matrix.rank())
-        {
-            isRankHigherOrEqual = false;
-        }
-    }
-    else
-    {
-        isRankHigherOrEqual = false;
-    }
-
-    return isRankHigherOrEqual;
-}
-
-template<typename DataType>
-DataType& Matrix<DataType>::operator[](int index)
-{
-    if (index<0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
-    }
-
-    if (index>=m_NrOfRows*m_NrOfColumns)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
-    }
-
-    return m_WrapMatrixByRow ? _getItemForLineWrap(index) : _getItemForColumnWrap(index);
 }
 
 template <typename DataType>
@@ -1575,6 +1305,51 @@ void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
 }
 
 template <typename DataType>
+void Matrix<DataType>::getNegativeMatrix(Matrix<DataType>& result)
+{
+    if (this != &result)
+    {
+        result.resize(m_NrOfRows,m_NrOfColumns);
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            result.m_pBaseArrayPtr[row][col] = (-1) * m_pBaseArrayPtr[row][col];
+        }
+    }
+}
+
+template <typename DataType>
+void Matrix<DataType>::getInverseElementsMatrix(Matrix<DataType>& result)
+{
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            if (m_pBaseArrayPtr[row][col]==0)
+            {
+                throw std::runtime_error{Matr::exceptions[Matr::Error::DIVISION_BY_ZERO]};
+            }
+        }
+    }
+
+    if (this != &result)
+    {
+        result.resize(m_NrOfRows,m_NrOfColumns);
+    }
+
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        for (int col{0}; col<m_NrOfColumns; ++col)
+        {
+            result.m_pBaseArrayPtr[row][col]= 1 / m_pBaseArrayPtr[row][col];
+        }
+    }
+}
+
+template <typename DataType>
 void Matrix<DataType>::sums(Matrix& result, ArithmeticMode mode, int pos)
 {
     if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
@@ -1768,48 +1543,274 @@ void Matrix<DataType>::products(Matrix& result, ArithmeticMode mode, int pos)
 }
 
 template <typename DataType>
-void Matrix<DataType>::getNegativeMatrix(Matrix<DataType>& result)
+Matrix<DataType> Matrix<DataType>::operator+ (const Matrix<DataType>& matrix)
 {
-    if (this != &result)
+    if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
     {
-        result.resize(m_NrOfRows,m_NrOfColumns);
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_DIMENSIONS]};
     }
+
+    Matrix<DataType> result{};
+    result.resize(m_NrOfRows, m_NrOfColumns);
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
         for (int col{0}; col<m_NrOfColumns; ++col)
         {
-            result.m_pBaseArrayPtr[row][col] = (-1) * m_pBaseArrayPtr[row][col];
+            result.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col] + matrix.m_pBaseArrayPtr[row][col];
         }
     }
+
+    return result;
 }
 
 template <typename DataType>
-void Matrix<DataType>::getInverseElementsMatrix(Matrix<DataType>& result)
+Matrix<DataType> Matrix<DataType>::operator- (const Matrix<DataType>& matrix)
 {
+    if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_DIMENSIONS]};
+    }
+
+    Matrix<DataType> result{};
+    result.resize(m_NrOfRows, m_NrOfColumns);
+
+    for (int i{0}; i<m_NrOfRows; ++i)
+    {
+        for (int j{0}; j<m_NrOfColumns; ++j)
+        {
+            result.m_pBaseArrayPtr[i][j] = m_pBaseArrayPtr[i][j] - matrix.m_pBaseArrayPtr[i][j];
+        }
+    }
+
+    return result;
+}
+
+template <typename DataType>
+Matrix<DataType> Matrix<DataType>::operator* (const Matrix<DataType>& matrix)
+{
+    if (m_NrOfColumns!=matrix.m_NrOfRows)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_ROWS_UNEQUAL_COLUMNS]};
+    }
+
+    Matrix<DataType> result{};
+    result.resize(m_NrOfRows,matrix.m_NrOfColumns);
+
     for (int row{0}; row<m_NrOfRows; ++row)
     {
-        for (int col{0}; col<m_NrOfColumns; ++col)
+        for (int col{0}; col<matrix.m_NrOfColumns; ++col)
         {
-            if (m_pBaseArrayPtr[row][col]==0)
+            for (int pivot{0}; pivot<m_NrOfColumns; ++pivot)
             {
-                throw std::runtime_error{Matr::exceptions[Matr::Error::DIVISION_BY_ZERO]};
+                result.m_pBaseArrayPtr[row][col] = result.m_pBaseArrayPtr[row][col]+m_pBaseArrayPtr[row][pivot] * matrix.m_pBaseArrayPtr[pivot][col];
             }
         }
     }
 
-    if (this != &result)
+    return result;
+}
+
+template<typename DataType>
+Matrix<DataType> operator*(const DataType &data, Matrix<DataType> &matrix)
+{
+    return matrix._multiply(data);
+}
+
+template<typename DataType>
+Matrix<DataType> Matrix<DataType>::operator*(const DataType &data)
+{
+    return _multiply(data);
+}
+
+template <typename DataType>
+Matrix<DataType> Matrix<DataType>::operator^ (int exp)
+{
+    if (m_NrOfRows!=m_NrOfColumns)
     {
-        result.resize(m_NrOfRows,m_NrOfColumns);
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_DIMENSIONS]};
     }
 
-    for (int row{0}; row<m_NrOfRows; ++row)
+    if (exp<0)
     {
-        for (int col{0}; col<m_NrOfColumns; ++col)
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    Matrix<DataType> result{};
+
+    if (exp==0)
+    {
+        result.transformToDiagMatrix(m_NrOfRows, 0, 1);
+        return result;
+    }
+
+    result=(*this);
+
+    return result._power(exp);
+}
+
+template <typename DataType>
+Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
+{
+    if (!(matrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
+    {
+        if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
         {
-            result.m_pBaseArrayPtr[row][col]= 1 / m_pBaseArrayPtr[row][col];
+            _deallocMemory();
+            _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
+        }
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
+            }
         }
     }
+
+    m_WrapMatrixByRow = matrix.m_WrapMatrixByRow;
+
+    return *this;
+}
+
+template <typename DataType>
+bool Matrix<DataType>::operator==(const Matrix<DataType>& matrix) const
+{
+    bool areEqual{false};
+
+    if (matrix.m_pBaseArrayPtr==m_pBaseArrayPtr)
+    {
+        areEqual = true;
+    }
+    else if (m_NrOfRows == matrix.m_NrOfRows && m_NrOfColumns == matrix.m_NrOfColumns)
+    {
+        bool continueChecking{true};
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                if (m_pBaseArrayPtr[row][col]!=matrix.m_pBaseArrayPtr[row][col])
+                {
+                    continueChecking = false;
+                    break;
+                }
+            }
+
+            if (!continueChecking)
+            {
+                break;
+            }
+        }
+    }
+
+    return areEqual;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::operator!=(const Matrix<DataType>& matrix) const
+{
+    bool areRanksDifferent{true};
+
+    if (&matrix != this)
+    {
+        // avoid calling the rank() method if same matrix (too costly)
+        if (rank() == matrix.rank())
+        {
+            areRanksDifferent = false;
+        }
+    }
+    else
+    {
+        areRanksDifferent = false;
+    }
+
+    return areRanksDifferent;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::operator<(const Matrix<DataType> &matrix) const
+{
+    bool isRankSmaller{true};
+
+    if (&matrix !=this)
+    {
+        // avoid calling the rank() method if same matrix (too costly)
+        if (rank()>=matrix.rank())
+        {
+            isRankSmaller = false;
+        }
+    }
+    else
+    {
+        isRankSmaller = false;
+    }
+
+    return isRankSmaller;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::operator<=(const Matrix<DataType> &matrix) const
+{
+    bool isRankSmallerOrEqual{true};
+
+    if (&matrix !=this)
+    {
+        // avoid calling the rank() method if same matrix (too costly)
+        if (rank()>matrix.rank())
+        {
+            isRankSmallerOrEqual = false;
+        }
+    }
+    else
+    {
+        isRankSmallerOrEqual = false;
+    }
+
+    return isRankSmallerOrEqual;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::operator>(const Matrix<DataType> &matrix) const
+{
+    bool isRankHigher{true};
+
+    if (&matrix !=this)
+    {
+        // avoid calling the rank() method if same matrix (too costly)
+        if (rank()<=matrix.rank())
+        {
+            isRankHigher = false;
+        }
+    }
+    else
+    {
+        isRankHigher = false;
+    }
+
+    return isRankHigher;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::operator>=(const Matrix<DataType> &matrix) const
+{
+    bool isRankHigherOrEqual{true};
+
+    if (&matrix !=this)
+    {
+        // avoid calling the rank() method if same matrix (too costly)
+        if (rank()<matrix.rank())
+        {
+            isRankHigherOrEqual = false;
+        }
+    }
+    else
+    {
+        isRankHigherOrEqual = false;
+    }
+
+    return isRankHigherOrEqual;
 }
 
 template<typename DataType>
