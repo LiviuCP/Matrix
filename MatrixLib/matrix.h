@@ -409,7 +409,7 @@ void Matrix<DataType>::transformToDiagMatrix(int nrOfRowsColumns, const DataType
     else
     {
         _deallocMemory();
-        Matrix matrix{nrOfRowsColumns, dataType, diagDataType};
+        Matrix<DataType> matrix{nrOfRowsColumns, dataType, diagDataType};
         swapWithMatrix(matrix);
     }
 }
@@ -1215,8 +1215,8 @@ void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType
             {
                 if (matrix.m_pBaseArrayPtr[diag][col]!=0)
                 {
-                    matrix.swapRow(diag,col);
-                    pseudoInverse.swapRow(diag,col);
+                    matrix.swapRow(diag, matrix, col);
+                    pseudoInverse.swapRow(diag, pseudoInverse, col);
                     continueCalculation(pseudoInverse, matrix, diag, m_NrOfRows);
                     rowSwapped = true;
                 }
