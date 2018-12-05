@@ -35,8 +35,8 @@ public:
     // transfers ownership of the data to the user (object becomes empty and user becomes responsible for de-allocating the data properly)
     DataType** getBaseArrayPtr(int& nrOfRows, int& nrOfColumns);
 	
-    int getNrOfRows();
-    int getNrOfColumns();
+    int getNrOfRows() const;
+    int getNrOfColumns() const;
 
     // resize and init elements with default constructor/value (DataType should be default constructible)
     void resize(int nrOfRows, int nrOfColumns);
@@ -69,16 +69,16 @@ public:
     void addRowToRow(int rowNr, const DataType& coeff, Matrix<DataType>& src, int srcRowNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destRowNr);
     void addColumnToColumn(int columnNr, const DataType& coeff, Matrix<DataType>& src, int srcColumnNr, const DataType& srcCoeff, Matrix<DataType> &dest, int destColumnNr);
 
-    DataType determinant();
+    DataType determinant() const;
     int rank() const;
 
-    void getInverseMatrix(Matrix<DataType> &coeff, Matrix<DataType>& pseudoInverse);
+    void getInverseMatrix(Matrix<DataType> &coeff, Matrix<DataType>& pseudoInverse) const;
     void getTransposedMatrix(Matrix<DataType>& result);
     void getNegativeMatrix(Matrix<DataType>& result);
     void getInverseElementsMatrix(Matrix<DataType>& result);
 
-    void sums(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1);
-    void products(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1);
+    void sums(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1) const;
+    void products(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1) const;
 
     Matrix<DataType> operator+ (const Matrix<DataType>& matrix);
     Matrix<DataType> operator- (const Matrix<DataType>& matrix);
@@ -308,13 +308,13 @@ DataType** Matrix<DataType>::getBaseArrayPtr(int& nrOfRows, int& nrOfColumns)
 }
 
 template<typename DataType>
-int Matrix<DataType>::getNrOfRows()
+int Matrix<DataType>::getNrOfRows() const
 {
     return m_NrOfRows;
 }
 
 template<typename DataType>
-int Matrix<DataType>::getNrOfColumns()
+int Matrix<DataType>::getNrOfColumns() const
 {
     return m_NrOfColumns;
 }
@@ -1032,7 +1032,7 @@ void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Ma
 }
 
 template <typename DataType>
-DataType Matrix<DataType>::determinant()
+DataType Matrix<DataType>::determinant() const
 {
     if (m_NrOfRows!=m_NrOfColumns)
     {
@@ -1169,7 +1169,7 @@ int Matrix<DataType>::rank() const
 }
 
 template<typename DataType>
-void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType>& pseudoInverse)
+void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType>& pseudoInverse) const
 {
     auto continueCalculation = [](Matrix<DataType>& pseudoInverse, Matrix<DataType>& helperMatrix, int diagIndex, int nrOfRows)
     {
@@ -1350,7 +1350,7 @@ void Matrix<DataType>::getInverseElementsMatrix(Matrix<DataType>& result)
 }
 
 template <typename DataType>
-void Matrix<DataType>::sums(Matrix& result, ArithmeticMode mode, int pos)
+void Matrix<DataType>::sums(Matrix& result, ArithmeticMode mode, int pos) const
 {
     if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
@@ -1447,7 +1447,7 @@ void Matrix<DataType>::sums(Matrix& result, ArithmeticMode mode, int pos)
 }
 
 template <typename DataType>
-void Matrix<DataType>::products(Matrix& result, ArithmeticMode mode, int pos)
+void Matrix<DataType>::products(Matrix& result, ArithmeticMode mode, int pos) const
 {
     if (result.m_pBaseArrayPtr==m_pBaseArrayPtr)
     {
