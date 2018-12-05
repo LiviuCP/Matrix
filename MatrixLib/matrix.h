@@ -159,13 +159,12 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<Da
 
     _allocMemory(nrOfRows, nrOfColumns);
 
-    int initListIndex{0};
+    typename std::initializer_list<DataType>::iterator initListIterator{dataTypeInitList.begin()};
     for (int row{0}; row < nrOfRows; ++row)
     {
         for (int col{0}; col < nrOfColumns; ++col)
         {
-            m_pBaseArrayPtr[row][col] = dataTypeInitList[initListIndex];
-            ++initListIndex;
+            m_pBaseArrayPtr[row][col] = *(initListIterator++);
         }
     }
 }
