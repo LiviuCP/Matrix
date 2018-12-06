@@ -2,6 +2,7 @@
 #include <cmath>
 #include <initializer_list>
 #include <vector>
+#include <utility>
 #include <exception>
 
 #include "matrix_exceptions.h"
@@ -23,7 +24,7 @@ public:
     Matrix();
     Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
     Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
-    Matrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType);
+    Matrix(int nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues);
     Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr);
     Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr);
     Matrix(const Matrix<DataType>& matrix);
@@ -175,12 +176,12 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<Da
 }
 
 template <typename DataType>
-Matrix<DataType>::Matrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType)
-    : Matrix<DataType>{nrOfRowsColumns, nrOfRowsColumns, dataType}
+Matrix<DataType>::Matrix(int nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues)
+    : Matrix<DataType>{nrOfRowsColumns, nrOfRowsColumns, diagMatrixValues.first}
 {
     for (int diag{0}; diag<m_NrOfRows; ++diag)
     {
-        m_pBaseArrayPtr[diag][diag] = diagDataType;
+        m_pBaseArrayPtr[diag][diag] = diagMatrixValues.second;
     }
 }
 
