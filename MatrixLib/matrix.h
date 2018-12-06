@@ -39,6 +39,9 @@ public:
     int getNrOfRows() const;
     int getNrOfColumns() const;
 
+    bool isWrappedByRow() const;
+    void setWrapMode(bool byRow);
+
     // resize and init elements with default constructor/value (DataType should be default constructible)
     void resize(int nrOfRows, int nrOfColumns);
     // resize and fill new elements with value of dataType (init still done with default constructor/value)
@@ -113,7 +116,7 @@ private:
     DataType** m_pBaseArrayPtr;
     int m_NrOfRows;
     int m_NrOfColumns;
-    bool m_WrapMatrixByRow;
+    bool m_IsWrappedByRow;
 };
 
 template <typename DataType>
@@ -121,13 +124,13 @@ Matrix<DataType>::Matrix()
     : m_pBaseArrayPtr{nullptr}
     , m_NrOfRows{0}
     , m_NrOfColumns{0}
-    , m_WrapMatrixByRow{true}
+    , m_IsWrappedByRow{true}
 {
 }
 
 template <typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType)
-    : m_WrapMatrixByRow{true}
+    : m_IsWrappedByRow{true}
 {
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
@@ -147,7 +150,7 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType
 
 template<typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList)
-    : m_WrapMatrixByRow{true}
+    : m_IsWrappedByRow{true}
 {
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
@@ -184,7 +187,7 @@ Matrix<DataType>::Matrix(int nrOfRowsColumns, const DataType& dataType, const Da
 // for converting static matrixes from legacy code to object (dynamic) matrixes only (user is responsible to ensure the static matrix is not read "out-of-bounds")
 template <typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr)
-    : m_WrapMatrixByRow{true}
+    : m_IsWrappedByRow{true}
 {
     if (!matrixPtr)
     {
@@ -210,7 +213,7 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr)
 // for converting one-dimensional arrays from legacy code to bidimensional dynamic matrixes only (user is responsible to ensure the static array is not read "out-of-bounds")
 template <typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr)
-    : m_WrapMatrixByRow{true}
+    : m_IsWrappedByRow{true}
 {
     if (!matrixPtr)
     {
@@ -235,7 +238,7 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr)
 
 template <typename DataType>
 Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
-    : m_WrapMatrixByRow{matrix.m_WrapMatrixByRow}
+    : m_IsWrappedByRow{matrix.m_IsWrappedByRow}
 {
     _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
 
@@ -253,7 +256,7 @@ Matrix<DataType>::Matrix(Matrix<DataType> &&matrix)
     : m_pBaseArrayPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfRows{matrix.m_NrOfRows}
     , m_NrOfColumns{matrix.m_NrOfColumns}
-    , m_WrapMatrixByRow{matrix.m_WrapMatrixByRow}
+    , m_IsWrappedByRow{matrix.m_IsWrappedByRow}
 {
     // same wrap value for the source matrix (matrix.m_WrapMatrixByRow)
     matrix.m_pBaseArrayPtr = nullptr;
@@ -294,7 +297,7 @@ DataType& Matrix<DataType>::operator[](int index)
         throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
 
-    return m_WrapMatrixByRow ? _getItemForLineWrap(index) : _getItemForColumnWrap(index);
+    return m_IsWrappedByRow ? _getItemForLineWrap(index) : _getItemForColumnWrap(index);
 }
 
 template<typename DataType>
@@ -331,6 +334,21 @@ template<typename DataType>
 int Matrix<DataType>::getNrOfColumns() const
 {
     return m_NrOfColumns;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::isWrappedByRow() const
+{
+    return m_IsWrappedByRow;
+}
+
+template<typename DataType>
+void Matrix<DataType>::setWrapMode(bool byRow)
+{
+    if (m_IsWrappedByRow != byRow)
+    {
+        m_IsWrappedByRow = byRow;
+    }
 }
 
 template<typename DataType>
@@ -624,12 +642,12 @@ void Matrix<DataType>::deleteColumn(int columnNr)
 template <typename DataType>
 void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix)
 {
-    if (m_WrapMatrixByRow && (firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns))
+    if (m_IsWrappedByRow && (firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns))
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_ROW_LENGTH]};
     }
 
-    if ((!m_WrapMatrixByRow) && (firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows))
+    if ((!m_IsWrappedByRow) && (firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows))
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
     }
@@ -676,7 +694,7 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    if (m_WrapMatrixByRow)
+    if (m_IsWrappedByRow)
     {
         if (splitRowColumnNr>m_NrOfRows)
         {
@@ -704,7 +722,7 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
         thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
         thirdMatrix.m_NrOfRows = m_NrOfRows;
         thirdMatrix.m_NrOfColumns = m_NrOfColumns;
-        thirdMatrix.m_WrapMatrixByRow = m_WrapMatrixByRow;
+        thirdMatrix.m_IsWrappedByRow = m_IsWrappedByRow;
 
         _allocMemory(1,1);
     }
@@ -833,7 +851,7 @@ void Matrix<DataType>::swapWithMatrix(Matrix<DataType> &matrix)
 {
     std::swap(m_NrOfRows,matrix.m_NrOfRows);
     std::swap(m_NrOfColumns,matrix.m_NrOfColumns);
-    std::swap(m_WrapMatrixByRow, matrix.m_WrapMatrixByRow);
+    std::swap(m_IsWrappedByRow, matrix.m_IsWrappedByRow);
     std::swap(m_pBaseArrayPtr, matrix.m_pBaseArrayPtr);
 }
 
@@ -898,7 +916,7 @@ void Matrix<DataType>::addRowToColumn(int rowNr, const DataType& coeff, Matrix& 
         throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
     }
 
-    if (dest.m_WrapMatrixByRow)
+    if (dest.m_IsWrappedByRow)
     {
         if (destColumnNr>=dest.m_NrOfRows)
         {
@@ -942,7 +960,7 @@ void Matrix<DataType>::addColumnToRow(int columnNr, const DataType& coeff, Matri
         throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
     }
 
-    if (dest.m_WrapMatrixByRow)
+    if (dest.m_IsWrappedByRow)
     {
         if (destRowNr>=dest.m_NrOfRows)
         {
@@ -981,7 +999,7 @@ void Matrix<DataType>::addRowToRow(int rowNr, const DataType& coeff, Matrix &src
         throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
     }
 
-    if (dest.m_WrapMatrixByRow)
+    if (dest.m_IsWrappedByRow)
     {
         if (destRowNr>=dest.m_NrOfRows)
         {
@@ -1019,7 +1037,7 @@ void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Ma
         throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
     }
 
-    if (dest.m_WrapMatrixByRow)
+    if (dest.m_IsWrappedByRow)
     {
         if (destColumnNr>=dest.m_NrOfRows)
         {
@@ -1683,7 +1701,7 @@ Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
         }
     }
 
-    m_WrapMatrixByRow = matrix.m_WrapMatrixByRow;
+    m_IsWrappedByRow = matrix.m_IsWrappedByRow;
 
     return *this;
 }
@@ -1928,7 +1946,7 @@ void Matrix<DataType>::_split(Matrix<DataType>& firstDestMatrix, Matrix<DataType
     firstDestMatrix._deallocMemory();
     secondDestMatrix._deallocMemory();
 
-    if (m_WrapMatrixByRow) {
+    if (m_IsWrappedByRow) {
         firstDestMatrix._allocMemory(splitRowColumnNr, m_NrOfColumns);
         secondDestMatrix._allocMemory(m_NrOfRows-splitRowColumnNr, m_NrOfColumns);
 
@@ -1973,7 +1991,7 @@ void Matrix<DataType>::_split(Matrix<DataType>& firstDestMatrix, Matrix<DataType
 template<typename DataType>
 void Matrix<DataType>::_concatenate(Matrix<DataType> &firstSrcMatrix, Matrix<DataType> &secondSrcMatrix)
 {
-    if (m_WrapMatrixByRow) {
+    if (m_IsWrappedByRow) {
         resize(firstSrcMatrix.m_NrOfRows+secondSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns);
 
         for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
