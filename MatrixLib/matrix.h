@@ -25,8 +25,6 @@ public:
     Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
     Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
     Matrix(int nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues);
-    Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr);
-    Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr);
     Matrix(const Matrix<DataType>& matrix);
     Matrix(Matrix<DataType>&& matrix);
     ~Matrix();
@@ -182,58 +180,6 @@ Matrix<DataType>::Matrix(int nrOfRowsColumns, const std::pair<DataType, DataType
     for (int diag{0}; diag<m_NrOfRows; ++diag)
     {
         m_pBaseArrayPtr[diag][diag] = diagMatrixValues.second;
-    }
-}
-
-// for converting static matrixes from legacy code to object (dynamic) matrixes only (user is responsible to ensure the static matrix is not read "out-of-bounds")
-template <typename DataType>
-Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType** matrixPtr)
-    : m_IsWrappedByRow{true}
-{
-    if (!matrixPtr)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_PTR]};
-    }
-
-    if (nrOfRows <= 0 || nrOfColumns <= 0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
-    }
-
-    _allocMemory(nrOfRows, nrOfColumns);
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            m_pBaseArrayPtr[row][col] = matrixPtr[row][col];
-        }
-    }
-}
-
-// for converting one-dimensional arrays from legacy code to bidimensional dynamic matrixes only (user is responsible to ensure the static array is not read "out-of-bounds")
-template <typename DataType>
-Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, DataType* matrixPtr)
-    : m_IsWrappedByRow{true}
-{
-    if (!matrixPtr)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_PTR]};
-    }
-
-    if (nrOfRows <= 0 || nrOfColumns <= 0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
-    }
-
-    _allocMemory(nrOfRows, nrOfColumns);
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            m_pBaseArrayPtr[row][col] = *(matrixPtr++);
-        }
     }
 }
 
