@@ -1,9 +1,7 @@
-QT += testlib
-QT -= gui
+TEMPLATE = subdirs
 
-CONFIG += qt console warn_on depend_includepath testcase c++11
-CONFIG -= app_bundle
+SUBDIRS += \
+    CommonTests \
+    ExceptionTests \
+    TypeDependentTests
 
-TEMPLATE = app
-
-SOURCES +=  tst_matrixtest.cpp
