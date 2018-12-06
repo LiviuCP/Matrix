@@ -185,7 +185,7 @@ Matrix<DataType>::Matrix(int nrOfRowsColumns, const std::pair<DataType, DataType
 
 template <typename DataType>
 Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
-    : m_IsWrappedByRow{matrix.m_IsWrappedByRow}
+    : m_IsWrappedByRow{true}
 {
     _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
 
@@ -203,7 +203,7 @@ Matrix<DataType>::Matrix(Matrix<DataType> &&matrix)
     : m_pBaseArrayPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfRows{matrix.m_NrOfRows}
     , m_NrOfColumns{matrix.m_NrOfColumns}
-    , m_IsWrappedByRow{matrix.m_IsWrappedByRow}
+    , m_IsWrappedByRow{true}
 {
     // same wrap value for the source matrix (matrix.m_WrapMatrixByRow)
     matrix.m_pBaseArrayPtr = nullptr;
