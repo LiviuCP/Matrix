@@ -268,7 +268,7 @@ DataType** Matrix<DataType>::getBaseArrayPtr(int& nrOfRows, int& nrOfColumns)
         nrOfColumns = 0;
     }
 
-    return m_pBaseArrayPtr;
+    return pBaseArrayPtr;
 }
 
 template<typename DataType>
