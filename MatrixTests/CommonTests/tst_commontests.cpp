@@ -19,6 +19,9 @@ private slots:
     void testDiagMatrixConstructor();
     void testCopyConstructor();
     void testMoveConstructor();
+    void testSwapNonEmptyMatrixes();
+    void testSwapEmptyWithNonEmptyMatrix();
+    void testSwapEmptyMatrixes();
 };
 
 CommonTests::CommonTests()
@@ -134,6 +137,101 @@ void CommonTests::testMoveConstructor()
     int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
 
     QVERIFY2(!matrixPtr, "The ressources haven't been correctly moved to the destination matrix by move constructor");
+}
+
+void CommonTests::testSwapNonEmptyMatrixes()
+{
+    IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+
+    std::swap(firstMatrix, secondMatrix);
+
+    QVERIFY2(firstMatrix.getNrOfRows() == 3 &&
+             firstMatrix.getNrOfColumns() == 2,
+
+             "Incorrect number of rows and/or columns in the first matrix after swap");
+
+    QVERIFY2(secondMatrix.getNrOfRows() == 2 &&
+             secondMatrix.getNrOfColumns() == 3,
+
+             "Incorrect number of rows and/or columns in the second matrix after swap");
+
+    QVERIFY2(firstMatrix.at(0, 0) == 7 &&
+             firstMatrix.at(0, 1) == 8 &&
+             firstMatrix.at(1, 0) == 9 &&
+             firstMatrix.at(1, 1) == 10 &&
+             firstMatrix.at(2, 0) == 11 &&
+             firstMatrix.at(2, 1) == 12,
+
+             "First matrix has incorrect element values after swap");
+
+    QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+             secondMatrix.at(0, 1) == 2 &&
+             secondMatrix.at(0, 2) == 3 &&
+             secondMatrix.at(1, 0) == 4 &&
+             secondMatrix.at(1, 1) == 5 &&
+             secondMatrix.at(1, 2) == 6,
+
+             "Second matrix has incorrect element values after swap");
+}
+
+void CommonTests::testSwapEmptyWithNonEmptyMatrix()
+{
+    IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    IntMatrix secondMatrix{};
+
+    std::swap(firstMatrix, secondMatrix);
+
+    QVERIFY2(firstMatrix.getNrOfRows() == 0 &&
+             firstMatrix.getNrOfColumns() == 0,
+
+             "Incorrect number of rows and/or columns in the first matrix after swap");
+
+    QVERIFY2(secondMatrix.getNrOfRows() == 2 &&
+             secondMatrix.getNrOfColumns() == 3,
+
+             "Incorrect number of rows and/or columns in the second matrix after swap");
+
+    int nrOfRows, nrOfColumns;
+    int** matrixPtr{firstMatrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+
+    QVERIFY2(!matrixPtr, "First matrix has incorrect number of elements after swap");
+
+    QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+             secondMatrix.at(0, 1) == 2 &&
+             secondMatrix.at(0, 2) == 3 &&
+             secondMatrix.at(1, 0) == 4 &&
+             secondMatrix.at(1, 1) == 5 &&
+             secondMatrix.at(1, 2) == 6,
+
+             "Second matrix has incorrect element values after swap");
+}
+
+void CommonTests::testSwapEmptyMatrixes()
+{
+    IntMatrix firstMatrix{};
+    IntMatrix secondMatrix{};
+
+    std::swap(firstMatrix, secondMatrix);
+
+    QVERIFY2(firstMatrix.getNrOfRows() == 0 &&
+             firstMatrix.getNrOfColumns() == 0,
+
+             "Incorrect number of rows and/or columns in the first matrix after swap");
+
+    QVERIFY2(secondMatrix.getNrOfRows() == 0 &&
+             secondMatrix.getNrOfColumns() == 0,
+
+             "Incorrect number of rows and/or columns in the second matrix after swap");
+
+    int nrOfRows, nrOfColumns;
+    int** matrixPtr{firstMatrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+
+    QVERIFY2(!matrixPtr, "First matrix has incorrect number of elements after swap");
+
+    matrixPtr = secondMatrix.getBaseArrayPtr(nrOfRows, nrOfColumns);
+
+    QVERIFY2(!matrixPtr, "Second matrix has incorrect number of elements after swap");
 }
 
 QTEST_APPLESS_MAIN(CommonTests)
