@@ -685,7 +685,7 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
 }
 
 template <typename DataType>
-void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix& matrix, int matrixRowNr, int matrixColumnNr)
+void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr)
 {
     if (rowNr<0 || columnNr<0 || matrixRowNr<0 || matrixColumnNr<0)
     {
@@ -699,7 +699,7 @@ void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix& matrix, int mat
 
     if (rowNr!=matrixRowNr || columnNr!=matrixColumnNr || &matrix != this)
     {
-        std::swap(m_pBaseArrayPtr[rowNr][columnNr], m_pBaseArrayPtr[matrixRowNr][matrixColumnNr]);
+        std::swap(m_pBaseArrayPtr[rowNr][columnNr], matrix.m_pBaseArrayPtr[matrixRowNr][matrixColumnNr]);
     }
 }
 
@@ -760,6 +760,11 @@ void Matrix<DataType>::swapColumn(int columnNr, Matrix& matrix, int matrixColumn
 template <typename DataType>
 void Matrix<DataType>::swapRowColumn(int rowNr, Matrix<DataType>& matrix, int matrixColumnNr)
 {
+    if (&matrix == this)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
+    }
+
     if (rowNr<0 || matrixColumnNr<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
