@@ -76,7 +76,6 @@ public:
 
     void getInverseMatrix(Matrix<DataType> &coeff, Matrix<DataType>& pseudoInverse) const;
     void getTransposedMatrix(Matrix<DataType>& result);
-    void getNegativeMatrix(Matrix<DataType>& result);
     void getInverseElementsMatrix(Matrix<DataType>& result);
 
     void sums(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1) const;
@@ -1269,23 +1268,6 @@ void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
             {
                 result.m_pBaseArrayPtr[col][row]=m_pBaseArrayPtr[row][col];
             }
-        }
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::getNegativeMatrix(Matrix<DataType>& result)
-{
-    if (this != &result)
-    {
-        result.resize(m_NrOfRows,m_NrOfColumns);
-    }
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            result.m_pBaseArrayPtr[row][col] = (-1) * m_pBaseArrayPtr[row][col];
         }
     }
 }
