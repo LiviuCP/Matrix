@@ -61,7 +61,6 @@ public:
     void swapRow(int rowNr, Matrix<DataType>& matrix, int matrixRowNr);
     void swapColumn(int columnNr, Matrix<DataType>& matrix, int matrixColumnNr);
     void swapRowColumn(int rowNr, Matrix<DataType>& matrix, int matrixColumnNr);
-    void swapWithMatrix(Matrix<DataType> &m);
 
     void setAllItemsToSameValue(const DataType& value);
     void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX=0, int srcY=0, int destX=0, int destY=0);
@@ -791,15 +790,6 @@ void Matrix<DataType>::swapRowColumn(int rowNr, Matrix<DataType>& matrix, int ma
         m_pBaseArrayPtr[rowNr][col] = matrix.m_pBaseArrayPtr[col][matrixColumnNr];
         matrix.m_pBaseArrayPtr[col][matrixColumnNr] = swap;
     }
-}
-
-template<typename DataType>
-void Matrix<DataType>::swapWithMatrix(Matrix<DataType> &matrix)
-{
-    std::swap(m_NrOfRows,matrix.m_NrOfRows);
-    std::swap(m_NrOfColumns,matrix.m_NrOfColumns);
-    std::swap(m_IsWrappedByRow, matrix.m_IsWrappedByRow);
-    std::swap(m_pBaseArrayPtr, matrix.m_pBaseArrayPtr);
 }
 
 template <typename DataType> void Matrix<DataType>::setAllItemsToSameValue(const DataType& value)
