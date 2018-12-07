@@ -76,7 +76,6 @@ public:
 
     void getInverseMatrix(Matrix<DataType> &coeff, Matrix<DataType>& pseudoInverse) const;
     void getTransposedMatrix(Matrix<DataType>& result);
-    void getInverseElementsMatrix(Matrix<DataType>& result);
 
     void sums(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1) const;
     void products(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1) const;
@@ -203,7 +202,6 @@ Matrix<DataType>::Matrix(Matrix<DataType> &&matrix)
     , m_NrOfColumns{matrix.m_NrOfColumns}
     , m_IsWrappedByRow{true}
 {
-    // same wrap value for the source matrix (matrix.m_WrapMatrixByRow)
     matrix.m_pBaseArrayPtr = nullptr;
     matrix.m_NrOfRows = 0;
     matrix.m_NrOfColumns = 0;
@@ -1268,34 +1266,6 @@ void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
             {
                 result.m_pBaseArrayPtr[col][row]=m_pBaseArrayPtr[row][col];
             }
-        }
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::getInverseElementsMatrix(Matrix<DataType>& result)
-{
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            if (m_pBaseArrayPtr[row][col]==0)
-            {
-                throw std::runtime_error{Matr::exceptions[Matr::Error::DIVISION_BY_ZERO]};
-            }
-        }
-    }
-
-    if (this != &result)
-    {
-        result.resize(m_NrOfRows,m_NrOfColumns);
-    }
-
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col{0}; col<m_NrOfColumns; ++col)
-        {
-            result.m_pBaseArrayPtr[row][col]= 1 / m_pBaseArrayPtr[row][col];
         }
     }
 }
