@@ -26,6 +26,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
 
+macx {
+    SOURCES += matrix.cpp
+}
+
 HEADERS += \
         matrix.h \
         matrix_exceptions.h
