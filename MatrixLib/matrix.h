@@ -38,9 +38,6 @@ public:
     int getNrOfRows() const;
     int getNrOfColumns() const;
 
-    bool isWrappedByRow() const;
-    void setWrapMode(bool byRow);
-
     // resize and init elements with default constructor/value (DataType should be default constructible)
     void resize(int nrOfRows, int nrOfColumns);
     // resize and fill new elements with value of dataType (init still done with default constructor/value)
@@ -54,8 +51,8 @@ public:
     void deleteRow (int rowNr);
     void deleteColumn(int columnNr);
 
-    void concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
-    void split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr);
+    void concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix, bool concatenateHorizontally = true);
+    void split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr, bool splitHorizontally = true);
 
     void swapItem(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr);
     void swapRow(int rowNr, Matrix<DataType>& matrix, int matrixRowNr);
@@ -66,10 +63,10 @@ public:
     void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX=0, int srcY=0, int destX=0, int destY=0);
 
     // functions depending on operations supported by DataItem (addition, multiplication, etc)
-    void addRowToColumn(int rowNr, const DataType& coeff, Matrix<DataType>& src, int srcColumnNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destColumnNr);
-    void addColumnToRow(int columnNr, const DataType& coeff, Matrix<DataType>& src, int srcRowNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destRowNr);
-    void addRowToRow(int rowNr, const DataType& coeff, Matrix<DataType>& src, int srcRowNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destRowNr);
-    void addColumnToColumn(int columnNr, const DataType& coeff, Matrix<DataType>& src, int srcColumnNr, const DataType& srcCoeff, Matrix<DataType> &dest, int destColumnNr);
+    void addRowToColumn(int rowNr, const DataType& coeff, Matrix<DataType>& src, int srcColumnNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destRowOrColumnNr, bool addToDestinationRow = true);
+    void addColumnToRow(int columnNr, const DataType& coeff, Matrix<DataType>& src, int srcRowNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destRowOrColumnNr, bool addToDestinationRow = true);
+    void addRowToRow(int rowNr, const DataType& coeff, Matrix<DataType>& src, int srcRowNr, const DataType& srcCoeff, Matrix<DataType>& dest, int destRowOrColumnNr, bool addToDestinationRow = true);
+    void addColumnToColumn(int columnNr, const DataType& coeff, Matrix<DataType>& src, int srcColumnNr, const DataType& srcCoeff, Matrix<DataType> &dest, int destRowOrColumnNr, bool addToDestinationRow = true);
 
     DataType determinant() const;
     int rank() const;
@@ -100,19 +97,15 @@ private:
     void _allocMemory(int nrOfRows, int nrOfColumns);
     void _deallocMemory();
 
-    DataType& _getItemForLineWrap(int oneDimensionalIndex);
-    DataType& _getItemForColumnWrap(int oneDimensionalIndex);
-
     Matrix<DataType> _power(int exp);
     Matrix<DataType> _multiply(const DataType& scalar);
 
-    void _split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestmatrix, int splitRowColumnNr);
-    void _concatenate(Matrix<DataType>& firstSrcMatrix,Matrix<DataType>& secondSrcMatrix);
+    void _split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestmatrix, int splitRowColumnNr, bool splitHorizontally);
+    void _concatenate(Matrix<DataType>& firstSrcMatrix,Matrix<DataType>& secondSrcMatrix, bool concatenateHorizontally);
 
     DataType** m_pBaseArrayPtr;
     int m_NrOfRows;
     int m_NrOfColumns;
-    bool m_IsWrappedByRow;
 };
 
 template <typename DataType>
@@ -120,13 +113,11 @@ Matrix<DataType>::Matrix()
     : m_pBaseArrayPtr{nullptr}
     , m_NrOfRows{0}
     , m_NrOfColumns{0}
-    , m_IsWrappedByRow{true}
 {
 }
 
 template <typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType)
-    : m_IsWrappedByRow{true}
 {
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
@@ -146,7 +137,6 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType
 
 template<typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList)
-    : m_IsWrappedByRow{true}
 {
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
@@ -182,7 +172,6 @@ Matrix<DataType>::Matrix(int nrOfRowsColumns, const std::pair<DataType, DataType
 
 template <typename DataType>
 Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
-    : m_IsWrappedByRow{true}
 {
     _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
 
@@ -200,7 +189,6 @@ Matrix<DataType>::Matrix(Matrix<DataType> &&matrix)
     : m_pBaseArrayPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfRows{matrix.m_NrOfRows}
     , m_NrOfColumns{matrix.m_NrOfColumns}
-    , m_IsWrappedByRow{true}
 {
     matrix.m_pBaseArrayPtr = nullptr;
     matrix.m_NrOfRows = 0;
@@ -240,7 +228,7 @@ DataType& Matrix<DataType>::operator[](int index)
         throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
 
-    return m_IsWrappedByRow ? _getItemForLineWrap(index) : _getItemForColumnWrap(index);
+    return m_pBaseArrayPtr[index/m_NrOfColumns][index%m_NrOfColumns];
 }
 
 template<typename DataType>
@@ -277,21 +265,6 @@ template<typename DataType>
 int Matrix<DataType>::getNrOfColumns() const
 {
     return m_NrOfColumns;
-}
-
-template<typename DataType>
-bool Matrix<DataType>::isWrappedByRow() const
-{
-    return m_IsWrappedByRow;
-}
-
-template<typename DataType>
-void Matrix<DataType>::setWrapMode(bool byRow)
-{
-    if (m_IsWrappedByRow != byRow)
-    {
-        m_IsWrappedByRow = byRow;
-    }
 }
 
 template<typename DataType>
@@ -583,14 +556,14 @@ void Matrix<DataType>::deleteColumn(int columnNr)
 }
 
 template <typename DataType>
-void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix)
+void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix, bool concatenateHorizontally)
 {
-    if (m_IsWrappedByRow && (firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns))
+    if (concatenateHorizontally && (firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns))
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_ROW_LENGTH]};
     }
 
-    if ((!m_IsWrappedByRow) && (firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows))
+    if ((!concatenateHorizontally) && (firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows))
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
     }
@@ -608,24 +581,24 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
 
     if ((firstSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr!=m_pBaseArrayPtr))
     {
-        _concatenate(thirdMatrix, secondSrcMatrix);
+        _concatenate(thirdMatrix, secondSrcMatrix, concatenateHorizontally);
     }
     else if ((firstSrcMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
     {
-        _concatenate(firstSrcMatrix, thirdMatrix);
+        _concatenate(firstSrcMatrix, thirdMatrix, concatenateHorizontally);
     }
     else if ((firstSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
     {
-        _concatenate(thirdMatrix, thirdMatrix);
+        _concatenate(thirdMatrix, thirdMatrix, concatenateHorizontally);
     }
     else
     {
-        _concatenate(firstSrcMatrix, secondSrcMatrix);
+        _concatenate(firstSrcMatrix, secondSrcMatrix, concatenateHorizontally);
     }
 }
 
 template <typename DataType>
-void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix,int splitRowColumnNr)
+void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr, bool splitHorizontally)
 {
     if (firstDestMatrix.m_pBaseArrayPtr==secondDestMatrix.m_pBaseArrayPtr)
     {
@@ -637,7 +610,7 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    if (m_IsWrappedByRow)
+    if (splitHorizontally)
     {
         if (splitRowColumnNr>m_NrOfRows)
         {
@@ -665,22 +638,21 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
         thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
         thirdMatrix.m_NrOfRows = m_NrOfRows;
         thirdMatrix.m_NrOfColumns = m_NrOfColumns;
-        thirdMatrix.m_IsWrappedByRow = m_IsWrappedByRow;
 
         _allocMemory(1,1);
     }
 
     if ((firstDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondDestMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr))
     {
-        thirdMatrix._split(*this, secondDestMatrix, splitRowColumnNr);
+        thirdMatrix._split(*this, secondDestMatrix, splitRowColumnNr, splitHorizontally);
     }
     else if ((firstDestMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr) && (secondDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
     {
-        thirdMatrix._split(firstDestMatrix, *this, splitRowColumnNr);
+        thirdMatrix._split(firstDestMatrix, *this, splitRowColumnNr, splitHorizontally);
     }
     else
     {
-        _split(firstDestMatrix, secondDestMatrix, splitRowColumnNr);
+        _split(firstDestMatrix, secondDestMatrix, splitRowColumnNr, splitHorizontally);
     }
 }
 
@@ -838,9 +810,9 @@ void Matrix<DataType>::copy(const Matrix<DataType>& src, int nrOfRows, int nrOfC
 }
 
 template<typename DataType>
-void Matrix<DataType>::addRowToColumn(int rowNr, const DataType& coeff, Matrix& src, int srcColumnNr, const DataType& srcCoeff, Matrix& dest,int destColumnNr)
+void Matrix<DataType>::addRowToColumn(int rowNr, const DataType& coeff, Matrix& src, int srcColumnNr, const DataType& srcCoeff, Matrix& dest, int destRowOrColumnNr, bool addToDestinationRow)
 {
-    if (rowNr<0 || srcColumnNr<0 || destColumnNr<0)
+    if (rowNr<0 || srcColumnNr<0 || destRowOrColumnNr<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
@@ -855,36 +827,36 @@ void Matrix<DataType>::addRowToColumn(int rowNr, const DataType& coeff, Matrix& 
         throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
     }
 
-    if (dest.m_IsWrappedByRow)
+    if (addToDestinationRow)
     {
-        if (destColumnNr>=dest.m_NrOfRows)
+        if (destRowOrColumnNr>=dest.m_NrOfRows)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_ROW_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pBaseArrayPtr[destColumnNr][row] = coeff * m_pBaseArrayPtr[rowNr][row] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
+            dest.m_pBaseArrayPtr[destRowOrColumnNr][row] = coeff * m_pBaseArrayPtr[rowNr][row] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
         }
     }
     else
     {
-        if (destColumnNr>=dest.m_NrOfColumns)
+        if (destRowOrColumnNr>=dest.m_NrOfColumns)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_COLUMN_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pBaseArrayPtr[row][destColumnNr] = coeff * m_pBaseArrayPtr[rowNr][row] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
+            dest.m_pBaseArrayPtr[row][destRowOrColumnNr] = coeff * m_pBaseArrayPtr[rowNr][row] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
         }
     }
 }
 
 template<typename DataType>
-void Matrix<DataType>::addColumnToRow(int columnNr, const DataType& coeff, Matrix& src, int srcRowNr, const DataType& srcCoeff, Matrix& dest, int destRowNr)
+void Matrix<DataType>::addColumnToRow(int columnNr, const DataType& coeff, Matrix& src, int srcRowNr, const DataType& srcCoeff, Matrix& dest, int destRowOrColumnNr, bool addToDestinationRow)
 {
-    if (columnNr<0 || srcRowNr<0 || destRowNr<0)
+    if (columnNr<0 || srcRowNr<0 || destRowOrColumnNr<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
@@ -899,36 +871,36 @@ void Matrix<DataType>::addColumnToRow(int columnNr, const DataType& coeff, Matri
         throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
     }
 
-    if (dest.m_IsWrappedByRow)
+    if (addToDestinationRow)
     {
-        if (destRowNr>=dest.m_NrOfRows)
+        if (destRowOrColumnNr>=dest.m_NrOfRows)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_ROW_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pBaseArrayPtr[destRowNr][row] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[srcRowNr][row];
+            dest.m_pBaseArrayPtr[destRowOrColumnNr][row] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[srcRowNr][row];
         }
     }
     else
     {
-        if (destRowNr>=dest.m_NrOfColumns)
+        if (destRowOrColumnNr>=dest.m_NrOfColumns)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_COLUMN_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pBaseArrayPtr[row][destRowNr] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[srcRowNr][row];
+            dest.m_pBaseArrayPtr[row][destRowOrColumnNr] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[srcRowNr][row];
         }
     }
 }
 
 template<typename DataType>
-void Matrix<DataType>::addRowToRow(int rowNr, const DataType& coeff, Matrix &src, int srcRowNr, const DataType& srcCoeff, Matrix& dest, int destRowNr)
+void Matrix<DataType>::addRowToRow(int rowNr, const DataType& coeff, Matrix &src, int srcRowNr, const DataType& srcCoeff, Matrix& dest, int destRowOrColumnNr, bool addToDestinationRow)
 {
-    if (rowNr<0 || srcRowNr<0 || destRowNr<0)
+    if (rowNr<0 || srcRowNr<0 || destRowOrColumnNr<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
@@ -938,35 +910,35 @@ void Matrix<DataType>::addRowToRow(int rowNr, const DataType& coeff, Matrix &src
         throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
     }
 
-    if (dest.m_IsWrappedByRow)
+    if (addToDestinationRow)
     {
-        if (destRowNr>=dest.m_NrOfRows)
+        if (destRowOrColumnNr>=dest.m_NrOfRows)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_ROW_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pBaseArrayPtr[destRowNr][row] = coeff * m_pBaseArrayPtr[rowNr][row] + srcCoeff * src.m_pBaseArrayPtr[srcRowNr][row];
+            dest.m_pBaseArrayPtr[destRowOrColumnNr][row] = coeff * m_pBaseArrayPtr[rowNr][row] + srcCoeff * src.m_pBaseArrayPtr[srcRowNr][row];
         }
     }
     else {
-        if (destRowNr>=dest.m_NrOfColumns)
+        if (destRowOrColumnNr>=dest.m_NrOfColumns)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_COLUMN_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pBaseArrayPtr[row][destRowNr] = coeff * m_pBaseArrayPtr[rowNr][row] + srcCoeff * src.m_pBaseArrayPtr[srcRowNr][row];
+            dest.m_pBaseArrayPtr[row][destRowOrColumnNr] = coeff * m_pBaseArrayPtr[rowNr][row] + srcCoeff * src.m_pBaseArrayPtr[srcRowNr][row];
         }
     }
 }
 
 template<typename DataType>
-void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Matrix& src, int srcColumnNr, const DataType& srcCoeff, Matrix& dest, int destColumnNr)
+void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Matrix& src, int srcColumnNr, const DataType& srcCoeff, Matrix& dest, int destRowOrColumnNr, bool addToDestinationRow)
 {
-    if (columnNr<0 || srcColumnNr<0 || destColumnNr<0)
+    if (columnNr<0 || srcColumnNr<0 || destRowOrColumnNr<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
@@ -976,28 +948,28 @@ void Matrix<DataType>::addColumnToColumn(int columnNr, const DataType& coeff, Ma
         throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
     }
 
-    if (dest.m_IsWrappedByRow)
+    if (addToDestinationRow)
     {
-        if (destColumnNr>=dest.m_NrOfRows)
+        if (destRowOrColumnNr>=dest.m_NrOfRows)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_ROW_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pBaseArrayPtr[destColumnNr][row] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
+            dest.m_pBaseArrayPtr[destRowOrColumnNr][row] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
         }
     }
     else
     {
-        if (destColumnNr>=dest.m_NrOfColumns)
+        if (destRowOrColumnNr>=dest.m_NrOfColumns)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::DEST_COLUMN_DOES_NOT_EXIST]};
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            dest.m_pBaseArrayPtr[row][destColumnNr] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
+            dest.m_pBaseArrayPtr[row][destRowOrColumnNr] = coeff * m_pBaseArrayPtr[row][columnNr] + srcCoeff * src.m_pBaseArrayPtr[row][srcColumnNr];
         }
     }
 }
@@ -1595,8 +1567,6 @@ Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
         }
     }
 
-    m_IsWrappedByRow = matrix.m_IsWrappedByRow;
-
     return *this;
 }
 
@@ -1779,18 +1749,6 @@ void Matrix<DataType>::_deallocMemory()
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::_getItemForLineWrap(int oneDimensionalIndex)
-{
-    return m_pBaseArrayPtr[oneDimensionalIndex/m_NrOfColumns][oneDimensionalIndex%m_NrOfColumns];
-}
-
-template<typename DataType>
-DataType& Matrix<DataType>::_getItemForColumnWrap(int oneDimensionalIndex)
-{
-    return m_pBaseArrayPtr[oneDimensionalIndex%m_NrOfRows][oneDimensionalIndex/m_NrOfRows];
-}
-
-template<typename DataType>
 Matrix<DataType> Matrix<DataType>::_power(int exponent)
 {
     Matrix<DataType> result{*this};
@@ -1835,12 +1793,12 @@ Matrix<DataType> Matrix<DataType>::_multiply(const DataType &scalar)
 }
 
 template<typename DataType>
-void Matrix<DataType>::_split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr)
+void Matrix<DataType>::_split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr, bool splitHorizontally)
 {
     firstDestMatrix._deallocMemory();
     secondDestMatrix._deallocMemory();
 
-    if (m_IsWrappedByRow) {
+    if (splitHorizontally) {
         firstDestMatrix._allocMemory(splitRowColumnNr, m_NrOfColumns);
         secondDestMatrix._allocMemory(m_NrOfRows-splitRowColumnNr, m_NrOfColumns);
 
@@ -1883,9 +1841,9 @@ void Matrix<DataType>::_split(Matrix<DataType>& firstDestMatrix, Matrix<DataType
 }
 
 template<typename DataType>
-void Matrix<DataType>::_concatenate(Matrix<DataType> &firstSrcMatrix, Matrix<DataType> &secondSrcMatrix)
+void Matrix<DataType>::_concatenate(Matrix<DataType> &firstSrcMatrix, Matrix<DataType> &secondSrcMatrix, bool concatenateHorizontally)
 {
-    if (m_IsWrappedByRow) {
+    if (concatenateHorizontally) {
         resize(firstSrcMatrix.m_NrOfRows+secondSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns);
 
         for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
