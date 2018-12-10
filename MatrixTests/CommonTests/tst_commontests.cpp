@@ -22,6 +22,13 @@ private slots:
     void testSwapNonEmptyMatrixes();
     void testSwapEmptyWithNonEmptyMatrix();
     void testSwapEmptyMatrixes();
+    void testSwapItemSameMatrix();
+    void testSwapItemTwoMatrixes();
+    void testSwapRowSameMatrix();
+    void testSwapRowTwoMatrixes();
+    void testSwapColumnSameMatrix();
+    void testSwapColumnTwoMatrixes();
+    void testSwapRowColumnTwoMatrixes();
 };
 
 CommonTests::CommonTests()
@@ -226,6 +233,194 @@ void CommonTests::testSwapEmptyMatrixes()
     matrixPtr = secondMatrix.getBaseArrayPtr(nrOfRows, nrOfColumns);
 
     QVERIFY2(!matrixPtr, "Second matrix has incorrect number of elements after swap");
+}
+
+void CommonTests::testSwapItemSameMatrix()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+    matrix.swapItem(1, 2, matrix, 0, 1);
+
+    QVERIFY2(matrix.at(0, 0) == 1 &&
+             matrix.at(0, 1) == 6 &&
+             matrix.at(0, 2) == 3 &&
+             matrix.at(1, 0) == 4 &&
+             matrix.at(1, 1) == 5 &&
+             matrix.at(1, 2) == 2,
+
+             "Items are incorrectly swapped within same matrix");
+}
+
+void CommonTests::testSwapItemTwoMatrixes()
+{
+    IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+
+    firstMatrix.swapItem(1, 2, secondMatrix, 2, 0);
+
+    QVERIFY2(firstMatrix.at(0, 0) == 1 &&
+             firstMatrix.at(0, 1) == 2 &&
+             firstMatrix.at(0, 2) == 3 &&
+             firstMatrix.at(1, 0) == 4 &&
+             firstMatrix.at(1, 1) == 5 &&
+             firstMatrix.at(1, 2) == 11,
+
+             "Items are incorrectly swapped between matrixes, first matrix does not have the desired value after swap");
+
+    QVERIFY2(secondMatrix.at(0, 0) == 7 &&
+             secondMatrix.at(0, 1) == 8 &&
+             secondMatrix.at(1, 0) == 9 &&
+             secondMatrix.at(1, 1) == 10 &&
+             secondMatrix.at(2, 0) == 6 &&
+             secondMatrix.at(2, 1) == 12,
+
+             "Items are incorrectly swapped between matrixes, second matrix does not have the desired value after swap");
+}
+
+void CommonTests::testSwapRowSameMatrix()
+{
+    IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+    matrix.swapRow(0, matrix, 2);
+
+    QVERIFY2(matrix.at(0, 0) == 7 &&
+             matrix.at(0, 1) == 8 &&
+             matrix.at(0, 2) == 9 &&
+             matrix.at(1, 0) == 4 &&
+             matrix.at(1, 1) == 5 &&
+             matrix.at(1, 2) == 6 &&
+             matrix.at(2, 0) == 1 &&
+             matrix.at(2, 1) == 2 &&
+             matrix.at(2, 2) == 3 &&
+             matrix.at(3, 0) == 10 &&
+             matrix.at(3, 1) == 11 &&
+             matrix.at(3, 2) == 12,
+
+             "Rows are incorrectly swapped within same matrix");
+}
+
+void CommonTests::testSwapRowTwoMatrixes()
+{
+    IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    IntMatrix secondMatrix{4, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
+
+    firstMatrix.swapRow(0, secondMatrix, 3);
+
+    QVERIFY2(firstMatrix.at(0, 0) == 16 &&
+             firstMatrix.at(0, 1) == 17 &&
+             firstMatrix.at(0, 2) == 18 &&
+             firstMatrix.at(1, 0) == 4 &&
+             firstMatrix.at(1, 1) == 5 &&
+             firstMatrix.at(1, 2) == 6,
+
+             "Rows are incorrectly swapped between matrixes, first matrix does not have the desired value after swap");
+
+    QVERIFY2(secondMatrix.at(0, 0) == 7 &&
+             secondMatrix.at(0, 1) == 8 &&
+             secondMatrix.at(0, 2) == 9 &&
+             secondMatrix.at(1, 0) == 10 &&
+             secondMatrix.at(1, 1) == 11 &&
+             secondMatrix.at(1, 2) == 12 &&
+             secondMatrix.at(2, 0) == 13 &&
+             secondMatrix.at(2, 1) == 14 &&
+             secondMatrix.at(2, 2) == 15 &&
+             secondMatrix.at(3, 0) == 1 &&
+             secondMatrix.at(3, 1) == 2 &&
+             secondMatrix.at(3, 2) == 3,
+
+             "Rows are incorrectly swapped between matrixes, second matrix does not have the desired value after swap");
+}
+
+void CommonTests::testSwapColumnSameMatrix()
+{
+    IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+    matrix.swapColumn(0, matrix, 2);
+
+    QVERIFY2(matrix.at(0, 0) == 3 &&
+             matrix.at(0, 1) == 2 &&
+             matrix.at(0, 2) == 1 &&
+             matrix.at(0, 3) == 4 &&
+             matrix.at(1, 0) == 7 &&
+             matrix.at(1, 1) == 6 &&
+             matrix.at(1, 2) == 5 &&
+             matrix.at(1, 3) == 8 &&
+             matrix.at(2, 0) == 11 &&
+             matrix.at(2, 1) == 10 &&
+             matrix.at(2, 2) == 9 &&
+             matrix.at(2, 3) == 12,
+
+             "Columns are incorrectly swapped within same matrix");
+}
+
+void CommonTests::testSwapColumnTwoMatrixes()
+{
+    IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+    IntMatrix secondMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
+
+    firstMatrix.swapColumn(0, secondMatrix, 3);
+
+    QVERIFY2(firstMatrix.at(0, 0) == 10 &&
+             firstMatrix.at(0, 1) == 2 &&
+             firstMatrix.at(1, 0) == 14 &&
+             firstMatrix.at(1, 1) == 4 &&
+             firstMatrix.at(2, 0) == 18 &&
+             firstMatrix.at(2, 1) == 6,
+
+             "Columns are incorrectly swapped between matrixes, first matrix does not have the desired value after swap");
+
+    QVERIFY2(secondMatrix.at(0, 0) == 7 &&
+             secondMatrix.at(0, 1) == 8 &&
+             secondMatrix.at(0, 2) == 9 &&
+             secondMatrix.at(0, 3) == 1 &&
+             secondMatrix.at(1, 0) == 11 &&
+             secondMatrix.at(1, 1) == 12 &&
+             secondMatrix.at(1, 2) == 13 &&
+             secondMatrix.at(1, 3) == 3 &&
+             secondMatrix.at(2, 0) == 15 &&
+             secondMatrix.at(2, 1) == 16 &&
+             secondMatrix.at(2, 2) == 17 &&
+             secondMatrix.at(2, 3) == 5,
+
+             "Columns are incorrectly swapped between matrixes, second matrix does not have the desired value after swap");
+}
+
+void CommonTests::testSwapRowColumnTwoMatrixes()
+{
+    IntMatrix firstMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    IntMatrix secondMatrix{3, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24}};
+
+    firstMatrix.swapRowColumn(0, secondMatrix, 3);
+
+    QVERIFY2(firstMatrix.at(0, 0) == 16 &&
+             firstMatrix.at(0, 1) == 20 &&
+             firstMatrix.at(0, 2) == 24 &&
+             firstMatrix.at(1, 0) == 4 &&
+             firstMatrix.at(1, 1) == 5 &&
+             firstMatrix.at(1, 2) == 6 &&
+             firstMatrix.at(2, 0) == 7 &&
+             firstMatrix.at(2, 1) == 8 &&
+             firstMatrix.at(2, 2) == 9 &&
+             firstMatrix.at(3, 0) == 10 &&
+             firstMatrix.at(3, 1) == 11 &&
+             firstMatrix.at(3, 2) == 12,
+
+             "Row from first matrix is incorrectly swapped with column from the second, first matrix does not have the desired value after swap");
+
+    QVERIFY2(secondMatrix.at(0, 0) == 13 &&
+             secondMatrix.at(0, 1) == 14 &&
+             secondMatrix.at(0, 2) == 15 &&
+             secondMatrix.at(0, 3) == 1 &&
+             secondMatrix.at(1, 0) == 17 &&
+             secondMatrix.at(1, 1) == 18 &&
+             secondMatrix.at(1, 2) == 19 &&
+             secondMatrix.at(1, 3) == 2 &&
+             secondMatrix.at(2, 0) == 21 &&
+             secondMatrix.at(2, 1) == 22 &&
+             secondMatrix.at(2, 2) == 23 &&
+             secondMatrix.at(2, 3) == 3,
+
+             "Row from first matrix is incorrectly swapped with column from the second, second matrix does not have the desired value after swap");
 }
 
 QTEST_APPLESS_MAIN(CommonTests)
