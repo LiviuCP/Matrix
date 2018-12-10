@@ -169,15 +169,15 @@ void CommonTests::testSwapNonEmptyMatrixes()
 
     std::swap(firstMatrix, secondMatrix);
 
-    QVERIFY2(firstMatrix.getNrOfRows() == 3 &&
-             firstMatrix.getNrOfColumns() == 2,
+    if (firstMatrix.getNrOfRows() != 3 || firstMatrix.getNrOfColumns() != 2)
+    {
+        QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
+    }
 
-             "Incorrect number of rows and/or columns in the first matrix after swap");
-
-    QVERIFY2(secondMatrix.getNrOfRows() == 2 &&
-             secondMatrix.getNrOfColumns() == 3,
-
-             "Incorrect number of rows and/or columns in the second matrix after swap");
+    if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
+    {
+        QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
+    }
 
     QVERIFY2(firstMatrix.at(0, 0) == 7 &&
              firstMatrix.at(0, 1) == 8 &&
@@ -205,15 +205,15 @@ void CommonTests::testSwapEmptyWithNonEmptyMatrix()
 
     std::swap(firstMatrix, secondMatrix);
 
-    QVERIFY2(firstMatrix.getNrOfRows() == 0 &&
-             firstMatrix.getNrOfColumns() == 0,
+    if (firstMatrix.getNrOfRows() != 0 || firstMatrix.getNrOfColumns() != 0)
+    {
+        QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
+    }
 
-             "Incorrect number of rows and/or columns in the first matrix after swap");
-
-    QVERIFY2(secondMatrix.getNrOfRows() == 2 &&
-             secondMatrix.getNrOfColumns() == 3,
-
-             "Incorrect number of rows and/or columns in the second matrix after swap");
+    if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
+    {
+        QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
+    }
 
     int nrOfRows, nrOfColumns;
     int** matrixPtr{firstMatrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
@@ -237,15 +237,15 @@ void CommonTests::testSwapEmptyMatrixes()
 
     std::swap(firstMatrix, secondMatrix);
 
-    QVERIFY2(firstMatrix.getNrOfRows() == 0 &&
-             firstMatrix.getNrOfColumns() == 0,
+    if (firstMatrix.getNrOfRows() != 0 || firstMatrix.getNrOfColumns() != 0)
+    {
+        QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
+    }
 
-             "Incorrect number of rows and/or columns in the first matrix after swap");
-
-    QVERIFY2(secondMatrix.getNrOfRows() == 0 &&
-             secondMatrix.getNrOfColumns() == 0,
-
-             "Incorrect number of rows and/or columns in the second matrix after swap");
+    if (secondMatrix.getNrOfRows() != 0 || secondMatrix.getNrOfColumns() != 0)
+    {
+        QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
+    }
 
     int nrOfRows, nrOfColumns;
     int** matrixPtr{firstMatrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
