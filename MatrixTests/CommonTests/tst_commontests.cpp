@@ -29,6 +29,8 @@ private slots:
     void testSwapColumnSameMatrix();
     void testSwapColumnTwoMatrixes();
     void testSwapRowColumnTwoMatrixes();
+    void testConcatenateTwoMatrixesVertically();
+    void testConcatenateTwoMatrixesHorizontally();
 };
 
 CommonTests::CommonTests()
@@ -421,6 +423,230 @@ void CommonTests::testSwapRowColumnTwoMatrixes()
              secondMatrix.at(2, 3) == 3,
 
              "Row from first matrix is incorrectly swapped with column from the second, second matrix does not have the desired value after swap");
+}
+
+void CommonTests::testConcatenateTwoMatrixesVertically()
+{
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{1, 2, {5, 6}};
+        IntMatrix thirdMatrix{};
+
+        thirdMatrix.concatenate(firstMatrix, secondMatrix);
+
+        if (thirdMatrix.getNrOfRows() != 3 || thirdMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(thirdMatrix.at(0, 0) == 1 &&
+                 thirdMatrix.at(0, 1) == 2 &&
+                 thirdMatrix.at(1, 0) == 3 &&
+                 thirdMatrix.at(1, 1) == 4 &&
+                 thirdMatrix.at(2, 0) == 5 &&
+                 thirdMatrix.at(2, 1) == 6,
+
+                 "Vertical concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{1, 2, {5, 6}};
+
+        firstMatrix.concatenate(firstMatrix, secondMatrix);
+
+        if (firstMatrix.getNrOfRows() != 3 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
+                 firstMatrix.at(0, 1) == 2 &&
+                 firstMatrix.at(1, 0) == 3 &&
+                 firstMatrix.at(1, 1) == 4 &&
+                 firstMatrix.at(2, 0) == 5 &&
+                 firstMatrix.at(2, 1) == 6,
+
+                 "Vertical concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{1, 2, {5, 6}};
+
+        secondMatrix.concatenate(firstMatrix, secondMatrix);
+
+        if (secondMatrix.getNrOfRows() != 3 || secondMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(1, 0) == 3 &&
+                 secondMatrix.at(1, 1) == 4 &&
+                 secondMatrix.at(2, 0) == 5 &&
+                 secondMatrix.at(2, 1) == 6,
+
+                 "Vertical concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+
+        firstMatrix.concatenate(firstMatrix, firstMatrix);
+
+        if (firstMatrix.getNrOfRows() != 4 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
+                 firstMatrix.at(0, 1) == 2 &&
+                 firstMatrix.at(1, 0) == 3 &&
+                 firstMatrix.at(1, 1) == 4 &&
+                 firstMatrix.at(2, 0) == 1 &&
+                 firstMatrix.at(2, 1) == 2 &&
+                 firstMatrix.at(3, 0) == 3 &&
+                 firstMatrix.at(3, 1) == 4,
+
+                 "Vertical concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{};
+
+        secondMatrix.concatenate(firstMatrix, firstMatrix);
+
+        if (secondMatrix.getNrOfRows() != 4 || secondMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(1, 0) == 3 &&
+                 secondMatrix.at(1, 1) == 4 &&
+                 secondMatrix.at(2, 0) == 1 &&
+                 secondMatrix.at(2, 1) == 2 &&
+                 secondMatrix.at(3, 0) == 3 &&
+                 secondMatrix.at(3, 1) == 4,
+
+                 "Vertical concatenation failed, destination matrix has incorrect values!");
+    }
+}
+
+void CommonTests::testConcatenateTwoMatrixesHorizontally()
+{
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{2, 1, {5, 6}};
+        IntMatrix thirdMatrix{};
+
+        thirdMatrix.concatenate(firstMatrix, secondMatrix, false);
+
+        if (thirdMatrix.getNrOfRows() != 2 || thirdMatrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(thirdMatrix.at(0, 0) == 1 &&
+                 thirdMatrix.at(0, 1) == 2 &&
+                 thirdMatrix.at(0, 2) == 5 &&
+                 thirdMatrix.at(1, 0) == 3 &&
+                 thirdMatrix.at(1, 1) == 4 &&
+                 thirdMatrix.at(1, 2) == 6,
+
+                 "Horizontal concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{2, 1, {5, 6}};
+
+        firstMatrix.concatenate(firstMatrix, secondMatrix, false);
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
+                 firstMatrix.at(0, 1) == 2 &&
+                 firstMatrix.at(0, 2) == 5 &&
+                 firstMatrix.at(1, 0) == 3 &&
+                 firstMatrix.at(1, 1) == 4 &&
+                 firstMatrix.at(1, 2) == 6,
+
+                 "Horizontal concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{2, 1, {5, 6}};
+
+        secondMatrix.concatenate(firstMatrix, secondMatrix, false);
+
+        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(0, 2) == 5 &&
+                 secondMatrix.at(1, 0) == 3 &&
+                 secondMatrix.at(1, 1) == 4 &&
+                 secondMatrix.at(1, 2) == 6,
+
+                 "Horizontal concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+
+        firstMatrix.concatenate(firstMatrix, firstMatrix, false);
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 4)
+        {
+            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
+                 firstMatrix.at(0, 1) == 2 &&
+                 firstMatrix.at(0, 2) == 1 &&
+                 firstMatrix.at(0, 3) == 2 &&
+                 firstMatrix.at(1, 0) == 3 &&
+                 firstMatrix.at(1, 1) == 4 &&
+                 firstMatrix.at(1, 2) == 3 &&
+                 firstMatrix.at(1, 3) == 4,
+
+                 "Horizontal concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{};
+
+        secondMatrix.concatenate(firstMatrix, firstMatrix, false);
+
+        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 4)
+        {
+            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(0, 2) == 1 &&
+                 secondMatrix.at(0, 3) == 2 &&
+                 secondMatrix.at(1, 0) == 3 &&
+                 secondMatrix.at(1, 1) == 4 &&
+                 secondMatrix.at(1, 2) == 3 &&
+                 secondMatrix.at(1, 3) == 4,
+
+                 "Horizontal concatenation failed, destination matrix has incorrect values!");
+    }
 }
 
 QTEST_APPLESS_MAIN(CommonTests)
