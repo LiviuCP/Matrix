@@ -59,7 +59,7 @@ public:
     void swapColumns(int columnNr, Matrix<DataType>& matrix, int matrixColumnNr);
     void swapRowColumn(int rowNr, Matrix<DataType>& matrix, int matrixColumnNr);
 
-    void setAllItemsToSameValue(const DataType& value);
+    void setAllItemsToValue(const DataType& value);
     void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX=0, int srcY=0, int destX=0, int destY=0);
 
     // functions depending on operations supported by DataItem (addition, multiplication, etc)
@@ -770,7 +770,7 @@ void Matrix<DataType>::swapRowColumn(int rowNr, Matrix<DataType>& matrix, int ma
     }
 }
 
-template <typename DataType> void Matrix<DataType>::setAllItemsToSameValue(const DataType& value)
+template <typename DataType> void Matrix<DataType>::setAllItemsToValue(const DataType& value)
 {
     for (int row{0}; row<m_NrOfRows; ++row)
     {
