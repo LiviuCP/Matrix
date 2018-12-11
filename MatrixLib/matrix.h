@@ -563,14 +563,14 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_ROW_LENGTH]};
     }
 
-    if ((!concatenateVertically) && (firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows))
+    if (!concatenateVertically && (firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows))
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
     }
 
     Matrix<DataType> thirdMatrix{};
 
-    if ((firstSrcMatrix.m_pBaseArrayPtr==m_pBaseArrayPtr) || (secondSrcMatrix.m_pBaseArrayPtr==m_pBaseArrayPtr))
+    if (&firstSrcMatrix == this || &secondSrcMatrix == this)
     {
         thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
         thirdMatrix.m_NrOfRows = m_NrOfRows;
@@ -579,15 +579,15 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
         _allocMemory(1,1);
     }
 
-    if ((firstSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr!=m_pBaseArrayPtr))
+    if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
     {
         _concatenate(thirdMatrix, secondSrcMatrix, concatenateVertically);
     }
-    else if ((firstSrcMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
+    else if (&firstSrcMatrix != this && (&secondSrcMatrix == this))
     {
         _concatenate(firstSrcMatrix, thirdMatrix, concatenateVertically);
     }
-    else if ((firstSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondSrcMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
+    else if (&firstSrcMatrix == this && (&secondSrcMatrix == this))
     {
         _concatenate(thirdMatrix, thirdMatrix, concatenateVertically);
     }
@@ -600,7 +600,7 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
 template <typename DataType>
 void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr, bool splitVertically)
 {
-    if (&firstDestMatrix==&secondDestMatrix)
+    if (&firstDestMatrix == &secondDestMatrix)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::SAME_VARIABLE_TWO_ARGS]};
     }
@@ -616,17 +616,20 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
         }
-        if ((splitRowColumnNr == 0) || (splitRowColumnNr == m_NrOfRows))
+
+        if (splitRowColumnNr == 0 || splitRowColumnNr == m_NrOfRows)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_ROWS]};
         }
     }
-    else {
+    else
+    {
         if (splitRowColumnNr>m_NrOfColumns)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
         }
-        if ((splitRowColumnNr == 0) || (splitRowColumnNr == m_NrOfColumns))
+
+        if (splitRowColumnNr == 0 || splitRowColumnNr == m_NrOfColumns)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_COLUMNS]};
         }
@@ -634,7 +637,8 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
 
     Matrix<DataType> thirdMatrix{};
 
-    if ((firstDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) || (secondDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr)) {
+    if (&firstDestMatrix == this || &secondDestMatrix == this)
+    {
         thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
         thirdMatrix.m_NrOfRows = m_NrOfRows;
         thirdMatrix.m_NrOfColumns = m_NrOfColumns;
@@ -642,11 +646,11 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
         _allocMemory(1,1);
     }
 
-    if ((firstDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr) && (secondDestMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr))
+    if (&firstDestMatrix == this && (&secondDestMatrix != this))
     {
         thirdMatrix._split(*this, secondDestMatrix, splitRowColumnNr, splitVertically);
     }
-    else if ((firstDestMatrix.m_pBaseArrayPtr != m_pBaseArrayPtr) && (secondDestMatrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
+    else if (&firstDestMatrix != this && (&secondDestMatrix == this))
     {
         thirdMatrix._split(firstDestMatrix, *this, splitRowColumnNr, splitVertically);
     }
@@ -1800,7 +1804,7 @@ void Matrix<DataType>::_split(Matrix<DataType>& firstDestMatrix, Matrix<DataType
 
     if (splitVertically) {
         firstDestMatrix._allocMemory(splitRowColumnNr, m_NrOfColumns);
-        secondDestMatrix._allocMemory(m_NrOfRows-splitRowColumnNr, m_NrOfColumns);
+        secondDestMatrix._allocMemory(m_NrOfRows - splitRowColumnNr, m_NrOfColumns);
 
         for (int row{0}; row<splitRowColumnNr; ++row)
         {
@@ -1821,7 +1825,7 @@ void Matrix<DataType>::_split(Matrix<DataType>& firstDestMatrix, Matrix<DataType
     else
     {
         firstDestMatrix._allocMemory(m_NrOfRows, splitRowColumnNr);
-        secondDestMatrix._allocMemory(m_NrOfRows, m_NrOfColumns-splitRowColumnNr);
+        secondDestMatrix._allocMemory(m_NrOfRows, m_NrOfColumns - splitRowColumnNr);
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
@@ -1830,6 +1834,7 @@ void Matrix<DataType>::_split(Matrix<DataType>& firstDestMatrix, Matrix<DataType
                 firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
             }
         }
+
         for (int row{0}; row<m_NrOfRows; ++row)
         {
             for (int col{splitRowColumnNr}; col<m_NrOfColumns; ++col)
@@ -1844,7 +1849,7 @@ template<typename DataType>
 void Matrix<DataType>::_concatenate(Matrix<DataType> &firstSrcMatrix, Matrix<DataType> &secondSrcMatrix, bool concatenateVertically)
 {
     if (concatenateVertically) {
-        resize(firstSrcMatrix.m_NrOfRows+secondSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns);
+        resize(firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns);
 
         for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
         {
@@ -1864,7 +1869,7 @@ void Matrix<DataType>::_concatenate(Matrix<DataType> &firstSrcMatrix, Matrix<Dat
     }
     else
     {
-        resize(firstSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns+secondSrcMatrix.m_NrOfColumns);
+        resize(firstSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns);
 
         for(int row{0}; row<m_NrOfRows; ++row)
         {
