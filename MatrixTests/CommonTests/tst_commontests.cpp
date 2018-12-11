@@ -28,6 +28,7 @@ private slots:
     void testConcatenateTwoMatrixesHorizontally();
     void testSplitTwoMatrixesVertically();
     void testSplitTwoMatrixesHorizontally();
+    void testTransformToDiagMatrix();
 };
 
 CommonTests::CommonTests()
@@ -849,6 +850,29 @@ void CommonTests::testSplitTwoMatrixesHorizontally()
 
                  "Horizontal split failed, second destination matrix has incorrect values!");
     }
+}
+
+void CommonTests::testTransformToDiagMatrix()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    matrix.transformToDiagMatrix(3, 7, 8);
+
+    if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 3)
+    {
+        QFAIL("Transforming to diagonal matrix failed, number of rows or columns is not correct!");
+    }
+
+    QVERIFY2(matrix.at(0, 0) == 8 &&
+             matrix.at(0, 1) == 7 &&
+             matrix.at(0, 2) == 7 &&
+             matrix.at(1, 0) == 7 &&
+             matrix.at(1, 1) == 8 &&
+             matrix.at(0, 2) == 7 &&
+             matrix.at(2, 0) == 7 &&
+             matrix.at(2, 1) == 7 &&
+             matrix.at(2, 2) == 8,
+
+             "Transforming to diagonal matrix failed, matrix has incorrect values!");
 }
 
 QTEST_APPLESS_MAIN(CommonTests)
