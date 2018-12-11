@@ -373,7 +373,7 @@ void Matrix<DataType>::transformToEqualElementsMatrix(int nrOfRows, int nrOfColu
     {
         _deallocMemory();
         Matrix matrix{nrOfRows, nrOfColumns, dataType};
-        swapWithMatrix(matrix);
+        std::swap(*this, matrix);
     }
 }
 
