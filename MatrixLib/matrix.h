@@ -357,8 +357,8 @@ void Matrix<DataType>::transformToDiagMatrix(int nrOfRowsColumns, const DataType
     else
     {
         _deallocMemory();
-        Matrix<DataType> matrix{nrOfRowsColumns, dataType, diagDataType};
-        swapWithMatrix(matrix);
+        Matrix<DataType> matrix{nrOfRowsColumns, std::pair<DataType, DataType>(dataType, diagDataType)};
+        std::swap(*this, matrix);
     }
 }
 
