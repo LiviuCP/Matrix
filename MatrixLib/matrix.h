@@ -1743,13 +1743,16 @@ void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns)
 template<typename DataType>
 void Matrix<DataType>::_deallocMemory()
 {
-    for (int row{0}; row<m_NrOfRows; ++row)
+    if (m_pBaseArrayPtr)
     {
-        delete m_pBaseArrayPtr[row];
-    }
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            delete m_pBaseArrayPtr[row];
+        }
 
-    delete []m_pBaseArrayPtr;
-    m_pBaseArrayPtr = nullptr;
+        delete []m_pBaseArrayPtr;
+        m_pBaseArrayPtr = nullptr;
+    }
 }
 
 template<typename DataType>
