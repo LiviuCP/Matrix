@@ -30,6 +30,7 @@ private slots:
     void testSplitTwoMatrixesHorizontally();
     void testTransformToDiagMatrix();
     void testTransformToEqualElementsMatrix();
+    void testSetAllItemsToValue();
 };
 
 CommonTests::CommonTests()
@@ -894,6 +895,26 @@ void CommonTests::testTransformToEqualElementsMatrix()
              matrix.at(2, 1) == 5,
 
              "Transforming to equal elements matrix failed, matrix has incorrect values!");
+}
+
+void CommonTests::testSetAllItemsToValue()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    matrix.setAllItemsToValue(7);
+
+    if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
+    {
+        QFAIL("Setting all matrix items to same value failed, number of rows or columns is not correct!");
+    }
+
+    QVERIFY2(matrix.at(0, 0) == 7 &&
+             matrix.at(0, 1) == 7 &&
+             matrix.at(0, 2) == 7 &&
+             matrix.at(1, 0) == 7 &&
+             matrix.at(1, 1) == 7 &&
+             matrix.at(1, 2) == 7,
+
+             "Setting all matrix items to same value failed, matrix has incorrect values!");
 }
 
 QTEST_APPLESS_MAIN(CommonTests)
