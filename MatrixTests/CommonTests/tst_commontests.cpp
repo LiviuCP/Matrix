@@ -20,9 +20,9 @@ private slots:
     void testCopyConstructor();
     void testMoveConstructor();
     void testSwapMatrixes();
-    void testSwapItem();
-    void testSwapRow();
-    void testSwapColumn();
+    void testSwapItems();
+    void testSwapRows();
+    void testSwapColumns();
     void testSwapRowColumn();
     void testConcatenateTwoMatrixesVertically();
     void testConcatenateTwoMatrixesHorizontally();
@@ -254,12 +254,12 @@ void CommonTests::testSwapMatrixes()
     }
 }
 
-void CommonTests::testSwapItem()
+void CommonTests::testSwapItems()
 {
     {
         IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
 
-        matrix.swapItem(1, 2, matrix, 0, 1);
+        matrix.swapItems(1, 2, matrix, 0, 1);
 
         QVERIFY2(matrix.at(0, 0) == 1 &&
                  matrix.at(0, 1) == 6 &&
@@ -275,7 +275,7 @@ void CommonTests::testSwapItem()
         IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
         IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
 
-        firstMatrix.swapItem(1, 2, secondMatrix, 2, 0);
+        firstMatrix.swapItems(1, 2, secondMatrix, 2, 0);
 
         QVERIFY2(firstMatrix.at(0, 0) == 1 &&
                  firstMatrix.at(0, 1) == 2 &&
@@ -297,12 +297,12 @@ void CommonTests::testSwapItem()
     }
 }
 
-void CommonTests::testSwapRow()
+void CommonTests::testSwapRows()
 {
     {
         IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        matrix.swapRow(0, matrix, 2);
+        matrix.swapRows(0, matrix, 2);
 
         QVERIFY2(matrix.at(0, 0) == 7 &&
                  matrix.at(0, 1) == 8 &&
@@ -324,7 +324,7 @@ void CommonTests::testSwapRow()
         IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
         IntMatrix secondMatrix{4, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
 
-        firstMatrix.swapRow(0, secondMatrix, 3);
+        firstMatrix.swapRows(0, secondMatrix, 3);
 
         QVERIFY2(firstMatrix.at(0, 0) == 16 &&
                  firstMatrix.at(0, 1) == 17 &&
@@ -352,12 +352,12 @@ void CommonTests::testSwapRow()
     }
 }
 
-void CommonTests::testSwapColumn()
+void CommonTests::testSwapColumns()
 {
     {
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        matrix.swapColumn(0, matrix, 2);
+        matrix.swapColumns(0, matrix, 2);
 
         QVERIFY2(matrix.at(0, 0) == 3 &&
                  matrix.at(0, 1) == 2 &&
@@ -379,7 +379,7 @@ void CommonTests::testSwapColumn()
         IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
         IntMatrix secondMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
 
-        firstMatrix.swapColumn(0, secondMatrix, 3);
+        firstMatrix.swapColumns(0, secondMatrix, 3);
 
         QVERIFY2(firstMatrix.at(0, 0) == 10 &&
                  firstMatrix.at(0, 1) == 2 &&

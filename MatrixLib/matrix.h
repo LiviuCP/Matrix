@@ -54,9 +54,9 @@ public:
     void concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix, bool concatenateVertically = true);
     void split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr, bool splitVertically = true);
 
-    void swapItem(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr);
-    void swapRow(int rowNr, Matrix<DataType>& matrix, int matrixRowNr);
-    void swapColumn(int columnNr, Matrix<DataType>& matrix, int matrixColumnNr);
+    void swapItems(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr);
+    void swapRows(int rowNr, Matrix<DataType>& matrix, int matrixRowNr);
+    void swapColumns(int columnNr, Matrix<DataType>& matrix, int matrixColumnNr);
     void swapRowColumn(int rowNr, Matrix<DataType>& matrix, int matrixColumnNr);
 
     void setAllItemsToSameValue(const DataType& value);
@@ -661,7 +661,7 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
 }
 
 template <typename DataType>
-void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr)
+void Matrix<DataType>::swapItems(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr)
 {
     if (rowNr<0 || columnNr<0 || matrixRowNr<0 || matrixColumnNr<0)
     {
@@ -680,7 +680,7 @@ void Matrix<DataType>::swapItem(int rowNr, int columnNr, Matrix<DataType>& matri
 }
 
 template <typename DataType>
-void Matrix<DataType>::swapRow(int rowNr, Matrix& matrix, int matrixRowNr)
+void Matrix<DataType>::swapRows(int rowNr, Matrix& matrix, int matrixRowNr)
 {
     if (rowNr<0 || matrixRowNr<0)
     {
@@ -704,7 +704,7 @@ void Matrix<DataType>::swapRow(int rowNr, Matrix& matrix, int matrixRowNr)
 }
 
 template <typename DataType>
-void Matrix<DataType>::swapColumn(int columnNr, Matrix& matrix, int matrixColumnNr)
+void Matrix<DataType>::swapColumns(int columnNr, Matrix& matrix, int matrixColumnNr)
 {
     if (columnNr<0 || matrixColumnNr<0)
     {
@@ -1001,7 +1001,7 @@ DataType Matrix<DataType>::determinant() const
             {
                 if (matrix.m_pBaseArrayPtr[firstRowIndex][diagIndex]!=0)
                 {
-                    matrix.swapRow(diagIndex,firstRowIndex);
+                    matrix.swapRows(diagIndex,firstRowIndex);
                     sign = sign * (-1);
 
                     for (int colIndex{diagIndex+1}; colIndex<m_NrOfColumns; ++colIndex)
@@ -1082,7 +1082,7 @@ int Matrix<DataType>::rank() const
                 if (matrix.m_pBaseArrayPtr[row][posY]!=0)
                 {
                     ++matrixRank;
-                    matrix.swapRow(row, posX);
+                    matrix.swapRows(row, posX);
                     continueCalculation(matrix, posX, posY);
                 }
             }
@@ -1092,7 +1092,7 @@ int Matrix<DataType>::rank() const
                 if (matrix.m_pBaseArrayPtr[posX][col]!=0)
                 {
                     ++matrixRank;
-                    matrix.swapColumn(col,posY);
+                    matrix.swapColumns(col,posY);
                     continueCalculation(matrix, posX, posY);
                 }
             }
@@ -1162,8 +1162,8 @@ void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType
             {
                 if (matrix.m_pBaseArrayPtr[diag][col]!=0)
                 {
-                    matrix.swapRow(diag, matrix, col);
-                    pseudoInverse.swapRow(diag, pseudoInverse, col);
+                    matrix.swapRows(diag, matrix, col);
+                    pseudoInverse.swapRows(diag, pseudoInverse, col);
                     continueCalculation(pseudoInverse, matrix, diag, m_NrOfRows);
                     rowSwapped = true;
                 }
