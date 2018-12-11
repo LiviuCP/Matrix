@@ -784,12 +784,7 @@ template <typename DataType> void Matrix<DataType>::setAllItemsToValue(const Dat
 template <typename DataType>
 void Matrix<DataType>::copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX, int srcY, int destX, int destY)
 {
-    if(m_pBaseArrayPtr || !src.m_pBaseArrayPtr)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_PTR]};
-    }
-
-    if (src.m_pBaseArrayPtr==m_pBaseArrayPtr)
+    if (&src == this)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
     }
@@ -799,7 +794,7 @@ void Matrix<DataType>::copy(const Matrix<DataType>& src, int nrOfRows, int nrOfC
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    if (srcX+nrOfRows>src.m_NrOfRows || srcY+nrOfColumns>src.m_NrOfColumns || destX+nrOfRows>m_NrOfRows || destY+nrOfColumns>m_NrOfColumns)
+    if (srcX + nrOfRows > src.m_NrOfRows || srcY + nrOfColumns > src.m_NrOfColumns || destX+nrOfRows > m_NrOfRows || destY+nrOfColumns > m_NrOfColumns)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
