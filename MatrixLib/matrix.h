@@ -600,7 +600,7 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
 template <typename DataType>
 void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr, bool splitVertically)
 {
-    if (firstDestMatrix.m_pBaseArrayPtr==secondDestMatrix.m_pBaseArrayPtr)
+    if (&firstDestMatrix==&secondDestMatrix)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::SAME_VARIABLE_TWO_ARGS]};
     }
