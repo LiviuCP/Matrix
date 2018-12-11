@@ -31,6 +31,7 @@ private slots:
     void testTransformToDiagMatrix();
     void testTransformToEqualElementsMatrix();
     void testSetAllItemsToValue();
+    void testCopy();
 };
 
 CommonTests::CommonTests()
@@ -915,6 +916,33 @@ void CommonTests::testSetAllItemsToValue()
              matrix.at(1, 2) == 7,
 
              "Setting all matrix items to same value failed, matrix has incorrect values!");
+}
+
+void CommonTests::testCopy()
+{
+    IntMatrix destMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    IntMatrix srcMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}};
+    destMatrix.copy(srcMatrix, 3, 2, 2, 1, 1, 0);
+
+    if (destMatrix.getNrOfRows() != 4 || destMatrix.getNrOfColumns() != 3)
+    {
+        QFAIL("Copying items failed, number of rows or columns of the destination matrix is not correct!");
+    }
+
+    QVERIFY2(destMatrix.at(0, 0) == 1 &&
+             destMatrix.at(0, 1) == 2 &&
+             destMatrix.at(0, 2) == 3 &&
+             destMatrix.at(1, 0) == 22 &&
+             destMatrix.at(1, 1) == 23 &&
+             destMatrix.at(1, 2) == 6 &&
+             destMatrix.at(2, 0) == 26 &&
+             destMatrix.at(2, 1) == 27 &&
+             destMatrix.at(2, 2) == 9 &&
+             destMatrix.at(3, 0) == 30 &&
+             destMatrix.at(3, 1) == 31 &&
+             destMatrix.at(3, 2) == 12,
+
+             "Copying items failed, destination matrix has incorrect values!");
 }
 
 QTEST_APPLESS_MAIN(CommonTests)
