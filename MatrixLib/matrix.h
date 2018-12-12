@@ -38,9 +38,9 @@ public:
     int getNrOfRows() const;
     int getNrOfColumns() const;
 
-    // resize and init elements with default constructor/value (DataType should be default constructible)
+    // resize and don't init elements (user has the responsibility to init them)
     void resize(int nrOfRows, int nrOfColumns);
-    // resize and fill new elements with value of dataType (init still done with default constructor/value)
+    // resize and fill new elements with value of dataType, existing elements retain their old values
     void resize(int nrOfRows, int nrOfColumns, const DataType& dataType);
 
     void transformToDiagMatrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType);
@@ -274,7 +274,7 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
-    else
+    else if (nrOfRows != m_NrOfRows || nrOfColumns != m_NrOfColumns)
     {
         _deallocMemory();
         _allocMemory(nrOfRows, nrOfColumns);
