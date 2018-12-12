@@ -33,6 +33,8 @@ private slots:
     void testSetAllItemsToValue();
     void testCopy();
     void testSquareBracketsOperator();
+    void testResizeAndRemoveOldValues();
+    void testResizeAndKeepOldValues();
 };
 
 CommonTests::CommonTests()
@@ -963,7 +965,290 @@ void CommonTests::testSquareBracketsOperator()
              matrix[10] == 11 &&
              matrix[11] == 12,
 
-             "The square bracket operator does not return the correct values");
+            "The square bracket operator does not return the correct values!");
+}
+
+void CommonTests::testResizeAndRemoveOldValues()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(4, 2);
+
+        if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(2, 3);
+
+        if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(3, 2);
+
+        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(4, 5);
+
+        if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 5)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(5, 3);
+
+        if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(5, 4);
+
+        if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 4)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(4, 3);
+
+        if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8 &&
+                 matrix.at(2, 2) == 9 &&
+                 matrix.at(3, 0) == 10 &&
+                 matrix.at(3, 1) == 11 &&
+                 matrix.at(3, 2) == 12,
+
+                "Resizing failed, the matrix does not retain its values if dimensions are unchanged!");
+    }
+}
+
+void CommonTests::testResizeAndKeepOldValues()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(4, 2, -1);
+
+        if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8 &&
+                 matrix.at(3, 0) == 10 &&
+                 matrix.at(3, 1) == 11,
+
+                "Resizing failed, the matrix does not have the correct values!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(2, 3, -1);
+
+        if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6,
+
+                "Resizing failed, the matrix does not have the correct values!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(3, 2, -1);
+
+        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8,
+
+                "Resizing failed, the matrix does not have the correct values!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(4, 5, -1);
+
+        if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 5)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(0, 3) == -1 &&
+                 matrix.at(0, 4) == -1 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6 &&
+                 matrix.at(1, 3) == -1 &&
+                 matrix.at(1, 4) == -1 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8 &&
+                 matrix.at(2, 2) == 9 &&
+                 matrix.at(2, 3) == -1 &&
+                 matrix.at(2, 4) == -1 &&
+                 matrix.at(3, 0) == 10 &&
+                 matrix.at(3, 1) == 11 &&
+                 matrix.at(3, 2) == 12 &&
+                 matrix.at(3, 3) == -1 &&
+                 matrix.at(3, 4) == -1,
+
+                "Resizing failed, the matrix does not have the correct values!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(5, 3, -1);
+
+        if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8 &&
+                 matrix.at(2, 2) == 9 &&
+                 matrix.at(3, 0) == 10 &&
+                 matrix.at(3, 1) == 11 &&
+                 matrix.at(3, 2) == 12 &&
+                 matrix.at(4, 0) == -1 &&
+                 matrix.at(4, 1) == -1 &&
+                 matrix.at(4, 2) == -1,
+
+                "Resizing failed, the matrix does not have the correct values!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(5, 4, -1);
+
+        if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 4)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(0, 3) == -1 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6 &&
+                 matrix.at(1, 3) == -1 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8 &&
+                 matrix.at(2, 2) == 9 &&
+                 matrix.at(2, 3) == -1 &&
+                 matrix.at(3, 0) == 10 &&
+                 matrix.at(3, 1) == 11 &&
+                 matrix.at(3, 2) == 12 &&
+                 matrix.at(3, 3) == -1 &&
+                 matrix.at(4, 0) == -1 &&
+                 matrix.at(4, 1) == -1 &&
+                 matrix.at(4, 2) == -1 &&
+                 matrix.at(4, 3) == -1,
+
+                "Resizing failed, the matrix does not have the correct values!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.resize(4, 3, -1);
+
+        if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8 &&
+                 matrix.at(2, 2) == 9 &&
+                 matrix.at(3, 0) == 10 &&
+                 matrix.at(3, 1) == 11 &&
+                 matrix.at(3, 2) == 12,
+
+                "Resizing failed, the matrix does not retain its values if dimensions are unchanged!");
+    }
 }
 
 QTEST_APPLESS_MAIN(CommonTests)
