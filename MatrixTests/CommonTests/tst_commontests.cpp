@@ -41,6 +41,8 @@ private slots:
     void testInsertColumnSetValue();
     void testEraseRow();
     void testEraseColumn();
+    void testCopyAssignmentOperator();
+    void testMoveAssignmentOperator();
 };
 
 CommonTests::CommonTests()
@@ -1717,6 +1719,60 @@ void CommonTests::testEraseColumn()
 
                  "Erase column failed, the matrix does have the right values on the remaining columns!");
     }
+}
+
+void CommonTests::testCopyAssignmentOperator()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
+
+    matrixCopy = matrix;
+
+    if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
+    {
+        QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+    }
+
+    QVERIFY2(matrixCopy.at(0, 0) == 1 &&
+             matrixCopy.at(0, 1) == 2 &&
+             matrixCopy.at(0, 2) == 3 &&
+             matrixCopy.at(1, 0) == 4 &&
+             matrixCopy.at(1, 1) == 5 &&
+             matrixCopy.at(1, 2) == 6,
+
+             "Copy assignment failed, the destination matrix does have the right values!");
+}
+
+void CommonTests::testMoveAssignmentOperator()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
+
+    matrixCopy = std::move(matrix);
+
+    if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
+    {
+        QFAIL("Move assignment failed, number of rows or columns of the destination matrix is not correct!");
+    }
+
+    QVERIFY2(matrixCopy.at(0, 0) == 1 &&
+             matrixCopy.at(0, 1) == 2 &&
+             matrixCopy.at(0, 2) == 3 &&
+             matrixCopy.at(1, 0) == 4 &&
+             matrixCopy.at(1, 1) == 5 &&
+             matrixCopy.at(1, 2) == 6,
+
+             "Move assignment failed, the destination matrix does have the right values!");
+
+    if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
+    {
+        QFAIL("Move assignment failed, number of rows or columns of the source matrix is not correct!");
+    }
+
+    int nrOfRows, nrOfColumns;
+    int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+
+    QVERIFY2(!matrixPtr, "The ressources haven't been correctly moved to the destination matrix by move assignment operator");
 }
 
 QTEST_APPLESS_MAIN(CommonTests)
