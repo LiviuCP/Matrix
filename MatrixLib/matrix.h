@@ -32,6 +32,9 @@ public:
     DataType& at(int i,int j);
     DataType& operator[] (int index);
 
+    Matrix<DataType>& operator= (const Matrix<DataType>& matrix);
+    Matrix<DataType>& operator= (Matrix<DataType>&& matrix);
+
     // transfers ownership of the data to the user (object becomes empty and user becomes responsible for de-allocating the data properly)
     DataType** getBaseArrayPtr(int& nrOfRows, int& nrOfColumns);
 	
@@ -85,8 +88,6 @@ public:
     friend Matrix<DataType> operator*(const DataType& data, Matrix<DataType>& matrix);
     Matrix<DataType> operator*(const DataType& data);
     Matrix<DataType> operator^ (int exp);
-    Matrix<DataType>& operator= (const Matrix<DataType>& matrix);
-    Matrix<DataType>& operator= (Matrix<DataType>&& matrix);
 
     bool operator== (const Matrix<DataType>& matrix) const;
     bool operator != (const Matrix<DataType>& matrix) const;
@@ -231,6 +232,43 @@ DataType& Matrix<DataType>::operator[](int index)
     }
 
     return m_pBaseArrayPtr[index/m_NrOfColumns][index%m_NrOfColumns];
+}
+
+template <typename DataType>
+Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
+{
+    if (!(matrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
+    {
+        if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
+        {
+            _deallocMemory();
+            _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
+        }
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
+            }
+        }
+    }
+
+    return *this;
+}
+
+template<typename DataType>
+Matrix<DataType>& Matrix<DataType>::operator=(Matrix<DataType> &&matrix)
+{
+    m_pBaseArrayPtr = matrix.m_pBaseArrayPtr;
+    m_NrOfRows = matrix.m_NrOfRows;
+    m_NrOfColumns = matrix.m_NrOfColumns;
+
+    matrix.m_pBaseArrayPtr = nullptr;
+    matrix.m_NrOfRows = 0;
+    matrix.m_NrOfColumns = 0;
+
+    return *this;
 }
 
 template<typename DataType>
@@ -1566,43 +1604,6 @@ Matrix<DataType> Matrix<DataType>::operator^ (int exp)
     result=(*this);
 
     return result._power(exp);
-}
-
-template <typename DataType>
-Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
-{
-    if (!(matrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
-    {
-        if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
-        {
-            _deallocMemory();
-            _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
-        }
-
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
-            }
-        }
-    }
-
-    return *this;
-}
-
-template<typename DataType>
-Matrix<DataType>& Matrix<DataType>::operator=(Matrix<DataType> &&matrix)
-{
-    m_pBaseArrayPtr = matrix.m_pBaseArrayPtr;
-    m_NrOfRows = matrix.m_NrOfRows;
-    m_NrOfColumns = matrix.m_NrOfColumns;
-
-    matrix.m_pBaseArrayPtr = nullptr;
-    matrix.m_NrOfRows = 0;
-    matrix.m_NrOfColumns = 0;
-
-    return *this;
 }
 
 template <typename DataType>
