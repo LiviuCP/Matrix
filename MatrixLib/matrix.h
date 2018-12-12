@@ -46,8 +46,10 @@ public:
     void transformToDiagMatrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType);
     void transformToEqualElementsMatrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
 
-    void insertRow (int rowNr);
+    void insertRow(int rowNr);
+    void insertRow(int rowNr, const DataType& dataType);
     void insertColumn(int columnNr);
+    void insertColumn(int columnNr, const DataType& dataType);
     void deleteRow (int rowNr);
     void deleteColumn(int columnNr);
 
@@ -416,6 +418,16 @@ void Matrix<DataType>::insertRow (int rowNr)
     ++m_NrOfRows;
 }
 
+template<typename DataType>
+void Matrix<DataType>::insertRow(int rowNr, const DataType &dataType)
+{
+    insertRow(rowNr);
+    for (int col{0}; col<m_NrOfColumns; ++col)
+    {
+        m_pBaseArrayPtr[rowNr][col] = dataType;
+    }
+}
+
 template <typename DataType>
 void Matrix<DataType>::insertColumn(int columnNr)
 {
@@ -465,6 +477,16 @@ void Matrix<DataType>::insertColumn(int columnNr)
     delete []m_pBaseArrayPtr;
     m_pBaseArrayPtr = insert_ptr;
     ++m_NrOfColumns;
+}
+
+template<typename DataType>
+void Matrix<DataType>::insertColumn(int columnNr, const DataType &dataType)
+{
+    insertColumn(columnNr);
+    for (int row{0}; row<m_NrOfRows; ++row)
+    {
+        m_pBaseArrayPtr[row][columnNr] = dataType;
+    }
 }
 
 template <typename DataType>
