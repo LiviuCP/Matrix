@@ -50,8 +50,8 @@ public:
     void insertRow(int rowNr, const DataType& dataType);
     void insertColumn(int columnNr);
     void insertColumn(int columnNr, const DataType& dataType);
-    void deleteRow (int rowNr);
-    void deleteColumn(int columnNr);
+    void eraseRow (int rowNr);
+    void eraseColumn(int columnNr);
 
     void concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix, bool concatenateVertically = true);
     void split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr, bool splitVertically = true);
@@ -490,7 +490,7 @@ void Matrix<DataType>::insertColumn(int columnNr, const DataType &dataType)
 }
 
 template <typename DataType>
-void Matrix<DataType>::deleteRow (int rowNr)
+void Matrix<DataType>::eraseRow (int rowNr)
 {
     if (m_NrOfRows==1)
     {
@@ -527,7 +527,7 @@ void Matrix<DataType>::deleteRow (int rowNr)
 }
 
 template <typename DataType>
-void Matrix<DataType>::deleteColumn(int columnNr)
+void Matrix<DataType>::eraseColumn(int columnNr)
 {
     if (m_NrOfColumns==1)
     {
