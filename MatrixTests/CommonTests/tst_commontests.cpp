@@ -32,6 +32,7 @@ private slots:
     void testTransformToEqualElementsMatrix();
     void testSetAllItemsToValue();
     void testCopy();
+    void testSquareBracketsOperator();
 };
 
 CommonTests::CommonTests()
@@ -943,6 +944,26 @@ void CommonTests::testCopy()
              destMatrix.at(3, 2) == 12,
 
              "Copying items failed, destination matrix has incorrect values!");
+}
+
+void CommonTests::testSquareBracketsOperator()
+{
+    IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+    QVERIFY2(matrix[0] == 1 &&
+             matrix[1] == 2 &&
+             matrix[2] == 3 &&
+             matrix[3] == 4 &&
+             matrix[4] == 5 &&
+             matrix[5] == 6 &&
+             matrix[6] == 7 &&
+             matrix[7] == 8 &&
+             matrix[8] == 10 &&
+             matrix[9] == 10 &&
+             matrix[10] == 11 &&
+             matrix[11] == 12,
+
+             "The square bracket operator does not return the correct values");
 }
 
 QTEST_APPLESS_MAIN(CommonTests)
