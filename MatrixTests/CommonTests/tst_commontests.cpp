@@ -958,7 +958,7 @@ void CommonTests::testSquareBracketsOperator()
              matrix[5] == 6 &&
              matrix[6] == 7 &&
              matrix[7] == 8 &&
-             matrix[8] == 10 &&
+             matrix[8] == 9 &&
              matrix[9] == 10 &&
              matrix[10] == 11 &&
              matrix[11] == 12,
