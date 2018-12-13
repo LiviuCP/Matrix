@@ -1284,7 +1284,7 @@ void CommonTests::testInsertRowNoSetValue()
                  matrix.at(4, 1) == 11 &&
                  matrix.at(4, 2) == 12,
 
-                 "Insert row failed, the matrix does have the right values on the existing rows!");
+                 "Insert row failed, the matrix doesn't have the right values on the existing rows!");
     }
 
     {
@@ -1309,7 +1309,7 @@ void CommonTests::testInsertRowNoSetValue()
                  matrix.at(4, 1) == 11 &&
                  matrix.at(4, 2) == 12,
 
-                 "Insert row failed, the matrix does have the right values on the existing rows!");
+                 "Insert row failed, the matrix doesn't have the right values on the existing rows!");
     }
 
     {
@@ -1334,7 +1334,7 @@ void CommonTests::testInsertRowNoSetValue()
                  matrix.at(3, 1) == 11 &&
                  matrix.at(3, 2) == 12,
 
-                 "Insert row failed, the matrix does have the right values on the existing rows!");
+                 "Insert row failed, the matrix doesn't have the right values on the existing rows!");
     }
 }
 
@@ -1365,7 +1365,7 @@ void CommonTests::testInsertRowSetValue()
                  matrix.at(4, 1) == 11 &&
                  matrix.at(4, 2) == 12,
 
-                 "Insert row failed, the matrix does have the right values!");
+                 "Insert row failed, the matrix doesn't have the right values!");
     }
 
     {
@@ -1393,7 +1393,7 @@ void CommonTests::testInsertRowSetValue()
                  matrix.at(4, 1) == 11 &&
                  matrix.at(4, 2) == 12,
 
-                 "Insert row failed, the matrix does have the right values!");
+                 "Insert row failed, the matrix doesn't have the right values!");
     }
 
     {
@@ -1421,7 +1421,7 @@ void CommonTests::testInsertRowSetValue()
                  matrix.at(4, 1) == -1 &&
                  matrix.at(4, 2) == -1,
 
-                 "Insert row failed, the matrix does have the right values!");
+                 "Insert row failed, the matrix doesn't have the right values!");
     }
 }
 
@@ -1449,7 +1449,7 @@ void CommonTests::testInsertColumnNoSetValue()
                  matrix.at(2, 3) == 11 &&
                  matrix.at(2, 4) == 12,
 
-                 "Insert column failed, the matrix does have the right values on the existing columns!");
+                 "Insert column failed, the matrix doesn't have the right values on the existing columns!");
     }
 
     {
@@ -1474,7 +1474,7 @@ void CommonTests::testInsertColumnNoSetValue()
                  matrix.at(2, 3) == 11 &&
                  matrix.at(2, 4) == 12,
 
-                 "Insert column failed, the matrix does have the right values on the existing columns!");
+                 "Insert column failed, the matrix doesn't have the right values on the existing columns!");
     }
 
     {
@@ -1499,7 +1499,7 @@ void CommonTests::testInsertColumnNoSetValue()
                  matrix.at(2, 2) == 11 &&
                  matrix.at(2, 3) == 12,
 
-                 "Insert column failed, the matrix does have the right values on the existing columns!");
+                 "Insert column failed, the matrix doesn't have the right values on the existing columns!");
     }
 }
 
@@ -1530,7 +1530,7 @@ void CommonTests::testInsertColumnSetValue()
                  matrix.at(2, 3) == 11 &&
                  matrix.at(2, 4) == 12,
 
-                 "Insert column failed, the matrix does have the right values!");
+                 "Insert column failed, the matrix doesn't have the right values!");
     }
 
     {
@@ -1558,7 +1558,7 @@ void CommonTests::testInsertColumnSetValue()
                  matrix.at(2, 3) == 11 &&
                  matrix.at(2, 4) == 12,
 
-                 "Insert column failed, the matrix does have the right values!");
+                 "Insert column failed, the matrix doesn't have the right values!");
     }
 
     {
@@ -1586,7 +1586,7 @@ void CommonTests::testInsertColumnSetValue()
                  matrix.at(2, 3) == 12 &&
                  matrix.at(2, 4) == -1,
 
-                 "Insert column failed, the matrix does have the right values!");
+                 "Insert column failed, the matrix doesn't have the right values!");
     }
 }
 
@@ -1610,7 +1610,7 @@ void CommonTests::testEraseRow()
                  matrix.at(1, 2) == 11 &&
                  matrix.at(1, 3) == 12,
 
-                 "Erase row failed, the matrix does have the right values on the remaining rows!");
+                 "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
     }
 
     {
@@ -1631,7 +1631,7 @@ void CommonTests::testEraseRow()
                  matrix.at(1, 2) == 11 &&
                  matrix.at(1, 3) == 12,
 
-                 "Erase row failed, the matrix does have the right values on the remaining rows!");
+                 "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
     }
 
     {
@@ -1652,7 +1652,7 @@ void CommonTests::testEraseRow()
                  matrix.at(1, 2) == 7 &&
                  matrix.at(1, 3) == 8,
 
-                 "Erase row failed, the matrix does have the right values on the remaining rows!");
+                 "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
     }
 }
 
@@ -1676,7 +1676,7 @@ void CommonTests::testEraseColumn()
                  matrix.at(3, 0) == 11 &&
                  matrix.at(3, 1) == 12,
 
-                 "Erase column failed, the matrix does have the right values on the remaining columns!");
+                 "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
     }
 
     {
@@ -1697,7 +1697,7 @@ void CommonTests::testEraseColumn()
                  matrix.at(3, 0) == 10 &&
                  matrix.at(3, 1) == 12,
 
-                 "Erase column failed, the matrix does have the right values on the remaining columns!");
+                 "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
     }
 
     {
@@ -1718,7 +1718,7 @@ void CommonTests::testEraseColumn()
                  matrix.at(3, 0) == 10 &&
                  matrix.at(3, 1) == 11,
 
-                 "Erase column failed, the matrix does have the right values on the remaining columns!");
+                 "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
     }
 }
 
