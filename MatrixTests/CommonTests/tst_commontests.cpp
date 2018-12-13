@@ -1724,56 +1724,125 @@ void CommonTests::testEraseColumn()
 
 void CommonTests::testCopyAssignmentOperator()
 {
-    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-    IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
-
-    matrixCopy = matrix;
-
-    if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
     {
-        QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
+
+        matrixCopy = matrix;
+
+        if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
+        {
+            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(matrixCopy.at(0, 0) == 1 &&
+                 matrixCopy.at(0, 1) == 2 &&
+                 matrixCopy.at(0, 2) == 3 &&
+                 matrixCopy.at(1, 0) == 4 &&
+                 matrixCopy.at(1, 1) == 5 &&
+                 matrixCopy.at(1, 2) == 6,
+
+                 "Copy assignment failed, the destination matrix doesn't have the right values!");
     }
 
-    QVERIFY2(matrixCopy.at(0, 0) == 1 &&
-             matrixCopy.at(0, 1) == 2 &&
-             matrixCopy.at(0, 2) == 3 &&
-             matrixCopy.at(1, 0) == 4 &&
-             matrixCopy.at(1, 1) == 5 &&
-             matrixCopy.at(1, 2) == 6,
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+        IntMatrix thirdMatrix{2, 2, {13, 14, 15, 16}};
 
-             "Copy assignment failed, the destination matrix does have the right values!");
+        firstMatrix = secondMatrix = thirdMatrix;
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Copy assignment failed, number of rows or columns of the first matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 13 &&
+                 firstMatrix.at(0, 1) == 14 &&
+                 firstMatrix.at(1, 0) == 15 &&
+                 firstMatrix.at(1, 1) == 16,
+
+                 "Copy assignment failed, the first matrix doesn't have the right values!");
+    }
 }
 
 void CommonTests::testMoveAssignmentOperator()
 {
-    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-    IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
-
-    matrixCopy = std::move(matrix);
-
-    if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
     {
-        QFAIL("Move assignment failed, number of rows or columns of the destination matrix is not correct!");
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
+
+        matrixCopy = std::move(matrix);
+
+        if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
+        {
+            QFAIL("Move assignment failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(matrixCopy.at(0, 0) == 1 &&
+                 matrixCopy.at(0, 1) == 2 &&
+                 matrixCopy.at(0, 2) == 3 &&
+                 matrixCopy.at(1, 0) == 4 &&
+                 matrixCopy.at(1, 1) == 5 &&
+                 matrixCopy.at(1, 2) == 6,
+
+                 "Move assignment failed, the destination matrix doesn't have the right values!");
+
+        if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
+        {
+            QFAIL("Move assignment failed, number of rows or columns of the source matrix is not correct!");
+        }
+
+        int nrOfRows, nrOfColumns;
+        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+
+        QVERIFY2(!matrixPtr, "The ressources haven't been correctly moved to the destination matrix by move assignment operator");
     }
 
-    QVERIFY2(matrixCopy.at(0, 0) == 1 &&
-             matrixCopy.at(0, 1) == 2 &&
-             matrixCopy.at(0, 2) == 3 &&
-             matrixCopy.at(1, 0) == 4 &&
-             matrixCopy.at(1, 1) == 5 &&
-             matrixCopy.at(1, 2) == 6,
-
-             "Move assignment failed, the destination matrix does have the right values!");
-
-    if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
     {
-        QFAIL("Move assignment failed, number of rows or columns of the source matrix is not correct!");
+        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+        IntMatrix thirdMatrix{2, 2, {13, 14, 15, 16}};
+
+        firstMatrix = secondMatrix = std::move(thirdMatrix);
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Copy and/or move assignment failed, number of rows or columns of the first matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 13 &&
+                 firstMatrix.at(0, 1) == 14 &&
+                 firstMatrix.at(1, 0) == 15 &&
+                 firstMatrix.at(1, 1) == 16,
+
+                 "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
     }
 
-    int nrOfRows, nrOfColumns;
-    int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+        IntMatrix thirdMatrix{2, 2, {13, 14, 15, 16}};
 
-    QVERIFY2(!matrixPtr, "The ressources haven't been correctly moved to the destination matrix by move assignment operator");
+        firstMatrix = std::move(secondMatrix = thirdMatrix);
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Copy and/or move assignment failed, number of rows or columns of the first matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 13 &&
+                 firstMatrix.at(0, 1) == 14 &&
+                 firstMatrix.at(1, 0) == 15 &&
+                 firstMatrix.at(1, 1) == 16,
+
+                 "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
+
+        int nrOfRows, nrOfColumns;
+        int** matrixPtr{secondMatrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+
+        QVERIFY2(!matrixPtr, "The ressources haven't been correctly moved to the first matrix by move assignment operator");
+    }
 }
 
 void CommonTests::testGetBaseArrayPtr()
