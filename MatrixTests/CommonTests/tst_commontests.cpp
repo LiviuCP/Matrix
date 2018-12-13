@@ -44,6 +44,7 @@ private slots:
     void testCopyAssignmentOperator();
     void testMoveAssignmentOperator();
     void testGetBaseArrayPtr();
+    void testClear();
 };
 
 CommonTests::CommonTests()
@@ -1854,7 +1855,7 @@ void CommonTests::testGetBaseArrayPtr()
 
     if (!matrixPtr || nrOfRows != 2 || nrOfColumns != 3)
     {
-        QFAIL("Passing resources outside the matrix failed, either the pointer is null or the number of rows and columns is not correct!");
+        QFAIL("Passing resources outside the matrix failed, either the pointer is not null or the number of rows and columns is not correct!");
     }
 
     QVERIFY2(matrixPtr[0][0] == 1 &&
@@ -1864,7 +1865,22 @@ void CommonTests::testGetBaseArrayPtr()
              matrixPtr[1][1] == 5 &&
              matrixPtr[1][2] == 6,
 
-             "Passing resources outside the matrix failed, the element values are not correct!");
+            "Passing resources outside the matrix failed, the element values are not correct!");
+}
+
+void CommonTests::testClear()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+    matrix.clear();
+
+    int nrOfRows, nrOfColumns;
+    int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+
+    if (matrixPtr || nrOfRows != 0 || nrOfColumns != 0)
+    {
+        QFAIL("Clear failed, either the pointer is not null or the number of rows and columns is different from 0!");
+    }
 }
 
 QTEST_APPLESS_MAIN(CommonTests)

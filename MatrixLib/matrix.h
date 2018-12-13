@@ -41,6 +41,8 @@ public:
     int getNrOfRows() const;
     int getNrOfColumns() const;
 
+    void clear();
+
     // resize and don't init elements (user has the responsibility to init them)
     void resize(int nrOfRows, int nrOfColumns);
     // resize and fill new elements with value of dataType, existing elements retain their old values
@@ -311,6 +313,12 @@ template<typename DataType>
 int Matrix<DataType>::getNrOfColumns() const
 {
     return m_NrOfColumns;
+}
+
+template<typename DataType>
+void Matrix<DataType>::clear()
+{
+    _deallocMemory();
 }
 
 template<typename DataType>
