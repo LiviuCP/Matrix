@@ -282,7 +282,7 @@ DataType** Matrix<DataType>::getBaseArrayPtr(int& nrOfRows, int& nrOfColumns)
 {
     DataType** pBaseArrayPtr{nullptr};
 
-    if (!m_pBaseArrayPtr && (m_NrOfRows != 0) && (m_NrOfColumns != 0))
+    if (m_pBaseArrayPtr && (m_NrOfRows != 0) && (m_NrOfColumns != 0))
     {
         nrOfRows = m_NrOfRows;
         nrOfColumns = m_NrOfColumns;
