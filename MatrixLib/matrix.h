@@ -97,7 +97,10 @@ public:
     bool operator >= (const Matrix<DataType>& matrix) const;
 
 private:
+    // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
     void _allocMemory(int nrOfRows, int nrOfColumns);
+
+    // ensure the current number of rows and columns is saved to local variables if still needed further
     void _deallocMemory();
 
     Matrix<DataType> _power(int exp);
@@ -1751,14 +1754,15 @@ bool Matrix<DataType>::operator>=(const Matrix<DataType> &matrix) const
 template<typename DataType>
 void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns)
 {
-    m_NrOfRows = nrOfRows;
-    m_NrOfColumns = nrOfColumns;
     m_pBaseArrayPtr = new DataType*[nrOfRows];
 
     for (int row{0}; row<nrOfRows; ++row)
     {
         m_pBaseArrayPtr[row] = new DataType[nrOfColumns];
     }
+
+    m_NrOfRows = nrOfRows;
+    m_NrOfColumns = nrOfColumns;
 }
 
 template<typename DataType>
@@ -1773,6 +1777,9 @@ void Matrix<DataType>::_deallocMemory()
 
         delete []m_pBaseArrayPtr;
         m_pBaseArrayPtr = nullptr;
+
+        m_NrOfRows = 0;
+        m_NrOfColumns = 0;
     }
 }
 
