@@ -237,7 +237,7 @@ DataType& Matrix<DataType>::operator[](int index)
 template <typename DataType>
 Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
 {
-    if (!(matrix.m_pBaseArrayPtr == m_pBaseArrayPtr))
+    if (&matrix != this && (m_pBaseArrayPtr || matrix.m_pBaseArrayPtr))
     {
         if (m_NrOfRows != matrix.m_NrOfRows || m_NrOfColumns != matrix.m_NrOfColumns)
         {
@@ -260,13 +260,16 @@ Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
 template<typename DataType>
 Matrix<DataType>& Matrix<DataType>::operator=(Matrix<DataType> &&matrix)
 {
-    m_pBaseArrayPtr = matrix.m_pBaseArrayPtr;
-    m_NrOfRows = matrix.m_NrOfRows;
-    m_NrOfColumns = matrix.m_NrOfColumns;
+    if (&matrix != this && (m_pBaseArrayPtr || matrix.m_pBaseArrayPtr))
+    {
+        m_pBaseArrayPtr = matrix.m_pBaseArrayPtr;
+        m_NrOfRows = matrix.m_NrOfRows;
+        m_NrOfColumns = matrix.m_NrOfColumns;
 
-    matrix.m_pBaseArrayPtr = nullptr;
-    matrix.m_NrOfRows = 0;
-    matrix.m_NrOfColumns = 0;
+        matrix.m_pBaseArrayPtr = nullptr;
+        matrix.m_NrOfRows = 0;
+        matrix.m_NrOfColumns = 0;
+    }
 
     return *this;
 }
