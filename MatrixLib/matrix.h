@@ -210,16 +210,18 @@ Matrix<DataType>::~Matrix()
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>:: at(int i,int j)
+DataType& Matrix<DataType>::at(int i,int j)
 {
     if (i<0 || j<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
+
     if (i>=m_NrOfRows || j>=m_NrOfColumns)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
+
     return m_pBaseArrayPtr[i][j];
 }
 
@@ -240,7 +242,7 @@ DataType& Matrix<DataType>::operator[](int index)
 }
 
 template <typename DataType>
-Matrix<DataType>& Matrix<DataType>:: operator= (const Matrix<DataType>& matrix)
+Matrix<DataType>& Matrix<DataType>::operator=(const Matrix<DataType>& matrix)
 {
     if (&matrix != this && (m_pBaseArrayPtr || matrix.m_pBaseArrayPtr))
     {
@@ -284,7 +286,7 @@ DataType** Matrix<DataType>::getBaseArrayPtr(int& nrOfRows, int& nrOfColumns)
 {
     DataType** pBaseArrayPtr{nullptr};
 
-    if (m_pBaseArrayPtr && (m_NrOfRows != 0) && (m_NrOfColumns != 0))
+    if (m_pBaseArrayPtr && m_NrOfRows && m_NrOfColumns)
     {
         nrOfRows = m_NrOfRows;
         nrOfColumns = m_NrOfColumns;
