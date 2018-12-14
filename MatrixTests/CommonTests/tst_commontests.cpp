@@ -62,11 +62,6 @@ void CommonTests::testDefaultConstructor()
     IntMatrix matrix{};
 
     QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Default constructor initialized matrix with wrong number of rows and columns");
-
-    int nrOfRows, nrOfColumns;
-    int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
-
-    QVERIFY2(!matrixPtr, "Default constructor allocated the wrong number of elements to the matrix");
 }
 
 void CommonTests::testInitListConstructor()
@@ -169,11 +164,6 @@ void CommonTests::testMoveConstructor()
              "Matrix elements have not been correctly initialized by the move constructor");
 
     QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
-
-    int nrOfRows, nrOfColumns;
-    int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
-
-    QVERIFY2(!matrixPtr, "The ressources haven't been correctly moved to the destination matrix by move constructor");
 }
 
 void CommonTests::testSwapMatrixes()
@@ -229,11 +219,6 @@ void CommonTests::testSwapMatrixes()
             QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
         }
 
-        int nrOfRows, nrOfColumns;
-        int** matrixPtr{firstMatrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
-
-        QVERIFY2(!matrixPtr, "First matrix has incorrect number of elements after swap");
-
         QVERIFY2(secondMatrix.at(0, 0) == 1 &&
                  secondMatrix.at(0, 1) == 2 &&
                  secondMatrix.at(0, 2) == 3 &&
@@ -259,15 +244,6 @@ void CommonTests::testSwapMatrixes()
         {
             QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
         }
-
-        int nrOfRows, nrOfColumns;
-        int** matrixPtr{firstMatrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
-
-        QVERIFY2(!matrixPtr, "First matrix has incorrect number of elements after swap");
-
-        matrixPtr = secondMatrix.getBaseArrayPtr(nrOfRows, nrOfColumns);
-
-        QVERIFY2(!matrixPtr, "Second matrix has incorrect number of elements after swap");
     }
 }
 
@@ -1793,11 +1769,6 @@ void CommonTests::testMoveAssignmentOperator()
         {
             QFAIL("Move assignment failed, number of rows or columns of the source matrix is not correct!");
         }
-
-        int nrOfRows, nrOfColumns;
-        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
-
-        QVERIFY2(!matrixPtr, "The ressources haven't been correctly moved to the destination matrix by move assignment operator");
     }
 
     {
@@ -1838,11 +1809,6 @@ void CommonTests::testMoveAssignmentOperator()
                  firstMatrix.at(1, 1) == 16,
 
                  "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
-
-        int nrOfRows, nrOfColumns;
-        int** matrixPtr{secondMatrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
-
-        QVERIFY2(!matrixPtr, "The ressources haven't been correctly moved to the first matrix by move assignment operator");
     }
 }
 
@@ -1874,12 +1840,9 @@ void CommonTests::testClear()
 
     matrix.clear();
 
-    int nrOfRows, nrOfColumns;
-    int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
-
-    if (matrixPtr || nrOfRows != 0 || nrOfColumns != 0)
+    if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
     {
-        QFAIL("Clear failed, either the pointer is not null or the number of rows and columns is different from 0!");
+        QFAIL("Clear failed, number of rows or columns is not correct!");
     }
 }
 
