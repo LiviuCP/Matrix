@@ -45,6 +45,7 @@ private slots:
     void testMoveAssignmentOperator();
     void testGetBaseArrayPtr();
     void testClear();
+    void testFunctionAt();
 };
 
 CommonTests::CommonTests()
@@ -1914,6 +1915,49 @@ void CommonTests::testClear()
     if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
     {
         QFAIL("Clear failed, number of rows or columns is not correct!");
+    }
+}
+
+void CommonTests::testFunctionAt()
+{
+    {
+        IntMatrix matrix{2, 3, 5};
+
+        matrix.at(0, 0) = 10;
+        matrix.at(0, 1) = 20;
+        matrix.at(0, 2) = 30;
+        matrix.at(1, 0) = 40;
+        matrix.at(1, 1) = 50;
+        matrix.at(1, 2) = 60;
+
+        QVERIFY2(matrix[0] == 10 &&
+                 matrix[1] == 20 &&
+                 matrix[2] == 30 &&
+                 matrix[3] == 40 &&
+                 matrix[4] == 50 &&
+                 matrix[5] == 60,
+
+                 "The at() method does not work correctly, setup values are wrong!");
+    }
+
+    {
+        IntMatrix matrix{2, 3, 5};
+
+        matrix[0] = 70;
+        matrix[1] = 80;
+        matrix[2] = 90;
+        matrix[3] = 100;
+        matrix[4] = 110;
+        matrix[5] = 120;
+
+        QVERIFY2(matrix.at(0, 0) == 70 &&
+                 matrix.at(0, 1) == 80 &&
+                 matrix.at(0, 2) == 90 &&
+                 matrix.at(1, 0) == 100 &&
+                 matrix.at(1, 1) == 110 &&
+                 matrix.at(1, 2) == 120,
+
+                 "The at() method does not work correctly, read values are wrong!");
     }
 }
 
