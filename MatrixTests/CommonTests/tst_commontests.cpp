@@ -936,22 +936,59 @@ void CommonTests::testCopy()
 
 void CommonTests::testSquareBracketsOperator()
 {
-    IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-    QVERIFY2(matrix[0] == 1 &&
-             matrix[1] == 2 &&
-             matrix[2] == 3 &&
-             matrix[3] == 4 &&
-             matrix[4] == 5 &&
-             matrix[5] == 6 &&
-             matrix[6] == 7 &&
-             matrix[7] == 8 &&
-             matrix[8] == 9 &&
-             matrix[9] == 10 &&
-             matrix[10] == 11 &&
-             matrix[11] == 12,
+        QVERIFY2(matrix[0] == 1 &&
+                 matrix[1] == 2 &&
+                 matrix[2] == 3 &&
+                 matrix[3] == 4 &&
+                 matrix[4] == 5 &&
+                 matrix[5] == 6 &&
+                 matrix[6] == 7 &&
+                 matrix[7] == 8 &&
+                 matrix[8] == 9 &&
+                 matrix[9] == 10 &&
+                 matrix[10] == 11 &&
+                 matrix[11] == 12,
 
-            "The square bracket operator does not return the correct values!");
+                "The square bracket operator did not return the correct values!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, 2};
+
+        matrix[0] = 10;
+        matrix[1] = 20;
+        matrix[2] = 30;
+        matrix[3] = 40;
+        matrix[4] = 50;
+        matrix[5] = 60;
+        matrix[6] = 70;
+        matrix[7] = 80;
+        matrix[8] = 90;
+        matrix[9] = 100;
+        matrix[10] = 110;
+        matrix[11] = 120;
+
+        int nrOfRows, nrOfColumns;
+        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+
+        QVERIFY2(matrixPtr[0][0] == 10 &&
+                 matrixPtr[0][1] == 20 &&
+                 matrixPtr[0][2] == 30 &&
+                 matrixPtr[1][0] == 40 &&
+                 matrixPtr[1][1] == 50 &&
+                 matrixPtr[1][2] == 60 &&
+                 matrixPtr[2][0] == 70 &&
+                 matrixPtr[2][1] == 80 &&
+                 matrixPtr[2][2] == 90 &&
+                 matrixPtr[3][0] == 100 &&
+                 matrixPtr[3][1] == 110 &&
+                 matrixPtr[3][2] == 120,
+
+                "The square bracket operator did not write the correct values!");
+    }
 }
 
 void CommonTests::testResizeAndRemoveOldValues()
