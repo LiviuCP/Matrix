@@ -648,11 +648,7 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
 
     if (&firstSrcMatrix == this || &secondSrcMatrix == this)
     {
-        thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
-        thirdMatrix.m_NrOfRows = m_NrOfRows;
-        thirdMatrix.m_NrOfColumns = m_NrOfColumns;
-
-        _allocMemory(1,1);
+        thirdMatrix = std::move(*this);
     }
 
     if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
@@ -715,11 +711,7 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
 
     if (&firstDestMatrix == this || &secondDestMatrix == this)
     {
-        thirdMatrix.m_pBaseArrayPtr = m_pBaseArrayPtr;
-        thirdMatrix.m_NrOfRows = m_NrOfRows;
-        thirdMatrix.m_NrOfColumns = m_NrOfColumns;
-
-        _allocMemory(1,1);
+        thirdMatrix = std::move(*this);
     }
 
     if (&firstDestMatrix == this && (&secondDestMatrix != this))
