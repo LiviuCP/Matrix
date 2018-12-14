@@ -367,14 +367,8 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns, const DataType& val
     }
     else if (nrOfRows!=m_NrOfRows || nrOfColumns!=m_NrOfColumns)
     {
-        Matrix<DataType> matrix{};
+        Matrix<DataType> matrix{std::move(*this)};
 
-        std::swap(m_pBaseArrayPtr, matrix.m_pBaseArrayPtr);
-
-        matrix.m_NrOfRows = m_NrOfRows;
-        matrix.m_NrOfColumns = m_NrOfColumns;
-
-        _deallocMemory(); // not actually required, it's just put for the sake of good practice (first free memory, then alloc new one)
         _allocMemory(nrOfRows, nrOfColumns);
 
         if (nrOfRows<matrix.m_NrOfRows && nrOfColumns<matrix.m_NrOfColumns)
