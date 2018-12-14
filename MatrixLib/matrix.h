@@ -556,7 +556,7 @@ void Matrix<DataType>::eraseRow (int rowNr)
 
     if (m_NrOfRows == 1)
     {
-        clear();
+        _deallocMemory();
     }
     else
     {
@@ -595,7 +595,7 @@ void Matrix<DataType>::eraseColumn(int columnNr)
 
     if (m_NrOfColumns==1)
     {
-        clear();
+        _deallocMemory();
     }
     else
     {
