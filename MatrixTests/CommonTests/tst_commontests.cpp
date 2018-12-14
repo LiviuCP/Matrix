@@ -1814,24 +1814,38 @@ void CommonTests::testMoveAssignmentOperator()
 
 void CommonTests::testGetBaseArrayPtr()
 {
-    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-
-    int nrOfRows, nrOfColumns;
-    int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
-
-    if (!matrixPtr || nrOfRows != 2 || nrOfColumns != 3)
     {
-        QFAIL("Passing resources outside the matrix failed, either the pointer is not null or the number of rows and columns is not correct!");
+        IntMatrix matrix{};
+
+        int nrOfRows, nrOfColumns;
+        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+
+        if (matrixPtr || nrOfRows != 0 || nrOfColumns != 0)
+        {
+            QFAIL("Passing resources outside the matrix failed, either the pointer is not null or the number of rows and columns of the empty matrix is different from 0!");
+        }
     }
 
-    QVERIFY2(matrixPtr[0][0] == 1 &&
-             matrixPtr[0][1] == 2 &&
-             matrixPtr[0][2] == 3 &&
-             matrixPtr[1][0] == 4 &&
-             matrixPtr[1][1] == 5 &&
-             matrixPtr[1][2] == 6,
+    {
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
 
-            "Passing resources outside the matrix failed, the element values are not correct!");
+        int nrOfRows, nrOfColumns;
+        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+
+        if (!matrixPtr || nrOfRows != 2 || nrOfColumns != 3)
+        {
+            QFAIL("Passing resources outside the matrix failed, either the pointer is null or the number of rows and columns is not correct!");
+        }
+
+        QVERIFY2(matrixPtr[0][0] == 1 &&
+                 matrixPtr[0][1] == 2 &&
+                 matrixPtr[0][2] == 3 &&
+                 matrixPtr[1][0] == 4 &&
+                 matrixPtr[1][1] == 5 &&
+                 matrixPtr[1][2] == 6,
+
+                "Passing resources outside the matrix failed, the element values are not correct!");
+    }
 }
 
 void CommonTests::testClear()
