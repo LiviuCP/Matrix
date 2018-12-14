@@ -440,27 +440,27 @@ void Matrix<DataType>::insertRow (int rowNr)
         throw std::runtime_error{Matr::exceptions[Matr::Error::INSERT_ROW_NONCONTIGUOUS]};
     }
 
-    DataType** insert_ptr=new DataType*[m_NrOfRows+1];
+    DataType** insertPtr=new DataType*[m_NrOfRows+1];
 
     for (int row{0}; row<rowNr; ++row)
     {
-        insert_ptr[row] = m_pBaseArrayPtr[row];
+        insertPtr[row] = m_pBaseArrayPtr[row];
     }
 
-    insert_ptr[rowNr]=new DataType[m_NrOfColumns];
+    insertPtr[rowNr]=new DataType[m_NrOfColumns];
 
     for (int col{0}; col<m_NrOfColumns; ++col)
     {
-        insert_ptr[rowNr][col]=0;
+        insertPtr[rowNr][col]=0;
     }
 
     for (int row{rowNr}; row<m_NrOfRows; ++row)
     {
-        insert_ptr[row+1] = m_pBaseArrayPtr[row];
+        insertPtr[row+1] = m_pBaseArrayPtr[row];
     }
 
     delete []m_pBaseArrayPtr;
-    m_pBaseArrayPtr = insert_ptr;
+    m_pBaseArrayPtr = insertPtr;
     ++m_NrOfRows;
 }
 
@@ -468,6 +468,7 @@ template<typename DataType>
 void Matrix<DataType>::insertRow(int rowNr, const DataType &dataType)
 {
     insertRow(rowNr);
+
     for (int col{0}; col<m_NrOfColumns; ++col)
     {
         m_pBaseArrayPtr[rowNr][col] = dataType;
@@ -487,18 +488,18 @@ void Matrix<DataType>::insertColumn(int columnNr)
         throw std::runtime_error{Matr::exceptions[Matr::Error::INSERT_COLUMN_NONCONTIGUOUS]};
     }
 
-    DataType** insert_ptr{new DataType*[m_NrOfRows]};
+    DataType** insertPtr{new DataType*[m_NrOfRows]};
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
-        insert_ptr[row]=new DataType[m_NrOfColumns+1];
+        insertPtr[row]=new DataType[m_NrOfColumns+1];
     }
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
         for (int col=0; col<columnNr; ++col)
         {
-            insert_ptr[row][col]=m_pBaseArrayPtr[row][col];
+            insertPtr[row][col]=m_pBaseArrayPtr[row][col];
         }
     }
 
@@ -506,13 +507,13 @@ void Matrix<DataType>::insertColumn(int columnNr)
     {
         for(int col=columnNr+1; col<m_NrOfColumns+1; ++col)
         {
-            insert_ptr[row][col]=m_pBaseArrayPtr[row][col-1];
+            insertPtr[row][col]=m_pBaseArrayPtr[row][col-1];
         }
     }
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
-        insert_ptr[row][columnNr]=0;
+        insertPtr[row][columnNr]=0;
     }
 
     for (int row{0}; row<m_NrOfRows; ++row)
@@ -521,7 +522,7 @@ void Matrix<DataType>::insertColumn(int columnNr)
     }
 
     delete []m_pBaseArrayPtr;
-    m_pBaseArrayPtr = insert_ptr;
+    m_pBaseArrayPtr = insertPtr;
     ++m_NrOfColumns;
 }
 
@@ -529,6 +530,7 @@ template<typename DataType>
 void Matrix<DataType>::insertColumn(int columnNr, const DataType &dataType)
 {
     insertColumn(columnNr);
+
     for (int row{0}; row<m_NrOfRows; ++row)
     {
         m_pBaseArrayPtr[row][columnNr] = dataType;
