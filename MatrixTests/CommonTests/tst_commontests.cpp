@@ -1631,6 +1631,16 @@ void CommonTests::testEraseRow()
 
                  "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
     }
+
+    {
+        IntMatrix matrix{1, 4, {1, 2, 3, 4}};
+        matrix.eraseRow(0);
+
+        if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
+        {
+            QFAIL("Erase row failed, number of rows or columns of the matrix is not correct!");
+        }
+    }
 }
 
 void CommonTests::testEraseColumn()
@@ -1696,6 +1706,16 @@ void CommonTests::testEraseColumn()
                  matrix.at(3, 1) == 11,
 
                  "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
+    }
+
+    {
+        IntMatrix matrix{4, 1, {1, 2, 3, 4}};
+        matrix.eraseColumn(0);
+
+        if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
+        {
+            QFAIL("Erase column failed, number of rows or columns of the matrix is not correct!");
+        }
     }
 }
 

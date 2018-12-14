@@ -544,11 +544,6 @@ void Matrix<DataType>::insertColumn(int columnNr, const DataType &dataType)
 template <typename DataType>
 void Matrix<DataType>::eraseRow (int rowNr)
 {
-    if (m_NrOfRows==1)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::ERASE_THE_ONLY_ROW]};
-    }
-
     if (rowNr>=m_NrOfRows)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
@@ -559,33 +554,35 @@ void Matrix<DataType>::eraseRow (int rowNr)
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    DataType** insert_ptr{new DataType*[m_NrOfRows-1]};
-
-    for (int row{0}; row<rowNr; ++row)
+    if (m_NrOfRows == 1)
     {
-        insert_ptr[row] = m_pBaseArrayPtr[row];
+        clear();
     }
-
-    delete []m_pBaseArrayPtr[rowNr];
-
-    for (int row{rowNr}; row<m_NrOfRows-1; ++row)
+    else
     {
-        insert_ptr[row] = m_pBaseArrayPtr[row+1];
-    }
+        DataType** insertPtr{new DataType*[m_NrOfRows-1]};
 
-    delete []m_pBaseArrayPtr;
-    m_pBaseArrayPtr = insert_ptr;
-    --m_NrOfRows;
+        for (int row{0}; row<rowNr; ++row)
+        {
+            insertPtr[row] = m_pBaseArrayPtr[row];
+        }
+
+        delete []m_pBaseArrayPtr[rowNr];
+
+        for (int row{rowNr}; row<m_NrOfRows-1; ++row)
+        {
+            insertPtr[row] = m_pBaseArrayPtr[row+1];
+        }
+
+        delete []m_pBaseArrayPtr;
+        m_pBaseArrayPtr = insertPtr;
+        --m_NrOfRows;
+    }
 }
 
 template <typename DataType>
 void Matrix<DataType>::eraseColumn(int columnNr)
 {
-    if (m_NrOfColumns==1)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::ERASE_THE_ONLY_COLUMN]};
-    }
-
     if (columnNr<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
@@ -596,37 +593,44 @@ void Matrix<DataType>::eraseColumn(int columnNr)
         throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
     }
 
-    DataType** insert_ptr{new DataType*[m_NrOfRows]};
-
-    for (int row{0}; row<m_NrOfRows; ++row)
+    if (m_NrOfColumns==1)
     {
-        insert_ptr[row]=new DataType[m_NrOfColumns-1];
+        clear();
     }
-
-    for (int row{0}; row<m_NrOfRows; ++row)
+    else
     {
-        for (int col{0}; col<columnNr; ++col)
+        DataType** insertPtr{new DataType*[m_NrOfRows]};
+
+        for (int row{0}; row<m_NrOfRows; ++row)
         {
-            insert_ptr[row][col]=m_pBaseArrayPtr[row][col];
+            insertPtr[row]=new DataType[m_NrOfColumns-1];
         }
-    }
 
-    for(int row{0}; row<m_NrOfRows; ++row)
-    {
-        for(int col{columnNr}; col<m_NrOfColumns-1; ++col)
+        for (int row{0}; row<m_NrOfRows; ++row)
         {
-            insert_ptr[row][col]=m_pBaseArrayPtr[row][col+1];
+            for (int col{0}; col<columnNr; ++col)
+            {
+                insertPtr[row][col]=m_pBaseArrayPtr[row][col];
+            }
         }
-    }
 
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        delete []m_pBaseArrayPtr[row];
-    }
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            for(int col{columnNr}; col<m_NrOfColumns-1; ++col)
+            {
+                insertPtr[row][col]=m_pBaseArrayPtr[row][col+1];
+            }
+        }
 
-    delete []m_pBaseArrayPtr;
-    m_pBaseArrayPtr = insert_ptr;
-    --m_NrOfColumns;
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            delete []m_pBaseArrayPtr[row];
+        }
+
+        delete []m_pBaseArrayPtr;
+        m_pBaseArrayPtr = insertPtr;
+        --m_NrOfColumns;
+    }
 }
 
 template <typename DataType>
