@@ -132,7 +132,7 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<Da
         throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
-    if (nrOfRows * nrOfColumns < static_cast<int>(dataTypeInitList.size()))
+    if (nrOfRows * nrOfColumns > static_cast<int>(dataTypeInitList.size()))
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::INSUFFICIENT_ELEMENTS_FOR_INIT]};
     }
