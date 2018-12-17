@@ -21,6 +21,7 @@ private slots:
     void testResizeAndRemoveOldValuesExceptions();
     void testResizeAndKeepOldValuesExceptions();
     void testTransformToDiagMatrixExceptions();
+    void testTransformToEqualElementsMatrixExceptions();
 };
 
 ExceptionTests::ExceptionTests()
@@ -129,6 +130,22 @@ void ExceptionTests::testTransformToDiagMatrixExceptions()
 
     QVERIFY_EXCEPTION_THROWN({matrix.transformToDiagMatrix(-4, 2, 5);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({matrix.transformToDiagMatrix(0, 2, 5);}, std::runtime_error);
+}
+
+void ExceptionTests::testTransformToEqualElementsMatrixExceptions()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+    QVERIFY_EXCEPTION_THROWN({matrix.transformToEqualElementsMatrix(-3, -4, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.transformToEqualElementsMatrix(-3, 0, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.transformToEqualElementsMatrix(-3, 4, 5);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({matrix.transformToEqualElementsMatrix(0, -4, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.transformToEqualElementsMatrix(0, 0, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.transformToEqualElementsMatrix(0, 4, 5);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({matrix.transformToEqualElementsMatrix(3, 0, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.transformToEqualElementsMatrix(3, -4, 5);}, std::runtime_error);
 }
 
 
