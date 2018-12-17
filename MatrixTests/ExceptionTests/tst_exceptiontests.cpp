@@ -16,7 +16,8 @@ private slots:
     void testInitListConstructorExceptions();
     void testIdenticalMatrixConstructorExceptions();
     void testDiagMatrixConstructorExceptions();
-
+    void testFunctionAtExceptions();
+    void testSquareBracketsOperatorExceptions();
 };
 
 ExceptionTests::ExceptionTests()
@@ -57,6 +58,28 @@ void ExceptionTests::testDiagMatrixConstructorExceptions()
 {
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, std::pair<int, int>{2, 5});}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, std::pair<int, int>{2, 5});}, std::runtime_error);
+}
+
+void ExceptionTests::testFunctionAtExceptions()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+    QVERIFY_EXCEPTION_THROWN({matrix.at(-1, -1) = 0;}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.at(-1, 1) = 0;}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.at(-1, 3) = 0;}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.at(1, -1) = 0;}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.at(1, 3) = 0;}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.at(2, -1) = 0;}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.at(2, 1) = 0;}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.at(2, 3) = 0;}, std::runtime_error);
+}
+
+void ExceptionTests::testSquareBracketsOperatorExceptions()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+    QVERIFY_EXCEPTION_THROWN({matrix[-1] = 0;}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix[6] = 0;}, std::runtime_error);
 }
 
 
