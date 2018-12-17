@@ -22,6 +22,12 @@ private slots:
     void testResizeAndKeepOldValuesExceptions();
     void testTransformToDiagMatrixExceptions();
     void testTransformToEqualElementsMatrixExceptions();
+    void testInsertRowNoSetValue();
+    void testInsertRowSetValue();
+    void testInsertColumnNoSetValue();
+    void testInsertColumnSetValue();
+    void testEraseRow();
+    void testEraseColumn();
 };
 
 ExceptionTests::ExceptionTests()
@@ -148,7 +154,41 @@ void ExceptionTests::testTransformToEqualElementsMatrixExceptions()
     QVERIFY_EXCEPTION_THROWN({matrix.transformToEqualElementsMatrix(3, -4, 5);}, std::runtime_error);
 }
 
+void ExceptionTests::testInsertRowNoSetValue()
+{
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertRow(-1);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertRow(3);}, std::runtime_error);
+}
 
+void ExceptionTests::testInsertRowSetValue()
+{
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertRow(-1, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertRow(3, 5);}, std::runtime_error);
+}
+
+void ExceptionTests::testInsertColumnNoSetValue()
+{
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertColumn(-1);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertColumn(4);}, std::runtime_error);
+}
+
+void ExceptionTests::testInsertColumnSetValue()
+{
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertColumn(-1, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertColumn(4, 5);}, std::runtime_error);
+}
+
+void ExceptionTests::testEraseRow()
+{
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseRow(-1);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseRow(2);}, std::runtime_error);
+}
+
+void ExceptionTests::testEraseColumn()
+{
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseColumn(-1);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseColumn(3);}, std::runtime_error);
+}
 
 QTEST_APPLESS_MAIN(ExceptionTests)
 
