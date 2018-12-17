@@ -22,8 +22,8 @@ public:
     };
 
     Matrix();
-    Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
     Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
+    Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
     Matrix(int nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues);
     Matrix(const Matrix<DataType>& matrix);
     Matrix(Matrix<DataType>&& matrix);
@@ -124,25 +124,6 @@ Matrix<DataType>::Matrix()
 {
 }
 
-template <typename DataType>
-Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType)
-{
-    if (nrOfRows <= 0 || nrOfColumns <= 0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
-    }
-
-    _allocMemory(nrOfRows,nrOfColumns);
-
-    for (int row{0}; row < nrOfRows; ++row)
-    {
-        for (int col{0}; col < nrOfColumns; ++col)
-        {
-            m_pBaseArrayPtr[row][col] = dataType;
-        }
-    }
-}
-
 template<typename DataType>
 Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList)
 {
@@ -164,6 +145,25 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<Da
         for (int col{0}; col < nrOfColumns; ++col)
         {
             m_pBaseArrayPtr[row][col] = *(initListIterator++);
+        }
+    }
+}
+
+template <typename DataType>
+Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType)
+{
+    if (nrOfRows <= 0 || nrOfColumns <= 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
+    }
+
+    _allocMemory(nrOfRows,nrOfColumns);
+
+    for (int row{0}; row < nrOfRows; ++row)
+    {
+        for (int col{0}; col < nrOfColumns; ++col)
+        {
+            m_pBaseArrayPtr[row][col] = dataType;
         }
     }
 }

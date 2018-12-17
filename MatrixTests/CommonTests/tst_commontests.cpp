@@ -19,33 +19,33 @@ private slots:
     void testDiagMatrixConstructor();
     void testCopyConstructor();
     void testMoveConstructor();
-    void testSwapMatrixes();
-    void testSwapItems();
-    void testSwapRows();
-    void testSwapColumns();
-    void testSwapRowColumn();
-    void testConcatenateTwoMatrixesVertically();
-    void testConcatenateTwoMatrixesHorizontally();
-    void testSplitTwoMatrixesVertically();
-    void testSplitTwoMatrixesHorizontally();
-    void testTransformToDiagMatrix();
-    void testTransformToEqualElementsMatrix();
-    void testSetAllItemsToValue();
-    void testCopy();
+    void testFunctionAt();
     void testSquareBracketsOperator();
+    void testCopyAssignmentOperator();
+    void testMoveAssignmentOperator();
+    void testGetBaseArrayPtr();
+    void testClear();
     void testResizeAndRemoveOldValues();
     void testResizeAndKeepOldValues();
+    void testTransformToDiagMatrix();
+    void testTransformToEqualElementsMatrix();
     void testInsertRowNoSetValue();
     void testInsertRowSetValue();
     void testInsertColumnNoSetValue();
     void testInsertColumnSetValue();
     void testEraseRow();
     void testEraseColumn();
-    void testCopyAssignmentOperator();
-    void testMoveAssignmentOperator();
-    void testGetBaseArrayPtr();
-    void testClear();
-    void testFunctionAt();
+    void testConcatenateTwoMatrixesVertically();
+    void testConcatenateTwoMatrixesHorizontally();
+    void testSplitTwoMatrixesVertically();
+    void testSplitTwoMatrixesHorizontally();
+    void testSwapMatrixes();
+    void testSwapItems();
+    void testSwapRows();
+    void testSwapColumns();
+    void testSwapRowColumn();
+    void testSetAllItemsToValue();
+    void testCopy();
 };
 
 CommonTests::CommonTests()
@@ -167,772 +167,47 @@ void CommonTests::testMoveConstructor()
     QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
 }
 
-void CommonTests::testSwapMatrixes()
+void CommonTests::testFunctionAt()
 {
     {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+        IntMatrix matrix{2, 3, 5};
 
-        std::swap(firstMatrix, secondMatrix);
+        matrix.at(0, 0) = 10;
+        matrix.at(0, 1) = 20;
+        matrix.at(0, 2) = 30;
+        matrix.at(1, 0) = 40;
+        matrix.at(1, 1) = 50;
+        matrix.at(1, 2) = 60;
 
-        if (firstMatrix.getNrOfRows() != 3 || firstMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
-        }
+        QVERIFY2(matrix[0] == 10 &&
+                 matrix[1] == 20 &&
+                 matrix[2] == 30 &&
+                 matrix[3] == 40 &&
+                 matrix[4] == 50 &&
+                 matrix[5] == 60,
 
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
-        }
-
-        QVERIFY2(firstMatrix.at(0, 0) == 7 &&
-                 firstMatrix.at(0, 1) == 8 &&
-                 firstMatrix.at(1, 0) == 9 &&
-                 firstMatrix.at(1, 1) == 10 &&
-                 firstMatrix.at(2, 0) == 11 &&
-                 firstMatrix.at(2, 1) == 12,
-
-                 "First matrix has incorrect element values after swap");
-
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(0, 2) == 3 &&
-                 secondMatrix.at(1, 0) == 4 &&
-                 secondMatrix.at(1, 1) == 5 &&
-                 secondMatrix.at(1, 2) == 6,
-
-                 "Second matrix has incorrect element values after swap");
+                 "The at() method does not work correctly, setup values are wrong!");
     }
 
     {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
+        IntMatrix matrix{2, 3, 5};
 
-        std::swap(firstMatrix, secondMatrix);
+        matrix[0] = 70;
+        matrix[1] = 80;
+        matrix[2] = 90;
+        matrix[3] = 100;
+        matrix[4] = 110;
+        matrix[5] = 120;
 
-        if (firstMatrix.getNrOfRows() != 0 || firstMatrix.getNrOfColumns() != 0)
-        {
-            QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
-        }
+        QVERIFY2(matrix.at(0, 0) == 70 &&
+                 matrix.at(0, 1) == 80 &&
+                 matrix.at(0, 2) == 90 &&
+                 matrix.at(1, 0) == 100 &&
+                 matrix.at(1, 1) == 110 &&
+                 matrix.at(1, 2) == 120,
 
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
-        }
-
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(0, 2) == 3 &&
-                 secondMatrix.at(1, 0) == 4 &&
-                 secondMatrix.at(1, 1) == 5 &&
-                 secondMatrix.at(1, 2) == 6,
-
-                 "Second matrix has incorrect element values after swap");
+                 "The at() method does not work correctly, read values are wrong!");
     }
-
-    {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{};
-
-        std::swap(firstMatrix, secondMatrix);
-
-        if (firstMatrix.getNrOfRows() != 0 || firstMatrix.getNrOfColumns() != 0)
-        {
-            QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
-        }
-
-        if (secondMatrix.getNrOfRows() != 0 || secondMatrix.getNrOfColumns() != 0)
-        {
-            QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
-        }
-    }
-}
-
-void CommonTests::testSwapItems()
-{
-    {
-        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-
-        matrix.swapItems(1, 2, matrix, 0, 1);
-
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 6 &&
-                 matrix.at(0, 2) == 3 &&
-                 matrix.at(1, 0) == 4 &&
-                 matrix.at(1, 1) == 5 &&
-                 matrix.at(1, 2) == 2,
-
-                 "Items are incorrectly swapped within same matrix");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
-
-        firstMatrix.swapItems(1, 2, secondMatrix, 2, 0);
-
-        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
-                 firstMatrix.at(0, 1) == 2 &&
-                 firstMatrix.at(0, 2) == 3 &&
-                 firstMatrix.at(1, 0) == 4 &&
-                 firstMatrix.at(1, 1) == 5 &&
-                 firstMatrix.at(1, 2) == 11,
-
-                 "Items are incorrectly swapped between matrixes, first matrix does not have the desired value after swap");
-
-        QVERIFY2(secondMatrix.at(0, 0) == 7 &&
-                 secondMatrix.at(0, 1) == 8 &&
-                 secondMatrix.at(1, 0) == 9 &&
-                 secondMatrix.at(1, 1) == 10 &&
-                 secondMatrix.at(2, 0) == 6 &&
-                 secondMatrix.at(2, 1) == 12,
-
-                 "Items are incorrectly swapped between matrixes, second matrix does not have the desired value after swap");
-    }
-}
-
-void CommonTests::testSwapRows()
-{
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.swapRows(0, matrix, 2);
-
-        QVERIFY2(matrix.at(0, 0) == 7 &&
-                 matrix.at(0, 1) == 8 &&
-                 matrix.at(0, 2) == 9 &&
-                 matrix.at(1, 0) == 4 &&
-                 matrix.at(1, 1) == 5 &&
-                 matrix.at(1, 2) == 6 &&
-                 matrix.at(2, 0) == 1 &&
-                 matrix.at(2, 1) == 2 &&
-                 matrix.at(2, 2) == 3 &&
-                 matrix.at(3, 0) == 10 &&
-                 matrix.at(3, 1) == 11 &&
-                 matrix.at(3, 2) == 12,
-
-                 "Rows are incorrectly swapped within same matrix");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{4, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
-
-        firstMatrix.swapRows(0, secondMatrix, 3);
-
-        QVERIFY2(firstMatrix.at(0, 0) == 16 &&
-                 firstMatrix.at(0, 1) == 17 &&
-                 firstMatrix.at(0, 2) == 18 &&
-                 firstMatrix.at(1, 0) == 4 &&
-                 firstMatrix.at(1, 1) == 5 &&
-                 firstMatrix.at(1, 2) == 6,
-
-                 "Rows are incorrectly swapped between matrixes, first matrix does not have the desired value after swap");
-
-        QVERIFY2(secondMatrix.at(0, 0) == 7 &&
-                 secondMatrix.at(0, 1) == 8 &&
-                 secondMatrix.at(0, 2) == 9 &&
-                 secondMatrix.at(1, 0) == 10 &&
-                 secondMatrix.at(1, 1) == 11 &&
-                 secondMatrix.at(1, 2) == 12 &&
-                 secondMatrix.at(2, 0) == 13 &&
-                 secondMatrix.at(2, 1) == 14 &&
-                 secondMatrix.at(2, 2) == 15 &&
-                 secondMatrix.at(3, 0) == 1 &&
-                 secondMatrix.at(3, 1) == 2 &&
-                 secondMatrix.at(3, 2) == 3,
-
-                 "Rows are incorrectly swapped between matrixes, second matrix does not have the desired value after swap");
-    }
-}
-
-void CommonTests::testSwapColumns()
-{
-    {
-        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.swapColumns(0, matrix, 2);
-
-        QVERIFY2(matrix.at(0, 0) == 3 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 2) == 1 &&
-                 matrix.at(0, 3) == 4 &&
-                 matrix.at(1, 0) == 7 &&
-                 matrix.at(1, 1) == 6 &&
-                 matrix.at(1, 2) == 5 &&
-                 matrix.at(1, 3) == 8 &&
-                 matrix.at(2, 0) == 11 &&
-                 matrix.at(2, 1) == 10 &&
-                 matrix.at(2, 2) == 9 &&
-                 matrix.at(2, 3) == 12,
-
-                 "Columns are incorrectly swapped within same matrix");
-    }
-
-    {
-        IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
-
-        firstMatrix.swapColumns(0, secondMatrix, 3);
-
-        QVERIFY2(firstMatrix.at(0, 0) == 10 &&
-                 firstMatrix.at(0, 1) == 2 &&
-                 firstMatrix.at(1, 0) == 14 &&
-                 firstMatrix.at(1, 1) == 4 &&
-                 firstMatrix.at(2, 0) == 18 &&
-                 firstMatrix.at(2, 1) == 6,
-
-                 "Columns are incorrectly swapped between matrixes, first matrix does not have the desired value after swap");
-
-        QVERIFY2(secondMatrix.at(0, 0) == 7 &&
-                 secondMatrix.at(0, 1) == 8 &&
-                 secondMatrix.at(0, 2) == 9 &&
-                 secondMatrix.at(0, 3) == 1 &&
-                 secondMatrix.at(1, 0) == 11 &&
-                 secondMatrix.at(1, 1) == 12 &&
-                 secondMatrix.at(1, 2) == 13 &&
-                 secondMatrix.at(1, 3) == 3 &&
-                 secondMatrix.at(2, 0) == 15 &&
-                 secondMatrix.at(2, 1) == 16 &&
-                 secondMatrix.at(2, 2) == 17 &&
-                 secondMatrix.at(2, 3) == 5,
-
-                 "Columns are incorrectly swapped between matrixes, second matrix does not have the desired value after swap");
-    }
-}
-
-void CommonTests::testSwapRowColumn()
-{
-    IntMatrix firstMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-    IntMatrix secondMatrix{3, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24}};
-
-    firstMatrix.swapRowColumn(0, secondMatrix, 3);
-
-    QVERIFY2(firstMatrix.at(0, 0) == 16 &&
-             firstMatrix.at(0, 1) == 20 &&
-             firstMatrix.at(0, 2) == 24 &&
-             firstMatrix.at(1, 0) == 4 &&
-             firstMatrix.at(1, 1) == 5 &&
-             firstMatrix.at(1, 2) == 6 &&
-             firstMatrix.at(2, 0) == 7 &&
-             firstMatrix.at(2, 1) == 8 &&
-             firstMatrix.at(2, 2) == 9 &&
-             firstMatrix.at(3, 0) == 10 &&
-             firstMatrix.at(3, 1) == 11 &&
-             firstMatrix.at(3, 2) == 12,
-
-             "Row from first matrix is incorrectly swapped with column from the second, first matrix does not have the desired value after swap");
-
-    QVERIFY2(secondMatrix.at(0, 0) == 13 &&
-             secondMatrix.at(0, 1) == 14 &&
-             secondMatrix.at(0, 2) == 15 &&
-             secondMatrix.at(0, 3) == 1 &&
-             secondMatrix.at(1, 0) == 17 &&
-             secondMatrix.at(1, 1) == 18 &&
-             secondMatrix.at(1, 2) == 19 &&
-             secondMatrix.at(1, 3) == 2 &&
-             secondMatrix.at(2, 0) == 21 &&
-             secondMatrix.at(2, 1) == 22 &&
-             secondMatrix.at(2, 2) == 23 &&
-             secondMatrix.at(2, 3) == 3,
-
-             "Row from first matrix is incorrectly swapped with column from the second, second matrix does not have the desired value after swap");
-}
-
-void CommonTests::testConcatenateTwoMatrixesVertically()
-{
-    {
-        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondMatrix{1, 2, {5, 6}};
-        IntMatrix thirdMatrix{};
-
-        thirdMatrix.concatenate(firstMatrix, secondMatrix);
-
-        if (thirdMatrix.getNrOfRows() != 3 || thirdMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        QVERIFY2(thirdMatrix.at(0, 0) == 1 &&
-                 thirdMatrix.at(0, 1) == 2 &&
-                 thirdMatrix.at(1, 0) == 3 &&
-                 thirdMatrix.at(1, 1) == 4 &&
-                 thirdMatrix.at(2, 0) == 5 &&
-                 thirdMatrix.at(2, 1) == 6,
-
-                 "Vertical concatenation failed, destination matrix has incorrect values!");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondMatrix{1, 2, {5, 6}};
-
-        firstMatrix.concatenate(firstMatrix, secondMatrix);
-
-        if (firstMatrix.getNrOfRows() != 3 || firstMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
-                 firstMatrix.at(0, 1) == 2 &&
-                 firstMatrix.at(1, 0) == 3 &&
-                 firstMatrix.at(1, 1) == 4 &&
-                 firstMatrix.at(2, 0) == 5 &&
-                 firstMatrix.at(2, 1) == 6,
-
-                 "Vertical concatenation failed, destination matrix has incorrect values!");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondMatrix{1, 2, {5, 6}};
-
-        secondMatrix.concatenate(firstMatrix, secondMatrix);
-
-        if (secondMatrix.getNrOfRows() != 3 || secondMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(1, 0) == 3 &&
-                 secondMatrix.at(1, 1) == 4 &&
-                 secondMatrix.at(2, 0) == 5 &&
-                 secondMatrix.at(2, 1) == 6,
-
-                 "Vertical concatenation failed, destination matrix has incorrect values!");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
-
-        firstMatrix.concatenate(firstMatrix, firstMatrix);
-
-        if (firstMatrix.getNrOfRows() != 4 || firstMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
-                 firstMatrix.at(0, 1) == 2 &&
-                 firstMatrix.at(1, 0) == 3 &&
-                 firstMatrix.at(1, 1) == 4 &&
-                 firstMatrix.at(2, 0) == 1 &&
-                 firstMatrix.at(2, 1) == 2 &&
-                 firstMatrix.at(3, 0) == 3 &&
-                 firstMatrix.at(3, 1) == 4,
-
-                 "Vertical concatenation failed, destination matrix has incorrect values!");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondMatrix{};
-
-        secondMatrix.concatenate(firstMatrix, firstMatrix);
-
-        if (secondMatrix.getNrOfRows() != 4 || secondMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(1, 0) == 3 &&
-                 secondMatrix.at(1, 1) == 4 &&
-                 secondMatrix.at(2, 0) == 1 &&
-                 secondMatrix.at(2, 1) == 2 &&
-                 secondMatrix.at(3, 0) == 3 &&
-                 secondMatrix.at(3, 1) == 4,
-
-                 "Vertical concatenation failed, destination matrix has incorrect values!");
-    }
-}
-
-void CommonTests::testConcatenateTwoMatrixesHorizontally()
-{
-    {
-        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondMatrix{2, 1, {5, 6}};
-        IntMatrix thirdMatrix{};
-
-        thirdMatrix.concatenate(firstMatrix, secondMatrix, false);
-
-        if (thirdMatrix.getNrOfRows() != 2 || thirdMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        QVERIFY2(thirdMatrix.at(0, 0) == 1 &&
-                 thirdMatrix.at(0, 1) == 2 &&
-                 thirdMatrix.at(0, 2) == 5 &&
-                 thirdMatrix.at(1, 0) == 3 &&
-                 thirdMatrix.at(1, 1) == 4 &&
-                 thirdMatrix.at(1, 2) == 6,
-
-                 "Horizontal concatenation failed, destination matrix has incorrect values!");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondMatrix{2, 1, {5, 6}};
-
-        firstMatrix.concatenate(firstMatrix, secondMatrix, false);
-
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
-                 firstMatrix.at(0, 1) == 2 &&
-                 firstMatrix.at(0, 2) == 5 &&
-                 firstMatrix.at(1, 0) == 3 &&
-                 firstMatrix.at(1, 1) == 4 &&
-                 firstMatrix.at(1, 2) == 6,
-
-                 "Horizontal concatenation failed, destination matrix has incorrect values!");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondMatrix{2, 1, {5, 6}};
-
-        secondMatrix.concatenate(firstMatrix, secondMatrix, false);
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(0, 2) == 5 &&
-                 secondMatrix.at(1, 0) == 3 &&
-                 secondMatrix.at(1, 1) == 4 &&
-                 secondMatrix.at(1, 2) == 6,
-
-                 "Horizontal concatenation failed, destination matrix has incorrect values!");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
-
-        firstMatrix.concatenate(firstMatrix, firstMatrix, false);
-
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 4)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
-                 firstMatrix.at(0, 1) == 2 &&
-                 firstMatrix.at(0, 2) == 1 &&
-                 firstMatrix.at(0, 3) == 2 &&
-                 firstMatrix.at(1, 0) == 3 &&
-                 firstMatrix.at(1, 1) == 4 &&
-                 firstMatrix.at(1, 2) == 3 &&
-                 firstMatrix.at(1, 3) == 4,
-
-                 "Horizontal concatenation failed, destination matrix has incorrect values!");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondMatrix{};
-
-        secondMatrix.concatenate(firstMatrix, firstMatrix, false);
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 4)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(0, 2) == 1 &&
-                 secondMatrix.at(0, 3) == 2 &&
-                 secondMatrix.at(1, 0) == 3 &&
-                 secondMatrix.at(1, 1) == 4 &&
-                 secondMatrix.at(1, 2) == 3 &&
-                 secondMatrix.at(1, 3) == 4,
-
-                 "Horizontal concatenation failed, destination matrix has incorrect values!");
-    }
-}
-
-void CommonTests::testSplitTwoMatrixesVertically()
-{
-    {
-        IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{};
-
-        firstMatrix.split(secondMatrix, thirdMatrix, 2);
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-
-        if (thirdMatrix.getNrOfRows() != 1 || thirdMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(1, 0) == 3 &&
-                 secondMatrix.at(1, 1) == 4,
-
-                 "Vertical split failed, first destination matrix has incorrect values!");
-
-        QVERIFY2(thirdMatrix.at(0, 0) == 5 &&
-                 thirdMatrix.at(0, 1) == 6,
-
-                 "Vertical split failed, second destination matrix has incorrect values!");
-    }
-
-    {
-        IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
-
-        firstMatrix.split(firstMatrix, secondMatrix, 2);
-
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-
-        if (secondMatrix.getNrOfRows() != 1 || secondMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-
-        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
-                 firstMatrix.at(0, 1) == 2 &&
-                 firstMatrix.at(1, 0) == 3 &&
-                 firstMatrix.at(1, 1) == 4,
-
-                 "Vertical split failed, first destination matrix has incorrect values!");
-
-        QVERIFY2(secondMatrix.at(0, 0) == 5 &&
-                 secondMatrix.at(0, 1) == 6,
-
-                 "Vertical split failed, second destination matrix has incorrect values!");
-    }
-
-    {
-        IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
-
-        firstMatrix.split(secondMatrix, firstMatrix, 2);
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-
-        if (firstMatrix.getNrOfRows() != 1 || firstMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(1, 0) == 3 &&
-                 secondMatrix.at(1, 1) == 4,
-
-                 "Vertical split failed, first destination matrix has incorrect values!");
-
-        QVERIFY2(firstMatrix.at(0, 0) == 5 &&
-                 firstMatrix.at(0, 1) == 6,
-
-                 "Vertical split failed, second destination matrix has incorrect values!");
-    }
-}
-
-void CommonTests::testSplitTwoMatrixesHorizontally()
-{
-    {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{};
-
-        firstMatrix.split(secondMatrix, thirdMatrix, 2, false);
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-
-        if (thirdMatrix.getNrOfRows() != 2 || thirdMatrix.getNrOfColumns() != 1)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(1, 0) == 4 &&
-                 secondMatrix.at(1, 1) == 5,
-
-                 "Horizontal split failed, first destination matrix has incorrect values!");
-
-        QVERIFY2(thirdMatrix.at(0, 0) == 3 &&
-                 thirdMatrix.at(1, 0) == 6,
-
-                 "Horizontal split failed, second destination matrix has incorrect values!");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
-
-        firstMatrix.split(firstMatrix, secondMatrix, 2, false);
-
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 1)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-
-        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
-                 firstMatrix.at(0, 1) == 2 &&
-                 firstMatrix.at(1, 0) == 4 &&
-                 firstMatrix.at(1, 1) == 5,
-
-                 "Horizontal split failed, first destination matrix has incorrect values!");
-
-        QVERIFY2(secondMatrix.at(0, 0) == 3 &&
-                 secondMatrix.at(1, 0) == 6,
-
-                 "Horizontal split failed, second destination matrix has incorrect values!");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
-
-        firstMatrix.split(secondMatrix, firstMatrix, 2, false);
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 1)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(1, 0) == 4 &&
-                 secondMatrix.at(1, 1) == 5,
-
-                 "Horizontal split failed, first destination matrix has incorrect values!");
-
-        QVERIFY2(firstMatrix.at(0, 0) == 3 &&
-                 firstMatrix.at(1, 0) == 6,
-
-                 "Horizontal split failed, second destination matrix has incorrect values!");
-    }
-}
-
-void CommonTests::testTransformToDiagMatrix()
-{
-    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-    matrix.transformToDiagMatrix(3, 7, 8);
-
-    if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 3)
-    {
-        QFAIL("Transforming to diagonal matrix failed, number of rows or columns is not correct!");
-    }
-
-    QVERIFY2(matrix.at(0, 0) == 8 &&
-             matrix.at(0, 1) == 7 &&
-             matrix.at(0, 2) == 7 &&
-             matrix.at(1, 0) == 7 &&
-             matrix.at(1, 1) == 8 &&
-             matrix.at(0, 2) == 7 &&
-             matrix.at(2, 0) == 7 &&
-             matrix.at(2, 1) == 7 &&
-             matrix.at(2, 2) == 8,
-
-             "Transforming to diagonal matrix failed, matrix has incorrect values!");
-}
-
-void CommonTests::testTransformToEqualElementsMatrix()
-{
-    IntMatrix matrix{2, 2, {1, 2, 3, 4}};
-    matrix.transformToEqualElementsMatrix(3, 2, 5);
-
-    if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
-    {
-        QFAIL("Transforming to equal elements matrix failed, number of rows or columns is not correct!");
-    }
-
-    QVERIFY2(matrix.at(0, 0) == 5 &&
-             matrix.at(0, 1) == 5 &&
-             matrix.at(1, 0) == 5 &&
-             matrix.at(1, 1) == 5 &&
-             matrix.at(2, 0) == 5 &&
-             matrix.at(2, 1) == 5,
-
-             "Transforming to equal elements matrix failed, matrix has incorrect values!");
-}
-
-void CommonTests::testSetAllItemsToValue()
-{
-    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-    matrix.setAllItemsToValue(7);
-
-    if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
-    {
-        QFAIL("Setting all matrix items to same value failed, number of rows or columns is not correct!");
-    }
-
-    QVERIFY2(matrix.at(0, 0) == 7 &&
-             matrix.at(0, 1) == 7 &&
-             matrix.at(0, 2) == 7 &&
-             matrix.at(1, 0) == 7 &&
-             matrix.at(1, 1) == 7 &&
-             matrix.at(1, 2) == 7,
-
-             "Setting all matrix items to same value failed, matrix has incorrect values!");
-}
-
-void CommonTests::testCopy()
-{
-    IntMatrix destMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-    IntMatrix srcMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}};
-    destMatrix.copy(srcMatrix, 3, 2, 2, 1, 1, 0);
-
-    if (destMatrix.getNrOfRows() != 4 || destMatrix.getNrOfColumns() != 3)
-    {
-        QFAIL("Copying items failed, number of rows or columns of the destination matrix is not correct!");
-    }
-
-    QVERIFY2(destMatrix.at(0, 0) == 1 &&
-             destMatrix.at(0, 1) == 2 &&
-             destMatrix.at(0, 2) == 3 &&
-             destMatrix.at(1, 0) == 22 &&
-             destMatrix.at(1, 1) == 23 &&
-             destMatrix.at(1, 2) == 6 &&
-             destMatrix.at(2, 0) == 26 &&
-             destMatrix.at(2, 1) == 27 &&
-             destMatrix.at(2, 2) == 9 &&
-             destMatrix.at(3, 0) == 30 &&
-             destMatrix.at(3, 1) == 31 &&
-             destMatrix.at(3, 2) == 12,
-
-             "Copying items failed, destination matrix has incorrect values!");
 }
 
 void CommonTests::testSquareBracketsOperator()
@@ -953,7 +228,7 @@ void CommonTests::testSquareBracketsOperator()
                  matrix[10] == 11 &&
                  matrix[11] == 12,
 
-                "The square bracket operator did not return the correct values!");
+                "The square brackets operator did not return the correct values!");
     }
 
     {
@@ -988,7 +263,168 @@ void CommonTests::testSquareBracketsOperator()
                  matrixPtr[3][1] == 110 &&
                  matrixPtr[3][2] == 120,
 
-                "The square bracket operator did not write the correct values!");
+                "The square brackets operator did not write the correct values!");
+    }
+}
+
+void CommonTests::testCopyAssignmentOperator()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
+
+        matrixCopy = matrix;
+
+        if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
+        {
+            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(matrixCopy.at(0, 0) == 1 &&
+                 matrixCopy.at(0, 1) == 2 &&
+                 matrixCopy.at(0, 2) == 3 &&
+                 matrixCopy.at(1, 0) == 4 &&
+                 matrixCopy.at(1, 1) == 5 &&
+                 matrixCopy.at(1, 2) == 6,
+
+                 "Copy assignment failed, the destination matrix doesn't have the right values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+        IntMatrix thirdMatrix{2, 2, {13, 14, 15, 16}};
+
+        firstMatrix = secondMatrix = thirdMatrix;
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Copy assignment failed, number of rows or columns of the first matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 13 &&
+                 firstMatrix.at(0, 1) == 14 &&
+                 firstMatrix.at(1, 0) == 15 &&
+                 firstMatrix.at(1, 1) == 16,
+
+                 "Copy assignment failed, the first matrix doesn't have the right values!");
+    }
+}
+
+void CommonTests::testMoveAssignmentOperator()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
+
+        matrixCopy = std::move(matrix);
+
+        if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
+        {
+            QFAIL("Move assignment failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(matrixCopy.at(0, 0) == 1 &&
+                 matrixCopy.at(0, 1) == 2 &&
+                 matrixCopy.at(0, 2) == 3 &&
+                 matrixCopy.at(1, 0) == 4 &&
+                 matrixCopy.at(1, 1) == 5 &&
+                 matrixCopy.at(1, 2) == 6,
+
+                 "Move assignment failed, the destination matrix doesn't have the right values!");
+
+        if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
+        {
+            QFAIL("Move assignment failed, number of rows or columns of the source matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+        IntMatrix thirdMatrix{2, 2, {13, 14, 15, 16}};
+
+        firstMatrix = secondMatrix = std::move(thirdMatrix);
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Copy and/or move assignment failed, number of rows or columns of the first matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 13 &&
+                 firstMatrix.at(0, 1) == 14 &&
+                 firstMatrix.at(1, 0) == 15 &&
+                 firstMatrix.at(1, 1) == 16,
+
+                 "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+        IntMatrix thirdMatrix{2, 2, {13, 14, 15, 16}};
+
+        firstMatrix = std::move(secondMatrix = thirdMatrix);
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Copy and/or move assignment failed, number of rows or columns of the first matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 13 &&
+                 firstMatrix.at(0, 1) == 14 &&
+                 firstMatrix.at(1, 0) == 15 &&
+                 firstMatrix.at(1, 1) == 16,
+
+                 "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
+    }
+}
+
+void CommonTests::testGetBaseArrayPtr()
+{
+    {
+        IntMatrix matrix{};
+
+        int nrOfRows, nrOfColumns;
+        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+
+        if (matrixPtr || nrOfRows != 0 || nrOfColumns != 0)
+        {
+            QFAIL("Passing resources outside the matrix failed, either the pointer is not null or the number of rows and columns of the empty matrix is different from 0!");
+        }
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+        int nrOfRows, nrOfColumns;
+        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+
+        if (!matrixPtr || nrOfRows != 2 || nrOfColumns != 3)
+        {
+            QFAIL("Passing resources outside the matrix failed, either the pointer is null or the number of rows and columns is not correct!");
+        }
+
+        QVERIFY2(matrixPtr[0][0] == 1 &&
+                 matrixPtr[0][1] == 2 &&
+                 matrixPtr[0][2] == 3 &&
+                 matrixPtr[1][0] == 4 &&
+                 matrixPtr[1][1] == 5 &&
+                 matrixPtr[1][2] == 6,
+
+                "Passing resources outside the matrix failed, the element values are not correct!");
+    }
+}
+
+void CommonTests::testClear()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+    matrix.clear();
+
+    if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
+    {
+        QFAIL("Clear failed, number of rows or columns is not correct!");
     }
 }
 
@@ -1273,6 +709,49 @@ void CommonTests::testResizeAndKeepOldValues()
 
                 "Resizing failed, the matrix does not retain its values if dimensions are unchanged!");
     }
+}
+
+void CommonTests::testTransformToDiagMatrix()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    matrix.transformToDiagMatrix(3, 7, 8);
+
+    if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 3)
+    {
+        QFAIL("Transforming to diagonal matrix failed, number of rows or columns is not correct!");
+    }
+
+    QVERIFY2(matrix.at(0, 0) == 8 &&
+             matrix.at(0, 1) == 7 &&
+             matrix.at(0, 2) == 7 &&
+             matrix.at(1, 0) == 7 &&
+             matrix.at(1, 1) == 8 &&
+             matrix.at(0, 2) == 7 &&
+             matrix.at(2, 0) == 7 &&
+             matrix.at(2, 1) == 7 &&
+             matrix.at(2, 2) == 8,
+
+             "Transforming to diagonal matrix failed, matrix has incorrect values!");
+}
+
+void CommonTests::testTransformToEqualElementsMatrix()
+{
+    IntMatrix matrix{2, 2, {1, 2, 3, 4}};
+    matrix.transformToEqualElementsMatrix(3, 2, 5);
+
+    if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
+    {
+        QFAIL("Transforming to equal elements matrix failed, number of rows or columns is not correct!");
+    }
+
+    QVERIFY2(matrix.at(0, 0) == 5 &&
+             matrix.at(0, 1) == 5 &&
+             matrix.at(1, 0) == 5 &&
+             matrix.at(1, 1) == 5 &&
+             matrix.at(2, 0) == 5 &&
+             matrix.at(2, 1) == 5,
+
+             "Transforming to equal elements matrix failed, matrix has incorrect values!");
 }
 
 void CommonTests::testInsertRowNoSetValue()
@@ -1757,208 +1236,729 @@ void CommonTests::testEraseColumn()
     }
 }
 
-void CommonTests::testCopyAssignmentOperator()
+void CommonTests::testConcatenateTwoMatrixesVertically()
+{
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{1, 2, {5, 6}};
+        IntMatrix thirdMatrix{};
+
+        thirdMatrix.concatenate(firstMatrix, secondMatrix);
+
+        if (thirdMatrix.getNrOfRows() != 3 || thirdMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(thirdMatrix.at(0, 0) == 1 &&
+                 thirdMatrix.at(0, 1) == 2 &&
+                 thirdMatrix.at(1, 0) == 3 &&
+                 thirdMatrix.at(1, 1) == 4 &&
+                 thirdMatrix.at(2, 0) == 5 &&
+                 thirdMatrix.at(2, 1) == 6,
+
+                 "Vertical concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{1, 2, {5, 6}};
+
+        firstMatrix.concatenate(firstMatrix, secondMatrix);
+
+        if (firstMatrix.getNrOfRows() != 3 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
+                 firstMatrix.at(0, 1) == 2 &&
+                 firstMatrix.at(1, 0) == 3 &&
+                 firstMatrix.at(1, 1) == 4 &&
+                 firstMatrix.at(2, 0) == 5 &&
+                 firstMatrix.at(2, 1) == 6,
+
+                 "Vertical concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{1, 2, {5, 6}};
+
+        secondMatrix.concatenate(firstMatrix, secondMatrix);
+
+        if (secondMatrix.getNrOfRows() != 3 || secondMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(1, 0) == 3 &&
+                 secondMatrix.at(1, 1) == 4 &&
+                 secondMatrix.at(2, 0) == 5 &&
+                 secondMatrix.at(2, 1) == 6,
+
+                 "Vertical concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+
+        firstMatrix.concatenate(firstMatrix, firstMatrix);
+
+        if (firstMatrix.getNrOfRows() != 4 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
+                 firstMatrix.at(0, 1) == 2 &&
+                 firstMatrix.at(1, 0) == 3 &&
+                 firstMatrix.at(1, 1) == 4 &&
+                 firstMatrix.at(2, 0) == 1 &&
+                 firstMatrix.at(2, 1) == 2 &&
+                 firstMatrix.at(3, 0) == 3 &&
+                 firstMatrix.at(3, 1) == 4,
+
+                 "Vertical concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{};
+
+        secondMatrix.concatenate(firstMatrix, firstMatrix);
+
+        if (secondMatrix.getNrOfRows() != 4 || secondMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(1, 0) == 3 &&
+                 secondMatrix.at(1, 1) == 4 &&
+                 secondMatrix.at(2, 0) == 1 &&
+                 secondMatrix.at(2, 1) == 2 &&
+                 secondMatrix.at(3, 0) == 3 &&
+                 secondMatrix.at(3, 1) == 4,
+
+                 "Vertical concatenation failed, destination matrix has incorrect values!");
+    }
+}
+
+void CommonTests::testConcatenateTwoMatrixesHorizontally()
+{
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{2, 1, {5, 6}};
+        IntMatrix thirdMatrix{};
+
+        thirdMatrix.concatenate(firstMatrix, secondMatrix, false);
+
+        if (thirdMatrix.getNrOfRows() != 2 || thirdMatrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(thirdMatrix.at(0, 0) == 1 &&
+                 thirdMatrix.at(0, 1) == 2 &&
+                 thirdMatrix.at(0, 2) == 5 &&
+                 thirdMatrix.at(1, 0) == 3 &&
+                 thirdMatrix.at(1, 1) == 4 &&
+                 thirdMatrix.at(1, 2) == 6,
+
+                 "Horizontal concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{2, 1, {5, 6}};
+
+        firstMatrix.concatenate(firstMatrix, secondMatrix, false);
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
+                 firstMatrix.at(0, 1) == 2 &&
+                 firstMatrix.at(0, 2) == 5 &&
+                 firstMatrix.at(1, 0) == 3 &&
+                 firstMatrix.at(1, 1) == 4 &&
+                 firstMatrix.at(1, 2) == 6,
+
+                 "Horizontal concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{2, 1, {5, 6}};
+
+        secondMatrix.concatenate(firstMatrix, secondMatrix, false);
+
+        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(0, 2) == 5 &&
+                 secondMatrix.at(1, 0) == 3 &&
+                 secondMatrix.at(1, 1) == 4 &&
+                 secondMatrix.at(1, 2) == 6,
+
+                 "Horizontal concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+
+        firstMatrix.concatenate(firstMatrix, firstMatrix, false);
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 4)
+        {
+            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
+                 firstMatrix.at(0, 1) == 2 &&
+                 firstMatrix.at(0, 2) == 1 &&
+                 firstMatrix.at(0, 3) == 2 &&
+                 firstMatrix.at(1, 0) == 3 &&
+                 firstMatrix.at(1, 1) == 4 &&
+                 firstMatrix.at(1, 2) == 3 &&
+                 firstMatrix.at(1, 3) == 4,
+
+                 "Horizontal concatenation failed, destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondMatrix{};
+
+        secondMatrix.concatenate(firstMatrix, firstMatrix, false);
+
+        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 4)
+        {
+            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(0, 2) == 1 &&
+                 secondMatrix.at(0, 3) == 2 &&
+                 secondMatrix.at(1, 0) == 3 &&
+                 secondMatrix.at(1, 1) == 4 &&
+                 secondMatrix.at(1, 2) == 3 &&
+                 secondMatrix.at(1, 3) == 4,
+
+                 "Horizontal concatenation failed, destination matrix has incorrect values!");
+    }
+}
+
+void CommonTests::testSplitTwoMatrixesVertically()
+{
+    {
+        IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{};
+        IntMatrix thirdMatrix{};
+
+        firstMatrix.split(secondMatrix, thirdMatrix, 2);
+
+        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
+        }
+
+        if (thirdMatrix.getNrOfRows() != 1 || thirdMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(1, 0) == 3 &&
+                 secondMatrix.at(1, 1) == 4,
+
+                 "Vertical split failed, first destination matrix has incorrect values!");
+
+        QVERIFY2(thirdMatrix.at(0, 0) == 5 &&
+                 thirdMatrix.at(0, 1) == 6,
+
+                 "Vertical split failed, second destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{};
+
+        firstMatrix.split(firstMatrix, secondMatrix, 2);
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
+        }
+
+        if (secondMatrix.getNrOfRows() != 1 || secondMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
+                 firstMatrix.at(0, 1) == 2 &&
+                 firstMatrix.at(1, 0) == 3 &&
+                 firstMatrix.at(1, 1) == 4,
+
+                 "Vertical split failed, first destination matrix has incorrect values!");
+
+        QVERIFY2(secondMatrix.at(0, 0) == 5 &&
+                 secondMatrix.at(0, 1) == 6,
+
+                 "Vertical split failed, second destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{};
+
+        firstMatrix.split(secondMatrix, firstMatrix, 2);
+
+        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
+        }
+
+        if (firstMatrix.getNrOfRows() != 1 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(1, 0) == 3 &&
+                 secondMatrix.at(1, 1) == 4,
+
+                 "Vertical split failed, first destination matrix has incorrect values!");
+
+        QVERIFY2(firstMatrix.at(0, 0) == 5 &&
+                 firstMatrix.at(0, 1) == 6,
+
+                 "Vertical split failed, second destination matrix has incorrect values!");
+    }
+}
+
+void CommonTests::testSplitTwoMatrixesHorizontally()
+{
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{};
+        IntMatrix thirdMatrix{};
+
+        firstMatrix.split(secondMatrix, thirdMatrix, 2, false);
+
+        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
+        }
+
+        if (thirdMatrix.getNrOfRows() != 2 || thirdMatrix.getNrOfColumns() != 1)
+        {
+            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(1, 0) == 4 &&
+                 secondMatrix.at(1, 1) == 5,
+
+                 "Horizontal split failed, first destination matrix has incorrect values!");
+
+        QVERIFY2(thirdMatrix.at(0, 0) == 3 &&
+                 thirdMatrix.at(1, 0) == 6,
+
+                 "Horizontal split failed, second destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{};
+
+        firstMatrix.split(firstMatrix, secondMatrix, 2, false);
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
+        }
+
+        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 1)
+        {
+            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
+                 firstMatrix.at(0, 1) == 2 &&
+                 firstMatrix.at(1, 0) == 4 &&
+                 firstMatrix.at(1, 1) == 5,
+
+                 "Horizontal split failed, first destination matrix has incorrect values!");
+
+        QVERIFY2(secondMatrix.at(0, 0) == 3 &&
+                 secondMatrix.at(1, 0) == 6,
+
+                 "Horizontal split failed, second destination matrix has incorrect values!");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{};
+
+        firstMatrix.split(secondMatrix, firstMatrix, 2, false);
+
+        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
+        }
+
+        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 1)
+        {
+            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(1, 0) == 4 &&
+                 secondMatrix.at(1, 1) == 5,
+
+                 "Horizontal split failed, first destination matrix has incorrect values!");
+
+        QVERIFY2(firstMatrix.at(0, 0) == 3 &&
+                 firstMatrix.at(1, 0) == 6,
+
+                 "Horizontal split failed, second destination matrix has incorrect values!");
+    }
+}
+
+void CommonTests::testSwapMatrixes()
+{
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+
+        std::swap(firstMatrix, secondMatrix);
+
+        if (firstMatrix.getNrOfRows() != 3 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
+        }
+
+        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
+        }
+
+        QVERIFY2(firstMatrix.at(0, 0) == 7 &&
+                 firstMatrix.at(0, 1) == 8 &&
+                 firstMatrix.at(1, 0) == 9 &&
+                 firstMatrix.at(1, 1) == 10 &&
+                 firstMatrix.at(2, 0) == 11 &&
+                 firstMatrix.at(2, 1) == 12,
+
+                 "First matrix has incorrect element values after swap");
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(0, 2) == 3 &&
+                 secondMatrix.at(1, 0) == 4 &&
+                 secondMatrix.at(1, 1) == 5 &&
+                 secondMatrix.at(1, 2) == 6,
+
+                 "Second matrix has incorrect element values after swap");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{};
+
+        std::swap(firstMatrix, secondMatrix);
+
+        if (firstMatrix.getNrOfRows() != 0 || firstMatrix.getNrOfColumns() != 0)
+        {
+            QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
+        }
+
+        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
+        }
+
+        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
+                 secondMatrix.at(0, 1) == 2 &&
+                 secondMatrix.at(0, 2) == 3 &&
+                 secondMatrix.at(1, 0) == 4 &&
+                 secondMatrix.at(1, 1) == 5 &&
+                 secondMatrix.at(1, 2) == 6,
+
+                 "Second matrix has incorrect element values after swap");
+    }
+
+    {
+        IntMatrix firstMatrix{};
+        IntMatrix secondMatrix{};
+
+        std::swap(firstMatrix, secondMatrix);
+
+        if (firstMatrix.getNrOfRows() != 0 || firstMatrix.getNrOfColumns() != 0)
+        {
+            QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
+        }
+
+        if (secondMatrix.getNrOfRows() != 0 || secondMatrix.getNrOfColumns() != 0)
+        {
+            QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
+        }
+    }
+}
+
+void CommonTests::testSwapItems()
 {
     {
         IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
 
-        matrixCopy = matrix;
+        matrix.swapItems(1, 2, matrix, 0, 1);
 
-        if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
-        {
-            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
-        }
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 6 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 2,
 
-        QVERIFY2(matrixCopy.at(0, 0) == 1 &&
-                 matrixCopy.at(0, 1) == 2 &&
-                 matrixCopy.at(0, 2) == 3 &&
-                 matrixCopy.at(1, 0) == 4 &&
-                 matrixCopy.at(1, 1) == 5 &&
-                 matrixCopy.at(1, 2) == 6,
-
-                 "Copy assignment failed, the destination matrix doesn't have the right values!");
+                 "Items are incorrectly swapped within same matrix");
     }
 
     {
         IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
         IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
-        IntMatrix thirdMatrix{2, 2, {13, 14, 15, 16}};
 
-        firstMatrix = secondMatrix = thirdMatrix;
+        firstMatrix.swapItems(1, 2, secondMatrix, 2, 0);
 
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Copy assignment failed, number of rows or columns of the first matrix is not correct!");
-        }
+        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
+                 firstMatrix.at(0, 1) == 2 &&
+                 firstMatrix.at(0, 2) == 3 &&
+                 firstMatrix.at(1, 0) == 4 &&
+                 firstMatrix.at(1, 1) == 5 &&
+                 firstMatrix.at(1, 2) == 11,
 
-        QVERIFY2(firstMatrix.at(0, 0) == 13 &&
-                 firstMatrix.at(0, 1) == 14 &&
-                 firstMatrix.at(1, 0) == 15 &&
-                 firstMatrix.at(1, 1) == 16,
+                 "Items are incorrectly swapped between matrixes, first matrix does not have the desired value after swap");
 
-                 "Copy assignment failed, the first matrix doesn't have the right values!");
+        QVERIFY2(secondMatrix.at(0, 0) == 7 &&
+                 secondMatrix.at(0, 1) == 8 &&
+                 secondMatrix.at(1, 0) == 9 &&
+                 secondMatrix.at(1, 1) == 10 &&
+                 secondMatrix.at(2, 0) == 6 &&
+                 secondMatrix.at(2, 1) == 12,
+
+                 "Items are incorrectly swapped between matrixes, second matrix does not have the desired value after swap");
     }
 }
 
-void CommonTests::testMoveAssignmentOperator()
+void CommonTests::testSwapRows()
 {
     {
-        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        matrixCopy = std::move(matrix);
+        matrix.swapRows(0, matrix, 2);
 
-        if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
-        {
-            QFAIL("Move assignment failed, number of rows or columns of the destination matrix is not correct!");
-        }
+        QVERIFY2(matrix.at(0, 0) == 7 &&
+                 matrix.at(0, 1) == 8 &&
+                 matrix.at(0, 2) == 9 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6 &&
+                 matrix.at(2, 0) == 1 &&
+                 matrix.at(2, 1) == 2 &&
+                 matrix.at(2, 2) == 3 &&
+                 matrix.at(3, 0) == 10 &&
+                 matrix.at(3, 1) == 11 &&
+                 matrix.at(3, 2) == 12,
 
-        QVERIFY2(matrixCopy.at(0, 0) == 1 &&
-                 matrixCopy.at(0, 1) == 2 &&
-                 matrixCopy.at(0, 2) == 3 &&
-                 matrixCopy.at(1, 0) == 4 &&
-                 matrixCopy.at(1, 1) == 5 &&
-                 matrixCopy.at(1, 2) == 6,
-
-                 "Move assignment failed, the destination matrix doesn't have the right values!");
-
-        if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
-        {
-            QFAIL("Move assignment failed, number of rows or columns of the source matrix is not correct!");
-        }
+                 "Rows are incorrectly swapped within same matrix");
     }
 
     {
         IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
-        IntMatrix thirdMatrix{2, 2, {13, 14, 15, 16}};
+        IntMatrix secondMatrix{4, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
 
-        firstMatrix = secondMatrix = std::move(thirdMatrix);
+        firstMatrix.swapRows(0, secondMatrix, 3);
 
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Copy and/or move assignment failed, number of rows or columns of the first matrix is not correct!");
-        }
+        QVERIFY2(firstMatrix.at(0, 0) == 16 &&
+                 firstMatrix.at(0, 1) == 17 &&
+                 firstMatrix.at(0, 2) == 18 &&
+                 firstMatrix.at(1, 0) == 4 &&
+                 firstMatrix.at(1, 1) == 5 &&
+                 firstMatrix.at(1, 2) == 6,
 
-        QVERIFY2(firstMatrix.at(0, 0) == 13 &&
-                 firstMatrix.at(0, 1) == 14 &&
-                 firstMatrix.at(1, 0) == 15 &&
-                 firstMatrix.at(1, 1) == 16,
+                 "Rows are incorrectly swapped between matrixes, first matrix does not have the desired value after swap");
 
-                 "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
-    }
+        QVERIFY2(secondMatrix.at(0, 0) == 7 &&
+                 secondMatrix.at(0, 1) == 8 &&
+                 secondMatrix.at(0, 2) == 9 &&
+                 secondMatrix.at(1, 0) == 10 &&
+                 secondMatrix.at(1, 1) == 11 &&
+                 secondMatrix.at(1, 2) == 12 &&
+                 secondMatrix.at(2, 0) == 13 &&
+                 secondMatrix.at(2, 1) == 14 &&
+                 secondMatrix.at(2, 2) == 15 &&
+                 secondMatrix.at(3, 0) == 1 &&
+                 secondMatrix.at(3, 1) == 2 &&
+                 secondMatrix.at(3, 2) == 3,
 
-    {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
-        IntMatrix thirdMatrix{2, 2, {13, 14, 15, 16}};
-
-        firstMatrix = std::move(secondMatrix = thirdMatrix);
-
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Copy and/or move assignment failed, number of rows or columns of the first matrix is not correct!");
-        }
-
-        QVERIFY2(firstMatrix.at(0, 0) == 13 &&
-                 firstMatrix.at(0, 1) == 14 &&
-                 firstMatrix.at(1, 0) == 15 &&
-                 firstMatrix.at(1, 1) == 16,
-
-                 "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
+                 "Rows are incorrectly swapped between matrixes, second matrix does not have the desired value after swap");
     }
 }
 
-void CommonTests::testGetBaseArrayPtr()
+void CommonTests::testSwapColumns()
 {
     {
-        IntMatrix matrix{};
+        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        int nrOfRows, nrOfColumns;
-        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+        matrix.swapColumns(0, matrix, 2);
 
-        if (matrixPtr || nrOfRows != 0 || nrOfColumns != 0)
-        {
-            QFAIL("Passing resources outside the matrix failed, either the pointer is not null or the number of rows and columns of the empty matrix is different from 0!");
-        }
+        QVERIFY2(matrix.at(0, 0) == 3 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 1 &&
+                 matrix.at(0, 3) == 4 &&
+                 matrix.at(1, 0) == 7 &&
+                 matrix.at(1, 1) == 6 &&
+                 matrix.at(1, 2) == 5 &&
+                 matrix.at(1, 3) == 8 &&
+                 matrix.at(2, 0) == 11 &&
+                 matrix.at(2, 1) == 10 &&
+                 matrix.at(2, 2) == 9 &&
+                 matrix.at(2, 3) == 12,
+
+                 "Columns are incorrectly swapped within same matrix");
     }
 
     {
-        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
 
-        int nrOfRows, nrOfColumns;
-        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+        firstMatrix.swapColumns(0, secondMatrix, 3);
 
-        if (!matrixPtr || nrOfRows != 2 || nrOfColumns != 3)
-        {
-            QFAIL("Passing resources outside the matrix failed, either the pointer is null or the number of rows and columns is not correct!");
-        }
+        QVERIFY2(firstMatrix.at(0, 0) == 10 &&
+                 firstMatrix.at(0, 1) == 2 &&
+                 firstMatrix.at(1, 0) == 14 &&
+                 firstMatrix.at(1, 1) == 4 &&
+                 firstMatrix.at(2, 0) == 18 &&
+                 firstMatrix.at(2, 1) == 6,
 
-        QVERIFY2(matrixPtr[0][0] == 1 &&
-                 matrixPtr[0][1] == 2 &&
-                 matrixPtr[0][2] == 3 &&
-                 matrixPtr[1][0] == 4 &&
-                 matrixPtr[1][1] == 5 &&
-                 matrixPtr[1][2] == 6,
+                 "Columns are incorrectly swapped between matrixes, first matrix does not have the desired value after swap");
 
-                "Passing resources outside the matrix failed, the element values are not correct!");
+        QVERIFY2(secondMatrix.at(0, 0) == 7 &&
+                 secondMatrix.at(0, 1) == 8 &&
+                 secondMatrix.at(0, 2) == 9 &&
+                 secondMatrix.at(0, 3) == 1 &&
+                 secondMatrix.at(1, 0) == 11 &&
+                 secondMatrix.at(1, 1) == 12 &&
+                 secondMatrix.at(1, 2) == 13 &&
+                 secondMatrix.at(1, 3) == 3 &&
+                 secondMatrix.at(2, 0) == 15 &&
+                 secondMatrix.at(2, 1) == 16 &&
+                 secondMatrix.at(2, 2) == 17 &&
+                 secondMatrix.at(2, 3) == 5,
+
+                 "Columns are incorrectly swapped between matrixes, second matrix does not have the desired value after swap");
     }
 }
 
-void CommonTests::testClear()
+void CommonTests::testSwapRowColumn()
+{
+    IntMatrix firstMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    IntMatrix secondMatrix{3, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24}};
+
+    firstMatrix.swapRowColumn(0, secondMatrix, 3);
+
+    QVERIFY2(firstMatrix.at(0, 0) == 16 &&
+             firstMatrix.at(0, 1) == 20 &&
+             firstMatrix.at(0, 2) == 24 &&
+             firstMatrix.at(1, 0) == 4 &&
+             firstMatrix.at(1, 1) == 5 &&
+             firstMatrix.at(1, 2) == 6 &&
+             firstMatrix.at(2, 0) == 7 &&
+             firstMatrix.at(2, 1) == 8 &&
+             firstMatrix.at(2, 2) == 9 &&
+             firstMatrix.at(3, 0) == 10 &&
+             firstMatrix.at(3, 1) == 11 &&
+             firstMatrix.at(3, 2) == 12,
+
+             "Row from first matrix is incorrectly swapped with column from the second, first matrix does not have the desired value after swap");
+
+    QVERIFY2(secondMatrix.at(0, 0) == 13 &&
+             secondMatrix.at(0, 1) == 14 &&
+             secondMatrix.at(0, 2) == 15 &&
+             secondMatrix.at(0, 3) == 1 &&
+             secondMatrix.at(1, 0) == 17 &&
+             secondMatrix.at(1, 1) == 18 &&
+             secondMatrix.at(1, 2) == 19 &&
+             secondMatrix.at(1, 3) == 2 &&
+             secondMatrix.at(2, 0) == 21 &&
+             secondMatrix.at(2, 1) == 22 &&
+             secondMatrix.at(2, 2) == 23 &&
+             secondMatrix.at(2, 3) == 3,
+
+             "Row from first matrix is incorrectly swapped with column from the second, second matrix does not have the desired value after swap");
+}
+
+void CommonTests::testSetAllItemsToValue()
 {
     IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    matrix.setAllItemsToValue(7);
 
-    matrix.clear();
-
-    if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
+    if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
     {
-        QFAIL("Clear failed, number of rows or columns is not correct!");
+        QFAIL("Setting all matrix items to same value failed, number of rows or columns is not correct!");
     }
+
+    QVERIFY2(matrix.at(0, 0) == 7 &&
+             matrix.at(0, 1) == 7 &&
+             matrix.at(0, 2) == 7 &&
+             matrix.at(1, 0) == 7 &&
+             matrix.at(1, 1) == 7 &&
+             matrix.at(1, 2) == 7,
+
+             "Setting all matrix items to same value failed, matrix has incorrect values!");
 }
 
-void CommonTests::testFunctionAt()
+void CommonTests::testCopy()
 {
+    IntMatrix destMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    IntMatrix srcMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}};
+    destMatrix.copy(srcMatrix, 3, 2, 2, 1, 1, 0);
+
+    if (destMatrix.getNrOfRows() != 4 || destMatrix.getNrOfColumns() != 3)
     {
-        IntMatrix matrix{2, 3, 5};
-
-        matrix.at(0, 0) = 10;
-        matrix.at(0, 1) = 20;
-        matrix.at(0, 2) = 30;
-        matrix.at(1, 0) = 40;
-        matrix.at(1, 1) = 50;
-        matrix.at(1, 2) = 60;
-
-        QVERIFY2(matrix[0] == 10 &&
-                 matrix[1] == 20 &&
-                 matrix[2] == 30 &&
-                 matrix[3] == 40 &&
-                 matrix[4] == 50 &&
-                 matrix[5] == 60,
-
-                 "The at() method does not work correctly, setup values are wrong!");
+        QFAIL("Copying items failed, number of rows or columns of the destination matrix is not correct!");
     }
 
-    {
-        IntMatrix matrix{2, 3, 5};
+    QVERIFY2(destMatrix.at(0, 0) == 1 &&
+             destMatrix.at(0, 1) == 2 &&
+             destMatrix.at(0, 2) == 3 &&
+             destMatrix.at(1, 0) == 22 &&
+             destMatrix.at(1, 1) == 23 &&
+             destMatrix.at(1, 2) == 6 &&
+             destMatrix.at(2, 0) == 26 &&
+             destMatrix.at(2, 1) == 27 &&
+             destMatrix.at(2, 2) == 9 &&
+             destMatrix.at(3, 0) == 30 &&
+             destMatrix.at(3, 1) == 31 &&
+             destMatrix.at(3, 2) == 12,
 
-        matrix[0] = 70;
-        matrix[1] = 80;
-        matrix[2] = 90;
-        matrix[3] = 100;
-        matrix[4] = 110;
-        matrix[5] = 120;
-
-        QVERIFY2(matrix.at(0, 0) == 70 &&
-                 matrix.at(0, 1) == 80 &&
-                 matrix.at(0, 2) == 90 &&
-                 matrix.at(1, 0) == 100 &&
-                 matrix.at(1, 1) == 110 &&
-                 matrix.at(1, 2) == 120,
-
-                 "The at() method does not work correctly, read values are wrong!");
-    }
+             "Copying items failed, destination matrix has incorrect values!");
 }
 
 QTEST_APPLESS_MAIN(CommonTests)
