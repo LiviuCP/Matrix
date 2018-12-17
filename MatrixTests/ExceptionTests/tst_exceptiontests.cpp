@@ -18,6 +18,8 @@ private slots:
     void testDiagMatrixConstructorExceptions();
     void testFunctionAtExceptions();
     void testSquareBracketsOperatorExceptions();
+    void testResizeAndRemoveOldValuesExceptions();
+    void testResizeAndKeepOldValuesExceptions();
 };
 
 ExceptionTests::ExceptionTests()
@@ -86,6 +88,38 @@ void ExceptionTests::testSquareBracketsOperatorExceptions()
 
     QVERIFY_EXCEPTION_THROWN({matrix[-1] = 0;}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({matrix[6] = 0;}, std::runtime_error);
+}
+
+void ExceptionTests::testResizeAndRemoveOldValuesExceptions()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(-3, -4);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(-3, 0);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(-3, 4);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(0, -4);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(0, 0);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(0, 4);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(3, -4);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(3, 0);}, std::runtime_error);
+}
+
+void ExceptionTests::testResizeAndKeepOldValuesExceptions()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(-3, -4, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(-3, 0, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(-3, 4, 5);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(0, -4, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(0, 0, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(0, 4, 5);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(3, -4, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.resize(3, 0, 5);}, std::runtime_error);
 }
 
 
