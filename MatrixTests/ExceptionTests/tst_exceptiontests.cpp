@@ -20,6 +20,7 @@ private slots:
     void testSquareBracketsOperatorExceptions();
     void testResizeAndRemoveOldValuesExceptions();
     void testResizeAndKeepOldValuesExceptions();
+    void testTransformToDiagMatrixExceptions();
 };
 
 ExceptionTests::ExceptionTests()
@@ -120,6 +121,14 @@ void ExceptionTests::testResizeAndKeepOldValuesExceptions()
 
     QVERIFY_EXCEPTION_THROWN({matrix.resize(3, -4, 5);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({matrix.resize(3, 0, 5);}, std::runtime_error);
+}
+
+void ExceptionTests::testTransformToDiagMatrixExceptions()
+{
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+    QVERIFY_EXCEPTION_THROWN({matrix.transformToDiagMatrix(-4, 2, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({matrix.transformToDiagMatrix(0, 2, 5);}, std::runtime_error);
 }
 
 
