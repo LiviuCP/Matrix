@@ -1,6 +1,8 @@
 #include <QtTest>
 
-// add necessary includes here
+#include "../../MatrixLib/matrix.h"
+
+using IntMatrix = Matrix<int>;
 
 class ExceptionTests : public QObject
 {
@@ -11,7 +13,9 @@ public:
     ~ExceptionTests();
 
 private slots:
-    void test_case1();
+    void testInitListConstructorExceptions();
+    void testIdenticalMatrixConstructorExceptions();
+    void testDiagMatrixConstructorExceptions();
 
 };
 
@@ -25,10 +29,37 @@ ExceptionTests::~ExceptionTests()
 
 }
 
-void ExceptionTests::test_case1()
+void ExceptionTests::testInitListConstructorExceptions()
 {
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, 2, {1, 2, 3, 4});}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, -2, {1, 2, 3, 4});}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, -2, {1, 2, 3, 4});}, std::runtime_error);
 
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, 2, {1, 2, 3, 4});}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, 0, {1, 2, 3, 4});}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 0, {1, 2, 3, 4});}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4});}, std::runtime_error);
 }
+
+void ExceptionTests::testIdenticalMatrixConstructorExceptions()
+{
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, 2, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, -2, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, -2, 5);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, 2, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, 0, 5);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 0, 5);}, std::runtime_error);
+}
+
+void ExceptionTests::testDiagMatrixConstructorExceptions()
+{
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, std::pair<int, int>{2, 5});}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, std::pair<int, int>{2, 5});}, std::runtime_error);
+}
+
+
 
 QTEST_APPLESS_MAIN(ExceptionTests)
 
