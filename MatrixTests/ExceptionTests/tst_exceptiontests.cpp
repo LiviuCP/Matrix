@@ -31,6 +31,7 @@ private slots:
     void testConcatenateExceptions();
     void testSplitExceptions();
     void testSwapItemsExceptions();
+    void testSwapRowsExceptions();
 };
 
 ExceptionTests::ExceptionTests()
@@ -577,6 +578,73 @@ void ExceptionTests::testSwapItemsExceptions()
 
                              std::runtime_error);
 }
+
+void ExceptionTests::testSwapRowsExceptions()
+{
+    QVERIFY_EXCEPTION_THROWN({
+                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
+                                  IntMatrix secondMatrix(4, 2, {7, 8, 9, 10, 11, 12, 13, 14});
+
+                                  firstMatrix.swapRows(-1, secondMatrix, 2);
+                             },
+
+                             std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({
+                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
+                                  IntMatrix secondMatrix(4, 2, {7, 8, 9, 10, 11, 12, 13, 14});
+
+                                  firstMatrix.swapRows(1, secondMatrix, -2);
+                             },
+
+                             std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({
+                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
+                                  IntMatrix secondMatrix(4, 2, {7, 8, 9, 10, 11, 12, 13, 14});
+
+                                  firstMatrix.swapRows(-1, secondMatrix, -2);
+                             },
+
+                             std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({
+                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
+                                  IntMatrix secondMatrix(4, 2, {7, 8, 9, 10, 11, 12, 13, 14});
+
+                                  firstMatrix.swapRows(1, secondMatrix, 4);
+                             },
+
+                             std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({
+                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
+                                  IntMatrix secondMatrix(4, 2, {7, 8, 9, 10, 11, 12, 13, 14});
+
+                                  firstMatrix.swapRows(3, secondMatrix, 2);
+                             },
+
+                             std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({
+                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
+                                  IntMatrix secondMatrix(4, 2, {7, 8, 9, 10, 11, 12, 13, 14});
+
+                                  firstMatrix.swapRows(3, secondMatrix, 4);
+                             },
+
+                             std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({
+                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
+                                  IntMatrix secondMatrix(3, 3, {7, 8, 9, 10, 11, 12});
+
+                                  firstMatrix.swapRows(1, secondMatrix, 0);
+                             },
+
+                             std::runtime_error);
+}
+
 QTEST_APPLESS_MAIN(ExceptionTests)
 
 #include "tst_exceptiontests.moc"
