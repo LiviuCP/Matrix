@@ -22,12 +22,12 @@ private slots:
     void testResizeAndKeepOldValuesExceptions();
     void testTransformToDiagMatrixExceptions();
     void testTransformToEqualElementsMatrixExceptions();
-    void testInsertRowNoSetValue();
-    void testInsertRowSetValue();
-    void testInsertColumnNoSetValue();
-    void testInsertColumnSetValue();
-    void testEraseRow();
-    void testEraseColumn();
+    void testInsertRowNoSetValueExceptions();
+    void testInsertRowSetValueExceptions();
+    void testInsertColumnNoSetValueExceptions();
+    void testInsertColumnSetValueExceptions();
+    void testEraseRowExceptions();
+    void testEraseColumnExceptions();
     void testConcatenateExceptions();
     void testSplitExceptions();
 };
@@ -144,37 +144,37 @@ void ExceptionTests::testTransformToEqualElementsMatrixExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.transformToEqualElementsMatrix(3, -4, 5);}, std::runtime_error);
 }
 
-void ExceptionTests::testInsertRowNoSetValue()
+void ExceptionTests::testInsertRowNoSetValueExceptions()
 {
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertRow(-1);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertRow(3);}, std::runtime_error);
 }
 
-void ExceptionTests::testInsertRowSetValue()
+void ExceptionTests::testInsertRowSetValueExceptions()
 {
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertRow(-1, 5);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertRow(3, 5);}, std::runtime_error);
 }
 
-void ExceptionTests::testInsertColumnNoSetValue()
+void ExceptionTests::testInsertColumnNoSetValueExceptions()
 {
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertColumn(-1);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertColumn(4);}, std::runtime_error);
 }
 
-void ExceptionTests::testInsertColumnSetValue()
+void ExceptionTests::testInsertColumnSetValueExceptions()
 {
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertColumn(-1, 5);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertColumn(4, 5);}, std::runtime_error);
 }
 
-void ExceptionTests::testEraseRow()
+void ExceptionTests::testEraseRowExceptions()
 {
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseRow(-1);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseRow(2);}, std::runtime_error);
 }
 
-void ExceptionTests::testEraseColumn()
+void ExceptionTests::testEraseColumnExceptions()
 {
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseColumn(-1);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseColumn(3);}, std::runtime_error);
