@@ -36,10 +36,8 @@ private slots:
     void testInsertColumnSetValue();
     void testEraseRow();
     void testEraseColumn();
-    void testConcatenateTwoMatrixesVertically();
-    void testConcatenateTwoMatrixesHorizontally();
-    void testSplitTwoMatrixesVertically();
-    void testSplitTwoMatrixesHorizontally();
+    void testConcatenate();
+    void testSplit();
     void testSwapMatrixes();
     void testSwapItems();
     void testSwapRows();
@@ -1370,7 +1368,7 @@ void CommonTests::testEraseColumn()
     }
 }
 
-void CommonTests::testConcatenateTwoMatrixesVertically()
+void CommonTests::testConcatenate()
 {
     {
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
@@ -1480,10 +1478,7 @@ void CommonTests::testConcatenateTwoMatrixesVertically()
 
                  "Vertical concatenation failed, destination matrix has incorrect values!");
     }
-}
 
-void CommonTests::testConcatenateTwoMatrixesHorizontally()
-{
     {
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
         IntMatrix secondMatrix{2, 1, {5, 6}};
@@ -1594,7 +1589,7 @@ void CommonTests::testConcatenateTwoMatrixesHorizontally()
     }
 }
 
-void CommonTests::testSplitTwoMatrixesVertically()
+void CommonTests::testSplit()
 {
     {
         IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
@@ -1683,10 +1678,7 @@ void CommonTests::testSplitTwoMatrixesVertically()
 
                  "Vertical split failed, second destination matrix has incorrect values!");
     }
-}
 
-void CommonTests::testSplitTwoMatrixesHorizontally()
-{
     {
         IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
         IntMatrix secondMatrix{};
