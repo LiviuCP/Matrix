@@ -24,6 +24,7 @@ private slots:
     void testCopyAssignmentOperator();
     void testMoveAssignmentOperator();
     void testGetBaseArrayPtr();
+    void testGetTransposedMatrix();
     void testClear();
     void testResizeAndRemoveOldValues();
     void testResizeAndKeepOldValues();
@@ -413,6 +414,139 @@ void CommonTests::testGetBaseArrayPtr()
                  matrixPtr[1][2] == 6,
 
                 "Passing resources outside the matrix failed, the element values are not correct!");
+    }
+}
+
+void CommonTests::testGetTransposedMatrix()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+        matrix.getTransposedMatrix(matrix);
+
+        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Calculating transposed matrix failed, number of rows or columns is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 4 &&
+                 matrix.at(1, 0) == 2 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(2, 0) == 3 &&
+                 matrix.at(2, 1) == 6,
+
+                 "Calculating transponsed matrix failed, the resulting values are incorrect!");
+    }
+
+    {
+        IntMatrix matrix{};
+
+        matrix.getTransposedMatrix(matrix);
+
+        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0,
+
+                 "Calculating transposed matrix failed, number of rows or columns is not correct!");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix transposedMatrix{2, 2, {7, 8, 9, 10}};
+
+        matrix.getTransposedMatrix(transposedMatrix);
+
+        if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Calculating transposed matrix failed, number of rows or columns of the source matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6,
+
+                 "Calculating transponsed matrix failed, the values of the source matrix are not correct!");
+
+        if (transposedMatrix.getNrOfRows() != 3 || transposedMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Calculating transposed matrix failed, number of rows or columns of the destination (transposed) matrix is not correct!");
+        }
+
+        QVERIFY2(transposedMatrix.at(0, 0) == 1 &&
+                 transposedMatrix.at(0, 1) == 4 &&
+                 transposedMatrix.at(1, 0) == 2 &&
+                 transposedMatrix.at(1, 1) == 5 &&
+                 transposedMatrix.at(2, 0) == 3 &&
+                 transposedMatrix.at(2, 1) == 6,
+
+                 "Calculating transponsed matrix failed, the values of the destination (transposed) matrix are not correct!");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix transposedMatrix{};
+
+        matrix.getTransposedMatrix(transposedMatrix);
+
+        if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Calculating transposed matrix failed, number of rows or columns of the source matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6,
+
+                 "Calculating transponsed matrix failed, the values of the source matrix are not correct!");
+
+        if (transposedMatrix.getNrOfRows() != 3 || transposedMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Calculating transposed matrix failed, number of rows or columns of the destination (transposed) matrix is not correct!");
+        }
+
+        QVERIFY2(transposedMatrix.at(0, 0) == 1 &&
+                 transposedMatrix.at(0, 1) == 4 &&
+                 transposedMatrix.at(1, 0) == 2 &&
+                 transposedMatrix.at(1, 1) == 5 &&
+                 transposedMatrix.at(2, 0) == 3 &&
+                 transposedMatrix.at(2, 1) == 6,
+
+                 "Calculating transponsed matrix failed, the values of the destination (transposed) matrix are not correct!");
+    }
+
+    {
+        IntMatrix matrix{};
+        IntMatrix transposedMatrix{2, 2, {1, 2, 3, 4}};
+
+        matrix.getTransposedMatrix(transposedMatrix);
+
+        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0,
+
+                 "Calculating transposed matrix failed, number of rows or columns of the source matrix is not correct!");
+
+        QVERIFY2(transposedMatrix.getNrOfRows() == 0 && transposedMatrix.getNrOfColumns() == 0,
+
+                 "Calculating transposed matrix failed, number of rows or columns of the destination (transposed) matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{};
+        IntMatrix transposedMatrix{};
+
+        matrix.getTransposedMatrix(transposedMatrix);
+
+        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0,
+
+                 "Calculating transposed matrix failed, number of rows or columns of the source matrix is not correct!");
+
+        QVERIFY2(transposedMatrix.getNrOfRows() == 0 && transposedMatrix.getNrOfColumns() == 0,
+
+                 "Calculating transposed matrix failed, number of rows or columns of the destination (transposed) matrix is not correct!");
     }
 }
 
