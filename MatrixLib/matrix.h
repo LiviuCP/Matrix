@@ -720,31 +720,31 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
         throw std::runtime_error{Matr::exceptions[Matr::Error::SAME_VARIABLE_TWO_ARGS]};
     }
 
-    if (splitRowColumnNr<0)
+    if (splitRowColumnNr < 0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
     if (splitVertically)
     {
-        if (splitRowColumnNr>m_NrOfRows)
+        if (splitRowColumnNr >= m_NrOfRows)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
         }
 
-        if (splitRowColumnNr == 0 || splitRowColumnNr == m_NrOfRows)
+        if (splitRowColumnNr == 0)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_ROWS]};
         }
     }
     else
     {
-        if (splitRowColumnNr>m_NrOfColumns)
+        if (splitRowColumnNr >= m_NrOfColumns)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
         }
 
-        if (splitRowColumnNr == 0 || splitRowColumnNr == m_NrOfColumns)
+        if (splitRowColumnNr == 0)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_COLUMNS]};
         }
