@@ -41,6 +41,8 @@ public:
     int getNrOfRows() const;
     int getNrOfColumns() const;
 
+    void getTransposedMatrix(Matrix<DataType>& result);
+
     void clear();
 
     // resize and don't init elements (user has the responsibility to init them)
@@ -79,7 +81,6 @@ public:
     int rank() const;
 
     void getInverseMatrix(Matrix<DataType> &coeff, Matrix<DataType>& pseudoInverse) const;
-    void getTransposedMatrix(Matrix<DataType>& result);
 
     void sums(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1) const;
     void products(Matrix<DataType>& result, ArithmeticMode mode, int pos=-1) const;
@@ -315,6 +316,48 @@ template<typename DataType>
 int Matrix<DataType>::getNrOfColumns() const
 {
     return m_NrOfColumns;
+}
+
+template <typename DataType>
+void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
+{
+    if (m_NrOfRows == 0)
+    {
+        if (this != &result)
+        {
+            result._deallocMemory();
+        }
+    }
+    else if (this == &result)
+    {
+        Matrix<DataType> matrix{};
+
+        matrix = std::move(*this);
+
+        _deallocMemory(); // not actually required, just for "safety" and consistency purposes
+        _allocMemory(matrix.m_NrOfColumns, matrix.m_NrOfRows);
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[col][row];
+            }
+        }
+    }
+    else
+    {
+        result._deallocMemory();
+        result._allocMemory(m_NrOfColumns, m_NrOfRows);
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                result.m_pBaseArrayPtr[col][row] = m_pBaseArrayPtr[row][col];
+            }
+        }
+    }
 }
 
 template<typename DataType>
@@ -1275,42 +1318,6 @@ void Matrix<DataType>::getInverseMatrix(Matrix<DataType>& coeff, Matrix<DataType
     for (int diag{0}; diag<m_NrOfRows; ++diag)
     {
         coeff.m_pBaseArrayPtr[diag][0] = matrix.m_pBaseArrayPtr[diag][diag];
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
-{
-    Matrix<DataType> matrix{};
-
-    if (m_pBaseArrayPtr==result.m_pBaseArrayPtr)
-    {
-        std::swap(m_pBaseArrayPtr, matrix.m_pBaseArrayPtr);
-
-        matrix.m_NrOfRows = m_NrOfRows;
-        matrix.m_NrOfColumns = m_NrOfColumns;
-
-        resize(m_NrOfColumns, m_NrOfRows);
-
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[col][row];
-            }
-        }
-    }
-    else
-    {
-        result.resize(m_NrOfColumns,m_NrOfRows);
-
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                result.m_pBaseArrayPtr[col][row]=m_pBaseArrayPtr[row][col];
-            }
-        }
     }
 }
 
