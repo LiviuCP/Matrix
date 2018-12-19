@@ -910,11 +910,14 @@ void Matrix<DataType>::copy(const Matrix<DataType>& src, int nrOfRows, int nrOfC
         throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
 
-    for (int row{0}; row<nrOfRows; ++row)
+    if (nrOfRows && nrOfColumns)
     {
-        for (int col{0}; col<nrOfColumns; ++col)
+        for (int row{0}; row<nrOfRows; ++row)
         {
-            m_pBaseArrayPtr[destX+row][destY+col] = src.m_pBaseArrayPtr[srcX+row][srcY+col];
+            for (int col{0}; col<nrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[destX+row][destY+col] = src.m_pBaseArrayPtr[srcX+row][srcY+col];
+            }
         }
     }
 }
