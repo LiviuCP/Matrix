@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     IntMatrixTests \
-    DecimalMatrixTests
+    DecimalMatrixTests \
+    FractionMatrixTests
