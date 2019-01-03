@@ -1784,7 +1784,7 @@ void Matrix<DataType>::_deallocMemory()
     {
         for (int row{0}; row<m_NrOfRows; ++row)
         {
-            delete m_pBaseArrayPtr[row];
+            delete []m_pBaseArrayPtr[row];
         }
 
         delete []m_pBaseArrayPtr;
