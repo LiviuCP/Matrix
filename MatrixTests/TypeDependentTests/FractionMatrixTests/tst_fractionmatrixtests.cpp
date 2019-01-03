@@ -5,13 +5,13 @@
 
 //#define FRACTION_MATRIX_TEST
 
-class tst_fractionmatrixtests : public QObject
+class FractionMatrixTests : public QObject
 {
     Q_OBJECT
 
 public:
-    tst_fractionmatrixtests();
-    ~tst_fractionmatrixtests();
+    FractionMatrixTests();
+    ~FractionMatrixTests();
 
 private slots:
 #ifdef FRACTION_MATRIX_TEST
@@ -22,12 +22,12 @@ private slots:
 
 
 
-tst_fractionmatrixtests::tst_fractionmatrixtests()
+FractionMatrixTests::FractionMatrixTests()
 {
 
 }
 
-tst_fractionmatrixtests::~tst_fractionmatrixtests()
+FractionMatrixTests::~FractionMatrixTests()
 {
 
 }
@@ -38,12 +38,12 @@ tst_fractionmatrixtests::~tst_fractionmatrixtests()
 
 using FractMatrix = Matrix<Fraction>;
 
-void tst_fractionmatrixtests::test_case1()
+void FractionMatrixTests::test_case1()
 {
 }
 
 #endif
 
-QTEST_APPLESS_MAIN(tst_fractionmatrixtests)
+QTEST_APPLESS_MAIN(FractionMatrixTests)
 
 #include "tst_fractionmatrixtests.moc"
