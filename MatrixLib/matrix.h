@@ -73,6 +73,7 @@ public:
 
     // logical operators (DataType should have them implemented)
     bool operator== (const Matrix<DataType>& matrix) const;
+    bool operator!= (const Matrix<DataType>& matrix) const;
 
 private:
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
@@ -83,6 +84,8 @@ private:
 
     void _split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestmatrix, int splitRowColumnNr, bool splitVertically);
     void _concatenate(Matrix<DataType>& firstSrcMatrix,Matrix<DataType>& secondSrcMatrix, bool concatenateVertically);
+
+    bool _isEqualTo(const Matrix<DataType> matrix) const;
 
     DataType** m_pBaseArrayPtr;
     int m_NrOfRows;
@@ -897,35 +900,13 @@ void Matrix<DataType>::copy(const Matrix<DataType>& src, int nrOfRows, int nrOfC
 template <typename DataType>
 bool Matrix<DataType>::operator==(const Matrix<DataType>& matrix) const
 {
-    bool areEqual{false};
+    return _isEqualTo(matrix);
+}
 
-    if (matrix.m_pBaseArrayPtr==m_pBaseArrayPtr)
-    {
-        areEqual = true;
-    }
-    else if (m_NrOfRows == matrix.m_NrOfRows && m_NrOfColumns == matrix.m_NrOfColumns)
-    {
-        bool continueChecking{true};
-
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                if (m_pBaseArrayPtr[row][col]!=matrix.m_pBaseArrayPtr[row][col])
-                {
-                    continueChecking = false;
-                    break;
-                }
-            }
-
-            if (!continueChecking)
-            {
-                break;
-            }
-        }
-    }
-
-    return areEqual;
+template<typename DataType>
+bool Matrix<DataType>::operator!=(const Matrix<DataType> &matrix) const
+{
+    return !_isEqualTo(matrix);
 }
 
 template<typename DataType>
@@ -1052,4 +1033,42 @@ void Matrix<DataType>::_concatenate(Matrix<DataType> &firstSrcMatrix, Matrix<Dat
             }
         }
     }
+}
+
+template<typename DataType>
+bool Matrix<DataType>::_isEqualTo(const Matrix<DataType> matrix) const
+{
+    bool areEqual{false};
+
+    if (&matrix == this)
+    {
+        areEqual = true;
+    }
+    else if (m_NrOfRows == matrix.m_NrOfRows && m_NrOfColumns == matrix.m_NrOfColumns)
+    {
+        //change assumption of equality to true until proving the opposite
+        areEqual = true;
+
+        bool continueChecking{true};
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                if (m_pBaseArrayPtr[row][col] != matrix.m_pBaseArrayPtr[row][col])
+                {
+                    continueChecking = false;
+                    areEqual = false;
+                    break;
+                }
+            }
+
+            if (!continueChecking)
+            {
+                break;
+            }
+        }
+    }
+
+    return areEqual;
 }
