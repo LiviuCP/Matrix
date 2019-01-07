@@ -246,8 +246,8 @@ void CommonTests::testSquareBracketsOperator()
         matrix[10] = 110;
         matrix[11] = 120;
 
-        int nrOfRows, nrOfColumns;
-        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+        int nrOfRows, nrOfColumns, rowCapacity, columnCapacity;
+        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns, rowCapacity, columnCapacity)};
 
         QVERIFY2(matrixPtr[0][0] == 10 &&
                  matrixPtr[0][1] == 20 &&
@@ -384,10 +384,10 @@ void CommonTests::testGetBaseArrayPtr()
     {
         IntMatrix matrix{};
 
-        int nrOfRows, nrOfColumns;
-        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+        int nrOfRows, nrOfColumns, rowCapacity, columnCapacity;
+        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns, rowCapacity, columnCapacity)};
 
-        if (matrixPtr || nrOfRows != 0 || nrOfColumns != 0)
+        if (matrixPtr || nrOfRows != 0 || nrOfColumns != 0 || rowCapacity != 0 || columnCapacity != 0)
         {
             QFAIL("Passing resources outside the matrix failed, either the pointer is not null or the number of rows and columns of the empty matrix is different from 0!");
         }
@@ -396,10 +396,10 @@ void CommonTests::testGetBaseArrayPtr()
     {
         IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
 
-        int nrOfRows, nrOfColumns;
-        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns)};
+        int nrOfRows, nrOfColumns, rowCapacity, columnCapacity;
+        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns, rowCapacity, columnCapacity)};
 
-        if (!matrixPtr || nrOfRows != 2 || nrOfColumns != 3)
+        if (!matrixPtr || nrOfRows != 2 || nrOfColumns != 3 || rowCapacity != 2 || columnCapacity != 3)
         {
             QFAIL("Passing resources outside the matrix failed, either the pointer is null or the number of rows and columns is not correct!");
         }

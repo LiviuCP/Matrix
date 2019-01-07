@@ -26,10 +26,12 @@ public:
     Matrix<DataType>& operator= (Matrix<DataType>&& matrix);
 
     // transfers ownership of the data to the user (object becomes empty and user becomes responsible for de-allocating the data properly)
-    DataType** getBaseArrayPtr(int& nrOfRows, int& nrOfColumns);
+    DataType** getBaseArrayPtr(int& nrOfRows, int& nrOfColumns, int& rowCapacity, int& columnCapacity);
 	
     int getNrOfRows() const;
     int getNrOfColumns() const;
+    int getRowCapacity() const;
+    int getColumnCapacity() const;
 
     void getTransposedMatrix(Matrix<DataType>& result);
 
@@ -68,7 +70,7 @@ public:
 
 private:
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
-    void _allocMemory(int nrOfRows, int nrOfColumns);
+    void _allocMemory(int nrOfRows, int nrOfColumns, int rowCapacity = 0, int columnCapacity = 0);
 
     // ensure the current number of rows and columns is saved to local variables if still needed further
     void _deallocMemory();
@@ -81,6 +83,8 @@ private:
     DataType** m_pBaseArrayPtr;
     int m_NrOfRows;
     int m_NrOfColumns;
+    int m_RowCapacity;
+    int m_ColumnCapacity;
 };
 
 template <typename DataType>
@@ -88,6 +92,8 @@ Matrix<DataType>::Matrix()
     : m_pBaseArrayPtr{nullptr}
     , m_NrOfRows{0}
     , m_NrOfColumns{0}
+    , m_RowCapacity{0}
+    , m_ColumnCapacity{0}
 {
 }
 
@@ -124,7 +130,7 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType
         throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
-    _allocMemory(nrOfRows,nrOfColumns);
+    _allocMemory(nrOfRows, nrOfColumns);
 
     for (int row{0}; row < nrOfRows; ++row)
     {
@@ -164,10 +170,14 @@ Matrix<DataType>::Matrix(Matrix<DataType> &&matrix)
     : m_pBaseArrayPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfRows{matrix.m_NrOfRows}
     , m_NrOfColumns{matrix.m_NrOfColumns}
+    , m_RowCapacity{matrix.m_RowCapacity}
+    , m_ColumnCapacity{matrix.m_ColumnCapacity}
 {
     matrix.m_pBaseArrayPtr = nullptr;
     matrix.m_NrOfRows = 0;
     matrix.m_NrOfColumns = 0;
+    matrix.m_RowCapacity = 0;
+    matrix.m_ColumnCapacity = 0;
 }
 
 template<typename DataType>
@@ -239,34 +249,44 @@ Matrix<DataType>& Matrix<DataType>::operator=(Matrix<DataType> &&matrix)
         m_pBaseArrayPtr = matrix.m_pBaseArrayPtr;
         m_NrOfRows = matrix.m_NrOfRows;
         m_NrOfColumns = matrix.m_NrOfColumns;
+        m_RowCapacity = matrix.m_RowCapacity;
+        m_ColumnCapacity = matrix.m_ColumnCapacity;
 
         matrix.m_pBaseArrayPtr = nullptr;
         matrix.m_NrOfRows = 0;
         matrix.m_NrOfColumns = 0;
+        matrix.m_RowCapacity = 0;
+        matrix.m_ColumnCapacity = 0;
     }
 
     return *this;
 }
 
 template<typename DataType>
-DataType** Matrix<DataType>::getBaseArrayPtr(int& nrOfRows, int& nrOfColumns)
+DataType** Matrix<DataType>::getBaseArrayPtr(int& nrOfRows, int& nrOfColumns, int& rowCapacity, int& columnCapacity)
 {
     DataType** pBaseArrayPtr{nullptr};
 
-    if (m_pBaseArrayPtr && m_NrOfRows && m_NrOfColumns)
+    if (m_pBaseArrayPtr)
     {
         nrOfRows = m_NrOfRows;
         nrOfColumns = m_NrOfColumns;
+        rowCapacity = m_RowCapacity;
+        columnCapacity = m_ColumnCapacity;
         pBaseArrayPtr = m_pBaseArrayPtr;
 
         m_pBaseArrayPtr = nullptr;
         m_NrOfRows = 0;
         m_NrOfColumns = 0;
+        m_RowCapacity = 0;
+        m_ColumnCapacity = 0;
     }
     else
     {
         nrOfRows = 0;
         nrOfColumns = 0;
+        rowCapacity = 0;
+        columnCapacity = 0;
     }
 
     return pBaseArrayPtr;
@@ -282,6 +302,18 @@ template<typename DataType>
 int Matrix<DataType>::getNrOfColumns() const
 {
     return m_NrOfColumns;
+}
+
+template<typename DataType>
+int Matrix<DataType>::getRowCapacity() const
+{
+    return m_RowCapacity;
+}
+
+template<typename DataType>
+int Matrix<DataType>::getColumnCapacity() const
+{
+    return m_ColumnCapacity;
 }
 
 template <typename DataType>
@@ -924,13 +956,40 @@ bool Matrix<DataType>::operator!=(const Matrix<DataType> &matrix) const
 }
 
 template<typename DataType>
-void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns)
+void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns, int rowCapacity, int columnCapacity)
 {
-    m_pBaseArrayPtr = new DataType*[nrOfRows];
+    if (rowCapacity < nrOfRows)
+    {
+        m_RowCapacity = nrOfRows;
+    }
+    else
+    {
+        m_RowCapacity = rowCapacity;
+    }
+
+    if (columnCapacity < nrOfColumns)
+    {
+        m_ColumnCapacity = nrOfColumns;
+    }
+    else
+    {
+        m_ColumnCapacity = columnCapacity;
+    }
+
+    m_pBaseArrayPtr = new DataType*[m_RowCapacity];
 
     for (int row{0}; row<nrOfRows; ++row)
     {
-        m_pBaseArrayPtr[row] = new DataType[nrOfColumns];
+        m_pBaseArrayPtr[row] = new DataType[m_ColumnCapacity];
+    }
+
+    // no elements to be allocated to the extra rows (elements to be allocated on demand)
+    if (m_RowCapacity > nrOfRows)
+    {
+        for (int row{nrOfRows}; row<m_RowCapacity; ++row)
+        {
+            m_pBaseArrayPtr[row] = nullptr;
+        }
     }
 
     m_NrOfRows = nrOfRows;
@@ -942,6 +1001,7 @@ void Matrix<DataType>::_deallocMemory()
 {
     if (m_pBaseArrayPtr)
     {
+        // if row capacity exceeds number of rows the surplus contains null pointers so no need to de-allocate them
         for (int row{0}; row<m_NrOfRows; ++row)
         {
             delete []m_pBaseArrayPtr[row];
@@ -953,6 +1013,8 @@ void Matrix<DataType>::_deallocMemory()
 
         m_NrOfRows = 0;
         m_NrOfColumns = 0;
+        m_RowCapacity = 0;
+        m_ColumnCapacity = 0;
     }
 }
 
