@@ -11,16 +11,6 @@ template <typename DataType>
 class Matrix
 {
 public: 
-    enum class ArithmeticMode
-    {
-        ALL_ITEMS,
-        ONE_ROW,
-        EACH_ROW,
-        ONE_COLUMN,
-        EACH_COLUMN,
-        ModesCount
-    };
-
     Matrix();
     Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
     Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
