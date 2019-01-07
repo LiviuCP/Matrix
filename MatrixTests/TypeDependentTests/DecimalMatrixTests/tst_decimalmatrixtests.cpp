@@ -1,4 +1,5 @@
 #include <QtTest>
+
 #include "../../../MatrixLib/matrix.h"
 
 using DecMatrix = Matrix<double>;

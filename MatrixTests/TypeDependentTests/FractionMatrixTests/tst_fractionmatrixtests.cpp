@@ -1,9 +1,10 @@
 #include <QtTest>
+
 #include "../../../MatrixLib/matrix.h"
 
 // uncomment the below #define after the Fraction library has been correctly setup
 
-#define FRACTION_MATRIX_TEST
+//#define FRACTION_MATRIX_TEST
 
 class FractionMatrixTests : public QObject
 {

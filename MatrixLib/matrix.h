@@ -1,9 +1,6 @@
-#include <cstdlib>
-#include <cmath>
 #include <initializer_list>
 #include <vector>
 #include <utility>
-#include <exception>
 
 #include "matrix_exceptions.h"
 
