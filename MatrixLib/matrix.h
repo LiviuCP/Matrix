@@ -72,6 +72,7 @@ public:
     void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX=0, int srcY=0, int destX=0, int destY=0);
 
     // logical operators (DataType should have them implemented)
+    operator bool() const;
     bool operator== (const Matrix<DataType>& matrix) const;
     bool operator!= (const Matrix<DataType>& matrix) const;
 
@@ -895,6 +896,29 @@ void Matrix<DataType>::copy(const Matrix<DataType>& src, int nrOfRows, int nrOfC
             }
         }
     }
+}
+
+template<typename DataType>
+Matrix<DataType>::operator bool() const
+{
+    bool result{false};
+
+    if (m_pBaseArrayPtr)
+    {
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                if (m_pBaseArrayPtr[row][col])
+                {
+                    result = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    return result;
 }
 
 template <typename DataType>

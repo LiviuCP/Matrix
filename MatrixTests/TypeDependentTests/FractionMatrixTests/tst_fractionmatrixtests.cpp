@@ -15,6 +15,7 @@ public:
 
 private slots:
 #ifdef FRACTION_MATRIX_TEST
+    void testBooleanOperator();
     void testMatrixesAreEqual();
     void testMatrixesAreNotEqual();
 #endif
@@ -38,6 +39,39 @@ FractionMatrixTests::~FractionMatrixTests()
 #include "fraction.h"
 
 using FractMatrix = Matrix<Fraction>;
+
+void FractionMatrixTests::testBooleanOperator()
+{
+    {
+        FractMatrix matrix{};
+
+        QVERIFY2(!matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        FractMatrix matrix{2, 3, {Fraction{"0/1"}, Fraction{"0.00"}, Fraction{"0/3"}, Fraction{"-0/4"}, Fraction{"0/-5"}, Fraction{"-0.000"}}};
+
+        QVERIFY2(!matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        FractMatrix matrix{2, 3, {Fraction{"1/3"}, Fraction{"-1/4"}, Fraction{"2.6"}, Fraction{"-3.8"}, Fraction{"0/1"}, Fraction{"-0.1"}}};
+
+        QVERIFY2(matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        FractMatrix matrix{2, 3, {Fraction{"0/1"}, Fraction{"0.00"}, Fraction{"0/3"}, Fraction{"-1/4"}, Fraction{"0/-5"}, Fraction{"-0.000"}}};
+
+        QVERIFY2(matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        FractMatrix matrix{2, 3, {Fraction{"0/1"}, Fraction{"0.00"}, Fraction{"0/3"}, Fraction{"-0/4"}, Fraction{"0/-5"}, Fraction{"0.25"}}};
+
+        QVERIFY2(matrix, "The boolean operator does not return the correct value");
+    }
+}
 
 void FractionMatrixTests::testMatrixesAreEqual()
 {

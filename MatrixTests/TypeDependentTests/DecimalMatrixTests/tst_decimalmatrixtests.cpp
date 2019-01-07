@@ -12,6 +12,7 @@ public:
     ~DecimalMatrixTests();
 
 private slots:
+    void testBooleanOperator();
     void testMatrixesAreEqual();
     void testMatrixesAreNotEqual();
 };
@@ -24,6 +25,33 @@ DecimalMatrixTests::DecimalMatrixTests()
 DecimalMatrixTests::~DecimalMatrixTests()
 {
 
+}
+
+void DecimalMatrixTests::testBooleanOperator()
+{
+    {
+        DecMatrix matrix{};
+
+        QVERIFY2(!matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        DecMatrix matrix{2, 3, {0.0, 0.00, 0.000, 0.0000, 0.00000, 0.000000}};
+
+        QVERIFY2(!matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        DecMatrix matrix{2, 3, {0.33333333, -0.25, 2.6, -3.8, 0.00, -0.1}};
+
+        QVERIFY2(matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        DecMatrix matrix{2, 3, {0.0, 0.00, 0.000, 0.0000, -0.25, 0.000000}};
+
+        QVERIFY2(matrix, "The boolean operator does not return the correct value");
+    }
 }
 
 void DecimalMatrixTests::testMatrixesAreEqual()

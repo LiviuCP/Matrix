@@ -12,9 +12,9 @@ public:
     ~IntMatrixTests();
 
 private slots:
+    void testBooleanOperator();
     void testMatrixesAreEqual();
     void testMatrixesAreNotEqual();
-
 };
 
 IntMatrixTests::IntMatrixTests()
@@ -25,6 +25,33 @@ IntMatrixTests::IntMatrixTests()
 IntMatrixTests::~IntMatrixTests()
 {
 
+}
+
+void IntMatrixTests::testBooleanOperator()
+{
+    {
+        IntMatrix matrix{};
+
+        QVERIFY2(!matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {0, 0, 0, 0, 0, 0}};
+
+        QVERIFY2(!matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {3, -25, 26, -38, 0, -1}};
+
+        QVERIFY2(matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {0, 0, 0, 0, -25, 0}};
+
+        QVERIFY2(matrix, "The boolean operator does not return the correct value");
+    }
 }
 
 void IntMatrixTests::testMatrixesAreEqual()
