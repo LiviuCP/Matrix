@@ -563,7 +563,7 @@ void Matrix<DataType>::eraseRow (int rowNr)
 {
     if (rowNr>=m_NrOfRows)
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
     }
 
     if (rowNr<0)
@@ -607,7 +607,7 @@ void Matrix<DataType>::eraseColumn(int columnNr)
 
     if (columnNr>=m_NrOfColumns)
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
+        throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
     }
 
     if (m_NrOfColumns==1)
@@ -705,7 +705,7 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
     {
         if (splitRowColumnNr >= m_NrOfRows)
         {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_ROW_DOES_NOT_EXIST]};
+            throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
         }
 
         if (splitRowColumnNr == 0)
@@ -717,7 +717,7 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
     {
         if (splitRowColumnNr >= m_NrOfColumns)
         {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::SRC_COLUMN_DOES_NOT_EXIST]};
+            throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
         }
 
         if (splitRowColumnNr == 0)
