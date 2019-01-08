@@ -72,6 +72,13 @@ private:
     // ensure the current number of rows and columns is saved to local variables if still needed further
     void _deallocMemory();
 
+    // to be used only when column capacity stays unchanged (otherwise use _allocMemory() and _deallocMemory()
+    void _increaseRowCapacity(int rowCapacityIncrement);
+    void _decreaseRowCapacity(int rowCapacityDecrement);
+
+    void _increaseNrOfRows(int nrOfRowsIncrement);
+    void _decreaseNrOfrows(int nrOfRowsDecrement);
+
     void _split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestmatrix, int splitRowColumnNr, bool splitVertically);
     void _concatenate(Matrix<DataType>& firstSrcMatrix,Matrix<DataType>& secondSrcMatrix, bool concatenateVertically);
 
@@ -1012,6 +1019,113 @@ void Matrix<DataType>::_deallocMemory()
         m_NrOfColumns = 0;
         m_RowCapacity = 0;
         m_ColumnCapacity = 0;
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::_increaseRowCapacity(int rowCapacityIncrement)
+{
+    if (rowCapacityIncrement > 0)
+    {
+        int rowCapacity{m_RowCapacity + rowCapacityIncrement};
+        DataType** pBaseArrayPtr{new DataType*[rowCapacity]};
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            pBaseArrayPtr[row] = m_pBaseArrayPtr[row];
+            m_pBaseArrayPtr[row] = nullptr;
+        }
+
+        for (int row{m_NrOfRows}; row<rowCapacity; ++row)
+        {
+            pBaseArrayPtr[row] = nullptr;
+        }
+
+        delete m_pBaseArrayPtr;
+        m_pBaseArrayPtr = pBaseArrayPtr;
+        pBaseArrayPtr = nullptr;
+        m_RowCapacity = rowCapacity;
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::_decreaseRowCapacity(int rowCapacityDecrement)
+{
+    if (rowCapacityDecrement > 0 && rowCapacityDecrement < m_RowCapacity)
+    {
+        int rowCapacity{m_RowCapacity - rowCapacityDecrement};
+        DataType** pBaseArrayPtr{new DataType*[rowCapacity]};
+
+        if (rowCapacity < m_NrOfRows)
+        {
+            for (int row{0}; row<rowCapacity; ++row)
+            {
+                pBaseArrayPtr[row] = m_pBaseArrayPtr[row];
+                m_pBaseArrayPtr[row] = nullptr;
+            }
+
+            for (int row{rowCapacity}; row<m_NrOfRows; ++row)
+            {
+                delete []m_pBaseArrayPtr[row];
+                m_pBaseArrayPtr[row] = nullptr;
+            }
+
+            m_NrOfRows = rowCapacity;
+        }
+        else
+        {
+            for (int row{0}; row<m_NrOfRows; ++row)
+            {
+                pBaseArrayPtr[row] = m_pBaseArrayPtr[row];
+                m_pBaseArrayPtr[row] = nullptr;
+            }
+
+            for (int row{m_NrOfRows}; row<rowCapacity; ++row)
+            {
+                pBaseArrayPtr[row] = nullptr;
+            }
+        }
+
+        delete m_pBaseArrayPtr;
+        m_pBaseArrayPtr = pBaseArrayPtr;
+        pBaseArrayPtr = nullptr;
+        m_RowCapacity = rowCapacity;
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::_increaseNrOfRows(int nrOfRowsIncrement)
+{
+    if (nrOfRowsIncrement > 0)
+    {
+        int nrOfRows{m_NrOfRows + nrOfRowsIncrement};
+
+        if (nrOfRows <= m_RowCapacity)
+        {
+            for(int row{m_NrOfRows}; row<nrOfRows; ++row)
+            {
+                m_pBaseArrayPtr[row] = new DataType[m_ColumnCapacity];
+            }
+
+            m_NrOfRows = nrOfRows;
+        }
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::_decreaseNrOfrows(int nrOfRowsDecrement)
+{
+    if (nrOfRowsDecrement > 0 && nrOfRowsDecrement < m_NrOfRows)
+    {
+        int nrOfRows{m_NrOfRows - nrOfRowsDecrement};
+
+        for (int row{nrOfRows}; row<m_NrOfRows; ++row)
+        {
+            delete []m_pBaseArrayPtr[row];
+            m_pBaseArrayPtr = nullptr;
+        }
+
+        m_NrOfRows = nrOfRows;
     }
 }
 
