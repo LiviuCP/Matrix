@@ -1122,7 +1122,7 @@ void Matrix<DataType>::_decreaseNrOfrows(int nrOfRowsDecrement)
         for (int row{nrOfRows}; row<m_NrOfRows; ++row)
         {
             delete []m_pBaseArrayPtr[row];
-            m_pBaseArrayPtr = nullptr;
+            m_pBaseArrayPtr[row] = nullptr;
         }
 
         m_NrOfRows = nrOfRows;
