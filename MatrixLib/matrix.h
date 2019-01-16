@@ -962,42 +962,45 @@ bool Matrix<DataType>::operator!=(const Matrix<DataType> &matrix) const
 template<typename DataType>
 void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns, int rowCapacity, int columnCapacity)
 {
-    if (rowCapacity < nrOfRows)
+    if (nrOfRows > 0 && nrOfColumns > 0)
     {
-        m_RowCapacity = nrOfRows;
-    }
-    else
-    {
-        m_RowCapacity = rowCapacity;
-    }
-
-    if (columnCapacity < nrOfColumns)
-    {
-        m_ColumnCapacity = nrOfColumns;
-    }
-    else
-    {
-        m_ColumnCapacity = columnCapacity;
-    }
-
-    m_pBaseArrayPtr = new DataType*[m_RowCapacity];
-
-    for (int row{0}; row<nrOfRows; ++row)
-    {
-        m_pBaseArrayPtr[row] = new DataType[m_ColumnCapacity];
-    }
-
-    // no elements to be allocated to the extra rows (elements to be allocated on demand)
-    if (m_RowCapacity > nrOfRows)
-    {
-        for (int row{nrOfRows}; row<m_RowCapacity; ++row)
+        if (rowCapacity < nrOfRows)
         {
-            m_pBaseArrayPtr[row] = nullptr;
+            m_RowCapacity = nrOfRows;
         }
-    }
+        else
+        {
+            m_RowCapacity = rowCapacity;
+        }
 
-    m_NrOfRows = nrOfRows;
-    m_NrOfColumns = nrOfColumns;
+        if (columnCapacity < nrOfColumns)
+        {
+            m_ColumnCapacity = nrOfColumns;
+        }
+        else
+        {
+            m_ColumnCapacity = columnCapacity;
+        }
+
+        m_pBaseArrayPtr = new DataType*[m_RowCapacity];
+
+        for (int row{0}; row<nrOfRows; ++row)
+        {
+            m_pBaseArrayPtr[row] = new DataType[m_ColumnCapacity];
+        }
+
+        // no elements to be allocated to the extra rows (elements to be allocated on demand)
+        if (m_RowCapacity > nrOfRows)
+        {
+            for (int row{nrOfRows}; row<m_RowCapacity; ++row)
+            {
+                m_pBaseArrayPtr[row] = nullptr;
+            }
+        }
+
+        m_NrOfRows = nrOfRows;
+        m_NrOfColumns = nrOfColumns;
+    }
 }
 
 template<typename DataType>
