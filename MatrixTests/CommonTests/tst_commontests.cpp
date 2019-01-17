@@ -62,11 +62,18 @@ void CommonTests::testDefaultConstructor()
     IntMatrix matrix{};
 
     QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Default constructor initialized matrix with wrong number of rows and columns");
+
+    QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Default constructor initialized matrix with wrong capacity");
 }
 
 void CommonTests::testInitListConstructor()
 {
     IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6} };
+
+    if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
+    {
+        QFAIL("Init list constructor initialized matrix with wrong capacity");
+    }
 
     if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
     {
@@ -87,6 +94,11 @@ void CommonTests::testIdenticalMatrixConstructor()
 {
     IntMatrix matrix{3, 2, 4};
 
+    if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 2)
+    {
+        QFAIL("Identical matrix constructor initialized matrix with wrong capacity");
+    }
+
     if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
     {
         QFAIL("Identical matrix constructor initialized matrix with wrong number of rows and columns");
@@ -105,6 +117,11 @@ void CommonTests::testIdenticalMatrixConstructor()
 void CommonTests::testDiagMatrixConstructor()
 {
     IntMatrix matrix{3, std::pair<int, int>{2,1}};
+
+    if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 3)
+    {
+        QFAIL("Diagonal matrix constructor initialized matrix with wrong capacity");
+    }
 
     if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 3)
     {
@@ -129,6 +146,11 @@ void CommonTests::testCopyConstructor()
     IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6} };
     IntMatrix matrixCopy{matrix};
 
+    if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
+    {
+        QFAIL("Copy constructor initialized matrix with wrong capacity");
+    }
+
     if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
     {
         QFAIL("Copy constructor initialized matrix with wrong number of rows and columns");
@@ -148,6 +170,11 @@ void CommonTests::testMoveConstructor()
 {
     IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6} };
     IntMatrix matrixMove{std::move(matrix)};
+
+    if (matrixMove.getRowCapacity() != 2 || matrixMove.getColumnCapacity() != 3)
+    {
+        QFAIL("Move constructor initialized matrix with wrong capacity");
+    }
 
     if (matrixMove.getNrOfRows() != 2 || matrixMove.getNrOfColumns() != 3)
     {

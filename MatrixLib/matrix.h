@@ -114,7 +114,10 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<Da
         throw std::runtime_error{Matr::exceptions[Matr::Error::INSUFFICIENT_ELEMENTS_FOR_INIT]};
     }
 
-    _allocMemory(nrOfRows, nrOfColumns);
+    const int c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
+    const int c_ColumnCapacityToAlloc{nrOfColumns + nrOfColumns / 4};
+
+    _allocMemory(nrOfRows, nrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
 
     typename std::initializer_list<DataType>::iterator initListIterator{dataTypeInitList.begin()};
     for (int row{0}; row < nrOfRows; ++row)
@@ -134,7 +137,10 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType
         throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
-    _allocMemory(nrOfRows, nrOfColumns);
+    const int c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
+    const int c_ColumnCapacityToAlloc{nrOfColumns + nrOfColumns / 4};
+
+    _allocMemory(nrOfRows, nrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
 
     for (int row{0}; row < nrOfRows; ++row)
     {
@@ -158,7 +164,10 @@ Matrix<DataType>::Matrix(int nrOfRowsColumns, const std::pair<DataType, DataType
 template <typename DataType>
 Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
 {
-    _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
+    const int c_RowCapacityToAlloc{matrix.m_NrOfRows + matrix.m_NrOfRows / 4};
+    const int c_ColumnCapacityToAlloc{matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4};
+
+    _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
 
     for (int row{0}; row<m_NrOfRows; ++row)
     {
