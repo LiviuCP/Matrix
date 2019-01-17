@@ -290,6 +290,82 @@ void CommonTests::testCopyAssignmentOperator()
     }
 
     {
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix matrixCopy{};
+
+        matrixCopy = matrix;
+
+        if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
+        {
+            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        QVERIFY2(matrixCopy.at(0, 0) == 1 &&
+                 matrixCopy.at(0, 1) == 2 &&
+                 matrixCopy.at(0, 2) == 3 &&
+                 matrixCopy.at(1, 0) == 4 &&
+                 matrixCopy.at(1, 1) == 5 &&
+                 matrixCopy.at(1, 2) == 6,
+
+                 "Copy assignment failed, the destination matrix doesn't have the right values!");
+    }
+
+    {
+        IntMatrix matrix{};
+        IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
+
+        matrixCopy = matrix;
+
+        if (matrixCopy.getNrOfRows() != 0 || matrixCopy.getNrOfColumns() != 0)
+        {
+            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{};
+        IntMatrix matrixCopy{};
+
+        matrixCopy = matrix;
+
+        if (matrixCopy.getNrOfRows() != 0 || matrixCopy.getNrOfColumns() != 0)
+        {
+            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+        matrix = matrix;
+
+        if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Same matrix copy assignment failed, number of rows or columns is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6,
+
+                 "Same matrix copy assignment failed, the matrix doesn't have the right values!");
+    }
+
+    {
+        IntMatrix matrix{};
+
+        matrix = matrix;
+
+        if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
+        {
+            QFAIL("Same matrix copy assignment failed, number of rows or columns is not correct!");
+        }
+    }
+
+    {
         IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
         IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
         IntMatrix thirdMatrix{2, 2, {13, 14, 15, 16}};
