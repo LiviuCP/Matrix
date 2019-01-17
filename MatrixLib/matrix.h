@@ -227,8 +227,8 @@ Matrix<DataType>& Matrix<DataType>::operator=(const Matrix<DataType>& matrix)
 {
     if (&matrix != this && (m_pBaseArrayPtr || matrix.m_pBaseArrayPtr))
     {
-        const int c_RowCapacityToAlloc{2 * matrix.m_NrOfRows};
-        const int c_ColumnCapacityToAlloc{2 * matrix.m_NrOfColumns};
+        const int c_RowCapacityToAlloc{matrix.m_NrOfRows + matrix.m_NrOfRows / 4};
+        const int c_ColumnCapacityToAlloc{matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4};
 
         if (m_RowCapacity != c_RowCapacityToAlloc || m_ColumnCapacity != c_ColumnCapacityToAlloc)
         {
