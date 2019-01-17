@@ -279,6 +279,11 @@ void CommonTests::testCopyAssignmentOperator()
             QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
         }
 
+        if (matrixCopy.getRowCapacity() != 4 || matrixCopy.getColumnCapacity() != 6)
+        {
+            QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
+        }
+
         QVERIFY2(matrixCopy.at(0, 0) == 1 &&
                  matrixCopy.at(0, 1) == 2 &&
                  matrixCopy.at(0, 2) == 3 &&
@@ -298,6 +303,11 @@ void CommonTests::testCopyAssignmentOperator()
         if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
         {
             QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        }
+
+        if (matrixCopy.getRowCapacity() != 4 || matrixCopy.getColumnCapacity() != 6)
+        {
+            QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
         }
 
         QVERIFY2(matrixCopy.at(0, 0) == 1 &&
@@ -320,6 +330,11 @@ void CommonTests::testCopyAssignmentOperator()
         {
             QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
         }
+
+        if (matrixCopy.getRowCapacity() != 0 || matrixCopy.getColumnCapacity() != 0)
+        {
+            QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
+        }
     }
 
     {
@@ -332,6 +347,11 @@ void CommonTests::testCopyAssignmentOperator()
         {
             QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
         }
+
+        if (matrixCopy.getRowCapacity() != 0 || matrixCopy.getColumnCapacity() != 0)
+        {
+            QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
+        }
     }
 
     {
@@ -342,6 +362,11 @@ void CommonTests::testCopyAssignmentOperator()
         if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
         {
             QFAIL("Same matrix copy assignment failed, number of rows or columns is not correct!");
+        }
+
+        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Same matrix copy assignment failed, capacity is not correct!");
         }
 
         QVERIFY2(matrix.at(0, 0) == 1 &&
@@ -363,6 +388,11 @@ void CommonTests::testCopyAssignmentOperator()
         {
             QFAIL("Same matrix copy assignment failed, number of rows or columns is not correct!");
         }
+
+        if (matrix.getRowCapacity() != 0 || matrix.getColumnCapacity() != 0)
+        {
+            QFAIL("Same matrix copy assignment failed, capacity is not correct!");
+        }
     }
 
     {
@@ -375,6 +405,11 @@ void CommonTests::testCopyAssignmentOperator()
         if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Copy assignment failed, number of rows or columns of the first matrix is not correct!");
+        }
+
+        if (firstMatrix.getRowCapacity() != 4 || firstMatrix.getColumnCapacity() != 4)
+        {
+            QFAIL("Copy assignment failed, capacity of the first matrix is not correct!");
         }
 
         QVERIFY2(firstMatrix.at(0, 0) == 13 &&

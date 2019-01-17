@@ -227,74 +227,26 @@ Matrix<DataType>& Matrix<DataType>::operator=(const Matrix<DataType>& matrix)
 {
     if (&matrix != this && (m_pBaseArrayPtr || matrix.m_pBaseArrayPtr))
     {
-        const int c_RowCapacityThreshold{m_RowCapacity/4};
-        const int c_ColumnCapacityThreshold{m_ColumnCapacity/4};
+        const int c_RowCapacityToAlloc{2 * matrix.m_NrOfRows};
+        const int c_ColumnCapacityToAlloc{2 * matrix.m_NrOfColumns};
 
-        if (m_ColumnCapacity < matrix.m_NrOfColumns)
+        if (m_RowCapacity != c_RowCapacityToAlloc || m_ColumnCapacity != c_ColumnCapacityToAlloc)
         {
             _deallocMemory();
-            if (m_RowCapacity < matrix.m_NrOfRows || matrix.m_NrOfRows <= c_RowCapacityThreshold)
-            {
-                _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, 2 * matrix.m_NrOfRows);
-            }
-            else
-            {
-                _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, m_RowCapacity);
-            }
-        }
-        else if (m_RowCapacity < matrix.m_NrOfRows)
-        {
-            if (matrix.m_NrOfColumns <= c_ColumnCapacityThreshold)
-            {
-                _deallocMemory();
-                _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, 2 * matrix.m_NrOfRows, 2 * matrix.m_NrOfColumns);
-            }
-            else
-            {
-                _increaseRowCapacity(2 * matrix.m_NrOfRows - m_RowCapacity);
-                _increaseNrOfRows(matrix.m_NrOfRows - m_NrOfRows);
-                m_NrOfColumns = matrix.m_NrOfColumns;
-            }
+            _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
         }
         else
         {
-            if (matrix.m_NrOfColumns <= c_ColumnCapacityThreshold)
+            if (m_NrOfRows < matrix.m_NrOfRows)
             {
-                _deallocMemory();
-                if (matrix.m_NrOfRows <= c_RowCapacityThreshold)
-                {
-                    _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, 2 * matrix.m_NrOfRows, 2 * matrix.m_NrOfColumns);
-                }
-                else
-                {
-                    _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, m_RowCapacity, 2 * matrix.m_NrOfColumns);
-                }
+                _increaseNrOfRows(matrix.m_NrOfRows-m_NrOfRows);
             }
-            else if (matrix.m_NrOfRows <= c_RowCapacityThreshold)
+            else if (m_NrOfRows > matrix.m_NrOfRows)
             {
-                _decreaseRowCapacity(m_RowCapacity - 2 * matrix.m_NrOfRows);
-                if (m_NrOfRows < matrix.m_NrOfRows)
-                {
-                    _increaseNrOfRows(matrix.m_NrOfRows - m_NrOfRows);
-                }
-                else if (m_NrOfRows > matrix.m_NrOfRows)
-                {
-                    _decreaseNrOfrows(m_NrOfRows - matrix.m_NrOfRows);
-                }
-                m_NrOfColumns = matrix.m_NrOfColumns;
+                _decreaseNrOfrows(m_NrOfRows-matrix.m_NrOfRows);
             }
-            else
-            {
-                if (m_NrOfRows < matrix.m_NrOfRows)
-                {
-                    _increaseNrOfRows(matrix.m_NrOfRows - m_NrOfRows);
-                }
-                else if (m_NrOfRows > matrix.m_NrOfRows)
-                {
-                    _decreaseNrOfrows(m_NrOfRows - matrix.m_NrOfRows);
-                }
-                m_NrOfColumns = matrix.m_NrOfColumns;
-            }
+
+            m_NrOfColumns = matrix.m_NrOfColumns;
         }
 
         for (int row{0}; row<m_NrOfRows; ++row)
