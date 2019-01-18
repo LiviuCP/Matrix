@@ -348,21 +348,24 @@ int Matrix<DataType>::getColumnCapacity() const
 template <typename DataType>
 void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
 {
-    if (m_NrOfRows == 0)
+    if (!m_NrOfRows)
     {
-        if (this != &result)
+        if (&result != this)
         {
             result._deallocMemory();
         }
     }
-    else if (this == &result)
+    else if (&result == this)
     {
         Matrix<DataType> matrix{};
 
         matrix = std::move(*this);
 
+        const int c_RowCapacityToAlloc{matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4};
+        const int c_ColumnCapacityToAlloc{matrix.m_NrOfRows + matrix.m_NrOfRows / 4};
+
         _deallocMemory(); // not actually required, just for "safety" and consistency purposes
-        _allocMemory(matrix.m_NrOfColumns, matrix.m_NrOfRows);
+        _allocMemory(matrix.m_NrOfColumns, matrix.m_NrOfRows, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
@@ -374,8 +377,11 @@ void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
     }
     else
     {
+        const int c_RowCapacityToAlloc{m_NrOfColumns + m_NrOfColumns / 4};
+        const int c_ColumnCapacityToAlloc{m_NrOfRows + m_NrOfRows / 4};
+
         result._deallocMemory();
-        result._allocMemory(m_NrOfColumns, m_NrOfRows);
+        result._allocMemory(m_NrOfColumns, m_NrOfRows, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
