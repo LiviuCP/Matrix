@@ -19,6 +19,7 @@ private slots:
     void testDiagMatrixConstructor();
     void testCopyConstructor();
     void testMoveConstructor();
+    void testCapacityWithConstructors();
     void testFunctionAt();
     void testSquareBracketsOperator();
     void testCopyAssignmentOperator();
@@ -191,6 +192,105 @@ void CommonTests::testMoveConstructor()
              "Matrix elements have not been correctly initialized by the move constructor");
 
     QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
+}
+
+void CommonTests::testCapacityWithConstructors()
+{
+    {
+        IntMatrix matrix{3, 4, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+
+        QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 5, "Init list constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+
+        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 3, "Init list constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{
+                            8, 10, {
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                                  }
+                        };
+
+        QVERIFY2(matrix.getRowCapacity() == 10 && matrix.getColumnCapacity() == 12, "Init list constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{
+                            10, 8, {
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0
+                                    }
+                        };
+
+        QVERIFY2(matrix.getRowCapacity() == 12 && matrix.getColumnCapacity() == 10, "Init list constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{3, 4, -5};
+
+        QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 5, "Identical matrix constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{4, 3, -5};
+
+        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 3, "Identical matrix constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{25, 20, -2};
+
+        QVERIFY2(matrix.getRowCapacity() == 31 && matrix.getColumnCapacity() == 25, "Identical matrix constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{20, 25, -2};
+
+        QVERIFY2(matrix.getRowCapacity() == 25 && matrix.getColumnCapacity() == 31, "Identical matrix constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{3, std::pair<int, int>{-2,-3}};
+
+        QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 3, "Diag matrix constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{4, std::pair<int, int>{-2,-3}};
+
+        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5, "Diag matrix constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{8, std::pair<int, int>{-2,-3}};
+
+        QVERIFY2(matrix.getRowCapacity() == 10 && matrix.getColumnCapacity() == 10, "Diag matrix constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{10, std::pair<int, int>{-2,-3}};
+
+        QVERIFY2(matrix.getRowCapacity() == 12 && matrix.getColumnCapacity() == 12, "Diag matrix constructor initialized matrix with wrong capacity");
+    }
 }
 
 void CommonTests::testFunctionAt()
