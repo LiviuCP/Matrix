@@ -778,6 +778,11 @@ void CommonTests::testGetTransposedMatrix()
 
         matrix.getTransposedMatrix(matrix);
 
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Calculating transposed matrix failed, capacity is not correct!");
+        }
+
         if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
         {
             QFAIL("Calculating transposed matrix failed, number of rows or columns is not correct!");
@@ -798,6 +803,10 @@ void CommonTests::testGetTransposedMatrix()
 
         matrix.getTransposedMatrix(matrix);
 
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0,
+
+                 "Calculating transposed matrix failed, capacity is not correct!");
+
         QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0,
 
                  "Calculating transposed matrix failed, number of rows or columns is not correct!");
@@ -808,6 +817,11 @@ void CommonTests::testGetTransposedMatrix()
         IntMatrix transposedMatrix{2, 2, {7, 8, 9, 10}};
 
         matrix.getTransposedMatrix(transposedMatrix);
+
+        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Calculating transposed matrix failed, capacity of the source matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
         {
@@ -822,6 +836,11 @@ void CommonTests::testGetTransposedMatrix()
                  matrix.at(1, 2) == 6,
 
                  "Calculating transponsed matrix failed, the values of the source matrix are not correct!");
+
+        if (transposedMatrix.getRowCapacity() != 3 || transposedMatrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
+        }
 
         if (transposedMatrix.getNrOfRows() != 3 || transposedMatrix.getNrOfColumns() != 2)
         {
@@ -844,6 +863,11 @@ void CommonTests::testGetTransposedMatrix()
 
         matrix.getTransposedMatrix(transposedMatrix);
 
+        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Calculating transposed matrix failed, capacity of the source matrix is not correct!");
+        }
+
         if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
         {
             QFAIL("Calculating transposed matrix failed, number of rows or columns of the source matrix is not correct!");
@@ -857,6 +881,11 @@ void CommonTests::testGetTransposedMatrix()
                  matrix.at(1, 2) == 6,
 
                  "Calculating transponsed matrix failed, the values of the source matrix are not correct!");
+
+        if (transposedMatrix.getRowCapacity() != 3 || transposedMatrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
+        }
 
         if (transposedMatrix.getNrOfRows() != 3 || transposedMatrix.getNrOfColumns() != 2)
         {
@@ -879,9 +908,17 @@ void CommonTests::testGetTransposedMatrix()
 
         matrix.getTransposedMatrix(transposedMatrix);
 
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0,
+
+                 "Calculating transposed matrix failed, capacity of the source matrix is not correct!");
+
         QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0,
 
                  "Calculating transposed matrix failed, number of rows or columns of the source matrix is not correct!");
+
+        QVERIFY2(transposedMatrix.getRowCapacity() == 0 && transposedMatrix.getColumnCapacity() == 0,
+
+                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
 
         QVERIFY2(transposedMatrix.getNrOfRows() == 0 && transposedMatrix.getNrOfColumns() == 0,
 
@@ -894,9 +931,17 @@ void CommonTests::testGetTransposedMatrix()
 
         matrix.getTransposedMatrix(transposedMatrix);
 
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0,
+
+                 "Calculating transposed matrix failed, capacity of the source matrix is not correct!");
+
         QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0,
 
                  "Calculating transposed matrix failed, number of rows or columns of the source matrix is not correct!");
+
+        QVERIFY2(transposedMatrix.getRowCapacity() == 0 && transposedMatrix.getColumnCapacity() == 0,
+
+                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
 
         QVERIFY2(transposedMatrix.getNrOfRows() == 0 && transposedMatrix.getNrOfColumns() == 0,
 
