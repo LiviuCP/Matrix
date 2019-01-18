@@ -518,28 +518,19 @@ void Matrix<DataType>::insertRow (int rowNr)
         throw std::runtime_error{Matr::exceptions[Matr::Error::INSERT_ROW_NONCONTIGUOUS]};
     }
 
-    DataType** insertPtr=new DataType*[m_NrOfRows+1];
-
-    for (int row{0}; row<rowNr; ++row)
+    // double row capacity if no spare capacity left (to defer any re-size when inserting further rows)
+    if (m_NrOfRows == m_RowCapacity)
     {
-        insertPtr[row] = m_pBaseArrayPtr[row];
+        _increaseRowCapacity(m_RowCapacity);
     }
 
-    insertPtr[rowNr]=new DataType[m_NrOfColumns];
+    // append empty row and move it upwards until reaching the correct position
+    _increaseNrOfRows(1);
 
-    for (int col{0}; col<m_NrOfColumns; ++col)
+    for (int row{m_NrOfRows-1}; row > rowNr; --row)
     {
-        insertPtr[rowNr][col]=0;
+        std::swap(m_pBaseArrayPtr[row], m_pBaseArrayPtr[row-1]);
     }
-
-    for (int row{rowNr}; row<m_NrOfRows; ++row)
-    {
-        insertPtr[row+1] = m_pBaseArrayPtr[row];
-    }
-
-    delete []m_pBaseArrayPtr;
-    m_pBaseArrayPtr = insertPtr;
-    ++m_NrOfRows;
 }
 
 template<typename DataType>
