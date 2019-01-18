@@ -1653,6 +1653,11 @@ void CommonTests::testEraseRow()
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         matrix.eraseRow(0);
 
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
+        {
+            QFAIL("Erase row failed, capacity of the matrix is not correct!");
+        }
+
         if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 4)
         {
             QFAIL("Erase row failed, number of rows or columns of the matrix is not correct!");
@@ -1673,6 +1678,11 @@ void CommonTests::testEraseRow()
     {
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         matrix.eraseRow(1);
+
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
+        {
+            QFAIL("Erase row failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 4)
         {
@@ -1695,6 +1705,11 @@ void CommonTests::testEraseRow()
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         matrix.eraseRow(2);
 
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
+        {
+            QFAIL("Erase row failed, capacity of the matrix is not correct!");
+        }
+
         if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 4)
         {
             QFAIL("Erase row failed, number of rows or columns of the matrix is not correct!");
@@ -1715,6 +1730,11 @@ void CommonTests::testEraseRow()
     {
         IntMatrix matrix{1, 4, {1, 2, 3, 4}};
         matrix.eraseRow(0);
+
+        if (matrix.getRowCapacity() != 0 || matrix.getColumnCapacity() != 0)
+        {
+            QFAIL("Erase row failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
         {

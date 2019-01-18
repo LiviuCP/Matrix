@@ -619,29 +619,32 @@ void Matrix<DataType>::eraseRow (int rowNr)
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
+    // this corner case needs to be considered for avoiding situations when number of rows is 0 and number of columns is different from 0
     if (m_NrOfRows == 1)
     {
         _deallocMemory();
     }
     else
     {
-        DataType** insertPtr{new DataType*[m_NrOfRows-1]};
-
-        for (int row{0}; row<rowNr; ++row)
-        {
-            insertPtr[row] = m_pBaseArrayPtr[row];
-        }
-
+        // delete the row elements
         delete []m_pBaseArrayPtr[rowNr];
+        m_pBaseArrayPtr[rowNr] = nullptr;
 
-        for (int row{rowNr}; row<m_NrOfRows-1; ++row)
+        // move the rows upwards one position to fill in the gap
+        for (int row{rowNr}; row < m_NrOfRows-1; ++row)
         {
-            insertPtr[row] = m_pBaseArrayPtr[row+1];
+            m_pBaseArrayPtr[row] = m_pBaseArrayPtr[row+1];
         }
 
-        delete []m_pBaseArrayPtr;
-        m_pBaseArrayPtr = insertPtr;
+        m_pBaseArrayPtr[m_NrOfRows-1] = nullptr;
         --m_NrOfRows;
+
+        // prevent overcapacity
+
+        if (m_NrOfRows <= m_RowCapacity/4)
+        {
+            _decreaseRowCapacity(m_RowCapacity - 2 * m_NrOfRows);
+        }
     }
 }
 
