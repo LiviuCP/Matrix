@@ -508,6 +508,11 @@ void Matrix<DataType>::transformToEqualElementsMatrix(int nrOfRows, int nrOfColu
 template <typename DataType>
 void Matrix<DataType>::insertRow (int rowNr)
 {
+    if (!m_NrOfRows)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::EMPTY_MATRIX]};
+    }
+
     if (rowNr<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
@@ -547,6 +552,11 @@ void Matrix<DataType>::insertRow(int rowNr, const DataType &dataType)
 template <typename DataType>
 void Matrix<DataType>::insertColumn(int columnNr)
 {
+    if (!m_NrOfRows)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::EMPTY_MATRIX]};
+    }
+
     if (columnNr<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};

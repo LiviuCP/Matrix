@@ -22,6 +22,7 @@ namespace Matr
         RESULT_NO_COLUMNS,
         SAME_VARIABLE_TWO_ARGS,
         CURRENT_MATRIX_AS_ARG,
+        EMPTY_MATRIX
     };
 
     using namespace std;
@@ -43,6 +44,7 @@ namespace Matr
         {    Error::RESULT_NO_COLUMNS,                                  string{"The resulting matrix has 0 columns"}                                                                                            },
         {    Error::SAME_VARIABLE_TWO_ARGS,                             string{"Same variable passed as two arguments to the function. This is not allowed for this method."}                                   },
         {    Error::CURRENT_MATRIX_AS_ARG,                              string{"Current matrix (*this) has been passed as argument into the function. This is not allowed for this method."}                    },
+        {    Error::EMPTY_MATRIX,                                       string{"Illegal operation on empty matrix"}                                                                                             }
     };
 }
 
