@@ -191,6 +191,8 @@ void CommonTests::testMoveConstructor()
 
              "Matrix elements have not been correctly initialized by the move constructor");
 
+    QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
+
     QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
 }
 
