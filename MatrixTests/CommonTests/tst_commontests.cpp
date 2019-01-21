@@ -1490,6 +1490,11 @@ void CommonTests::testInsertColumnNoSetValue()
 
         if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
         {
+            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+        }
+
+        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        {
             QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
         }
 
@@ -1515,6 +1520,11 @@ void CommonTests::testInsertColumnNoSetValue()
 
         if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
         {
+            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+        }
+
+        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        {
             QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
         }
 
@@ -1537,6 +1547,11 @@ void CommonTests::testInsertColumnNoSetValue()
     {
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         matrix.insertColumn(4);
+
+        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        {
+            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
         {
@@ -1568,6 +1583,11 @@ void CommonTests::testInsertColumnSetValue()
 
         if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
         {
+            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+        }
+
+        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        {
             QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
         }
 
@@ -1596,6 +1616,11 @@ void CommonTests::testInsertColumnSetValue()
 
         if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
         {
+            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+        }
+
+        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        {
             QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
         }
 
@@ -1621,6 +1646,11 @@ void CommonTests::testInsertColumnSetValue()
     {
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         matrix.insertColumn(4, -1);
+
+        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        {
+            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
         {
