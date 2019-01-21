@@ -681,7 +681,7 @@ void Matrix<DataType>::eraseColumn(int columnNr)
     {
         _deallocMemory();
     }
-    else if (m_NrOfColumns <= m_ColumnCapacity/4)
+    else if (m_NrOfColumns-1 <= m_ColumnCapacity/4)
     {
         Matrix matrix{};
         std::swap(*this, matrix);
