@@ -607,6 +607,7 @@ void Matrix<DataType>::insertColumn(int columnNr)
         }
 
         delete []pColumnPtr;
+        pColumnPtr = nullptr;
     }
 }
 
@@ -680,39 +681,47 @@ void Matrix<DataType>::eraseColumn(int columnNr)
     {
         _deallocMemory();
     }
-    else
+    else if (m_NrOfColumns <= m_ColumnCapacity/4)
     {
-        DataType** insertPtr{new DataType*[m_NrOfRows]};
+        Matrix matrix{};
+        std::swap(*this, matrix);
+        _deallocMemory();
+        _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns-1, matrix.m_RowCapacity, (matrix.m_NrOfColumns - 1) * 2);
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for(int row{0}; row<m_NrOfRows; ++row)
         {
-            insertPtr[row]=new DataType[m_NrOfColumns-1];
-        }
-
-        for (int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<columnNr; ++col)
+            for(int col{0}; col<columnNr; ++col)
             {
-                insertPtr[row][col]=m_pBaseArrayPtr[row][col];
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
+            }
+
+            for(int col{columnNr}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col+1];
             }
         }
+    }
+    else
+    {
+        DataType* pColumnPtr{new DataType[m_NrOfRows]};
 
         for(int row{0}; row<m_NrOfRows; ++row)
         {
             for(int col{columnNr}; col<m_NrOfColumns-1; ++col)
             {
-                insertPtr[row][col]=m_pBaseArrayPtr[row][col+1];
+                m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col+1];
             }
         }
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        // ensure the data of the last column is cleared prior to decrementing number of columns
+        for(int row{0}; row<m_NrOfRows; ++row)
         {
-            delete []m_pBaseArrayPtr[row];
+            m_pBaseArrayPtr[row][m_NrOfColumns-1] = pColumnPtr[row];
         }
 
-        delete []m_pBaseArrayPtr;
-        m_pBaseArrayPtr = insertPtr;
         --m_NrOfColumns;
+        delete []pColumnPtr;
+        pColumnPtr = nullptr;
     }
 }
 
