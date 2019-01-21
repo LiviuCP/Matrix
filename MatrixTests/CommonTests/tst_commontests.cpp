@@ -31,8 +31,10 @@ private slots:
     void testResizeAndKeepOldValues();
     void testInsertRowNoSetValue();
     void testInsertRowSetValue();
+    void testCapacityWithInsertRow();
     void testInsertColumnNoSetValue();
     void testInsertColumnSetValue();
+    void testCapacityWithInsertColumn();
     void testEraseRow();
     void testEraseColumn();
     void testConcatenate();
@@ -1437,6 +1439,69 @@ void CommonTests::testInsertRowSetValue()
     }
 }
 
+void CommonTests::testCapacityWithInsertRow()
+{
+    {
+        IntMatrix matrix{3, 4, -2};
+        matrix.insertRow(1);
+
+        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 5)
+        {
+            QFAIL("Insert row failed, capacity of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{3, 4, -2};
+        matrix.insertRow(1, 5);
+
+        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 5)
+        {
+            QFAIL("Insert row failed, capacity of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{6, 5, -2};
+        matrix.insertRow(3);
+
+        if (matrix.getRowCapacity() != 7 || matrix.getColumnCapacity() != 6)
+        {
+            QFAIL("Insert row failed, capacity of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{6, 5, -2};
+        matrix.insertRow(3, 5);
+
+        if (matrix.getRowCapacity() != 7 || matrix.getColumnCapacity() != 6)
+        {
+            QFAIL("Insert row failed, capacity of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{8, 2, -2};
+        matrix.insertRow(5);
+
+        if (matrix.getRowCapacity() != 10 || matrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Insert row failed, capacity of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{8, 2, -2};
+        matrix.insertRow(5, 5);
+
+        if (matrix.getRowCapacity() != 10 || matrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Insert row failed, capacity of the matrix is not correct!");
+        }
+    }
+}
+
 void CommonTests::testInsertColumnNoSetValue()
 {
     {
@@ -1629,6 +1694,69 @@ void CommonTests::testInsertColumnSetValue()
                  matrix.at(2, 4) == -1,
 
                  "Insert column failed, the matrix doesn't have the right values!");
+    }
+}
+
+void CommonTests::testCapacityWithInsertColumn()
+{
+    {
+        IntMatrix matrix{5, 3, 4};
+        matrix.insertColumn(1);
+
+        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 6)
+        {
+            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{5, 3, 4};
+        matrix.insertColumn(1, 1);
+
+        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 6)
+        {
+            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{5, 7, 4};
+        matrix.insertColumn(1);
+
+        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 8)
+        {
+            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{5, 7, 4};
+        matrix.insertColumn(1, 1);
+
+        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 8)
+        {
+            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{5, 14, 4};
+        matrix.insertColumn(1);
+
+        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 17)
+        {
+            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+        }
+    }
+
+    {
+        IntMatrix matrix{5, 14, 4};
+        matrix.insertColumn(1, 1);
+
+        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 17)
+        {
+            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+        }
     }
 }
 
