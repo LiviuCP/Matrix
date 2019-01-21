@@ -567,42 +567,47 @@ void Matrix<DataType>::insertColumn(int columnNr)
         throw std::runtime_error{Matr::exceptions[Matr::Error::INSERT_COLUMN_NONCONTIGUOUS]};
     }
 
-    DataType** insertPtr{new DataType*[m_NrOfRows]};
-
-    for (int row{0}; row<m_NrOfRows; ++row)
+    if (m_NrOfColumns == m_ColumnCapacity)
     {
-        insertPtr[row]=new DataType[m_NrOfColumns+1];
-    }
+        Matrix matrix{};
+        std::swap(*this, matrix);
+        _deallocMemory();
+        _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns + 1, matrix.m_RowCapacity, 2 * matrix.m_NrOfColumns);
 
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        for (int col=0; col<columnNr; ++col)
+        for (int row{0}; row<m_NrOfRows; ++row)
         {
-            insertPtr[row][col]=m_pBaseArrayPtr[row][col];
+            for (int col{0}; col<columnNr; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
+            }
+
+            for(int col{columnNr+1}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col-1];
+            }
         }
     }
-
-    for(int row{0}; row<m_NrOfRows; ++row)
+    else
     {
-        for(int col=columnNr+1; col<m_NrOfColumns+1; ++col)
+        ++m_NrOfColumns;
+        DataType* pColumnPtr{new DataType[m_NrOfRows]};
+
+        for(int row{0}; row<m_NrOfRows; ++row)
         {
-            insertPtr[row][col]=m_pBaseArrayPtr[row][col-1];
+            for(int col{m_NrOfColumns-1}; col>columnNr; --col)
+            {
+                m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col-1];
+            }
         }
-    }
 
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        insertPtr[row][columnNr]=0;
-    }
+        // ensure the newly inserted column doesn't contain data from an old column
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            m_pBaseArrayPtr[row][columnNr] = pColumnPtr[row];
+        }
 
-    for (int row{0}; row<m_NrOfRows; ++row)
-    {
-        delete []m_pBaseArrayPtr[row];
+        delete []pColumnPtr;
     }
-
-    delete []m_pBaseArrayPtr;
-    m_pBaseArrayPtr = insertPtr;
-    ++m_NrOfColumns;
 }
 
 template<typename DataType>
