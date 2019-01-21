@@ -34,7 +34,7 @@ public:
 
     void clear();
 
-    // resize and don't init elements (user has the responsibility to init them)
+    // resize and don't init new elements (user has the responsibility to init them), existing elements retain their old values
     void resize(int nrOfRows, int nrOfColumns);
     // resize and fill new elements with value of dataType, existing elements retain their old values
     void resize(int nrOfRows, int nrOfColumns, const DataType& dataType);
@@ -399,14 +399,44 @@ void Matrix<DataType>::clear()
 template<typename DataType>
 void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
 {
+    auto copyMatrix = [](Matrix<DataType>& dest, Matrix<DataType>& src, int beginRowIndex, int endRowIndex, int beginColumnIndex, int endColumnIndex)
+    {
+        for (int row{beginRowIndex}; row<endRowIndex; ++row)
+        {
+            for (int col{beginColumnIndex}; col<endColumnIndex; ++col)
+            {
+                dest.m_pBaseArrayPtr[row][col]=src.m_pBaseArrayPtr[row][col];
+            }
+        }
+    };
+
     if (nrOfRows<=0 || nrOfColumns<=0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
-    else if (nrOfRows != m_NrOfRows || nrOfColumns != m_NrOfColumns)
+
+    if (nrOfRows!=m_NrOfRows || nrOfColumns!=m_NrOfColumns)
     {
-        _deallocMemory();
+        Matrix<DataType> matrix{std::move(*this)};
+
         _allocMemory(nrOfRows, nrOfColumns);
+
+        if (nrOfRows<matrix.m_NrOfRows && nrOfColumns<matrix.m_NrOfColumns)
+        {
+            copyMatrix(*this, matrix, 0, nrOfRows, 0, nrOfColumns);
+        }
+        else if (nrOfRows<=matrix.m_NrOfRows && nrOfColumns>=matrix.m_NrOfColumns)
+        {
+            copyMatrix(*this, matrix, 0, nrOfRows, 0, matrix.m_NrOfColumns);
+        }
+        else if ((nrOfRows>=matrix.m_NrOfRows) && (nrOfColumns<=matrix.m_NrOfColumns))
+        {
+            copyMatrix(*this, matrix, 0, matrix.m_NrOfRows, 0, nrOfColumns);
+        }
+        else
+        {
+            copyMatrix(*this, matrix, 0, matrix.m_NrOfRows, 0, matrix.m_NrOfColumns);
+        }
     }
 }
 

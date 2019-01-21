@@ -27,8 +27,8 @@ private slots:
     void testGetBaseArrayPtr();
     void testGetTransposedMatrix();
     void testClear();
-    void testResizeAndRemoveOldValues();
-    void testResizeAndKeepOldValues();
+    void testResizeWithoutFillingInNewValues();
+    void testResizeAndFillInNewValues();
     void testInsertRowNoSetValue();
     void testInsertRowSetValue();
     void testCapacityWithInsertRow();
@@ -963,7 +963,7 @@ void CommonTests::testClear()
     }
 }
 
-void CommonTests::testResizeAndRemoveOldValues()
+void CommonTests::testResizeWithoutFillingInNewValues()
 {
     {
         IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
@@ -974,6 +974,17 @@ void CommonTests::testResizeAndRemoveOldValues()
         {
             QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
         }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8 &&
+                 matrix.at(3, 0) == 10 &&
+                 matrix.at(3, 1) == 11,
+
+                "Resizing failed, the matrix does not have the correct values!");
     }
 
     {
@@ -985,6 +996,15 @@ void CommonTests::testResizeAndRemoveOldValues()
         {
             QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
         }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6,
+
+                "Resizing failed, the matrix does not have the correct values!");
     }
 
     {
@@ -996,6 +1016,15 @@ void CommonTests::testResizeAndRemoveOldValues()
         {
             QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
         }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8,
+
+                "Resizing failed, the matrix does not have the correct values!");
     }
 
     {
@@ -1007,6 +1036,21 @@ void CommonTests::testResizeAndRemoveOldValues()
         {
             QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
         }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8 &&
+                 matrix.at(2, 2) == 9 &&
+                 matrix.at(3, 0) == 10 &&
+                 matrix.at(3, 1) == 11 &&
+                 matrix.at(3, 2) == 12,
+
+                "Resizing failed, the matrix does not have the correct values!");
     }
 
     {
@@ -1018,6 +1062,21 @@ void CommonTests::testResizeAndRemoveOldValues()
         {
             QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
         }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8 &&
+                 matrix.at(2, 2) == 9 &&
+                 matrix.at(3, 0) == 10 &&
+                 matrix.at(3, 1) == 11 &&
+                 matrix.at(3, 2) == 12,
+
+                "Resizing failed, the matrix does not have the correct values!");
     }
 
     {
@@ -1029,6 +1088,21 @@ void CommonTests::testResizeAndRemoveOldValues()
         {
             QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
         }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8 &&
+                 matrix.at(2, 2) == 9 &&
+                 matrix.at(3, 0) == 10 &&
+                 matrix.at(3, 1) == 11 &&
+                 matrix.at(3, 2) == 12,
+
+                "Resizing failed, the matrix does not have the correct values!");
     }
 
     {
@@ -1058,7 +1132,7 @@ void CommonTests::testResizeAndRemoveOldValues()
     }
 }
 
-void CommonTests::testResizeAndKeepOldValues()
+void CommonTests::testResizeAndFillInNewValues()
 {
     {
         IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
