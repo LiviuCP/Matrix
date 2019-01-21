@@ -1447,60 +1447,42 @@ void CommonTests::testCapacityWithInsertRow()
         IntMatrix matrix{3, 4, -2};
         matrix.insertRow(1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Insert row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 5, "Insert row failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{3, 4, -2};
         matrix.insertRow(1, 5);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Insert row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 5, "Insert row failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{6, 5, -2};
         matrix.insertRow(3);
 
-        if (matrix.getRowCapacity() != 7 || matrix.getColumnCapacity() != 6)
-        {
-            QFAIL("Insert row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 7 && matrix.getColumnCapacity() == 6, "Insert row failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{6, 5, -2};
         matrix.insertRow(3, 5);
 
-        if (matrix.getRowCapacity() != 7 || matrix.getColumnCapacity() != 6)
-        {
-            QFAIL("Insert row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 7 && matrix.getColumnCapacity() == 6, "Insert row failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{8, 2, -2};
         matrix.insertRow(5);
 
-        if (matrix.getRowCapacity() != 10 || matrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Insert row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 10 && matrix.getColumnCapacity() == 2, "Insert row failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{8, 2, -2};
         matrix.insertRow(5, 5);
 
-        if (matrix.getRowCapacity() != 10 || matrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Insert row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 10 && matrix.getColumnCapacity() == 2, "Insert row failed, capacity of the matrix is not correct!");
     }
 }
 
@@ -1705,60 +1687,42 @@ void CommonTests::testCapacityWithInsertColumn()
         IntMatrix matrix{5, 3, 4};
         matrix.insertColumn(1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 6)
-        {
-            QFAIL("Insert column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 6, "Insert column failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{5, 3, 4};
         matrix.insertColumn(1, 1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 6)
-        {
-            QFAIL("Insert column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 6, "Insert column failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{5, 7, 4};
         matrix.insertColumn(1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 8)
-        {
-            QFAIL("Insert column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 8, "Insert column failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{5, 7, 4};
         matrix.insertColumn(1, 1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 8)
-        {
-            QFAIL("Insert column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 8, "Insert column failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{5, 14, 4};
         matrix.insertColumn(1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 17)
-        {
-            QFAIL("Insert column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 17, "Insert column failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{5, 14, 4};
         matrix.insertColumn(1, 1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 17)
-        {
-            QFAIL("Insert column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 17, "Insert column failed, capacity of the matrix is not correct!");
     }
 }
 
@@ -1864,107 +1828,65 @@ void CommonTests::testCapacityWithEraseRow()
         IntMatrix matrix{3, 4, -2};
         matrix.eraseRow(1);
 
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 5, "Erase row failed, capacity of the matrix is not correct!");
 
         matrix.eraseRow(1);
 
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 5, "Erase row failed, capacity of the matrix is not correct!");
 
         matrix.eraseRow(0);
 
-        if (matrix.getRowCapacity() != 0 || matrix.getColumnCapacity() != 0)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase row failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{4, 4, -2};
         matrix.eraseRow(1);
 
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5, "Erase row failed, capacity of the matrix is not correct!");
 
         matrix.eraseRow(1);
 
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5, "Erase row failed, capacity of the matrix is not correct!");
 
         matrix.eraseRow(1);
 
-        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 2 && matrix.getColumnCapacity() == 5, "Erase row failed, capacity of the matrix is not correct!");
 
         matrix.eraseRow(0);
 
-        if (matrix.getRowCapacity() != 0 || matrix.getColumnCapacity() != 0)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase row failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{7, 5, -2};
         matrix.eraseRow(1);
 
-        if (matrix.getRowCapacity() != 8 || matrix.getColumnCapacity() != 6)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 8 && matrix.getColumnCapacity() == 6, "Erase row failed, capacity of the matrix is not correct!");
 
         matrix.eraseRow(1);
 
-        if (matrix.getRowCapacity() != 8 || matrix.getColumnCapacity() != 6)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 8 && matrix.getColumnCapacity() == 6, "Erase row failed, capacity of the matrix is not correct!");
 
         matrix.eraseRow(1);
 
-        if (matrix.getRowCapacity() != 8 || matrix.getColumnCapacity() != 6)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 8 && matrix.getColumnCapacity() == 6, "Erase row failed, capacity of the matrix is not correct!");
 
         matrix.eraseRow(1);
 
-        if (matrix.getRowCapacity() != 8 || matrix.getColumnCapacity() != 6)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 8 && matrix.getColumnCapacity() == 6, "Erase row failed, capacity of the matrix is not correct!");
 
         matrix.eraseRow(1);
 
-        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 6)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 4 && matrix.getColumnCapacity() == 6, "Erase row failed, capacity of the matrix is not correct!");
 
         matrix.eraseRow(1);
 
-        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 6)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 2 && matrix.getColumnCapacity() == 6, "Erase row failed, capacity of the matrix is not correct!");
 
         matrix.eraseRow(0);
 
-        if (matrix.getRowCapacity() != 0 || matrix.getColumnCapacity() != 0)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase row failed, capacity of the matrix is not correct!");
     }
 }
 
@@ -2070,107 +1992,65 @@ void CommonTests::testCapacityWithEraseColumn()
         IntMatrix matrix{4, 3, 4};
         matrix.eraseColumn(1);
 
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 3, "Erase column failed, capacity of the matrix is not correct!");
 
         matrix.eraseColumn(1);
 
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 3, "Erase column failed, capacity of the matrix is not correct!");
 
         matrix.eraseColumn(0);
 
-        if (matrix.getRowCapacity() != 0 || matrix.getColumnCapacity() != 0)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase column failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{4, 4, 4};
         matrix.eraseColumn(1);
 
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5, "Erase column failed, capacity of the matrix is not correct!");
 
         matrix.eraseColumn(1);
 
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5, "Erase column failed, capacity of the matrix is not correct!");
 
         matrix.eraseColumn(1);
 
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 2, "Erase column failed, capacity of the matrix is not correct!");
 
         matrix.eraseColumn(0);
 
-        if (matrix.getRowCapacity() != 0 || matrix.getColumnCapacity() != 0)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase column failed, capacity of the matrix is not correct!");
     }
 
     {
         IntMatrix matrix{5, 7, -2};
         matrix.eraseColumn(1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 8)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 8, "Erase column failed, capacity of the matrix is not correct!");
 
         matrix.eraseColumn(1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 8)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 8, "Erase column failed, capacity of the matrix is not correct!");
 
         matrix.eraseColumn(1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 8)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 8, "Erase column failed, capacity of the matrix is not correct!");
 
         matrix.eraseColumn(1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 8)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 8, "Erase column failed, capacity of the matrix is not correct!");
 
         matrix.eraseColumn(1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 4)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 4, "Erase column failed, capacity of the matrix is not correct!");
 
         matrix.eraseColumn(1);
 
-        if (matrix.getRowCapacity() != 6 || matrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 2, "Erase column failed, capacity of the matrix is not correct!");
 
         matrix.eraseColumn(0);
 
-        if (matrix.getRowCapacity() != 0 || matrix.getColumnCapacity() != 0)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase column failed, capacity of the matrix is not correct!");
     }
 }
 
