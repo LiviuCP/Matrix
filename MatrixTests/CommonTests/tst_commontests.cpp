@@ -29,8 +29,6 @@ private slots:
     void testClear();
     void testResizeAndRemoveOldValues();
     void testResizeAndKeepOldValues();
-    void testTransformToDiagMatrix();
-    void testTransformToEqualElementsMatrix();
     void testInsertRowNoSetValue();
     void testInsertRowSetValue();
     void testInsertColumnNoSetValue();
@@ -1242,49 +1240,6 @@ void CommonTests::testResizeAndKeepOldValues()
 
                 "Resizing failed, the matrix does not retain its values if dimensions are unchanged!");
     }
-}
-
-void CommonTests::testTransformToDiagMatrix()
-{
-    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-    matrix.transformToDiagMatrix(3, 7, 8);
-
-    if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 3)
-    {
-        QFAIL("Transforming to diagonal matrix failed, number of rows or columns is not correct!");
-    }
-
-    QVERIFY2(matrix.at(0, 0) == 8 &&
-             matrix.at(0, 1) == 7 &&
-             matrix.at(0, 2) == 7 &&
-             matrix.at(1, 0) == 7 &&
-             matrix.at(1, 1) == 8 &&
-             matrix.at(0, 2) == 7 &&
-             matrix.at(2, 0) == 7 &&
-             matrix.at(2, 1) == 7 &&
-             matrix.at(2, 2) == 8,
-
-             "Transforming to diagonal matrix failed, matrix has incorrect values!");
-}
-
-void CommonTests::testTransformToEqualElementsMatrix()
-{
-    IntMatrix matrix{2, 2, {1, 2, 3, 4}};
-    matrix.transformToEqualElementsMatrix(3, 2, 5);
-
-    if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
-    {
-        QFAIL("Transforming to equal elements matrix failed, number of rows or columns is not correct!");
-    }
-
-    QVERIFY2(matrix.at(0, 0) == 5 &&
-             matrix.at(0, 1) == 5 &&
-             matrix.at(1, 0) == 5 &&
-             matrix.at(1, 1) == 5 &&
-             matrix.at(2, 0) == 5 &&
-             matrix.at(2, 1) == 5,
-
-             "Transforming to equal elements matrix failed, matrix has incorrect values!");
 }
 
 void CommonTests::testInsertRowNoSetValue()

@@ -20,8 +20,6 @@ private slots:
     void testSquareBracketsOperatorExceptions();
     void testResizeAndRemoveOldValuesExceptions();
     void testResizeAndKeepOldValuesExceptions();
-    void testTransformToDiagMatrixExceptions();
-    void testTransformToEqualElementsMatrixExceptions();
     void testInsertRowNoSetValueExceptions();
     void testInsertRowSetValueExceptions();
     void testInsertColumnNoSetValueExceptions();
@@ -127,26 +125,6 @@ void ExceptionTests::testResizeAndKeepOldValuesExceptions()
 
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resize(3, -4, 5);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resize(3, 0, 5);}, std::runtime_error);
-}
-
-void ExceptionTests::testTransformToDiagMatrixExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.transformToDiagMatrix(-4, 2, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.transformToDiagMatrix(0, 2, 5);}, std::runtime_error);
-}
-
-void ExceptionTests::testTransformToEqualElementsMatrixExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.transformToEqualElementsMatrix(-3, -4, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.transformToEqualElementsMatrix(-3, 0, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.transformToEqualElementsMatrix(-3, 4, 5);}, std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.transformToEqualElementsMatrix(0, -4, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.transformToEqualElementsMatrix(0, 0, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.transformToEqualElementsMatrix(0, 4, 5);}, std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.transformToEqualElementsMatrix(3, 0, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.transformToEqualElementsMatrix(3, -4, 5);}, std::runtime_error);
 }
 
 void ExceptionTests::testInsertRowNoSetValueExceptions()

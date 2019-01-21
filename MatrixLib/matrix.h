@@ -39,9 +39,6 @@ public:
     // resize and fill new elements with value of dataType, existing elements retain their old values
     void resize(int nrOfRows, int nrOfColumns, const DataType& dataType);
 
-    void transformToDiagMatrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType);
-    void transformToEqualElementsMatrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
-
     void insertRow(int rowNr);
     void insertRow(int rowNr, const DataType& dataType);
     void insertColumn(int columnNr);
@@ -472,38 +469,6 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns, const DataType& val
         }
     }
 }
-
-template <typename DataType>
-void Matrix<DataType>::transformToDiagMatrix(int nrOfRowsColumns, const DataType& dataType, const DataType& diagDataType)
-{
-    if (nrOfRowsColumns<=0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
-    }
-    else
-    {
-        _deallocMemory();
-        Matrix<DataType> matrix{nrOfRowsColumns, std::pair<DataType, DataType>(dataType, diagDataType)};
-        std::swap(*this, matrix);
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::transformToEqualElementsMatrix(int nrOfRows, int nrOfColumns, const DataType& dataType)
-{
-    if (nrOfRows<=0 || nrOfColumns<=0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
-    }
-    else
-    {
-        _deallocMemory();
-        Matrix matrix{nrOfRows, nrOfColumns, dataType};
-        std::swap(*this, matrix);
-    }
-}
-
-
 
 template <typename DataType>
 void Matrix<DataType>::insertRow (int rowNr)
