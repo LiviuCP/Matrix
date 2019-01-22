@@ -1088,7 +1088,7 @@ void Matrix<DataType>::_increaseRowCapacity(int rowCapacityIncrement)
             pBaseArrayPtr[row] = nullptr;
         }
 
-        delete m_pBaseArrayPtr;
+        delete []m_pBaseArrayPtr;
         m_pBaseArrayPtr = pBaseArrayPtr;
         pBaseArrayPtr = nullptr;
         m_RowCapacity = rowCapacity;
@@ -1133,7 +1133,7 @@ void Matrix<DataType>::_decreaseRowCapacity(int rowCapacityDecrement)
             }
         }
 
-        delete m_pBaseArrayPtr;
+        delete []m_pBaseArrayPtr;
         m_pBaseArrayPtr = pBaseArrayPtr;
         pBaseArrayPtr = nullptr;
         m_RowCapacity = rowCapacity;
