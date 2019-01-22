@@ -35,9 +35,9 @@ public:
     void clear();
 
     // resize and don't init new elements (user has the responsibility to init them), existing elements retain their old values
-    void resize(int nrOfRows, int nrOfColumns);
+    void resize(int nrOfRows, int nrOfColumns, int rowCapacity=0, int columnCapacity=0);
     // resize and fill new elements with value of dataType, existing elements retain their old values
-    void resize(int nrOfRows, int nrOfColumns, const DataType& dataType);
+    void resizeWithValue(int nrOfRows, int nrOfColumns, const DataType& dataType, int rowCapacity=0, int columnCapacity=0);
 
     void insertRow(int rowNr);
     void insertRow(int rowNr, const DataType& dataType);
@@ -397,63 +397,72 @@ void Matrix<DataType>::clear()
 }
 
 template<typename DataType>
-void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns)
+void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns, int rowCapacity, int columnCapacity)
 {
-    auto copyMatrix = [](Matrix<DataType>& dest, Matrix<DataType>& src, int beginRowIndex, int endRowIndex, int beginColumnIndex, int endColumnIndex)
-    {
-        for (int row{beginRowIndex}; row<endRowIndex; ++row)
-        {
-            for (int col{beginColumnIndex}; col<endColumnIndex; ++col)
-            {
-                dest.m_pBaseArrayPtr[row][col]=src.m_pBaseArrayPtr[row][col];
-            }
-        }
-    };
-
     if (nrOfRows<=0 || nrOfColumns<=0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
-    if (nrOfRows!=m_NrOfRows || nrOfColumns!=m_NrOfColumns)
+    int rowCapacityToSet{rowCapacity > nrOfRows ? rowCapacity : nrOfRows};
+    int columnCapacityToSet{columnCapacity > nrOfColumns ? columnCapacity : nrOfColumns};
+
+    if (columnCapacityToSet != m_ColumnCapacity)
     {
+        int rowsToKeep{nrOfRows > m_NrOfRows ? m_NrOfRows : nrOfRows};
+        int columnsToKeep{nrOfColumns > m_NrOfColumns ? m_NrOfColumns : nrOfColumns};
+
         Matrix<DataType> matrix{std::move(*this)};
+        _allocMemory(nrOfRows, nrOfColumns, rowCapacityToSet, columnCapacityToSet);
 
-        _allocMemory(nrOfRows, nrOfColumns);
-
-        if (nrOfRows<matrix.m_NrOfRows && nrOfColumns<matrix.m_NrOfColumns)
+        for (int row{0}; row<rowsToKeep; ++row)
         {
-            copyMatrix(*this, matrix, 0, nrOfRows, 0, nrOfColumns);
+            for (int col{0}; col<columnsToKeep; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
+            }
         }
-        else if (nrOfRows<=matrix.m_NrOfRows && nrOfColumns>=matrix.m_NrOfColumns)
+    }
+    else if (rowCapacityToSet != m_RowCapacity)
+    {
+        if (m_RowCapacity < rowCapacityToSet)
         {
-            copyMatrix(*this, matrix, 0, nrOfRows, 0, matrix.m_NrOfColumns);
-        }
-        else if ((nrOfRows>=matrix.m_NrOfRows) && (nrOfColumns<=matrix.m_NrOfColumns))
-        {
-            copyMatrix(*this, matrix, 0, matrix.m_NrOfRows, 0, nrOfColumns);
+            _increaseRowCapacity(rowCapacityToSet-m_RowCapacity);
         }
         else
         {
-            copyMatrix(*this, matrix, 0, matrix.m_NrOfRows, 0, matrix.m_NrOfColumns);
+            _decreaseRowCapacity(m_RowCapacity - rowCapacityToSet);
         }
+
+        if (nrOfRows > m_NrOfRows)
+        {
+            _increaseNrOfRows(nrOfRows - m_NrOfRows);
+        }
+        else if (nrOfRows < m_NrOfRows)
+        {
+            _decreaseNrOfrows(m_NrOfRows - nrOfRows);
+        }
+
+        m_NrOfColumns = nrOfColumns;
+    }
+    else
+    {
+        if (nrOfRows > m_NrOfRows)
+        {
+            _increaseNrOfRows(nrOfRows - m_NrOfRows);
+        }
+        else if (nrOfRows < m_NrOfRows)
+        {
+            _decreaseNrOfrows(m_NrOfRows - nrOfRows);
+        }
+
+        m_NrOfColumns = nrOfColumns;
     }
 }
 
 template <typename DataType>
-void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns, const DataType& value)
+void Matrix<DataType>::resizeWithValue(int nrOfRows, int nrOfColumns, const DataType& value, int rowCapacity, int columnCapacity)
 {
-    auto copyMatrix = [](Matrix<DataType>& dest, Matrix<DataType>& src, int beginRowIndex, int endRowIndex, int beginColumnIndex, int endColumnIndex)
-    {
-        for (int row{beginRowIndex}; row<endRowIndex; ++row)
-        {
-            for (int col{beginColumnIndex}; col<endColumnIndex; ++col)
-            {
-                dest.m_pBaseArrayPtr[row][col]=src.m_pBaseArrayPtr[row][col];
-            }
-        }
-    };
-
     // DataType should support the assign (=) operator
     auto fillNewItems = [](Matrix<DataType>& dest, int beginRowIndex, int endRowIndex, int beginColumnIndex, int endColumnIndex, const DataType& value)
     {
@@ -466,37 +475,27 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns, const DataType& val
         }
     };
 
-    if (nrOfRows<=0 || nrOfColumns<=0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
-    }
-    else if (nrOfRows!=m_NrOfRows || nrOfColumns!=m_NrOfColumns)
-    {
-        Matrix<DataType> matrix{std::move(*this)};
+    int rowDelta{nrOfRows <= m_NrOfRows ? 0 : nrOfRows - m_NrOfRows};
+    int columnDelta{nrOfColumns <= m_NrOfColumns ? 0 : nrOfColumns - m_NrOfColumns};
 
-        _allocMemory(nrOfRows, nrOfColumns);
+    resize(nrOfRows, nrOfColumns, rowCapacity, columnCapacity);
 
-        if (nrOfRows<matrix.m_NrOfRows && nrOfColumns<matrix.m_NrOfColumns)
+    if (rowDelta)
+    {
+        if (columnDelta)
         {
-            copyMatrix(*this, matrix, 0, nrOfRows, 0, nrOfColumns);
-        }
-        else if (nrOfRows<=matrix.m_NrOfRows && nrOfColumns>=matrix.m_NrOfColumns)
-        {
-            copyMatrix(*this, matrix, 0, nrOfRows, 0, matrix.m_NrOfColumns);
-            fillNewItems(*this, 0, nrOfRows, matrix.m_NrOfColumns, nrOfColumns, value);
-        }
-        else if ((nrOfRows>=matrix.m_NrOfRows) && (nrOfColumns<=matrix.m_NrOfColumns))
-        {
-            copyMatrix(*this, matrix, 0, matrix.m_NrOfRows, 0, nrOfColumns);
-            fillNewItems(*this, matrix.m_NrOfRows, nrOfRows, 0, nrOfColumns, value);
+            fillNewItems(*this, 0, m_NrOfRows - rowDelta, m_NrOfColumns - columnDelta, m_NrOfColumns, value);
+            fillNewItems(*this, m_NrOfRows - rowDelta, m_NrOfRows, 0, m_NrOfColumns - columnDelta, value);
+            fillNewItems(*this, m_NrOfRows - rowDelta, m_NrOfRows, m_NrOfColumns - columnDelta, m_NrOfColumns, value);
         }
         else
         {
-            copyMatrix(*this, matrix, 0, matrix.m_NrOfRows, 0, matrix.m_NrOfColumns);
-            fillNewItems(*this, 0, nrOfRows, matrix.m_NrOfColumns, nrOfColumns, value);
-            fillNewItems(*this, matrix.m_NrOfRows, nrOfRows, 0, nrOfColumns, value);
-            fillNewItems(*this, matrix.m_NrOfRows, nrOfRows, matrix.m_NrOfColumns, nrOfColumns, value);
+            fillNewItems(*this, m_NrOfRows - rowDelta, m_NrOfRows, 0, m_NrOfColumns, value);
         }
+    }
+    else if (columnDelta)
+    {
+        fillNewItems(*this, 0, m_NrOfRows, m_NrOfColumns - columnDelta, m_NrOfColumns, value);
     }
 }
 

@@ -970,6 +970,11 @@ void CommonTests::testResizeWithoutFillingInNewValues()
 
         matrix.resize(4, 2);
 
+        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
+
         if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
         {
             QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
@@ -992,6 +997,11 @@ void CommonTests::testResizeWithoutFillingInNewValues()
 
         matrix.resize(2, 3);
 
+        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
+
         if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
         {
             QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
@@ -1012,6 +1022,11 @@ void CommonTests::testResizeWithoutFillingInNewValues()
 
         matrix.resize(3, 2);
 
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
+
         if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
         {
             QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
@@ -1031,6 +1046,11 @@ void CommonTests::testResizeWithoutFillingInNewValues()
         IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
         matrix.resize(4, 5);
+
+        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 5)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 5)
         {
@@ -1058,6 +1078,11 @@ void CommonTests::testResizeWithoutFillingInNewValues()
 
         matrix.resize(5, 3);
 
+        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
+
         if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
         {
             QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
@@ -1084,6 +1109,11 @@ void CommonTests::testResizeWithoutFillingInNewValues()
 
         matrix.resize(5, 4);
 
+        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 4)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
+
         if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 4)
         {
             QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
@@ -1109,6 +1139,11 @@ void CommonTests::testResizeWithoutFillingInNewValues()
         IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
         matrix.resize(4, 3);
+
+        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 3)
         {
@@ -1137,7 +1172,12 @@ void CommonTests::testResizeAndFillInNewValues()
     {
         IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        matrix.resize(4, 2, -1);
+        matrix.resizeWithValue(4, 2, -1);
+
+        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
         {
@@ -1159,7 +1199,12 @@ void CommonTests::testResizeAndFillInNewValues()
     {
         IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        matrix.resize(2, 3, -1);
+        matrix.resizeWithValue(2, 3, -1);
+
+        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
         {
@@ -1179,7 +1224,12 @@ void CommonTests::testResizeAndFillInNewValues()
     {
         IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        matrix.resize(3, 2, -1);
+        matrix.resizeWithValue(3, 2, -1);
+
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
         {
@@ -1199,7 +1249,12 @@ void CommonTests::testResizeAndFillInNewValues()
     {
         IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        matrix.resize(4, 5, -1);
+        matrix.resizeWithValue(4, 5, -1);
+
+        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 5)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 5)
         {
@@ -1233,7 +1288,12 @@ void CommonTests::testResizeAndFillInNewValues()
     {
         IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        matrix.resize(5, 3, -1);
+        matrix.resizeWithValue(5, 3, -1);
+
+        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
         {
@@ -1262,7 +1322,12 @@ void CommonTests::testResizeAndFillInNewValues()
     {
         IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        matrix.resize(5, 4, -1);
+        matrix.resizeWithValue(5, 4, -1);
+
+        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 4)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 4)
         {
@@ -1296,7 +1361,12 @@ void CommonTests::testResizeAndFillInNewValues()
     {
         IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        matrix.resize(4, 3, -1);
+        matrix.resizeWithValue(4, 3, -1);
+
+        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        }
 
         if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 3)
         {
