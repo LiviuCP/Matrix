@@ -39,6 +39,8 @@ public:
     // resize and fill new elements with value of dataType, existing elements retain their old values
     void resizeWithValue(int nrOfRows, int nrOfColumns, const DataType& dataType, int rowCapacity=0, int columnCapacity=0);
 
+    void shrinkToFit();
+
     void insertRow(int rowNr);
     void insertRow(int rowNr, const DataType& dataType);
     void insertColumn(int columnNr);
@@ -496,6 +498,29 @@ void Matrix<DataType>::resizeWithValue(int nrOfRows, int nrOfColumns, const Data
     else if (columnDelta)
     {
         fillNewItems(*this, 0, m_NrOfRows, m_NrOfColumns - columnDelta, m_NrOfColumns, value);
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::shrinkToFit()
+{
+    if (m_ColumnCapacity != m_NrOfColumns)
+    {
+        Matrix matrix{std::move(*this)};
+        _deallocMemory();
+        _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
+            }
+        }
+    }
+    else if (m_RowCapacity != m_NrOfRows)
+    {
+        _decreaseRowCapacity(m_RowCapacity - m_NrOfRows);
     }
 }
 

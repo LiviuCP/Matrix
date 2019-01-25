@@ -29,6 +29,7 @@ private slots:
     void testClear();
     void testResizeWithoutFillingInNewValues();
     void testResizeAndFillInNewValues();
+    void testShrinkToFit();
     void testInsertRowNoSetValue();
     void testInsertRowSetValue();
     void testCapacityWithInsertRow();
@@ -1387,6 +1388,143 @@ void CommonTests::testResizeAndFillInNewValues()
                  matrix.at(3, 2) == 12,
 
                 "Resizing failed, the matrix does not retain its values if dimensions are unchanged!");
+    }
+}
+
+void CommonTests::testShrinkToFit()
+{
+    {
+        IntMatrix matrix{};
+
+        matrix.shrinkToFit();
+
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Shrinking to fit failed, capacity of the empty matrix is not correct!");
+        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Shrinking to fit failed, number of rows or columns of the empty matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
+
+        matrix.shrinkToFit();
+
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Shrinking to fit failed, capacity of the matrix is not correct!");
+        }
+
+        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Shrinking to fit failed, number of rows or columns of the matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8 &&
+                 matrix.at(2, 2) == 9,
+
+                 "Shrinking to fit failed, the matrix does not retain its values!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.shrinkToFit();
+
+        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Shrinking to fit failed, capacity of the matrix is not correct!");
+        }
+
+        if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Shrinking to fit failed, number of rows or columns of the matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6 &&
+                 matrix.at(2, 0) == 7 &&
+                 matrix.at(2, 1) == 8 &&
+                 matrix.at(2, 2) == 9 &&
+                 matrix.at(3, 0) == 10 &&
+                 matrix.at(3, 1) == 11 &&
+                 matrix.at(3, 2) == 12,
+
+                 "Shrinking to fit failed, the matrix does not retain its values!");
+    }
+
+    {
+        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+        matrix.shrinkToFit();
+
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 4)
+        {
+            QFAIL("Shrinking to fit failed, capacity of the matrix is not correct!");
+        }
+
+        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 4)
+        {
+            QFAIL("Shrinking to fit failed, number of rows or columns of the matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(0, 3) == 4 &&
+                 matrix.at(1, 0) == 5 &&
+                 matrix.at(1, 1) == 6 &&
+                 matrix.at(1, 2) == 7 &&
+                 matrix.at(1, 3) == 8 &&
+                 matrix.at(2, 0) == 9 &&
+                 matrix.at(2, 1) == 10 &&
+                 matrix.at(2, 2) == 11 &&
+                 matrix.at(2, 3) == 12,
+
+                 "Shrinking to fit failed, the matrix does not retain its values!");
+    }
+
+    {
+        IntMatrix matrix{4, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
+
+        matrix.shrinkToFit();
+
+        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 4)
+        {
+            QFAIL("Shrinking to fit failed, capacity of the matrix is not correct!");
+        }
+
+        if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 4)
+        {
+            QFAIL("Shrinking to fit failed, number of rows or columns of the matrix is not correct!");
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(0, 3) == 4 &&
+                 matrix.at(1, 0) == 5 &&
+                 matrix.at(1, 1) == 6 &&
+                 matrix.at(1, 2) == 7 &&
+                 matrix.at(1, 3) == 8 &&
+                 matrix.at(2, 0) == 9 &&
+                 matrix.at(2, 1) == 10 &&
+                 matrix.at(2, 2) == 11 &&
+                 matrix.at(2, 3) == 12 &&
+                 matrix.at(3, 0) == 13 &&
+                 matrix.at(3, 1) == 14 &&
+                 matrix.at(3, 2) == 15 &&
+                 matrix.at(3, 3) == 16,
+
+                 "Shrinking to fit failed, the matrix does not retain its values!");
     }
 }
 
