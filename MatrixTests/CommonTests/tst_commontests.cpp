@@ -3864,9 +3864,19 @@ void CommonTests::testSwapMatrixes()
             QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
         }
 
+        if (firstMatrix.getRowCapacity() != 3 || firstMatrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Incorrect capacity of the first matrix after swap");
+        }
+
         if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
         {
             QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
+        }
+
+        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Incorrect capacity of the second matrix after swap");
         }
 
         QVERIFY2(firstMatrix.at(0, 0) == 7 &&
@@ -3894,9 +3904,12 @@ void CommonTests::testSwapMatrixes()
 
         std::swap(firstMatrix, secondMatrix);
 
-        if (firstMatrix.getNrOfRows() != 0 || firstMatrix.getNrOfColumns() != 0)
+        QVERIFY2(firstMatrix.getRowCapacity() == 0 && firstMatrix.getColumnCapacity() == 0, "Incorrect capacity of the first matrix after swap");
+        QVERIFY2(firstMatrix.getNrOfRows() == 0 && firstMatrix.getNrOfColumns() == 0, "Incorrect number of rows and/or columns in the first matrix after swap");
+
+        if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 3)
         {
-            QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
+            QFAIL("Incorrect capacity of the second matrix after swap");
         }
 
         if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
@@ -3920,15 +3933,10 @@ void CommonTests::testSwapMatrixes()
 
         std::swap(firstMatrix, secondMatrix);
 
-        if (firstMatrix.getNrOfRows() != 0 || firstMatrix.getNrOfColumns() != 0)
-        {
-            QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
-        }
-
-        if (secondMatrix.getNrOfRows() != 0 || secondMatrix.getNrOfColumns() != 0)
-        {
-            QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
-        }
+        QVERIFY2(firstMatrix.getRowCapacity() == 0 && firstMatrix.getColumnCapacity() == 0, "Incorrect capacity of the first matrix after swap");
+        QVERIFY2(firstMatrix.getNrOfRows() == 0 && firstMatrix.getNrOfColumns() == 0, "Incorrect number of rows and/or columns in the first matrix after swap");
+        QVERIFY2(secondMatrix.getRowCapacity() == 0 && secondMatrix.getColumnCapacity() == 0, "Incorrect capacity of the second matrix after swap");
+        QVERIFY2(secondMatrix.getNrOfRows() == 0 && secondMatrix.getNrOfColumns() == 0, "Incorrect number of rows and/or columns in the second matrix after swap");
     }
 }
 
