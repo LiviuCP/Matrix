@@ -4136,11 +4136,6 @@ void CommonTests::testSetAllItemsToValue()
     IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
     matrix.setAllItemsToValue(7);
 
-    if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
-    {
-        QFAIL("Setting all matrix items to same value failed, number of rows or columns is not correct!");
-    }
-
     QVERIFY2(matrix.at(0, 0) == 7 &&
              matrix.at(0, 1) == 7 &&
              matrix.at(0, 2) == 7 &&
