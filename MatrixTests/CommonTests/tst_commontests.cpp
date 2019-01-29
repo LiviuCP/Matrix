@@ -2903,7 +2903,7 @@ void CommonTests::testInsertColumnNoSetValue()
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         matrix.insertColumn(2);
 
-        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
         {
             QFAIL("Insert column failed, capacity of the matrix is not correct!");
         }
@@ -2933,7 +2933,7 @@ void CommonTests::testInsertColumnNoSetValue()
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         matrix.insertColumn(0);
 
-        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
         {
             QFAIL("Insert column failed, capacity of the matrix is not correct!");
         }
@@ -2963,7 +2963,7 @@ void CommonTests::testInsertColumnNoSetValue()
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         matrix.insertColumn(4);
 
-        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
         {
             QFAIL("Insert column failed, capacity of the matrix is not correct!");
         }
@@ -2996,7 +2996,7 @@ void CommonTests::testInsertColumnSetValue()
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         matrix.insertColumn(2, -1);
 
-        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
         {
             QFAIL("Insert column failed, capacity of the matrix is not correct!");
         }
@@ -3029,7 +3029,7 @@ void CommonTests::testInsertColumnSetValue()
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         matrix.insertColumn(0, -1);
 
-        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
         {
             QFAIL("Insert column failed, capacity of the matrix is not correct!");
         }
@@ -3062,7 +3062,7 @@ void CommonTests::testInsertColumnSetValue()
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         matrix.insertColumn(4, -1);
 
-        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
         {
             QFAIL("Insert column failed, capacity of the matrix is not correct!");
         }
@@ -3221,15 +3221,8 @@ void CommonTests::testEraseRow()
         IntMatrix matrix{1, 4, {1, 2, 3, 4}};
         matrix.eraseRow(0);
 
-        if (matrix.getRowCapacity() != 0 || matrix.getColumnCapacity() != 0)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
-
-        if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
-        {
-            QFAIL("Erase row failed, number of rows or columns of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase row failed, capacity of the matrix is not correct!");
+        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Erase row failed, number of rows or columns of the matrix is not correct!");
     }
 }
 
@@ -3385,15 +3378,8 @@ void CommonTests::testEraseColumn()
         IntMatrix matrix{4, 1, {1, 2, 3, 4}};
         matrix.eraseColumn(0);
 
-        if (matrix.getRowCapacity() != 0 || matrix.getColumnCapacity() != 0)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
-
-        if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
-        {
-            QFAIL("Erase column failed, number of rows or columns of the matrix is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase row failed, capacity of the matrix is not correct!");
+        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Erase row failed, number of rows or columns of the matrix is not correct!");
     }
 }
 
