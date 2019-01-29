@@ -4153,11 +4153,6 @@ void CommonTests::testCopy()
         IntMatrix srcMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}};
         destMatrix.copy(srcMatrix, 3, 2, 2, 1, 1, 0);
 
-        if (destMatrix.getNrOfRows() != 4 || destMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Copying items failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
         QVERIFY2(destMatrix.at(0, 0) == 1 &&
                  destMatrix.at(0, 1) == 2 &&
                  destMatrix.at(0, 2) == 3 &&
@@ -4178,11 +4173,6 @@ void CommonTests::testCopy()
         IntMatrix destMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         IntMatrix srcMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}};
         destMatrix.copy(srcMatrix, 0, 2, 2, 1, 1, 0);
-
-        if (destMatrix.getNrOfRows() != 4 || destMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Copying items failed, number of rows or columns of the destination matrix is not correct!");
-        }
 
         QVERIFY2(destMatrix.at(0, 0) == 1 &&
                  destMatrix.at(0, 1) == 2 &&
@@ -4205,11 +4195,6 @@ void CommonTests::testCopy()
         IntMatrix srcMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}};
         destMatrix.copy(srcMatrix, 3, 0, 2, 1, 1, 0);
 
-        if (destMatrix.getNrOfRows() != 4 || destMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Copying items failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
         QVERIFY2(destMatrix.at(0, 0) == 1 &&
                  destMatrix.at(0, 1) == 2 &&
                  destMatrix.at(0, 2) == 3 &&
@@ -4230,11 +4215,6 @@ void CommonTests::testCopy()
         IntMatrix destMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
         IntMatrix srcMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}};
         destMatrix.copy(srcMatrix, 0, 0, 2, 1, 1, 0);
-
-        if (destMatrix.getNrOfRows() != 4 || destMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Copying items failed, number of rows or columns of the destination matrix is not correct!");
-        }
 
         QVERIFY2(destMatrix.at(0, 0) == 1 &&
                  destMatrix.at(0, 1) == 2 &&
