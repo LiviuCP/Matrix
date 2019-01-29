@@ -18,12 +18,16 @@ private slots:
     void testIdenticalMatrixConstructor();
     void testDiagMatrixConstructor();
     void testCopyConstructor();
+    void testCapacityWithCopyConstructor();
     void testMoveConstructor();
+    void testCapacityWithMoveConstructor();
     void testCapacityWithConstructors();
     void testFunctionAt();
     void testSquareBracketsOperator();
     void testCopyAssignmentOperator();
+    void testCapacityWithCopyAssignmentOperator();
     void testMoveAssignmentOperator();
+    void testCapacityWithMoveAssignmentOperator();
     void testGetBaseArrayPtr();
     void testGetTransposedMatrix();
     void testCapacityWithTransposedMatrix();
@@ -173,6 +177,37 @@ void CommonTests::testCopyConstructor()
              "Matrix elements have not been correctly initialized by the copy constructor");
 }
 
+void CommonTests::testCapacityWithCopyConstructor()
+{
+    {
+        IntMatrix matrix{3, 4, -1};
+        IntMatrix matrixCopy{matrix};
+
+        QVERIFY2(matrixCopy.getRowCapacity() == 3 && matrixCopy.getColumnCapacity() == 5, "Copy constructor failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, -1};
+        IntMatrix matrixCopy{matrix};
+
+        QVERIFY2(matrixCopy.getRowCapacity() == 5 && matrixCopy.getColumnCapacity() == 3, "Copy constructor failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{7, 8, -1};
+        IntMatrix matrixCopy{matrix};
+
+        QVERIFY2(matrixCopy.getRowCapacity() == 8 && matrixCopy.getColumnCapacity() == 10, "Copy constructor failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{8, 7, -1};
+        IntMatrix matrixCopy{matrix};
+
+        QVERIFY2(matrixCopy.getRowCapacity() == 10 && matrixCopy.getColumnCapacity() == 8, "Copy constructor failed, capacity of the destination matrix is not correct!");
+    }
+}
+
 void CommonTests::testMoveConstructor()
 {
     IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6} };
@@ -200,6 +235,37 @@ void CommonTests::testMoveConstructor()
     QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
 
     QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
+}
+
+void CommonTests::testCapacityWithMoveConstructor()
+{
+    {
+        IntMatrix matrix{3, 4, -1};
+        IntMatrix matrixMove{std::move(matrix)};
+
+        QVERIFY2(matrixMove.getRowCapacity() == 3 && matrixMove.getColumnCapacity() == 5, "Move constructor failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, -1};
+        IntMatrix matrixMove{std::move(matrix)};
+
+        QVERIFY2(matrixMove.getRowCapacity() == 5 && matrixMove.getColumnCapacity() == 3, "Move constructor failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{7, 8, -1};
+        IntMatrix matrixMove{std::move(matrix)};
+
+        QVERIFY2(matrixMove.getRowCapacity() == 8 && matrixMove.getColumnCapacity() == 10, "Move constructor failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{8, 7, -1};
+        IntMatrix matrixMove{std::move(matrix)};
+
+        QVERIFY2(matrixMove.getRowCapacity() == 10 && matrixMove.getColumnCapacity() == 8, "Move constructor failed, capacity of the destination matrix is not correct!");
+    }
 }
 
 void CommonTests::testCapacityWithConstructors()
@@ -672,6 +738,81 @@ void CommonTests::testCopyAssignmentOperator()
     }
 }
 
+void CommonTests::testCapacityWithCopyAssignmentOperator()
+{
+    {
+        IntMatrix matrix{3, 4, -1};
+        IntMatrix matrixCopy{};
+
+        matrixCopy = matrix;
+
+        QVERIFY2(matrixCopy.getRowCapacity() == 3 && matrixCopy.getColumnCapacity() == 5, "Copy assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, -1};
+        IntMatrix matrixCopy{};
+
+        matrixCopy = matrix;
+
+        QVERIFY2(matrixCopy.getRowCapacity() == 5 && matrixCopy.getColumnCapacity() == 3, "Copy assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{7, 8, -1};
+        IntMatrix matrixCopy{};
+
+        matrixCopy = matrix;
+
+        QVERIFY2(matrixCopy.getRowCapacity() == 8 && matrixCopy.getColumnCapacity() == 10, "Copy assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{8, 7, -1};
+        IntMatrix matrixCopy{};
+
+        matrixCopy = matrix;
+
+        QVERIFY2(matrixCopy.getRowCapacity() == 10 && matrixCopy.getColumnCapacity() == 8, "Copy assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{3, 4, -1};
+        IntMatrix matrixCopy{2, 3, -5};
+
+        matrixCopy = matrix;
+
+        QVERIFY2(matrixCopy.getRowCapacity() == 3 && matrixCopy.getColumnCapacity() == 5, "Copy assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, -1};
+        IntMatrix matrixCopy{2, 3, -5};
+
+        matrixCopy = matrix;
+
+        QVERIFY2(matrixCopy.getRowCapacity() == 5 && matrixCopy.getColumnCapacity() == 3, "Copy assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{7, 8, -1};
+        IntMatrix matrixCopy{3, 4, -5};
+
+        matrixCopy = matrix;
+
+        QVERIFY2(matrixCopy.getRowCapacity() == 8 && matrixCopy.getColumnCapacity() == 10, "Copy assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{8, 7, -1};
+        IntMatrix matrixCopy{3, 4, -5};
+
+        matrixCopy = matrix;
+
+        QVERIFY2(matrixCopy.getRowCapacity() == 10 && matrixCopy.getColumnCapacity() == 8, "Copy assignment failed, capacity of the destination matrix is not correct!");
+    }
+}
+
 void CommonTests::testMoveAssignmentOperator()
 {
     {
@@ -824,6 +965,81 @@ void CommonTests::testMoveAssignmentOperator()
                  firstMatrix.at(1, 1) == 16,
 
                  "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
+    }
+}
+
+void CommonTests::testCapacityWithMoveAssignmentOperator()
+{
+    {
+        IntMatrix matrix{3, 4, -1};
+        IntMatrix matrixMove{};
+
+        matrixMove = std::move(matrix);
+
+        QVERIFY2(matrixMove.getRowCapacity() == 3 && matrixMove.getColumnCapacity() == 5, "Move assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, -1};
+        IntMatrix matrixMove{};
+
+        matrixMove = std::move(matrix);
+
+        QVERIFY2(matrixMove.getRowCapacity() == 5 && matrixMove.getColumnCapacity() == 3, "Move assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{7, 8, -1};
+        IntMatrix matrixMove{};
+
+        matrixMove = std::move(matrix);
+
+        QVERIFY2(matrixMove.getRowCapacity() == 8 && matrixMove.getColumnCapacity() == 10, "Move assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{8, 7, -1};
+        IntMatrix matrixMove{};
+
+        matrixMove = std::move(matrix);
+
+        QVERIFY2(matrixMove.getRowCapacity() == 10 && matrixMove.getColumnCapacity() == 8, "Move assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{3, 4, -1};
+        IntMatrix matrixMove{2, 3, -5};
+
+        matrixMove = std::move(matrix);
+
+        QVERIFY2(matrixMove.getRowCapacity() == 3 && matrixMove.getColumnCapacity() == 5, "Move assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{4, 3, -1};
+        IntMatrix matrixMove{2, 3, -5};
+
+        matrixMove = std::move(matrix);
+
+        QVERIFY2(matrixMove.getRowCapacity() == 5 && matrixMove.getColumnCapacity() == 3, "Move assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{7, 8, -1};
+        IntMatrix matrixMove{3, 4, -5};
+
+        matrixMove = std::move(matrix);
+
+        QVERIFY2(matrixMove.getRowCapacity() == 8 && matrixMove.getColumnCapacity() == 10, "Move assignment failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix matrix{8, 7, -1};
+        IntMatrix matrixMove{3, 4, -5};
+
+        matrixMove = std::move(matrix);
+
+        QVERIFY2(matrixMove.getRowCapacity() == 10 && matrixMove.getColumnCapacity() == 8, "Move assignment failed, capacity of the destination matrix is not correct!");
     }
 }
 
