@@ -756,18 +756,18 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
     }
 
-    int nrOfRows{concatenateVertically ? firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows : firstSrcMatrix.m_NrOfRows};
-    int nrOfColumns{concatenateVertically ? firstSrcMatrix.m_NrOfColumns : firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns};
-    int rowCapacity{nrOfRows + nrOfRows / 4};
-    int columnCapacity{nrOfColumns + nrOfColumns / 4};
+    const int c_NrOfRows{concatenateVertically ? firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows : firstSrcMatrix.m_NrOfRows};
+    const int c_NrOfColumns{concatenateVertically ? firstSrcMatrix.m_NrOfColumns : firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns};
+    const int c_RowCapacity{c_NrOfRows + c_NrOfRows / 4};
+    const int c_ColumnCapacity{c_NrOfColumns + c_NrOfColumns / 4};
 
     if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
     {
         if (concatenateVertically)
         {
             int startingRowNr{m_NrOfRows};
-            _increaseRowCapacity(rowCapacity - m_RowCapacity);
-            _increaseNrOfRows(nrOfRows - m_NrOfRows);
+            _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
+            _increaseNrOfRows(c_NrOfRows - m_NrOfRows);
 
             for (int row{startingRowNr}; row<m_NrOfRows; ++row)
             {
@@ -781,7 +781,7 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
         {
             Matrix matrix{std::move(*this)};
             _deallocMemory();
-            _allocMemory(nrOfRows, nrOfColumns, rowCapacity, columnCapacity);
+            _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
 
             for(int row{0}; row<m_NrOfRows; ++row)
             {
@@ -804,20 +804,20 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
     {
         if (concatenateVertically)
         {
-            DataType** pBaseArrayPtr{new DataType*[rowCapacity]};
+            DataType** pBaseArrayPtr{new DataType*[c_RowCapacity]};
 
             for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
             {
                 pBaseArrayPtr[row] = new DataType[m_ColumnCapacity];
             }
 
-            for (int row{firstSrcMatrix.m_NrOfRows}; row<nrOfRows; ++row)
+            for (int row{firstSrcMatrix.m_NrOfRows}; row<c_NrOfRows; ++row)
             {
                 pBaseArrayPtr[row] = m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows];
                 m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows] = nullptr;
             }
 
-            for (int row{nrOfRows}; row<rowCapacity; ++row)
+            for (int row{c_NrOfRows}; row<c_RowCapacity; ++row)
             {
                 pBaseArrayPtr[row] = nullptr;
             }
@@ -833,14 +833,14 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
             delete []m_pBaseArrayPtr;
             m_pBaseArrayPtr = pBaseArrayPtr;
             pBaseArrayPtr = nullptr;
-            m_NrOfRows = nrOfRows;
-            m_RowCapacity = rowCapacity;
+            m_NrOfRows = c_NrOfRows;
+            m_RowCapacity = c_RowCapacity;
         }
         else
         {
             Matrix matrix{std::move(*this)};
             _deallocMemory();
-            _allocMemory(nrOfRows, nrOfColumns, rowCapacity, columnCapacity);
+            _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
 
             for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
             {
@@ -864,7 +864,7 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
         if (concatenateVertically)
         {
             int startingRowNr{m_NrOfRows};
-            _increaseRowCapacity(rowCapacity - m_RowCapacity);
+            _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
             _increaseNrOfRows(m_NrOfRows);
 
             for (int row{startingRowNr}; row<m_NrOfRows; ++row)
@@ -880,7 +880,7 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
             {
                 Matrix matrix{std::move(*this)};
                 _deallocMemory();
-                _allocMemory(nrOfRows, nrOfColumns, rowCapacity, columnCapacity);
+                _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
 
                 for(int row{0}; row<m_NrOfRows; ++row)
                 {
@@ -903,7 +903,7 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
     else
     {
         _deallocMemory();
-        _allocMemory(nrOfRows, nrOfColumns, rowCapacity, columnCapacity);
+        _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
 
         if(concatenateVertically)
         {
