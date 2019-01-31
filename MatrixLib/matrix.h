@@ -79,7 +79,6 @@ private:
     void _decreaseNrOfrows(int nrOfRowsDecrement);
 
     void _split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestmatrix, int splitRowColumnNr, bool splitVertically);
-    void _concatenate(Matrix<DataType>& firstSrcMatrix,Matrix<DataType>& secondSrcMatrix, bool concatenateVertically);
 
     bool _isEqualTo(const Matrix<DataType> matrix) const;
 
@@ -757,28 +756,191 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
     }
 
-    Matrix<DataType> thirdMatrix{};
-
-    if (&firstSrcMatrix == this || &secondSrcMatrix == this)
-    {
-        thirdMatrix = std::move(*this);
-    }
+    int nrOfRows{concatenateVertically ? firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows : firstSrcMatrix.m_NrOfRows};
+    int nrOfColumns{concatenateVertically ? firstSrcMatrix.m_NrOfColumns : firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns};
+    int rowCapacity{nrOfRows + nrOfRows / 4};
+    int columnCapacity{nrOfColumns + nrOfColumns / 4};
 
     if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
     {
-        _concatenate(thirdMatrix, secondSrcMatrix, concatenateVertically);
+        if (concatenateVertically)
+        {
+            int startingRowNr{m_NrOfRows};
+            _increaseRowCapacity(rowCapacity - m_RowCapacity);
+            _increaseNrOfRows(nrOfRows - m_NrOfRows);
+
+            for (int row{startingRowNr}; row<m_NrOfRows; ++row)
+            {
+                for (int col{0}; col<m_NrOfColumns; ++col)
+                {
+                    m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-startingRowNr][col];
+                }
+            }
+        }
+        else
+        {
+            Matrix matrix{std::move(*this)};
+            _deallocMemory();
+            _allocMemory(nrOfRows, nrOfColumns, rowCapacity, columnCapacity);
+
+            for(int row{0}; row<m_NrOfRows; ++row)
+            {
+                for (int col{0}; col<matrix.m_NrOfColumns; ++col)
+                {
+                    m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
+                }
+            }
+
+            for(int row{0}; row<m_NrOfRows; ++row)
+            {
+                for (int col{matrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+                {
+                    m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-matrix.m_NrOfColumns];
+                }
+            }
+        }
     }
     else if (&firstSrcMatrix != this && (&secondSrcMatrix == this))
     {
-        _concatenate(firstSrcMatrix, thirdMatrix, concatenateVertically);
+        if (concatenateVertically)
+        {
+            DataType** pBaseArrayPtr{new DataType*[rowCapacity]};
+
+            for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+            {
+                pBaseArrayPtr[row] = new DataType[m_ColumnCapacity];
+            }
+
+            for (int row{firstSrcMatrix.m_NrOfRows}; row<nrOfRows; ++row)
+            {
+                pBaseArrayPtr[row] = m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows];
+                m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows] = nullptr;
+            }
+
+            for (int row{nrOfRows}; row<rowCapacity; ++row)
+            {
+                pBaseArrayPtr[row] = nullptr;
+            }
+
+            for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+            {
+                for (int col{0}; col<m_NrOfColumns; ++col)
+                {
+                    pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
+                }
+            }
+
+            delete []m_pBaseArrayPtr;
+            m_pBaseArrayPtr = pBaseArrayPtr;
+            pBaseArrayPtr = nullptr;
+            m_NrOfRows = nrOfRows;
+            m_RowCapacity = rowCapacity;
+        }
+        else
+        {
+            Matrix matrix{std::move(*this)};
+            _deallocMemory();
+            _allocMemory(nrOfRows, nrOfColumns, rowCapacity, columnCapacity);
+
+            for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+            {
+                for (int col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
+                {
+                    m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
+                }
+            }
+
+            for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+            {
+                for (int col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+                {
+                    m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
+                }
+            }
+        }
     }
     else if (&firstSrcMatrix == this && (&secondSrcMatrix == this))
     {
-        _concatenate(thirdMatrix, thirdMatrix, concatenateVertically);
+        if (concatenateVertically)
+        {
+            int startingRowNr{m_NrOfRows};
+            _increaseRowCapacity(rowCapacity - m_RowCapacity);
+            _increaseNrOfRows(m_NrOfRows);
+
+            for (int row{startingRowNr}; row<m_NrOfRows; ++row)
+            {
+                for (int col{0}; col<m_NrOfColumns; ++col)
+                {
+                    m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row-startingRowNr][col];
+                }
+            }
+        }
+        else
+        {
+            {
+                Matrix matrix{std::move(*this)};
+                _deallocMemory();
+                _allocMemory(nrOfRows, nrOfColumns, rowCapacity, columnCapacity);
+
+                for(int row{0}; row<m_NrOfRows; ++row)
+                {
+                    for (int col{0}; col<matrix.m_NrOfColumns; ++col)
+                    {
+                        m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
+                    }
+                }
+
+                for(int row{0}; row<m_NrOfRows; ++row)
+                {
+                    for (int col{matrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+                    {
+                        m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col-matrix.m_NrOfColumns];
+                    }
+                }
+            }
+        }
     }
     else
     {
-        _concatenate(firstSrcMatrix, secondSrcMatrix, concatenateVertically);
+        _deallocMemory();
+        _allocMemory(nrOfRows, nrOfColumns, rowCapacity, columnCapacity);
+
+        if(concatenateVertically)
+        {
+            for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+            {
+                for (int col{0}; col<m_NrOfColumns; ++col)
+                {
+                    m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
+                }
+            }
+
+            for (int row{firstSrcMatrix.m_NrOfRows}; row<m_NrOfRows; ++row)
+            {
+                for (int col{0}; col<m_NrOfColumns; ++col)
+                {
+                    m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows][col];
+                }
+            }
+        }
+        else
+        {
+            for(int row{0}; row<m_NrOfRows; ++row)
+            {
+                for (int col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
+                {
+                    m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
+                }
+            }
+
+            for(int row{0}; row<m_NrOfRows; ++row)
+            {
+                for (int col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+                {
+                    m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
+                }
+            }
+        }
     }
 }
 
@@ -1244,50 +1406,6 @@ void Matrix<DataType>::_split(Matrix<DataType>& firstDestMatrix, Matrix<DataType
             for (int col{splitRowColumnNr}; col<m_NrOfColumns; ++col)
             {
                 secondDestMatrix.m_pBaseArrayPtr[row][col-splitRowColumnNr] = m_pBaseArrayPtr[row][col];
-            }
-        }
-    }
-}
-
-template<typename DataType>
-void Matrix<DataType>::_concatenate(Matrix<DataType> &firstSrcMatrix, Matrix<DataType> &secondSrcMatrix, bool concatenateVertically)
-{
-    if (concatenateVertically) {
-        resize(firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns);
-
-        for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
-            }
-        }
-
-        for (int row{firstSrcMatrix.m_NrOfRows}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows][col];
-            }
-        }
-    }
-    else
-    {
-        resize(firstSrcMatrix.m_NrOfRows, firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns);
-
-        for(int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
-            }
-        }
-
-        for(int row{0}; row<m_NrOfRows; ++row)
-        {
-            for (int col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
             }
         }
     }

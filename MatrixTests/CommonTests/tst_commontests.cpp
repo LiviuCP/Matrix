@@ -3676,6 +3676,11 @@ void CommonTests::testConcatenate()
 
         thirdMatrix.concatenate(firstMatrix, secondMatrix);
 
+        if (thirdMatrix.getRowCapacity() != 3 || thirdMatrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
+        }
+
         if (thirdMatrix.getNrOfRows() != 3 || thirdMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
@@ -3696,6 +3701,11 @@ void CommonTests::testConcatenate()
         IntMatrix secondMatrix{1, 2, {5, 6}};
 
         firstMatrix.concatenate(firstMatrix, secondMatrix);
+
+        if (firstMatrix.getRowCapacity() != 3 || firstMatrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
+        }
 
         if (firstMatrix.getNrOfRows() != 3 || firstMatrix.getNrOfColumns() != 2)
         {
@@ -3718,6 +3728,11 @@ void CommonTests::testConcatenate()
 
         secondMatrix.concatenate(firstMatrix, secondMatrix);
 
+        if (secondMatrix.getRowCapacity() != 3 || secondMatrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
+        }
+
         if (secondMatrix.getNrOfRows() != 3 || secondMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
@@ -3737,6 +3752,11 @@ void CommonTests::testConcatenate()
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
 
         firstMatrix.concatenate(firstMatrix, firstMatrix);
+
+        if (firstMatrix.getRowCapacity() != 5 || firstMatrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
+        }
 
         if (firstMatrix.getNrOfRows() != 4 || firstMatrix.getNrOfColumns() != 2)
         {
@@ -3760,6 +3780,11 @@ void CommonTests::testConcatenate()
         IntMatrix secondMatrix{};
 
         secondMatrix.concatenate(firstMatrix, firstMatrix);
+
+        if (secondMatrix.getRowCapacity() != 5 || secondMatrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
+        }
 
         if (secondMatrix.getNrOfRows() != 4 || secondMatrix.getNrOfColumns() != 2)
         {
@@ -3785,6 +3810,11 @@ void CommonTests::testConcatenate()
 
         thirdMatrix.concatenate(firstMatrix, secondMatrix, false);
 
+        if (thirdMatrix.getRowCapacity() != 2 || thirdMatrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        }
+
         if (thirdMatrix.getNrOfRows() != 2 || thirdMatrix.getNrOfColumns() != 3)
         {
             QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
@@ -3805,6 +3835,11 @@ void CommonTests::testConcatenate()
         IntMatrix secondMatrix{2, 1, {5, 6}};
 
         firstMatrix.concatenate(firstMatrix, secondMatrix, false);
+
+        if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        }
 
         if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 3)
         {
@@ -3827,6 +3862,11 @@ void CommonTests::testConcatenate()
 
         secondMatrix.concatenate(firstMatrix, secondMatrix, false);
 
+        if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        }
+
         if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
         {
             QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
@@ -3846,6 +3886,11 @@ void CommonTests::testConcatenate()
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
 
         firstMatrix.concatenate(firstMatrix, firstMatrix, false);
+
+        if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 5)
+        {
+            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        }
 
         if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 4)
         {
@@ -3869,6 +3914,11 @@ void CommonTests::testConcatenate()
         IntMatrix secondMatrix{};
 
         secondMatrix.concatenate(firstMatrix, firstMatrix, false);
+
+        if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 5)
+        {
+            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        }
 
         if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 4)
         {
