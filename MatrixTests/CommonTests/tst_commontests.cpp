@@ -47,7 +47,8 @@ private slots:
     void testCapacityWithEraseRow();
     void testEraseColumn();
     void testCapacityWithEraseColumn();
-    void testConcatenate();
+    void testCatByRow();
+    void testCatByColumn();
     void testSplit();
     void testSwapMatrixes();
     void testSwapItems();
@@ -3667,14 +3668,14 @@ void CommonTests::testCapacityWithEraseColumn()
     }
 }
 
-void CommonTests::testConcatenate()
+void CommonTests::testCatByRow()
 {
     {
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
         IntMatrix secondMatrix{1, 2, {5, 6}};
         IntMatrix thirdMatrix{};
 
-        thirdMatrix.concatenate(firstMatrix, secondMatrix);
+        thirdMatrix.catByRow(firstMatrix, secondMatrix);
 
         if (thirdMatrix.getRowCapacity() != 3 || thirdMatrix.getColumnCapacity() != 2)
         {
@@ -3700,7 +3701,7 @@ void CommonTests::testConcatenate()
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
         IntMatrix secondMatrix{1, 2, {5, 6}};
 
-        firstMatrix.concatenate(firstMatrix, secondMatrix);
+        firstMatrix.catByRow(firstMatrix, secondMatrix);
 
         if (firstMatrix.getRowCapacity() != 3 || firstMatrix.getColumnCapacity() != 2)
         {
@@ -3726,7 +3727,7 @@ void CommonTests::testConcatenate()
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
         IntMatrix secondMatrix{1, 2, {5, 6}};
 
-        secondMatrix.concatenate(firstMatrix, secondMatrix);
+        secondMatrix.catByRow(firstMatrix, secondMatrix);
 
         if (secondMatrix.getRowCapacity() != 3 || secondMatrix.getColumnCapacity() != 2)
         {
@@ -3751,7 +3752,7 @@ void CommonTests::testConcatenate()
     {
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
 
-        firstMatrix.concatenate(firstMatrix, firstMatrix);
+        firstMatrix.catByRow(firstMatrix, firstMatrix);
 
         if (firstMatrix.getRowCapacity() != 5 || firstMatrix.getColumnCapacity() != 2)
         {
@@ -3779,7 +3780,7 @@ void CommonTests::testConcatenate()
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
         IntMatrix secondMatrix{};
 
-        secondMatrix.concatenate(firstMatrix, firstMatrix);
+        secondMatrix.catByRow(firstMatrix, firstMatrix);
 
         if (secondMatrix.getRowCapacity() != 5 || secondMatrix.getColumnCapacity() != 2)
         {
@@ -3802,13 +3803,16 @@ void CommonTests::testConcatenate()
 
                  "Vertical concatenation failed, destination matrix has incorrect values!");
     }
+}
 
+void CommonTests::testCatByColumn()
+{
     {
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
         IntMatrix secondMatrix{2, 1, {5, 6}};
         IntMatrix thirdMatrix{};
 
-        thirdMatrix.concatenate(firstMatrix, secondMatrix, false);
+        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
 
         if (thirdMatrix.getRowCapacity() != 2 || thirdMatrix.getColumnCapacity() != 3)
         {
@@ -3834,7 +3838,7 @@ void CommonTests::testConcatenate()
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
         IntMatrix secondMatrix{2, 1, {5, 6}};
 
-        firstMatrix.concatenate(firstMatrix, secondMatrix, false);
+        firstMatrix.catByColumn(firstMatrix, secondMatrix);
 
         if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 3)
         {
@@ -3860,7 +3864,7 @@ void CommonTests::testConcatenate()
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
         IntMatrix secondMatrix{2, 1, {5, 6}};
 
-        secondMatrix.concatenate(firstMatrix, secondMatrix, false);
+        secondMatrix.catByColumn(firstMatrix, secondMatrix);
 
         if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 3)
         {
@@ -3885,7 +3889,7 @@ void CommonTests::testConcatenate()
     {
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
 
-        firstMatrix.concatenate(firstMatrix, firstMatrix, false);
+        firstMatrix.catByColumn(firstMatrix, firstMatrix);
 
         if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 5)
         {
@@ -3913,7 +3917,7 @@ void CommonTests::testConcatenate()
         IntMatrix firstMatrix{2, 2, {1, 2, 3, 4}};
         IntMatrix secondMatrix{};
 
-        secondMatrix.concatenate(firstMatrix, firstMatrix, false);
+        secondMatrix.catByColumn(firstMatrix, firstMatrix);
 
         if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 5)
         {

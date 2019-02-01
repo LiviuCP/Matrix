@@ -26,7 +26,8 @@ private slots:
     void testInsertColumnSetValueExceptions();
     void testEraseRowExceptions();
     void testEraseColumnExceptions();
-    void testConcatenateExceptions();
+    void testCatByRowExceptions();
+    void testCatByColumnExceptions();
     void testSplitExceptions();
     void testSwapItemsExceptions();
     void testSwapRowsExceptions();
@@ -167,24 +168,27 @@ void ExceptionTests::testEraseColumnExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseColumn(3);}, std::runtime_error);
 }
 
-void ExceptionTests::testConcatenateExceptions()
+void ExceptionTests::testCatByRowExceptions()
 {
     QVERIFY_EXCEPTION_THROWN({
                                   IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
                                   IntMatrix secondMatrix(2, 2, {7, 8, 9, 10});
                                   IntMatrix thirdMatrix{};
 
-                                  thirdMatrix.concatenate(firstMatrix, secondMatrix);
+                                  thirdMatrix.catByRow(firstMatrix, secondMatrix);
                              },
 
                              std::runtime_error);
+}
 
+void ExceptionTests::testCatByColumnExceptions()
+{
     QVERIFY_EXCEPTION_THROWN({
                                   IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
                                   IntMatrix secondMatrix(2, 2, {7, 8, 9, 10});
                                   IntMatrix thirdMatrix{};
 
-                                  thirdMatrix.concatenate(firstMatrix, secondMatrix, false);
+                                  thirdMatrix.catByColumn(firstMatrix, secondMatrix);
                              },
 
                              std::runtime_error);

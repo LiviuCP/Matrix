@@ -48,7 +48,8 @@ public:
     void eraseRow (int rowNr);
     void eraseColumn(int columnNr);
 
-    void concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix, bool concatenateVertically = true);
+    void catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
+    void catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
     void split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr, bool splitVertically = true);
 
     void swapItems(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr);
@@ -741,160 +742,78 @@ void Matrix<DataType>::eraseColumn(int columnNr)
     }
 }
 
-template <typename DataType>
-void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix, bool concatenateVertically)
+template<typename DataType>
+void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix)
 {
-    if (concatenateVertically && (firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns))
+    if (firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_ROW_LENGTH]};
     }
 
-    if (!concatenateVertically && (firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows))
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
-    }
-
-    const int c_NrOfRows{concatenateVertically ? firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows : firstSrcMatrix.m_NrOfRows};
-    const int c_NrOfColumns{concatenateVertically ? firstSrcMatrix.m_NrOfColumns : firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns};
+    const int c_NrOfRows{firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows};
+    const int c_NrOfColumns{firstSrcMatrix.m_NrOfColumns};
     const int c_RowCapacity{c_NrOfRows + c_NrOfRows / 4};
     const int c_ColumnCapacity{c_NrOfColumns + c_NrOfColumns / 4};
 
     if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
     {
-        if (concatenateVertically)
+        int startingRowNr{m_NrOfRows};
+        _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
+        _increaseNrOfRows(c_NrOfRows - m_NrOfRows);
+
+        for (int row{startingRowNr}; row<m_NrOfRows; ++row)
         {
-            int startingRowNr{m_NrOfRows};
-            _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
-            _increaseNrOfRows(c_NrOfRows - m_NrOfRows);
-
-            for (int row{startingRowNr}; row<m_NrOfRows; ++row)
+            for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                for (int col{0}; col<m_NrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-startingRowNr][col];
-                }
-            }
-        }
-        else
-        {
-            Matrix matrix{std::move(*this)};
-            _deallocMemory();
-            _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
-
-            for(int row{0}; row<m_NrOfRows; ++row)
-            {
-                for (int col{0}; col<matrix.m_NrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
-                }
-            }
-
-            for(int row{0}; row<m_NrOfRows; ++row)
-            {
-                for (int col{matrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-matrix.m_NrOfColumns];
-                }
+                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-startingRowNr][col];
             }
         }
     }
     else if (&firstSrcMatrix != this && (&secondSrcMatrix == this))
     {
-        if (concatenateVertically)
+        DataType** pBaseArrayPtr{new DataType*[c_RowCapacity]};
+
+        for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
         {
-            DataType** pBaseArrayPtr{new DataType*[c_RowCapacity]};
-
-            for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
-            {
-                pBaseArrayPtr[row] = new DataType[m_ColumnCapacity];
-            }
-
-            for (int row{firstSrcMatrix.m_NrOfRows}; row<c_NrOfRows; ++row)
-            {
-                pBaseArrayPtr[row] = m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows];
-                m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows] = nullptr;
-            }
-
-            for (int row{c_NrOfRows}; row<c_RowCapacity; ++row)
-            {
-                pBaseArrayPtr[row] = nullptr;
-            }
-
-            for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
-            {
-                for (int col{0}; col<m_NrOfColumns; ++col)
-                {
-                    pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
-                }
-            }
-
-            delete []m_pBaseArrayPtr;
-            m_pBaseArrayPtr = pBaseArrayPtr;
-            pBaseArrayPtr = nullptr;
-            m_NrOfRows = c_NrOfRows;
-            m_RowCapacity = c_RowCapacity;
+            pBaseArrayPtr[row] = new DataType[m_ColumnCapacity];
         }
-        else
+
+        for (int row{firstSrcMatrix.m_NrOfRows}; row<c_NrOfRows; ++row)
         {
-            Matrix matrix{std::move(*this)};
-            _deallocMemory();
-            _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+            pBaseArrayPtr[row] = m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows];
+            m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows] = nullptr;
+        }
 
-            for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
-            {
-                for (int col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
-                }
-            }
+        for (int row{c_NrOfRows}; row<c_RowCapacity; ++row)
+        {
+            pBaseArrayPtr[row] = nullptr;
+        }
 
-            for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+        for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                for (int col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
-                }
+                pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
             }
         }
+
+        delete []m_pBaseArrayPtr;
+        m_pBaseArrayPtr = pBaseArrayPtr;
+        pBaseArrayPtr = nullptr;
+        m_NrOfRows = c_NrOfRows;
+        m_RowCapacity = c_RowCapacity;
     }
     else if (&firstSrcMatrix == this && (&secondSrcMatrix == this))
     {
-        if (concatenateVertically)
+        int startingRowNr{m_NrOfRows};
+        _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
+        _increaseNrOfRows(m_NrOfRows);
+
+        for (int row{startingRowNr}; row<m_NrOfRows; ++row)
         {
-            int startingRowNr{m_NrOfRows};
-            _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
-            _increaseNrOfRows(m_NrOfRows);
-
-            for (int row{startingRowNr}; row<m_NrOfRows; ++row)
+            for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                for (int col{0}; col<m_NrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row-startingRowNr][col];
-                }
-            }
-        }
-        else
-        {
-            {
-                Matrix matrix{std::move(*this)};
-                _deallocMemory();
-                _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
-
-                for(int row{0}; row<m_NrOfRows; ++row)
-                {
-                    for (int col{0}; col<matrix.m_NrOfColumns; ++col)
-                    {
-                        m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
-                    }
-                }
-
-                for(int row{0}; row<m_NrOfRows; ++row)
-                {
-                    for (int col{matrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
-                    {
-                        m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col-matrix.m_NrOfColumns];
-                    }
-                }
+                m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row-startingRowNr][col];
             }
         }
     }
@@ -903,40 +822,121 @@ void Matrix<DataType>::concatenate(Matrix<DataType>& firstSrcMatrix, Matrix<Data
         _deallocMemory();
         _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
 
-        if(concatenateVertically)
+        for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
         {
-            for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+            for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                for (int col{0}; col<m_NrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
-                }
-            }
-
-            for (int row{firstSrcMatrix.m_NrOfRows}; row<m_NrOfRows; ++row)
-            {
-                for (int col{0}; col<m_NrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows][col];
-                }
+                m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
             }
         }
-        else
-        {
-            for(int row{0}; row<m_NrOfRows; ++row)
-            {
-                for (int col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
-                }
-            }
 
-            for(int row{0}; row<m_NrOfRows; ++row)
+        for (int row{firstSrcMatrix.m_NrOfRows}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                for (int col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
-                }
+                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows][col];
+            }
+        }
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix)
+{
+    if (firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
+    }
+
+    const int c_NrOfRows{firstSrcMatrix.m_NrOfRows};
+    const int c_NrOfColumns{firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns};
+    const int c_RowCapacity{c_NrOfRows + c_NrOfRows / 4};
+    const int c_ColumnCapacity{c_NrOfColumns + c_NrOfColumns / 4};
+
+    if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
+    {
+        Matrix matrix{std::move(*this)};
+        _deallocMemory();
+        _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<matrix.m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
+            }
+        }
+
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{matrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-matrix.m_NrOfColumns];
+            }
+        }
+    }
+    else if (&firstSrcMatrix != this && (&secondSrcMatrix == this))
+    {
+        Matrix matrix{std::move(*this)};
+        _deallocMemory();
+        _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+
+        for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
+            }
+        }
+
+        for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+        {
+            for (int col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
+            }
+        }
+    }
+    else if (&firstSrcMatrix == this && (&secondSrcMatrix == this))
+    {
+        Matrix matrix{std::move(*this)};
+        _deallocMemory();
+        _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<matrix.m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
+            }
+        }
+
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{matrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col-matrix.m_NrOfColumns];
+            }
+        }
+    }
+    else
+    {
+        _deallocMemory();
+        _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
+            }
+        }
+
+        for(int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
             }
         }
     }
