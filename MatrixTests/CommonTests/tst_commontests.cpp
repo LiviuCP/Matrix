@@ -49,7 +49,8 @@ private slots:
     void testCapacityWithEraseColumn();
     void testCatByRow();
     void testCatByColumn();
-    void testSplit();
+    void testSplitByRow();
+    void testSplitByColumn();
     void testSwapMatrixes();
     void testSwapItems();
     void testSwapRows();
@@ -3942,14 +3943,14 @@ void CommonTests::testCatByColumn()
     }
 }
 
-void CommonTests::testSplit()
+void CommonTests::testSplitByRow()
 {
     {
         IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{};
 
-        firstMatrix.split(secondMatrix, thirdMatrix, 2);
+        firstMatrix.splitByRow(secondMatrix, thirdMatrix, 2);
 
         if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 2)
         {
@@ -3988,7 +3989,7 @@ void CommonTests::testSplit()
         IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
         IntMatrix secondMatrix{};
 
-        firstMatrix.split(firstMatrix, secondMatrix, 2);
+        firstMatrix.splitByRow(firstMatrix, secondMatrix, 2);
 
         if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 2)
         {
@@ -4027,7 +4028,7 @@ void CommonTests::testSplit()
         IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
         IntMatrix secondMatrix{};
 
-        firstMatrix.split(secondMatrix, firstMatrix, 2);
+        firstMatrix.splitByRow(secondMatrix, firstMatrix, 2);
 
         if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 2)
         {
@@ -4061,13 +4062,16 @@ void CommonTests::testSplit()
 
                  "Vertical split failed, second destination matrix has incorrect values!");
     }
+}
 
+void CommonTests::testSplitByColumn()
+{
     {
         IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{};
 
-        firstMatrix.split(secondMatrix, thirdMatrix, 2, false);
+        firstMatrix.splitByColumn(secondMatrix, thirdMatrix, 2);
 
         if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 2)
         {
@@ -4106,7 +4110,7 @@ void CommonTests::testSplit()
         IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
         IntMatrix secondMatrix{};
 
-        firstMatrix.split(firstMatrix, secondMatrix, 2, false);
+        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 2);
 
         if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 2)
         {
@@ -4145,7 +4149,7 @@ void CommonTests::testSplit()
         IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
         IntMatrix secondMatrix{};
 
-        firstMatrix.split(secondMatrix, firstMatrix, 2, false);
+        firstMatrix.splitByColumn(secondMatrix, firstMatrix, 2);
 
         if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 2)
         {

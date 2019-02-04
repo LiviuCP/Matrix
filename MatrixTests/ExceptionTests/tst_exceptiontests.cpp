@@ -28,7 +28,8 @@ private slots:
     void testEraseColumnExceptions();
     void testCatByRowExceptions();
     void testCatByColumnExceptions();
-    void testSplitExceptions();
+    void testSplitByRowExceptions();
+    void testSplitByColumnExceptions();
     void testSwapItemsExceptions();
     void testSwapRowsExceptions();
     void testSwapColumnsExceptions();
@@ -194,13 +195,13 @@ void ExceptionTests::testCatByColumnExceptions()
                              std::runtime_error);
 }
 
-void ExceptionTests::testSplitExceptions()
+void ExceptionTests::testSplitByRowExceptions()
 {
     QVERIFY_EXCEPTION_THROWN({
                                   IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
                                   IntMatrix secondMatrix;
 
-                                  firstMatrix.split(secondMatrix, secondMatrix, 1);
+                                  firstMatrix.splitByRow(secondMatrix, secondMatrix, 1);
                              },
 
                              std::runtime_error);
@@ -208,17 +209,7 @@ void ExceptionTests::testSplitExceptions()
     QVERIFY_EXCEPTION_THROWN({
                                   IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
 
-                                  firstMatrix.split(firstMatrix, firstMatrix, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix{};
-                                  IntMatrix thirdMatrix{};
-
-                                  firstMatrix.split(secondMatrix, thirdMatrix, -1);
+                                  firstMatrix.splitByRow(firstMatrix, firstMatrix, 1);
                              },
 
                              std::runtime_error);
@@ -228,7 +219,7 @@ void ExceptionTests::testSplitExceptions()
                                   IntMatrix secondMatrix{};
                                   IntMatrix thirdMatrix{};
 
-                                  firstMatrix.split(secondMatrix, thirdMatrix, 0);
+                                  firstMatrix.splitByRow(secondMatrix, thirdMatrix, -1);
                              },
 
                              std::runtime_error);
@@ -238,16 +229,29 @@ void ExceptionTests::testSplitExceptions()
                                   IntMatrix secondMatrix{};
                                   IntMatrix thirdMatrix{};
 
-                                  firstMatrix.split(secondMatrix, thirdMatrix, 2);
+                                  firstMatrix.splitByRow(secondMatrix, thirdMatrix, 0);
                              },
 
                              std::runtime_error);
 
+    QVERIFY_EXCEPTION_THROWN({
+                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
+                                  IntMatrix secondMatrix{};
+                                  IntMatrix thirdMatrix{};
+
+                                  firstMatrix.splitByRow(secondMatrix, thirdMatrix, 2);
+                             },
+
+                             std::runtime_error);
+}
+
+void ExceptionTests::testSplitByColumnExceptions()
+{
     QVERIFY_EXCEPTION_THROWN({
                                   IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
                                   IntMatrix secondMatrix;
 
-                                  firstMatrix.split(secondMatrix, secondMatrix, 1, false);
+                                  firstMatrix.splitByColumn(secondMatrix, secondMatrix, 1);
                              },
 
                              std::runtime_error);
@@ -255,17 +259,7 @@ void ExceptionTests::testSplitExceptions()
     QVERIFY_EXCEPTION_THROWN({
                                   IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
 
-                                  firstMatrix.split(firstMatrix, firstMatrix, 1, false);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix{};
-                                  IntMatrix thirdMatrix{};
-
-                                  firstMatrix.split(secondMatrix, thirdMatrix, -1, false);
+                                  firstMatrix.splitByColumn(firstMatrix, firstMatrix, 1);
                              },
 
                              std::runtime_error);
@@ -275,7 +269,7 @@ void ExceptionTests::testSplitExceptions()
                                   IntMatrix secondMatrix{};
                                   IntMatrix thirdMatrix{};
 
-                                  firstMatrix.split(secondMatrix, thirdMatrix, 0, false);
+                                  firstMatrix.splitByColumn(secondMatrix, thirdMatrix, -1);
                              },
 
                              std::runtime_error);
@@ -285,7 +279,17 @@ void ExceptionTests::testSplitExceptions()
                                   IntMatrix secondMatrix{};
                                   IntMatrix thirdMatrix{};
 
-                                  firstMatrix.split(secondMatrix, thirdMatrix, 2, false);
+                                  firstMatrix.splitByColumn(secondMatrix, thirdMatrix, 0);
+                             },
+
+                             std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({
+                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
+                                  IntMatrix secondMatrix{};
+                                  IntMatrix thirdMatrix{};
+
+                                  firstMatrix.splitByColumn(secondMatrix, thirdMatrix, 2);
                              },
 
                              std::runtime_error);

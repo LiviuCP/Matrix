@@ -50,7 +50,8 @@ public:
 
     void catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
     void catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
-    void split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr, bool splitVertically = true);
+    void splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowNr);
+    void splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitColumnNr);
 
     void swapItems(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr);
     void swapRows(int rowNr, Matrix<DataType>& matrix, int matrixRowNr);
@@ -942,91 +943,172 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
     }
 }
 
-template <typename DataType>
-void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowColumnNr, bool splitVertically)
+template<typename DataType>
+void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowNr)
 {
     if (&firstDestMatrix == &secondDestMatrix)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::SAME_VARIABLE_TWO_ARGS]};
     }
 
-    if (splitRowColumnNr < 0)
+    if (splitRowNr < 0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    if (splitVertically)
+    if (splitRowNr >= m_NrOfRows)
     {
-        if (splitRowColumnNr >= m_NrOfRows)
-        {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
-        }
-
-        if (splitRowColumnNr == 0)
-        {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_ROWS]};
-        }
-    }
-    else
-    {
-        if (splitRowColumnNr >= m_NrOfColumns)
-        {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
-        }
-
-        if (splitRowColumnNr == 0)
-        {
-            throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_COLUMNS]};
-        }
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
     }
 
-    const int c_FirstDestMatrixNrOfRows{splitVertically ? splitRowColumnNr : m_NrOfRows};
-    const int c_FirstDestMatrixNrOfColumns{splitVertically ? m_NrOfColumns : splitRowColumnNr};
-    const int c_FirstDestMatrixRowCapacity{splitVertically ? c_FirstDestMatrixNrOfRows + c_FirstDestMatrixNrOfRows/4: m_RowCapacity};
-    const int c_FirstDestMatrixColumnCapacity{splitVertically ? m_ColumnCapacity: c_FirstDestMatrixNrOfColumns + c_FirstDestMatrixNrOfColumns/4};
+    if (splitRowNr == 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_ROWS]};
+    }
 
-    const int c_SecondDestMatrixNrOfRows{splitVertically ? m_NrOfRows - splitRowColumnNr : m_NrOfRows};
-    const int c_SecondDestMatrixNrOfColumns{splitVertically ? m_NrOfColumns : m_NrOfColumns - splitRowColumnNr};
-    const int c_SecondDestMatrixRowCapacity{splitVertically ? c_SecondDestMatrixNrOfRows + c_SecondDestMatrixNrOfRows/4: m_RowCapacity};
-    const int c_SecondDestMatrixColumnCapacity{splitVertically ? m_ColumnCapacity : c_SecondDestMatrixNrOfColumns + c_SecondDestMatrixNrOfColumns/4};
+    const int c_FirstDestMatrixNrOfRows{splitRowNr};
+    const int c_FirstDestMatrixNrOfColumns{m_NrOfColumns};
+    const int c_FirstDestMatrixRowCapacity{c_FirstDestMatrixNrOfRows + c_FirstDestMatrixNrOfRows/4};
+    const int c_FirstDestMatrixColumnCapacity{m_ColumnCapacity};
+
+    const int c_SecondDestMatrixNrOfRows{m_NrOfRows - splitRowNr};
+    const int c_SecondDestMatrixNrOfColumns{m_NrOfColumns};
+    const int c_SecondDestMatrixRowCapacity{c_SecondDestMatrixNrOfRows + c_SecondDestMatrixNrOfRows/4};
+    const int c_SecondDestMatrixColumnCapacity{m_ColumnCapacity};
 
     if (&firstDestMatrix == this && (&secondDestMatrix != this))
     {
         secondDestMatrix._deallocMemory();
         secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, c_SecondDestMatrixColumnCapacity);
 
-        if (splitVertically) {
-            for (int row{splitRowColumnNr}; row<m_NrOfRows; ++row)
-            {
-                for (int col{0}; col<m_NrOfColumns; ++col)
-                {
-                    secondDestMatrix.m_pBaseArrayPtr[row-splitRowColumnNr][col] = m_pBaseArrayPtr[row][col];
-                }
-            }
-
-            firstDestMatrix._decreaseRowCapacity(m_RowCapacity - c_FirstDestMatrixRowCapacity);
-            firstDestMatrix._decreaseNrOfrows(m_NrOfRows - c_FirstDestMatrixNrOfRows);
-        }
-        else
+        for (int row{splitRowNr}; row<m_NrOfRows; ++row)
         {
-            for (int row{0}; row<m_NrOfRows; ++row)
+            for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                for (int col{splitRowColumnNr}; col<m_NrOfColumns; ++col)
-                {
-                    secondDestMatrix.m_pBaseArrayPtr[row][col-splitRowColumnNr] = m_pBaseArrayPtr[row][col];
-                }
+                secondDestMatrix.m_pBaseArrayPtr[row-splitRowNr][col] = m_pBaseArrayPtr[row][col];
             }
+        }
 
-            Matrix matrix{std::move(*this)};
-            _deallocMemory();
-            _allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, c_FirstDestMatrixRowCapacity, c_FirstDestMatrixColumnCapacity);
+        firstDestMatrix._decreaseRowCapacity(m_RowCapacity - c_FirstDestMatrixRowCapacity);
+        firstDestMatrix._decreaseNrOfrows(m_NrOfRows - c_FirstDestMatrixNrOfRows);
+    }
+    else if (&firstDestMatrix != this && (&secondDestMatrix == this))
+    {
+        firstDestMatrix._deallocMemory();
+        firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, c_FirstDestMatrixRowCapacity, c_FirstDestMatrixColumnCapacity);
 
-            for (int row{0}; row<m_NrOfRows; ++row)
+        for (int row{0}; row<splitRowNr; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                for (int col{0}; col<splitRowColumnNr; ++col)
-                {
-                    firstDestMatrix.m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
-                }
+                firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
+            }
+        }
+
+        DataType** pBaseArrayPtr{new DataType*[c_SecondDestMatrixRowCapacity]};
+
+        for (int row{splitRowNr}; row<m_NrOfRows; ++row)
+        {
+            pBaseArrayPtr[row-splitRowNr] = m_pBaseArrayPtr[row];
+            m_pBaseArrayPtr[row] = nullptr;
+        }
+
+        for (int row{splitRowNr}; row < c_SecondDestMatrixRowCapacity; ++row)
+        {
+            pBaseArrayPtr[row] = nullptr;
+        }
+
+        _deallocMemory();
+
+        m_pBaseArrayPtr = pBaseArrayPtr;
+        pBaseArrayPtr = nullptr;
+
+        m_NrOfRows = c_SecondDestMatrixNrOfRows;
+        m_NrOfColumns = c_SecondDestMatrixNrOfColumns;
+        m_RowCapacity = c_SecondDestMatrixRowCapacity;
+        m_ColumnCapacity = c_SecondDestMatrixColumnCapacity;
+    }
+    else
+    {
+        firstDestMatrix._deallocMemory();
+        firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, c_FirstDestMatrixRowCapacity, c_FirstDestMatrixColumnCapacity);
+
+        secondDestMatrix._deallocMemory();
+        secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, c_SecondDestMatrixColumnCapacity);
+
+        for (int row{0}; row<splitRowNr; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
+            }
+        }
+
+        for (int row{splitRowNr}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<m_NrOfColumns; ++col)
+            {
+                secondDestMatrix.m_pBaseArrayPtr[row-splitRowNr][col] = m_pBaseArrayPtr[row][col];
+            }
+        }
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitColumnNr)
+{
+    if (&firstDestMatrix == &secondDestMatrix)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::SAME_VARIABLE_TWO_ARGS]};
+    }
+
+    if (splitColumnNr < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (splitColumnNr >= m_NrOfColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
+    }
+
+    if (splitColumnNr == 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_COLUMNS]};
+    }
+
+    const int c_FirstDestMatrixNrOfRows{m_NrOfRows};
+    const int c_FirstDestMatrixNrOfColumns{splitColumnNr};
+    const int c_FirstDestMatrixRowCapacity{m_RowCapacity};
+    const int c_FirstDestMatrixColumnCapacity{c_FirstDestMatrixNrOfColumns + c_FirstDestMatrixNrOfColumns/4};
+
+    const int c_SecondDestMatrixNrOfRows{m_NrOfRows};
+    const int c_SecondDestMatrixNrOfColumns{m_NrOfColumns - splitColumnNr};
+    const int c_SecondDestMatrixRowCapacity{m_RowCapacity};
+    const int c_SecondDestMatrixColumnCapacity{c_SecondDestMatrixNrOfColumns + c_SecondDestMatrixNrOfColumns/4};
+
+    if (&firstDestMatrix == this && (&secondDestMatrix != this))
+    {
+        secondDestMatrix._deallocMemory();
+        secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, c_SecondDestMatrixColumnCapacity);
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{splitColumnNr}; col<m_NrOfColumns; ++col)
+            {
+                secondDestMatrix.m_pBaseArrayPtr[row][col-splitColumnNr] = m_pBaseArrayPtr[row][col];
+            }
+        }
+
+        Matrix matrix{std::move(*this)};
+        _deallocMemory();
+        _allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, c_FirstDestMatrixRowCapacity, c_FirstDestMatrixColumnCapacity);
+
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<splitColumnNr; ++col)
+            {
+                firstDestMatrix.m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
             }
         }
     }
@@ -1035,58 +1117,23 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
         firstDestMatrix._deallocMemory();
         firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, c_FirstDestMatrixRowCapacity, c_FirstDestMatrixColumnCapacity);
 
-        if (splitVertically) {
-            for (int row{0}; row<splitRowColumnNr; ++row)
-            {
-                for (int col{0}; col<m_NrOfColumns; ++col)
-                {
-                    firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
-                }
-            }
-
-            DataType** pBaseArrayPtr{new DataType*[c_SecondDestMatrixRowCapacity]};
-
-            for (int row{splitRowColumnNr}; row<m_NrOfRows; ++row)
-            {
-                pBaseArrayPtr[row-splitRowColumnNr] = m_pBaseArrayPtr[row];
-                m_pBaseArrayPtr[row] = nullptr;
-            }
-
-            for (int row{splitRowColumnNr}; row < c_SecondDestMatrixRowCapacity; ++row)
-            {
-                pBaseArrayPtr[row] = nullptr;
-            }
-
-            _deallocMemory();
-
-            m_pBaseArrayPtr = pBaseArrayPtr;
-            pBaseArrayPtr = nullptr;
-
-            m_NrOfRows = c_SecondDestMatrixNrOfRows;
-            m_NrOfColumns = c_SecondDestMatrixNrOfColumns;
-            m_RowCapacity = c_SecondDestMatrixRowCapacity;
-            m_ColumnCapacity = c_SecondDestMatrixColumnCapacity;
-        }
-        else
+        for (int row{0}; row<m_NrOfRows; ++row)
         {
-            for (int row{0}; row<m_NrOfRows; ++row)
+            for (int col{0}; col<splitColumnNr; ++col)
             {
-                for (int col{0}; col<splitRowColumnNr; ++col)
-                {
-                    firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
-                }
+                firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
             }
+        }
 
-            Matrix matrix{std::move(*this)};
-            _deallocMemory();
-            _allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, c_SecondDestMatrixColumnCapacity);
+        Matrix matrix{std::move(*this)};
+        _deallocMemory();
+        _allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, c_SecondDestMatrixColumnCapacity);
 
-            for (int row{0}; row<c_SecondDestMatrixNrOfRows; ++row)
+        for (int row{0}; row<c_SecondDestMatrixNrOfRows; ++row)
+        {
+            for (int col{0}; col<c_SecondDestMatrixNrOfColumns; ++col)
             {
-                for (int col{0}; col<c_SecondDestMatrixNrOfColumns; ++col)
-                {
-                    m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col+splitRowColumnNr];
-                }
+                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col+splitColumnNr];
             }
         }
     }
@@ -1098,39 +1145,19 @@ void Matrix<DataType>::split(Matrix<DataType>& firstDestMatrix, Matrix<DataType>
         secondDestMatrix._deallocMemory();
         secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, c_SecondDestMatrixColumnCapacity);
 
-        if (splitVertically) {
-            for (int row{0}; row<splitRowColumnNr; ++row)
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{0}; col<splitColumnNr; ++col)
             {
-                for (int col{0}; col<m_NrOfColumns; ++col)
-                {
-                    firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
-                }
-            }
-
-            for (int row{splitRowColumnNr}; row<m_NrOfRows; ++row)
-            {
-                for (int col{0}; col<m_NrOfColumns; ++col)
-                {
-                    secondDestMatrix.m_pBaseArrayPtr[row-splitRowColumnNr][col] = m_pBaseArrayPtr[row][col];
-                }
+                firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
             }
         }
-        else
-        {
-            for (int row{0}; row<m_NrOfRows; ++row)
-            {
-                for (int col{0}; col<splitRowColumnNr; ++col)
-                {
-                    firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
-                }
-            }
 
-            for (int row{0}; row<m_NrOfRows; ++row)
+        for (int row{0}; row<m_NrOfRows; ++row)
+        {
+            for (int col{splitColumnNr}; col<m_NrOfColumns; ++col)
             {
-                for (int col{splitRowColumnNr}; col<m_NrOfColumns; ++col)
-                {
-                    secondDestMatrix.m_pBaseArrayPtr[row][col-splitRowColumnNr] = m_pBaseArrayPtr[row][col];
-                }
+                secondDestMatrix.m_pBaseArrayPtr[row][col-splitColumnNr] = m_pBaseArrayPtr[row][col];
             }
         }
     }
