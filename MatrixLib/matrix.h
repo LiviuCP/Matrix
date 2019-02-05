@@ -886,7 +886,21 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
     {
         Matrix matrix{std::move(*this)};
         _deallocMemory();
-        _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+        if (matrix.m_ColumnCapacity < c_NrOfColumns)
+        {
+            if (matrix.m_RowCapacity < c_NrOfRows)
+            {
+                _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+            }
+            else
+            {
+                _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, c_ColumnCapacity);
+            }
+        }
+        else
+        {
+            _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
+        }
 
         for(int row{0}; row<m_NrOfRows; ++row)
         {
@@ -908,7 +922,21 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
     {
         Matrix matrix{std::move(*this)};
         _deallocMemory();
-        _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+        if (matrix.m_ColumnCapacity < c_NrOfColumns || matrix.m_RowCapacity < c_NrOfRows)
+        {
+            if (matrix.m_RowCapacity < c_NrOfRows)
+            {
+                _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+            }
+            else
+            {
+                _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, c_ColumnCapacity);
+            }
+        }
+        else
+        {
+            _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
+        }
 
         for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
         {
@@ -930,7 +958,21 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
     {
         Matrix matrix{std::move(*this)};
         _deallocMemory();
-        _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+        if (matrix.m_ColumnCapacity < c_NrOfColumns || matrix.m_RowCapacity < c_NrOfRows)
+        {
+            if (matrix.m_RowCapacity < c_NrOfRows)
+            {
+                _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+            }
+            else
+            {
+                _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, c_ColumnCapacity);
+            }
+        }
+        else
+        {
+            _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
+        }
 
         for(int row{0}; row<m_NrOfRows; ++row)
         {
@@ -950,8 +992,32 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
     }
     else
     {
-        _deallocMemory();
-        _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+        if (m_ColumnCapacity < c_NrOfColumns)
+        {
+            if (m_RowCapacity < c_NrOfRows)
+            {
+                _deallocMemory();
+                _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
+            }
+            else
+            {
+                _deallocMemory();
+                _allocMemory(c_NrOfRows, c_NrOfColumns, m_RowCapacity, c_ColumnCapacity);
+            }
+        }
+        else if (m_RowCapacity < c_NrOfRows)
+        {
+            int sameColumnCapacity{m_ColumnCapacity};
+            _deallocMemory();
+            _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, sameColumnCapacity);
+        }
+        else
+        {
+            int sameRowCapacity{m_RowCapacity};
+            int sameColumnCapacity{m_ColumnCapacity};
+            _deallocMemory();
+            _allocMemory(c_NrOfRows, c_NrOfColumns, sameRowCapacity, sameColumnCapacity);
+        }
 
         for(int row{0}; row<m_NrOfRows; ++row)
         {
