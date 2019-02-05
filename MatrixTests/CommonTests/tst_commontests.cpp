@@ -3961,7 +3961,7 @@ void CommonTests::testCapacityWithCatByRow()
 
         thirdMatrix.catByRow(firstMatrix, secondMatrix);
 
-        QVERIFY2(thirdMatrix.getRowCapacity() == 11 && thirdMatrix.getColumnCapacity() == 8,
+        QVERIFY2(thirdMatrix.getRowCapacity() == 12 && thirdMatrix.getColumnCapacity() == 8,
                  "Vertical concatenation failed, capacity of the destination matrix is not correct!");
     }
 
