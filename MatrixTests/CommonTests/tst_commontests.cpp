@@ -50,6 +50,7 @@ private slots:
     void testCatByRow();
     void testCapacityWithCatByRow();
     void testCatByColumn();
+    void testCapacityWithCatByColumn();
     void testSplitByRow();
     void testSplitByColumn();
     void testSwapMatrixes();
@@ -4159,6 +4160,224 @@ void CommonTests::testCatByColumn()
                  secondMatrix.at(1, 3) == 4,
 
                  "Horizontal concatenation failed, destination matrix has incorrect values!");
+    }
+}
+
+void CommonTests::testCapacityWithCatByColumn()
+{
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+        firstMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 11,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+
+        firstMatrix.resize(7, 4, 8, 8);
+        firstMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 11,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+
+        firstMatrix.resize(7, 4, 8, 9);
+        firstMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 9,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+
+        firstMatrix.resize(7, 4, 8, 10);
+        firstMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 10,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+        secondMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 11,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+
+        secondMatrix.resize(7, 5, 8, 8);
+        secondMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 11,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+
+        secondMatrix.resize(7, 5, 8, 9);
+        secondMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 9,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+
+        secondMatrix.resize(7, 5, 8, 10);
+        secondMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 10,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+
+        firstMatrix.catByColumn(firstMatrix, firstMatrix);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 10,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+
+        firstMatrix.resize(7, 4, 8, 7);
+        firstMatrix.catByColumn(firstMatrix, firstMatrix);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 10,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+
+        firstMatrix.resize(7, 4, 8, 8);
+        firstMatrix.catByColumn(firstMatrix, firstMatrix);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 8,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+
+        firstMatrix.resize(7, 4, 8, 9);
+        firstMatrix.catByColumn(firstMatrix, firstMatrix);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 9,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix thirdMatrix{};
+
+        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(thirdMatrix.getRowCapacity() == 8 && thirdMatrix.getColumnCapacity() == 11,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix thirdMatrix{5, 7, -1};
+
+        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(thirdMatrix.getRowCapacity() == 8 && thirdMatrix.getColumnCapacity() == 11,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix thirdMatrix{5, 10, -1};
+
+        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(thirdMatrix.getRowCapacity() == 8 && thirdMatrix.getColumnCapacity() == 12,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix thirdMatrix{6, 6, -1};
+
+        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(thirdMatrix.getRowCapacity() == 7 && thirdMatrix.getColumnCapacity() == 11,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix thirdMatrix{6, 7, -1};
+        thirdMatrix.resize(6, 7, 7, 9);
+
+        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(thirdMatrix.getRowCapacity() == 7 && thirdMatrix.getColumnCapacity() == 9,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix thirdMatrix{6, 7, -1};
+        thirdMatrix.resize(6, 7, 8, 9);
+
+        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(thirdMatrix.getRowCapacity() == 8 && thirdMatrix.getColumnCapacity() == 9,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix thirdMatrix{6, 7, -1};
+        thirdMatrix.resize(6, 7, 7, 10);
+
+        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(thirdMatrix.getRowCapacity() == 7 && thirdMatrix.getColumnCapacity() == 10,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix thirdMatrix{6, 7, -1};
+        thirdMatrix.resize(6, 7, 8, 10);
+
+        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(thirdMatrix.getRowCapacity() == 8 && thirdMatrix.getColumnCapacity() == 10,
+                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
     }
 }
 
