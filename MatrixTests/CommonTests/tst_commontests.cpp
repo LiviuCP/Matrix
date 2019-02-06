@@ -158,27 +158,37 @@ void CommonTests::testDiagMatrixConstructor()
 
 void CommonTests::testCopyConstructor()
 {
-    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6} };
-    IntMatrix matrixCopy{matrix};
-
-    if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
     {
-        QFAIL("Copy constructor initialized matrix with wrong capacity");
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix matrixCopy{matrix};
+
+        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Copy constructor initialized matrix with wrong capacity");
+        }
+
+        if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
+        {
+            QFAIL("Copy constructor initialized matrix with wrong number of rows and columns");
+        }
+
+        QVERIFY2(matrixCopy.at(0, 0) == 1 &&
+                 matrixCopy.at(0, 1) == 2 &&
+                 matrixCopy.at(0, 2) == 3 &&
+                 matrixCopy.at(1, 0) == 4 &&
+                 matrixCopy.at(1, 1) == 5 &&
+                 matrixCopy.at(1, 2) == 6,
+
+                 "Matrix elements have not been correctly initialized by the copy constructor");
     }
 
-    if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
     {
-        QFAIL("Copy constructor initialized matrix with wrong number of rows and columns");
+        IntMatrix matrix{};
+        IntMatrix matrixCopy{matrix};
+
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Copy constructor initialized matrix with wrong capacity");
+        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Copy constructor initialized matrix with wrong number of rows and columns");
     }
-
-    QVERIFY2(matrixCopy.at(0, 0) == 1 &&
-             matrixCopy.at(0, 1) == 2 &&
-             matrixCopy.at(0, 2) == 3 &&
-             matrixCopy.at(1, 0) == 4 &&
-             matrixCopy.at(1, 1) == 5 &&
-             matrixCopy.at(1, 2) == 6,
-
-             "Matrix elements have not been correctly initialized by the copy constructor");
 }
 
 void CommonTests::testCapacityWithCopyConstructor()
