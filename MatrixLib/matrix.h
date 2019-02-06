@@ -1485,6 +1485,14 @@ void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns, int rowCapaci
         m_NrOfRows = nrOfRows;
         m_NrOfColumns = nrOfColumns;
     }
+    else
+    {
+        m_NrOfRows = 0;
+        m_NrOfColumns = 0;
+        m_RowCapacity = 0;
+        m_ColumnCapacity = 0;
+        m_pBaseArrayPtr = nullptr;
+    }
 }
 
 template<typename DataType>
