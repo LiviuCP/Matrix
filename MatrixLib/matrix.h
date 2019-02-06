@@ -80,7 +80,7 @@ private:
     void _increaseNrOfRows(int nrOfRowsIncrement);
     void _decreaseNrOfrows(int nrOfRowsDecrement);
 
-    bool _isEqualTo(const Matrix<DataType> matrix) const;
+    bool _isEqualTo(const Matrix<DataType>& matrix) const;
 
     DataType** m_pBaseArrayPtr;
     int m_NrOfRows;
@@ -1628,7 +1628,7 @@ void Matrix<DataType>::_decreaseNrOfrows(int nrOfRowsDecrement)
 }
 
 template<typename DataType>
-bool Matrix<DataType>::_isEqualTo(const Matrix<DataType> matrix) const
+bool Matrix<DataType>::_isEqualTo(const Matrix<DataType>& matrix) const
 {
     bool areEqual{false};
 
