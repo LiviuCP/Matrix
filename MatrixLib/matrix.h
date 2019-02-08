@@ -758,25 +758,25 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataTyp
 
     if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
     {
-        int startingRowNr{m_NrOfRows};
+        const int c_StartingRowNr{m_NrOfRows};
         if (m_RowCapacity < c_NrOfRows)
         {
             _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
         }
         _increaseNrOfRows(c_NrOfRows - m_NrOfRows);
 
-        for (int row{startingRowNr}; row<m_NrOfRows; ++row)
+        for (int row{c_StartingRowNr}; row<m_NrOfRows; ++row)
         {
             for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-startingRowNr][col];
+                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-c_StartingRowNr][col];
             }
         }
     }
     else if (&firstSrcMatrix != this && (&secondSrcMatrix == this))
     {
-        int newRowCapacity{m_RowCapacity < c_NrOfRows ? c_RowCapacity : m_RowCapacity};
-        DataType** pBaseArrayPtr{new DataType*[newRowCapacity]};
+        const int c_NewRowCapacity{m_RowCapacity < c_NrOfRows ? c_RowCapacity : m_RowCapacity};
+        DataType** pBaseArrayPtr{new DataType*[c_NewRowCapacity]};
 
         for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
         {
@@ -789,7 +789,7 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataTyp
             m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows] = nullptr;
         }
 
-        for (int row{c_NrOfRows}; row<newRowCapacity; ++row)
+        for (int row{c_NrOfRows}; row<c_NewRowCapacity; ++row)
         {
             pBaseArrayPtr[row] = nullptr;
         }
@@ -806,22 +806,22 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataTyp
         m_pBaseArrayPtr = pBaseArrayPtr;
         pBaseArrayPtr = nullptr;
         m_NrOfRows = c_NrOfRows;
-        m_RowCapacity = newRowCapacity;
+        m_RowCapacity = c_NewRowCapacity;
     }
     else if (&firstSrcMatrix == this && (&secondSrcMatrix == this))
     {
-        int startingRowNr{m_NrOfRows};
+        const int c_StartingRowNr{m_NrOfRows};
         if (m_RowCapacity < c_NrOfRows)
         {
             _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
         }
         _increaseNrOfRows(m_NrOfRows);
 
-        for (int row{startingRowNr}; row<m_NrOfRows; ++row)
+        for (int row{c_StartingRowNr}; row<m_NrOfRows; ++row)
         {
             for (int col{0}; col<m_NrOfColumns; ++col)
             {
-                m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row-startingRowNr][col];
+                m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row-c_StartingRowNr][col];
             }
         }
     }
@@ -836,9 +836,9 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataTyp
             }
             else
             {
-                int sameRowCapacity{m_RowCapacity};
+                const int c_SameRowCapacity{m_RowCapacity};
                 _deallocMemory();
-                _allocMemory(c_NrOfRows, c_NrOfColumns, sameRowCapacity, c_ColumnCapacity);
+                _allocMemory(c_NrOfRows, c_NrOfColumns, c_SameRowCapacity, c_ColumnCapacity);
             }
         }
         else if (m_RowCapacity < c_NrOfRows)
