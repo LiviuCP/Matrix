@@ -1102,7 +1102,7 @@ void CommonTests::testGetTransposedMatrix()
 
         matrix.getTransposedMatrix(matrix);
 
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 2)
+        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 3)
         {
             QFAIL("Calculating transposed matrix failed, capacity is not correct!");
         }
@@ -1324,7 +1324,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
 
         matrix.getTransposedMatrix(matrix);
 
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 3,
+        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5,
 
                  "Calculating transposed matrix failed, capacity of the matrix after transposing is not correct!");
     }
@@ -1334,7 +1334,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
 
         matrix.getTransposedMatrix(matrix);
 
-        QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 5,
+        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5,
 
                  "Calculating transposed matrix failed, capacity of the matrix after transposing is not correct!");
     }
@@ -1344,7 +1344,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
 
         matrix.getTransposedMatrix(matrix);
 
-        QVERIFY2(matrix.getRowCapacity() == 10 && matrix.getColumnCapacity() == 8,
+        QVERIFY2(matrix.getRowCapacity() == 8 && matrix.getColumnCapacity() == 10,
 
                  "Calculating transposed matrix failed, capacity of the matrix after transposing is not correct!");
     }
@@ -1354,7 +1354,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
 
         matrix.getTransposedMatrix(matrix);
 
-        QVERIFY2(matrix.getRowCapacity() == 8 && matrix.getColumnCapacity() == 10,
+        QVERIFY2(matrix.getRowCapacity() == 10 && matrix.getColumnCapacity() == 8,
 
                  "Calculating transposed matrix failed, capacity of the matrix after transposing is not correct!");
     }
