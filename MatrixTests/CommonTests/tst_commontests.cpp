@@ -52,6 +52,7 @@ private slots:
     void testCatByColumn();
     void testCapacityWithCatByColumn();
     void testSplitByRow();
+    void testCapacityWithSplitByRow();
     void testSplitByColumn();
     void testSwapMatrixes();
     void testSwapItems();
@@ -4509,6 +4510,293 @@ void CommonTests::testSplitByRow()
                  firstMatrix.at(0, 1) == 6,
 
                  "Vertical split failed, second destination matrix has incorrect values!");
+    }
+}
+
+void CommonTests::testCapacityWithSplitByRow()
+{
+    {
+        IntMatrix firstMatrix{15, 17, -3};
+        IntMatrix secondMatrix{};
+        firstMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{15, 17, -3};
+        IntMatrix secondMatrix{5, 8, 2};
+        firstMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{15, 17, -3};
+        IntMatrix secondMatrix{5, 8, 2};
+        secondMatrix.resize(5, 8, 6, 17);
+        firstMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 17,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{15, 17, -3};
+        IntMatrix secondMatrix{5, 8, 2};
+        secondMatrix.resize(5, 8, 6, 18);
+        firstMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 18,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{15, 17, -3};
+        IntMatrix secondMatrix{6, 15, 2};
+        firstMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 7 && secondMatrix.getColumnCapacity() == 18,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{15, 17, -3};
+        IntMatrix secondMatrix{7, 17, 2};
+        firstMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{};
+        IntMatrix secondMatrix{15, 17, -3};
+        secondMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{5, 8, 2};
+        IntMatrix secondMatrix{15, 17, -3};
+        secondMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{6, 8, 2};
+        IntMatrix secondMatrix{15, 17, -3};
+        firstMatrix.resize(6, 8, 7, 17);
+        secondMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 17,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{6, 8, 2};
+        IntMatrix secondMatrix{15, 17, -3};
+        firstMatrix.resize(6, 8, 7, 18);
+        secondMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 18,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 15, 2};
+        IntMatrix secondMatrix{15, 17, -3};
+        secondMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 18,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{8, 17, 2};
+        IntMatrix secondMatrix{15, 17, -3};
+        secondMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{};
+        IntMatrix secondMatrix{};
+        IntMatrix thirdMatrix{15, 17, -3};
+        thirdMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{5, 8, 2};
+        IntMatrix secondMatrix{};
+        IntMatrix thirdMatrix{15, 17, -3};
+        thirdMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{6, 8, 2};
+        IntMatrix secondMatrix{};
+        IntMatrix thirdMatrix{15, 17, -3};
+        firstMatrix.resize(6, 8, 7, 17);
+        thirdMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 17,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{6, 8, 2};
+        IntMatrix secondMatrix{};
+        IntMatrix thirdMatrix{15, 17, -3};
+        firstMatrix.resize(6, 8, 7, 18);
+        thirdMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 18,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{7, 15, 2};
+        IntMatrix secondMatrix{};
+        IntMatrix thirdMatrix{15, 17, -3};
+        thirdMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 18,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{8, 17, 2};
+        IntMatrix secondMatrix{};
+        IntMatrix thirdMatrix{15, 17, -3};
+        thirdMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{};
+        IntMatrix secondMatrix{5, 8, 2};
+        IntMatrix thirdMatrix{15, 17, -3};
+        thirdMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{};
+        IntMatrix secondMatrix{5, 8, 2};
+        IntMatrix thirdMatrix{15, 17, -3};
+        secondMatrix.resize(5, 8, 6, 17);
+        thirdMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 17,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{};
+        IntMatrix secondMatrix{5, 8, 2};
+        IntMatrix thirdMatrix{15, 17, -3};
+        secondMatrix.resize(5, 8, 6, 18);
+        thirdMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 18,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{};
+        IntMatrix secondMatrix{6, 15, 2};
+        IntMatrix thirdMatrix{15, 17, -3};
+        thirdMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 7 && secondMatrix.getColumnCapacity() == 18,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{};
+        IntMatrix secondMatrix{7, 17, 2};
+        IntMatrix thirdMatrix{15, 17, -3};
+        thirdMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix firstMatrix{8, 17, 2};
+        IntMatrix secondMatrix{7, 17, 2};
+        IntMatrix thirdMatrix{15, 17, -3};
+        thirdMatrix.splitByRow(firstMatrix, secondMatrix, 8);
+
+        QVERIFY2(firstMatrix.getRowCapacity() == 10 && firstMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the first destination matrix is not correct!");
+        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 21,
+                 "Vertical split failed, capacity of the second destination matrix is not correct!");
     }
 }
 
