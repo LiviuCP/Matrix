@@ -4439,7 +4439,7 @@ void CommonTests::testSplitByRow()
 
         firstMatrix.splitByRow(firstMatrix, secondMatrix, 2);
 
-        if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 2)
+        if (firstMatrix.getRowCapacity() != 3 || firstMatrix.getColumnCapacity() != 2)
         {
             QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
         }
@@ -4488,7 +4488,7 @@ void CommonTests::testSplitByRow()
             QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
         }
 
-        if (firstMatrix.getRowCapacity() != 1 || firstMatrix.getColumnCapacity() != 2)
+        if (firstMatrix.getRowCapacity() != 3 || firstMatrix.getColumnCapacity() != 2)
         {
             QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
         }
