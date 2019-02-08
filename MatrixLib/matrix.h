@@ -1284,8 +1284,33 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
 
     if (&firstDestMatrix == this && (&secondDestMatrix != this))
     {
-        secondDestMatrix._deallocMemory();
-        secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, c_SecondDestMatrixColumnCapacity);
+        if (secondDestMatrix.m_RowCapacity < c_SecondDestMatrixNrOfRows)
+        {
+            if (secondDestMatrix.m_ColumnCapacity < c_SecondDestMatrixNrOfColumns)
+            {
+                secondDestMatrix._deallocMemory();
+                secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, c_SecondDestMatrixColumnCapacity);
+            }
+            else
+            {
+                int sameColumnCapacity{secondDestMatrix.m_ColumnCapacity};
+                secondDestMatrix._deallocMemory();
+                secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, sameColumnCapacity);
+            }
+        }
+        else if (secondDestMatrix.m_ColumnCapacity < c_SecondDestMatrixNrOfColumns)
+        {
+            int sameRowCapacity{secondDestMatrix.m_RowCapacity};
+            secondDestMatrix._deallocMemory();
+            secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, sameRowCapacity, c_SecondDestMatrixColumnCapacity);
+        }
+        else
+        {
+            int sameRowCapacity{secondDestMatrix.m_RowCapacity};
+            int sameColumnCapacity{secondDestMatrix.m_ColumnCapacity};
+            secondDestMatrix._deallocMemory();
+            secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, sameRowCapacity, sameColumnCapacity);
+        }
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
@@ -1297,7 +1322,7 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
 
         Matrix matrix{std::move(*this)};
         _deallocMemory();
-        _allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, c_FirstDestMatrixRowCapacity, c_FirstDestMatrixColumnCapacity);
+        _allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
@@ -1309,8 +1334,33 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
     }
     else if (&firstDestMatrix != this && (&secondDestMatrix == this))
     {
-        firstDestMatrix._deallocMemory();
-        firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, c_FirstDestMatrixRowCapacity, c_FirstDestMatrixColumnCapacity);
+        if (firstDestMatrix.m_RowCapacity < c_FirstDestMatrixNrOfRows)
+        {
+            if (firstDestMatrix.m_ColumnCapacity < c_FirstDestMatrixNrOfColumns)
+            {
+                firstDestMatrix._deallocMemory();
+                firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, c_FirstDestMatrixRowCapacity, c_FirstDestMatrixColumnCapacity);
+            }
+            else
+            {
+                int sameColumnCapacity{firstDestMatrix.m_ColumnCapacity};
+                firstDestMatrix._deallocMemory();
+                firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, c_FirstDestMatrixRowCapacity, sameColumnCapacity);
+            }
+        }
+        else if (firstDestMatrix.m_ColumnCapacity < c_FirstDestMatrixNrOfColumns)
+        {
+            int sameRowCapacity{firstDestMatrix.m_RowCapacity};
+            firstDestMatrix._deallocMemory();
+            firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, sameRowCapacity, c_FirstDestMatrixColumnCapacity);
+        }
+        else
+        {
+            int sameRowCapacity{firstDestMatrix.m_RowCapacity};
+            int sameColumnCapacity{firstDestMatrix.m_ColumnCapacity};
+            firstDestMatrix._deallocMemory();
+            firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, sameRowCapacity, sameColumnCapacity);
+        }
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {
@@ -1322,7 +1372,7 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
 
         Matrix matrix{std::move(*this)};
         _deallocMemory();
-        _allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, c_SecondDestMatrixColumnCapacity);
+        _allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
 
         for (int row{0}; row<c_SecondDestMatrixNrOfRows; ++row)
         {
@@ -1334,11 +1384,61 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
     }
     else
     {
-        firstDestMatrix._deallocMemory();
-        firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, c_FirstDestMatrixRowCapacity, c_FirstDestMatrixColumnCapacity);
+        if (firstDestMatrix.m_RowCapacity < c_FirstDestMatrixNrOfRows)
+        {
+            if (firstDestMatrix.m_ColumnCapacity < c_FirstDestMatrixNrOfColumns)
+            {
+                firstDestMatrix._deallocMemory();
+                firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, c_FirstDestMatrixRowCapacity, c_FirstDestMatrixColumnCapacity);
+            }
+            else
+            {
+                int sameColumnCapacity{firstDestMatrix.m_ColumnCapacity};
+                firstDestMatrix._deallocMemory();
+                firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, c_FirstDestMatrixRowCapacity, sameColumnCapacity);
+            }
+        }
+        else if (firstDestMatrix.m_ColumnCapacity < c_FirstDestMatrixNrOfColumns)
+        {
+            int sameRowCapacity{firstDestMatrix.m_RowCapacity};
+            firstDestMatrix._deallocMemory();
+            firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, sameRowCapacity, c_FirstDestMatrixColumnCapacity);
+        }
+        else
+        {
+            int sameRowCapacity{firstDestMatrix.m_RowCapacity};
+            int sameColumnCapacity{firstDestMatrix.m_ColumnCapacity};
+            firstDestMatrix._deallocMemory();
+            firstDestMatrix._allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, sameRowCapacity, sameColumnCapacity);
+        }
 
-        secondDestMatrix._deallocMemory();
-        secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, c_SecondDestMatrixColumnCapacity);
+        if (secondDestMatrix.m_RowCapacity < c_SecondDestMatrixNrOfRows)
+        {
+            if (secondDestMatrix.m_ColumnCapacity < c_SecondDestMatrixNrOfColumns)
+            {
+                secondDestMatrix._deallocMemory();
+                secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, c_SecondDestMatrixColumnCapacity);
+            }
+            else
+            {
+                int sameColumnCapacity{secondDestMatrix.m_ColumnCapacity};
+                secondDestMatrix._deallocMemory();
+                secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, c_SecondDestMatrixRowCapacity, sameColumnCapacity);
+            }
+        }
+        else if (secondDestMatrix.m_ColumnCapacity < c_SecondDestMatrixNrOfColumns)
+        {
+            int sameRowCapacity{secondDestMatrix.m_RowCapacity};
+            secondDestMatrix._deallocMemory();
+            secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, sameRowCapacity, c_SecondDestMatrixColumnCapacity);
+        }
+        else
+        {
+            int sameRowCapacity{secondDestMatrix.m_RowCapacity};
+            int sameColumnCapacity{secondDestMatrix.m_ColumnCapacity};
+            secondDestMatrix._deallocMemory();
+            secondDestMatrix._allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, sameRowCapacity, sameColumnCapacity);
+        }
 
         for (int row{0}; row<m_NrOfRows; ++row)
         {

@@ -4560,7 +4560,7 @@ void CommonTests::testSplitByColumn()
 
         firstMatrix.splitByColumn(firstMatrix, secondMatrix, 2);
 
-        if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 2)
+        if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 3)
         {
             QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
         }
@@ -4609,7 +4609,7 @@ void CommonTests::testSplitByColumn()
             QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
         }
 
-        if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 1)
+        if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 3)
         {
             QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
         }
