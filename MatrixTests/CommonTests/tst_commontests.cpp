@@ -756,76 +756,55 @@ void CommonTests::testCopyAssignmentOperator()
 
 void CommonTests::testCapacityWithCopyAssignmentOperator()
 {
+    using namespace std;
+    auto testCapacity = [](string testNumber, const IntMatrix& matrix, IntMatrix& matrixCopy, int desiredRowCapacity, int desiredColumnCapacity)
     {
-        IntMatrix matrix{3, 4, -1};
-        IntMatrix matrixCopy{};
-
         matrixCopy = matrix;
 
-        QVERIFY2(matrixCopy.getRowCapacity() == 3 && matrixCopy.getColumnCapacity() == 5, "Copy assignment failed, capacity of the destination matrix is not correct!");
+        QVERIFY2(matrixCopy.getRowCapacity() == desiredRowCapacity && matrixCopy.getColumnCapacity() == desiredColumnCapacity,
+                 string{"Copy assignment failed, capacity of the destination matrix is not correct! Test number: " + testNumber}.c_str());
+    };
+
+    int testNumber{1};
+
+    {
+        IntMatrix matrixCopy{};
+        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{3, 4, -1}, matrixCopy, 3, 5);
     }
 
     {
-        IntMatrix matrix{4, 3, -1};
         IntMatrix matrixCopy{};
-
-        matrixCopy = matrix;
-
-        QVERIFY2(matrixCopy.getRowCapacity() == 5 && matrixCopy.getColumnCapacity() == 3, "Copy assignment failed, capacity of the destination matrix is not correct!");
+        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{4, 3, -1}, matrixCopy, 5, 3);
     }
 
     {
-        IntMatrix matrix{7, 8, -1};
         IntMatrix matrixCopy{};
-
-        matrixCopy = matrix;
-
-        QVERIFY2(matrixCopy.getRowCapacity() == 8 && matrixCopy.getColumnCapacity() == 10, "Copy assignment failed, capacity of the destination matrix is not correct!");
+        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{7, 8, -1}, matrixCopy, 8, 10);
     }
 
     {
-        IntMatrix matrix{8, 7, -1};
         IntMatrix matrixCopy{};
-
-        matrixCopy = matrix;
-
-        QVERIFY2(matrixCopy.getRowCapacity() == 10 && matrixCopy.getColumnCapacity() == 8, "Copy assignment failed, capacity of the destination matrix is not correct!");
+        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{8, 7, -1}, matrixCopy, 10, 8);
     }
 
     {
-        IntMatrix matrix{3, 4, -1};
         IntMatrix matrixCopy{2, 3, -5};
-
-        matrixCopy = matrix;
-
-        QVERIFY2(matrixCopy.getRowCapacity() == 3 && matrixCopy.getColumnCapacity() == 5, "Copy assignment failed, capacity of the destination matrix is not correct!");
+        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{3, 4, -1}, matrixCopy, 3, 5);
     }
 
     {
-        IntMatrix matrix{4, 3, -1};
         IntMatrix matrixCopy{2, 3, -5};
-
-        matrixCopy = matrix;
-
-        QVERIFY2(matrixCopy.getRowCapacity() == 5 && matrixCopy.getColumnCapacity() == 3, "Copy assignment failed, capacity of the destination matrix is not correct!");
+        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{4, 3, -1}, matrixCopy, 5, 3);
     }
 
     {
-        IntMatrix matrix{7, 8, -1};
         IntMatrix matrixCopy{3, 4, -5};
-
-        matrixCopy = matrix;
-
-        QVERIFY2(matrixCopy.getRowCapacity() == 8 && matrixCopy.getColumnCapacity() == 10, "Copy assignment failed, capacity of the destination matrix is not correct!");
+        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{7, 8, -1}, matrixCopy, 8, 10);
     }
 
     {
-        IntMatrix matrix{8, 7, -1};
         IntMatrix matrixCopy{3, 4, -5};
-
-        matrixCopy = matrix;
-
-        QVERIFY2(matrixCopy.getRowCapacity() == 10 && matrixCopy.getColumnCapacity() == 8, "Copy assignment failed, capacity of the destination matrix is not correct!");
+        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{8, 7, -1}, matrixCopy, 10, 8);
     }
 }
 
@@ -1665,7 +1644,7 @@ void CommonTests::testCapacityResizeWithoutFillingInNewValues()
     auto testCapacity = [](string testNumber,
                            IntMatrix& matrix,
                            const IntMatrix& matrixCopy,
-                           int desiredRawCapacity,
+                           int desiredRowCapacity,
                            int desiredColumnCapacity,
                            int nrOfRows,
                            int nrOfColumns,
@@ -1680,7 +1659,7 @@ void CommonTests::testCapacityResizeWithoutFillingInNewValues()
 
         secondMatrixCopy.resize(nrOfRows, nrOfColumns, inputRowCapacity, inputColumnCapacity);
 
-        if (secondMatrixCopy.getRowCapacity() != desiredRawCapacity || secondMatrixCopy.getColumnCapacity() != desiredColumnCapacity)
+        if (secondMatrixCopy.getRowCapacity() != desiredRowCapacity || secondMatrixCopy.getColumnCapacity() != desiredColumnCapacity)
         {
             QFAIL(string{"Resizing failed, capacity of the matrix is not correct! Test number: " + testNumber}.c_str());
         }
