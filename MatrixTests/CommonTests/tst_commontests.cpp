@@ -91,20 +91,21 @@ void CommonTests::testInitListConstructor()
     {
         QFAIL("Init list constructor initialized matrix with wrong capacity");
     }
-
-    if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
+    else if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
     {
         QFAIL("Init list constructor initialized matrix with wrong number of rows and columns");
     }
+    else
+    {
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 3 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 5 &&
+                 matrix.at(1, 2) == 6,
 
-    QVERIFY2(matrix.at(0, 0) == 1 &&
-             matrix.at(0, 1) == 2 &&
-             matrix.at(0, 2) == 3 &&
-             matrix.at(1, 0) == 4 &&
-             matrix.at(1, 1) == 5 &&
-             matrix.at(1, 2) == 6,
-
-             "Matrix elements have not been correctly initialized by the init list constructor");
+                 "Matrix elements have not been correctly initialized by the init list constructor");
+    }
 }
 
 void CommonTests::testIdenticalMatrixConstructor()
@@ -115,20 +116,21 @@ void CommonTests::testIdenticalMatrixConstructor()
     {
         QFAIL("Identical matrix constructor initialized matrix with wrong capacity");
     }
-
-    if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
+    else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
     {
         QFAIL("Identical matrix constructor initialized matrix with wrong number of rows and columns");
     }
+    else
+    {
+        QVERIFY2(matrix.at(0, 0) == 4 &&
+                 matrix.at(0, 1) == 4 &&
+                 matrix.at(1, 0) == 4 &&
+                 matrix.at(1, 1) == 4 &&
+                 matrix.at(2, 0) == 4 &&
+                 matrix.at(2, 1) == 4,
 
-    QVERIFY2(matrix.at(0, 0) == 4 &&
-             matrix.at(0, 1) == 4 &&
-             matrix.at(1, 0) == 4 &&
-             matrix.at(1, 1) == 4 &&
-             matrix.at(2, 0) == 4 &&
-             matrix.at(2, 1) == 4,
-
-             "Matrix elements have not been correctly initialized by the identical matrix constructor");
+                 "Matrix elements have not been correctly initialized by the identical matrix constructor");
+    }
 }
 
 void CommonTests::testDiagMatrixConstructor()
@@ -139,23 +141,24 @@ void CommonTests::testDiagMatrixConstructor()
     {
         QFAIL("Diagonal matrix constructor initialized matrix with wrong capacity");
     }
-
-    if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 3)
+    else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 3)
     {
         QFAIL("Diagonal matrix constructor initialized matrix with wrong number of rows and columns");
     }
+    else
+    {
+        QVERIFY2(matrix.at(0, 0) == 1 &&
+                 matrix.at(0, 1) == 2 &&
+                 matrix.at(0, 2) == 2 &&
+                 matrix.at(1, 0) == 2 &&
+                 matrix.at(1, 1) == 1 &&
+                 matrix.at(1, 2) == 2 &&
+                 matrix.at(2, 0) == 2 &&
+                 matrix.at(2, 1) == 2 &&
+                 matrix.at(2, 2) == 1,
 
-    QVERIFY2(matrix.at(0, 0) == 1 &&
-             matrix.at(0, 1) == 2 &&
-             matrix.at(0, 2) == 2 &&
-             matrix.at(1, 0) == 2 &&
-             matrix.at(1, 1) == 1 &&
-             matrix.at(1, 2) == 2 &&
-             matrix.at(2, 0) == 2 &&
-             matrix.at(2, 1) == 2 &&
-             matrix.at(2, 2) == 1,
-
-             "Matrix elements have not been correctly initialized by the diagonal matrix constructor");
+                 "Matrix elements have not been correctly initialized by the diagonal matrix constructor");
+    }
 }
 
 void CommonTests::testCapacityWithConstructors()
@@ -267,20 +270,21 @@ void CommonTests::testCopyConstructor()
         {
             QFAIL("Copy constructor initialized matrix with wrong capacity");
         }
-
-        if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
+        else if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
         {
             QFAIL("Copy constructor initialized matrix with wrong number of rows and columns");
         }
+        else
+        {
+            QVERIFY2(matrixCopy.at(0, 0) == 1 &&
+                     matrixCopy.at(0, 1) == 2 &&
+                     matrixCopy.at(0, 2) == 3 &&
+                     matrixCopy.at(1, 0) == 4 &&
+                     matrixCopy.at(1, 1) == 5 &&
+                     matrixCopy.at(1, 2) == 6,
 
-        QVERIFY2(matrixCopy.at(0, 0) == 1 &&
-                 matrixCopy.at(0, 1) == 2 &&
-                 matrixCopy.at(0, 2) == 3 &&
-                 matrixCopy.at(1, 0) == 4 &&
-                 matrixCopy.at(1, 1) == 5 &&
-                 matrixCopy.at(1, 2) == 6,
-
-                 "Matrix elements have not been correctly initialized by the copy constructor");
+                     "Matrix elements have not been correctly initialized by the copy constructor");
+        }
     }
 
     {
@@ -332,24 +336,24 @@ void CommonTests::testMoveConstructor()
     {
         QFAIL("Move constructor initialized matrix with wrong capacity");
     }
-
-    if (matrixMove.getNrOfRows() != 2 || matrixMove.getNrOfColumns() != 3)
+    else if (matrixMove.getNrOfRows() != 2 || matrixMove.getNrOfColumns() != 3)
     {
         QFAIL("Move constructor initialized matrix with wrong number of rows and columns");
     }
+    else
+    {
+        QVERIFY2(matrixMove.at(0, 0) == 1 &&
+                 matrixMove.at(0, 1) == 2 &&
+                 matrixMove.at(0, 2) == 3 &&
+                 matrixMove.at(1, 0) == 4 &&
+                 matrixMove.at(1, 1) == 5 &&
+                 matrixMove.at(1, 2) == 6,
 
-    QVERIFY2(matrixMove.at(0, 0) == 1 &&
-             matrixMove.at(0, 1) == 2 &&
-             matrixMove.at(0, 2) == 3 &&
-             matrixMove.at(1, 0) == 4 &&
-             matrixMove.at(1, 1) == 5 &&
-             matrixMove.at(1, 2) == 6,
+                 "Matrix elements have not been correctly initialized by the move constructor");
 
-             "Matrix elements have not been correctly initialized by the move constructor");
-
-    QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
-
-    QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
+        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
+    }
 }
 
 void CommonTests::testCapacityWithMoveConstructor()
