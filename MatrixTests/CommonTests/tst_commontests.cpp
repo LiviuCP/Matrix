@@ -802,104 +802,101 @@ void CommonTests::testCapacityWithCopyAssignmentOperator()
 void CommonTests::testMoveAssignmentOperator()
 {
     {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+        IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix destMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
 
-        secondMatrix = std::move(firstMatrix);
+        destMatrix = std::move(srcMatrix);
 
-        if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 3)
+        if (destMatrix.getRowCapacity() != 2 || destMatrix.getColumnCapacity() != 3)
         {
             QFAIL("Move assignment failed, capacity of the destination matrix is not correct!");
         }
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
+        else if (destMatrix.getNrOfRows() != 2 || destMatrix.getNrOfColumns() != 3)
         {
             QFAIL("Move assignment failed, number of rows or columns of the destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(destMatrix.at(0, 0) == 1 &&
+                     destMatrix.at(0, 1) == 2 &&
+                     destMatrix.at(0, 2) == 3 &&
+                     destMatrix.at(1, 0) == 4 &&
+                     destMatrix.at(1, 1) == 5 &&
+                     destMatrix.at(1, 2) == 6,
 
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(0, 2) == 3 &&
-                 secondMatrix.at(1, 0) == 4 &&
-                 secondMatrix.at(1, 1) == 5 &&
-                 secondMatrix.at(1, 2) == 6,
+                     "Move assignment failed, the destination matrix doesn't have the right values!");
 
-                 "Move assignment failed, the destination matrix doesn't have the right values!");
+            QVERIFY2(srcMatrix.getRowCapacity() == 0 && srcMatrix.getColumnCapacity() == 0,
+                     "Move assignment failed, capacity of the source matrix is not correct!");
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 0 && firstMatrix.getColumnCapacity() == 0,
-                 "Move assignment failed, capacity of the source matrix is not correct!");
-
-        QVERIFY2(firstMatrix.getNrOfRows() == 0 && firstMatrix.getNrOfColumns() == 0,
-                 "Move assignment failed, number of rows or columns of the source matrix is not correct!");
+            QVERIFY2(srcMatrix.getNrOfRows() == 0 && srcMatrix.getNrOfColumns() == 0,
+                     "Move assignment failed, number of rows or columns of the source matrix is not correct!");
+        }
     }
 
     {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
+        IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix destMatrix{};
 
-        secondMatrix = std::move(firstMatrix);
+        destMatrix = std::move(srcMatrix);
 
-        if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 3)
+        if (destMatrix.getRowCapacity() != 2 || destMatrix.getColumnCapacity() != 3)
         {
             QFAIL("Move assignment failed, capacity of the destination matrix is not correct!");
         }
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
+        else if (destMatrix.getNrOfRows() != 2 || destMatrix.getNrOfColumns() != 3)
         {
             QFAIL("Move assignment failed, number of rows or columns of the destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(destMatrix.at(0, 0) == 1 &&
+                     destMatrix.at(0, 1) == 2 &&
+                     destMatrix.at(0, 2) == 3 &&
+                     destMatrix.at(1, 0) == 4 &&
+                     destMatrix.at(1, 1) == 5 &&
+                     destMatrix.at(1, 2) == 6,
 
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(0, 2) == 3 &&
-                 secondMatrix.at(1, 0) == 4 &&
-                 secondMatrix.at(1, 1) == 5 &&
-                 secondMatrix.at(1, 2) == 6,
+                     "Move assignment failed, the destination matrix doesn't have the right values!");
 
-                 "Move assignment failed, the destination matrix doesn't have the right values!");
+            QVERIFY2(srcMatrix.getRowCapacity() == 0 && srcMatrix.getColumnCapacity() == 0,
+                     "Move assignment failed, capacity of the source matrix is not correct!");
+            QVERIFY2(srcMatrix.getNrOfRows() == 0 && srcMatrix.getNrOfColumns() == 0,
+                     "Move assignment failed, number of rows or columns of the source matrix is not correct!");
+        }
+    }
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 0 && firstMatrix.getColumnCapacity() == 0,
+    {
+        IntMatrix srcMatrix{};
+        IntMatrix destMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+
+        destMatrix = std::move(srcMatrix);
+
+        QVERIFY2(destMatrix.getRowCapacity() == 0 && destMatrix.getColumnCapacity() == 0,
+                 "Move assignment failed, capacity of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getNrOfRows() == 0 && destMatrix.getNrOfColumns() == 0,
+                 "Move assignment failed, number of rows or columns of the destination matrix is not correct!");
+
+        QVERIFY2(srcMatrix.getRowCapacity() == 0 && srcMatrix.getColumnCapacity() == 0,
                  "Move assignment failed, capacity of the source matrix is not correct!");
-
-        QVERIFY2(firstMatrix.getNrOfRows() == 0 && firstMatrix.getNrOfColumns() == 0,
+        QVERIFY2(srcMatrix.getNrOfRows() == 0 && srcMatrix.getNrOfColumns() == 0,
                  "Move assignment failed, number of rows or columns of the source matrix is not correct!");
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+        IntMatrix srcMatrix{};
+        IntMatrix destMatrix{};
 
-        secondMatrix = std::move(firstMatrix);
+        destMatrix = std::move(srcMatrix);
 
-        QVERIFY2(secondMatrix.getRowCapacity() == 0 && secondMatrix.getColumnCapacity() == 0,
+        QVERIFY2(destMatrix.getRowCapacity() == 0 && destMatrix.getColumnCapacity() == 0,
                  "Move assignment failed, capacity of the destination matrix is not correct!");
-
-        QVERIFY2(secondMatrix.getNrOfRows() == 0 && secondMatrix.getNrOfColumns() == 0,
+        QVERIFY2(destMatrix.getNrOfRows() == 0 && destMatrix.getNrOfColumns() == 0,
                  "Move assignment failed, number of rows or columns of the destination matrix is not correct!");
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 0 && firstMatrix.getColumnCapacity() == 0,
+        QVERIFY2(srcMatrix.getRowCapacity() == 0 && srcMatrix.getColumnCapacity() == 0,
                  "Move assignment failed, capacity of the source matrix is not correct!");
-
-        QVERIFY2(firstMatrix.getNrOfRows() == 0 && firstMatrix.getNrOfColumns() == 0,
-                 "Move assignment failed, number of rows or columns of the source matrix is not correct!");
-    }
-
-    {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{};
-
-        secondMatrix = std::move(firstMatrix);
-
-        QVERIFY2(secondMatrix.getRowCapacity() == 0 && secondMatrix.getColumnCapacity() == 0,
-                 "Move assignment failed, capacity of the destination matrix is not correct!");
-
-        QVERIFY2(secondMatrix.getNrOfRows() == 0 && secondMatrix.getNrOfColumns() == 0,
-                 "Move assignment failed, number of rows or columns of the destination matrix is not correct!");
-
-        QVERIFY2(firstMatrix.getRowCapacity() == 0 && firstMatrix.getColumnCapacity() == 0,
-                 "Move assignment failed, capacity of the source matrix is not correct!");
-
-        QVERIFY2(firstMatrix.getNrOfRows() == 0 && firstMatrix.getNrOfColumns() == 0,
+        QVERIFY2(srcMatrix.getNrOfRows() == 0 && srcMatrix.getNrOfColumns() == 0,
                  "Move assignment failed, number of rows or columns of the source matrix is not correct!");
     }
 
@@ -914,18 +911,19 @@ void CommonTests::testMoveAssignmentOperator()
         {
             QFAIL("Copy and/or move assignment failed, capacity of the first matrix is not correct!");
         }
-
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        else if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Copy and/or move assignment failed, number of rows or columns of the first matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(firstMatrix.at(0, 0) == 13 &&
+                     firstMatrix.at(0, 1) == 14 &&
+                     firstMatrix.at(1, 0) == 15 &&
+                     firstMatrix.at(1, 1) == 16,
 
-        QVERIFY2(firstMatrix.at(0, 0) == 13 &&
-                 firstMatrix.at(0, 1) == 14 &&
-                 firstMatrix.at(1, 0) == 15 &&
-                 firstMatrix.at(1, 1) == 16,
-
-                 "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
+                     "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
+        }
     }
 
     {
@@ -939,18 +937,19 @@ void CommonTests::testMoveAssignmentOperator()
         {
             QFAIL("Copy and/or move assignment failed, capacity of the first matrix is not correct!");
         }
-
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        else if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Copy and/or move assignment failed, number of rows or columns of the first matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(firstMatrix.at(0, 0) == 13 &&
+                     firstMatrix.at(0, 1) == 14 &&
+                     firstMatrix.at(1, 0) == 15 &&
+                     firstMatrix.at(1, 1) == 16,
 
-        QVERIFY2(firstMatrix.at(0, 0) == 13 &&
-                 firstMatrix.at(0, 1) == 14 &&
-                 firstMatrix.at(1, 0) == 15 &&
-                 firstMatrix.at(1, 1) == 16,
-
-                 "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
+                     "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
+        }
     }
 }
 
