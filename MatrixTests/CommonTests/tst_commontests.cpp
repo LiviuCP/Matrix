@@ -956,70 +956,70 @@ void CommonTests::testMoveAssignmentOperator()
 void CommonTests::testCapacityWithMoveAssignmentOperator()
 {
     using namespace std;
-    auto moveAndTestCapacity = [](string testNumber, IntMatrix& matrix, IntMatrix& matrixMove, int desiredRowCapacity, int desiredColumnCapacity)
+    auto moveAndTestCapacity = [](string testNumber, IntMatrix& srcMatrix, IntMatrix& destMatrix, int desiredRowCapacity, int desiredColumnCapacity)
     {
-        matrixMove = move(matrix);
+        destMatrix = move(srcMatrix);
 
-        QVERIFY2(matrixMove.getRowCapacity() == desiredRowCapacity && matrixMove.getColumnCapacity() == desiredColumnCapacity,
+        QVERIFY2(destMatrix.getRowCapacity() == desiredRowCapacity && destMatrix.getColumnCapacity() == desiredColumnCapacity,
                  string{"Move assignment failed, capacity of the destination matrix is not correct! Test number: " + testNumber}.c_str());
     };
 
     int testNumber{1};
 
     {
-        IntMatrix matrix{3, 4, -1};
-        IntMatrix matrixMove{};
+        IntMatrix srcMatrix{3, 4, -1};
+        IntMatrix destMatrix{};
 
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 3, 5);
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 3, 5);
     }
 
     {
-        IntMatrix matrix{4, 3, -1};
-        IntMatrix matrixMove{};
+        IntMatrix srcMatrix{4, 3, -1};
+        IntMatrix destMatrix{};
 
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 5, 3);
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 5, 3);
     }
 
     {
-        IntMatrix matrix{7, 8, -1};
-        IntMatrix matrixMove{};
+        IntMatrix srcMatrix{7, 8, -1};
+        IntMatrix destMatrix{};
 
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 8, 10);
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 8, 10);
     }
 
     {
-        IntMatrix matrix{8, 7, -1};
-        IntMatrix matrixMove{};
+        IntMatrix srcMatrix{8, 7, -1};
+        IntMatrix destMatrix{};
 
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 10, 8);
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 10, 8);
     }
 
     {
-        IntMatrix matrix{3, 4, -1};
-        IntMatrix matrixMove{2, 3, -5};
+        IntMatrix srcMatrix{3, 4, -1};
+        IntMatrix destMatrix{2, 3, -5};
 
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 3, 5);
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 3, 5);
     }
 
     {
-        IntMatrix matrix{4, 3, -1};
-        IntMatrix matrixMove{2, 3, -5};
+        IntMatrix srcMatrix{4, 3, -1};
+        IntMatrix destMatrix{2, 3, -5};
 
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 5, 3);
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 5, 3);
     }
 
     {
-        IntMatrix matrix{7, 8, -1};
-        IntMatrix matrixMove{3, 4, -5};
+        IntMatrix srcMatrix{7, 8, -1};
+        IntMatrix destMatrix{3, 4, -5};
 
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 8, 10);
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 8, 10);
     }
 
     {
-        IntMatrix matrix{8, 7, -1};
-        IntMatrix matrixMove{3, 4, -5};
+        IntMatrix srcMatrix{8, 7, -1};
+        IntMatrix destMatrix{3, 4, -5};
 
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 10, 8);
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 10, 8);
     }
 }
 
