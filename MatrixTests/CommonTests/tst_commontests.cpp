@@ -4988,572 +4988,417 @@ void CommonTests::testSplitByColumn()
 
 void CommonTests::testCapacityWithSplitByColumn()
 {
+    using namespace std;
+    auto splitByColumnAndTestCapacity = [](string testNumber,
+                                        IntMatrix& srcMatrix,
+                                        IntMatrix& firstDestMatrix,
+                                        IntMatrix& secondDestMatrix,
+                                        int splitColumnNr,
+                                        int desiredFirstDestMatrixRowCapacity,
+                                        int desiredFirstDestMatrixColumnCapacity,
+                                        int desiredSecondDestMatrixRowCapacity,
+                                        int desiredSecondDestMatrixColumnCapacity)
+    {
+        srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitColumnNr);
+
+        QVERIFY2(firstDestMatrix.getRowCapacity() == desiredFirstDestMatrixRowCapacity && firstDestMatrix.getColumnCapacity() == desiredFirstDestMatrixColumnCapacity,
+                 string{"Horizontal split failed, capacity of the first destination matrix is not correct! Test number: " + testNumber}.c_str());
+        QVERIFY2(secondDestMatrix.getRowCapacity() == desiredSecondDestMatrixRowCapacity && secondDestMatrix.getColumnCapacity() == desiredSecondDestMatrixColumnCapacity,
+                 string{"Horizontal split failed, capacity of the second destination matrix is not correct! Test number: " + testNumber}.c_str());
+    };
+
+    int testNumber{1};
+
     {
         IntMatrix firstMatrix{17, 15, -3};
         IntMatrix secondMatrix{};
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 8, 21, 18, 21, 8);
     }
 
     {
         IntMatrix firstMatrix{17, 15, -3};
         IntMatrix secondMatrix{8, 5, 2};
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 8, 21, 18, 21, 8);
     }
 
     {
         IntMatrix firstMatrix{17, 15, -3};
         IntMatrix secondMatrix{8, 5, 2};
+
         secondMatrix.resize(8, 5, 17, 6);
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 17 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 8, 21, 18, 17, 8);
     }
 
     {
         IntMatrix firstMatrix{17, 15, -3};
         IntMatrix secondMatrix{8, 5, 2};
-        secondMatrix.resize(8, 5, 18, 6);
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        secondMatrix.resize(8, 5, 18, 6);
+
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 8, 21, 18, 18, 8);
     }
 
     {
         IntMatrix firstMatrix{17, 15, -3};
         IntMatrix secondMatrix{15, 6, 2};
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 7,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 8, 21, 18, 18, 7);
     }
 
     {
         IntMatrix firstMatrix{17, 15, -3};
         IntMatrix secondMatrix{17, 7, 2};
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 8, 21, 18, 21, 8);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{17, 15, -3};
-        secondMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 8, 21, 10, 21, 18);
     }
 
     {
         IntMatrix firstMatrix{8, 5, 2};
         IntMatrix secondMatrix{17, 15, -3};
-        secondMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 8, 21, 10, 21, 18);
     }
 
     {
         IntMatrix firstMatrix{8, 6, 2};
         IntMatrix secondMatrix{17, 15, -3};
+
         firstMatrix.resize(8, 6, 17, 7);
-        secondMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 17 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 8, 17, 10, 21, 18);
     }
 
     {
         IntMatrix firstMatrix{8, 6, 2};
         IntMatrix secondMatrix{17, 15, -3};
-        firstMatrix.resize(8, 6, 18, 7);
-        secondMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        firstMatrix.resize(8, 6, 18, 7);
+
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 8, 18, 10, 21, 18);
     }
 
     {
         IntMatrix firstMatrix{15, 7, 2};
         IntMatrix secondMatrix{17, 15, -3};
-        secondMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 8, 18, 8, 21, 18);
     }
 
     {
         IntMatrix firstMatrix{17, 8, 2};
         IntMatrix secondMatrix{17, 15, -3};
-        secondMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 8, 21, 10, 21, 18);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 21, 10, 21, 8);
     }
 
     {
         IntMatrix firstMatrix{8, 5, 2};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 21, 10, 21, 8);
     }
 
     {
         IntMatrix firstMatrix{8, 6, 2};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{17, 15, -3};
+
         firstMatrix.resize(8, 6, 17, 7);
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 17 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 17, 10, 21, 8);
     }
 
     {
         IntMatrix firstMatrix{8, 6, 2};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{17, 15, -3};
-        firstMatrix.resize(8, 6, 18, 7);
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        firstMatrix.resize(8, 6, 18, 7);
+
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 18, 10, 21, 8);
     }
 
     {
         IntMatrix firstMatrix{15, 7, 2};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 18, 8, 21, 8);
     }
 
     {
         IntMatrix firstMatrix{17, 8, 2};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 21, 10, 21, 8);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{8, 5, 2};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 21, 10, 21, 8);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{8, 5, 2};
         IntMatrix thirdMatrix{17, 15, -3};
+
         secondMatrix.resize(8, 5, 17, 6);
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 17 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 21, 10, 17, 8);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{8, 5, 2};
         IntMatrix thirdMatrix{17, 15, -3};
-        secondMatrix.resize(8, 5, 18, 6);
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        secondMatrix.resize(8, 5, 18, 6);
+
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 21, 10, 18, 8);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{15, 6, 2};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 7,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 21, 10, 18, 7);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{17, 7, 2};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 21, 10, 21, 8);
     }
 
     {
         IntMatrix firstMatrix{17, 8, 2};
         IntMatrix secondMatrix{17, 7, 2};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 8);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 21, 10, 21, 8);
     }
 
     {
         IntMatrix firstMatrix{17, 15, -3};
         IntMatrix secondMatrix{};
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 7, 21, 18, 21, 10);
     }
 
     {
         IntMatrix firstMatrix{17, 15, -3};
         IntMatrix secondMatrix{8, 6, 2};
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 7, 21, 18, 21, 10);
     }
 
     {
         IntMatrix firstMatrix{17, 15, -3};
         IntMatrix secondMatrix{8, 6, 2};
+
         secondMatrix.resize(8, 6, 17, 7);
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 17 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 7, 21, 18, 17, 10);
     }
 
     {
         IntMatrix firstMatrix{17, 15, -3};
         IntMatrix secondMatrix{8, 6, 2};
-        secondMatrix.resize(8, 6, 18, 7);
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        secondMatrix.resize(8, 6, 18, 7);
+
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 7, 21, 18, 18, 10);
     }
 
     {
         IntMatrix firstMatrix{17, 15, -3};
         IntMatrix secondMatrix{15, 7, 2};
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 7, 21, 18, 18, 8);
     }
 
     {
         IntMatrix firstMatrix{17, 15, -3};
         IntMatrix secondMatrix{17, 8, 2};
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 7, 21, 18, 21, 10);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{17, 15, -3};
-        secondMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 7, 21, 8, 21, 18);
     }
 
     {
         IntMatrix firstMatrix{8, 5, 2};
         IntMatrix secondMatrix{17, 15, -3};
-        secondMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 7, 21, 8, 21, 18);
     }
 
     {
         IntMatrix firstMatrix{8, 5, 2};
         IntMatrix secondMatrix{17, 15, -3};
+
         firstMatrix.resize(8, 5, 17, 6);
-        secondMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 17 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 7, 17, 8, 21, 18);
     }
 
     {
         IntMatrix firstMatrix{8, 5, 2};
         IntMatrix secondMatrix{17, 15, -3};
-        firstMatrix.resize(8, 5, 18, 6);
-        secondMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        firstMatrix.resize(8, 5, 18, 6);
+
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 7, 18, 8, 21, 18);
     }
 
     {
         IntMatrix firstMatrix{15, 6, 2};
         IntMatrix secondMatrix{17, 15, -3};
-        secondMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 7,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 7, 18, 7, 21, 18);
     }
 
     {
         IntMatrix firstMatrix{17, 7, 2};
         IntMatrix secondMatrix{17, 15, -3};
-        secondMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 18,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 7, 21, 8, 21, 18);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 21, 8, 21, 10);
     }
 
     {
         IntMatrix firstMatrix{8, 5, 2};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 21, 8, 21, 10);
     }
 
     {
         IntMatrix firstMatrix{8, 5, 2};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{17, 15, -3};
+
         firstMatrix.resize(8, 5, 17, 6);
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 17 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 17, 8, 21, 10);
     }
 
     {
         IntMatrix firstMatrix{8, 5, 2};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{17, 15, -3};
-        firstMatrix.resize(8, 5, 18, 6);
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        firstMatrix.resize(8, 5, 18, 6);
+
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 18, 8, 21, 10);
     }
 
     {
         IntMatrix firstMatrix{15, 6, 2};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 18 && firstMatrix.getColumnCapacity() == 7,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 18, 7, 21, 10);
     }
 
     {
         IntMatrix firstMatrix{17, 7, 2};
         IntMatrix secondMatrix{};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 21, 8, 21, 10);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{8, 6, 2};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 21, 8, 21, 10);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{8, 6, 2};
         IntMatrix thirdMatrix{17, 15, -3};
+
         secondMatrix.resize(8, 6, 17, 7);
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 17 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 21, 8, 17, 10);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{8, 6, 2};
         IntMatrix thirdMatrix{17, 15, -3};
-        secondMatrix.resize(8, 6, 18, 7);
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        secondMatrix.resize(8, 6, 18, 7);
+
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 21, 8, 18, 10);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{15, 7, 2};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 18 && secondMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 21, 8, 18, 8);
     }
 
     {
         IntMatrix firstMatrix{};
         IntMatrix secondMatrix{17, 8, 2};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 21, 8, 21, 10);
     }
 
     {
         IntMatrix firstMatrix{17, 7, 2};
         IntMatrix secondMatrix{17, 8, 2};
         IntMatrix thirdMatrix{17, 15, -3};
-        thirdMatrix.splitByColumn(firstMatrix, secondMatrix, 7);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 21 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal split failed, capacity of the first destination matrix is not correct!");
-        QVERIFY2(secondMatrix.getRowCapacity() == 21 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal split failed, capacity of the second destination matrix is not correct!");
+        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 21, 8, 21, 10);
     }
 }
 
