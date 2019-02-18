@@ -1437,13 +1437,20 @@ void CommonTests::testCapacityWithTransposedMatrix()
 
 void CommonTests::testClear()
 {
-    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-
-    matrix.clear();
-
-    if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
     {
-        QFAIL("Clear failed, number of rows or columns is not correct!");
+        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        matrix.clear();
+
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Clear failed, capacity is not correct!");
+        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Clear failed, number of rows and columns is not correct!");
+    }
+
+    {
+        IntMatrix matrix{};
+        matrix.clear();
+
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Clear failed, capacity is not correct!");
+        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Clear failed, number of rows and columns is not correct!");
     }
 }
 
