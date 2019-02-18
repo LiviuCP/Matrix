@@ -490,202 +490,194 @@ void CommonTests::testSquareBracketsOperator()
 void CommonTests::testCopyAssignmentOperator()
 {
     {
-        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
+        IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix destMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
 
-        matrixCopy = matrix;
+        destMatrix = srcMatrix;
 
-        if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
-        {
-            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        if (matrixCopy.getRowCapacity() != 2 || matrixCopy.getColumnCapacity() != 3)
+        if (destMatrix.getRowCapacity() != 2 || destMatrix.getColumnCapacity() != 3)
         {
             QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
         }
-
-        QVERIFY2(matrixCopy.at(0, 0) == 1 &&
-                 matrixCopy.at(0, 1) == 2 &&
-                 matrixCopy.at(0, 2) == 3 &&
-                 matrixCopy.at(1, 0) == 4 &&
-                 matrixCopy.at(1, 1) == 5 &&
-                 matrixCopy.at(1, 2) == 6,
-
-                 "Copy assignment failed, the destination matrix doesn't have the right values!");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix matrixCopy{};
-
-        matrixCopy = matrix;
-
-        if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
+        else if (destMatrix.getNrOfRows() != 2 || destMatrix.getNrOfColumns() != 3)
         {
             QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
         }
-
-        if (matrixCopy.getRowCapacity() != 2 || matrixCopy.getColumnCapacity() != 3)
+        else
         {
-            QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
-        }
+            QVERIFY2(destMatrix.at(0, 0) == 1 &&
+                     destMatrix.at(0, 1) == 2 &&
+                     destMatrix.at(0, 2) == 3 &&
+                     destMatrix.at(1, 0) == 4 &&
+                     destMatrix.at(1, 1) == 5 &&
+                     destMatrix.at(1, 2) == 6,
 
-        QVERIFY2(matrixCopy.at(0, 0) == 1 &&
-                 matrixCopy.at(0, 1) == 2 &&
-                 matrixCopy.at(0, 2) == 3 &&
-                 matrixCopy.at(1, 0) == 4 &&
-                 matrixCopy.at(1, 1) == 5 &&
-                 matrixCopy.at(1, 2) == 6,
-
-                 "Copy assignment failed, the destination matrix doesn't have the right values!");
-    }
-
-    {
-        IntMatrix matrix{};
-        IntMatrix matrixCopy{3, 2, {7, 8, 9, 10, 11, 12}};
-
-        matrixCopy = matrix;
-
-        if (matrixCopy.getNrOfRows() != 0 || matrixCopy.getNrOfColumns() != 0)
-        {
-            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        if (matrixCopy.getRowCapacity() != 0 || matrixCopy.getColumnCapacity() != 0)
-        {
-            QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
+                     "Copy assignment failed, the destination matrix doesn't have the right values!");
         }
     }
 
     {
-        IntMatrix matrix{};
-        IntMatrix matrixCopy{};
+        IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix destMatrix{};
 
-        matrixCopy = matrix;
+        destMatrix = srcMatrix;
 
-        if (matrixCopy.getNrOfRows() != 0 || matrixCopy.getNrOfColumns() != 0)
+        if (destMatrix.getRowCapacity() != 2 || destMatrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
+        }
+        else if (destMatrix.getNrOfRows() != 2 || destMatrix.getNrOfColumns() != 3)
         {
             QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
         }
-
-        if (matrixCopy.getRowCapacity() != 0 || matrixCopy.getColumnCapacity() != 0)
+        else
         {
-            QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
+            QVERIFY2(destMatrix.at(0, 0) == 1 &&
+                     destMatrix.at(0, 1) == 2 &&
+                     destMatrix.at(0, 2) == 3 &&
+                     destMatrix.at(1, 0) == 4 &&
+                     destMatrix.at(1, 1) == 5 &&
+                     destMatrix.at(1, 2) == 6,
+
+                     "Copy assignment failed, the destination matrix doesn't have the right values!");
         }
     }
 
     {
-        IntMatrix matrix{3, 4, 7};
-        IntMatrix matrixCopy{2, 3, 8};
+        IntMatrix srcMatrix{};
+        IntMatrix destMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
 
-        matrixCopy = matrix;
+        destMatrix = srcMatrix;
 
-        if (matrixCopy.getNrOfRows() != 3 || matrixCopy.getNrOfColumns() != 4)
-        {
-            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
-        }
+        QVERIFY2(destMatrix.getRowCapacity() == 0 && destMatrix.getColumnCapacity() == 0, "Copy assignment failed, capacity of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getNrOfRows() == 0 && destMatrix.getNrOfColumns() == 0, "Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+    }
 
-        if (matrixCopy.getRowCapacity() != 3 || matrixCopy.getColumnCapacity() != 5)
+    {
+        IntMatrix srcMatrix{};
+        IntMatrix destMatrix{};
+
+        destMatrix = srcMatrix;
+
+        QVERIFY2(destMatrix.getRowCapacity() == 0 && destMatrix.getColumnCapacity() == 0, "Copy assignment failed, capacity of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getNrOfRows() == 0 && destMatrix.getNrOfColumns() == 0, "Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+    }
+
+    {
+        IntMatrix srcMatrix{3, 4, 7};
+        IntMatrix destMatrix{2, 3, 8};
+
+        destMatrix = srcMatrix;
+
+        if (destMatrix.getRowCapacity() != 3 || destMatrix.getColumnCapacity() != 5)
         {
             QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
         }
-
-        for (int row{0}; row < matrixCopy.getNrOfRows(); ++row)
+        else if (destMatrix.getNrOfRows() != 3 || destMatrix.getNrOfColumns() != 4)
         {
-            for (int col{0}; col < matrixCopy.getNrOfColumns(); ++col)
+            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        }
+        else
+        {
+            for (int row{0}; row < destMatrix.getNrOfRows(); ++row)
             {
-                if (matrixCopy.at(row, col) != 7)
+                for (int col{0}; col < destMatrix.getNrOfColumns(); ++col)
                 {
-                    QFAIL("Copy assignment failed, the destination matrix doesn't have the right values!");
-                    break;
+                    if (destMatrix.at(row, col) != 7)
+                    {
+                        QFAIL("Copy assignment failed, the destination matrix doesn't have the right values!");
+                        break;
+                    }
                 }
             }
         }
     }
 
     {
-        IntMatrix matrix{4, 3, 9};
-        IntMatrix matrixCopy{2, 3, 8};
+        IntMatrix srcMatrix{4, 3, 9};
+        IntMatrix destMatrix{2, 3, 8};
 
-        matrixCopy = matrix;
+        destMatrix = srcMatrix;
 
-        if (matrixCopy.getNrOfRows() != 4 || matrixCopy.getNrOfColumns() != 3)
-        {
-            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        if (matrixCopy.getRowCapacity() != 5 || matrixCopy.getColumnCapacity() != 3)
+        if (destMatrix.getRowCapacity() != 5 || destMatrix.getColumnCapacity() != 3)
         {
             QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
         }
-
-        for (int row{0}; row < matrixCopy.getNrOfRows(); ++row)
+        else if (destMatrix.getNrOfRows() != 4 || destMatrix.getNrOfColumns() != 3)
         {
-            for (int col{0}; col < matrixCopy.getNrOfColumns(); ++col)
+            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        }
+        else
+        {
+            for (int row{0}; row < destMatrix.getNrOfRows(); ++row)
             {
-                if (matrixCopy.at(row, col) != 9)
+                for (int col{0}; col < destMatrix.getNrOfColumns(); ++col)
                 {
-                    QFAIL("Copy assignment failed, the destination matrix doesn't have the right values!");
-                    break;
+                    if (destMatrix.at(row, col) != 9)
+                    {
+                        QFAIL("Copy assignment failed, the destination matrix doesn't have the right values!");
+                        break;
+                    }
                 }
             }
         }
     }
 
     {
-        IntMatrix matrix{20, 20, 11};
-        IntMatrix matrixCopy{2, 3, 8};
+        IntMatrix srcMatrix{20, 20, 11};
+        IntMatrix destMatrix{2, 3, 8};
 
-        matrixCopy = matrix;
+        destMatrix = srcMatrix;
 
-        if (matrixCopy.getNrOfRows() != 20 || matrixCopy.getNrOfColumns() != 20)
-        {
-            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        if (matrixCopy.getRowCapacity() != 25 || matrixCopy.getColumnCapacity() != 25)
+        if (destMatrix.getRowCapacity() != 25 || destMatrix.getColumnCapacity() != 25)
         {
             QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
         }
-
-        for (int row{0}; row < matrixCopy.getNrOfRows(); ++row)
+        else if (destMatrix.getNrOfRows() != 20 || destMatrix.getNrOfColumns() != 20)
         {
-            for (int col{0}; col < matrixCopy.getNrOfColumns(); ++col)
+            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        }
+        else
+        {
+            for (int row{0}; row < destMatrix.getNrOfRows(); ++row)
             {
-                if (matrixCopy.at(row, col) != 11)
+                for (int col{0}; col < destMatrix.getNrOfColumns(); ++col)
                 {
-                    QFAIL("Copy assignment failed, the destination matrix doesn't have the right values!");
-                    break;
+                    if (destMatrix.at(row, col) != 11)
+                    {
+                        QFAIL("Copy assignment failed, the destination matrix doesn't have the right values!");
+                        break;
+                    }
                 }
             }
         }
     }
 
     {
-        IntMatrix matrix{22, 22, 12};
-        IntMatrix matrixCopy{2, 3, 8};
+        IntMatrix srcMatrix{22, 22, 12};
+        IntMatrix destMatrix{2, 3, 8};
 
-        matrixCopy = matrix;
+        destMatrix = srcMatrix;
 
-        if (matrixCopy.getNrOfRows() != 22 || matrixCopy.getNrOfColumns() != 22)
-        {
-            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
-        }
-
-        if (matrixCopy.getRowCapacity() != 27 || matrixCopy.getColumnCapacity() != 27)
+        if (destMatrix.getRowCapacity() != 27 || destMatrix.getColumnCapacity() != 27)
         {
             QFAIL("Copy assignment failed, capacity of the destination matrix is not correct!");
         }
-
-        for (int row{0}; row < matrixCopy.getNrOfRows(); ++row)
+        else if (destMatrix.getNrOfRows() != 22 || destMatrix.getNrOfColumns() != 22)
         {
-            for (int col{0}; col < matrixCopy.getNrOfColumns(); ++col)
+            QFAIL("Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        }
+        else
+        {
+            for (int row{0}; row < destMatrix.getNrOfRows(); ++row)
             {
-                if (matrixCopy.at(row, col) != 12)
+                for (int col{0}; col < destMatrix.getNrOfColumns(); ++col)
                 {
-                    QFAIL("Copy assignment failed, the destination matrix doesn't have the right values!");
-                    break;
+                    if (destMatrix.at(row, col) != 12)
+                    {
+                        QFAIL("Copy assignment failed, the destination matrix doesn't have the right values!");
+                        break;
+                    }
                 }
             }
         }
@@ -695,25 +687,26 @@ void CommonTests::testCopyAssignmentOperator()
         IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
 
         matrix = matrix;
-
-        if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Same matrix copy assignment failed, number of rows or columns is not correct!");
-        }
 
         if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
         {
             QFAIL("Same matrix copy assignment failed, capacity is not correct!");
         }
+        else if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
+        {
+            QFAIL("Same matrix copy assignment failed, number of rows or columns is not correct!");
+        }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 2 &&
+                     matrix.at(0, 2) == 3 &&
+                     matrix.at(1, 0) == 4 &&
+                     matrix.at(1, 1) == 5 &&
+                     matrix.at(1, 2) == 6,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 2) == 3 &&
-                 matrix.at(1, 0) == 4 &&
-                 matrix.at(1, 1) == 5 &&
-                 matrix.at(1, 2) == 6,
-
-                 "Same matrix copy assignment failed, the matrix doesn't have the right values!");
+                     "Same matrix copy assignment failed, the matrix doesn't have the right values!");
+        }
     }
 
     {
@@ -721,15 +714,8 @@ void CommonTests::testCopyAssignmentOperator()
 
         matrix = matrix;
 
-        if (matrix.getNrOfRows() != 0 || matrix.getNrOfColumns() != 0)
-        {
-            QFAIL("Same matrix copy assignment failed, number of rows or columns is not correct!");
-        }
-
-        if (matrix.getRowCapacity() != 0 || matrix.getColumnCapacity() != 0)
-        {
-            QFAIL("Same matrix copy assignment failed, capacity is not correct!");
-        }
+        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Same matrix copy assignment failed, capacity is not correct!");
+        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Same matrix copy assignment failed, number of rows or columns is not correct!");
     }
 
     {
@@ -739,22 +725,23 @@ void CommonTests::testCopyAssignmentOperator()
 
         firstMatrix = secondMatrix = thirdMatrix;
 
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Copy assignment failed, number of rows or columns of the first matrix is not correct!");
-        }
-
         if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 2)
         {
             QFAIL("Copy assignment failed, capacity of the first matrix is not correct!");
         }
+        else if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Copy assignment failed, number of rows or columns of the first matrix is not correct!");
+        }
+        else
+        {
+            QVERIFY2(firstMatrix.at(0, 0) == 13 &&
+                     firstMatrix.at(0, 1) == 14 &&
+                     firstMatrix.at(1, 0) == 15 &&
+                     firstMatrix.at(1, 1) == 16,
 
-        QVERIFY2(firstMatrix.at(0, 0) == 13 &&
-                 firstMatrix.at(0, 1) == 14 &&
-                 firstMatrix.at(1, 0) == 15 &&
-                 firstMatrix.at(1, 1) == 16,
-
-                 "Copy assignment failed, the first matrix doesn't have the right values!");
+                     "Copy assignment failed, the first matrix doesn't have the right values!");
+        }
     }
 }
 
