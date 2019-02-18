@@ -1249,163 +1249,114 @@ void CommonTests::testTranspose()
 
 void CommonTests::testCapacityWithTranspose()
 {
+    using namespace std;
+    auto transposeAndTestCapacity = [](string testNumber, IntMatrix& matrix, IntMatrix& transposedMatrix, int desiredRowCapacity, int desiredColumnCapacity)
+    {
+        matrix.transpose(transposedMatrix);
+
+        QVERIFY2(transposedMatrix.getRowCapacity() == desiredRowCapacity && transposedMatrix.getColumnCapacity() == desiredColumnCapacity,
+                 string{"Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct! Test number: " + testNumber}.c_str());
+    };
+
+    int testNumber{1};
+
     {
         IntMatrix matrix{3, 4, 2};
         IntMatrix transposedMatrix{};
 
-        matrix.transpose(transposedMatrix);
-
-        QVERIFY2(transposedMatrix.getRowCapacity() == 5 && transposedMatrix.getColumnCapacity() == 3,
-
-                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 5, 3);
     }
 
     {
         IntMatrix matrix{4, 3, 2};
         IntMatrix transposedMatrix{};
 
-        matrix.transpose(transposedMatrix);
-
-        QVERIFY2(transposedMatrix.getRowCapacity() == 3 && transposedMatrix.getColumnCapacity() == 5,
-
-                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 3, 5);
     }
 
     {
         IntMatrix matrix{7, 8, 2};
         IntMatrix transposedMatrix{};
 
-        matrix.transpose(transposedMatrix);
-
-        QVERIFY2(transposedMatrix.getRowCapacity() == 10 && transposedMatrix.getColumnCapacity() == 8,
-
-                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 10, 8);
     }
 
     {
         IntMatrix matrix{8, 7, 2};
         IntMatrix transposedMatrix{};
 
-        matrix.transpose(transposedMatrix);
-
-        QVERIFY2(transposedMatrix.getRowCapacity() == 8 && transposedMatrix.getColumnCapacity() == 10,
-
-                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 8, 10);
     }
 
     {
         IntMatrix matrix{8, 7, 2};
         IntMatrix transposedMatrix{5, 6, 2};
 
-        matrix.transpose(transposedMatrix);
-
-        QVERIFY2(transposedMatrix.getRowCapacity() == 8 && transposedMatrix.getColumnCapacity() == 10,
-
-                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 8, 10);
     }
 
     {
         IntMatrix matrix{8, 7, 2};
         IntMatrix transposedMatrix{6, 6, 2};
 
-        matrix.transpose(transposedMatrix);
-
-        QVERIFY2(transposedMatrix.getRowCapacity() == 7 && transposedMatrix.getColumnCapacity() == 10,
-
-                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 7, 10);
     }
 
     {
         IntMatrix matrix{8, 7, 2};
         IntMatrix transposedMatrix{5, 7, 2};
 
-        matrix.transpose(transposedMatrix);
-
-        QVERIFY2(transposedMatrix.getRowCapacity() == 8 && transposedMatrix.getColumnCapacity() == 8,
-
-                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 8, 8);
     }
 
     {
         IntMatrix matrix{8, 7, 2};
         IntMatrix transposedMatrix{6, 7, 2};
 
-        matrix.transpose(transposedMatrix);
-
-        QVERIFY2(transposedMatrix.getRowCapacity() == 7 && transposedMatrix.getColumnCapacity() == 8,
-
-                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 7, 8);
     }
 
     {
         IntMatrix matrix{8, 7, 2};
         IntMatrix transposedMatrix{7, 8, 2};
 
-        matrix.transpose(transposedMatrix);
-
-        QVERIFY2(transposedMatrix.getRowCapacity() == 8 && transposedMatrix.getColumnCapacity() == 10,
-
-                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 8, 10);
     }
 
     {
         IntMatrix matrix{3, 3, 2};
 
-        matrix.transpose(matrix);
-
-        QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 3,
-
-                 "Calculating transposed matrix failed, capacity of the matrix after transposing is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrix, 3, 3);
     }
 
     {
         IntMatrix matrix{3, 4, 2};
 
-        matrix.transpose(matrix);
-
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5,
-
-                 "Calculating transposed matrix failed, capacity of the matrix after transposing is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrix, 5, 5);
     }
 
     {
         IntMatrix matrix{4, 3, 2};
 
-        matrix.transpose(matrix);
-
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5,
-
-                 "Calculating transposed matrix failed, capacity of the matrix after transposing is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrix, 5, 5);
     }
 
     {
         IntMatrix matrix{4, 4, 2};
 
-        matrix.transpose(matrix);
-
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5,
-
-                 "Calculating transposed matrix failed, capacity of the matrix after transposing is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrix, 5, 5);
     }
 
     {
         IntMatrix matrix{7, 8, 2};
 
-        matrix.transpose(matrix);
-
-        QVERIFY2(matrix.getRowCapacity() == 8 && matrix.getColumnCapacity() == 10,
-
-                 "Calculating transposed matrix failed, capacity of the matrix after transposing is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrix, 8, 10);
     }
 
     {
         IntMatrix matrix{8, 7, 2};
 
-        matrix.transpose(matrix);
-
-        QVERIFY2(matrix.getRowCapacity() == 10 && matrix.getColumnCapacity() == 8,
-
-                 "Calculating transposed matrix failed, capacity of the matrix after transposing is not correct!");
+        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrix, 10, 8);
     }
 }
 
