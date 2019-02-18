@@ -299,31 +299,31 @@ void CommonTests::testCopyConstructor()
 void CommonTests::testCapacityWithCopyConstructor()
 {
     {
-        IntMatrix matrix{3, 4, -1};
-        IntMatrix matrixCopy{matrix};
+        IntMatrix srcMatrix{3, 4, -1};
+        IntMatrix destMatrix{srcMatrix};
 
-        QVERIFY2(matrixCopy.getRowCapacity() == 3 && matrixCopy.getColumnCapacity() == 5, "Copy constructor failed, capacity of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getRowCapacity() == 3 && destMatrix.getColumnCapacity() == 5, "Copy constructor failed, capacity of the destination matrix is not correct!");
     }
 
     {
-        IntMatrix matrix{4, 3, -1};
-        IntMatrix matrixCopy{matrix};
+        IntMatrix srcMatrix{4, 3, -1};
+        IntMatrix destMatrix{srcMatrix};
 
-        QVERIFY2(matrixCopy.getRowCapacity() == 5 && matrixCopy.getColumnCapacity() == 3, "Copy constructor failed, capacity of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getRowCapacity() == 5 && destMatrix.getColumnCapacity() == 3, "Copy constructor failed, capacity of the destination matrix is not correct!");
     }
 
     {
-        IntMatrix matrix{7, 8, -1};
-        IntMatrix matrixCopy{matrix};
+        IntMatrix srcMatrix{7, 8, -1};
+        IntMatrix destMatrix{srcMatrix};
 
-        QVERIFY2(matrixCopy.getRowCapacity() == 8 && matrixCopy.getColumnCapacity() == 10, "Copy constructor failed, capacity of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getRowCapacity() == 8 && destMatrix.getColumnCapacity() == 10, "Copy constructor failed, capacity of the destination matrix is not correct!");
     }
 
     {
-        IntMatrix matrix{8, 7, -1};
-        IntMatrix matrixCopy{matrix};
+        IntMatrix srcMatrix{8, 7, -1};
+        IntMatrix destMatrix{srcMatrix};
 
-        QVERIFY2(matrixCopy.getRowCapacity() == 10 && matrixCopy.getColumnCapacity() == 8, "Copy constructor failed, capacity of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getRowCapacity() == 10 && destMatrix.getColumnCapacity() == 8, "Copy constructor failed, capacity of the destination matrix is not correct!");
     }
 }
 
