@@ -4507,395 +4507,395 @@ void CommonTests::testCapacityWithSplitByRow()
     int testNumber{1};
 
     {
-        IntMatrix firstMatrix{15, 17, -3};
-        IntMatrix secondMatrix{};
+        IntMatrix srcFirstDestMatrix{15, 17, -3};
+        IntMatrix secondDestMatrix{};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 8, 18, 21, 8, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 18, 21, 8, 21);
     }
 
     {
-        IntMatrix firstMatrix{15, 17, -3};
-        IntMatrix secondMatrix{5, 8, 2};
+        IntMatrix srcFirstDestMatrix{15, 17, -3};
+        IntMatrix secondDestMatrix{5, 8, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 8, 18, 21, 8, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 18, 21, 8, 21);
     }
 
     {
-        IntMatrix firstMatrix{15, 17, -3};
-        IntMatrix secondMatrix{5, 8, 2};
+        IntMatrix srcFirstDestMatrix{15, 17, -3};
+        IntMatrix secondDestMatrix{5, 8, 2};
 
-        secondMatrix.resize(5, 8, 6, 17);
+        secondDestMatrix.resize(5, 8, 6, 17);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 8, 18, 21, 8, 17);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 18, 21, 8, 17);
     }
 
     {
-        IntMatrix firstMatrix{15, 17, -3};
-        IntMatrix secondMatrix{5, 8, 2};
+        IntMatrix srcFirstDestMatrix{15, 17, -3};
+        IntMatrix secondDestMatrix{5, 8, 2};
 
-        secondMatrix.resize(5, 8, 6, 18);
+        secondDestMatrix.resize(5, 8, 6, 18);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 8, 18, 21, 8, 18);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 18, 21, 8, 18);
     }
 
     {
-        IntMatrix firstMatrix{15, 17, -3};
-        IntMatrix secondMatrix{6, 15, 2};
+        IntMatrix srcFirstDestMatrix{15, 17, -3};
+        IntMatrix secondDestMatrix{6, 15, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 8, 18, 21, 7, 18);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 18, 21, 7, 18);
     }
 
     {
-        IntMatrix firstMatrix{15, 17, -3};
-        IntMatrix secondMatrix{7, 17, 2};
+        IntMatrix srcFirstDestMatrix{15, 17, -3};
+        IntMatrix secondDestMatrix{7, 17, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 8, 18, 21, 8, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 18, 21, 8, 21);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix srcSecondDestMatrix{15, 17, -3};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 8, 10, 21, 18, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 10, 21, 18, 21);
     }
 
     {
-        IntMatrix firstMatrix{5, 8, 2};
-        IntMatrix secondMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{5, 8, 2};
+        IntMatrix srcSecondDestMatrix{15, 17, -3};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 8, 10, 21, 18, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 10, 21, 18, 21);
     }
 
     {
-        IntMatrix firstMatrix{6, 8, 2};
-        IntMatrix secondMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{6, 8, 2};
+        IntMatrix srcSecondDestMatrix{15, 17, -3};
 
-        firstMatrix.resize(6, 8, 7, 17);
+        firstDestMatrix.resize(6, 8, 7, 17);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 8, 10, 17, 18, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 10, 17, 18, 21);
     }
 
     {
-        IntMatrix firstMatrix{6, 8, 2};
-        IntMatrix secondMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{6, 8, 2};
+        IntMatrix srcSecondDestMatrix{15, 17, -3};
 
-        firstMatrix.resize(6, 8, 7, 18);
+        firstDestMatrix.resize(6, 8, 7, 18);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 8, 10, 18, 18, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 10, 18, 18, 21);
     }
 
     {
-        IntMatrix firstMatrix{7, 15, 2};
-        IntMatrix secondMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{7, 15, 2};
+        IntMatrix srcSecondDestMatrix{15, 17, -3};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 8, 8, 18, 18, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 8, 18, 18, 21);
     }
 
     {
-        IntMatrix firstMatrix{8, 17, 2};
-        IntMatrix secondMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{8, 17, 2};
+        IntMatrix srcSecondDestMatrix{15, 17, -3};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 8, 10, 21, 18, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 10, 21, 18, 21);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 10, 21, 8, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 21);
     }
 
     {
-        IntMatrix firstMatrix{5, 8, 2};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{5, 8, 2};
+        IntMatrix secondDestMatrix{};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 10, 21, 8, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 21);
     }
 
     {
-        IntMatrix firstMatrix{6, 8, 2};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{6, 8, 2};
+        IntMatrix secondDestMatrix{};
 
-        firstMatrix.resize(6, 8, 7, 17);
+        firstDestMatrix.resize(6, 8, 7, 17);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 10, 17, 8, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 17, 8, 21);
     }
 
     {
-        IntMatrix firstMatrix{6, 8, 2};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{6, 8, 2};
+        IntMatrix secondDestMatrix{};
 
-        firstMatrix.resize(6, 8, 7, 18);
+        firstDestMatrix.resize(6, 8, 7, 18);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 10, 18, 8, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 18, 8, 21);
     }
 
     {
-        IntMatrix firstMatrix{7, 15, 2};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{7, 15, 2};
+        IntMatrix secondDestMatrix{};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 8, 18, 8, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 8, 18, 8, 21);
     }
 
     {
-        IntMatrix firstMatrix{8, 17, 2};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{8, 17, 2};
+        IntMatrix secondDestMatrix{};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 10, 21, 8, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 21);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{5, 8, 2};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{5, 8, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 10, 21, 8, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 21);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{5, 8, 2};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{5, 8, 2};
 
-        secondMatrix.resize(5, 8, 6, 17);
+        secondDestMatrix.resize(5, 8, 6, 17);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 10, 21, 8, 17);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 17);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{5, 8, 2};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{5, 8, 2};
 
-        secondMatrix.resize(5, 8, 6, 18);
+        secondDestMatrix.resize(5, 8, 6, 18);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 10, 21, 8, 18);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 18);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{6, 15, 2};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{6, 15, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 10, 21, 7, 18);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 7, 18);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{7, 17, 2};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{7, 17, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 10, 21, 8, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 21);
     }
 
     {
-        IntMatrix firstMatrix{8, 17, 2};
-        IntMatrix secondMatrix{7, 17, 2};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{8, 17, 2};
+        IntMatrix secondDestMatrix{7, 17, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 8, 10, 21, 8, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 21);
     }
 
     {
-        IntMatrix firstMatrix{15, 17, -3};
-        IntMatrix secondMatrix{};
+        IntMatrix srcFirstDestMatrix{15, 17, -3};
+        IntMatrix secondDestMatrix{};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 7, 18, 21, 10, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 18, 21, 10, 21);
     }
 
     {
-        IntMatrix firstMatrix{15, 17, -3};
-        IntMatrix secondMatrix{6, 8, 2};
+        IntMatrix srcFirstDestMatrix{15, 17, -3};
+        IntMatrix secondDestMatrix{6, 8, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 7, 18, 21, 10, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 18, 21, 10, 21);
     }
 
     {
-        IntMatrix firstMatrix{15, 17, -3};
-        IntMatrix secondMatrix{6, 8, 2};
+        IntMatrix srcFirstDestMatrix{15, 17, -3};
+        IntMatrix secondDestMatrix{6, 8, 2};
 
-        secondMatrix.resize(6, 8, 7, 17);
+        secondDestMatrix.resize(6, 8, 7, 17);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 7, 18, 21, 10, 17);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 18, 21, 10, 17);
     }
 
     {
-        IntMatrix firstMatrix{15, 17, -3};
-        IntMatrix secondMatrix{6, 8, 2};
+        IntMatrix srcFirstDestMatrix{15, 17, -3};
+        IntMatrix secondDestMatrix{6, 8, 2};
 
-        secondMatrix.resize(6, 8, 7, 18);
+        secondDestMatrix.resize(6, 8, 7, 18);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 7, 18, 21, 10, 18);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 18, 21, 10, 18);
     }
 
     {
-        IntMatrix firstMatrix{15, 17, -3};
-        IntMatrix secondMatrix{7, 15, 2};
+        IntMatrix srcFirstDestMatrix{15, 17, -3};
+        IntMatrix secondDestMatrix{7, 15, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 7, 18, 21, 8, 18);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 18, 21, 8, 18);
     }
 
     {
-        IntMatrix firstMatrix{15, 17, -3};
-        IntMatrix secondMatrix{8, 17, 2};
+        IntMatrix srcFirstDestMatrix{15, 17, -3};
+        IntMatrix secondDestMatrix{8, 17, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, secondMatrix, 7, 18, 21, 10, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 18, 21, 10, 21);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix srcSecondDestMatrix{15, 17, -3};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 7, 8, 21, 18, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 8, 21, 18, 21);
     }
 
     {
-        IntMatrix firstMatrix{5, 8, 2};
-        IntMatrix secondMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{5, 8, 2};
+        IntMatrix srcSecondDestMatrix{15, 17, -3};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 7, 8, 21, 18, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 8, 21, 18, 21);
     }
 
     {
-        IntMatrix firstMatrix{5, 8, 2};
-        IntMatrix secondMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{5, 8, 2};
+        IntMatrix srcSecondDestMatrix{15, 17, -3};
 
-        firstMatrix.resize(5, 8, 6, 17);
+        firstDestMatrix.resize(5, 8, 6, 17);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 7, 8, 17, 18, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 8, 17, 18, 21);
     }
 
     {
-        IntMatrix firstMatrix{5, 8, 2};
-        IntMatrix secondMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{5, 8, 2};
+        IntMatrix srcSecondDestMatrix{15, 17, -3};
 
-        firstMatrix.resize(5, 8, 6, 18);
+        firstDestMatrix.resize(5, 8, 6, 18);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 7, 8, 18, 18, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 8, 18, 18, 21);
     }
 
     {
-        IntMatrix firstMatrix{6, 15, 2};
-        IntMatrix secondMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{6, 15, 2};
+        IntMatrix srcSecondDestMatrix{15, 17, -3};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 7, 7, 18, 18, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 7, 18, 18, 21);
     }
 
     {
-        IntMatrix firstMatrix{7, 17, 2};
-        IntMatrix secondMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{7, 17, 2};
+        IntMatrix srcSecondDestMatrix{15, 17, -3};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), secondMatrix, firstMatrix, secondMatrix, 7, 8, 21, 18, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 8, 21, 18, 21);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 8, 21, 10, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 21);
     }
 
     {
-        IntMatrix firstMatrix{5, 8, 2};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{5, 8, 2};
+        IntMatrix secondDestMatrix{};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 8, 21, 10, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 21);
     }
 
     {
-        IntMatrix firstMatrix{5, 8, 2};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{5, 8, 2};
+        IntMatrix secondDestMatrix{};
 
-        firstMatrix.resize(5, 8, 6, 17);
+        firstDestMatrix.resize(5, 8, 6, 17);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 8, 17, 10, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 17, 10, 21);
     }
 
     {
-        IntMatrix firstMatrix{5, 8, 2};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{5, 8, 2};
+        IntMatrix secondDestMatrix{};
 
-        firstMatrix.resize(5, 8, 6, 18);
+        firstDestMatrix.resize(5, 8, 6, 18);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 8, 18, 10, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 18, 10, 21);
     }
 
     {
-        IntMatrix firstMatrix{6, 15, 2};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{6, 15, 2};
+        IntMatrix secondDestMatrix{};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 7, 18, 10, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 7, 18, 10, 21);
     }
 
     {
-        IntMatrix firstMatrix{7, 17, 2};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{7, 17, 2};
+        IntMatrix secondDestMatrix{};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 8, 21, 10, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 21);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{6, 8, 2};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{6, 8, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 8, 21, 10, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 21);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{6, 8, 2};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{6, 8, 2};
 
-        secondMatrix.resize(6, 8, 7, 17);
+        secondDestMatrix.resize(6, 8, 7, 17);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 8, 21, 10, 17);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 17);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{6, 8, 2};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{6, 8, 2};
 
-        secondMatrix.resize(6, 8, 7, 18);
+        secondDestMatrix.resize(6, 8, 7, 18);
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 8, 21, 10, 18);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 18);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{7, 15, 2};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{7, 15, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 8, 21, 8, 18);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 8, 18);
     }
 
     {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{8, 17, 2};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{8, 17, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 8, 21, 10, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 21);
     }
 
     {
-        IntMatrix firstMatrix{7, 17, 2};
-        IntMatrix secondMatrix{8, 17, 2};
-        IntMatrix thirdMatrix{15, 17, -3};
+        IntMatrix srcMatrix{15, 17, -3};
+        IntMatrix firstDestMatrix{7, 17, 2};
+        IntMatrix secondDestMatrix{8, 17, 2};
 
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), thirdMatrix, firstMatrix, secondMatrix, 7, 8, 21, 10, 21);
+        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 21);
     }
 }
 
