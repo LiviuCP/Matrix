@@ -2906,26 +2906,27 @@ void CommonTests::testInsertRowNoSetValue()
         {
             QFAIL("Insert row failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
+        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
         {
             QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 2 &&
+                     matrix.at(0, 2) == 3 &&
+                     matrix.at(1, 0) == 4 &&
+                     matrix.at(1, 1) == 5 &&
+                     matrix.at(1, 2) == 6 &&
+                     matrix.at(3, 0) == 7 &&
+                     matrix.at(3, 1) == 8 &&
+                     matrix.at(3, 2) == 9 &&
+                     matrix.at(4, 0) == 10 &&
+                     matrix.at(4, 1) == 11 &&
+                     matrix.at(4, 2) == 12,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 2) == 3 &&
-                 matrix.at(1, 0) == 4 &&
-                 matrix.at(1, 1) == 5 &&
-                 matrix.at(1, 2) == 6 &&
-                 matrix.at(3, 0) == 7 &&
-                 matrix.at(3, 1) == 8 &&
-                 matrix.at(3, 2) == 9 &&
-                 matrix.at(4, 0) == 10 &&
-                 matrix.at(4, 1) == 11 &&
-                 matrix.at(4, 2) == 12,
-
-                 "Insert row failed, the matrix doesn't have the right values on the existing rows!");
+                     "Insert row failed, the matrix doesn't have the right values on the existing rows!");
+        }
     }
 
     {
@@ -2936,26 +2937,27 @@ void CommonTests::testInsertRowNoSetValue()
         {
             QFAIL("Insert row failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
+        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
         {
             QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(1, 0) == 1 &&
+                     matrix.at(1, 1) == 2 &&
+                     matrix.at(1, 2) == 3 &&
+                     matrix.at(2, 0) == 4 &&
+                     matrix.at(2, 1) == 5 &&
+                     matrix.at(2, 2) == 6 &&
+                     matrix.at(3, 0) == 7 &&
+                     matrix.at(3, 1) == 8 &&
+                     matrix.at(3, 2) == 9 &&
+                     matrix.at(4, 0) == 10 &&
+                     matrix.at(4, 1) == 11 &&
+                     matrix.at(4, 2) == 12,
 
-        QVERIFY2(matrix.at(1, 0) == 1 &&
-                 matrix.at(1, 1) == 2 &&
-                 matrix.at(1, 2) == 3 &&
-                 matrix.at(2, 0) == 4 &&
-                 matrix.at(2, 1) == 5 &&
-                 matrix.at(2, 2) == 6 &&
-                 matrix.at(3, 0) == 7 &&
-                 matrix.at(3, 1) == 8 &&
-                 matrix.at(3, 2) == 9 &&
-                 matrix.at(4, 0) == 10 &&
-                 matrix.at(4, 1) == 11 &&
-                 matrix.at(4, 2) == 12,
-
-                 "Insert row failed, the matrix doesn't have the right values on the existing rows!");
+                     "Insert row failed, the matrix doesn't have the right values on the existing rows!");
+        }
     }
 
     {
@@ -2966,26 +2968,27 @@ void CommonTests::testInsertRowNoSetValue()
         {
             QFAIL("Insert row failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
+        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
         {
             QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 2 &&
+                     matrix.at(0, 2) == 3 &&
+                     matrix.at(1, 0) == 4 &&
+                     matrix.at(1, 1) == 5 &&
+                     matrix.at(1, 2) == 6 &&
+                     matrix.at(2, 0) == 7 &&
+                     matrix.at(2, 1) == 8 &&
+                     matrix.at(2, 2) == 9 &&
+                     matrix.at(3, 0) == 10 &&
+                     matrix.at(3, 1) == 11 &&
+                     matrix.at(3, 2) == 12,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 2) == 3 &&
-                 matrix.at(1, 0) == 4 &&
-                 matrix.at(1, 1) == 5 &&
-                 matrix.at(1, 2) == 6 &&
-                 matrix.at(2, 0) == 7 &&
-                 matrix.at(2, 1) == 8 &&
-                 matrix.at(2, 2) == 9 &&
-                 matrix.at(3, 0) == 10 &&
-                 matrix.at(3, 1) == 11 &&
-                 matrix.at(3, 2) == 12,
-
-                 "Insert row failed, the matrix doesn't have the right values on the existing rows!");
+                     "Insert row failed, the matrix doesn't have the right values on the existing rows!");
+        }
     }
 }
 
@@ -2999,29 +3002,30 @@ void CommonTests::testInsertRowSetValue()
         {
             QFAIL("Insert row failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
+        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
         {
             QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 2 &&
+                     matrix.at(0, 2) == 3 &&
+                     matrix.at(1, 0) == 4 &&
+                     matrix.at(1, 1) == 5 &&
+                     matrix.at(1, 2) == 6 &&
+                     matrix.at(2, 0) == -1 &&
+                     matrix.at(2, 1) == -1 &&
+                     matrix.at(2, 2) == -1 &&
+                     matrix.at(3, 0) == 7 &&
+                     matrix.at(3, 1) == 8 &&
+                     matrix.at(3, 2) == 9 &&
+                     matrix.at(4, 0) == 10 &&
+                     matrix.at(4, 1) == 11 &&
+                     matrix.at(4, 2) == 12,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 2) == 3 &&
-                 matrix.at(1, 0) == 4 &&
-                 matrix.at(1, 1) == 5 &&
-                 matrix.at(1, 2) == 6 &&
-                 matrix.at(2, 0) == -1 &&
-                 matrix.at(2, 1) == -1 &&
-                 matrix.at(2, 2) == -1 &&
-                 matrix.at(3, 0) == 7 &&
-                 matrix.at(3, 1) == 8 &&
-                 matrix.at(3, 2) == 9 &&
-                 matrix.at(4, 0) == 10 &&
-                 matrix.at(4, 1) == 11 &&
-                 matrix.at(4, 2) == 12,
-
-                 "Insert row failed, the matrix doesn't have the right values!");
+                     "Insert row failed, the matrix doesn't have the right values!");
+        }
     }
 
     {
@@ -3032,29 +3036,30 @@ void CommonTests::testInsertRowSetValue()
         {
             QFAIL("Insert row failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
+        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
         {
             QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == -1 &&
+                     matrix.at(0, 1) == -1 &&
+                     matrix.at(0, 2) == -1 &&
+                     matrix.at(1, 0) == 1 &&
+                     matrix.at(1, 1) == 2 &&
+                     matrix.at(1, 2) == 3 &&
+                     matrix.at(2, 0) == 4 &&
+                     matrix.at(2, 1) == 5 &&
+                     matrix.at(2, 2) == 6 &&
+                     matrix.at(3, 0) == 7 &&
+                     matrix.at(3, 1) == 8 &&
+                     matrix.at(3, 2) == 9 &&
+                     matrix.at(4, 0) == 10 &&
+                     matrix.at(4, 1) == 11 &&
+                     matrix.at(4, 2) == 12,
 
-        QVERIFY2(matrix.at(0, 0) == -1 &&
-                 matrix.at(0, 1) == -1 &&
-                 matrix.at(0, 2) == -1 &&
-                 matrix.at(1, 0) == 1 &&
-                 matrix.at(1, 1) == 2 &&
-                 matrix.at(1, 2) == 3 &&
-                 matrix.at(2, 0) == 4 &&
-                 matrix.at(2, 1) == 5 &&
-                 matrix.at(2, 2) == 6 &&
-                 matrix.at(3, 0) == 7 &&
-                 matrix.at(3, 1) == 8 &&
-                 matrix.at(3, 2) == 9 &&
-                 matrix.at(4, 0) == 10 &&
-                 matrix.at(4, 1) == 11 &&
-                 matrix.at(4, 2) == 12,
-
-                 "Insert row failed, the matrix doesn't have the right values!");
+                     "Insert row failed, the matrix doesn't have the right values!");
+        }
     }
 
     {
@@ -3065,29 +3070,30 @@ void CommonTests::testInsertRowSetValue()
         {
             QFAIL("Insert row failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
+        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
         {
             QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 2 &&
+                     matrix.at(0, 2) == 3 &&
+                     matrix.at(1, 0) == 4 &&
+                     matrix.at(1, 1) == 5 &&
+                     matrix.at(1, 2) == 6 &&
+                     matrix.at(2, 0) == 7 &&
+                     matrix.at(2, 1) == 8 &&
+                     matrix.at(2, 2) == 9 &&
+                     matrix.at(3, 0) == 10 &&
+                     matrix.at(3, 1) == 11 &&
+                     matrix.at(3, 2) == 12 &&
+                     matrix.at(4, 0) == -1 &&
+                     matrix.at(4, 1) == -1 &&
+                     matrix.at(4, 2) == -1,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 2) == 3 &&
-                 matrix.at(1, 0) == 4 &&
-                 matrix.at(1, 1) == 5 &&
-                 matrix.at(1, 2) == 6 &&
-                 matrix.at(2, 0) == 7 &&
-                 matrix.at(2, 1) == 8 &&
-                 matrix.at(2, 2) == 9 &&
-                 matrix.at(3, 0) == 10 &&
-                 matrix.at(3, 1) == 11 &&
-                 matrix.at(3, 2) == 12 &&
-                 matrix.at(4, 0) == -1 &&
-                 matrix.at(4, 1) == -1 &&
-                 matrix.at(4, 2) == -1,
-
-                 "Insert row failed, the matrix doesn't have the right values!");
+                     "Insert row failed, the matrix doesn't have the right values!");
+        }
     }
 }
 
@@ -3146,26 +3152,27 @@ void CommonTests::testInsertColumnNoSetValue()
         {
             QFAIL("Insert column failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
         {
             QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 2 &&
+                     matrix.at(0, 3) == 3 &&
+                     matrix.at(0, 4) == 4 &&
+                     matrix.at(1, 0) == 5 &&
+                     matrix.at(1, 1) == 6 &&
+                     matrix.at(1, 3) == 7 &&
+                     matrix.at(1, 4) == 8 &&
+                     matrix.at(2, 0) == 9 &&
+                     matrix.at(2, 1) == 10 &&
+                     matrix.at(2, 3) == 11 &&
+                     matrix.at(2, 4) == 12,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 3) == 3 &&
-                 matrix.at(0, 4) == 4 &&
-                 matrix.at(1, 0) == 5 &&
-                 matrix.at(1, 1) == 6 &&
-                 matrix.at(1, 3) == 7 &&
-                 matrix.at(1, 4) == 8 &&
-                 matrix.at(2, 0) == 9 &&
-                 matrix.at(2, 1) == 10 &&
-                 matrix.at(2, 3) == 11 &&
-                 matrix.at(2, 4) == 12,
-
-                 "Insert column failed, the matrix doesn't have the right values on the existing columns!");
+                     "Insert column failed, the matrix doesn't have the right values on the existing columns!");
+        }
     }
 
     {
@@ -3176,26 +3183,27 @@ void CommonTests::testInsertColumnNoSetValue()
         {
             QFAIL("Insert column failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
         {
             QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 1) == 1 &&
+                     matrix.at(0, 2) == 2 &&
+                     matrix.at(0, 3) == 3 &&
+                     matrix.at(0, 4) == 4 &&
+                     matrix.at(1, 1) == 5 &&
+                     matrix.at(1, 2) == 6 &&
+                     matrix.at(1, 3) == 7 &&
+                     matrix.at(1, 4) == 8 &&
+                     matrix.at(2, 1) == 9 &&
+                     matrix.at(2, 2) == 10 &&
+                     matrix.at(2, 3) == 11 &&
+                     matrix.at(2, 4) == 12,
 
-        QVERIFY2(matrix.at(0, 1) == 1 &&
-                 matrix.at(0, 2) == 2 &&
-                 matrix.at(0, 3) == 3 &&
-                 matrix.at(0, 4) == 4 &&
-                 matrix.at(1, 1) == 5 &&
-                 matrix.at(1, 2) == 6 &&
-                 matrix.at(1, 3) == 7 &&
-                 matrix.at(1, 4) == 8 &&
-                 matrix.at(2, 1) == 9 &&
-                 matrix.at(2, 2) == 10 &&
-                 matrix.at(2, 3) == 11 &&
-                 matrix.at(2, 4) == 12,
-
-                 "Insert column failed, the matrix doesn't have the right values on the existing columns!");
+                     "Insert column failed, the matrix doesn't have the right values on the existing columns!");
+        }
     }
 
     {
@@ -3206,26 +3214,27 @@ void CommonTests::testInsertColumnNoSetValue()
         {
             QFAIL("Insert column failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
         {
             QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 2 &&
+                     matrix.at(0, 2) == 3 &&
+                     matrix.at(0, 3) == 4 &&
+                     matrix.at(1, 0) == 5 &&
+                     matrix.at(1, 1) == 6 &&
+                     matrix.at(1, 2) == 7 &&
+                     matrix.at(1, 3) == 8 &&
+                     matrix.at(2, 0) == 9 &&
+                     matrix.at(2, 1) == 10 &&
+                     matrix.at(2, 2) == 11 &&
+                     matrix.at(2, 3) == 12,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 2) == 3 &&
-                 matrix.at(0, 3) == 4 &&
-                 matrix.at(1, 0) == 5 &&
-                 matrix.at(1, 1) == 6 &&
-                 matrix.at(1, 2) == 7 &&
-                 matrix.at(1, 3) == 8 &&
-                 matrix.at(2, 0) == 9 &&
-                 matrix.at(2, 1) == 10 &&
-                 matrix.at(2, 2) == 11 &&
-                 matrix.at(2, 3) == 12,
-
-                 "Insert column failed, the matrix doesn't have the right values on the existing columns!");
+                     "Insert column failed, the matrix doesn't have the right values on the existing columns!");
+        }
     }
 }
 
@@ -3239,29 +3248,30 @@ void CommonTests::testInsertColumnSetValue()
         {
             QFAIL("Insert column failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
         {
             QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 2 &&
+                     matrix.at(0, 2) == -1 &&
+                     matrix.at(0, 3) == 3 &&
+                     matrix.at(0, 4) == 4 &&
+                     matrix.at(1, 0) == 5 &&
+                     matrix.at(1, 2) == -1 &&
+                     matrix.at(1, 1) == 6 &&
+                     matrix.at(1, 3) == 7 &&
+                     matrix.at(1, 4) == 8 &&
+                     matrix.at(2, 0) == 9 &&
+                     matrix.at(2, 1) == 10 &&
+                     matrix.at(2, 2) == -1 &&
+                     matrix.at(2, 3) == 11 &&
+                     matrix.at(2, 4) == 12,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 2) == -1 &&
-                 matrix.at(0, 3) == 3 &&
-                 matrix.at(0, 4) == 4 &&
-                 matrix.at(1, 0) == 5 &&
-                 matrix.at(1, 2) == -1 &&
-                 matrix.at(1, 1) == 6 &&
-                 matrix.at(1, 3) == 7 &&
-                 matrix.at(1, 4) == 8 &&
-                 matrix.at(2, 0) == 9 &&
-                 matrix.at(2, 1) == 10 &&
-                 matrix.at(2, 2) == -1 &&
-                 matrix.at(2, 3) == 11 &&
-                 matrix.at(2, 4) == 12,
-
-                 "Insert column failed, the matrix doesn't have the right values!");
+                     "Insert column failed, the matrix doesn't have the right values!");
+        }
     }
 
     {
@@ -3272,29 +3282,30 @@ void CommonTests::testInsertColumnSetValue()
         {
             QFAIL("Insert column failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
         {
             QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == -1 &&
+                     matrix.at(0, 1) == 1 &&
+                     matrix.at(0, 2) == 2 &&
+                     matrix.at(0, 3) == 3 &&
+                     matrix.at(0, 4) == 4 &&
+                     matrix.at(1, 0) == -1 &&
+                     matrix.at(1, 1) == 5 &&
+                     matrix.at(1, 2) == 6 &&
+                     matrix.at(1, 3) == 7 &&
+                     matrix.at(1, 4) == 8 &&
+                     matrix.at(2, 0) == -1 &&
+                     matrix.at(2, 1) == 9 &&
+                     matrix.at(2, 2) == 10 &&
+                     matrix.at(2, 3) == 11 &&
+                     matrix.at(2, 4) == 12,
 
-        QVERIFY2(matrix.at(0, 0) == -1 &&
-                 matrix.at(0, 1) == 1 &&
-                 matrix.at(0, 2) == 2 &&
-                 matrix.at(0, 3) == 3 &&
-                 matrix.at(0, 4) == 4 &&
-                 matrix.at(1, 0) == -1 &&
-                 matrix.at(1, 1) == 5 &&
-                 matrix.at(1, 2) == 6 &&
-                 matrix.at(1, 3) == 7 &&
-                 matrix.at(1, 4) == 8 &&
-                 matrix.at(2, 0) == -1 &&
-                 matrix.at(2, 1) == 9 &&
-                 matrix.at(2, 2) == 10 &&
-                 matrix.at(2, 3) == 11 &&
-                 matrix.at(2, 4) == 12,
-
-                 "Insert column failed, the matrix doesn't have the right values!");
+                     "Insert column failed, the matrix doesn't have the right values!");
+        }
     }
 
     {
@@ -3305,29 +3316,30 @@ void CommonTests::testInsertColumnSetValue()
         {
             QFAIL("Insert column failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
+        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
         {
             QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 2 &&
+                     matrix.at(0, 2) == 3 &&
+                     matrix.at(0, 3) == 4 &&
+                     matrix.at(0, 4) == -1 &&
+                     matrix.at(1, 0) == 5 &&
+                     matrix.at(1, 1) == 6 &&
+                     matrix.at(1, 2) == 7 &&
+                     matrix.at(1, 3) == 8 &&
+                     matrix.at(1, 4) == -1 &&
+                     matrix.at(2, 0) == 9 &&
+                     matrix.at(2, 1) == 10 &&
+                     matrix.at(2, 2) == 11 &&
+                     matrix.at(2, 3) == 12 &&
+                     matrix.at(2, 4) == -1,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 2) == 3 &&
-                 matrix.at(0, 3) == 4 &&
-                 matrix.at(0, 4) == -1 &&
-                 matrix.at(1, 0) == 5 &&
-                 matrix.at(1, 1) == 6 &&
-                 matrix.at(1, 2) == 7 &&
-                 matrix.at(1, 3) == 8 &&
-                 matrix.at(1, 4) == -1 &&
-                 matrix.at(2, 0) == 9 &&
-                 matrix.at(2, 1) == 10 &&
-                 matrix.at(2, 2) == 11 &&
-                 matrix.at(2, 3) == 12 &&
-                 matrix.at(2, 4) == -1,
-
-                 "Insert column failed, the matrix doesn't have the right values!");
+                     "Insert column failed, the matrix doesn't have the right values!");
+        }
     }
 }
 
