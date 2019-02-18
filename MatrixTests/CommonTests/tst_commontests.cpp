@@ -3398,22 +3398,23 @@ void CommonTests::testEraseRow()
         {
             QFAIL("Erase row failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 4)
+        else if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 4)
         {
             QFAIL("Erase row failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 5 &&
+                     matrix.at(0, 1) == 6 &&
+                     matrix.at(0, 2) == 7 &&
+                     matrix.at(0, 3) == 8 &&
+                     matrix.at(1, 0) == 9 &&
+                     matrix.at(1, 1) == 10 &&
+                     matrix.at(1, 2) == 11 &&
+                     matrix.at(1, 3) == 12,
 
-        QVERIFY2(matrix.at(0, 0) == 5 &&
-                 matrix.at(0, 1) == 6 &&
-                 matrix.at(0, 2) == 7 &&
-                 matrix.at(0, 3) == 8 &&
-                 matrix.at(1, 0) == 9 &&
-                 matrix.at(1, 1) == 10 &&
-                 matrix.at(1, 2) == 11 &&
-                 matrix.at(1, 3) == 12,
-
-                 "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
+                     "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
+        }
     }
 
     {
@@ -3424,22 +3425,23 @@ void CommonTests::testEraseRow()
         {
             QFAIL("Erase row failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 4)
+        else if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 4)
         {
             QFAIL("Erase row failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 2 &&
+                     matrix.at(0, 2) == 3 &&
+                     matrix.at(0, 3) == 4 &&
+                     matrix.at(1, 0) == 9 &&
+                     matrix.at(1, 1) == 10 &&
+                     matrix.at(1, 2) == 11 &&
+                     matrix.at(1, 3) == 12,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 2) == 3 &&
-                 matrix.at(0, 3) == 4 &&
-                 matrix.at(1, 0) == 9 &&
-                 matrix.at(1, 1) == 10 &&
-                 matrix.at(1, 2) == 11 &&
-                 matrix.at(1, 3) == 12,
-
-                 "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
+                     "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
+        }
     }
 
     {
@@ -3450,22 +3452,23 @@ void CommonTests::testEraseRow()
         {
             QFAIL("Erase row failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 4)
+        else if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 4)
         {
             QFAIL("Erase row failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 2 &&
+                     matrix.at(0, 2) == 3 &&
+                     matrix.at(0, 3) == 4 &&
+                     matrix.at(1, 0) == 5 &&
+                     matrix.at(1, 1) == 6 &&
+                     matrix.at(1, 2) == 7 &&
+                     matrix.at(1, 3) == 8,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 2) == 3 &&
-                 matrix.at(0, 3) == 4 &&
-                 matrix.at(1, 0) == 5 &&
-                 matrix.at(1, 1) == 6 &&
-                 matrix.at(1, 2) == 7 &&
-                 matrix.at(1, 3) == 8,
-
-                 "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
+                     "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
+        }
     }
 
     {
@@ -3555,22 +3558,23 @@ void CommonTests::testEraseColumn()
         {
             QFAIL("Erase column failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
+        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
         {
             QFAIL("Erase column failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 2 &&
+                     matrix.at(0, 1) == 3 &&
+                     matrix.at(1, 0) == 5 &&
+                     matrix.at(1, 1) == 6 &&
+                     matrix.at(2, 0) == 8 &&
+                     matrix.at(2, 1) == 9 &&
+                     matrix.at(3, 0) == 11 &&
+                     matrix.at(3, 1) == 12,
 
-        QVERIFY2(matrix.at(0, 0) == 2 &&
-                 matrix.at(0, 1) == 3 &&
-                 matrix.at(1, 0) == 5 &&
-                 matrix.at(1, 1) == 6 &&
-                 matrix.at(2, 0) == 8 &&
-                 matrix.at(2, 1) == 9 &&
-                 matrix.at(3, 0) == 11 &&
-                 matrix.at(3, 1) == 12,
-
-                 "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
+                     "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
+        }
     }
 
     {
@@ -3581,22 +3585,23 @@ void CommonTests::testEraseColumn()
         {
             QFAIL("Erase column failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
+        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
         {
             QFAIL("Erase column failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 3 &&
+                     matrix.at(1, 0) == 4 &&
+                     matrix.at(1, 1) == 6 &&
+                     matrix.at(2, 0) == 7 &&
+                     matrix.at(2, 1) == 9 &&
+                     matrix.at(3, 0) == 10 &&
+                     matrix.at(3, 1) == 12,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 3 &&
-                 matrix.at(1, 0) == 4 &&
-                 matrix.at(1, 1) == 6 &&
-                 matrix.at(2, 0) == 7 &&
-                 matrix.at(2, 1) == 9 &&
-                 matrix.at(3, 0) == 10 &&
-                 matrix.at(3, 1) == 12,
-
-                 "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
+                     "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
+        }
     }
 
     {
@@ -3607,22 +3612,23 @@ void CommonTests::testEraseColumn()
         {
             QFAIL("Erase column failed, capacity of the matrix is not correct!");
         }
-
-        if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
+        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
         {
             QFAIL("Erase column failed, number of rows or columns of the matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(matrix.at(0, 0) == 1 &&
+                     matrix.at(0, 1) == 2 &&
+                     matrix.at(1, 0) == 4 &&
+                     matrix.at(1, 1) == 5 &&
+                     matrix.at(2, 0) == 7 &&
+                     matrix.at(2, 1) == 8 &&
+                     matrix.at(3, 0) == 10 &&
+                     matrix.at(3, 1) == 11,
 
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(1, 0) == 4 &&
-                 matrix.at(1, 1) == 5 &&
-                 matrix.at(2, 0) == 7 &&
-                 matrix.at(2, 1) == 8 &&
-                 matrix.at(3, 0) == 10 &&
-                 matrix.at(3, 1) == 11,
-
-                 "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
+                     "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
+        }
     }
 
     {
