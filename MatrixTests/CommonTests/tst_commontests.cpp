@@ -263,36 +263,36 @@ void CommonTests::testCapacityWithConstructors()
 void CommonTests::testCopyConstructor()
 {
     {
-        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix matrixCopy{matrix};
+        IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix destMatrix{srcMatrix};
 
-        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
+        if (destMatrix.getRowCapacity() != 2 || destMatrix.getColumnCapacity() != 3)
         {
             QFAIL("Copy constructor initialized matrix with wrong capacity");
         }
-        else if (matrixCopy.getNrOfRows() != 2 || matrixCopy.getNrOfColumns() != 3)
+        else if (destMatrix.getNrOfRows() != 2 || destMatrix.getNrOfColumns() != 3)
         {
             QFAIL("Copy constructor initialized matrix with wrong number of rows and columns");
         }
         else
         {
-            QVERIFY2(matrixCopy.at(0, 0) == 1 &&
-                     matrixCopy.at(0, 1) == 2 &&
-                     matrixCopy.at(0, 2) == 3 &&
-                     matrixCopy.at(1, 0) == 4 &&
-                     matrixCopy.at(1, 1) == 5 &&
-                     matrixCopy.at(1, 2) == 6,
+            QVERIFY2(destMatrix.at(0, 0) == 1 &&
+                     destMatrix.at(0, 1) == 2 &&
+                     destMatrix.at(0, 2) == 3 &&
+                     destMatrix.at(1, 0) == 4 &&
+                     destMatrix.at(1, 1) == 5 &&
+                     destMatrix.at(1, 2) == 6,
 
                      "Matrix elements have not been correctly initialized by the copy constructor");
         }
     }
 
     {
-        IntMatrix matrix{};
-        IntMatrix matrixCopy{matrix};
+        IntMatrix srcMatrix{};
+        IntMatrix destMatrix{srcMatrix};
 
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Copy constructor initialized matrix with wrong capacity");
-        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Copy constructor initialized matrix with wrong number of rows and columns");
+        QVERIFY2(destMatrix.getRowCapacity() == 0 && destMatrix.getColumnCapacity() == 0, "Copy constructor initialized matrix with wrong capacity");
+        QVERIFY2(destMatrix.getNrOfRows() == 0 && destMatrix.getNrOfColumns() == 0, "Copy constructor initialized matrix with wrong number of rows and columns");
     }
 }
 
