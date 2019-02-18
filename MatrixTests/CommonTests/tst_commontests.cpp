@@ -4359,121 +4359,127 @@ void CommonTests::testCapacityWithCatByColumn()
 void CommonTests::testSplitByRow()
 {
     {
-        IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{};
+        IntMatrix srcMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{};
 
-        firstMatrix.splitByRow(secondMatrix, thirdMatrix, 2);
+        srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, 2);
 
-        if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 2)
+        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
         {
             QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
         }
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 2)
+        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
+                     firstDestMatrix.at(0, 1) == 2 &&
+                     firstDestMatrix.at(1, 0) == 3 &&
+                     firstDestMatrix.at(1, 1) == 4,
 
-        if (thirdMatrix.getRowCapacity() != 1 || thirdMatrix.getColumnCapacity() != 2)
+                     "Vertical split failed, first destination matrix has incorrect values!");
+        }
+
+        if (secondDestMatrix.getRowCapacity() != 1 || secondDestMatrix.getColumnCapacity() != 2)
         {
             QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
         }
-
-        if (thirdMatrix.getNrOfRows() != 1 || thirdMatrix.getNrOfColumns() != 2)
+        else if (secondDestMatrix.getNrOfRows() != 1 || secondDestMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(secondDestMatrix.at(0, 0) == 5 &&
+                     secondDestMatrix.at(0, 1) == 6,
 
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(1, 0) == 3 &&
-                 secondMatrix.at(1, 1) == 4,
-
-                 "Vertical split failed, first destination matrix has incorrect values!");
-
-        QVERIFY2(thirdMatrix.at(0, 0) == 5 &&
-                 thirdMatrix.at(0, 1) == 6,
-
-                 "Vertical split failed, second destination matrix has incorrect values!");
+                     "Vertical split failed, second destination matrix has incorrect values!");
+        }
     }
 
     {
-        IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
+        IntMatrix srcFirstDestMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondDestMatrix{};
 
-        firstMatrix.splitByRow(firstMatrix, secondMatrix, 2);
+        srcFirstDestMatrix.splitByRow(srcFirstDestMatrix, secondDestMatrix, 2);
 
-        if (firstMatrix.getRowCapacity() != 3 || firstMatrix.getColumnCapacity() != 2)
+        if (srcFirstDestMatrix.getRowCapacity() != 3 || srcFirstDestMatrix.getColumnCapacity() != 2)
         {
             QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
         }
-
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        else if (srcFirstDestMatrix.getNrOfRows() != 2 || srcFirstDestMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(srcFirstDestMatrix.at(0, 0) == 1 &&
+                     srcFirstDestMatrix.at(0, 1) == 2 &&
+                     srcFirstDestMatrix.at(1, 0) == 3 &&
+                     srcFirstDestMatrix.at(1, 1) == 4,
 
-        if (secondMatrix.getRowCapacity() != 1 || secondMatrix.getColumnCapacity() != 2)
+                     "Vertical split failed, first destination matrix has incorrect values!");
+        }
+
+        if (secondDestMatrix.getRowCapacity() != 1 || secondDestMatrix.getColumnCapacity() != 2)
         {
             QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
         }
-
-        if (secondMatrix.getNrOfRows() != 1 || secondMatrix.getNrOfColumns() != 2)
+        else if (secondDestMatrix.getNrOfRows() != 1 || secondDestMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(secondDestMatrix.at(0, 0) == 5 &&
+                     secondDestMatrix.at(0, 1) == 6,
 
-        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
-                 firstMatrix.at(0, 1) == 2 &&
-                 firstMatrix.at(1, 0) == 3 &&
-                 firstMatrix.at(1, 1) == 4,
-
-                 "Vertical split failed, first destination matrix has incorrect values!");
-
-        QVERIFY2(secondMatrix.at(0, 0) == 5 &&
-                 secondMatrix.at(0, 1) == 6,
-
-                 "Vertical split failed, second destination matrix has incorrect values!");
+                     "Vertical split failed, second destination matrix has incorrect values!");
+        }
     }
 
     {
-        IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
+        IntMatrix srcSecondDestMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+        IntMatrix firstDestMatrix{};
 
-        firstMatrix.splitByRow(secondMatrix, firstMatrix, 2);
+        srcSecondDestMatrix.splitByRow(firstDestMatrix, srcSecondDestMatrix, 2);
 
-        if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 2)
+        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
         {
             QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
         }
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 2)
+        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
+                     firstDestMatrix.at(0, 1) == 2 &&
+                     firstDestMatrix.at(1, 0) == 3 &&
+                     firstDestMatrix.at(1, 1) == 4,
 
-        if (firstMatrix.getRowCapacity() != 3 || firstMatrix.getColumnCapacity() != 2)
+                     "Vertical split failed, first destination matrix has incorrect values!");
+        }
+
+        if (srcSecondDestMatrix.getRowCapacity() != 3 || srcSecondDestMatrix.getColumnCapacity() != 2)
         {
             QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
         }
-
-        if (firstMatrix.getNrOfRows() != 1 || firstMatrix.getNrOfColumns() != 2)
+        else if (srcSecondDestMatrix.getNrOfRows() != 1 || srcSecondDestMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(srcSecondDestMatrix.at(0, 0) == 5 &&
+                     srcSecondDestMatrix.at(0, 1) == 6,
 
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(1, 0) == 3 &&
-                 secondMatrix.at(1, 1) == 4,
-
-                 "Vertical split failed, first destination matrix has incorrect values!");
-
-        QVERIFY2(firstMatrix.at(0, 0) == 5 &&
-                 firstMatrix.at(0, 1) == 6,
-
-                 "Vertical split failed, second destination matrix has incorrect values!");
+                     "Vertical split failed, second destination matrix has incorrect values!");
+        }
     }
 }
 
@@ -4896,121 +4902,127 @@ void CommonTests::testCapacityWithSplitByRow()
 void CommonTests::testSplitByColumn()
 {
     {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
-        IntMatrix thirdMatrix{};
+        IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix firstDestMatrix{};
+        IntMatrix secondDestMatrix{};
 
-        firstMatrix.splitByColumn(secondMatrix, thirdMatrix, 2);
+        srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, 2);
 
-        if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 2)
+        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
         {
             QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
         }
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 2)
+        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
+                     firstDestMatrix.at(0, 1) == 2 &&
+                     firstDestMatrix.at(1, 0) == 4 &&
+                     firstDestMatrix.at(1, 1) == 5,
 
-        if (thirdMatrix.getRowCapacity() != 2 || thirdMatrix.getColumnCapacity() != 1)
+                     "Horizontal split failed, first destination matrix has incorrect values!");
+        }
+
+        if (secondDestMatrix.getRowCapacity() != 2 || secondDestMatrix.getColumnCapacity() != 1)
         {
             QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
         }
-
-        if (thirdMatrix.getNrOfRows() != 2 || thirdMatrix.getNrOfColumns() != 1)
+        else if (secondDestMatrix.getNrOfRows() != 2 || secondDestMatrix.getNrOfColumns() != 1)
         {
             QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(secondDestMatrix.at(0, 0) == 3 &&
+                     secondDestMatrix.at(1, 0) == 6,
 
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(1, 0) == 4 &&
-                 secondMatrix.at(1, 1) == 5,
-
-                 "Horizontal split failed, first destination matrix has incorrect values!");
-
-        QVERIFY2(thirdMatrix.at(0, 0) == 3 &&
-                 thirdMatrix.at(1, 0) == 6,
-
-                 "Horizontal split failed, second destination matrix has incorrect values!");
+                     "Horizontal split failed, second destination matrix has incorrect values!");
+        }
     }
 
     {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
+        IntMatrix srcFirstDestMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix secondDestMatrix{};
 
-        firstMatrix.splitByColumn(firstMatrix, secondMatrix, 2);
+        srcFirstDestMatrix.splitByColumn(srcFirstDestMatrix, secondDestMatrix, 2);
 
-        if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 3)
+        if (srcFirstDestMatrix.getRowCapacity() != 2 || srcFirstDestMatrix.getColumnCapacity() != 3)
         {
             QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
         }
-
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 2)
+        else if (srcFirstDestMatrix.getNrOfRows() != 2 || srcFirstDestMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(srcFirstDestMatrix.at(0, 0) == 1 &&
+                     srcFirstDestMatrix.at(0, 1) == 2 &&
+                     srcFirstDestMatrix.at(1, 0) == 4 &&
+                     srcFirstDestMatrix.at(1, 1) == 5,
 
-        if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 1)
+                     "Horizontal split failed, first destination matrix has incorrect values!");
+        }
+
+        if (secondDestMatrix.getRowCapacity() != 2 || secondDestMatrix.getColumnCapacity() != 1)
         {
             QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
         }
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 1)
+        else if (secondDestMatrix.getNrOfRows() != 2 || secondDestMatrix.getNrOfColumns() != 1)
         {
             QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(secondDestMatrix.at(0, 0) == 3 &&
+                     secondDestMatrix.at(1, 0) == 6,
 
-        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
-                 firstMatrix.at(0, 1) == 2 &&
-                 firstMatrix.at(1, 0) == 4 &&
-                 firstMatrix.at(1, 1) == 5,
-
-                 "Horizontal split failed, first destination matrix has incorrect values!");
-
-        QVERIFY2(secondMatrix.at(0, 0) == 3 &&
-                 secondMatrix.at(1, 0) == 6,
-
-                 "Horizontal split failed, second destination matrix has incorrect values!");
+                     "Horizontal split failed, second destination matrix has incorrect values!");
+        }
     }
 
     {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
+        IntMatrix srcSecondDestMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        IntMatrix firstDestMatrix{};
 
-        firstMatrix.splitByColumn(secondMatrix, firstMatrix, 2);
+        srcSecondDestMatrix.splitByColumn(firstDestMatrix, srcSecondDestMatrix, 2);
 
-        if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 2)
+        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
         {
             QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
         }
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 2)
+        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
         {
             QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
+                     firstDestMatrix.at(0, 1) == 2 &&
+                     firstDestMatrix.at(1, 0) == 4 &&
+                     firstDestMatrix.at(1, 1) == 5,
 
-        if (firstMatrix.getRowCapacity() != 2 || firstMatrix.getColumnCapacity() != 3)
+                     "Horizontal split failed, first destination matrix has incorrect values!");
+        }
+
+        if (srcSecondDestMatrix.getRowCapacity() != 2 || srcSecondDestMatrix.getColumnCapacity() != 3)
         {
             QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
         }
-
-        if (firstMatrix.getNrOfRows() != 2 || firstMatrix.getNrOfColumns() != 1)
+        else if (srcSecondDestMatrix.getNrOfRows() != 2 || srcSecondDestMatrix.getNrOfColumns() != 1)
         {
             QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
         }
+        else
+        {
+            QVERIFY2(srcSecondDestMatrix.at(0, 0) == 3 &&
+                     srcSecondDestMatrix.at(1, 0) == 6,
 
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(1, 0) == 4 &&
-                 secondMatrix.at(1, 1) == 5,
-
-                 "Horizontal split failed, first destination matrix has incorrect values!");
-
-        QVERIFY2(firstMatrix.at(0, 0) == 3 &&
-                 firstMatrix.at(1, 0) == 6,
-
-                 "Horizontal split failed, second destination matrix has incorrect values!");
+                     "Horizontal split failed, second destination matrix has incorrect values!");
+        }
     }
 }
 
