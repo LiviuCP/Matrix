@@ -748,54 +748,54 @@ void CommonTests::testCopyAssignmentOperator()
 void CommonTests::testCapacityWithCopyAssignmentOperator()
 {
     using namespace std;
-    auto copyAndTestCapacity = [](string testNumber, const IntMatrix& matrix, IntMatrix& matrixCopy, int desiredRowCapacity, int desiredColumnCapacity)
+    auto copyAndTestCapacity = [](string testNumber, const IntMatrix& srcMatrix, IntMatrix& destMatrix, int desiredRowCapacity, int desiredColumnCapacity)
     {
-        matrixCopy = matrix;
+        destMatrix = srcMatrix;
 
-        QVERIFY2(matrixCopy.getRowCapacity() == desiredRowCapacity && matrixCopy.getColumnCapacity() == desiredColumnCapacity,
+        QVERIFY2(destMatrix.getRowCapacity() == desiredRowCapacity && destMatrix.getColumnCapacity() == desiredColumnCapacity,
                  string{"Copy assignment failed, capacity of the destination matrix is not correct! Test number: " + testNumber}.c_str());
     };
 
     int testNumber{1};
 
     {
-        IntMatrix matrixCopy{};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{3, 4, -1}, matrixCopy, 3, 5);
+        IntMatrix destMatrix{};
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{3, 4, -1}, destMatrix, 3, 5);
     }
 
     {
-        IntMatrix matrixCopy{};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{4, 3, -1}, matrixCopy, 5, 3);
+        IntMatrix destMatrix{};
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{4, 3, -1}, destMatrix, 5, 3);
     }
 
     {
-        IntMatrix matrixCopy{};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{7, 8, -1}, matrixCopy, 8, 10);
+        IntMatrix destMatrix{};
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{7, 8, -1}, destMatrix, 8, 10);
     }
 
     {
-        IntMatrix matrixCopy{};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{8, 7, -1}, matrixCopy, 10, 8);
+        IntMatrix destMatrix{};
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{8, 7, -1}, destMatrix, 10, 8);
     }
 
     {
-        IntMatrix matrixCopy{2, 3, -5};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{3, 4, -1}, matrixCopy, 3, 5);
+        IntMatrix destMatrix{2, 3, -5};
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{3, 4, -1}, destMatrix, 3, 5);
     }
 
     {
-        IntMatrix matrixCopy{2, 3, -5};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{4, 3, -1}, matrixCopy, 5, 3);
+        IntMatrix destMatrix{2, 3, -5};
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{4, 3, -1}, destMatrix, 5, 3);
     }
 
     {
-        IntMatrix matrixCopy{3, 4, -5};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{7, 8, -1}, matrixCopy, 8, 10);
+        IntMatrix destMatrix{3, 4, -5};
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{7, 8, -1}, destMatrix, 8, 10);
     }
 
     {
-        IntMatrix matrixCopy{3, 4, -5};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{8, 7, -1}, matrixCopy, 10, 8);
+        IntMatrix destMatrix{3, 4, -5};
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{8, 7, -1}, destMatrix, 10, 8);
     }
 }
 
