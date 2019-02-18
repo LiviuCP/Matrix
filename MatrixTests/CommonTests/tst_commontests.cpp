@@ -757,7 +757,7 @@ void CommonTests::testCopyAssignmentOperator()
 void CommonTests::testCapacityWithCopyAssignmentOperator()
 {
     using namespace std;
-    auto testCapacity = [](string testNumber, const IntMatrix& matrix, IntMatrix& matrixCopy, int desiredRowCapacity, int desiredColumnCapacity)
+    auto copyAndTestCapacity = [](string testNumber, const IntMatrix& matrix, IntMatrix& matrixCopy, int desiredRowCapacity, int desiredColumnCapacity)
     {
         matrixCopy = matrix;
 
@@ -769,42 +769,42 @@ void CommonTests::testCapacityWithCopyAssignmentOperator()
 
     {
         IntMatrix matrixCopy{};
-        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{3, 4, -1}, matrixCopy, 3, 5);
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{3, 4, -1}, matrixCopy, 3, 5);
     }
 
     {
         IntMatrix matrixCopy{};
-        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{4, 3, -1}, matrixCopy, 5, 3);
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{4, 3, -1}, matrixCopy, 5, 3);
     }
 
     {
         IntMatrix matrixCopy{};
-        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{7, 8, -1}, matrixCopy, 8, 10);
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{7, 8, -1}, matrixCopy, 8, 10);
     }
 
     {
         IntMatrix matrixCopy{};
-        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{8, 7, -1}, matrixCopy, 10, 8);
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{8, 7, -1}, matrixCopy, 10, 8);
     }
 
     {
         IntMatrix matrixCopy{2, 3, -5};
-        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{3, 4, -1}, matrixCopy, 3, 5);
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{3, 4, -1}, matrixCopy, 3, 5);
     }
 
     {
         IntMatrix matrixCopy{2, 3, -5};
-        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{4, 3, -1}, matrixCopy, 5, 3);
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{4, 3, -1}, matrixCopy, 5, 3);
     }
 
     {
         IntMatrix matrixCopy{3, 4, -5};
-        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{7, 8, -1}, matrixCopy, 8, 10);
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{7, 8, -1}, matrixCopy, 8, 10);
     }
 
     {
         IntMatrix matrixCopy{3, 4, -5};
-        testCapacity(QString::number(testNumber++).toStdString(), IntMatrix{8, 7, -1}, matrixCopy, 10, 8);
+        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{8, 7, -1}, matrixCopy, 10, 8);
     }
 }
 
@@ -1636,7 +1636,7 @@ void CommonTests::testCapacityResizeWithoutFillingInNewValues()
 {
     using namespace std;
 
-    auto testCapacity = [](string testNumber,
+    auto resizeAndTestCapacity = [](string testNumber,
                            IntMatrix& matrix,
                            const IntMatrix& matrixCopy,
                            int desiredRowCapacity,
@@ -1688,47 +1688,47 @@ void CommonTests::testCapacityResizeWithoutFillingInNewValues()
 
         matrix.resize(10, 7);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 9, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 7, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 7, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 7, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 7, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 9, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 7, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 7, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 7, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 7, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 10, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 7, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 7, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 7, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 7, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 10, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 7, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 7, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 7, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 7, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 10, 7, 11, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 10, 7, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 10, 7, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 7, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 10, 7, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 10, 7, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 10, 7, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 10, 7, 11, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 10, 7, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 10, 7, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 7, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 10, 7, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 10, 7, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 10, 7, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 10, 7, 12, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 10, 7, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 10, 7, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 7, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 10, 7, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 10, 7, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 10, 7, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 10, 7, 12, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 10, 7, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 10, 7, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 7, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 10, 7, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 10, 7, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 10, 7, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 10, 7, 13, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 10, 7, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 10, 7, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 7, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 10, 7, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 10, 7, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 10, 7, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 10, 7, 13, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 10, 7, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 10, 7, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 7, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 10, 7, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 10, 7, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 10, 7, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7);
     }
 
     {
@@ -1737,49 +1737,49 @@ void CommonTests::testCapacityResizeWithoutFillingInNewValues()
 
         matrix.resize(9, 8);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 8, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 8, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 8, 8, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 8, 8, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 8, 8, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 8, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 8, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 8, 8, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 8, 8, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 8, 8, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 8);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 8, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 8, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 8, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 8, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 8, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 8, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 9, 8, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 9, 8, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 8, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 9, 8, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 9, 8, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 9, 8, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 9, 8, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 9, 8, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 8, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 9, 8, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 9, 8, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 9, 8, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 9, 8, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 9, 8, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 8, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 9, 8, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 9, 8, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 9, 8, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 9, 8, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 9, 8, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 8, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 9, 8, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 9, 8, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 9, 8, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 9, 8, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 9, 8, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 8, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 9, 8, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 9, 8, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 9, 8, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 9, 8, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 9, 8, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 8, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 9, 8, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 9, 8, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 9, 8, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 9, 8, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 9, 8, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 8, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 9, 8, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 9, 8, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 9, 8, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 9, 8, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 9, 8, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 8, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 9, 8, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 9, 8, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 9, 8, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8);
     }
 
     {
@@ -1788,55 +1788,55 @@ void CommonTests::testCapacityResizeWithoutFillingInNewValues()
 
         matrix.resize(9, 7);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 8, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 8, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 7, 8, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 7, 8, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 7, 8, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 7, 8, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 8, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 8, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 7, 8, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 7, 8, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 7, 8, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 7, 8, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 8);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 9, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 7, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 7, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 7, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 7, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 9, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 7, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 7, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 7, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 7, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 9, 7, 10, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 9, 7, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 9, 7, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 7, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 9, 7, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 9, 7, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 9, 7, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 9, 7, 10, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 9, 7, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 9, 7, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 7, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 9, 7, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 9, 7, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 9, 7, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 9, 7, 11, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 9, 7, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 9, 7, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 7, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 9, 7, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 9, 7, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 9, 7, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 9, 7, 11, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 9, 7, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 9, 7, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 7, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 9, 7, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 9, 7, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 9, 7, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 9, 7, 12, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 9, 7, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 9, 7, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 7, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 9, 7, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 9, 7, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 9, 7, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 9, 7, 12, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 9, 7, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 9, 7, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 7, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 9, 7, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 9, 7, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 9, 7, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 9, 7, 13, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 9, 7, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 9, 7, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 7, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 9, 7, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 9, 7, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 9, 7, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 9, 7, 13, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 9, 7, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 9, 7, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 7, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 9, 7, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 9, 7, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 9, 7, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7);
     }
 
     {
@@ -1845,42 +1845,42 @@ void CommonTests::testCapacityResizeWithoutFillingInNewValues()
 
         matrix.resize(10, 8);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 8, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 8, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 8, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 8, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 8, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 8, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 8, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 8, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 8, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 8, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 8, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 8, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 10, 8, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 10, 8, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 8, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 10, 8, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 10, 8, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 10, 8, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 10, 8, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 10, 8, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 8, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 10, 8, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 10, 8, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 10, 8, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 10, 8, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 10, 8, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 8, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 10, 8, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 10, 8, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 10, 8, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 10, 8, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 10, 8, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 8, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 10, 8, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 10, 8, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 10, 8, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 10, 8, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 10, 8, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 8, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 10, 8, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 10, 8, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 10, 8, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 10, 8, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 10, 8, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 8, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 10, 8, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 10, 8, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 10, 8, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8);
     }
 
     {
@@ -1889,42 +1889,42 @@ void CommonTests::testCapacityResizeWithoutFillingInNewValues()
 
         matrix.resize(11, 8);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 8, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 8, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 8, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 8, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 8, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 8, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 8, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 8, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 8, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 8, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 8, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 8, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 8, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 8, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 8, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 8, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 8, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 8, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 11, 8, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 11, 8, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 8, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 11, 8, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 11, 8, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 11, 8, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 11, 8, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 11, 8, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 8, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 11, 8, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 11, 8, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 11, 8, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 11, 8, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 11, 8, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 8, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 11, 8, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 11, 8, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 11, 8, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 11, 8, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 11, 8, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 8, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 11, 8, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 11, 8, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 11, 8, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8);
     }
 
     {
@@ -1933,42 +1933,42 @@ void CommonTests::testCapacityResizeWithoutFillingInNewValues()
 
         matrix.resize(10, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 9, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 9, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 9, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 9, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 9, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 9, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 9, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 9, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 9, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 9, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 9, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 10, 9, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 10, 9, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 9, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 9, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 9, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 10, 9, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 10, 9, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 9, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 9, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 9, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 9, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 10, 9, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 10, 9, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 9, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 9, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 9, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 9, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 10, 9, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 10, 9, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 9, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 9, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 9, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 9, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 10, 9, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 10, 9, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 9, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 9, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 9, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 9, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 10, 9, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 10, 9, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 9, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9);
     }
 
     {
@@ -1977,42 +1977,42 @@ void CommonTests::testCapacityResizeWithoutFillingInNewValues()
 
         matrix.resize(11, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 9, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 9, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 9, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 9, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 9, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 9, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 9, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 9, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 9, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 9, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 9, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 9, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 9, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 9, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 9, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 11, 9, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 11, 9, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 9, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 9, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 9, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 9, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 11, 9, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 11, 9, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 9, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 9, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 9, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 9, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 11, 9, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 11, 9, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 9, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 9, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 9, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 9, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 11, 9, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 11, 9, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 9, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9);
     }
 
     {
@@ -2021,47 +2021,47 @@ void CommonTests::testCapacityResizeWithoutFillingInNewValues()
 
         matrix.resize(11, 7);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 9, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 7, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 7, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 7, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 7, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 9, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 7, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 7, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 7, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 7, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 10, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 7, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 7, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 7, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 7, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 10, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 7, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 7, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 7, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 7, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 11, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 7, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 7, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 7, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 7, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 11, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 7, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 7, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 7, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 7, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 11, 7, 12, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 11, 7, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 11, 7, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 7, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 11, 7, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 11, 7, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 11, 7, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 11, 7, 12, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 11, 7, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 11, 7, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 7, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 11, 7, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 11, 7, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 11, 7, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 11, 7, 13, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 11, 7, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 11, 7, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 7, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 11, 7, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 11, 7, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 11, 7, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 11, 7, 13, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 11, 7, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 11, 7, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 7, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 11, 7, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 11, 7, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 11, 7, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7);
     }
 
     {
@@ -2070,49 +2070,49 @@ void CommonTests::testCapacityResizeWithoutFillingInNewValues()
 
         matrix.resize(9, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 8, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 8, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 8, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 9, 8, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 9, 8, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 8, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 8, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 8, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 9, 8, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 9, 8, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 8);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 9, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 9, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 9, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 9, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 9, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 9, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 9, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 9, 9, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 9, 9, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 9, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 9, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 9, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 9, 9, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 9, 9, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 9, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 9, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 9, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 9, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 9, 9, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 9, 9, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 9, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 9, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 9, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 9, 9, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 9, 9, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 9, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 9, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 9, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 9, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 9, 9, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 9, 9, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 9, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 9, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 9, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 9, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 9, 9, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 9, 9, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 9, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 9, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 9, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 9, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 9, 9, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 9, 9, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 9, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 9, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 9, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 9, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 9, 9, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 9, 9, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 9, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9);
     }
 }
 
@@ -2343,7 +2343,7 @@ void CommonTests::testCapacityResizeAndFillInNewValues()
 {
     using namespace std;
 
-    auto testCapacity = [](string testNumber,
+    auto resizeAndTestCapacity = [](string testNumber,
                            IntMatrix& matrix,
                            const IntMatrix& matrixCopy,
                            int desiredRawCapacity,
@@ -2380,47 +2380,47 @@ void CommonTests::testCapacityResizeAndFillInNewValues()
 
         matrix.resizeWithValue(10, 7, -5);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 9, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 7, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 7, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 7, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 7, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 9, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 7, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 7, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 7, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 7, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 10, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 7, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 7, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 7, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 7, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 10, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 7, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 7, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 7, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 7, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 10, 7, 11, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 10, 7, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 10, 7, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 7, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 10, 7, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 10, 7, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 10, 7, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 10, 7, 11, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 10, 7, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 10, 7, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 7, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 10, 7, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 10, 7, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 10, 7, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 10, 7, 12, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 10, 7, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 10, 7, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 7, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 10, 7, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 10, 7, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 10, 7, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 10, 7, 12, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 10, 7, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 10, 7, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 7, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 10, 7, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 10, 7, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 10, 7, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 10, 7, 13, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 10, 7, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 10, 7, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 7, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 10, 7, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 10, 7, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 10, 7, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 10, 7, 13, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 10, 7, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 10, 7, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 7, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 10, 7, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 10, 7, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 10, 7, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7);
     }
 
     {
@@ -2429,49 +2429,49 @@ void CommonTests::testCapacityResizeAndFillInNewValues()
 
         matrix.resizeWithValue(9, 8, -5);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 8, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 8, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 8, 8, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 8, 8, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 8, 8, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 8, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 8, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 8, 8, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 8, 8, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 8, 8, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 8);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 8, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 8, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 8, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 8, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 8, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 8, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 9, 8, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 9, 8, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 8, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 9, 8, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 9, 8, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 9, 8, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 9, 8, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 9, 8, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 8, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 9, 8, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 9, 8, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 9, 8, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 9, 8, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 9, 8, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 8, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 9, 8, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 9, 8, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 9, 8, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 9, 8, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 9, 8, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 8, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 9, 8, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 9, 8, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 9, 8, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 9, 8, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 9, 8, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 8, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 9, 8, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 9, 8, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 9, 8, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 9, 8, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 9, 8, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 8, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 9, 8, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 9, 8, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 9, 8, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 9, 8, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 9, 8, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 8, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 9, 8, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 9, 8, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 9, 8, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 9, 8, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 9, 8, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 8, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 9, 8, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 9, 8, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 9, 8, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8);
     }
 
     {
@@ -2480,55 +2480,55 @@ void CommonTests::testCapacityResizeAndFillInNewValues()
 
         matrix.resizeWithValue(9, 7, -5);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 8, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 8, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 7, 8, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 7, 8, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 7, 8, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 7, 8, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 8, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 8, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 7, 8, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 7, 8, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 7, 8, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 7, 8, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 8);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 9, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 7, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 7, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 7, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 7, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 9, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 7, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 7, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 7, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 7, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 9, 7, 10, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 9, 7, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 9, 7, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 7, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 9, 7, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 9, 7, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 9, 7, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 9, 7, 10, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 9, 7, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 9, 7, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 7, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 9, 7, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 9, 7, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 9, 7, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 9, 7, 11, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 9, 7, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 9, 7, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 7, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 9, 7, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 9, 7, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 9, 7, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 9, 7, 11, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 9, 7, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 9, 7, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 7, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 9, 7, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 9, 7, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 9, 7, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 9, 7, 12, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 9, 7, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 9, 7, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 7, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 9, 7, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 9, 7, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 9, 7, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 9, 7, 12, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 9, 7, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 9, 7, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 7, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 9, 7, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 9, 7, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 9, 7, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 9, 7, 13, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 9, 7, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 9, 7, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 7, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 9, 7, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 9, 7, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 9, 7, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 9, 7, 13, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 9, 7, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 9, 7, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 7, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 9, 7, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 9, 7, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 9, 7, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7);
     }
 
     {
@@ -2537,42 +2537,42 @@ void CommonTests::testCapacityResizeAndFillInNewValues()
 
         matrix.resizeWithValue(10, 8, -5);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 8, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 8, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 8, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 8, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 8, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 8, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 8, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 8, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 8, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 8, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 8, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 8, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 10, 8, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 10, 8, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 8, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 10, 8, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 10, 8, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 10, 8, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 10, 8, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 10, 8, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 8, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 10, 8, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 10, 8, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 10, 8, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 10, 8, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 10, 8, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 8, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 10, 8, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 10, 8, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 10, 8, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 10, 8, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 10, 8, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 8, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 10, 8, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 10, 8, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 10, 8, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 10, 8, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 10, 8, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 8, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 10, 8, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 10, 8, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 10, 8, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 10, 8, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 10, 8, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 8, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 10, 8, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 10, 8, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 10, 8, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8);
     }
 
     {
@@ -2581,42 +2581,42 @@ void CommonTests::testCapacityResizeAndFillInNewValues()
 
         matrix.resizeWithValue(11, 8, -5);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 8, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 8, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 8, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 8, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 8, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 8, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 8, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 8, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 8, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 8, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 8, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 8, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 8, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 8, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 8, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 8, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 8, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 8, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 11, 8, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 11, 8, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 8, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 11, 8, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 11, 8, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 11, 8, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 11, 8, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 11, 8, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 8, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 11, 8, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 11, 8, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 11, 8, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 11, 8, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 11, 8, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 8, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 11, 8, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 11, 8, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 11, 8, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 11, 8, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 11, 8, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 8, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 11, 8, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 11, 8, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 11, 8, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8);
     }
 
     {
@@ -2625,42 +2625,42 @@ void CommonTests::testCapacityResizeAndFillInNewValues()
 
         matrix.resizeWithValue(10, 9, -5);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 9, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 9, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 9, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 9, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 9, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 9, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 9, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 9, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 9, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 9, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 9, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 10, 9, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 10, 9, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 9, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 9, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 9, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 10, 9, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 10, 9, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 9, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 9, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 9, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 9, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 10, 9, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 10, 9, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 9, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 9, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 9, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 9, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 10, 9, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 10, 9, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 9, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 9, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 9, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 9, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 10, 9, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 10, 9, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 9, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 9, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 9, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 9, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 10, 9, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 10, 9, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 9, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9);
     }
 
     {
@@ -2669,42 +2669,42 @@ void CommonTests::testCapacityResizeAndFillInNewValues()
 
         matrix.resizeWithValue(11, 9, -5);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 9, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 9, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 9, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 9, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 9, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 9, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 9, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 9, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 9, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 9, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 9, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 9, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 9, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 9, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 9, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 11, 9, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 11, 9, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 9, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 9, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 9, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 9, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 11, 9, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 11, 9, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 9, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 9, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 9, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 9, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 11, 9, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 11, 9, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 9, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 9, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 9, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 9, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 11, 9, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 11, 9, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 9, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9);
     }
 
     {
@@ -2713,47 +2713,47 @@ void CommonTests::testCapacityResizeAndFillInNewValues()
 
         matrix.resizeWithValue(11, 7, -5);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 9, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 7, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 7, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 7, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 7, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 9, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 7, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 7, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 7, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 7, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 10, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 7, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 7, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 7, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 7, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 10, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 7, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 7, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 7, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 7, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 11, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 7, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 7, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 7, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 7, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 11, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 7, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 7, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 7, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 7, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 11, 7, 12, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 11, 7, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 11, 7, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 7, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 11, 7, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 11, 7, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 11, 7, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 11, 7, 12, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 11, 7, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 11, 7, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 7, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 11, 7, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 11, 7, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 11, 7, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 11, 7, 13, 6);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 11, 7, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 11, 7, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 7, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 11, 7, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 11, 7, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 11, 7, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 11, 7, 13, 6);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 11, 7, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 11, 7, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 7, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 11, 7, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 11, 7, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 11, 7, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7);
     }
 
     {
@@ -2762,49 +2762,49 @@ void CommonTests::testCapacityResizeAndFillInNewValues()
 
         matrix.resizeWithValue(9, 9, -5);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 8, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 8, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 8, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 9, 8, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 9, 8, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 8, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 8, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 8, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 9, 8, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 9, 8, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 8);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 9, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 9, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 9, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 9, 9, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 9, 9, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 9, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 9, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 9, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 9, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 9);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 9, 10, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 9, 10, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 9, 10, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 9, 9, 10, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 9, 9, 10, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 9, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 9, 10, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 9, 10, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 9, 10, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 9, 9, 10, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 9, 9, 10, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 9, 10);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 9, 11, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 9, 11, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 9, 11, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 9, 9, 11, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 9, 9, 11, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 9, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 9, 11, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 9, 11, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 9, 11, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 9, 9, 11, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 9, 9, 11, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 9, 11);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 9, 12, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 9, 12, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 9, 12, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 9, 9, 12, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 9, 9, 12, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 9, 12);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 9, 12, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 9, 12, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 9, 12, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 9, 9, 12, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 9, 9, 12, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 9, 12);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 9, 13, 7);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 9, 13, 8);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 9, 13, 9);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 9, 9, 13, 10);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 9, 9, 13, 11);
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 9, 13);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 9, 13, 7);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 9, 13, 8);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 9, 13, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 9, 9, 13, 10);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 9, 9, 13, 11);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 9, 13);
 
-        testCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9);
+        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9);
     }
 }
 
