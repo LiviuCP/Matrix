@@ -965,76 +965,71 @@ void CommonTests::testMoveAssignmentOperator()
 
 void CommonTests::testCapacityWithMoveAssignmentOperator()
 {
+    using namespace std;
+    auto moveAndTestCapacity = [](string testNumber, IntMatrix& matrix, IntMatrix& matrixMove, int desiredRowCapacity, int desiredColumnCapacity)
+    {
+        matrixMove = move(matrix);
+
+        QVERIFY2(matrixMove.getRowCapacity() == desiredRowCapacity && matrixMove.getColumnCapacity() == desiredColumnCapacity,
+                 string{"Move assignment failed, capacity of the destination matrix is not correct! Test number: " + testNumber}.c_str());
+    };
+
+    int testNumber{1};
+
     {
         IntMatrix matrix{3, 4, -1};
         IntMatrix matrixMove{};
 
-        matrixMove = std::move(matrix);
-
-        QVERIFY2(matrixMove.getRowCapacity() == 3 && matrixMove.getColumnCapacity() == 5, "Move assignment failed, capacity of the destination matrix is not correct!");
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 3, 5);
     }
 
     {
         IntMatrix matrix{4, 3, -1};
         IntMatrix matrixMove{};
 
-        matrixMove = std::move(matrix);
-
-        QVERIFY2(matrixMove.getRowCapacity() == 5 && matrixMove.getColumnCapacity() == 3, "Move assignment failed, capacity of the destination matrix is not correct!");
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 5, 3);
     }
 
     {
         IntMatrix matrix{7, 8, -1};
         IntMatrix matrixMove{};
 
-        matrixMove = std::move(matrix);
-
-        QVERIFY2(matrixMove.getRowCapacity() == 8 && matrixMove.getColumnCapacity() == 10, "Move assignment failed, capacity of the destination matrix is not correct!");
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 8, 10);
     }
 
     {
         IntMatrix matrix{8, 7, -1};
         IntMatrix matrixMove{};
 
-        matrixMove = std::move(matrix);
-
-        QVERIFY2(matrixMove.getRowCapacity() == 10 && matrixMove.getColumnCapacity() == 8, "Move assignment failed, capacity of the destination matrix is not correct!");
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 10, 8);
     }
 
     {
         IntMatrix matrix{3, 4, -1};
         IntMatrix matrixMove{2, 3, -5};
 
-        matrixMove = std::move(matrix);
-
-        QVERIFY2(matrixMove.getRowCapacity() == 3 && matrixMove.getColumnCapacity() == 5, "Move assignment failed, capacity of the destination matrix is not correct!");
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 3, 5);
     }
 
     {
         IntMatrix matrix{4, 3, -1};
         IntMatrix matrixMove{2, 3, -5};
 
-        matrixMove = std::move(matrix);
-
-        QVERIFY2(matrixMove.getRowCapacity() == 5 && matrixMove.getColumnCapacity() == 3, "Move assignment failed, capacity of the destination matrix is not correct!");
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 5, 3);
     }
 
     {
         IntMatrix matrix{7, 8, -1};
         IntMatrix matrixMove{3, 4, -5};
 
-        matrixMove = std::move(matrix);
-
-        QVERIFY2(matrixMove.getRowCapacity() == 8 && matrixMove.getColumnCapacity() == 10, "Move assignment failed, capacity of the destination matrix is not correct!");
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 8, 10);
     }
 
     {
         IntMatrix matrix{8, 7, -1};
         IntMatrix matrixMove{3, 4, -5};
 
-        matrixMove = std::move(matrix);
-
-        QVERIFY2(matrixMove.getRowCapacity() == 10 && matrixMove.getColumnCapacity() == 8, "Move assignment failed, capacity of the destination matrix is not correct!");
+        moveAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixMove, 10, 8);
     }
 }
 
