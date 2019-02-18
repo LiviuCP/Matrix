@@ -359,31 +359,31 @@ void CommonTests::testMoveConstructor()
 void CommonTests::testCapacityWithMoveConstructor()
 {
     {
-        IntMatrix matrix{3, 4, -1};
-        IntMatrix matrixMove{std::move(matrix)};
+        IntMatrix srcMatrix{3, 4, -1};
+        IntMatrix destMatrix{std::move(srcMatrix)};
 
-        QVERIFY2(matrixMove.getRowCapacity() == 3 && matrixMove.getColumnCapacity() == 5, "Move constructor failed, capacity of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getRowCapacity() == 3 && destMatrix.getColumnCapacity() == 5, "Move constructor failed, capacity of the destination matrix is not correct!");
     }
 
     {
-        IntMatrix matrix{4, 3, -1};
-        IntMatrix matrixMove{std::move(matrix)};
+        IntMatrix srcMatrix{4, 3, -1};
+        IntMatrix destMatrix{std::move(srcMatrix)};
 
-        QVERIFY2(matrixMove.getRowCapacity() == 5 && matrixMove.getColumnCapacity() == 3, "Move constructor failed, capacity of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getRowCapacity() == 5 && destMatrix.getColumnCapacity() == 3, "Move constructor failed, capacity of the destination matrix is not correct!");
     }
 
     {
-        IntMatrix matrix{7, 8, -1};
-        IntMatrix matrixMove{std::move(matrix)};
+        IntMatrix srcMatrix{7, 8, -1};
+        IntMatrix destMatrix{std::move(srcMatrix)};
 
-        QVERIFY2(matrixMove.getRowCapacity() == 8 && matrixMove.getColumnCapacity() == 10, "Move constructor failed, capacity of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getRowCapacity() == 8 && destMatrix.getColumnCapacity() == 10, "Move constructor failed, capacity of the destination matrix is not correct!");
     }
 
     {
-        IntMatrix matrix{8, 7, -1};
-        IntMatrix matrixMove{std::move(matrix)};
+        IntMatrix srcMatrix{8, 7, -1};
+        IntMatrix destMatrix{std::move(srcMatrix)};
 
-        QVERIFY2(matrixMove.getRowCapacity() == 10 && matrixMove.getColumnCapacity() == 8, "Move constructor failed, capacity of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getRowCapacity() == 10 && destMatrix.getColumnCapacity() == 8, "Move constructor failed, capacity of the destination matrix is not correct!");
     }
 }
 
