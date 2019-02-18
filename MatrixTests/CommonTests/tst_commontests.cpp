@@ -33,9 +33,9 @@ private slots:
     void testCapacityWithTranspose();
     void testClear();
     void testResizeWithoutFillingInNewValues();
-    void testCapacityResizeWithoutFillingInNewValues();
+    void testCapacityWithResizeWithoutFillingInNewValues();
     void testResizeAndFillInNewValues();
-    void testCapacityResizeAndFillInNewValues();
+    void testCapacityWithResizeAndFillInNewValues();
     void testShrinkToFit();
     void testInsertRowNoSetValue();
     void testInsertRowSetValue();
@@ -1632,7 +1632,7 @@ void CommonTests::testResizeWithoutFillingInNewValues()
     }
 }
 
-void CommonTests::testCapacityResizeWithoutFillingInNewValues()
+void CommonTests::testCapacityWithResizeWithoutFillingInNewValues()
 {
     using namespace std;
 
@@ -2339,14 +2339,14 @@ void CommonTests::testResizeAndFillInNewValues()
     }
 }
 
-void CommonTests::testCapacityResizeAndFillInNewValues()
+void CommonTests::testCapacityWithResizeAndFillInNewValues()
 {
     using namespace std;
 
     auto resizeAndTestCapacity = [](string testNumber,
                            IntMatrix& matrix,
                            const IntMatrix& matrixCopy,
-                           int desiredRawCapacity,
+                           int desiredRowCapacity,
                            int desiredColumnCapacity,
                            int fillValue,
                            int nrOfRows,
@@ -2359,7 +2359,7 @@ void CommonTests::testCapacityResizeAndFillInNewValues()
 
         secondMatrixCopy.resizeWithValue(nrOfRows, nrOfColumns, fillValue, inputRowCapacity, inputColumnCapacity);
 
-        if (secondMatrixCopy.getRowCapacity() != desiredRawCapacity || secondMatrixCopy.getColumnCapacity() != desiredColumnCapacity)
+        if (secondMatrixCopy.getRowCapacity() != desiredRowCapacity || secondMatrixCopy.getColumnCapacity() != desiredColumnCapacity)
         {
             QFAIL(string{"Resizing failed, capacity of the matrix is not correct! Test number: " + testNumber}.c_str());
         }
