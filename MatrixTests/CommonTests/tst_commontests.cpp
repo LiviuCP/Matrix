@@ -329,30 +329,30 @@ void CommonTests::testCapacityWithCopyConstructor()
 
 void CommonTests::testMoveConstructor()
 {
-    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6} };
-    IntMatrix matrixMove{std::move(matrix)};
+    IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6} };
+    IntMatrix destMatrix{std::move(srcMatrix)};
 
-    if (matrixMove.getRowCapacity() != 2 || matrixMove.getColumnCapacity() != 3)
+    if (destMatrix.getRowCapacity() != 2 || destMatrix.getColumnCapacity() != 3)
     {
         QFAIL("Move constructor initialized matrix with wrong capacity");
     }
-    else if (matrixMove.getNrOfRows() != 2 || matrixMove.getNrOfColumns() != 3)
+    else if (destMatrix.getNrOfRows() != 2 || destMatrix.getNrOfColumns() != 3)
     {
         QFAIL("Move constructor initialized matrix with wrong number of rows and columns");
     }
     else
     {
-        QVERIFY2(matrixMove.at(0, 0) == 1 &&
-                 matrixMove.at(0, 1) == 2 &&
-                 matrixMove.at(0, 2) == 3 &&
-                 matrixMove.at(1, 0) == 4 &&
-                 matrixMove.at(1, 1) == 5 &&
-                 matrixMove.at(1, 2) == 6,
+        QVERIFY2(destMatrix.at(0, 0) == 1 &&
+                 destMatrix.at(0, 1) == 2 &&
+                 destMatrix.at(0, 2) == 3 &&
+                 destMatrix.at(1, 0) == 4 &&
+                 destMatrix.at(1, 1) == 5 &&
+                 destMatrix.at(1, 2) == 6,
 
                  "Matrix elements have not been correctly initialized by the move constructor");
 
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
-        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
+        QVERIFY2(srcMatrix.getRowCapacity() == 0 && srcMatrix.getColumnCapacity() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
+        QVERIFY2(srcMatrix.getNrOfRows() == 0 && srcMatrix.getNrOfColumns() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
     }
 }
 
