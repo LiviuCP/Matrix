@@ -30,7 +30,7 @@ public:
     int getRowCapacity() const;
     int getColumnCapacity() const;
 
-    void getTransposedMatrix(Matrix<DataType>& result);
+    void transpose(Matrix<DataType>& result);
 
     void clear();
 
@@ -345,7 +345,7 @@ int Matrix<DataType>::getColumnCapacity() const
 }
 
 template <typename DataType>
-void Matrix<DataType>::getTransposedMatrix(Matrix<DataType>& result)
+void Matrix<DataType>::transpose(Matrix<DataType>& result)
 {
     if (!m_NrOfRows)
     {

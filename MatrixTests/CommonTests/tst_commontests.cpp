@@ -29,8 +29,8 @@ private slots:
     void testMoveAssignmentOperator();
     void testCapacityWithMoveAssignmentOperator();
     void testGetBaseArrayPtr();
-    void testGetTransposedMatrix();
-    void testCapacityWithTransposedMatrix();
+    void testTranspose();
+    void testCapacityWithTranspose();
     void testClear();
     void testResizeWithoutFillingInNewValues();
     void testCapacityResizeWithoutFillingInNewValues();
@@ -1095,12 +1095,12 @@ void CommonTests::testGetBaseArrayPtr()
     }
 }
 
-void CommonTests::testGetTransposedMatrix()
+void CommonTests::testTranspose()
 {
     {
         IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
 
-        matrix.getTransposedMatrix(matrix);
+        matrix.transpose(matrix);
 
         if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 3)
         {
@@ -1125,7 +1125,7 @@ void CommonTests::testGetTransposedMatrix()
     {
         IntMatrix matrix{};
 
-        matrix.getTransposedMatrix(matrix);
+        matrix.transpose(matrix);
 
         QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0,
 
@@ -1140,7 +1140,7 @@ void CommonTests::testGetTransposedMatrix()
         IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
         IntMatrix transposedMatrix{2, 2, {7, 8, 9, 10}};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
         {
@@ -1185,7 +1185,7 @@ void CommonTests::testGetTransposedMatrix()
         IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
         IntMatrix transposedMatrix{};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
         {
@@ -1230,7 +1230,7 @@ void CommonTests::testGetTransposedMatrix()
         IntMatrix matrix{};
         IntMatrix transposedMatrix{2, 2, {1, 2, 3, 4}};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0,
 
@@ -1253,7 +1253,7 @@ void CommonTests::testGetTransposedMatrix()
         IntMatrix matrix{};
         IntMatrix transposedMatrix{};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0,
 
@@ -1273,13 +1273,13 @@ void CommonTests::testGetTransposedMatrix()
     }
 }
 
-void CommonTests::testCapacityWithTransposedMatrix()
+void CommonTests::testCapacityWithTranspose()
 {
     {
         IntMatrix matrix{3, 4, 2};
         IntMatrix transposedMatrix{};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         QVERIFY2(transposedMatrix.getRowCapacity() == 5 && transposedMatrix.getColumnCapacity() == 3,
 
@@ -1290,7 +1290,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
         IntMatrix matrix{4, 3, 2};
         IntMatrix transposedMatrix{};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         QVERIFY2(transposedMatrix.getRowCapacity() == 3 && transposedMatrix.getColumnCapacity() == 5,
 
@@ -1301,7 +1301,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
         IntMatrix matrix{7, 8, 2};
         IntMatrix transposedMatrix{};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         QVERIFY2(transposedMatrix.getRowCapacity() == 10 && transposedMatrix.getColumnCapacity() == 8,
 
@@ -1312,7 +1312,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
         IntMatrix matrix{8, 7, 2};
         IntMatrix transposedMatrix{};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         QVERIFY2(transposedMatrix.getRowCapacity() == 8 && transposedMatrix.getColumnCapacity() == 10,
 
@@ -1323,7 +1323,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
         IntMatrix matrix{8, 7, 2};
         IntMatrix transposedMatrix{5, 6, 2};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         QVERIFY2(transposedMatrix.getRowCapacity() == 8 && transposedMatrix.getColumnCapacity() == 10,
 
@@ -1334,7 +1334,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
         IntMatrix matrix{8, 7, 2};
         IntMatrix transposedMatrix{6, 6, 2};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         QVERIFY2(transposedMatrix.getRowCapacity() == 7 && transposedMatrix.getColumnCapacity() == 10,
 
@@ -1345,7 +1345,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
         IntMatrix matrix{8, 7, 2};
         IntMatrix transposedMatrix{5, 7, 2};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         QVERIFY2(transposedMatrix.getRowCapacity() == 8 && transposedMatrix.getColumnCapacity() == 8,
 
@@ -1356,7 +1356,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
         IntMatrix matrix{8, 7, 2};
         IntMatrix transposedMatrix{6, 7, 2};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         QVERIFY2(transposedMatrix.getRowCapacity() == 7 && transposedMatrix.getColumnCapacity() == 8,
 
@@ -1367,7 +1367,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
         IntMatrix matrix{8, 7, 2};
         IntMatrix transposedMatrix{7, 8, 2};
 
-        matrix.getTransposedMatrix(transposedMatrix);
+        matrix.transpose(transposedMatrix);
 
         QVERIFY2(transposedMatrix.getRowCapacity() == 8 && transposedMatrix.getColumnCapacity() == 10,
 
@@ -1377,7 +1377,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
     {
         IntMatrix matrix{3, 3, 2};
 
-        matrix.getTransposedMatrix(matrix);
+        matrix.transpose(matrix);
 
         QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 3,
 
@@ -1387,7 +1387,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
     {
         IntMatrix matrix{3, 4, 2};
 
-        matrix.getTransposedMatrix(matrix);
+        matrix.transpose(matrix);
 
         QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5,
 
@@ -1397,7 +1397,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
     {
         IntMatrix matrix{4, 3, 2};
 
-        matrix.getTransposedMatrix(matrix);
+        matrix.transpose(matrix);
 
         QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5,
 
@@ -1407,7 +1407,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
     {
         IntMatrix matrix{4, 4, 2};
 
-        matrix.getTransposedMatrix(matrix);
+        matrix.transpose(matrix);
 
         QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5,
 
@@ -1417,7 +1417,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
     {
         IntMatrix matrix{7, 8, 2};
 
-        matrix.getTransposedMatrix(matrix);
+        matrix.transpose(matrix);
 
         QVERIFY2(matrix.getRowCapacity() == 8 && matrix.getColumnCapacity() == 10,
 
@@ -1427,7 +1427,7 @@ void CommonTests::testCapacityWithTransposedMatrix()
     {
         IntMatrix matrix{8, 7, 2};
 
-        matrix.getTransposedMatrix(matrix);
+        matrix.transpose(matrix);
 
         QVERIFY2(matrix.getRowCapacity() == 10 && matrix.getColumnCapacity() == 8,
 
