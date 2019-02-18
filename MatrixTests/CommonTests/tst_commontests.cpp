@@ -4179,180 +4179,180 @@ void CommonTests::testCatByColumn()
 void CommonTests::testCapacityWithCatByColumn()
 {
     using namespace std;
-    auto catByColumnAndTestCapacity = [](string testNumber, IntMatrix& firstMatrix, IntMatrix& secondMatrix, IntMatrix& thirdMatrix, int desiredRowCapacity, int desiredColumnCapacity)
+    auto catByColumnAndTestCapacity = [](string testNumber, IntMatrix& firstSrcMatrix, IntMatrix& secondSrcMatrix, IntMatrix& destMatrix, int desiredRowCapacity, int desiredColumnCapacity)
     {
-        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
+        destMatrix.catByColumn(firstSrcMatrix, secondSrcMatrix);
 
-        QVERIFY2(thirdMatrix.getRowCapacity() == desiredRowCapacity && thirdMatrix.getColumnCapacity() == desiredColumnCapacity,
+        QVERIFY2(destMatrix.getRowCapacity() == desiredRowCapacity && destMatrix.getColumnCapacity() == desiredColumnCapacity,
                  string{"Horizontal concatenation failed, capacity of the destination matrix is not correct! Test number: " + testNumber}.c_str());
     };
 
     int testNumber{1};
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix destFirstSrcMatrix{7, 4, 5};
+        IntMatrix secondSrcMatrix{7, 5, -2};
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, firstMatrix, 8, 11);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSrcMatrix, secondSrcMatrix, destFirstSrcMatrix, 8, 11);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix destFirstSrcMatrix{7, 4, 5};
+        IntMatrix secondSrcMatrix{7, 5, -2};
 
-        firstMatrix.resize(7, 4, 8, 8);
+        destFirstSrcMatrix.resize(7, 4, 8, 8);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, firstMatrix, 8, 11);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSrcMatrix, secondSrcMatrix, destFirstSrcMatrix, 8, 11);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix destFirstSrcMatrix{7, 4, 5};
+        IntMatrix secondSrcMatrix{7, 5, -2};
 
-        firstMatrix.resize(7, 4, 8, 9);
+        destFirstSrcMatrix.resize(7, 4, 8, 9);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, firstMatrix, 8, 9);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSrcMatrix, secondSrcMatrix, destFirstSrcMatrix, 8, 9);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix destFirstSrcMatrix{7, 4, 5};
+        IntMatrix secondSrcMatrix{7, 5, -2};
 
-        firstMatrix.resize(7, 4, 8, 10);
+        destFirstSrcMatrix.resize(7, 4, 8, 10);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, firstMatrix, 8, 10);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSrcMatrix, secondSrcMatrix, destFirstSrcMatrix, 8, 10);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix firstSrcMatrix{7, 4, 5};
+        IntMatrix destSecondSrcMatrix{7, 5, -2};
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, secondMatrix, 8, 11);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, destSecondSrcMatrix, destSecondSrcMatrix, 8, 11);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix firstSrcMatrix{7, 4, 5};
+        IntMatrix destSecondSrcMatrix{7, 5, -2};
 
-        secondMatrix.resize(7, 5, 8, 8);
+        destSecondSrcMatrix.resize(7, 5, 8, 8);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, secondMatrix, 8, 11);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, destSecondSrcMatrix, destSecondSrcMatrix, 8, 11);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix firstSrcMatrix{7, 4, 5};
+        IntMatrix destSecondSrcMatrix{7, 5, -2};
 
-        secondMatrix.resize(7, 5, 8, 9);
+        destSecondSrcMatrix.resize(7, 5, 8, 9);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, secondMatrix, 8, 9);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, destSecondSrcMatrix, destSecondSrcMatrix, 8, 9);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
+        IntMatrix firstSrcMatrix{7, 4, 5};
+        IntMatrix destSecondSrcMatrix{7, 5, -2};
 
-        secondMatrix.resize(7, 5, 8, 10);
+        destSecondSrcMatrix.resize(7, 5, 8, 10);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, secondMatrix, 8, 10);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, destSecondSrcMatrix, destSecondSrcMatrix, 8, 10);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix destFirstSecondSrcMatrix{7, 4, 5};
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, firstMatrix, 8, 10);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 8, 10);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix destFirstSecondSrcMatrix{7, 4, 5};
 
-        firstMatrix.resize(7, 4, 8, 7);
+        destFirstSecondSrcMatrix.resize(7, 4, 8, 7);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, firstMatrix, 8, 10);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 8, 10);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix destFirstSecondSrcMatrix{7, 4, 5};
 
-        firstMatrix.resize(7, 4, 8, 8);
+        destFirstSecondSrcMatrix.resize(7, 4, 8, 8);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, firstMatrix, 8, 8);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 8, 8);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
+        IntMatrix destFirstSecondSrcMatrix{7, 4, 5};
 
-        firstMatrix.resize(7, 4, 8, 9);
+        destFirstSecondSrcMatrix.resize(7, 4, 8, 9);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, firstMatrix, 8, 9);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 8, 9);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
-        IntMatrix thirdMatrix{};
+        IntMatrix firstSrcMatrix{7, 4, 5};
+        IntMatrix secondSrcMatrix{7, 5, -2};
+        IntMatrix destMatrix{};
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 8, 11);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 8, 11);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
-        IntMatrix thirdMatrix{5, 7, -1};
+        IntMatrix firstSrcMatrix{7, 4, 5};
+        IntMatrix secondSrcMatrix{7, 5, -2};
+        IntMatrix destMatrix{5, 7, -1};
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 8, 11);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 8, 11);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
-        IntMatrix thirdMatrix{5, 10, -1};
+        IntMatrix firstSrcMatrix{7, 4, 5};
+        IntMatrix secondSrcMatrix{7, 5, -2};
+        IntMatrix destMatrix{5, 10, -1};
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 8, 12);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 8, 12);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
-        IntMatrix thirdMatrix{6, 6, -1};
+        IntMatrix firstSrcMatrix{7, 4, 5};
+        IntMatrix secondSrcMatrix{7, 5, -2};
+        IntMatrix destMatrix{6, 6, -1};
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 7, 11);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 7, 11);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
-        IntMatrix thirdMatrix{6, 7, -1};
-        thirdMatrix.resize(6, 7, 7, 9);
+        IntMatrix firstSrcMatrix{7, 4, 5};
+        IntMatrix secondSrcMatrix{7, 5, -2};
+        IntMatrix destMatrix{6, 7, -1};
+        destMatrix.resize(6, 7, 7, 9);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 7, 9);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 7, 9);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
-        IntMatrix thirdMatrix{6, 7, -1};
-        thirdMatrix.resize(6, 7, 8, 9);
+        IntMatrix firstSrcMatrix{7, 4, 5};
+        IntMatrix secondSrcMatrix{7, 5, -2};
+        IntMatrix destMatrix{6, 7, -1};
+        destMatrix.resize(6, 7, 8, 9);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 8, 9);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 8, 9);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
-        IntMatrix thirdMatrix{6, 7, -1};
-        thirdMatrix.resize(6, 7, 7, 10);
+        IntMatrix firstSrcMatrix{7, 4, 5};
+        IntMatrix secondSrcMatrix{7, 5, -2};
+        IntMatrix destMatrix{6, 7, -1};
+        destMatrix.resize(6, 7, 7, 10);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 7, 10);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 7, 10);
     }
 
     {
-        IntMatrix firstMatrix{7, 4, 5};
-        IntMatrix secondMatrix{7, 5, -2};
-        IntMatrix thirdMatrix{6, 7, -1};
-        thirdMatrix.resize(6, 7, 8, 10);
+        IntMatrix firstSrcMatrix{7, 4, 5};
+        IntMatrix secondSrcMatrix{7, 5, -2};
+        IntMatrix destMatrix{6, 7, -1};
+        destMatrix.resize(6, 7, 8, 10);
 
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 8, 10);
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 8, 10);
     }
 }
 
