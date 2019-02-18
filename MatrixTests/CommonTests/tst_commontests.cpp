@@ -4150,13 +4150,22 @@ void CommonTests::testCatByColumn()
 
 void CommonTests::testCapacityWithCatByColumn()
 {
+    using namespace std;
+    auto catByColumnAndTestCapacity = [](string testNumber, IntMatrix& firstMatrix, IntMatrix& secondMatrix, IntMatrix& thirdMatrix, int desiredRowCapacity, int desiredColumnCapacity)
+    {
+        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
+
+        QVERIFY2(thirdMatrix.getRowCapacity() == desiredRowCapacity && thirdMatrix.getColumnCapacity() == desiredColumnCapacity,
+                 string{"Horizontal concatenation failed, capacity of the destination matrix is not correct! Test number: " + testNumber}.c_str());
+    };
+
+    int testNumber{1};
+
     {
         IntMatrix firstMatrix{7, 4, 5};
         IntMatrix secondMatrix{7, 5, -2};
-        firstMatrix.catByColumn(firstMatrix, secondMatrix);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 11,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, firstMatrix, 8, 11);
     }
 
     {
@@ -4164,10 +4173,8 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix secondMatrix{7, 5, -2};
 
         firstMatrix.resize(7, 4, 8, 8);
-        firstMatrix.catByColumn(firstMatrix, secondMatrix);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 11,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, firstMatrix, 8, 11);
     }
 
     {
@@ -4175,10 +4182,8 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix secondMatrix{7, 5, -2};
 
         firstMatrix.resize(7, 4, 8, 9);
-        firstMatrix.catByColumn(firstMatrix, secondMatrix);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 9,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, firstMatrix, 8, 9);
     }
 
     {
@@ -4186,19 +4191,15 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix secondMatrix{7, 5, -2};
 
         firstMatrix.resize(7, 4, 8, 10);
-        firstMatrix.catByColumn(firstMatrix, secondMatrix);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, firstMatrix, 8, 10);
     }
 
     {
         IntMatrix firstMatrix{7, 4, 5};
         IntMatrix secondMatrix{7, 5, -2};
-        secondMatrix.catByColumn(firstMatrix, secondMatrix);
 
-        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 11,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, secondMatrix, 8, 11);
     }
 
     {
@@ -4206,10 +4207,8 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix secondMatrix{7, 5, -2};
 
         secondMatrix.resize(7, 5, 8, 8);
-        secondMatrix.catByColumn(firstMatrix, secondMatrix);
 
-        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 11,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, secondMatrix, 8, 11);
     }
 
     {
@@ -4217,10 +4216,8 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix secondMatrix{7, 5, -2};
 
         secondMatrix.resize(7, 5, 8, 9);
-        secondMatrix.catByColumn(firstMatrix, secondMatrix);
 
-        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 9,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, secondMatrix, 8, 9);
     }
 
     {
@@ -4228,49 +4225,38 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix secondMatrix{7, 5, -2};
 
         secondMatrix.resize(7, 5, 8, 10);
-        secondMatrix.catByColumn(firstMatrix, secondMatrix);
 
-        QVERIFY2(secondMatrix.getRowCapacity() == 8 && secondMatrix.getColumnCapacity() == 10,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, secondMatrix, 8, 10);
     }
 
     {
         IntMatrix firstMatrix{7, 4, 5};
 
-        firstMatrix.catByColumn(firstMatrix, firstMatrix);
-
-        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, firstMatrix, 8, 10);
     }
 
     {
         IntMatrix firstMatrix{7, 4, 5};
 
         firstMatrix.resize(7, 4, 8, 7);
-        firstMatrix.catByColumn(firstMatrix, firstMatrix);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 10,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, firstMatrix, 8, 10);
     }
 
     {
         IntMatrix firstMatrix{7, 4, 5};
 
         firstMatrix.resize(7, 4, 8, 8);
-        firstMatrix.catByColumn(firstMatrix, firstMatrix);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 8,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, firstMatrix, 8, 8);
     }
 
     {
         IntMatrix firstMatrix{7, 4, 5};
 
         firstMatrix.resize(7, 4, 8, 9);
-        firstMatrix.catByColumn(firstMatrix, firstMatrix);
 
-        QVERIFY2(firstMatrix.getRowCapacity() == 8 && firstMatrix.getColumnCapacity() == 9,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, firstMatrix, firstMatrix, 8, 9);
     }
 
     {
@@ -4278,10 +4264,7 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix secondMatrix{7, 5, -2};
         IntMatrix thirdMatrix{};
 
-        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
-
-        QVERIFY2(thirdMatrix.getRowCapacity() == 8 && thirdMatrix.getColumnCapacity() == 11,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 8, 11);
     }
 
     {
@@ -4289,10 +4272,7 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix secondMatrix{7, 5, -2};
         IntMatrix thirdMatrix{5, 7, -1};
 
-        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
-
-        QVERIFY2(thirdMatrix.getRowCapacity() == 8 && thirdMatrix.getColumnCapacity() == 11,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 8, 11);
     }
 
     {
@@ -4300,10 +4280,7 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix secondMatrix{7, 5, -2};
         IntMatrix thirdMatrix{5, 10, -1};
 
-        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
-
-        QVERIFY2(thirdMatrix.getRowCapacity() == 8 && thirdMatrix.getColumnCapacity() == 12,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 8, 12);
     }
 
     {
@@ -4311,10 +4288,7 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix secondMatrix{7, 5, -2};
         IntMatrix thirdMatrix{6, 6, -1};
 
-        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
-
-        QVERIFY2(thirdMatrix.getRowCapacity() == 7 && thirdMatrix.getColumnCapacity() == 11,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 7, 11);
     }
 
     {
@@ -4323,10 +4297,7 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix thirdMatrix{6, 7, -1};
         thirdMatrix.resize(6, 7, 7, 9);
 
-        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
-
-        QVERIFY2(thirdMatrix.getRowCapacity() == 7 && thirdMatrix.getColumnCapacity() == 9,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 7, 9);
     }
 
     {
@@ -4335,10 +4306,7 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix thirdMatrix{6, 7, -1};
         thirdMatrix.resize(6, 7, 8, 9);
 
-        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
-
-        QVERIFY2(thirdMatrix.getRowCapacity() == 8 && thirdMatrix.getColumnCapacity() == 9,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 8, 9);
     }
 
     {
@@ -4347,10 +4315,7 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix thirdMatrix{6, 7, -1};
         thirdMatrix.resize(6, 7, 7, 10);
 
-        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
-
-        QVERIFY2(thirdMatrix.getRowCapacity() == 7 && thirdMatrix.getColumnCapacity() == 10,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 7, 10);
     }
 
     {
@@ -4359,10 +4324,7 @@ void CommonTests::testCapacityWithCatByColumn()
         IntMatrix thirdMatrix{6, 7, -1};
         thirdMatrix.resize(6, 7, 8, 10);
 
-        thirdMatrix.catByColumn(firstMatrix, secondMatrix);
-
-        QVERIFY2(thirdMatrix.getRowCapacity() == 8 && thirdMatrix.getColumnCapacity() == 10,
-                 "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstMatrix, secondMatrix, thirdMatrix, 8, 10);
     }
 }
 
