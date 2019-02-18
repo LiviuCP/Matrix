@@ -1596,26 +1596,27 @@ void CommonTests::testCapacityWithResizeWithoutFillingInNewValues()
         {
             QFAIL(string{"Resizing failed, capacity of the matrix is not correct! Test number: " + testNumber}.c_str());
         }
-
-        if (secondMatrixCopy.getNrOfRows() != nrOfRows || secondMatrixCopy.getNrOfColumns() != nrOfColumns)
+        else if (secondMatrixCopy.getNrOfRows() != nrOfRows || secondMatrixCopy.getNrOfColumns() != nrOfColumns)
         {
             QFAIL(string{"Resizing failed, number of rows or columns of the matrix is not correct! Test number: " + testNumber}.c_str());
         }
-
-        bool retainedValuesAreCorrect{true};
-        for (int row{0}; row < retainedNrOfRows; ++row)
+        else
         {
-            for (int col{0}; col < retainedNrOfColumns; ++col)
+            bool retainedValuesAreCorrect{true};
+            for (int row{0}; row < retainedNrOfRows; ++row)
             {
-                if (secondMatrixCopy.at(row, col) != matrix.at(row, col))
+                for (int col{0}; col < retainedNrOfColumns; ++col)
                 {
-                    retainedValuesAreCorrect = false;
-                    break;
+                    if (secondMatrixCopy.at(row, col) != matrix.at(row, col))
+                    {
+                        retainedValuesAreCorrect = false;
+                        break;
+                    }
                 }
             }
-        }
 
-        QVERIFY2(retainedValuesAreCorrect, string{"Resizing failed, the matrix does not have the correct values for the retained items! Test number: " + testNumber}.c_str());
+            QVERIFY2(retainedValuesAreCorrect, string{"Resizing failed, the matrix does not have the correct values for the retained items! Test number: " + testNumber}.c_str());
+        }
     };
 
     int testNumber{1};
@@ -2308,13 +2309,14 @@ void CommonTests::testCapacityWithResizeAndFillInNewValues()
         {
             QFAIL(string{"Resizing failed, capacity of the matrix is not correct! Test number: " + testNumber}.c_str());
         }
-
-        if (secondMatrixCopy.getNrOfRows() != nrOfRows || secondMatrixCopy.getNrOfColumns() != nrOfColumns)
+        else if (secondMatrixCopy.getNrOfRows() != nrOfRows || secondMatrixCopy.getNrOfColumns() != nrOfColumns)
         {
             QFAIL(string{"Resizing failed, number of rows or columns of the matrix is not correct! Test number: " + testNumber}.c_str());
         }
-
-        QVERIFY2(secondMatrixCopy == matrix, string{"Resizing failed, the matrix does not have the correct values! Test number: " + testNumber}.c_str());
+        else
+        {
+            QVERIFY2(secondMatrixCopy == matrix, string{"Resizing failed, the matrix does not have the correct values! Test number: " + testNumber}.c_str());
+        }
     };
 
     int testNumber{1};
