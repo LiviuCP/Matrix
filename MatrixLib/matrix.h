@@ -845,10 +845,12 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataTyp
         {
             _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
             _increaseNrOfRows(c_NrOfRows - m_NrOfRows);
+            m_NrOfColumns = c_NrOfColumns;
         }
         else
         {
             _increaseNrOfRows(c_NrOfRows - m_NrOfRows);
+            m_NrOfColumns = c_NrOfColumns;
         }
 
         for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
