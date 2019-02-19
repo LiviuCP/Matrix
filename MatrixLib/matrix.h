@@ -1003,8 +1003,9 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
             }
             else
             {
+                int sameRowCapacity{m_RowCapacity};
                 _deallocMemory();
-                _allocMemory(c_NrOfRows, c_NrOfColumns, m_RowCapacity, c_ColumnCapacity);
+                _allocMemory(c_NrOfRows, c_NrOfColumns, sameRowCapacity, c_ColumnCapacity);
             }
         }
         else if (m_RowCapacity < c_NrOfRows)
