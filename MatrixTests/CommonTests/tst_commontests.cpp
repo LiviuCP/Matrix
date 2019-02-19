@@ -3739,6 +3739,90 @@ void CommonTests::testCatByRow()
     }
 
     {
+        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondSrcMatrix{1, 2, {5, 6}};
+        IntMatrix destMatrix{2, 3, {7, 8, 9, 10, 11, 12}};
+
+        destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix);
+
+        if (destMatrix.getRowCapacity() != 3 || destMatrix.getColumnCapacity() != 3)
+        {
+            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
+        }
+        else if (destMatrix.getNrOfRows() != 3 || destMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+        else
+        {
+            QVERIFY2(destMatrix.at(0, 0) == 1 &&
+                     destMatrix.at(0, 1) == 2 &&
+                     destMatrix.at(1, 0) == 3 &&
+                     destMatrix.at(1, 1) == 4 &&
+                     destMatrix.at(2, 0) == 5 &&
+                     destMatrix.at(2, 1) == 6,
+
+                     "Vertical concatenation failed, destination matrix has incorrect values!");
+        }
+    }
+
+    {
+        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondSrcMatrix{1, 2, {5, 6}};
+        IntMatrix destMatrix{4, 1, {7, 8, 9, 10}};
+
+        destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix);
+
+        if (destMatrix.getRowCapacity() != 5 || destMatrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
+        }
+        else if (destMatrix.getNrOfRows() != 3 || destMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+        else
+        {
+            QVERIFY2(destMatrix.at(0, 0) == 1 &&
+                     destMatrix.at(0, 1) == 2 &&
+                     destMatrix.at(1, 0) == 3 &&
+                     destMatrix.at(1, 1) == 4 &&
+                     destMatrix.at(2, 0) == 5 &&
+                     destMatrix.at(2, 1) == 6,
+
+                     "Vertical concatenation failed, destination matrix has incorrect values!");
+        }
+    }
+
+    {
+        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
+        IntMatrix secondSrcMatrix{1, 2, {5, 6}};
+        IntMatrix destMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+
+        destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix);
+
+        if (destMatrix.getRowCapacity() != 3 || destMatrix.getColumnCapacity() != 2)
+        {
+            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
+        }
+        else if (destMatrix.getNrOfRows() != 3 || destMatrix.getNrOfColumns() != 2)
+        {
+            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
+        }
+        else
+        {
+            QVERIFY2(destMatrix.at(0, 0) == 1 &&
+                     destMatrix.at(0, 1) == 2 &&
+                     destMatrix.at(1, 0) == 3 &&
+                     destMatrix.at(1, 1) == 4 &&
+                     destMatrix.at(2, 0) == 5 &&
+                     destMatrix.at(2, 1) == 6,
+
+                     "Vertical concatenation failed, destination matrix has incorrect values!");
+        }
+    }
+
+    {
         IntMatrix destFirstSrcMatrix{2, 2, {1, 2, 3, 4}};
         IntMatrix secondSrcatrix{1, 2, {5, 6}};
 
