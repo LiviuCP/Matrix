@@ -66,6 +66,55 @@ public:
     bool operator== (const Matrix<DataType>& matrix) const;
     bool operator!= (const Matrix<DataType>& matrix) const;
 
+    // iterators and iterator methods
+    class ZIterator
+    {
+        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this priviledge
+        friend class Matrix;
+    public:
+        using iterator_category = std::forward_iterator_tag;
+        using value_type = DataType;
+        using difference_type = int;
+        using pointer = DataType**;
+        using reference = DataType&;
+
+        // "empty" iterator, no position information
+        ZIterator();
+
+        DataType& operator*();
+
+        ZIterator operator++();
+        ZIterator operator++(int noValue);
+
+        bool operator!=(const ZIterator& it) const;
+        bool operator==(const ZIterator& it) const;
+
+    private:
+        ZIterator(const Matrix& matrix, int currentRowNr, int currentColumnNr);
+
+        void _increment();
+
+        DataType** m_pMatrixPtr;
+        int m_CurrentRowNr;
+        int m_CurrentColumnNr;
+        int m_NrOfMatrixRows;
+        int m_NrOfMatrixColumns;
+    };
+
+    ZIterator zBegin()
+    {
+        ZIterator it{*this, 0, 0};
+
+        return it;
+    }
+
+    ZIterator zEnd()
+    {
+        ZIterator it{*this, m_NrOfRows-1, m_NrOfColumns};
+
+        return it;
+    }
+
 private:
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
     void _allocMemory(int nrOfRows, int nrOfColumns, int rowCapacity = 0, int columnCapacity = 0);
@@ -1681,5 +1730,84 @@ void Matrix<DataType>::_adjustSizeAndCapacity(int nrOfRows, int nrOfColumns)
     {
         _deallocMemory();
         _allocMemory(nrOfRows, nrOfColumns, c_OldRowCapacity, c_OldColumnCapacity);
+    }
+}
+
+template<typename DataType>
+Matrix<DataType>::ZIterator::ZIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_CurrentRowNr{-1}
+    , m_CurrentColumnNr{-1}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::ZIterator::operator*()
+{
+    return m_pMatrixPtr[m_CurrentRowNr][m_CurrentColumnNr];
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator++()
+{
+    _increment();
+    return *this;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator++(int noValue)
+{
+    (void) noValue;
+    ZIterator zIterator{*this};
+
+    _increment();
+
+    return zIterator;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ZIterator::operator!=(const ZIterator& it) const
+{
+    return (this->m_CurrentRowNr != it.m_CurrentRowNr || this->m_CurrentColumnNr != it.m_CurrentColumnNr || this->m_pMatrixPtr != it.m_pMatrixPtr);
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ZIterator::operator==(const ZIterator& it) const
+{
+    return (this->m_CurrentRowNr == it.m_CurrentRowNr && this->m_CurrentColumnNr == it.m_CurrentColumnNr && this->m_pMatrixPtr == it.m_pMatrixPtr);
+}
+
+template<typename DataType>
+Matrix<DataType>::ZIterator::ZIterator(const Matrix& matrix, int currentRowNr, int currentColumnNr)
+    : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
+    , m_NrOfMatrixRows{matrix.m_NrOfRows}
+    , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
+{
+    if (m_CurrentRowNr < 0 || m_CurrentColumnNr < 0 || currentRowNr >= m_NrOfMatrixRows || currentColumnNr > m_NrOfMatrixColumns ||
+        (currentRowNr < m_NrOfMatrixRows && m_CurrentColumnNr == m_NrOfMatrixColumns))
+    {
+        m_CurrentRowNr = -1;
+        m_CurrentColumnNr = -1;
+    }
+    else
+    {
+        m_CurrentRowNr = currentRowNr;
+        m_CurrentColumnNr = currentColumnNr;
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::ZIterator::_increment()
+{
+    if (m_CurrentColumnNr != m_NrOfMatrixColumns)
+    {
+        ++m_CurrentColumnNr;
+        if (m_CurrentColumnNr == m_NrOfMatrixColumns && (m_CurrentRowNr != (m_NrOfMatrixRows-1)))
+        {
+            m_CurrentColumnNr = m_CurrentColumnNr - m_NrOfMatrixColumns;
+            ++m_CurrentRowNr;
+        }
     }
 }
