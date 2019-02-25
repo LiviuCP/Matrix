@@ -101,8 +101,8 @@ public:
         int m_NrOfMatrixColumns;
     };
 
-    ZIterator zBegin();
-    ZIterator zEnd();
+    ZIterator zBegin() const;
+    ZIterator zEnd() const;
 
 private:
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
@@ -1468,15 +1468,15 @@ bool Matrix<DataType>::operator!=(const Matrix<DataType> &matrix) const
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::zBegin()
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zBegin() const
 {
     return ZIterator{*this, 0, 0};
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::zEnd()
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zEnd() const
 {
-    return {*this, m_NrOfRows-1, m_NrOfColumns};
+    return ZIterator{*this, m_NrOfRows-1, m_NrOfColumns};
 }
 
 template<typename DataType>
@@ -1786,8 +1786,8 @@ Matrix<DataType>::ZIterator::ZIterator(const Matrix& matrix, int currentRowNr, i
     , m_NrOfMatrixRows{matrix.m_NrOfRows}
     , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
 {
-    if (m_CurrentRowNr < 0 || m_CurrentColumnNr < 0 || currentRowNr >= m_NrOfMatrixRows || currentColumnNr > m_NrOfMatrixColumns ||
-        (currentRowNr < m_NrOfMatrixRows && m_CurrentColumnNr == m_NrOfMatrixColumns))
+    if (currentRowNr < 0 || currentColumnNr < 0 || currentRowNr >= m_NrOfMatrixRows || currentColumnNr > m_NrOfMatrixColumns ||
+        (currentRowNr < m_NrOfMatrixRows-1 && currentColumnNr == m_NrOfMatrixColumns))
     {
         m_CurrentRowNr = -1;
         m_CurrentColumnNr = -1;
@@ -1802,7 +1802,7 @@ Matrix<DataType>::ZIterator::ZIterator(const Matrix& matrix, int currentRowNr, i
 template<typename DataType>
 void Matrix<DataType>::ZIterator::_increment()
 {
-    if (m_CurrentColumnNr != m_NrOfMatrixColumns)
+    if (!(m_CurrentColumnNr == m_NrOfMatrixColumns && m_CurrentRowNr == (m_NrOfMatrixRows-1)))
     {
         ++m_CurrentColumnNr;
         if (m_CurrentColumnNr == m_NrOfMatrixColumns && (m_CurrentRowNr != (m_NrOfMatrixRows-1)))
