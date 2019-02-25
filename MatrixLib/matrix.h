@@ -101,19 +101,8 @@ public:
         int m_NrOfMatrixColumns;
     };
 
-    ZIterator zBegin()
-    {
-        ZIterator it{*this, 0, 0};
-
-        return it;
-    }
-
-    ZIterator zEnd()
-    {
-        ZIterator it{*this, m_NrOfRows-1, m_NrOfColumns};
-
-        return it;
-    }
+    ZIterator zBegin();
+    ZIterator zEnd();
 
 private:
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
@@ -1476,6 +1465,18 @@ template<typename DataType>
 bool Matrix<DataType>::operator!=(const Matrix<DataType> &matrix) const
 {
     return !_isEqualTo(matrix);
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zBegin()
+{
+    return ZIterator{*this, 0, 0};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zEnd()
+{
+    return {*this, m_NrOfRows-1, m_NrOfColumns};
 }
 
 template<typename DataType>
