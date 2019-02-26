@@ -17,6 +17,8 @@ private slots:
     void testPassingThroughAllElements();
     void testIncrementOperators();
     void testDereferenceStarOperator();
+    void testIteratorsAreEqual();
+    void testIteratorsAreNotEqual();
 };
 
 ZIteratorTests::ZIteratorTests()
@@ -160,6 +162,63 @@ void ZIteratorTests::testDereferenceStarOperator()
         *writeIter = 10;
 
         QVERIFY2(matrix.at(0, 2) == 10, "The dereference (*) operator does not work correctly, the value is not correctly written to the pointed location");
+    }
+}
+
+void ZIteratorTests::testIteratorsAreEqual()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zBegin()};
+        IntMatrixZIterator secondIter{matrix.zBegin()};
+
+        QVERIFY2(firstIter == secondIter, "The two iterators are not equal");
+        QVERIFY2(firstIter == matrix.zBegin(), "The two iterators are not equal");
+
+        ++firstIter;
+        ++firstIter;
+        ++secondIter;
+        ++secondIter;
+
+        QVERIFY2(firstIter == secondIter, "The two iterators are not equal");
+
+        ++firstIter;
+        ++firstIter;
+        ++firstIter;
+        ++firstIter;
+
+        QVERIFY2(firstIter == matrix.zEnd(), "The two iterators are not equal");
+
+        secondIter = matrix.zEnd();
+
+        QVERIFY2(firstIter == secondIter, "The two iterators are not equal");
+    }
+
+    {
+        IntMatrix matrix{};
+
+        QVERIFY2(matrix.zBegin() == matrix.zEnd(), "The two iterators are not equal");
+    }
+}
+
+void ZIteratorTests::testIteratorsAreNotEqual()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zBegin()};
+        IntMatrixZIterator secondIter{matrix.zBegin()};
+
+        QVERIFY2(matrix.zBegin() != matrix.zEnd(), "The begin iterator equals the end iterator");
+
+        ++firstIter;
+        ++secondIter;
+        ++secondIter;
+
+        QVERIFY2(firstIter != secondIter, "The two iterators are equal");
+        QVERIFY2(firstIter != matrix.zBegin(), "The first iterator equals the begin iterator");
+        QVERIFY2(secondIter != matrix.zBegin(), "The second iterator equals the begin iterator");
+        QVERIFY2(firstIter != matrix.zEnd(), "The first iterator equals the end iterator");
+        QVERIFY2(secondIter != matrix.zEnd(), "The second iterator equals the end iterator");
     }
 }
 
