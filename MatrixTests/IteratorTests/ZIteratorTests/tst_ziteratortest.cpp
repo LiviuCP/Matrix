@@ -16,6 +16,7 @@ public:
 private slots:
     void testPassingThroughAllElements();
     void testIncrementOperators();
+    void testDereferenceStarOperator();
 };
 
 ZIteratorTests::ZIteratorTests()
@@ -134,6 +135,31 @@ void ZIteratorTests::testIncrementOperators()
 
         QVERIFY2(*it == 2, "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
         QVERIFY2(*postPreIncrementIt == 2, "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+    }
+}
+
+void ZIteratorTests::testDereferenceStarOperator()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator readIter{matrix.zBegin()};
+
+        matrix.at(0, 2) = 10;
+        ++readIter;
+        ++readIter;
+
+        QVERIFY2(*readIter == 10, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator writeIter{matrix.zBegin()};
+
+        ++writeIter;
+        ++writeIter;
+        *writeIter = 10;
+
+        QVERIFY2(matrix.at(0, 2) == 10, "The dereference (*) operator does not work correctly, the value is not correctly written to the pointed location");
     }
 }
 
