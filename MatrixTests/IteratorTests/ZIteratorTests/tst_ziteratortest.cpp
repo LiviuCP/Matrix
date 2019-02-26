@@ -15,6 +15,7 @@ public:
 
 private slots:
     void testPassingThroughAllElements();
+    void testIncrementOperators();
 };
 
 ZIteratorTests::ZIteratorTests()
@@ -54,6 +55,69 @@ void ZIteratorTests::testPassingThroughAllElements()
         }
 
         QVERIFY2(count == 0, "The Z Iterator does not work correctly, there are no elements to pass through");
+    }
+}
+
+void ZIteratorTests::testIncrementOperators()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.zBegin()};
+
+        IntMatrixZIterator preIncrementIt{++it};
+
+        QVERIFY2(*it == 2, "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*preIncrementIt == 2, "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.zBegin()};
+
+        IntMatrixZIterator prePreIncrementIt{++(++it)};
+
+        QVERIFY2(*it == 2, "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*prePreIncrementIt == -3, "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.zBegin()};
+
+        IntMatrixZIterator postIncrementIt{it++};
+
+        QVERIFY2(*it == 2, "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*postIncrementIt == 1, "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.zBegin()};
+
+        IntMatrixZIterator postPostIncrementIt{(it++)++};
+
+        QVERIFY2(*it == 2, "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*postPostIncrementIt == 1, "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.zBegin()};
+
+        IntMatrixZIterator prePostIncrementIt{(++it)++};
+
+        QVERIFY2(*it == 2, "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*prePostIncrementIt == 2, "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.zBegin()};
+
+        IntMatrixZIterator postPreIncrementIt{++(it++)};
+
+        QVERIFY2(*it == 2, "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*postPreIncrementIt == 2, "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
     }
 }
 
