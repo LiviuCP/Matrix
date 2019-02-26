@@ -46,6 +46,22 @@ void ZIteratorTests::testPassingThroughAllElements()
     }
 
     {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, -7, 8, 9, 10, -11, 12}};
+        int sum{0};
+
+        for (IntMatrixZIterator it{matrix.zBegin()}; it != matrix.zEnd(); ++it)
+        {
+            if (*it < 0)
+            {
+                *it *= -1;
+            }
+            sum += *it;
+        }
+
+        QVERIFY2(sum == 78, "Passing through through all matrix elements by using the Z iterator and calculating their absolute values does not work correctly, sum of the absolute values is not correct");
+    }
+
+    {
         IntMatrix matrix{};
         int count{0};
 
