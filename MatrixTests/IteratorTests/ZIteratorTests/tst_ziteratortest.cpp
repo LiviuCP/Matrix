@@ -19,6 +19,7 @@ private slots:
     void testDereferenceStarOperator();
     void testIteratorsAreEqual();
     void testIteratorsAreNotEqual();
+    void testGetIterator();
 };
 
 ZIteratorTests::ZIteratorTests()
@@ -195,6 +196,21 @@ void ZIteratorTests::testIteratorsAreEqual()
     }
 
     {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.getZIterator(0, 0)};
+
+        QVERIFY2(it == matrix.zBegin(), "The two iterators are not equal");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.getZIterator(1, 2)};
+        IntMatrixZIterator secondIter{matrix.getZIterator(1, 2)};
+
+        QVERIFY2(firstIter == secondIter, "The two iterators are not equal");
+    }
+
+    {
         IntMatrix matrix{};
 
         QVERIFY2(matrix.zBegin() == matrix.zEnd(), "The two iterators are not equal");
@@ -220,6 +236,26 @@ void ZIteratorTests::testIteratorsAreNotEqual()
         QVERIFY2(firstIter != matrix.zEnd(), "The first iterator equals the end iterator");
         QVERIFY2(secondIter != matrix.zEnd(), "The second iterator equals the end iterator");
     }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.getZIterator(0, 1)};
+        IntMatrixZIterator secondIter{matrix.getZIterator(1, 2)};
+
+        QVERIFY2(firstIter != secondIter, "The begin iterator equals the end iterator");
+        QVERIFY2(firstIter != matrix.zBegin(), "The first iterator equals the begin iterator");
+        QVERIFY2(secondIter != matrix.zBegin(), "The second iterator equals the begin iterator");
+        QVERIFY2(firstIter != matrix.zEnd(), "The first iterator equals the end iterator");
+        QVERIFY2(secondIter != matrix.zEnd(), "The second iterator equals the end iterator");
+    }
+}
+
+void ZIteratorTests::testGetIterator()
+{
+    IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+    IntMatrixZIterator it{matrix.getZIterator(0, 1)};
+
+    QVERIFY2(*it == 2, "The getIterator() method does not work correctly, the resulting iterator does not point to the right element");
 }
 
 QTEST_APPLESS_MAIN(ZIteratorTests)
