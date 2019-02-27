@@ -1747,6 +1747,11 @@ Matrix<DataType>::ZIterator::ZIterator()
 template<typename DataType>
 DataType& Matrix<DataType>::ZIterator::operator*()
 {
+    if (m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
+    }
+
     return m_pMatrixPtr[m_CurrentRowNr][m_CurrentColumnNr];
 }
 

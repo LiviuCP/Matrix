@@ -3,6 +3,7 @@
 #include "../../MatrixLib/matrix.h"
 
 using IntMatrix = Matrix<int>;
+using IntMatrixZIterator = Matrix<int>::ZIterator;
 
 class ExceptionTests : public QObject
 {
@@ -35,6 +36,7 @@ private slots:
     void testSwapColumnsExceptions();
     void testSwapRowColumnExceptions();
     void testCopyExceptions();
+    void testZIteratorExceptions();
 };
 
 ExceptionTests::ExceptionTests()
@@ -1129,6 +1131,27 @@ void ExceptionTests::testCopyExceptions()
                                   IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
 
                                   destMatrix.copy(srcMatrix, 3, 2, 2, 1, 2, 2);
+                             },
+
+                             std::runtime_error);
+}
+
+void ExceptionTests::testZIteratorExceptions()
+{
+    QVERIFY_EXCEPTION_THROWN({
+                                  IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
+                                  IntMatrixZIterator it{matrix.zEnd()};
+
+                                  *it = -14;
+                             },
+
+                             std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({
+                                  IntMatrix matrix{};
+                                  IntMatrixZIterator it{matrix.zBegin()};
+
+                                  *it = -9;
                              },
 
                              std::runtime_error);
