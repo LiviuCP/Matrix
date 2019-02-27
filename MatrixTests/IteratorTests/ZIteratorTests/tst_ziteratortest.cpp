@@ -20,6 +20,7 @@ private slots:
     void testIteratorsAreEqual();
     void testIteratorsAreNotEqual();
     void testGetIterator();
+    void testStdCount();
 };
 
 ZIteratorTests::ZIteratorTests()
@@ -256,6 +257,43 @@ void ZIteratorTests::testGetIterator()
     IntMatrixZIterator it{matrix.getZIterator(0, 1)};
 
     QVERIFY2(*it == 2, "The getIterator() method does not work correctly, the resulting iterator does not point to the right element");
+}
+
+void ZIteratorTests::testStdCount()
+{
+    using namespace std;
+
+    IntMatrix matrix{4, 5, {-1, 1, 3, 1, 4, 5, 6, 8, 0, 1, 2, -2, 2, 10, 9, -7, 7, 2, 4, 8}};
+
+    int matchCount{count(matrix.zBegin(), matrix.zEnd(), 2)};
+    QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.zBegin(), matrix.zEnd(), -5);
+    QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.getZIterator(0, 2), matrix.getZIterator(1, 4), 1);
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.getZIterator(0, 2), matrix.getZIterator(2, 0), 1);
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.getZIterator(0, 3), matrix.getZIterator(1, 4), 1);
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.getZIterator(0, 3), matrix.getZIterator(2, 0), 1);
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.zBegin(), matrix.getZIterator(2, 3), 2);
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.getZIterator(2, 3), matrix.zEnd(), 2);
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.zBegin(), matrix.getZIterator(2, 2), 2);
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.getZIterator(2, 2), matrix.zEnd(), 2);
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
 }
 
 QTEST_APPLESS_MAIN(ZIteratorTests)
