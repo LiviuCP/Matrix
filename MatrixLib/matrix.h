@@ -16,7 +16,7 @@ public:
     Matrix(Matrix<DataType>&& matrix);
     ~Matrix();
 
-    DataType& at(int i,int j);
+    DataType& at(int rowNr, int columnNr);
     DataType& operator[] (int index);
 
     Matrix<DataType>& operator= (const Matrix<DataType>& matrix);
@@ -237,19 +237,19 @@ Matrix<DataType>::~Matrix()
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::at(int i,int j)
+DataType& Matrix<DataType>::at(int rowNr, int columnNr)
 {
-    if (i<0 || j<0)
+    if (rowNr<0 || columnNr<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    if (i>=m_NrOfRows || j>=m_NrOfColumns)
+    if (rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
 
-    return m_pBaseArrayPtr[i][j];
+    return m_pBaseArrayPtr[rowNr][columnNr];
 }
 
 template<typename DataType>
