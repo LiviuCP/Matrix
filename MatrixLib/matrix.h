@@ -103,6 +103,8 @@ public:
 
     ZIterator zBegin() const;
     ZIterator zEnd() const;
+    ZIterator zRowBegin(int rowNr) const;
+    ZIterator zRowEnd(int rowNr) const;
     ZIterator getZIterator(int rowNr, int columnNr) const;
 
 private:
@@ -1478,6 +1480,49 @@ template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::zEnd() const
 {
     return ZIterator{*this, m_NrOfRows-1, m_NrOfColumns};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowBegin(int rowNr) const
+{
+    if (rowNr < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (rowNr >= m_NrOfRows)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+    }
+
+    return ZIterator{*this, rowNr, 0};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowEnd(int rowNr) const
+{
+    if (rowNr < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (rowNr >= m_NrOfRows)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+    }
+
+    ZIterator it{};
+
+    if (rowNr < m_NrOfRows-1)
+    {
+        it = ZIterator{*this, rowNr+1, 0};
+    }
+    else
+    {
+        it = ZIterator{*this, rowNr, m_NrOfColumns};
+    }
+
+    return it;
 }
 
 template<typename DataType>

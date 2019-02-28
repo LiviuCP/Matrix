@@ -1166,6 +1166,15 @@ void ExceptionTests::testZIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixZIterator it = matrix.getZIterator(2, -1);  Q_UNUSED(it)}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixZIterator it = matrix.getZIterator(2, 1);   Q_UNUSED(it)}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixZIterator it = matrix.getZIterator(2, 3);   Q_UNUSED(it)}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixZIterator it = matrix.zRowBegin(-1);   Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixZIterator it = matrix.zRowEnd(-1);   Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixZIterator it = matrix.zRowBegin(0);   Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixZIterator it = matrix.zRowEnd(0);   Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixZIterator it = matrix.zRowBegin(-1); Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixZIterator it = matrix.zRowEnd(-1); Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixZIterator it = matrix.zRowBegin(4); Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixZIterator it = matrix.zRowEnd(4); Q_UNUSED(it)}, std::runtime_error);
 }
 
 QTEST_APPLESS_MAIN(ExceptionTests)
