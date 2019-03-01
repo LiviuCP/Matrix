@@ -4,6 +4,8 @@
 
 using IntMatrix = Matrix<int>;
 using IntMatrixZIterator = Matrix<int>::ZIterator;
+using StringMatrix = Matrix<std::string>;
+using StringMatrixIterator = Matrix<std::string>::ZIterator;
 
 class ZIteratorTests : public QObject
 {
@@ -17,6 +19,7 @@ private slots:
     void testPassingThroughAllElements();
     void testIncrementOperators();
     void testDereferenceStarOperator();
+    void testDereferenceArrowOperator();
     void testIteratorsAreEqual();
     void testIteratorsAreNotEqual();
     void testGetIterator();
@@ -165,6 +168,30 @@ void ZIteratorTests::testDereferenceStarOperator()
         *writeIter = 10;
 
         QVERIFY2(matrix.at(0, 2) == 10, "The dereference (*) operator does not work correctly, the value is not correctly written to the pointed location");
+    }
+}
+
+void ZIteratorTests::testDereferenceArrowOperator()
+{
+    {
+        StringMatrix matrix{2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+        StringMatrixIterator readIter{matrix.zBegin()};
+
+        ++readIter;
+
+        QVERIFY2(readIter->size() == 5, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    }
+
+    {
+        StringMatrix matrix{2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+        StringMatrixIterator writeIter{matrix.zBegin()};
+
+        ++writeIter;
+        ++writeIter;
+
+        writeIter->assign("abcdefghi");
+
+        QVERIFY2(matrix.at(0, 2) == "abcdefghi", "The dereference (->) operator does not work correctly, the method of the item class does not write the correct value to the expected location");
     }
 }
 

@@ -82,6 +82,7 @@ public:
         ZIterator();
 
         DataType& operator*() const;
+        DataType* operator->() const;
 
         ZIterator operator++();
         ZIterator operator++(int noValue);
@@ -1832,6 +1833,17 @@ DataType& Matrix<DataType>::ZIterator::operator*() const
     }
 
     return m_pMatrixPtr[m_CurrentRowNr][m_CurrentColumnNr];
+}
+
+template<typename DataType>
+DataType* Matrix<DataType>::ZIterator::operator->() const
+{
+    if (m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
+    }
+
+    return (m_pMatrixPtr[m_CurrentRowNr] + m_CurrentColumnNr);
 }
 
 template<typename DataType>
