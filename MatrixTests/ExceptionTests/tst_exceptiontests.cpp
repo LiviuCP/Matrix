@@ -1139,24 +1139,12 @@ void ExceptionTests::testCopyExceptions()
 
 void ExceptionTests::testZIteratorExceptions()
 {
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrixZIterator it{matrix.zEnd()};
+    // test zBegin() and zEnd() dereference errors
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix{}; IntMatrixZIterator it{matrix.zBegin()}; *it = -9; }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixZIterator it{matrix.zEnd()}; *it = -14; }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixZIterator it{matrix.zEnd()}; *it = -14; }, std::runtime_error);
 
-                                  *it = -14;
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix matrix{};
-                                  IntMatrixZIterator it{matrix.zBegin()};
-
-                                  *it = -9;
-                             },
-
-                             std::runtime_error);
-
+    // test wrong indexes (negative or out-of-bound)
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                           IntMatrixZIterator it = matrix.getZIterator(0, 0);   Q_UNUSED(it)}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixZIterator it = matrix.getZIterator(-1, -1); Q_UNUSED(it)}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixZIterator it = matrix.getZIterator(-1, 1);  Q_UNUSED(it)}, std::runtime_error);
