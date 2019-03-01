@@ -81,7 +81,7 @@ public:
         // "empty" iterator, no position information
         ZIterator();
 
-        DataType& operator*();
+        DataType& operator*() const;
 
         ZIterator operator++();
         ZIterator operator++(int noValue);
@@ -1824,7 +1824,7 @@ Matrix<DataType>::ZIterator::ZIterator()
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ZIterator::operator*()
+DataType& Matrix<DataType>::ZIterator::operator*() const
 {
     if (m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0)
     {
