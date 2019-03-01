@@ -106,6 +106,7 @@ public:
     ZIterator zRowBegin(int rowNr) const;
     ZIterator zRowEnd(int rowNr) const;
     ZIterator getZIterator(int rowNr, int columnNr) const;
+    ZIterator getZIterator(int index) const;
 
 private:
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
@@ -1539,6 +1540,22 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(int rowNr, i
     }
 
     return ZIterator{*this, rowNr, columnNr};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(int index) const
+{
+    if (index < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (index >= m_NrOfRows*m_NrOfColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
+    }
+
+    return ZIterator{*this, index/m_NrOfColumns, index%m_NrOfColumns};
 }
 
 template<typename DataType>

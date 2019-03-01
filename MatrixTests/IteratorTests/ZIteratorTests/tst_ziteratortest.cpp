@@ -206,8 +206,15 @@ void ZIteratorTests::testIteratorsAreEqual()
 
     {
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.getZIterator(0)};
+
+        QVERIFY2(it == matrix.zBegin(), "The two iterators are not equal");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
         IntMatrixZIterator firstIter{matrix.getZIterator(1, 2)};
-        IntMatrixZIterator secondIter{matrix.getZIterator(1, 2)};
+        IntMatrixZIterator secondIter{matrix.getZIterator(5)};
 
         QVERIFY2(firstIter == secondIter, "The two iterators are not equal");
     }
@@ -231,6 +238,13 @@ void ZIteratorTests::testIteratorsAreEqual()
 
         QVERIFY2(matrix.zRowBegin(1) == matrix.getZIterator(1, 0), "The two iterators are not equal");
         QVERIFY2(matrix.zRowEnd(1) == matrix.getZIterator(2, 0), "The two iterators are not equal");
+    }
+
+    {
+        IntMatrix matrix{3, 2, {1, 2, -3, 4, -5, 6}};
+
+        QVERIFY2(matrix.zRowBegin(1) == matrix.getZIterator(2), "The two iterators are not equal");
+        QVERIFY2(matrix.zRowEnd(1) == matrix.getZIterator(4), "The two iterators are not equal");
     }
 }
 
@@ -272,14 +286,35 @@ void ZIteratorTests::testIteratorsAreNotEqual()
         QVERIFY2(matrix.zRowBegin(0) != matrix.zRowBegin(1), "The matrix begin ZIterator of the first row equals the begin ZIterator of the second row");
         QVERIFY2(matrix.zRowEnd(0) != matrix.zRowEnd(1), "The matrix end ZIterator of the first row equals the end ZIterator of the second row");
     }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.getZIterator(1)};
+        IntMatrixZIterator secondIter{matrix.getZIterator(5)};
+
+        QVERIFY2(firstIter != secondIter, "The begin iterator equals the end iterator");
+        QVERIFY2(firstIter != matrix.zBegin(), "The first iterator equals the begin iterator");
+        QVERIFY2(secondIter != matrix.zBegin(), "The second iterator equals the begin iterator");
+        QVERIFY2(firstIter != matrix.zEnd(), "The first iterator equals the end iterator");
+        QVERIFY2(secondIter != matrix.zEnd(), "The second iterator equals the end iterator");
+    }
 }
 
 void ZIteratorTests::testGetIterator()
 {
-    IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
-    IntMatrixZIterator it{matrix.getZIterator(0, 1)};
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.getZIterator(0, 1)};
 
-    QVERIFY2(*it == 2, "The getIterator() method does not work correctly, the resulting iterator does not point to the right element");
+        QVERIFY2(*it == 2, "The getIterator() method does not work correctly, the resulting iterator does not point to the right element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.getZIterator(1)};
+
+        QVERIFY2(*it == 2, "The getIterator() method does not work correctly, the resulting iterator does not point to the right element");
+    }
 }
 
 void ZIteratorTests::testRowBeginEndIterators()
@@ -327,6 +362,30 @@ void ZIteratorTests::testStdCount()
     QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getZIterator(2, 2), matrix.zEnd(), 2);
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.getZIterator(2), matrix.getZIterator(9), 1);
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.getZIterator(2), matrix.getZIterator(10), 1);
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.getZIterator(3), matrix.getZIterator(9), 1);
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.getZIterator(3), matrix.getZIterator(10), 1);
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.zBegin(), matrix.getZIterator(13), 2);
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.getZIterator(13), matrix.zEnd(), 2);
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.zBegin(), matrix.getZIterator(12), 2);
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+
+    matchCount = count(matrix.getZIterator(12), matrix.zEnd(), 2);
     QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
 
     matchCount = count(matrix.zRowBegin(1), matrix.zRowEnd(1), 1);
