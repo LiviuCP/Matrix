@@ -85,7 +85,9 @@ public:
         DataType* operator->() const;
 
         ZIterator operator++();
-        ZIterator operator++(int noValue);
+        ZIterator operator++(int unused);
+        ZIterator operator--();
+        ZIterator operator--(int unused);
 
         bool operator!=(const ZIterator& it) const;
         bool operator==(const ZIterator& it) const;
@@ -94,6 +96,7 @@ public:
         ZIterator(const Matrix& matrix, int currentRowNr, int currentColumnNr);
 
         void _increment();
+        void _decrement();
 
         DataType** m_pMatrixPtr;
         int m_CurrentRowNr;
@@ -1854,12 +1857,30 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator++()
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator++(int noValue)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator++(int unused)
 {
-    (void) noValue;
+    (void) unused;
     ZIterator zIterator{*this};
 
     _increment();
+
+    return zIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator--()
+{
+    _decrement();
+    return *this;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator--(int unused)
+{
+    (void) unused;
+    ZIterator zIterator{*this};
+
+    _decrement();
 
     return zIterator;
 }
@@ -1908,3 +1929,22 @@ void Matrix<DataType>::ZIterator::_increment()
         }
     }
 }
+
+template<typename DataType>
+void Matrix<DataType>::ZIterator::_decrement()
+{
+    if (m_CurrentRowNr > 0 || m_CurrentColumnNr > 0)
+    {
+        if(m_CurrentColumnNr == 0)
+        {
+            --m_CurrentRowNr;
+            m_CurrentColumnNr = m_NrOfMatrixColumns - 1;
+        }
+        else
+        {
+            --m_CurrentColumnNr;
+        }
+    }
+}
+
+
