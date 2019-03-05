@@ -23,6 +23,10 @@ private slots:
     void testDereferenceArrowOperator();
     void testIteratorsAreEqual();
     void testIteratorsAreNotEqual();
+    void testSmallerThanOperator();
+    void testSmallerThanOrEqualToOperator();
+    void testGreaterThanOperator();
+    void testGreaterThanOrEqualToOperator();
     void testGetIterator();
     void testRowBeginEndIterators();
     void testStdCount();
@@ -514,6 +518,242 @@ void ZIteratorTests::testIteratorsAreNotEqual()
         QVERIFY2(secondIter != matrix.zBegin(), "The second iterator equals the begin iterator");
         QVERIFY2(firstIter != matrix.zEnd(), "The first iterator equals the end iterator");
         QVERIFY2(secondIter != matrix.zEnd(), "The second iterator equals the end iterator");
+    }
+}
+
+void ZIteratorTests::testSmallerThanOperator()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zBegin()};
+        IntMatrixZIterator secondIter{matrix.zBegin()};
+
+        ++firstIter;
+        ++secondIter;
+        ++secondIter;
+
+        QVERIFY2(matrix.zBegin() < firstIter, "The first iterator is greater than or equal to the second iterator");
+        QVERIFY2(firstIter < secondIter, "The first iterator is greater than or equal to the second iterator");
+        QVERIFY2(secondIter < matrix.zEnd(), "The first iterator is greater than or equal to the second iterator");
+
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zEnd()};
+        IntMatrixZIterator secondIter{matrix.zEnd()};
+
+        --firstIter;
+        --firstIter;
+        --secondIter;
+
+        QVERIFY2(matrix.zBegin() < firstIter, "The first iterator is greater than or equal to the second iterator");
+        QVERIFY2(firstIter < secondIter, "The first iterator is greater than or equal to the second iterator");
+        QVERIFY2(secondIter < matrix.zEnd(), "The first iterator is greater than or equal to the second iterator");
+
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, -10, 11, 12}};
+
+        QVERIFY2(matrix.zBegin() < matrix.getZIterator(0, 1), "The first iterator is greater than or equal to the second iterator");
+        QVERIFY2(matrix.getZIterator(0, 1) < matrix.zRowBegin(1), "The first iterator is greater than or equal to the second iterator");
+        QVERIFY2(matrix.zRowBegin(1) < matrix.getZIterator(1, 1), "The first iterator is greater than or equal to the second iterator");
+        QVERIFY2(matrix.getZIterator(1, 1) < matrix.zRowEnd(1), "The first iterator is greater than or equal to the second iterator");
+        QVERIFY2(matrix.zRowEnd(1) < matrix.getZIterator(2, 1), "The first iterator is greater than or equal to the second iterator");
+        QVERIFY2(matrix.getZIterator(2, 1) < matrix.zRowBegin(3), "The first iterator is greater than or equal to the second iterator");
+        QVERIFY2(matrix.zRowBegin(3) < matrix.zEnd(), "The first iterator is greater than or equal to the second iterator");
+    }
+}
+
+void ZIteratorTests::testSmallerThanOrEqualToOperator()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zBegin()};
+        IntMatrixZIterator secondIter{matrix.zBegin()};
+
+        ++firstIter;
+        ++secondIter;
+        ++secondIter;
+
+        QVERIFY2(matrix.zBegin() <= firstIter, "The first iterator is greater than the second iterator");
+        QVERIFY2(firstIter <= secondIter, "The first iterator is greater than the second iterator");
+        QVERIFY2(secondIter <= matrix.zEnd(), "The first iterator is greater than the second iterator");
+
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zBegin()};
+        IntMatrixZIterator secondIter{matrix.zBegin()};
+
+        ++firstIter;
+        ++secondIter;
+
+        QVERIFY2(matrix.zBegin() <= firstIter, "The first iterator is greater than the second iterator");
+        QVERIFY2(firstIter <= secondIter, "The first iterator is greater than the second iterator");
+        QVERIFY2(secondIter <= matrix.zEnd(), "The first iterator is greater than the second iterator");
+
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zEnd()};
+        IntMatrixZIterator secondIter{matrix.zEnd()};
+
+        --firstIter;
+        --firstIter;
+        --secondIter;
+
+        QVERIFY2(matrix.zBegin() <= firstIter, "The first iterator is greater than the second iterator");
+        QVERIFY2(firstIter <= secondIter, "The first iterator is greater than the second iterator");
+        QVERIFY2(secondIter <= matrix.zEnd(), "The first iterator is greater than the second iterator");
+
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zEnd()};
+        IntMatrixZIterator secondIter{matrix.zEnd()};
+
+        --firstIter;
+        --secondIter;
+
+        QVERIFY2(matrix.zBegin() <= firstIter, "The first iterator is greater than the second iterator");
+        QVERIFY2(firstIter <= secondIter, "The first iterator is greater than the second iterator");
+        QVERIFY2(secondIter <= matrix.zEnd(), "The first iterator is greater than the second iterator");
+
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, -10, 11, 12}};
+
+        QVERIFY2(matrix.zBegin() <= matrix.getZIterator(0, 0), "The first iterator is greater than the second iterator");
+        QVERIFY2(matrix.getZIterator(0, 0) <= matrix.getZIterator(0, 1), "The first iterator is greater than the second iterator");
+        QVERIFY2(matrix.getZIterator(0, 1) <= matrix.zRowBegin(1), "The first iterator is greater than the second iterator");
+        QVERIFY2(matrix.zRowBegin(1) <= matrix.getZIterator(1, 1), "The first iterator is greater than the second iterator");
+        QVERIFY2(matrix.getZIterator(1, 1) <= matrix.zRowEnd(1), "The first iterator is greater than the second iterator");
+        QVERIFY2(matrix.zRowEnd(1) <= matrix.getZIterator(2, 0), "The first iterator is greater than the second iterator");
+        QVERIFY2(matrix.getZIterator(2, 0) <= matrix.zRowBegin(3), "The first iterator is greater than the second iterator");
+        QVERIFY2(matrix.zRowBegin(3) <= matrix.getZIterator(3, 0), "The first iterator is greater than the second iterator");
+        QVERIFY2(matrix.getZIterator(3, 0) <= matrix.zRowEnd(3), "The first iterator is greater than the second iterator");
+        QVERIFY2(matrix.zRowEnd(3) <= matrix.zEnd(), "The first iterator is greater than the second iterator");
+    }
+}
+
+void ZIteratorTests::testGreaterThanOperator()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zBegin()};
+        IntMatrixZIterator secondIter{matrix.zBegin()};
+
+        ++firstIter;
+        ++secondIter;
+        ++secondIter;
+
+        QVERIFY2(matrix.zEnd() > secondIter, "The first iterator is smaller than or equal to the second iterator");
+        QVERIFY2(secondIter > firstIter, "The first iterator is smaller than or equal to the second iterator");
+        QVERIFY2(firstIter > matrix.zBegin(), "The first iterator is smaller than or equal to the second iterator");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zEnd()};
+        IntMatrixZIterator secondIter{matrix.zEnd()};
+
+        --firstIter;
+        --firstIter;
+        --secondIter;
+
+        QVERIFY2(matrix.zEnd() > secondIter, "The first iterator is smaller than or equal to the second iterator");
+        QVERIFY2(secondIter > firstIter, "The first iterator is smaller than or equal to the second iterator");
+        QVERIFY2(firstIter > matrix.zBegin(), "The first iterator is smaller than or equal to the second iterator");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, -10, 11, 12}};
+
+        QVERIFY2(matrix.zEnd() > matrix.zRowBegin(3), "The first iterator is smaller than or equal to the second iterator");
+        QVERIFY2(matrix.zRowBegin(3) > matrix.getZIterator(2, 1), "The first iterator is smaller than or equal to the second iterator");
+        QVERIFY2(matrix.getZIterator(2, 1) > matrix.zRowEnd(1), "The first iterator is smaller than or equal to the second iterator");
+        QVERIFY2(matrix.zRowEnd(1) > matrix.getZIterator(1, 1), "The first iterator is smaller than or equal to the second iterator");
+        QVERIFY2(matrix.getZIterator(1, 1) > matrix.zRowBegin(1), "The first iterator is smaller than or equal to the second iterator");
+        QVERIFY2(matrix.zRowBegin(1) > matrix.getZIterator(0, 1), "The first iterator is smaller than or equal to the second iterator");
+        QVERIFY2(matrix.getZIterator(0, 1) > matrix.zBegin(), "The first iterator is smaller than or equal to the second iterator");
+    }
+}
+
+void ZIteratorTests::testGreaterThanOrEqualToOperator()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zBegin()};
+        IntMatrixZIterator secondIter{matrix.zBegin()};
+
+        ++firstIter;
+        ++secondIter;
+        ++secondIter;
+
+        QVERIFY2(matrix.zEnd() >= secondIter, "The first iterator is smaller than the second iterator");
+        QVERIFY2(secondIter >= firstIter, "The first iterator is smaller than the second iterator");
+        QVERIFY2(firstIter >= matrix.zBegin(), "The first iterator is smaller than the second iterator");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zBegin()};
+        IntMatrixZIterator secondIter{matrix.zBegin()};
+
+        ++firstIter;
+        ++secondIter;
+
+        QVERIFY2(matrix.zEnd() >= secondIter, "The first iterator is smaller than the second iterator");
+        QVERIFY2(secondIter >= firstIter, "The first iterator is smaller than the second iterator");
+        QVERIFY2(firstIter >= matrix.zBegin(), "The first iterator is smaller than the second iterator");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zEnd()};
+        IntMatrixZIterator secondIter{matrix.zEnd()};
+
+        --firstIter;
+        --firstIter;
+        --secondIter;
+
+        QVERIFY2(matrix.zEnd() >= secondIter, "The first iterator is smaller than the second iterator");
+        QVERIFY2(secondIter >= firstIter, "The first iterator is smaller than the second iterator");
+        QVERIFY2(firstIter >= matrix.zBegin(), "The first iterator is smaller than the second iterator");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator firstIter{matrix.zEnd()};
+        IntMatrixZIterator secondIter{matrix.zEnd()};
+
+        --firstIter;
+        --secondIter;
+
+        QVERIFY2(matrix.zEnd() >= secondIter, "The first iterator is smaller than the second iterator");
+        QVERIFY2(secondIter >= firstIter, "The first iterator is smaller than the second iterator");
+        QVERIFY2(firstIter >= matrix.zBegin(), "The first iterator is smaller than the second iterator");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, -10, 11, 12}};
+
+        QVERIFY2(matrix.zEnd() >= matrix.zRowEnd(3), "The first iterator is smaller than the second iterator");
+        QVERIFY2(matrix.zRowEnd(3) >= matrix.getZIterator(3, 0), "The first iterator is smaller than the second iterator");
+        QVERIFY2(matrix.getZIterator(3, 0) >= matrix.zRowBegin(3), "The first iterator is smaller than the second iterator");
+        QVERIFY2(matrix.zRowBegin(3) >= matrix.getZIterator(2, 0), "The first iterator is smaller than the second iterator");
+        QVERIFY2(matrix.getZIterator(2, 0) >= matrix.zRowEnd(1), "The first iterator is smaller than the second iterator");
+        QVERIFY2(matrix.zRowEnd(1) >= matrix.getZIterator(1, 1), "The first iterator is smaller than the second iterator");
+        QVERIFY2(matrix.getZIterator(1, 1) >= matrix.zRowBegin(1), "The first iterator is smaller than the second iterator");
+        QVERIFY2(matrix.zRowBegin(1) >= matrix.getZIterator(0, 1), "The first iterator is smaller than the second iterator");
+        QVERIFY2(matrix.getZIterator(0, 1) >= matrix.getZIterator(0, 0), "The first iterator is smaller than the second iterator");
+        QVERIFY2(matrix.getZIterator(0, 0) >= matrix.zBegin(), "The first iterator is smaller than the second iterator");
     }
 }
 

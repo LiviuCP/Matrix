@@ -89,8 +89,12 @@ public:
         ZIterator operator--();
         ZIterator operator--(int unused);
 
-        bool operator!=(const ZIterator& it) const;
         bool operator==(const ZIterator& it) const;
+        bool operator!=(const ZIterator& it) const;
+        bool operator<(const ZIterator& it) const;
+        bool operator<=(const ZIterator& it) const;
+        bool operator>(const ZIterator& it) const;
+        bool operator>=(const ZIterator& it) const;
 
     private:
         ZIterator(const Matrix& matrix, int currentRowNr, int currentColumnNr);
@@ -1886,15 +1890,39 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator--(int
 }
 
 template<typename DataType>
+bool Matrix<DataType>::ZIterator::operator==(const ZIterator& it) const
+{
+    return (this->m_CurrentRowNr == it.m_CurrentRowNr && this->m_CurrentColumnNr == it.m_CurrentColumnNr && this->m_pMatrixPtr == it.m_pMatrixPtr);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ZIterator::operator!=(const ZIterator& it) const
 {
     return (this->m_CurrentRowNr != it.m_CurrentRowNr || this->m_CurrentColumnNr != it.m_CurrentColumnNr || this->m_pMatrixPtr != it.m_pMatrixPtr);
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ZIterator::operator==(const ZIterator& it) const
+bool Matrix<DataType>::ZIterator::operator<(const ZIterator& it) const
 {
-    return (this->m_CurrentRowNr == it.m_CurrentRowNr && this->m_CurrentColumnNr == it.m_CurrentColumnNr && this->m_pMatrixPtr == it.m_pMatrixPtr);
+    return (m_CurrentRowNr < it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr < it.m_CurrentColumnNr));
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ZIterator::operator<=(const ZIterator& it) const
+{
+    return (m_CurrentRowNr < it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr <= it.m_CurrentColumnNr));
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ZIterator::operator>(const ZIterator& it) const
+{
+    return (m_CurrentRowNr > it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr > it.m_CurrentColumnNr));
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ZIterator::operator>=(const ZIterator& it) const
+{
+    return (m_CurrentRowNr > it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr >= it.m_CurrentColumnNr));
 }
 
 template<typename DataType>
