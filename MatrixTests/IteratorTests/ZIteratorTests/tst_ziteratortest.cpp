@@ -145,6 +145,26 @@ void ZIteratorTests::testIncrementOperators()
         QVERIFY2(*it == 2, "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
         QVERIFY2(*postPreIncrementIt == 2, "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
     }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.zEnd()};
+
+        IntMatrixZIterator postPreIncrementIt{++it};
+
+        QVERIFY2(it == matrix.zEnd(), "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(postPreIncrementIt == matrix.zEnd(), "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.zEnd()};
+
+        IntMatrixZIterator postPreIncrementIt{it++};
+
+        QVERIFY2(it == matrix.zEnd(), "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(postPreIncrementIt == matrix.zEnd(), "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+    }
 }
 
 void ZIteratorTests::testDereferenceStarOperator()
