@@ -89,6 +89,9 @@ public:
         ZIterator operator--();
         ZIterator operator--(int unused);
 
+        ZIterator operator+(difference_type offset);
+        ZIterator operator-(difference_type offset);
+
         bool operator==(const ZIterator& it) const;
         bool operator!=(const ZIterator& it) const;
         bool operator<(const ZIterator& it) const;
@@ -1887,6 +1890,68 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator--(int
     _decrement();
 
     return zIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator+(ZIterator::difference_type offset)
+{
+    ZIterator it{};
+
+    if (m_pMatrixPtr)
+    {
+        it = *this;
+        const int currentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+        const int resultingIndex{currentIndex + offset};
+
+        if (resultingIndex <= 0)
+        {
+            it.m_CurrentRowNr = 0;
+            it.m_CurrentColumnNr = 0;
+        }
+        else if (resultingIndex >= m_NrOfMatrixRows * m_NrOfMatrixColumns)
+        {
+            it.m_CurrentRowNr = m_NrOfMatrixRows - 1;
+            it.m_CurrentColumnNr = m_NrOfMatrixColumns;
+        }
+        else
+        {
+            it.m_CurrentRowNr = resultingIndex / m_NrOfMatrixColumns;
+            it.m_CurrentColumnNr = resultingIndex % m_NrOfMatrixColumns;
+        }
+    }
+
+    return it;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator-(ZIterator::difference_type offset)
+{
+    ZIterator it{};
+
+    if (m_pMatrixPtr)
+    {
+        it = *this;
+        const int currentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+        const int resultingIndex{currentIndex - offset};
+
+        if (resultingIndex <= 0)
+        {
+            it.m_CurrentRowNr = 0;
+            it.m_CurrentColumnNr = 0;
+        }
+        else if (resultingIndex >= m_NrOfMatrixRows * m_NrOfMatrixColumns)
+        {
+            it.m_CurrentRowNr = m_NrOfMatrixRows - 1;
+            it.m_CurrentColumnNr = m_NrOfMatrixColumns;
+        }
+        else
+        {
+            it.m_CurrentRowNr = resultingIndex / m_NrOfMatrixColumns;
+            it.m_CurrentColumnNr = resultingIndex % m_NrOfMatrixColumns;
+        }
+    }
+
+    return it;
 }
 
 template<typename DataType>
