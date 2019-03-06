@@ -1895,63 +1895,41 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator--(int
 template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator+(ZIterator::difference_type offset)
 {
-    ZIterator it{};
+    ZIterator zIterator{};
 
     if (m_pMatrixPtr)
     {
-        it = *this;
         const int currentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
         const int resultingIndex{currentIndex + offset};
 
-        if (resultingIndex <= 0)
-        {
-            it.m_CurrentRowNr = 0;
-            it.m_CurrentColumnNr = 0;
-        }
-        else if (resultingIndex >= m_NrOfMatrixRows * m_NrOfMatrixColumns)
-        {
-            it.m_CurrentRowNr = m_NrOfMatrixRows - 1;
-            it.m_CurrentColumnNr = m_NrOfMatrixColumns;
-        }
-        else
-        {
-            it.m_CurrentRowNr = resultingIndex / m_NrOfMatrixColumns;
-            it.m_CurrentColumnNr = resultingIndex % m_NrOfMatrixColumns;
-        }
+        zIterator.m_pMatrixPtr = m_pMatrixPtr;
+        zIterator.m_NrOfMatrixRows = m_NrOfMatrixRows;
+        zIterator.m_NrOfMatrixColumns = m_NrOfMatrixColumns;
+        zIterator.m_CurrentRowNr = resultingIndex <= 0 ? 0 : resultingIndex >= m_NrOfMatrixRows * m_NrOfMatrixColumns ? m_NrOfMatrixRows - 1 : resultingIndex / m_NrOfMatrixColumns;
+        zIterator.m_CurrentColumnNr = resultingIndex <= 0 ? 0 : resultingIndex >= m_NrOfMatrixRows * m_NrOfMatrixColumns ? m_NrOfMatrixColumns : resultingIndex % m_NrOfMatrixColumns;
     }
 
-    return it;
+    return zIterator;
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator-(ZIterator::difference_type offset)
 {
-    ZIterator it{};
+    ZIterator zIterator{};
 
     if (m_pMatrixPtr)
     {
-        it = *this;
         const int currentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
         const int resultingIndex{currentIndex - offset};
 
-        if (resultingIndex <= 0)
-        {
-            it.m_CurrentRowNr = 0;
-            it.m_CurrentColumnNr = 0;
-        }
-        else if (resultingIndex >= m_NrOfMatrixRows * m_NrOfMatrixColumns)
-        {
-            it.m_CurrentRowNr = m_NrOfMatrixRows - 1;
-            it.m_CurrentColumnNr = m_NrOfMatrixColumns;
-        }
-        else
-        {
-            it.m_CurrentRowNr = resultingIndex / m_NrOfMatrixColumns;
-            it.m_CurrentColumnNr = resultingIndex % m_NrOfMatrixColumns;
-        }
+        zIterator.m_pMatrixPtr = m_pMatrixPtr;
+        zIterator.m_NrOfMatrixRows = m_NrOfMatrixRows;
+        zIterator.m_NrOfMatrixColumns = m_NrOfMatrixColumns;
+        zIterator.m_CurrentRowNr = resultingIndex <= 0 ? 0 : resultingIndex >= m_NrOfMatrixRows * m_NrOfMatrixColumns ? m_NrOfMatrixRows - 1 : resultingIndex / m_NrOfMatrixColumns;
+        zIterator.m_CurrentColumnNr = resultingIndex <= 0 ? 0 : resultingIndex >= m_NrOfMatrixRows * m_NrOfMatrixColumns ? m_NrOfMatrixColumns : resultingIndex % m_NrOfMatrixColumns;
     }
 
-    return it;
+    return zIterator;
 }
 
 template<typename DataType>
