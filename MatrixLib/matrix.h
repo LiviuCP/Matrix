@@ -1939,7 +1939,7 @@ typename Matrix<DataType>::ZIterator::difference_type Matrix<DataType>::ZIterato
 {
     if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
     }
 
     const int firstItCurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
@@ -1953,7 +1953,7 @@ bool Matrix<DataType>::ZIterator::operator==(const ZIterator& it) const
 {
     if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
     }
 
     return (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr == it.m_CurrentColumnNr);
@@ -1964,7 +1964,7 @@ bool Matrix<DataType>::ZIterator::operator!=(const ZIterator& it) const
 {
     if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
     }
 
     return (m_CurrentRowNr != it.m_CurrentRowNr || m_CurrentColumnNr != it.m_CurrentColumnNr);
@@ -1975,7 +1975,7 @@ bool Matrix<DataType>::ZIterator::operator<(const ZIterator& it) const
 {
     if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
     }
 
     return (m_CurrentRowNr < it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr < it.m_CurrentColumnNr));
@@ -1986,7 +1986,7 @@ bool Matrix<DataType>::ZIterator::operator<=(const ZIterator& it) const
 {
     if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
     }
 
     return (m_CurrentRowNr < it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr <= it.m_CurrentColumnNr));
@@ -1997,7 +1997,7 @@ bool Matrix<DataType>::ZIterator::operator>(const ZIterator& it) const
 {
     if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
     }
 
     return (m_CurrentRowNr > it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr > it.m_CurrentColumnNr));
@@ -2008,7 +2008,7 @@ bool Matrix<DataType>::ZIterator::operator>=(const ZIterator& it) const
 {
     if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
     {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
     }
 
     return (m_CurrentRowNr > it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr >= it.m_CurrentColumnNr));
