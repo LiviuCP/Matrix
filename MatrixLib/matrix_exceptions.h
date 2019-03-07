@@ -48,7 +48,7 @@ namespace Matr
         {    Error::CURRENT_MATRIX_AS_ARG,                              string{"Current matrix (*this) has been passed as argument into the function. This is not allowed for this method."}                    },
         {    Error::EMPTY_MATRIX,                                       string{"Illegal operation on empty matrix"}                                                                                             },
         {    Error::DEREFERENCE_END_ITERATOR,                           string{"Attempt to dereference an end iterator"}                                                                                        },
-        {    Error::ITERATORS_DIFFERENT_MATRIXES,                       string{"The two iterators point to different matrixes or one of them is empty"}                                                         }
+        {    Error::ITERATORS_DIFFERENT_MATRIXES,                       string{"The two iterators point to different matrixes at least one of which is not empty"}                                              }
     };
 }
 
