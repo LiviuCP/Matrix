@@ -1935,7 +1935,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator-(ZIte
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator::difference_type Matrix<DataType>::ZIterator::operator-(const ZIterator &it) const
+typename Matrix<DataType>::ZIterator::difference_type Matrix<DataType>::ZIterator::operator-(const ZIterator& it) const
 {
     if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
     {
@@ -1951,36 +1951,66 @@ typename Matrix<DataType>::ZIterator::difference_type Matrix<DataType>::ZIterato
 template<typename DataType>
 bool Matrix<DataType>::ZIterator::operator==(const ZIterator& it) const
 {
-    return (this->m_CurrentRowNr == it.m_CurrentRowNr && this->m_CurrentColumnNr == it.m_CurrentColumnNr && this->m_pMatrixPtr == it.m_pMatrixPtr);
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+    }
+
+    return (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr == it.m_CurrentColumnNr);
 }
 
 template<typename DataType>
 bool Matrix<DataType>::ZIterator::operator!=(const ZIterator& it) const
 {
-    return (this->m_CurrentRowNr != it.m_CurrentRowNr || this->m_CurrentColumnNr != it.m_CurrentColumnNr || this->m_pMatrixPtr != it.m_pMatrixPtr);
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+    }
+
+    return (m_CurrentRowNr != it.m_CurrentRowNr || m_CurrentColumnNr != it.m_CurrentColumnNr);
 }
 
 template<typename DataType>
 bool Matrix<DataType>::ZIterator::operator<(const ZIterator& it) const
 {
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+    }
+
     return (m_CurrentRowNr < it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr < it.m_CurrentColumnNr));
 }
 
 template<typename DataType>
 bool Matrix<DataType>::ZIterator::operator<=(const ZIterator& it) const
 {
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+    }
+
     return (m_CurrentRowNr < it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr <= it.m_CurrentColumnNr));
 }
 
 template<typename DataType>
 bool Matrix<DataType>::ZIterator::operator>(const ZIterator& it) const
 {
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+    }
+
     return (m_CurrentRowNr > it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr > it.m_CurrentColumnNr));
 }
 
 template<typename DataType>
 bool Matrix<DataType>::ZIterator::operator>=(const ZIterator& it) const
 {
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+    }
+
     return (m_CurrentRowNr > it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr >= it.m_CurrentColumnNr));
 }
 
