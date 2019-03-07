@@ -92,6 +92,8 @@ public:
         ZIterator operator+(difference_type offset);
         ZIterator operator-(difference_type offset);
 
+        difference_type operator-(const ZIterator& it) const;
+
         bool operator==(const ZIterator& it) const;
         bool operator!=(const ZIterator& it) const;
         bool operator<(const ZIterator& it) const;
@@ -1930,6 +1932,20 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator-(ZIte
     }
 
     return zIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator::difference_type Matrix<DataType>::ZIterator::operator-(const ZIterator &it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATORS_DIFFERENT_MATRIXES]};
+    }
+
+    const int firstItCurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+    const int secondItCurrentIndex{it.m_CurrentRowNr * it.m_NrOfMatrixColumns + it.m_CurrentColumnNr};
+
+    return (firstItCurrentIndex - secondItCurrentIndex);
 }
 
 template<typename DataType>

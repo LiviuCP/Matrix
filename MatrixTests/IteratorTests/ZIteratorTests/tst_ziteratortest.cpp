@@ -21,6 +21,7 @@ private slots:
     void testDecrementOperators();
     void testOperatorPlus();
     void testOperatorMinus();
+    void testDifferenceOperator();
     void testDereferenceStarOperator();
     void testDereferenceArrowOperator();
     void testIteratorsAreEqual();
@@ -515,6 +516,42 @@ void ZIteratorTests::testOperatorMinus()
 
         QVERIFY2(firstIter == it, "Operator - does not correctly work, the resulting iterator is not the right one");
         QVERIFY2(secondIter == it, "Operator - does not correctly work, the resulting iterator is not the right one");
+    }
+}
+
+void ZIteratorTests::testDifferenceOperator()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+
+        QVERIFY2(matrix.zEnd() - matrix.zBegin() == 6, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.zBegin() - matrix.zEnd() == -6, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.zBegin() - matrix.zBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.zEnd() - matrix.zEnd() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.getZIterator(1, 0) - matrix.getZIterator(0, 1) == 2, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.getZIterator(0, 1) - matrix.getZIterator(1, 0) == -2, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.getZIterator(1, 0) - matrix.zBegin() == 3, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.zBegin() - matrix.getZIterator(1, 0) == -3, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.getZIterator(0, 1) - matrix.zEnd() == -5, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.zEnd() - matrix.getZIterator(0, 1) == 5, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.getZIterator(1, 0) - matrix.getZIterator(1, 0) == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    }
+
+    {
+        IntMatrix matrix{};
+
+        QVERIFY2(matrix.zEnd() - matrix.zBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.zEnd() - matrix.zBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.zBegin() - matrix.zBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(matrix.zEnd() - matrix.zEnd() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    }
+
+    {
+        IntMatrixZIterator firstIter{};
+        IntMatrixZIterator secondIter{};
+
+        QVERIFY2(firstIter - secondIter == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+        QVERIFY2(secondIter - firstIter == 0, "The difference operator does not work correctly, difference between iterators is wrong");
     }
 }
 

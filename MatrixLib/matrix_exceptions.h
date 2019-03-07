@@ -23,7 +23,8 @@ namespace Matr
         SAME_VARIABLE_TWO_ARGS,
         CURRENT_MATRIX_AS_ARG,
         EMPTY_MATRIX,
-        DEREFERENCE_END_ITERATOR
+        DEREFERENCE_END_ITERATOR,
+        ITERATORS_DIFFERENT_MATRIXES
     };
 
     using namespace std;
@@ -46,7 +47,8 @@ namespace Matr
         {    Error::SAME_VARIABLE_TWO_ARGS,                             string{"Same variable passed as two arguments to the function. This is not allowed for this method."}                                   },
         {    Error::CURRENT_MATRIX_AS_ARG,                              string{"Current matrix (*this) has been passed as argument into the function. This is not allowed for this method."}                    },
         {    Error::EMPTY_MATRIX,                                       string{"Illegal operation on empty matrix"}                                                                                             },
-        {    Error::DEREFERENCE_END_ITERATOR,                           string{"Attempt to dereference an end iterator"}                                                                                        }
+        {    Error::DEREFERENCE_END_ITERATOR,                           string{"Attempt to dereference an end iterator"}                                                                                        },
+        {    Error::ITERATORS_DIFFERENT_MATRIXES,                       string{"The two iterators point to different matrixes or one of them is empty"}                                                         }
     };
 }
 
