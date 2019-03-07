@@ -6,4 +6,5 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES +=  tst_ziteratortest.cpp
+SOURCES += \ 
+    tst_ziteratortests.cpp

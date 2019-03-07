@@ -1169,4 +1169,4 @@ void ZIteratorTests::testStdFind()
 
 QTEST_APPLESS_MAIN(ZIteratorTests)
 
-#include "tst_ziteratortest.moc"
+#include "tst_ziteratortests.moc"
