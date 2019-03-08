@@ -24,7 +24,8 @@ namespace Matr
         CURRENT_MATRIX_AS_ARG,
         EMPTY_MATRIX,
         DEREFERENCE_END_ITERATOR,
-        INCOMPATIBLE_ITERATORS
+        INCOMPATIBLE_ITERATORS,
+        ITERATOR_INDEX_OUT_OF_BOUNDS
     };
 
     using namespace std;
@@ -48,7 +49,8 @@ namespace Matr
         {    Error::CURRENT_MATRIX_AS_ARG,                              string{"Current matrix (*this) has been passed as argument into the function. This is not allowed for this method."}                    },
         {    Error::EMPTY_MATRIX,                                       string{"Illegal operation on empty matrix"}                                                                                             },
         {    Error::DEREFERENCE_END_ITERATOR,                           string{"Attempt to dereference an end iterator"}                                                                                        },
-        {    Error::INCOMPATIBLE_ITERATORS,                             string{"The two iterators are incompatible, their matrix parameters differ"}                                                            }
+        {    Error::INCOMPATIBLE_ITERATORS,                             string{"The two iterators are incompatible, their matrix parameters differ"}                                                            },
+        {    Error::ITERATOR_INDEX_OUT_OF_BOUNDS,                       string{"The index used for dereferencing the iterator is out of bounds"}                                                                }
     };
 }
 

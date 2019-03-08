@@ -24,6 +24,7 @@ private slots:
     void testDifferenceOperator();
     void testDereferenceStarOperator();
     void testDereferenceArrowOperator();
+    void testDereferenceSquareBracketsOperator();
     void testIteratorsAreEqual();
     void testIteratorsAreNotEqual();
     void testSmallerThanOperator();
@@ -601,6 +602,65 @@ void ZIteratorTests::testDereferenceArrowOperator()
         writeIter->assign("abcdefghi");
 
         QVERIFY2(matrix.at(0, 2) == "abcdefghi", "The dereference (->) operator does not work correctly, the method of the item class does not write the correct value to the expected location");
+    }
+}
+
+void ZIteratorTests::testDereferenceSquareBracketsOperator()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+
+        IntMatrixZIterator firstReadIter{matrix.zBegin()};
+        IntMatrixZIterator secondReadIter{matrix.getZIterator(1, 0)};
+        IntMatrixZIterator thirdReadIter{matrix.zEnd()};
+
+        QVERIFY2(firstReadIter[0] == 1 && firstReadIter[1] == 2 && firstReadIter[2] == -3 && firstReadIter[3] == 4 && firstReadIter[4] == -5 && firstReadIter[5] == 6,
+                "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
+
+        QVERIFY2(secondReadIter[-3] == 1 && secondReadIter[-2] == 2 && secondReadIter[-1] == -3 && secondReadIter[0] == 4 && secondReadIter[1] == -5 && secondReadIter[2] == 6,
+                "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
+
+        QVERIFY2(thirdReadIter[-6] == 1 && thirdReadIter[-5] == 2 && thirdReadIter[-4] == -3 && thirdReadIter[-3] == 4 && thirdReadIter[-2] == -5 && thirdReadIter[-1] == 6,
+                "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+
+        IntMatrixZIterator writeIter{matrix.zBegin()};
+
+        writeIter[0] = 7;
+        writeIter[2] = -8;
+        writeIter[5] = 9;
+
+        QVERIFY2(matrix.at(0, 0) == 7 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == -8 && matrix.at(1, 0) == 4 && matrix.at(1, 1) == -5 && matrix.at(1, 2) == 9,
+                 "The dereference square brackets operator doesn't work correctly, value has been written properly for at least one element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+
+        IntMatrixZIterator writeIter{matrix.getZIterator(1, 0)};
+
+        writeIter[-3] = 7;
+        writeIter[0] = -8;
+        writeIter[2] = 9;
+
+        QVERIFY2(matrix.at(0, 0) == 7 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == -3 && matrix.at(1, 0) == -8 && matrix.at(1, 1) == -5 && matrix.at(1, 2) == 9,
+                 "The dereference square brackets operator doesn't work correctly, value has been written properly for at least one element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+
+        IntMatrixZIterator writeIter{matrix.zEnd()};
+
+        writeIter[-6] = 7;
+        writeIter[-3] = -8;
+        writeIter[-1] = 9;
+
+        QVERIFY2(matrix.at(0, 0) == 7 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == -3 && matrix.at(1, 0) == -8 && matrix.at(1, 1) == -5 && matrix.at(1, 2) == 9,
+                 "The dereference square brackets operator doesn't work correctly, value has been written properly for at least one element");
     }
 }
 

@@ -83,6 +83,7 @@ public:
 
         DataType& operator*() const;
         DataType* operator->() const;
+        DataType& operator[](difference_type index) const;
 
         ZIterator operator++();
         ZIterator operator++(int unused);
@@ -1856,6 +1857,21 @@ DataType* Matrix<DataType>::ZIterator::operator->() const
     }
 
     return (m_pMatrixPtr[m_CurrentRowNr] + m_CurrentColumnNr);
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::ZIterator::operator[](ZIterator::difference_type index) const
+{
+    const int c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+    const int c_ResultingIndex{c_CurrentIndex + index};
+    const int c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
+
+    if (c_ResultingIndex < 0 || c_ResultingIndex >= c_UpperBound)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATOR_INDEX_OUT_OF_BOUNDS]};
+    }
+
+    return m_pMatrixPtr[c_ResultingIndex / m_NrOfMatrixColumns][c_ResultingIndex % m_NrOfMatrixColumns];
 }
 
 template<typename DataType>
