@@ -72,7 +72,7 @@ public:
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this priviledge
         friend class Matrix;
     public:
-        using iterator_category = std::forward_iterator_tag;
+        using iterator_category = std::random_access_iterator_tag;
         using value_type = DataType;
         using difference_type = int;
         using pointer = DataType**;
