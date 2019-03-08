@@ -72,6 +72,7 @@ public:
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this priviledge
         friend class Matrix;
     public:
+        // all these are required for STL compatibility
         using iterator_category = std::random_access_iterator_tag;
         using value_type = DataType;
         using difference_type = int;
@@ -81,9 +82,9 @@ public:
         // "empty" iterator, no position information
         ZIterator();
 
-        DataType& operator*() const;
-        DataType* operator->() const;
-        DataType& operator[](difference_type index) const;
+        reference operator*() const;
+        value_type* operator->() const;
+        reference operator[](difference_type index) const;
 
         ZIterator operator++();
         ZIterator operator++(int unused);
@@ -108,7 +109,7 @@ public:
         void _increment();
         void _decrement();
 
-        DataType** m_pMatrixPtr;
+        pointer m_pMatrixPtr;
         int m_CurrentRowNr;
         int m_CurrentColumnNr;
         int m_NrOfMatrixRows;
@@ -1838,7 +1839,7 @@ Matrix<DataType>::ZIterator::ZIterator()
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ZIterator::operator*() const
+typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator*() const
 {
     if (m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0)
     {
@@ -1849,7 +1850,7 @@ DataType& Matrix<DataType>::ZIterator::operator*() const
 }
 
 template<typename DataType>
-DataType* Matrix<DataType>::ZIterator::operator->() const
+typename Matrix<DataType>::ZIterator::value_type* Matrix<DataType>::ZIterator::operator->() const
 {
     if (m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0)
     {
@@ -1860,7 +1861,7 @@ DataType* Matrix<DataType>::ZIterator::operator->() const
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ZIterator::operator[](ZIterator::difference_type index) const
+typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator[](ZIterator::difference_type index) const
 {
     const int c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
     const int c_ResultingIndex{c_CurrentIndex + index};
