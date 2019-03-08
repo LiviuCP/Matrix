@@ -35,6 +35,7 @@ private slots:
     void testRowBeginEndIterators();
     void testStdCount();
     void testStdFind();
+    void testStdSort();
 };
 
 ZIteratorTests::ZIteratorTests()
@@ -1224,6 +1225,87 @@ void ZIteratorTests::testStdFind()
         QVERIFY2(find(matrix.zBegin(), matrix.getZIterator(3, 1), -2) != matrix.getZIterator(3, 1), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
         QVERIFY2(find(matrix.zBegin(), matrix.getZIterator(3, 1), 11) == matrix.getZIterator(3, 1), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
         QVERIFY2(find(matrix.zBegin(), matrix.getZIterator(3, 1), 10) == matrix.getZIterator(3, 1), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+    }
+}
+
+void ZIteratorTests::testStdSort()
+{
+    {
+        IntMatrix matrix{4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 6, 2, -2, 2, 8, 9, -7, 7, 2, 9, 11}};
+
+        std::sort(matrix.zBegin(), matrix.zEnd());
+
+        QVERIFY2(matrix.at(0, 0) == -7 && matrix.at(0, 1) == -2 && matrix.at(0, 2) == -1 && matrix.at(0, 3) == 0 && matrix.at(0, 4) == 1 &&
+                 matrix.at(1, 0) ==  1 && matrix.at(1, 1) ==  2 && matrix.at(1, 2) ==  2 && matrix.at(1, 3) == 2 && matrix.at(1, 4) == 3 &&
+                 matrix.at(2, 0) ==  4 && matrix.at(2, 1) ==  5 && matrix.at(2, 2) ==  6 && matrix.at(2, 3) == 7 && matrix.at(2, 4) == 8 &&
+                 matrix.at(3, 0) ==  8 && matrix.at(3, 1) ==  9 && matrix.at(3, 2) ==  9 && matrix.at(3, 3) == 9 && matrix.at(3, 4) == 11,
+
+                 "The ZIterator objects don't work correctly, the matrix has not been sorted properly");
+
+    }
+
+    {
+        IntMatrix matrix{4, 5, {
+                                    -1,  1, 3, 1, 4,
+                                     5,  9, 8, 0, 6,
+                                     2, -2, 2, 8, 9,
+                                    -7,  7, 2, 9, 11
+                               }};
+
+        for (int row{0}; row<matrix.getNrOfRows(); ++row)
+        {
+            std::sort(matrix.zRowBegin(row), matrix.zRowEnd(row));
+        }
+
+        QVERIFY2(matrix.at(0, 0) == -1 && matrix.at(0, 1) == 1 && matrix.at(0, 2) == 1 && matrix.at(0, 3) == 3 && matrix.at(0, 4) == 4 &&
+                 matrix.at(1, 0) ==  0 && matrix.at(1, 1) == 5 && matrix.at(1, 2) == 6 && matrix.at(1, 3) == 8 && matrix.at(1, 4) == 9 &&
+                 matrix.at(2, 0) == -2 && matrix.at(2, 1) == 2 && matrix.at(2, 2) == 2 && matrix.at(2, 3) == 8 && matrix.at(2, 4) == 9 &&
+                 matrix.at(3, 0) == -7 && matrix.at(3, 1) == 2 && matrix.at(3, 2) == 7 && matrix.at(3, 3) == 9 && matrix.at(3, 4) == 11,
+
+                 "The ZIterator objects don't work correctly, the per row sorting has not been done properly");
+
+    }
+
+    {
+        IntMatrix matrix{4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, (0), 6, 2, -2, 2, 8, 9, -7, (7), 2, 9, 11}};
+
+        std::sort(matrix.getZIterator(1, 3), matrix.getZIterator(3, 1));
+
+        QVERIFY2(matrix.at(0, 0) == -1 && matrix.at(0, 1) == 1   && matrix.at(0, 2) == 3 && matrix.at(0, 3) == 1    && matrix.at(0, 4) ==  4 &&
+                 matrix.at(1, 0) ==  5 && matrix.at(1, 1) == 9   && matrix.at(1, 2) == 8 && matrix.at(1, 3) == (-7) && matrix.at(1, 4) == -2 &&
+                 matrix.at(2, 0) ==  0 && matrix.at(2, 1) == 2   && matrix.at(2, 2) == 2 && matrix.at(2, 3) == 6    && matrix.at(2, 4) ==  8 &&
+                 matrix.at(3, 0) ==  9 && matrix.at(3, 1) == (7) && matrix.at(3, 2) == 2 && matrix.at(3, 3) == 9    && matrix.at(3, 4) == 11,
+
+                 "The ZIterator objects don't work correctly, the matrix has not been sorted properly");
+
+    }
+
+    {
+        IntMatrix matrix{4, 5, {(-1), 1, 3, 1, 4, 5, 9, 8, 0, 6, 2, (-2), 2, 8, 9, -7, 7, 2, 9, 11}};
+
+        std::sort(matrix.zBegin(), matrix.getZIterator(2, 1));
+
+        QVERIFY2(matrix.at(0, 0) == -1 && matrix.at(0, 1) == 0    && matrix.at(0, 2) == 1 && matrix.at(0, 3) == 1 && matrix.at(0, 4) == 2 &&
+                 matrix.at(1, 0) ==  3 && matrix.at(1, 1) == 4    && matrix.at(1, 2) == 5 && matrix.at(1, 3) == 6 && matrix.at(1, 4) == 8 &&
+                 matrix.at(2, 0) ==  9 && matrix.at(2, 1) == (-2) && matrix.at(2, 2) == 2 && matrix.at(2, 3) == 8 && matrix.at(2, 4) == 9 &&
+                 matrix.at(3, 0) == -7 && matrix.at(3, 1) == 7    && matrix.at(3, 2) == 2 && matrix.at(3, 3) == 9 && matrix.at(3, 4) == 11,
+
+                 "The ZIterator objects don't work correctly, the matrix has not been sorted properly");
+
+    }
+
+    {
+        IntMatrix matrix{4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 6, 2, (-2), 2, 8, 9, -7, 7, 2, 9, 11}};
+
+        std::sort(matrix.getZIterator(2, 1), matrix.zEnd());
+
+        QVERIFY2(matrix.at(0, 0) == -1 && matrix.at(0, 1) == 1    && matrix.at(0, 2) == 3  && matrix.at(0, 3) == 1 && matrix.at(0, 4) == 4 &&
+                 matrix.at(1, 0) ==  5 && matrix.at(1, 1) == 9    && matrix.at(1, 2) == 8  && matrix.at(1, 3) == 0 && matrix.at(1, 4) == 6 &&
+                 matrix.at(2, 0) ==  2 && matrix.at(2, 1) == (-7) && matrix.at(2, 2) == -2 && matrix.at(2, 3) == 2 && matrix.at(2, 4) == 2 &&
+                 matrix.at(3, 0) ==  7 && matrix.at(3, 1) == 8    && matrix.at(3, 2) == 9  && matrix.at(3, 3) == 9 && matrix.at(3, 4) == 11,
+
+                 "The ZIterator objects don't work correctly, the matrix has not been sorted properly");
+
     }
 }
 
