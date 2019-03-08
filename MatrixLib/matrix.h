@@ -1917,14 +1917,15 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator+(ZIte
 
     if (m_pMatrixPtr)
     {
-        const int currentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
-        const int resultingIndex{currentIndex + offset};
+        const int c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+        const int c_ResultingIndex{c_CurrentIndex + offset};
+        const int c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
 
         zIterator.m_pMatrixPtr = m_pMatrixPtr;
         zIterator.m_NrOfMatrixRows = m_NrOfMatrixRows;
         zIterator.m_NrOfMatrixColumns = m_NrOfMatrixColumns;
-        zIterator.m_CurrentRowNr = resultingIndex <= 0 ? 0 : resultingIndex >= m_NrOfMatrixRows * m_NrOfMatrixColumns ? m_NrOfMatrixRows - 1 : resultingIndex / m_NrOfMatrixColumns;
-        zIterator.m_CurrentColumnNr = resultingIndex <= 0 ? 0 : resultingIndex >= m_NrOfMatrixRows * m_NrOfMatrixColumns ? m_NrOfMatrixColumns : resultingIndex % m_NrOfMatrixColumns;
+        zIterator.m_CurrentRowNr = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? m_NrOfMatrixRows - 1 : c_ResultingIndex / m_NrOfMatrixColumns;
+        zIterator.m_CurrentColumnNr = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? m_NrOfMatrixColumns : c_ResultingIndex % m_NrOfMatrixColumns;
     }
 
     return zIterator;
@@ -1937,14 +1938,15 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator-(ZIte
 
     if (m_pMatrixPtr)
     {
-        const int currentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
-        const int resultingIndex{currentIndex - offset};
+        const int c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+        const int c_ResultingIndex{c_CurrentIndex - offset};
+        const int c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
 
         zIterator.m_pMatrixPtr = m_pMatrixPtr;
         zIterator.m_NrOfMatrixRows = m_NrOfMatrixRows;
         zIterator.m_NrOfMatrixColumns = m_NrOfMatrixColumns;
-        zIterator.m_CurrentRowNr = resultingIndex <= 0 ? 0 : resultingIndex >= m_NrOfMatrixRows * m_NrOfMatrixColumns ? m_NrOfMatrixRows - 1 : resultingIndex / m_NrOfMatrixColumns;
-        zIterator.m_CurrentColumnNr = resultingIndex <= 0 ? 0 : resultingIndex >= m_NrOfMatrixRows * m_NrOfMatrixColumns ? m_NrOfMatrixColumns : resultingIndex % m_NrOfMatrixColumns;
+        zIterator.m_CurrentRowNr = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? m_NrOfMatrixRows - 1 : c_ResultingIndex / m_NrOfMatrixColumns;
+        zIterator.m_CurrentColumnNr = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? m_NrOfMatrixColumns : c_ResultingIndex % m_NrOfMatrixColumns;
     }
 
     return zIterator;
@@ -1958,10 +1960,10 @@ typename Matrix<DataType>::ZIterator::difference_type Matrix<DataType>::ZIterato
         throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
     }
 
-    const int firstItCurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
-    const int secondItCurrentIndex{it.m_CurrentRowNr * it.m_NrOfMatrixColumns + it.m_CurrentColumnNr};
+    const int c_FirstItCurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+    const int c_SecondItCurrentIndex{it.m_CurrentRowNr * it.m_NrOfMatrixColumns + it.m_CurrentColumnNr};
 
-    return (firstItCurrentIndex - secondItCurrentIndex);
+    return (c_FirstItCurrentIndex - c_SecondItCurrentIndex);
 }
 
 template<typename DataType>
