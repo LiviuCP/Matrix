@@ -31,6 +31,7 @@ private slots:
     void testSmallerThanOrEqualToOperator();
     void testGreaterThanOperator();
     void testGreaterThanOrEqualToOperator();
+    void testIsValidWithMatrix();
     void testGetIterator();
     void testRowBeginEndIterators();
     void testStdCount();
@@ -1030,6 +1031,99 @@ void ZIteratorTests::testGreaterThanOrEqualToOperator()
         QVERIFY2(matrix.zRowBegin(1) >= matrix.getZIterator(0, 1), "The first iterator is smaller than the second iterator");
         QVERIFY2(matrix.getZIterator(0, 1) >= matrix.getZIterator(0, 0), "The first iterator is smaller than the second iterator");
         QVERIFY2(matrix.getZIterator(0, 0) >= matrix.zBegin(), "The first iterator is smaller than the second iterator");
+    }
+}
+
+void ZIteratorTests::testIsValidWithMatrix()
+{
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrix secondMatrix{3, 2, {7, 8, -9, 10, -11, 12}};
+        IntMatrixZIterator it{firstMatrix.getZIterator(1, 0)};
+
+        QVERIFY2(it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (true)");
+        QVERIFY2(!it.isValidWithMatrix(secondMatrix), "The validity function does not return the right value (false)");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.getZIterator(1, 0)};
+
+        matrix.clear();
+
+        QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.getZIterator(1, 0)};
+
+        matrix.resize(2, 3);
+
+        QVERIFY2(it.isValidWithMatrix(matrix), "The validity function does not return the right value (true)");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.getZIterator(1, 0)};
+
+        matrix.resizeWithValue(2, 4, -5);
+
+        QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.getZIterator(1, 0)};
+
+        matrix.resizeWithValue(4, 3, -5);
+
+        QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator it{matrix.getZIterator(1, 0)};
+
+        matrix.resizeWithValue(4, 5, -5);
+
+        QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrix secondMatrix{3, 2, 5};
+        IntMatrixZIterator it{firstMatrix.getZIterator(1, 0)};
+
+        secondMatrix = std::move(firstMatrix);
+
+        QVERIFY2(!it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (false)");
+        QVERIFY2(it.isValidWithMatrix(secondMatrix), "The validity function does not return the right value (true)");
+
+        firstMatrix = std::move(secondMatrix);
+
+        QVERIFY2(it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (true)");
+        QVERIFY2(!it.isValidWithMatrix(secondMatrix), "The validity function does not return the right value (false)");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrix secondMatrix{2, 3, 5};
+        IntMatrixZIterator it{firstMatrix.getZIterator(1, 0)};
+
+        firstMatrix = std::move(secondMatrix);
+
+        QVERIFY2(!it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (false)");
+    }
+
+    {
+        IntMatrix firstMatrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrix secondMatrix{2, 3, 5};
+        IntMatrixZIterator it{firstMatrix.getZIterator(1, 0)};
+
+        firstMatrix = secondMatrix;
+
+        QVERIFY2(it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (true)");
     }
 }
 

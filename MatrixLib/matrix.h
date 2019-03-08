@@ -103,6 +103,8 @@ public:
         bool operator>(const ZIterator& it) const;
         bool operator>=(const ZIterator& it) const;
 
+        bool isValidWithMatrix(const Matrix& matrix) const;
+
     private:
         ZIterator(const Matrix& matrix, int currentRowNr, int currentColumnNr);
 
@@ -2031,6 +2033,12 @@ bool Matrix<DataType>::ZIterator::operator>=(const ZIterator& it) const
     }
 
     return (m_CurrentRowNr > it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr >= it.m_CurrentColumnNr));
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ZIterator::isValidWithMatrix(const Matrix &matrix) const
+{
+    return (m_pMatrixPtr == matrix.m_pBaseArrayPtr && m_NrOfMatrixRows == matrix.m_NrOfRows && m_NrOfMatrixColumns == matrix.m_NrOfColumns);
 }
 
 template<typename DataType>
