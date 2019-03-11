@@ -32,6 +32,7 @@ private slots:
     void testGreaterThanOperator();
     void testGreaterThanOrEqualToOperator();
     void testIsValidWithMatrix();
+    void testPositionGetters();
     void testGetIterator();
     void testRowBeginEndIterators();
     void testStdCount();
@@ -1125,6 +1126,20 @@ void ZIteratorTests::testIsValidWithMatrix()
 
         QVERIFY2(it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (true)");
     }
+}
+
+void ZIteratorTests::testPositionGetters()
+{
+    IntMatrix firstMatrix{2, 3, {1, 2, -3, 4, -5, 6}};
+    IntMatrix secondMatrix{2, 3, {7, 8, -9, 10, -11, 12}};
+
+    IntMatrixZIterator it{firstMatrix.getZIterator(1, 0)};
+
+    firstMatrix = std::move(secondMatrix);
+
+    IntMatrixZIterator newIt{firstMatrix.getZIterator(it.getCurrentRowNr(), it.getCurrentColumnNr())};
+
+    QVERIFY2(*newIt == 10, "The position getters do not work correctly, iterator dereferencing does not return the right value");
 }
 
 void ZIteratorTests::testGetIterator()

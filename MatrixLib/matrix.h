@@ -105,6 +105,9 @@ public:
 
         bool isValidWithMatrix(const Matrix& matrix) const;
 
+        int getCurrentRowNr() const;
+        int getCurrentColumnNr() const;
+
     private:
         ZIterator(const Matrix& matrix, int currentRowNr, int currentColumnNr);
 
@@ -2039,6 +2042,18 @@ template<typename DataType>
 bool Matrix<DataType>::ZIterator::isValidWithMatrix(const Matrix &matrix) const
 {
     return (m_pMatrixPtr == matrix.m_pBaseArrayPtr && m_NrOfMatrixRows == matrix.m_NrOfRows && m_NrOfMatrixColumns == matrix.m_NrOfColumns);
+}
+
+template<typename DataType>
+int Matrix<DataType>::ZIterator::getCurrentRowNr() const
+{
+    return m_CurrentRowNr;
+}
+
+template<typename DataType>
+int Matrix<DataType>::ZIterator::getCurrentColumnNr() const
+{
+    return m_CurrentColumnNr;
 }
 
 template<typename DataType>
