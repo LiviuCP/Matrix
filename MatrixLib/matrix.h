@@ -464,16 +464,16 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns, int rowCapacity, in
         throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
-    int rowCapacityToSet{rowCapacity > nrOfRows ? rowCapacity : nrOfRows};
-    int columnCapacityToSet{columnCapacity > nrOfColumns ? columnCapacity : nrOfColumns};
+    const int c_RowCapacityToSet{rowCapacity > nrOfRows ? rowCapacity : nrOfRows};
+    const int c_ColumnCapacityToSet{columnCapacity > nrOfColumns ? columnCapacity : nrOfColumns};
 
-    if (columnCapacityToSet != m_ColumnCapacity)
+    if (c_ColumnCapacityToSet != m_ColumnCapacity)
     {
         int rowsToKeep{nrOfRows > m_NrOfRows ? m_NrOfRows : nrOfRows};
         int columnsToKeep{nrOfColumns > m_NrOfColumns ? m_NrOfColumns : nrOfColumns};
 
         Matrix<DataType> matrix{std::move(*this)};
-        _allocMemory(nrOfRows, nrOfColumns, rowCapacityToSet, columnCapacityToSet);
+        _allocMemory(nrOfRows, nrOfColumns, c_RowCapacityToSet, c_ColumnCapacityToSet);
 
         for (int row{0}; row<rowsToKeep; ++row)
         {
@@ -483,15 +483,15 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns, int rowCapacity, in
             }
         }
     }
-    else if (rowCapacityToSet != m_RowCapacity)
+    else if (c_RowCapacityToSet != m_RowCapacity)
     {
-        if (m_RowCapacity < rowCapacityToSet)
+        if (m_RowCapacity < c_RowCapacityToSet)
         {
-            _increaseRowCapacity(rowCapacityToSet-m_RowCapacity);
+            _increaseRowCapacity(c_RowCapacityToSet-m_RowCapacity);
         }
         else
         {
-            _decreaseRowCapacity(m_RowCapacity - rowCapacityToSet);
+            _decreaseRowCapacity(m_RowCapacity - c_RowCapacityToSet);
         }
 
         if (nrOfRows > m_NrOfRows)
@@ -535,27 +535,27 @@ void Matrix<DataType>::resizeWithValue(int nrOfRows, int nrOfColumns, const Data
         }
     };
 
-    int rowDelta{nrOfRows <= m_NrOfRows ? 0 : nrOfRows - m_NrOfRows};
-    int columnDelta{nrOfColumns <= m_NrOfColumns ? 0 : nrOfColumns - m_NrOfColumns};
+    const int c_RowDelta{nrOfRows <= m_NrOfRows ? 0 : nrOfRows - m_NrOfRows};
+    const int c_ColumnDelta{nrOfColumns <= m_NrOfColumns ? 0 : nrOfColumns - m_NrOfColumns};
 
     resize(nrOfRows, nrOfColumns, rowCapacity, columnCapacity);
 
-    if (rowDelta)
+    if (c_RowDelta)
     {
-        if (columnDelta)
+        if (c_ColumnDelta)
         {
-            fillNewItems(*this, 0, m_NrOfRows - rowDelta, m_NrOfColumns - columnDelta, m_NrOfColumns, value);
-            fillNewItems(*this, m_NrOfRows - rowDelta, m_NrOfRows, 0, m_NrOfColumns - columnDelta, value);
-            fillNewItems(*this, m_NrOfRows - rowDelta, m_NrOfRows, m_NrOfColumns - columnDelta, m_NrOfColumns, value);
+            fillNewItems(*this, 0, m_NrOfRows - c_RowDelta, m_NrOfColumns - c_ColumnDelta, m_NrOfColumns, value);
+            fillNewItems(*this, m_NrOfRows - c_RowDelta, m_NrOfRows, 0, m_NrOfColumns - c_ColumnDelta, value);
+            fillNewItems(*this, m_NrOfRows - c_RowDelta, m_NrOfRows, m_NrOfColumns - c_ColumnDelta, m_NrOfColumns, value);
         }
         else
         {
-            fillNewItems(*this, m_NrOfRows - rowDelta, m_NrOfRows, 0, m_NrOfColumns, value);
+            fillNewItems(*this, m_NrOfRows - c_RowDelta, m_NrOfRows, 0, m_NrOfColumns, value);
         }
     }
-    else if (columnDelta)
+    else if (c_ColumnDelta)
     {
-        fillNewItems(*this, 0, m_NrOfRows, m_NrOfColumns - columnDelta, m_NrOfColumns, value);
+        fillNewItems(*this, 0, m_NrOfRows, m_NrOfColumns - c_ColumnDelta, m_NrOfColumns, value);
     }
 }
 
