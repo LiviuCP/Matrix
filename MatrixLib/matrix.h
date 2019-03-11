@@ -9,6 +9,7 @@ class Matrix
 {
 public: 
     using size_type = int;
+    using diff_type = int;
 
     Matrix();
     Matrix(size_type nrOfRows, size_type nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
@@ -77,7 +78,7 @@ public:
         // all these are required for STL compatibility
         using iterator_category = std::random_access_iterator_tag;
         using value_type = DataType;
-        using difference_type = int;
+        using difference_type = diff_type;
         using pointer = DataType**;
         using reference = DataType&;
 
@@ -138,11 +139,11 @@ private:
     void _deallocMemory();
 
     // to be used only when column capacity stays unchanged (otherwise use _allocMemory() and _deallocMemory()
-    void _increaseRowCapacity(int rowCapacityIncrement);
-    void _decreaseRowCapacity(int rowCapacityDecrement);
+    void _increaseRowCapacity(diff_type rowCapacityIncrement);
+    void _decreaseRowCapacity(diff_type rowCapacityDecrement);
 
-    void _increaseNrOfRows(int nrOfRowsIncrement);
-    void _decreaseNrOfrows(int nrOfRowsDecrement);
+    void _increaseNrOfRows(diff_type nrOfRowsIncrement);
+    void _decreaseNrOfrows(diff_type nrOfRowsDecrement);
 
     bool _isEqualTo(const Matrix<DataType>& matrix) const;
     void _adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns);
@@ -540,8 +541,8 @@ void Matrix<DataType>::resizeWithValue(size_type nrOfRows, size_type nrOfColumns
         }
     };
 
-    const int c_RowDelta{nrOfRows <= m_NrOfRows ? 0 : nrOfRows - m_NrOfRows};
-    const int c_ColumnDelta{nrOfColumns <= m_NrOfColumns ? 0 : nrOfColumns - m_NrOfColumns};
+    const diff_type c_RowDelta{nrOfRows <= m_NrOfRows ? 0 : nrOfRows - m_NrOfRows};
+    const diff_type c_ColumnDelta{nrOfColumns <= m_NrOfColumns ? 0 : nrOfColumns - m_NrOfColumns};
 
     resize(nrOfRows, nrOfColumns, rowCapacity, columnCapacity);
 
@@ -1658,7 +1659,7 @@ void Matrix<DataType>::_deallocMemory()
 }
 
 template<typename DataType>
-void Matrix<DataType>::_increaseRowCapacity(int rowCapacityIncrement)
+void Matrix<DataType>::_increaseRowCapacity(diff_type rowCapacityIncrement)
 {
     if (rowCapacityIncrement > 0)
     {
@@ -1684,7 +1685,7 @@ void Matrix<DataType>::_increaseRowCapacity(int rowCapacityIncrement)
 }
 
 template<typename DataType>
-void Matrix<DataType>::_decreaseRowCapacity(int rowCapacityDecrement)
+void Matrix<DataType>::_decreaseRowCapacity(diff_type rowCapacityDecrement)
 {
     if (rowCapacityDecrement > 0 && rowCapacityDecrement < m_RowCapacity)
     {
@@ -1729,7 +1730,7 @@ void Matrix<DataType>::_decreaseRowCapacity(int rowCapacityDecrement)
 }
 
 template<typename DataType>
-void Matrix<DataType>::_increaseNrOfRows(int nrOfRowsIncrement)
+void Matrix<DataType>::_increaseNrOfRows(diff_type nrOfRowsIncrement)
 {
     if (nrOfRowsIncrement > 0)
     {
@@ -1748,7 +1749,7 @@ void Matrix<DataType>::_increaseNrOfRows(int nrOfRowsIncrement)
 }
 
 template<typename DataType>
-void Matrix<DataType>::_decreaseNrOfrows(int nrOfRowsDecrement)
+void Matrix<DataType>::_decreaseNrOfrows(diff_type nrOfRowsDecrement)
 {
     if (nrOfRowsDecrement > 0 && nrOfRowsDecrement < m_NrOfRows)
     {
