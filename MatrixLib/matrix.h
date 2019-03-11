@@ -59,7 +59,7 @@ public:
     void swapRowColumn(int rowNr, Matrix<DataType>& matrix, int matrixColumnNr);
 
     void setAllItemsToValue(const DataType& value);
-    void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX=0, int srcY=0, int destX=0, int destY=0);
+    void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcMatrixRowNr=0, int srcMatrixColumnNr=0, int rowNr=0, int columnNr=0);
 
     // logical operators (DataType should have them implemented)
     operator bool() const;
@@ -1427,19 +1427,19 @@ template <typename DataType> void Matrix<DataType>::setAllItemsToValue(const Dat
 }
 
 template <typename DataType>
-void Matrix<DataType>::copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcX, int srcY, int destX, int destY)
+void Matrix<DataType>::copy(const Matrix<DataType>& srcMatrix, int nrOfRows, int nrOfColumns, int srcMatrixRowNr, int srcMatrixColumnNr, int rowNr, int columnNr)
 {
-    if (&src == this)
+    if (&srcMatrix == this)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::CURRENT_MATRIX_AS_ARG]};
     }
 
-    if (nrOfRows<0 || nrOfColumns<0 || srcX<0 || srcY<0 || destX<0 || destY<0)
+    if (nrOfRows<0 || nrOfColumns<0 || srcMatrixRowNr<0 || srcMatrixColumnNr<0 || rowNr<0 || columnNr<0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    if (srcX + nrOfRows > src.m_NrOfRows || srcY + nrOfColumns > src.m_NrOfColumns || destX+nrOfRows > m_NrOfRows || destY+nrOfColumns > m_NrOfColumns)
+    if (srcMatrixRowNr + nrOfRows > srcMatrix.m_NrOfRows || srcMatrixColumnNr + nrOfColumns > srcMatrix.m_NrOfColumns || rowNr+nrOfRows > m_NrOfRows || columnNr+nrOfColumns > m_NrOfColumns)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
@@ -1450,7 +1450,7 @@ void Matrix<DataType>::copy(const Matrix<DataType>& src, int nrOfRows, int nrOfC
         {
             for (int col{0}; col<nrOfColumns; ++col)
             {
-                m_pBaseArrayPtr[destX+row][destY+col] = src.m_pBaseArrayPtr[srcX+row][srcY+col];
+                m_pBaseArrayPtr[rowNr+row][columnNr+col] = srcMatrix.m_pBaseArrayPtr[srcMatrixRowNr+row][srcMatrixColumnNr+col];
             }
         }
     }
