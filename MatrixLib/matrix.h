@@ -1,3 +1,6 @@
+#ifndef MATRIX_H
+#define MATRIX_H
+
 #include <initializer_list>
 #include <vector>
 #include <utility>
@@ -2108,5 +2111,7 @@ void Matrix<DataType>::ZIterator::_decrement()
         }
     }
 }
+
+#endif // MATRIX_H
 
 
