@@ -8,58 +8,60 @@ template <typename DataType>
 class Matrix
 {
 public: 
+    using size_type = int;
+
     Matrix();
-    Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
-    Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType);
-    Matrix(int nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues);
+    Matrix(size_type nrOfRows, size_type nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
+    Matrix(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType);
+    Matrix(size_type nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues);
     Matrix(const Matrix<DataType>& matrix);
     Matrix(Matrix<DataType>&& matrix);
     ~Matrix();
 
-    DataType& at(int rowNr, int columnNr);
-    DataType& operator[] (int index);
+    DataType& at(size_type rowNr, size_type columnNr);
+    DataType& operator[] (size_type index);
 
     Matrix<DataType>& operator= (const Matrix<DataType>& matrix);
     Matrix<DataType>& operator= (Matrix<DataType>&& matrix);
 
     // transfers ownership of the data to the user (object becomes empty and user becomes responsible for de-allocating the data properly)
-    DataType** getBaseArrayPtr(int& nrOfRows, int& nrOfColumns, int& rowCapacity, int& columnCapacity);
+    DataType** getBaseArrayPtr(size_type& nrOfRows, size_type& nrOfColumns, size_type& rowCapacity, size_type& columnCapacity);
 	
-    int getNrOfRows() const;
-    int getNrOfColumns() const;
-    int getRowCapacity() const;
-    int getColumnCapacity() const;
+    size_type getNrOfRows() const;
+    size_type getNrOfColumns() const;
+    size_type getRowCapacity() const;
+    size_type getColumnCapacity() const;
 
     void transpose(Matrix<DataType>& result);
 
     void clear();
 
     // resize and don't init new elements (user has the responsibility to init them), existing elements retain their old values
-    void resize(int nrOfRows, int nrOfColumns, int rowCapacity=0, int columnCapacity=0);
+    void resize(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity=0, size_type columnCapacity=0);
     // resize and fill new elements with value of dataType, existing elements retain their old values
-    void resizeWithValue(int nrOfRows, int nrOfColumns, const DataType& dataType, int rowCapacity=0, int columnCapacity=0);
+    void resizeWithValue(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType, size_type rowCapacity=0, size_type columnCapacity=0);
 
     void shrinkToFit();
 
-    void insertRow(int rowNr);
-    void insertRow(int rowNr, const DataType& dataType);
-    void insertColumn(int columnNr);
-    void insertColumn(int columnNr, const DataType& dataType);
-    void eraseRow (int rowNr);
-    void eraseColumn(int columnNr);
+    void insertRow(size_type rowNr);
+    void insertRow(size_type rowNr, const DataType& dataType);
+    void insertColumn(size_type columnNr);
+    void insertColumn(size_type columnNr, const DataType& dataType);
+    void eraseRow (size_type rowNr);
+    void eraseColumn(size_type columnNr);
 
     void catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
     void catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
-    void splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowNr);
-    void splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitColumnNr);
+    void splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, size_type splitRowNr);
+    void splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, size_type splitColumnNr);
 
-    void swapItems(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr);
-    void swapRows(int rowNr, Matrix<DataType>& matrix, int matrixRowNr);
-    void swapColumns(int columnNr, Matrix<DataType>& matrix, int matrixColumnNr);
-    void swapRowColumn(int rowNr, Matrix<DataType>& matrix, int matrixColumnNr);
+    void swapItems(size_type rowNr, size_type columnNr, Matrix<DataType>& matrix, size_type matrixRowNr, size_type matrixColumnNr);
+    void swapRows(size_type rowNr, Matrix<DataType>& matrix, size_type matrixRowNr);
+    void swapColumns(size_type columnNr, Matrix<DataType>& matrix, size_type matrixColumnNr);
+    void swapRowColumn(size_type rowNr, Matrix<DataType>& matrix, size_type matrixColumnNr);
 
     void setAllItemsToValue(const DataType& value);
-    void copy(const Matrix<DataType>& src, int nrOfRows, int nrOfColumns, int srcMatrixRowNr=0, int srcMatrixColumnNr=0, int rowNr=0, int columnNr=0);
+    void copy(const Matrix<DataType>& src, size_type nrOfRows, size_type nrOfColumns, size_type srcMatrixRowNr=0, size_type srcMatrixColumnNr=0, size_type rowNr=0, size_type columnNr=0);
 
     // logical operators (DataType should have them implemented)
     operator bool() const;
@@ -105,32 +107,32 @@ public:
 
         bool isValidWithMatrix(const Matrix& matrix) const;
 
-        int getCurrentRowNr() const;
-        int getCurrentColumnNr() const;
+        size_type getCurrentRowNr() const;
+        size_type getCurrentColumnNr() const;
 
     private:
-        ZIterator(const Matrix& matrix, int currentRowNr, int currentColumnNr);
+        ZIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr);
 
         void _increment();
         void _decrement();
 
         pointer m_pMatrixPtr;
-        int m_CurrentRowNr;
-        int m_CurrentColumnNr;
-        int m_NrOfMatrixRows;
-        int m_NrOfMatrixColumns;
+        size_type m_CurrentRowNr;
+        size_type m_CurrentColumnNr;
+        size_type m_NrOfMatrixRows;
+        size_type m_NrOfMatrixColumns;
     };
 
     ZIterator zBegin();
     ZIterator zEnd();
-    ZIterator zRowBegin(int rowNr);
-    ZIterator zRowEnd(int rowNr);
-    ZIterator getZIterator(int rowNr, int columnNr);
-    ZIterator getZIterator(int index);
+    ZIterator zRowBegin(size_type rowNr);
+    ZIterator zRowEnd(size_type rowNr);
+    ZIterator getZIterator(size_type rowNr, size_type columnNr);
+    ZIterator getZIterator(size_type index);
 
 private:
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
-    void _allocMemory(int nrOfRows, int nrOfColumns, int rowCapacity = 0, int columnCapacity = 0);
+    void _allocMemory(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity = 0, size_type columnCapacity = 0);
 
     // ensure the current number of rows and columns is saved to local variables if still needed further
     void _deallocMemory();
@@ -143,13 +145,13 @@ private:
     void _decreaseNrOfrows(int nrOfRowsDecrement);
 
     bool _isEqualTo(const Matrix<DataType>& matrix) const;
-    void _adjustSizeAndCapacity(int nrOfRows, int nrOfColumns);
+    void _adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns);
 
     DataType** m_pBaseArrayPtr;
-    int m_NrOfRows;
-    int m_NrOfColumns;
-    int m_RowCapacity;
-    int m_ColumnCapacity;
+    size_type m_NrOfRows;
+    size_type m_NrOfColumns;
+    size_type m_RowCapacity;
+    size_type m_ColumnCapacity;
 };
 
 template <typename DataType>
@@ -163,27 +165,27 @@ Matrix<DataType>::Matrix()
 }
 
 template<typename DataType>
-Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<DataType> dataTypeInitList)
+Matrix<DataType>::Matrix(size_type nrOfRows, size_type nrOfColumns, std::initializer_list<DataType> dataTypeInitList)
 {
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
-    if (nrOfRows * nrOfColumns > static_cast<int>(dataTypeInitList.size()))
+    if (nrOfRows * nrOfColumns > static_cast<size_type>(dataTypeInitList.size()))
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::INSUFFICIENT_ELEMENTS_FOR_INIT]};
     }
 
-    const int c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
-    const int c_ColumnCapacityToAlloc{nrOfColumns + nrOfColumns / 4};
+    const size_type c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
+    const size_type c_ColumnCapacityToAlloc{nrOfColumns + nrOfColumns / 4};
 
     _allocMemory(nrOfRows, nrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
 
     typename std::initializer_list<DataType>::iterator initListIterator{dataTypeInitList.begin()};
-    for (int row{0}; row < nrOfRows; ++row)
+    for (size_type row{0}; row < nrOfRows; ++row)
     {
-        for (int col{0}; col < nrOfColumns; ++col)
+        for (size_type col{0}; col < nrOfColumns; ++col)
         {
             m_pBaseArrayPtr[row][col] = *(initListIterator++);
         }
@@ -191,21 +193,21 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, std::initializer_list<Da
 }
 
 template <typename DataType>
-Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType)
+Matrix<DataType>::Matrix(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType)
 {
     if (nrOfRows <= 0 || nrOfColumns <= 0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
-    const int c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
-    const int c_ColumnCapacityToAlloc{nrOfColumns + nrOfColumns / 4};
+    const size_type c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
+    const size_type c_ColumnCapacityToAlloc{nrOfColumns + nrOfColumns / 4};
 
     _allocMemory(nrOfRows, nrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
 
-    for (int row{0}; row < nrOfRows; ++row)
+    for (size_type row{0}; row < nrOfRows; ++row)
     {
-        for (int col{0}; col < nrOfColumns; ++col)
+        for (size_type col{0}; col < nrOfColumns; ++col)
         {
             m_pBaseArrayPtr[row][col] = dataType;
         }
@@ -213,10 +215,10 @@ Matrix<DataType>::Matrix(int nrOfRows, int nrOfColumns, const DataType& dataType
 }
 
 template <typename DataType>
-Matrix<DataType>::Matrix(int nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues)
+Matrix<DataType>::Matrix(size_type nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues)
     : Matrix<DataType>{nrOfRowsColumns, nrOfRowsColumns, diagMatrixValues.first}
 {
-    for (int diag{0}; diag<m_NrOfRows; ++diag)
+    for (size_type diag{0}; diag<m_NrOfRows; ++diag)
     {
         m_pBaseArrayPtr[diag][diag] = diagMatrixValues.second;
     }
@@ -225,14 +227,14 @@ Matrix<DataType>::Matrix(int nrOfRowsColumns, const std::pair<DataType, DataType
 template <typename DataType>
 Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
 {
-    const int c_RowCapacityToAlloc{matrix.m_NrOfRows + matrix.m_NrOfRows / 4};
-    const int c_ColumnCapacityToAlloc{matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4};
+    const size_type c_RowCapacityToAlloc{matrix.m_NrOfRows + matrix.m_NrOfRows / 4};
+    const size_type c_ColumnCapacityToAlloc{matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4};
 
     _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
 
-    for (int row{0}; row<m_NrOfRows; ++row)
+    for (size_type row{0}; row<m_NrOfRows; ++row)
     {
-        for (int col{0}; col<m_NrOfColumns; ++col)
+        for (size_type col{0}; col<m_NrOfColumns; ++col)
         {
             m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
         }
@@ -261,7 +263,7 @@ Matrix<DataType>::~Matrix()
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::at(int rowNr, int columnNr)
+DataType& Matrix<DataType>::at(size_type rowNr, size_type columnNr)
 {
     if (rowNr<0 || columnNr<0)
     {
@@ -277,7 +279,7 @@ DataType& Matrix<DataType>::at(int rowNr, int columnNr)
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::operator[](int index)
+DataType& Matrix<DataType>::operator[](size_type index)
 {
     if (index<0)
     {
@@ -297,8 +299,8 @@ Matrix<DataType>& Matrix<DataType>::operator=(const Matrix<DataType>& matrix)
 {
     if (&matrix != this && (m_pBaseArrayPtr || matrix.m_pBaseArrayPtr))
     {
-        const int c_RowCapacityToAlloc{matrix.m_NrOfRows + matrix.m_NrOfRows / 4};
-        const int c_ColumnCapacityToAlloc{matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4};
+        const size_type c_RowCapacityToAlloc{matrix.m_NrOfRows + matrix.m_NrOfRows / 4};
+        const size_type c_ColumnCapacityToAlloc{matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4};
 
         if (m_RowCapacity != c_RowCapacityToAlloc || m_ColumnCapacity != c_ColumnCapacityToAlloc)
         {
@@ -319,9 +321,9 @@ Matrix<DataType>& Matrix<DataType>::operator=(const Matrix<DataType>& matrix)
             m_NrOfColumns = matrix.m_NrOfColumns;
         }
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
             }
@@ -353,7 +355,7 @@ Matrix<DataType>& Matrix<DataType>::operator=(Matrix<DataType> &&matrix)
 }
 
 template<typename DataType>
-DataType** Matrix<DataType>::getBaseArrayPtr(int& nrOfRows, int& nrOfColumns, int& rowCapacity, int& columnCapacity)
+DataType** Matrix<DataType>::getBaseArrayPtr(size_type& nrOfRows, size_type& nrOfColumns, size_type& rowCapacity, size_type& columnCapacity)
 {
     DataType** pBaseArrayPtr{nullptr};
 
@@ -383,25 +385,25 @@ DataType** Matrix<DataType>::getBaseArrayPtr(int& nrOfRows, int& nrOfColumns, in
 }
 
 template<typename DataType>
-int Matrix<DataType>::getNrOfRows() const
+typename Matrix<DataType>::size_type Matrix<DataType>::getNrOfRows() const
 {
     return m_NrOfRows;
 }
 
 template<typename DataType>
-int Matrix<DataType>::getNrOfColumns() const
+typename Matrix<DataType>::size_type Matrix<DataType>::getNrOfColumns() const
 {
     return m_NrOfColumns;
 }
 
 template<typename DataType>
-int Matrix<DataType>::getRowCapacity() const
+typename Matrix<DataType>::size_type Matrix<DataType>::getRowCapacity() const
 {
     return m_RowCapacity;
 }
 
 template<typename DataType>
-int Matrix<DataType>::getColumnCapacity() const
+typename Matrix<DataType>::size_type Matrix<DataType>::getColumnCapacity() const
 {
     return m_ColumnCapacity;
 }
@@ -420,20 +422,20 @@ void Matrix<DataType>::transpose(Matrix<DataType>& result)
     {
         Matrix<DataType> matrix{};
 
-        const int c_InitialRowCapacity{m_RowCapacity};
-        const int c_InitialColumnCapacity{m_ColumnCapacity};
+        const size_type c_InitialRowCapacity{m_RowCapacity};
+        const size_type c_InitialColumnCapacity{m_ColumnCapacity};
 
         matrix = std::move(*this);
 
-        const int c_RowCapacityToAlloc{c_InitialRowCapacity < matrix.m_NrOfColumns ?  matrix.m_NrOfColumns +  matrix.m_NrOfColumns/4 : c_InitialRowCapacity};
-        const int c_ColumnCapacityToAlloc{c_InitialColumnCapacity < matrix.m_NrOfRows ? matrix.m_NrOfRows + matrix.m_NrOfRows/4 : c_InitialColumnCapacity};
+        const size_type c_RowCapacityToAlloc{c_InitialRowCapacity < matrix.m_NrOfColumns ?  matrix.m_NrOfColumns +  matrix.m_NrOfColumns/4 : c_InitialRowCapacity};
+        const size_type c_ColumnCapacityToAlloc{c_InitialColumnCapacity < matrix.m_NrOfRows ? matrix.m_NrOfRows + matrix.m_NrOfRows/4 : c_InitialColumnCapacity};
 
         _deallocMemory(); // not actually required, just for "safety" and consistency purposes
         _allocMemory(matrix.m_NrOfColumns, matrix.m_NrOfRows, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[col][row];
             }
@@ -443,9 +445,9 @@ void Matrix<DataType>::transpose(Matrix<DataType>& result)
     {
         result._adjustSizeAndCapacity(m_NrOfColumns, m_NrOfRows);
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 result.m_pBaseArrayPtr[col][row] = m_pBaseArrayPtr[row][col];
             }
@@ -460,27 +462,27 @@ void Matrix<DataType>::clear()
 }
 
 template<typename DataType>
-void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns, int rowCapacity, int columnCapacity)
+void Matrix<DataType>::resize(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity, size_type columnCapacity)
 {
     if (nrOfRows<=0 || nrOfColumns<=0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NULL_OR_NEG_DIMENSION]};
     }
 
-    const int c_RowCapacityToSet{rowCapacity > nrOfRows ? rowCapacity : nrOfRows};
-    const int c_ColumnCapacityToSet{columnCapacity > nrOfColumns ? columnCapacity : nrOfColumns};
+    const size_type c_RowCapacityToSet{rowCapacity > nrOfRows ? rowCapacity : nrOfRows};
+    const size_type c_ColumnCapacityToSet{columnCapacity > nrOfColumns ? columnCapacity : nrOfColumns};
 
     if (c_ColumnCapacityToSet != m_ColumnCapacity)
     {
-        int rowsToKeep{nrOfRows > m_NrOfRows ? m_NrOfRows : nrOfRows};
-        int columnsToKeep{nrOfColumns > m_NrOfColumns ? m_NrOfColumns : nrOfColumns};
+        size_type rowsToKeep{nrOfRows > m_NrOfRows ? m_NrOfRows : nrOfRows};
+        size_type columnsToKeep{nrOfColumns > m_NrOfColumns ? m_NrOfColumns : nrOfColumns};
 
         Matrix<DataType> matrix{std::move(*this)};
         _allocMemory(nrOfRows, nrOfColumns, c_RowCapacityToSet, c_ColumnCapacityToSet);
 
-        for (int row{0}; row<rowsToKeep; ++row)
+        for (size_type row{0}; row<rowsToKeep; ++row)
         {
-            for (int col{0}; col<columnsToKeep; ++col)
+            for (size_type col{0}; col<columnsToKeep; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
             }
@@ -524,14 +526,14 @@ void Matrix<DataType>::resize(int nrOfRows, int nrOfColumns, int rowCapacity, in
 }
 
 template <typename DataType>
-void Matrix<DataType>::resizeWithValue(int nrOfRows, int nrOfColumns, const DataType& value, int rowCapacity, int columnCapacity)
+void Matrix<DataType>::resizeWithValue(size_type nrOfRows, size_type nrOfColumns, const DataType& value, size_type rowCapacity, size_type columnCapacity)
 {
     // DataType should support the assign (=) operator
-    auto fillNewItems = [](Matrix<DataType>& dest, int beginRowIndex, int endRowIndex, int beginColumnIndex, int endColumnIndex, const DataType& value)
+    auto fillNewItems = [](Matrix<DataType>& dest, size_type beginRowIndex, size_type endRowIndex, size_type beginColumnIndex, size_type endColumnIndex, const DataType& value)
     {
-        for (int row{beginRowIndex}; row<endRowIndex; ++row)
+        for (size_type row{beginRowIndex}; row<endRowIndex; ++row)
         {
-            for (int col{beginColumnIndex}; col<endColumnIndex; ++col)
+            for (size_type col{beginColumnIndex}; col<endColumnIndex; ++col)
             {
                 dest.m_pBaseArrayPtr[row][col] = value;
             }
@@ -571,9 +573,9 @@ void Matrix<DataType>::shrinkToFit()
         _deallocMemory();
         _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
             }
@@ -586,7 +588,7 @@ void Matrix<DataType>::shrinkToFit()
 }
 
 template <typename DataType>
-void Matrix<DataType>::insertRow (int rowNr)
+void Matrix<DataType>::insertRow (size_type rowNr)
 {
     if (!m_NrOfRows)
     {
@@ -612,25 +614,25 @@ void Matrix<DataType>::insertRow (int rowNr)
     // append empty row and move it upwards until reaching the correct position
     _increaseNrOfRows(1);
 
-    for (int row{m_NrOfRows-1}; row > rowNr; --row)
+    for (size_type row{m_NrOfRows-1}; row > rowNr; --row)
     {
         std::swap(m_pBaseArrayPtr[row], m_pBaseArrayPtr[row-1]);
     }
 }
 
 template<typename DataType>
-void Matrix<DataType>::insertRow(int rowNr, const DataType &dataType)
+void Matrix<DataType>::insertRow(size_type rowNr, const DataType &dataType)
 {
     insertRow(rowNr);
 
-    for (int col{0}; col<m_NrOfColumns; ++col)
+    for (size_type col{0}; col<m_NrOfColumns; ++col)
     {
         m_pBaseArrayPtr[rowNr][col] = dataType;
     }
 }
 
 template <typename DataType>
-void Matrix<DataType>::insertColumn(int columnNr)
+void Matrix<DataType>::insertColumn(size_type columnNr)
 {
     if (!m_NrOfRows)
     {
@@ -654,14 +656,14 @@ void Matrix<DataType>::insertColumn(int columnNr)
         _deallocMemory();
         _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns + 1, matrix.m_RowCapacity, 2 * matrix.m_NrOfColumns);
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<columnNr; ++col)
+            for (size_type col{0}; col<columnNr; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
             }
 
-            for(int col{columnNr+1}; col<m_NrOfColumns; ++col)
+            for(size_type col{columnNr+1}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col-1];
             }
@@ -672,16 +674,16 @@ void Matrix<DataType>::insertColumn(int columnNr)
         ++m_NrOfColumns;
         DataType* pColumnPtr{new DataType[m_NrOfRows]};
 
-        for(int row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for(int col{m_NrOfColumns-1}; col>columnNr; --col)
+            for(size_type col{m_NrOfColumns-1}; col>columnNr; --col)
             {
                 m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col-1];
             }
         }
 
         // ensure the newly inserted column doesn't contain data from an old column
-        for(int row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row<m_NrOfRows; ++row)
         {
             m_pBaseArrayPtr[row][columnNr] = pColumnPtr[row];
         }
@@ -692,18 +694,18 @@ void Matrix<DataType>::insertColumn(int columnNr)
 }
 
 template<typename DataType>
-void Matrix<DataType>::insertColumn(int columnNr, const DataType &dataType)
+void Matrix<DataType>::insertColumn(size_type columnNr, const DataType &dataType)
 {
     insertColumn(columnNr);
 
-    for (int row{0}; row<m_NrOfRows; ++row)
+    for (size_type row{0}; row<m_NrOfRows; ++row)
     {
         m_pBaseArrayPtr[row][columnNr] = dataType;
     }
 }
 
 template <typename DataType>
-void Matrix<DataType>::eraseRow (int rowNr)
+void Matrix<DataType>::eraseRow (size_type rowNr)
 {
     if (rowNr>=m_NrOfRows)
     {
@@ -727,7 +729,7 @@ void Matrix<DataType>::eraseRow (int rowNr)
         m_pBaseArrayPtr[rowNr] = nullptr;
 
         // move the rows upwards one position to fill in the gap
-        for (int row{rowNr}; row < m_NrOfRows-1; ++row)
+        for (size_type row{rowNr}; row < m_NrOfRows-1; ++row)
         {
             m_pBaseArrayPtr[row] = m_pBaseArrayPtr[row+1];
         }
@@ -745,7 +747,7 @@ void Matrix<DataType>::eraseRow (int rowNr)
 }
 
 template <typename DataType>
-void Matrix<DataType>::eraseColumn(int columnNr)
+void Matrix<DataType>::eraseColumn(size_type columnNr)
 {
     if (columnNr<0)
     {
@@ -768,14 +770,14 @@ void Matrix<DataType>::eraseColumn(int columnNr)
         _deallocMemory();
         _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns-1, matrix.m_RowCapacity, (matrix.m_NrOfColumns - 1) * 2);
 
-        for(int row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for(int col{0}; col<columnNr; ++col)
+            for(size_type col{0}; col<columnNr; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
             }
 
-            for(int col{columnNr}; col<m_NrOfColumns; ++col)
+            for(size_type col{columnNr}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col+1];
             }
@@ -785,16 +787,16 @@ void Matrix<DataType>::eraseColumn(int columnNr)
     {
         DataType* pColumnPtr{new DataType[m_NrOfRows]};
 
-        for(int row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for(int col{columnNr}; col<m_NrOfColumns-1; ++col)
+            for(size_type col{columnNr}; col<m_NrOfColumns-1; ++col)
             {
                 m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col+1];
             }
         }
 
         // ensure the data of the last column is cleared prior to decrementing number of columns
-        for(int row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row<m_NrOfRows; ++row)
         {
             m_pBaseArrayPtr[row][m_NrOfColumns-1] = pColumnPtr[row];
         }
@@ -813,23 +815,23 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataTyp
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_ROW_LENGTH]};
     }
 
-    const int c_NrOfRows{firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows};
-    const int c_NrOfColumns{firstSrcMatrix.m_NrOfColumns};
-    const int c_RowCapacity{c_NrOfRows + c_NrOfRows / 4};
-    const int c_ColumnCapacity{c_NrOfColumns + c_NrOfColumns / 4};
+    const size_type c_NrOfRows{firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows};
+    const size_type c_NrOfColumns{firstSrcMatrix.m_NrOfColumns};
+    const size_type c_RowCapacity{c_NrOfRows + c_NrOfRows / 4};
+    const size_type c_ColumnCapacity{c_NrOfColumns + c_NrOfColumns / 4};
 
     if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
     {
-        const int c_StartingRowNr{m_NrOfRows};
+        const size_type c_StartingRowNr{m_NrOfRows};
         if (m_RowCapacity < c_NrOfRows)
         {
             _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
         }
         _increaseNrOfRows(c_NrOfRows - m_NrOfRows);
 
-        for (int row{c_StartingRowNr}; row<m_NrOfRows; ++row)
+        for (size_type row{c_StartingRowNr}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-c_StartingRowNr][col];
             }
@@ -837,28 +839,28 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataTyp
     }
     else if (&firstSrcMatrix != this && (&secondSrcMatrix == this))
     {
-        const int c_NewRowCapacity{m_RowCapacity < c_NrOfRows ? c_RowCapacity : m_RowCapacity};
+        const size_type c_NewRowCapacity{m_RowCapacity < c_NrOfRows ? c_RowCapacity : m_RowCapacity};
         DataType** pBaseArrayPtr{new DataType*[c_NewRowCapacity]};
 
-        for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+        for (size_type row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
         {
             pBaseArrayPtr[row] = new DataType[m_ColumnCapacity];
         }
 
-        for (int row{firstSrcMatrix.m_NrOfRows}; row<c_NrOfRows; ++row)
+        for (size_type row{firstSrcMatrix.m_NrOfRows}; row<c_NrOfRows; ++row)
         {
             pBaseArrayPtr[row] = m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows];
             m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows] = nullptr;
         }
 
-        for (int row{c_NrOfRows}; row<c_NewRowCapacity; ++row)
+        for (size_type row{c_NrOfRows}; row<c_NewRowCapacity; ++row)
         {
             pBaseArrayPtr[row] = nullptr;
         }
 
-        for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+        for (size_type row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
             }
@@ -872,16 +874,16 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataTyp
     }
     else if (&firstSrcMatrix == this && (&secondSrcMatrix == this))
     {
-        const int c_StartingRowNr{m_NrOfRows};
+        const size_type c_StartingRowNr{m_NrOfRows};
         if (m_RowCapacity < c_NrOfRows)
         {
             _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
         }
         _increaseNrOfRows(m_NrOfRows);
 
-        for (int row{c_StartingRowNr}; row<m_NrOfRows; ++row)
+        for (size_type row{c_StartingRowNr}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row-c_StartingRowNr][col];
             }
@@ -898,7 +900,7 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataTyp
             }
             else
             {
-                const int c_SameRowCapacity{m_RowCapacity};
+                const size_type c_SameRowCapacity{m_RowCapacity};
                 _deallocMemory();
                 _allocMemory(c_NrOfRows, c_NrOfColumns, c_SameRowCapacity, c_ColumnCapacity);
             }
@@ -915,17 +917,17 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataTyp
             m_NrOfColumns = c_NrOfColumns;
         }
 
-        for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+        for (size_type row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
             }
         }
 
-        for (int row{firstSrcMatrix.m_NrOfRows}; row<m_NrOfRows; ++row)
+        for (size_type row{firstSrcMatrix.m_NrOfRows}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows][col];
             }
@@ -941,10 +943,10 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
     }
 
-    const int c_NrOfRows{firstSrcMatrix.m_NrOfRows};
-    const int c_NrOfColumns{firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns};
-    const int c_RowCapacity{c_NrOfRows + c_NrOfRows / 4};
-    const int c_ColumnCapacity{c_NrOfColumns + c_NrOfColumns / 4};
+    const size_type c_NrOfRows{firstSrcMatrix.m_NrOfRows};
+    const size_type c_NrOfColumns{firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns};
+    const size_type c_RowCapacity{c_NrOfRows + c_NrOfRows / 4};
+    const size_type c_ColumnCapacity{c_NrOfColumns + c_NrOfColumns / 4};
 
     if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
     {
@@ -966,17 +968,17 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
             _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
         }
 
-        for(int row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<matrix.m_NrOfColumns; ++col)
+            for (size_type col{0}; col<matrix.m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
             }
         }
 
-        for(int row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{matrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+            for (size_type col{matrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-matrix.m_NrOfColumns];
             }
@@ -1002,17 +1004,17 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
             _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
         }
 
-        for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+        for (size_type row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
         {
-            for (int col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
+            for (size_type col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
             }
         }
 
-        for (int row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
+        for (size_type row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
         {
-            for (int col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+            for (size_type col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
             }
@@ -1038,17 +1040,17 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
             _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
         }
 
-        for(int row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<matrix.m_NrOfColumns; ++col)
+            for (size_type col{0}; col<matrix.m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
             }
         }
 
-        for(int row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{matrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+            for (size_type col{matrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col-matrix.m_NrOfColumns];
             }
@@ -1065,36 +1067,36 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
             }
             else
             {
-                int sameRowCapacity{m_RowCapacity};
+                size_type sameRowCapacity{m_RowCapacity};
                 _deallocMemory();
                 _allocMemory(c_NrOfRows, c_NrOfColumns, sameRowCapacity, c_ColumnCapacity);
             }
         }
         else if (m_RowCapacity < c_NrOfRows)
         {
-            int sameColumnCapacity{m_ColumnCapacity};
+            size_type sameColumnCapacity{m_ColumnCapacity};
             _deallocMemory();
             _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, sameColumnCapacity);
         }
         else
         {
-            int sameRowCapacity{m_RowCapacity};
-            int sameColumnCapacity{m_ColumnCapacity};
+            size_type sameRowCapacity{m_RowCapacity};
+            size_type sameColumnCapacity{m_ColumnCapacity};
             _deallocMemory();
             _allocMemory(c_NrOfRows, c_NrOfColumns, sameRowCapacity, sameColumnCapacity);
         }
 
-        for(int row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
+            for (size_type col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
             }
         }
 
-        for(int row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+            for (size_type col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
             }
@@ -1103,7 +1105,7 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
 }
 
 template<typename DataType>
-void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitRowNr)
+void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, size_type splitRowNr)
 {
     if (&firstDestMatrix == &secondDestMatrix)
     {
@@ -1125,19 +1127,19 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<Data
         throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_ROWS]};
     }
 
-    const int c_FirstDestMatrixNrOfRows{splitRowNr};
-    const int c_FirstDestMatrixNrOfColumns{m_NrOfColumns};
+    const size_type c_FirstDestMatrixNrOfRows{splitRowNr};
+    const size_type c_FirstDestMatrixNrOfColumns{m_NrOfColumns};
 
-    const int c_SecondDestMatrixNrOfRows{m_NrOfRows - splitRowNr};
-    const int c_SecondDestMatrixNrOfColumns{m_NrOfColumns};
+    const size_type c_SecondDestMatrixNrOfRows{m_NrOfRows - splitRowNr};
+    const size_type c_SecondDestMatrixNrOfColumns{m_NrOfColumns};
 
     if (&firstDestMatrix == this && (&secondDestMatrix != this))
     {
         secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns);
 
-        for (int row{splitRowNr}; row<m_NrOfRows; ++row)
+        for (size_type row{splitRowNr}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 secondDestMatrix.m_pBaseArrayPtr[row-splitRowNr][col] = m_pBaseArrayPtr[row][col];
             }
@@ -1149,9 +1151,9 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<Data
     {
         firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns);
 
-        for (int row{0}; row<splitRowNr; ++row)
+        for (size_type row{0}; row<splitRowNr; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
             }
@@ -1159,19 +1161,19 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<Data
 
         DataType** pBaseArrayPtr{new DataType*[secondDestMatrix.m_RowCapacity]};
 
-        for (int row{splitRowNr}; row<m_NrOfRows; ++row)
+        for (size_type row{splitRowNr}; row<m_NrOfRows; ++row)
         {
             pBaseArrayPtr[row-splitRowNr] = m_pBaseArrayPtr[row];
             m_pBaseArrayPtr[row] = nullptr;
         }
 
-        for (int row{splitRowNr}; row < secondDestMatrix.m_RowCapacity; ++row)
+        for (size_type row{splitRowNr}; row < secondDestMatrix.m_RowCapacity; ++row)
         {
             pBaseArrayPtr[row] = nullptr;
         }
 
-        int sameRowCapacity{secondDestMatrix.m_RowCapacity};
-        int sameColumnCapacity{secondDestMatrix.m_ColumnCapacity};
+        size_type sameRowCapacity{secondDestMatrix.m_RowCapacity};
+        size_type sameColumnCapacity{secondDestMatrix.m_ColumnCapacity};
         _deallocMemory();
 
         m_pBaseArrayPtr = pBaseArrayPtr;
@@ -1187,17 +1189,17 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<Data
         firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns);
         secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns);
 
-        for (int row{0}; row<splitRowNr; ++row)
+        for (size_type row{0}; row<splitRowNr; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
             }
         }
 
-        for (int row{splitRowNr}; row<m_NrOfRows; ++row)
+        for (size_type row{splitRowNr}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 secondDestMatrix.m_pBaseArrayPtr[row-splitRowNr][col] = m_pBaseArrayPtr[row][col];
             }
@@ -1206,7 +1208,7 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<Data
 }
 
 template<typename DataType>
-void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, int splitColumnNr)
+void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, size_type splitColumnNr)
 {
     if (&firstDestMatrix == &secondDestMatrix)
     {
@@ -1228,19 +1230,19 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
         throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_COLUMNS]};
     }
 
-    const int c_FirstDestMatrixNrOfRows{m_NrOfRows};
-    const int c_FirstDestMatrixNrOfColumns{splitColumnNr};
+    const size_type c_FirstDestMatrixNrOfRows{m_NrOfRows};
+    const size_type c_FirstDestMatrixNrOfColumns{splitColumnNr};
 
-    const int c_SecondDestMatrixNrOfRows{m_NrOfRows};
-    const int c_SecondDestMatrixNrOfColumns{m_NrOfColumns - splitColumnNr};
+    const size_type c_SecondDestMatrixNrOfRows{m_NrOfRows};
+    const size_type c_SecondDestMatrixNrOfColumns{m_NrOfColumns - splitColumnNr};
 
     if (&firstDestMatrix == this && (&secondDestMatrix != this))
     {
         secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns);
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{splitColumnNr}; col<m_NrOfColumns; ++col)
+            for (size_type col{splitColumnNr}; col<m_NrOfColumns; ++col)
             {
                 secondDestMatrix.m_pBaseArrayPtr[row][col-splitColumnNr] = m_pBaseArrayPtr[row][col];
             }
@@ -1250,9 +1252,9 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
         _deallocMemory();
         _allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<splitColumnNr; ++col)
+            for (size_type col{0}; col<splitColumnNr; ++col)
             {
                 firstDestMatrix.m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
             }
@@ -1262,9 +1264,9 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
     {
         firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns);
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<splitColumnNr; ++col)
+            for (size_type col{0}; col<splitColumnNr; ++col)
             {
                 firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
             }
@@ -1274,9 +1276,9 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
         _deallocMemory();
         _allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
 
-        for (int row{0}; row<c_SecondDestMatrixNrOfRows; ++row)
+        for (size_type row{0}; row<c_SecondDestMatrixNrOfRows; ++row)
         {
-            for (int col{0}; col<c_SecondDestMatrixNrOfColumns; ++col)
+            for (size_type col{0}; col<c_SecondDestMatrixNrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col+splitColumnNr];
             }
@@ -1287,17 +1289,17 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
         firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns);
         secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns);
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<splitColumnNr; ++col)
+            for (size_type col{0}; col<splitColumnNr; ++col)
             {
                 firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
             }
         }
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{splitColumnNr}; col<m_NrOfColumns; ++col)
+            for (size_type col{splitColumnNr}; col<m_NrOfColumns; ++col)
             {
                 secondDestMatrix.m_pBaseArrayPtr[row][col-splitColumnNr] = m_pBaseArrayPtr[row][col];
             }
@@ -1306,7 +1308,7 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
 }
 
 template <typename DataType>
-void Matrix<DataType>::swapItems(int rowNr, int columnNr, Matrix<DataType>& matrix, int matrixRowNr, int matrixColumnNr)
+void Matrix<DataType>::swapItems(size_type rowNr, size_type columnNr, Matrix<DataType>& matrix, size_type matrixRowNr, size_type matrixColumnNr)
 {
     if (rowNr<0 || columnNr<0 || matrixRowNr<0 || matrixColumnNr<0)
     {
@@ -1325,7 +1327,7 @@ void Matrix<DataType>::swapItems(int rowNr, int columnNr, Matrix<DataType>& matr
 }
 
 template <typename DataType>
-void Matrix<DataType>::swapRows(int rowNr, Matrix& matrix, int matrixRowNr)
+void Matrix<DataType>::swapRows(size_type rowNr, Matrix& matrix, size_type matrixRowNr)
 {
     if (rowNr<0 || matrixRowNr<0)
     {
@@ -1349,7 +1351,7 @@ void Matrix<DataType>::swapRows(int rowNr, Matrix& matrix, int matrixRowNr)
 }
 
 template <typename DataType>
-void Matrix<DataType>::swapColumns(int columnNr, Matrix& matrix, int matrixColumnNr)
+void Matrix<DataType>::swapColumns(size_type columnNr, Matrix& matrix, size_type matrixColumnNr)
 {
     if (columnNr<0 || matrixColumnNr<0)
     {
@@ -1368,7 +1370,7 @@ void Matrix<DataType>::swapColumns(int columnNr, Matrix& matrix, int matrixColum
 
     if (columnNr!=matrixColumnNr || &matrix!=this)
     {
-        for(int row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row<m_NrOfRows; ++row)
         {
             // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
             DataType swap{m_pBaseArrayPtr[row][columnNr]};
@@ -1379,7 +1381,7 @@ void Matrix<DataType>::swapColumns(int columnNr, Matrix& matrix, int matrixColum
 }
 
 template <typename DataType>
-void Matrix<DataType>::swapRowColumn(int rowNr, Matrix<DataType>& matrix, int matrixColumnNr)
+void Matrix<DataType>::swapRowColumn(size_type rowNr, Matrix<DataType>& matrix, size_type matrixColumnNr)
 {
     if (&matrix == this)
     {
@@ -1406,7 +1408,7 @@ void Matrix<DataType>::swapRowColumn(int rowNr, Matrix<DataType>& matrix, int ma
         throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
     }
 
-    for (int col{0}; col<m_NrOfColumns; ++col)
+    for (size_type col{0}; col<m_NrOfColumns; ++col)
     {
         // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
         DataType swap{m_pBaseArrayPtr[rowNr][col]};
@@ -1417,9 +1419,9 @@ void Matrix<DataType>::swapRowColumn(int rowNr, Matrix<DataType>& matrix, int ma
 
 template <typename DataType> void Matrix<DataType>::setAllItemsToValue(const DataType& value)
 {
-    for (int row{0}; row<m_NrOfRows; ++row)
+    for (size_type row{0}; row<m_NrOfRows; ++row)
     {
-        for (int col{0}; col<m_NrOfColumns; ++col)
+        for (size_type col{0}; col<m_NrOfColumns; ++col)
         {
             m_pBaseArrayPtr[row][col] = value;
         }
@@ -1427,7 +1429,7 @@ template <typename DataType> void Matrix<DataType>::setAllItemsToValue(const Dat
 }
 
 template <typename DataType>
-void Matrix<DataType>::copy(const Matrix<DataType>& srcMatrix, int nrOfRows, int nrOfColumns, int srcMatrixRowNr, int srcMatrixColumnNr, int rowNr, int columnNr)
+void Matrix<DataType>::copy(const Matrix<DataType>& srcMatrix, size_type nrOfRows, size_type nrOfColumns, size_type srcMatrixRowNr, size_type srcMatrixColumnNr, size_type rowNr, size_type columnNr)
 {
     if (&srcMatrix == this)
     {
@@ -1446,9 +1448,9 @@ void Matrix<DataType>::copy(const Matrix<DataType>& srcMatrix, int nrOfRows, int
 
     if (nrOfRows && nrOfColumns)
     {
-        for (int row{0}; row<nrOfRows; ++row)
+        for (size_type row{0}; row<nrOfRows; ++row)
         {
-            for (int col{0}; col<nrOfColumns; ++col)
+            for (size_type col{0}; col<nrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[rowNr+row][columnNr+col] = srcMatrix.m_pBaseArrayPtr[srcMatrixRowNr+row][srcMatrixColumnNr+col];
             }
@@ -1463,9 +1465,9 @@ Matrix<DataType>::operator bool() const
 
     if (m_pBaseArrayPtr)
     {
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 if (m_pBaseArrayPtr[row][col])
                 {
@@ -1504,7 +1506,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::zEnd()
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowBegin(int rowNr)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowBegin(size_type rowNr)
 {
     if (rowNr < 0)
     {
@@ -1520,7 +1522,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowBegin(int rowNr)
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowEnd(int rowNr)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowEnd(size_type rowNr)
 {
     if (rowNr < 0)
     {
@@ -1547,7 +1549,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowEnd(int rowNr)
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(int rowNr, int columnNr)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(size_type rowNr, size_type columnNr)
 {
     if (rowNr<0 || columnNr<0)
     {
@@ -1563,23 +1565,23 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(int rowNr, i
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(int index)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(size_type index)
 {
     if (index < 0)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    if (index >= m_NrOfRows*m_NrOfColumns)
+    if (index >= m_NrOfRows * m_NrOfColumns)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
 
-    return ZIterator{*this, index/m_NrOfColumns, index%m_NrOfColumns};
+    return ZIterator{*this, index / m_NrOfColumns, index % m_NrOfColumns};
 }
 
 template<typename DataType>
-void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns, int rowCapacity, int columnCapacity)
+void Matrix<DataType>::_allocMemory(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity, size_type columnCapacity)
 {
     if (nrOfRows > 0 && nrOfColumns > 0)
     {
@@ -1603,7 +1605,7 @@ void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns, int rowCapaci
 
         m_pBaseArrayPtr = new DataType*[m_RowCapacity];
 
-        for (int row{0}; row<nrOfRows; ++row)
+        for (size_type row{0}; row<nrOfRows; ++row)
         {
             m_pBaseArrayPtr[row] = new DataType[m_ColumnCapacity];
         }
@@ -1611,7 +1613,7 @@ void Matrix<DataType>::_allocMemory(int nrOfRows, int nrOfColumns, int rowCapaci
         // no elements to be allocated to the extra rows (elements to be allocated on demand)
         if (m_RowCapacity > nrOfRows)
         {
-            for (int row{nrOfRows}; row<m_RowCapacity; ++row)
+            for (size_type row{nrOfRows}; row<m_RowCapacity; ++row)
             {
                 m_pBaseArrayPtr[row] = nullptr;
             }
@@ -1636,7 +1638,7 @@ void Matrix<DataType>::_deallocMemory()
     if (m_pBaseArrayPtr)
     {
         // if row capacity exceeds number of rows the surplus contains null pointers so no need to de-allocate them
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
             if (m_pBaseArrayPtr[row])
             {
@@ -1660,16 +1662,16 @@ void Matrix<DataType>::_increaseRowCapacity(int rowCapacityIncrement)
 {
     if (rowCapacityIncrement > 0)
     {
-        int rowCapacity{m_RowCapacity + rowCapacityIncrement};
+        size_type rowCapacity{m_RowCapacity + rowCapacityIncrement};
         DataType** pBaseArrayPtr{new DataType*[rowCapacity]};
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
             pBaseArrayPtr[row] = m_pBaseArrayPtr[row];
             m_pBaseArrayPtr[row] = nullptr;
         }
 
-        for (int row{m_NrOfRows}; row<rowCapacity; ++row)
+        for (size_type row{m_NrOfRows}; row<rowCapacity; ++row)
         {
             pBaseArrayPtr[row] = nullptr;
         }
@@ -1686,18 +1688,18 @@ void Matrix<DataType>::_decreaseRowCapacity(int rowCapacityDecrement)
 {
     if (rowCapacityDecrement > 0 && rowCapacityDecrement < m_RowCapacity)
     {
-        int rowCapacity{m_RowCapacity - rowCapacityDecrement};
+        size_type rowCapacity{m_RowCapacity - rowCapacityDecrement};
         DataType** pBaseArrayPtr{new DataType*[rowCapacity]};
 
         if (rowCapacity < m_NrOfRows)
         {
-            for (int row{0}; row<rowCapacity; ++row)
+            for (size_type row{0}; row<rowCapacity; ++row)
             {
                 pBaseArrayPtr[row] = m_pBaseArrayPtr[row];
                 m_pBaseArrayPtr[row] = nullptr;
             }
 
-            for (int row{rowCapacity}; row<m_NrOfRows; ++row)
+            for (size_type row{rowCapacity}; row<m_NrOfRows; ++row)
             {
                 delete []m_pBaseArrayPtr[row];
                 m_pBaseArrayPtr[row] = nullptr;
@@ -1707,13 +1709,13 @@ void Matrix<DataType>::_decreaseRowCapacity(int rowCapacityDecrement)
         }
         else
         {
-            for (int row{0}; row<m_NrOfRows; ++row)
+            for (size_type row{0}; row<m_NrOfRows; ++row)
             {
                 pBaseArrayPtr[row] = m_pBaseArrayPtr[row];
                 m_pBaseArrayPtr[row] = nullptr;
             }
 
-            for (int row{m_NrOfRows}; row<rowCapacity; ++row)
+            for (size_type row{m_NrOfRows}; row<rowCapacity; ++row)
             {
                 pBaseArrayPtr[row] = nullptr;
             }
@@ -1731,11 +1733,11 @@ void Matrix<DataType>::_increaseNrOfRows(int nrOfRowsIncrement)
 {
     if (nrOfRowsIncrement > 0)
     {
-        int nrOfRows{m_NrOfRows + nrOfRowsIncrement};
+        size_type nrOfRows{m_NrOfRows + nrOfRowsIncrement};
 
         if (nrOfRows <= m_RowCapacity)
         {
-            for(int row{m_NrOfRows}; row<nrOfRows; ++row)
+            for(size_type row{m_NrOfRows}; row<nrOfRows; ++row)
             {
                 m_pBaseArrayPtr[row] = new DataType[m_ColumnCapacity];
             }
@@ -1750,9 +1752,9 @@ void Matrix<DataType>::_decreaseNrOfrows(int nrOfRowsDecrement)
 {
     if (nrOfRowsDecrement > 0 && nrOfRowsDecrement < m_NrOfRows)
     {
-        int nrOfRows{m_NrOfRows - nrOfRowsDecrement};
+        size_type nrOfRows{m_NrOfRows - nrOfRowsDecrement};
 
-        for (int row{nrOfRows}; row<m_NrOfRows; ++row)
+        for (size_type row{nrOfRows}; row<m_NrOfRows; ++row)
         {
             delete []m_pBaseArrayPtr[row];
             m_pBaseArrayPtr[row] = nullptr;
@@ -1778,9 +1780,9 @@ bool Matrix<DataType>::_isEqualTo(const Matrix<DataType>& matrix) const
 
         bool continueChecking{true};
 
-        for (int row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row<m_NrOfRows; ++row)
         {
-            for (int col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 if (m_pBaseArrayPtr[row][col] != matrix.m_pBaseArrayPtr[row][col])
                 {
@@ -1801,12 +1803,12 @@ bool Matrix<DataType>::_isEqualTo(const Matrix<DataType>& matrix) const
 }
 
 template<typename DataType>
-void Matrix<DataType>::_adjustSizeAndCapacity(int nrOfRows, int nrOfColumns)
+void Matrix<DataType>::_adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns)
 {
-    const int c_NewRowCapacity{nrOfRows + nrOfRows/4};
-    const int c_NewColumnCapacity{nrOfColumns + nrOfColumns/4};
-    const int c_OldRowCapacity{m_RowCapacity};
-    const int c_OldColumnCapacity{m_ColumnCapacity};
+    const size_type c_NewRowCapacity{nrOfRows + nrOfRows/4};
+    const size_type c_NewColumnCapacity{nrOfColumns + nrOfColumns/4};
+    const size_type c_OldRowCapacity{m_RowCapacity};
+    const size_type c_OldColumnCapacity{m_ColumnCapacity};
 
     if (m_RowCapacity < nrOfRows)
     {
@@ -1868,9 +1870,9 @@ typename Matrix<DataType>::ZIterator::value_type* Matrix<DataType>::ZIterator::o
 template<typename DataType>
 typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator[](ZIterator::difference_type index) const
 {
-    const int c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
-    const int c_ResultingIndex{c_CurrentIndex + index};
-    const int c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
+    const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+    const size_type c_ResultingIndex{c_CurrentIndex + index};
+    const size_type c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
 
     if (c_ResultingIndex < 0 || c_ResultingIndex >= c_UpperBound)
     {
@@ -1923,9 +1925,9 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator+(ZIte
 
     if (m_pMatrixPtr)
     {
-        const int c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
-        const int c_ResultingIndex{c_CurrentIndex + offset};
-        const int c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
+        const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+        const size_type c_ResultingIndex{c_CurrentIndex + offset};
+        const size_type c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
 
         zIterator.m_pMatrixPtr = m_pMatrixPtr;
         zIterator.m_NrOfMatrixRows = m_NrOfMatrixRows;
@@ -1944,9 +1946,9 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator-(ZIte
 
     if (m_pMatrixPtr)
     {
-        const int c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
-        const int c_ResultingIndex{c_CurrentIndex - offset};
-        const int c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
+        const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+        const size_type c_ResultingIndex{c_CurrentIndex - offset};
+        const size_type c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
 
         zIterator.m_pMatrixPtr = m_pMatrixPtr;
         zIterator.m_NrOfMatrixRows = m_NrOfMatrixRows;
@@ -1966,8 +1968,8 @@ typename Matrix<DataType>::ZIterator::difference_type Matrix<DataType>::ZIterato
         throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
     }
 
-    const int c_FirstItCurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
-    const int c_SecondItCurrentIndex{it.m_CurrentRowNr * it.m_NrOfMatrixColumns + it.m_CurrentColumnNr};
+    const size_type c_FirstItCurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+    const size_type c_SecondItCurrentIndex{it.m_CurrentRowNr * it.m_NrOfMatrixColumns + it.m_CurrentColumnNr};
 
     return (c_FirstItCurrentIndex - c_SecondItCurrentIndex);
 }
@@ -2045,19 +2047,19 @@ bool Matrix<DataType>::ZIterator::isValidWithMatrix(const Matrix &matrix) const
 }
 
 template<typename DataType>
-int Matrix<DataType>::ZIterator::getCurrentRowNr() const
+typename Matrix<DataType>::size_type Matrix<DataType>::ZIterator::getCurrentRowNr() const
 {
     return m_CurrentRowNr;
 }
 
 template<typename DataType>
-int Matrix<DataType>::ZIterator::getCurrentColumnNr() const
+typename Matrix<DataType>::size_type Matrix<DataType>::ZIterator::getCurrentColumnNr() const
 {
     return m_CurrentColumnNr;
 }
 
 template<typename DataType>
-Matrix<DataType>::ZIterator::ZIterator(const Matrix& matrix, int currentRowNr, int currentColumnNr)
+Matrix<DataType>::ZIterator::ZIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfMatrixRows{matrix.m_NrOfRows}
     , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
