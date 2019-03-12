@@ -1,6 +1,7 @@
 #include <QtTest>
 
 #include "../../../MatrixLib/matrix.h"
+#include "../../../MatrixLib/matrix_template_specializations.h"
 
 using StringMatrix = Matrix<std::string>;
 
@@ -13,6 +14,7 @@ public:
     ~StringMatrixTests();
 
 private slots:
+    void testBooleanOperator();
     void testMatrixesAreEqual();
     void testMatrixesAreNotEqual();
 
@@ -26,6 +28,39 @@ StringMatrixTests::StringMatrixTests()
 StringMatrixTests::~StringMatrixTests()
 {
 
+}
+
+void StringMatrixTests::testBooleanOperator()
+{
+    {
+        StringMatrix matrix{};
+
+        QVERIFY2(!matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        StringMatrix matrix{2, 3, {"", "", "", "", "", ""}};
+
+        QVERIFY2(!matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        StringMatrix matrix{2, 3, {"abcD", "-a bcd", "-0.123", " ", "1aBc-", ".A1b2"}};
+
+        QVERIFY2(matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        StringMatrix matrix{2, 3, {"", " ", "", "", "", ""}};
+
+        QVERIFY2(matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        StringMatrix matrix{2, 3, {"", "", "", "", "abc", ""}};
+
+        QVERIFY2(matrix, "The boolean operator does not return the correct value");
+    }
 }
 
 void StringMatrixTests::testMatrixesAreEqual()
