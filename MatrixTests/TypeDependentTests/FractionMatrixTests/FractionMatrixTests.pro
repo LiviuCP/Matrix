@@ -9,6 +9,9 @@ TEMPLATE = app
 SOURCES += \
     tst_fractionmatrixtests.cpp
 
+#uncomment the below #define after the Fraction library has been correctly setup
+#DEFINES = FRACTION
+
 QMAKE_LFLAGS = "-Wl,-rpath,\'$$top_srcdir/ThirdParty/Fractions/lib\'"
 
 LIBS += -L"$$top_srcdir/ThirdParty/Fractions/lib" -lFractionLib
