@@ -4,14 +4,14 @@
 #
 #-------------------------------------------------
 
-QT       -= core gui
+QT       -= gui
 
 TARGET = MatrixLib
 TEMPLATE = lib
 
 CONFIG += c++11 staticlib
 
-DEFINES += MATRIXLIB_LIBRARY
+DEFINES += MATRIXLIB_LIBRARY QT
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -32,7 +32,8 @@ macx {
 
 HEADERS += \
         matrix.h \
-        matrix_exceptions.h
+        matrix_exceptions.h \
+        matrix_template_specializations.h
 
 unix {
     target.path = /usr/lib

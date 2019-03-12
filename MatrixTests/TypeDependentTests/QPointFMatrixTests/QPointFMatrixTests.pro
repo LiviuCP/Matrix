@@ -8,3 +8,5 @@ TEMPLATE = app
 
 SOURCES += \
     tst_qpointfmatrixtests.cpp
+
+DEFINES = QT

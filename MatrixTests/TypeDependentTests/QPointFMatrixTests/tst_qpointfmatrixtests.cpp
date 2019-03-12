@@ -2,6 +2,7 @@
 #include <QPointF>
 
 #include "../../../MatrixLib/matrix.h"
+#include "../../../MatrixLib/matrix_template_specializations.h"
 
 using QPointFMatrix = Matrix<QPointF>;
 
@@ -14,7 +15,7 @@ public:
     ~QPointFMatrixTests();
 
 private slots:
-//    void testBooleanOperator(); // we need to specialize the QPointF Matrix in order to make this operator working (to be done later)
+    void testBooleanOperator();
     void testMatrixesAreEqual();
     void testMatrixesAreNotEqual();
 
@@ -30,10 +31,32 @@ QPointFMatrixTests::~QPointFMatrixTests()
 
 }
 
-//void QPointFMatrixTests::testBooleanOperator()
-//{
+void QPointFMatrixTests::testBooleanOperator()
+{
+    {
+        QPointFMatrix matrix{};
 
-//}
+        QVERIFY2(!matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        QPointFMatrix matrix{2, 3, {QPointF(0.0, 0.00), QPointF(-0.0, 0.000), QPointF(0.00, 0.0), QPointF(0.0, -0.000), QPointF(0.0000, 0.00), QPointF(-0.0000, 0.00)}};
+
+        QVERIFY2(!matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        QPointFMatrix matrix{2, 3, {QPointF(0.12, 10.00), QPointF(-0.5, 0.123), QPointF(1000.00, 100.1), QPointF(0.4, -0.005), QPointF(2.1234, 0.00), QPointF(-0.0001, 0.05)}};
+
+        QVERIFY2(matrix, "The boolean operator does not return the correct value");
+    }
+
+    {
+        QPointFMatrix matrix{2, 3, {QPointF(0.0, 0.00), QPointF(-0.0, 0.000), QPointF(0.00, 0.0), QPointF(0.3, -0.000), QPointF(0.0000, 0.00), QPointF(-0.0000, 0.00)}};
+
+        QVERIFY2(matrix, "The boolean operator does not return the correct value");
+    }
+}
 
 void QPointFMatrixTests::testMatrixesAreEqual()
 {
