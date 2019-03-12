@@ -127,12 +127,12 @@ public:
         size_type m_NrOfMatrixColumns;
     };
 
-    ZIterator zBegin();
-    ZIterator zEnd();
-    ZIterator zRowBegin(size_type rowNr);
-    ZIterator zRowEnd(size_type rowNr);
-    ZIterator getZIterator(size_type rowNr, size_type columnNr);
-    ZIterator getZIterator(size_type index);
+    ZIterator zBegin() const;
+    ZIterator zEnd() const;
+    ZIterator zRowBegin(size_type rowNr) const;
+    ZIterator zRowEnd(size_type rowNr) const;
+    ZIterator getZIterator(size_type rowNr, size_type columnNr) const;
+    ZIterator getZIterator(size_type index) const;
 
 private:
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
@@ -1498,19 +1498,19 @@ bool Matrix<DataType>::operator!=(const Matrix<DataType> &matrix) const
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::zBegin()
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zBegin() const
 {
     return ZIterator{*this, 0, 0};
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::zEnd()
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zEnd() const
 {
     return ZIterator{*this, m_NrOfRows-1, m_NrOfColumns};
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowBegin(size_type rowNr)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowBegin(size_type rowNr) const
 {
     if (rowNr < 0)
     {
@@ -1526,7 +1526,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowBegin(size_type rowNr
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowEnd(size_type rowNr)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowEnd(size_type rowNr) const
 {
     if (rowNr < 0)
     {
@@ -1553,7 +1553,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowEnd(size_type rowNr)
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(size_type rowNr, size_type columnNr)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(size_type rowNr, size_type columnNr) const
 {
     if (rowNr<0 || columnNr<0)
     {
@@ -1569,7 +1569,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(size_type ro
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(size_type index)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(size_type index) const
 {
     if (index < 0)
     {
