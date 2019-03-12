@@ -134,6 +134,10 @@ public:
     ZIterator getZIterator(size_type rowNr, size_type columnNr) const;
     ZIterator getZIterator(size_type index) const;
 
+    // required for being able to use the "auto" keyword for iterating through the matrix elements
+    ZIterator begin() const;
+    ZIterator end() const;
+
 private:
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
     void _allocMemory(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity = 0, size_type columnCapacity = 0);
@@ -1582,6 +1586,18 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(size_type in
     }
 
     return ZIterator{*this, index / m_NrOfColumns, index % m_NrOfColumns};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::begin() const
+{
+    return zBegin();
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator Matrix<DataType>::end() const
+{
+    return zEnd();
 }
 
 template<typename DataType>

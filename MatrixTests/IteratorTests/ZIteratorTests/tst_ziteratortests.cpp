@@ -38,6 +38,7 @@ private slots:
     void testStdCount();
     void testStdFind();
     void testStdSort();
+    void testIteratingWithAuto();
 };
 
 ZIteratorTests::ZIteratorTests()
@@ -1415,6 +1416,26 @@ void ZIteratorTests::testStdSort()
 
                  "The ZIterator objects don't work correctly, the matrix has not been sorted properly");
 
+    }
+}
+
+void ZIteratorTests::testIteratingWithAuto()
+{
+    {
+        IntMatrix matrix{2, 3, {-1, 2, -3, 4, -5, 6}};
+
+        int sum{0};
+        int prod{1};
+        int count{0};
+
+        for (auto element : matrix)
+        {
+            sum += element;
+            prod *= element;
+            ++count;
+        }
+
+        QVERIFY2(sum == 3 && prod == -720 && count == 6, "Iterating through the matrix elements by using the auto keyword does not work correctly");
     }
 }
 
