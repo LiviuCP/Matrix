@@ -4,4 +4,5 @@ SUBDIRS += \
     IntMatrixTests \
     DecimalMatrixTests \
     FractionMatrixTests \
-    QPointFMatrixTests
+    QPointFMatrixTests \
+    StringMatrixTests
