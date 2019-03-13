@@ -1437,6 +1437,40 @@ void ZIteratorTests::testIteratingWithAuto()
 
         QVERIFY2(sum == 3 && prod == -720 && count == 6, "Iterating through the matrix elements by using the auto keyword does not work correctly");
     }
+
+    {
+        IntMatrix matrix{2, 3, {-1, 2, 3, 4, -5, 6}};
+
+        int sum{0};
+
+        for (auto element : matrix)
+        {
+            if (element < 0)
+            {
+                element = element * (-1);
+            }
+
+            sum += element;
+        }
+
+        QVERIFY2(matrix.at(0, 0) == -1 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == 3 && matrix.at(1, 0) == 4 && matrix.at(1, 1) == -5 && matrix.at(1, 2) == 6 && sum == 21,
+                 "Iterating through the matrix elements by using the auto keyword does not work correctly");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {-1, 2, 3, 4, -5, 6}};
+
+        for (auto& element : matrix)
+        {
+            if (element < 0)
+            {
+                element = element * (-1);
+            }
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == 3 && matrix.at(1, 0) == 4 && matrix.at(1, 1) == 5 && matrix.at(1, 2) == 6,
+                 "Iterating through the matrix elements by using the auto keyword does not work correctly");
+    }
 }
 
 QTEST_APPLESS_MAIN(ZIteratorTests)
