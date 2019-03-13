@@ -16,29 +16,31 @@ public:
     ~ZIteratorTests();
 
 private slots:
-    void testPassingThroughAllElements();
     void testIncrementOperators();
     void testDecrementOperators();
     void testOperatorPlus();
     void testOperatorMinus();
     void testDifferenceOperator();
-    void testDereferenceStarOperator();
-    void testDereferenceArrowOperator();
-    void testDereferenceSquareBracketsOperator();
     void testIteratorsAreEqual();
     void testIteratorsAreNotEqual();
     void testSmallerThanOperator();
     void testSmallerThanOrEqualToOperator();
     void testGreaterThanOperator();
     void testGreaterThanOrEqualToOperator();
+    void testDereferenceStarOperator();
+    void testDereferenceArrowOperator();
+    void testDereferenceSquareBracketsOperator();
     void testIsValidWithMatrix();
     void testPositionGetters();
-    void testGetIterator();
+
+    void testPassingThroughAllElements();
     void testRowBeginEndIterators();
+    void testGetIterator();
+    void testIteratingWithAuto();
+
     void testStdCount();
     void testStdFind();
     void testStdSort();
-    void testIteratingWithAuto();
 };
 
 ZIteratorTests::ZIteratorTests()
@@ -49,77 +51,6 @@ ZIteratorTests::ZIteratorTests()
 ZIteratorTests::~ZIteratorTests()
 {
 
-}
-
-void ZIteratorTests::testPassingThroughAllElements()
-{
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, -7, 8, 9, 10, -11, 12}};
-        int count{0};
-        int sum{0};
-
-        for (IntMatrixZIterator it{matrix.zBegin()}; it != matrix.zEnd(); ++it)
-        {
-            ++count;
-            sum += *it;
-        }
-
-        QVERIFY2(count == 12, "Passing through through all matrix elements by using the Z iterator does not work correctly, total elements count is not correct");
-        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the Z iterator does not work correctly, sum of the elements is not correct");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, -7, 8, 9, 10, -11, 12}};
-        int count{0};
-        int sum{0};
-
-        IntMatrixZIterator it{matrix.zEnd()};
-
-        while (it != matrix.zBegin())
-        {
-            --it;
-            ++count;
-            sum += *it;
-        }
-
-        QVERIFY2(count == 12, "Passing through through all matrix elements by using the Z iterator does not work correctly, total elements count is not correct");
-        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the Z iterator does not work correctly, sum of the elements is not correct");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, -7, 8, 9, 10, -11, 12}};
-        int sum{0};
-
-        for (IntMatrixZIterator it{matrix.zBegin()}; it != matrix.zEnd(); ++it)
-        {
-            if (*it < 0)
-            {
-                *it *= -1;
-            }
-            sum += *it;
-        }
-
-        QVERIFY2(sum == 78, "Passing through through all matrix elements by using the Z iterator and calculating their absolute values does not work correctly, sum of the absolute values is not correct");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, -7, 8, 9, 10, -11, 12}};
-        int sum{0};
-
-        IntMatrixZIterator it{matrix.zEnd()};
-
-        while (it != matrix.zBegin())
-        {
-            --it;
-            if (*it < 0)
-            {
-                *it *= -1;
-            }
-            sum += *it;
-        }
-
-        QVERIFY2(sum == 78, "Passing through through all matrix elements by using the Z iterator and calculating their absolute values does not work correctly, sum of the absolute values is not correct");
-    }
 }
 
 void ZIteratorTests::testIncrementOperators()
@@ -560,114 +491,6 @@ void ZIteratorTests::testDifferenceOperator()
     }
 }
 
-void ZIteratorTests::testDereferenceStarOperator()
-{
-    {
-        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
-        IntMatrixZIterator readIter{matrix.zBegin()};
-
-        matrix.at(0, 2) = 10;
-        ++readIter;
-        ++readIter;
-
-        QVERIFY2(*readIter == 10, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
-        IntMatrixZIterator writeIter{matrix.zBegin()};
-
-        ++writeIter;
-        ++writeIter;
-        *writeIter = 10;
-
-        QVERIFY2(matrix.at(0, 2) == 10, "The dereference (*) operator does not work correctly, the value is not correctly written to the pointed location");
-    }
-}
-
-void ZIteratorTests::testDereferenceArrowOperator()
-{
-    {
-        StringMatrix matrix{2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-        StringMatrixIterator readIter{matrix.zBegin()};
-
-        ++readIter;
-
-        QVERIFY2(readIter->size() == 5, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
-    }
-
-    {
-        StringMatrix matrix{2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-        StringMatrixIterator writeIter{matrix.zBegin()};
-
-        ++writeIter;
-        ++writeIter;
-
-        writeIter->assign("abcdefghi");
-
-        QVERIFY2(matrix.at(0, 2) == "abcdefghi", "The dereference (->) operator does not work correctly, the method of the item class does not write the correct value to the expected location");
-    }
-}
-
-void ZIteratorTests::testDereferenceSquareBracketsOperator()
-{
-    {
-        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
-
-        IntMatrixZIterator firstReadIter{matrix.zBegin()};
-        IntMatrixZIterator secondReadIter{matrix.getZIterator(1, 0)};
-        IntMatrixZIterator thirdReadIter{matrix.zEnd()};
-
-        QVERIFY2(firstReadIter[0] == 1 && firstReadIter[1] == 2 && firstReadIter[2] == -3 && firstReadIter[3] == 4 && firstReadIter[4] == -5 && firstReadIter[5] == 6,
-                "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
-
-        QVERIFY2(secondReadIter[-3] == 1 && secondReadIter[-2] == 2 && secondReadIter[-1] == -3 && secondReadIter[0] == 4 && secondReadIter[1] == -5 && secondReadIter[2] == 6,
-                "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
-
-        QVERIFY2(thirdReadIter[-6] == 1 && thirdReadIter[-5] == 2 && thirdReadIter[-4] == -3 && thirdReadIter[-3] == 4 && thirdReadIter[-2] == -5 && thirdReadIter[-1] == 6,
-                "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
-
-        IntMatrixZIterator writeIter{matrix.zBegin()};
-
-        writeIter[0] = 7;
-        writeIter[2] = -8;
-        writeIter[5] = 9;
-
-        QVERIFY2(matrix.at(0, 0) == 7 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == -8 && matrix.at(1, 0) == 4 && matrix.at(1, 1) == -5 && matrix.at(1, 2) == 9,
-                 "The dereference square brackets operator doesn't work correctly, value has been written properly for at least one element");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
-
-        IntMatrixZIterator writeIter{matrix.getZIterator(1, 0)};
-
-        writeIter[-3] = 7;
-        writeIter[0] = -8;
-        writeIter[2] = 9;
-
-        QVERIFY2(matrix.at(0, 0) == 7 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == -3 && matrix.at(1, 0) == -8 && matrix.at(1, 1) == -5 && matrix.at(1, 2) == 9,
-                 "The dereference square brackets operator doesn't work correctly, value has been written properly for at least one element");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
-
-        IntMatrixZIterator writeIter{matrix.zEnd()};
-
-        writeIter[-6] = 7;
-        writeIter[-3] = -8;
-        writeIter[-1] = 9;
-
-        QVERIFY2(matrix.at(0, 0) == 7 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == -3 && matrix.at(1, 0) == -8 && matrix.at(1, 1) == -5 && matrix.at(1, 2) == 9,
-                 "The dereference square brackets operator doesn't work correctly, value has been written properly for at least one element");
-    }
-}
-
 void ZIteratorTests::testIteratorsAreEqual()
 {
     {
@@ -1036,6 +859,114 @@ void ZIteratorTests::testGreaterThanOrEqualToOperator()
     }
 }
 
+void ZIteratorTests::testDereferenceStarOperator()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator readIter{matrix.zBegin()};
+
+        matrix.at(0, 2) = 10;
+        ++readIter;
+        ++readIter;
+
+        QVERIFY2(*readIter == 10, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixZIterator writeIter{matrix.zBegin()};
+
+        ++writeIter;
+        ++writeIter;
+        *writeIter = 10;
+
+        QVERIFY2(matrix.at(0, 2) == 10, "The dereference (*) operator does not work correctly, the value is not correctly written to the pointed location");
+    }
+}
+
+void ZIteratorTests::testDereferenceArrowOperator()
+{
+    {
+        StringMatrix matrix{2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+        StringMatrixIterator readIter{matrix.zBegin()};
+
+        ++readIter;
+
+        QVERIFY2(readIter->size() == 5, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    }
+
+    {
+        StringMatrix matrix{2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+        StringMatrixIterator writeIter{matrix.zBegin()};
+
+        ++writeIter;
+        ++writeIter;
+
+        writeIter->assign("abcdefghi");
+
+        QVERIFY2(matrix.at(0, 2) == "abcdefghi", "The dereference (->) operator does not work correctly, the method of the item class does not write the correct value to the expected location");
+    }
+}
+
+void ZIteratorTests::testDereferenceSquareBracketsOperator()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+
+        IntMatrixZIterator firstReadIter{matrix.zBegin()};
+        IntMatrixZIterator secondReadIter{matrix.getZIterator(1, 0)};
+        IntMatrixZIterator thirdReadIter{matrix.zEnd()};
+
+        QVERIFY2(firstReadIter[0] == 1 && firstReadIter[1] == 2 && firstReadIter[2] == -3 && firstReadIter[3] == 4 && firstReadIter[4] == -5 && firstReadIter[5] == 6,
+                "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
+
+        QVERIFY2(secondReadIter[-3] == 1 && secondReadIter[-2] == 2 && secondReadIter[-1] == -3 && secondReadIter[0] == 4 && secondReadIter[1] == -5 && secondReadIter[2] == 6,
+                "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
+
+        QVERIFY2(thirdReadIter[-6] == 1 && thirdReadIter[-5] == 2 && thirdReadIter[-4] == -3 && thirdReadIter[-3] == 4 && thirdReadIter[-2] == -5 && thirdReadIter[-1] == 6,
+                "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+
+        IntMatrixZIterator writeIter{matrix.zBegin()};
+
+        writeIter[0] = 7;
+        writeIter[2] = -8;
+        writeIter[5] = 9;
+
+        QVERIFY2(matrix.at(0, 0) == 7 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == -8 && matrix.at(1, 0) == 4 && matrix.at(1, 1) == -5 && matrix.at(1, 2) == 9,
+                 "The dereference square brackets operator doesn't work correctly, value has been written properly for at least one element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+
+        IntMatrixZIterator writeIter{matrix.getZIterator(1, 0)};
+
+        writeIter[-3] = 7;
+        writeIter[0] = -8;
+        writeIter[2] = 9;
+
+        QVERIFY2(matrix.at(0, 0) == 7 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == -3 && matrix.at(1, 0) == -8 && matrix.at(1, 1) == -5 && matrix.at(1, 2) == 9,
+                 "The dereference square brackets operator doesn't work correctly, value has been written properly for at least one element");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+
+        IntMatrixZIterator writeIter{matrix.zEnd()};
+
+        writeIter[-6] = 7;
+        writeIter[-3] = -8;
+        writeIter[-1] = 9;
+
+        QVERIFY2(matrix.at(0, 0) == 7 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == -3 && matrix.at(1, 0) == -8 && matrix.at(1, 1) == -5 && matrix.at(1, 2) == 9,
+                 "The dereference square brackets operator doesn't work correctly, value has been written properly for at least one element");
+    }
+}
+
 void ZIteratorTests::testIsValidWithMatrix()
 {
     {
@@ -1143,6 +1074,88 @@ void ZIteratorTests::testPositionGetters()
     QVERIFY2(*newIt == 10, "The position getters do not work correctly, iterator dereferencing does not return the right value");
 }
 
+void ZIteratorTests::testPassingThroughAllElements()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, -7, 8, 9, 10, -11, 12}};
+        int count{0};
+        int sum{0};
+
+        for (IntMatrixZIterator it{matrix.zBegin()}; it != matrix.zEnd(); ++it)
+        {
+            ++count;
+            sum += *it;
+        }
+
+        QVERIFY2(count == 12, "Passing through through all matrix elements by using the Z iterator does not work correctly, total elements count is not correct");
+        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the Z iterator does not work correctly, sum of the elements is not correct");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, -7, 8, 9, 10, -11, 12}};
+        int count{0};
+        int sum{0};
+
+        IntMatrixZIterator it{matrix.zEnd()};
+
+        while (it != matrix.zBegin())
+        {
+            --it;
+            ++count;
+            sum += *it;
+        }
+
+        QVERIFY2(count == 12, "Passing through through all matrix elements by using the Z iterator does not work correctly, total elements count is not correct");
+        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the Z iterator does not work correctly, sum of the elements is not correct");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, -7, 8, 9, 10, -11, 12}};
+        int sum{0};
+
+        for (IntMatrixZIterator it{matrix.zBegin()}; it != matrix.zEnd(); ++it)
+        {
+            if (*it < 0)
+            {
+                *it *= -1;
+            }
+            sum += *it;
+        }
+
+        QVERIFY2(sum == 78, "Passing through through all matrix elements by using the Z iterator and calculating their absolute values does not work correctly, sum of the absolute values is not correct");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, -7, 8, 9, 10, -11, 12}};
+        int sum{0};
+
+        IntMatrixZIterator it{matrix.zEnd()};
+
+        while (it != matrix.zBegin())
+        {
+            --it;
+            if (*it < 0)
+            {
+                *it *= -1;
+            }
+            sum += *it;
+        }
+
+        QVERIFY2(sum == 78, "Passing through through all matrix elements by using the Z iterator and calculating their absolute values does not work correctly, sum of the absolute values is not correct");
+    }
+}
+
+void ZIteratorTests::testRowBeginEndIterators()
+{
+    IntMatrix matrix{3, 2, {1, 2, -3, 4, -5, 6}};
+
+    IntMatrixZIterator firstRowBeginIter{matrix.zRowBegin(0)};
+    IntMatrixZIterator secondRowEndIter{matrix.zRowEnd(1)};
+
+    QVERIFY2(*firstRowBeginIter == 1, "The matrix begin ZIterator of the first row does not point to the right element");
+    QVERIFY2(*secondRowEndIter == -5, "The matrix end ZIterator of the second row does not point to the right element");
+}
+
 void ZIteratorTests::testGetIterator()
 {
     {
@@ -1160,15 +1173,58 @@ void ZIteratorTests::testGetIterator()
     }
 }
 
-void ZIteratorTests::testRowBeginEndIterators()
+void ZIteratorTests::testIteratingWithAuto()
 {
-    IntMatrix matrix{3, 2, {1, 2, -3, 4, -5, 6}};
+    {
+        IntMatrix matrix{2, 3, {-1, 2, -3, 4, -5, 6}};
 
-    IntMatrixZIterator firstRowBeginIter{matrix.zRowBegin(0)};
-    IntMatrixZIterator secondRowEndIter{matrix.zRowEnd(1)};
+        int sum{0};
+        int prod{1};
+        int count{0};
 
-    QVERIFY2(*firstRowBeginIter == 1, "The matrix begin ZIterator of the first row does not point to the right element");
-    QVERIFY2(*secondRowEndIter == -5, "The matrix end ZIterator of the second row does not point to the right element");
+        for (auto element : matrix)
+        {
+            sum += element;
+            prod *= element;
+            ++count;
+        }
+
+        QVERIFY2(sum == 3 && prod == -720 && count == 6, "Iterating through the matrix elements by using the auto keyword does not work correctly");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {-1, 2, 3, 4, -5, 6}};
+
+        int sum{0};
+
+        for (auto element : matrix)
+        {
+            if (element < 0)
+            {
+                element = element * (-1);
+            }
+
+            sum += element;
+        }
+
+        QVERIFY2(matrix.at(0, 0) == -1 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == 3 && matrix.at(1, 0) == 4 && matrix.at(1, 1) == -5 && matrix.at(1, 2) == 6 && sum == 21,
+                 "Iterating through the matrix elements by using the auto keyword does not work correctly");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {-1, 2, 3, 4, -5, 6}};
+
+        for (auto& element : matrix)
+        {
+            if (element < 0)
+            {
+                element = element * (-1);
+            }
+        }
+
+        QVERIFY2(matrix.at(0, 0) == 1 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == 3 && matrix.at(1, 0) == 4 && matrix.at(1, 1) == 5 && matrix.at(1, 2) == 6,
+                 "Iterating through the matrix elements by using the auto keyword does not work correctly");
+    }
 }
 
 void ZIteratorTests::testStdCount()
@@ -1416,60 +1472,6 @@ void ZIteratorTests::testStdSort()
 
                  "The ZIterator objects don't work correctly, the matrix has not been sorted properly");
 
-    }
-}
-
-void ZIteratorTests::testIteratingWithAuto()
-{
-    {
-        IntMatrix matrix{2, 3, {-1, 2, -3, 4, -5, 6}};
-
-        int sum{0};
-        int prod{1};
-        int count{0};
-
-        for (auto element : matrix)
-        {
-            sum += element;
-            prod *= element;
-            ++count;
-        }
-
-        QVERIFY2(sum == 3 && prod == -720 && count == 6, "Iterating through the matrix elements by using the auto keyword does not work correctly");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {-1, 2, 3, 4, -5, 6}};
-
-        int sum{0};
-
-        for (auto element : matrix)
-        {
-            if (element < 0)
-            {
-                element = element * (-1);
-            }
-
-            sum += element;
-        }
-
-        QVERIFY2(matrix.at(0, 0) == -1 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == 3 && matrix.at(1, 0) == 4 && matrix.at(1, 1) == -5 && matrix.at(1, 2) == 6 && sum == 21,
-                 "Iterating through the matrix elements by using the auto keyword does not work correctly");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {-1, 2, 3, 4, -5, 6}};
-
-        for (auto& element : matrix)
-        {
-            if (element < 0)
-            {
-                element = element * (-1);
-            }
-        }
-
-        QVERIFY2(matrix.at(0, 0) == 1 && matrix.at(0, 1) == 2 && matrix.at(0, 2) == 3 && matrix.at(1, 0) == 4 && matrix.at(1, 1) == 5 && matrix.at(1, 2) == 6,
-                 "Iterating through the matrix elements by using the auto keyword does not work correctly");
     }
 }
 

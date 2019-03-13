@@ -29,10 +29,6 @@ public:
         // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
         ZIterator();
 
-        reference operator*() const;
-        value_type* operator->() const;
-        reference operator[](difference_type index) const;
-
         ZIterator operator++();
         ZIterator operator++(int unused);
         ZIterator operator--();
@@ -49,6 +45,10 @@ public:
         bool operator<=(const ZIterator& it) const;
         bool operator>(const ZIterator& it) const;
         bool operator>=(const ZIterator& it) const;
+
+        reference operator*() const;
+        value_type* operator->() const;
+        reference operator[](difference_type index) const;
 
         bool isValidWithMatrix(const Matrix& matrix) const;
 
@@ -169,43 +169,6 @@ Matrix<DataType>::ZIterator::ZIterator()
     , m_NrOfMatrixRows{0}
     , m_NrOfMatrixColumns{0}
 {
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator*() const
-{
-    if (m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
-    }
-
-    return m_pMatrixPtr[m_CurrentRowNr][m_CurrentColumnNr];
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ZIterator::value_type* Matrix<DataType>::ZIterator::operator->() const
-{
-    if (m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
-    }
-
-    return (m_pMatrixPtr[m_CurrentRowNr] + m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator[](ZIterator::difference_type index) const
-{
-    const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
-    const size_type c_ResultingIndex{c_CurrentIndex + index};
-    const size_type c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
-
-    if (c_ResultingIndex < 0 || c_ResultingIndex >= c_UpperBound)
-    {
-        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATOR_INDEX_OUT_OF_BOUNDS]};
-    }
-
-    return m_pMatrixPtr[c_ResultingIndex / m_NrOfMatrixColumns][c_ResultingIndex % m_NrOfMatrixColumns];
 }
 
 template<typename DataType>
@@ -364,6 +327,43 @@ bool Matrix<DataType>::ZIterator::operator>=(const ZIterator& it) const
     }
 
     return (m_CurrentRowNr > it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr >= it.m_CurrentColumnNr));
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator*() const
+{
+    if (m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
+    }
+
+    return m_pMatrixPtr[m_CurrentRowNr][m_CurrentColumnNr];
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator::value_type* Matrix<DataType>::ZIterator::operator->() const
+{
+    if (m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
+    }
+
+    return (m_pMatrixPtr[m_CurrentRowNr] + m_CurrentColumnNr);
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator[](ZIterator::difference_type index) const
+{
+    const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+    const size_type c_ResultingIndex{c_CurrentIndex + index};
+    const size_type c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
+
+    if (c_ResultingIndex < 0 || c_ResultingIndex >= c_UpperBound)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATOR_INDEX_OUT_OF_BOUNDS]};
+    }
+
+    return m_pMatrixPtr[c_ResultingIndex / m_NrOfMatrixColumns][c_ResultingIndex % m_NrOfMatrixColumns];
 }
 
 template<typename DataType>
