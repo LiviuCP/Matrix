@@ -809,13 +809,13 @@ template <typename DataType>
 void Matrix<DataType>::resizeWithValue(size_type nrOfRows, size_type nrOfColumns, const DataType& value, size_type rowCapacity, size_type columnCapacity)
 {
     // DataType should support the assign (=) operator
-    auto fillNewItems = [](Matrix<DataType>& dest, size_type beginRowIndex, size_type endRowIndex, size_type beginColumnIndex, size_type endColumnIndex, const DataType& value)
+    auto fillNewItems = [this, &value](size_type beginRowIndex, size_type endRowIndex, size_type beginColumnIndex, size_type endColumnIndex)
     {
         for (size_type row{beginRowIndex}; row<endRowIndex; ++row)
         {
             for (size_type col{beginColumnIndex}; col<endColumnIndex; ++col)
             {
-                dest.m_pBaseArrayPtr[row][col] = value;
+                m_pBaseArrayPtr[row][col] = value;
             }
         }
     };
@@ -829,18 +829,18 @@ void Matrix<DataType>::resizeWithValue(size_type nrOfRows, size_type nrOfColumns
     {
         if (c_ColumnDelta)
         {
-            fillNewItems(*this, 0, m_NrOfRows - c_RowDelta, m_NrOfColumns - c_ColumnDelta, m_NrOfColumns, value);
-            fillNewItems(*this, m_NrOfRows - c_RowDelta, m_NrOfRows, 0, m_NrOfColumns - c_ColumnDelta, value);
-            fillNewItems(*this, m_NrOfRows - c_RowDelta, m_NrOfRows, m_NrOfColumns - c_ColumnDelta, m_NrOfColumns, value);
+            fillNewItems(0, m_NrOfRows - c_RowDelta, m_NrOfColumns - c_ColumnDelta, m_NrOfColumns);
+            fillNewItems(m_NrOfRows - c_RowDelta, m_NrOfRows, 0, m_NrOfColumns - c_ColumnDelta);
+            fillNewItems(m_NrOfRows - c_RowDelta, m_NrOfRows, m_NrOfColumns - c_ColumnDelta, m_NrOfColumns);
         }
         else
         {
-            fillNewItems(*this, m_NrOfRows - c_RowDelta, m_NrOfRows, 0, m_NrOfColumns, value);
+            fillNewItems(m_NrOfRows - c_RowDelta, m_NrOfRows, 0, m_NrOfColumns);
         }
     }
     else if (c_ColumnDelta)
     {
-        fillNewItems(*this, 0, m_NrOfRows, m_NrOfColumns - c_ColumnDelta, m_NrOfColumns, value);
+        fillNewItems(0, m_NrOfRows, m_NrOfColumns - c_ColumnDelta, m_NrOfColumns);
     }
 }
 
