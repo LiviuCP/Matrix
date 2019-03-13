@@ -35,7 +35,7 @@ private slots:
 
     void testPassingThroughAllElements();
     void testRowBeginEndIterators();
-    void testGetIterator();
+    void testGetZIterator();
     void testIteratingWithAuto();
 
     void testStdCount();
@@ -1156,7 +1156,7 @@ void ZIteratorTests::testRowBeginEndIterators()
     QVERIFY2(*secondRowEndIter == -5, "The matrix end ZIterator of the second row does not point to the right element");
 }
 
-void ZIteratorTests::testGetIterator()
+void ZIteratorTests::testGetZIterator()
 {
     {
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
