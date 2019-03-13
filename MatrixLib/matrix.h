@@ -1605,23 +1605,8 @@ void Matrix<DataType>::_allocMemory(size_type nrOfRows, size_type nrOfColumns, s
 {
     if (nrOfRows > 0 && nrOfColumns > 0)
     {
-        if (rowCapacity < nrOfRows)
-        {
-            m_RowCapacity = nrOfRows;
-        }
-        else
-        {
-            m_RowCapacity = rowCapacity;
-        }
-
-        if (columnCapacity < nrOfColumns)
-        {
-            m_ColumnCapacity = nrOfColumns;
-        }
-        else
-        {
-            m_ColumnCapacity = columnCapacity;
-        }
+        m_RowCapacity = rowCapacity < nrOfRows ? nrOfRows : rowCapacity;
+        m_ColumnCapacity = columnCapacity < nrOfColumns ? nrOfColumns : columnCapacity;
 
         m_pBaseArrayPtr = new DataType*[m_RowCapacity];
 
