@@ -522,7 +522,7 @@ Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
 }
 
 template<typename DataType>
-Matrix<DataType>::Matrix(Matrix<DataType> &&matrix)
+Matrix<DataType>::Matrix(Matrix<DataType>&& matrix)
     : m_pBaseArrayPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfRows{matrix.m_NrOfRows}
     , m_NrOfColumns{matrix.m_NrOfColumns}
@@ -571,7 +571,7 @@ DataType& Matrix<DataType>::operator[](size_type index)
         throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
     }
 
-    return m_pBaseArrayPtr[index/m_NrOfColumns][index%m_NrOfColumns];
+    return m_pBaseArrayPtr[index / m_NrOfColumns][index % m_NrOfColumns];
 }
 
 template <typename DataType>
