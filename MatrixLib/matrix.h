@@ -1223,149 +1223,8 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_COLUMN_LENGTH]};
     }
 
-    const size_type c_NrOfRows{firstSrcMatrix.m_NrOfRows};
-    const size_type c_NrOfColumns{firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns};
-    const size_type c_RowCapacity{c_NrOfRows + c_NrOfRows / 4};
-    const size_type c_ColumnCapacity{c_NrOfColumns + c_NrOfColumns / 4};
-
-    if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
+    auto concatenate = [this](Matrix& firstSrcMatrix, Matrix& secondSrcMatrix)
     {
-        Matrix matrix{std::move(*this)};
-        _deallocMemory();
-        if (matrix.m_ColumnCapacity < c_NrOfColumns)
-        {
-            if (matrix.m_RowCapacity < c_NrOfRows)
-            {
-                _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
-            }
-            else
-            {
-                _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, c_ColumnCapacity);
-            }
-        }
-        else
-        {
-            _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
-        }
-
-        for(size_type row{0}; row<m_NrOfRows; ++row)
-        {
-            for (size_type col{0}; col<matrix.m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
-            }
-        }
-
-        for(size_type row{0}; row<m_NrOfRows; ++row)
-        {
-            for (size_type col{matrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-matrix.m_NrOfColumns];
-            }
-        }
-    }
-    else if (&firstSrcMatrix != this && (&secondSrcMatrix == this))
-    {
-        Matrix matrix{std::move(*this)};
-        _deallocMemory();
-        if (matrix.m_ColumnCapacity < c_NrOfColumns || matrix.m_RowCapacity < c_NrOfRows)
-        {
-            if (matrix.m_RowCapacity < c_NrOfRows)
-            {
-                _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
-            }
-            else
-            {
-                _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, c_ColumnCapacity);
-            }
-        }
-        else
-        {
-            _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
-        }
-
-        for (size_type row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
-        {
-            for (size_type col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
-            }
-        }
-
-        for (size_type row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
-        {
-            for (size_type col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
-            }
-        }
-    }
-    else if (&firstSrcMatrix == this && (&secondSrcMatrix == this))
-    {
-        Matrix matrix{std::move(*this)};
-        _deallocMemory();
-        if (matrix.m_ColumnCapacity < c_NrOfColumns || matrix.m_RowCapacity < c_NrOfRows)
-        {
-            if (matrix.m_RowCapacity < c_NrOfRows)
-            {
-                _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
-            }
-            else
-            {
-                _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, c_ColumnCapacity);
-            }
-        }
-        else
-        {
-            _allocMemory(c_NrOfRows, c_NrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
-        }
-
-        for(size_type row{0}; row<m_NrOfRows; ++row)
-        {
-            for (size_type col{0}; col<matrix.m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
-            }
-        }
-
-        for(size_type row{0}; row<m_NrOfRows; ++row)
-        {
-            for (size_type col{matrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col-matrix.m_NrOfColumns];
-            }
-        }
-    }
-    else
-    {
-        if (m_ColumnCapacity < c_NrOfColumns)
-        {
-            if (m_RowCapacity < c_NrOfRows)
-            {
-                _deallocMemory();
-                _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
-            }
-            else
-            {
-                size_type sameRowCapacity{m_RowCapacity};
-                _deallocMemory();
-                _allocMemory(c_NrOfRows, c_NrOfColumns, sameRowCapacity, c_ColumnCapacity);
-            }
-        }
-        else if (m_RowCapacity < c_NrOfRows)
-        {
-            size_type sameColumnCapacity{m_ColumnCapacity};
-            _deallocMemory();
-            _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, sameColumnCapacity);
-        }
-        else
-        {
-            size_type sameRowCapacity{m_RowCapacity};
-            size_type sameColumnCapacity{m_ColumnCapacity};
-            _deallocMemory();
-            _allocMemory(c_NrOfRows, c_NrOfColumns, sameRowCapacity, sameColumnCapacity);
-        }
-
         for(size_type row{0}; row<m_NrOfRows; ++row)
         {
             for (size_type col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
@@ -1381,7 +1240,29 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
                 m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
             }
         }
+    };
+
+    const size_type c_NewNrOfRows{firstSrcMatrix.m_NrOfRows};
+    const size_type c_NewNrOfColumns{firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns};
+    const size_type c_NewRowCapacity{c_NewNrOfRows + c_NewNrOfRows / 4};
+    const size_type c_NewColumnCapacity{c_NewNrOfColumns + c_NewNrOfColumns / 4};
+    const size_type c_OldRowCapacity{m_RowCapacity};
+    const size_type c_OldColumnCapacity{m_ColumnCapacity};
+
+    Matrix matrix{};
+
+    if (&firstSrcMatrix == this || (&secondSrcMatrix == this))
+    {
+        matrix = std::move(*this);
     }
+
+    _deallocMemory(); // actually not required, just for the good practice's sake!
+    _allocMemory(c_NewNrOfRows,
+                 c_NewNrOfColumns,
+                 c_OldRowCapacity < c_NewNrOfRows ? c_NewRowCapacity : c_OldRowCapacity,
+                 c_OldColumnCapacity < c_NewNrOfColumns ? c_NewColumnCapacity : c_OldColumnCapacity);
+
+    concatenate(&firstSrcMatrix == this ? matrix : firstSrcMatrix, &secondSrcMatrix == this ? matrix : secondSrcMatrix);
 }
 
 template<typename DataType>
