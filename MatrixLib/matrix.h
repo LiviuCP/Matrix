@@ -1095,123 +1095,97 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataTyp
         throw std::runtime_error{Matr::exceptions[Matr::Error::MATRIXES_UNEQUAL_ROW_LENGTH]};
     }
 
-    const size_type c_NrOfRows{firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows};
-    const size_type c_NrOfColumns{firstSrcMatrix.m_NrOfColumns};
-    const size_type c_RowCapacity{c_NrOfRows + c_NrOfRows / 4};
-    const size_type c_ColumnCapacity{c_NrOfColumns + c_NrOfColumns / 4};
+    const size_type c_OldNrOfRows{m_NrOfRows};
+    const size_type c_NewNrOfRows{firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows};
+    const size_type c_OldRowCapacity{m_RowCapacity};
+    const size_type c_OldColumnCapacity{m_ColumnCapacity};
+    const size_type c_NewRowCapacity{c_OldRowCapacity < c_NewNrOfRows ? c_NewNrOfRows + c_NewNrOfRows / 4 : c_OldRowCapacity};
+    const size_type c_NewColumnCapacity{firstSrcMatrix.m_NrOfColumns + firstSrcMatrix.m_NrOfColumns / 4};
 
-    if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
+    auto copyElements = [this](const Matrix& srcMatrix, size_type rangeStart, size_type rangeEnd)
     {
-        const size_type c_StartingRowNr{m_NrOfRows};
-        if (m_RowCapacity < c_NrOfRows)
-        {
-            _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
-        }
-        _increaseNrOfRows(c_NrOfRows - m_NrOfRows);
-
-        for (size_type row{c_StartingRowNr}; row<m_NrOfRows; ++row)
+        for (size_type row{rangeStart}; row<rangeEnd; ++row)
         {
             for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
-                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-c_StartingRowNr][col];
+                m_pBaseArrayPtr[row][col] = srcMatrix.m_pBaseArrayPtr[row-rangeStart][col];
             }
         }
+    };
+
+    if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
+    {
+        if (c_OldRowCapacity < c_NewNrOfRows)
+        {
+            _increaseRowCapacity(c_NewRowCapacity - c_OldRowCapacity);
+        }
+        _increaseNrOfRows(c_NewNrOfRows - c_OldNrOfRows);
+
+        copyElements(secondSrcMatrix, c_OldNrOfRows, m_NrOfRows);
     }
     else if (&firstSrcMatrix != this && (&secondSrcMatrix == this))
     {
-        const size_type c_NewRowCapacity{m_RowCapacity < c_NrOfRows ? c_RowCapacity : m_RowCapacity};
         DataType** pBaseArrayPtr{new DataType*[c_NewRowCapacity]};
 
+        // deep copy the elements of the first source matrix (instead of copying the row pointers) to avoid column capacity mismatches
         for (size_type row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
         {
-            pBaseArrayPtr[row] = new DataType[m_ColumnCapacity];
-        }
+            pBaseArrayPtr[row] = new DataType[c_OldColumnCapacity];
 
-        for (size_type row{firstSrcMatrix.m_NrOfRows}; row<c_NrOfRows; ++row)
-        {
-            pBaseArrayPtr[row] = m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows];
-            m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows] = nullptr;
-        }
-
-        for (size_type row{c_NrOfRows}; row<c_NewRowCapacity; ++row)
-        {
-            pBaseArrayPtr[row] = nullptr;
-        }
-
-        for (size_type row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
-        {
             for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
                 pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
             }
         }
 
+        // shallow copy the rows of the second source matrix (current matrix)
+        for (size_type row{firstSrcMatrix.m_NrOfRows}; row<c_NewNrOfRows; ++row)
+        {
+            pBaseArrayPtr[row] = m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows];
+            m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows] = nullptr;
+        }
+
+        // unused rows remain "empty"
+        for (size_type row{c_NewNrOfRows}; row<c_NewRowCapacity; ++row)
+        {
+            pBaseArrayPtr[row] = nullptr;
+        }
+
         delete []m_pBaseArrayPtr;
         m_pBaseArrayPtr = pBaseArrayPtr;
         pBaseArrayPtr = nullptr;
-        m_NrOfRows = c_NrOfRows;
+        m_NrOfRows = c_NewNrOfRows;
         m_RowCapacity = c_NewRowCapacity;
     }
     else if (&firstSrcMatrix == this && (&secondSrcMatrix == this))
     {
-        const size_type c_StartingRowNr{m_NrOfRows};
-        if (m_RowCapacity < c_NrOfRows)
+        if (c_OldRowCapacity < c_NewNrOfRows)
         {
-            _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
+            _increaseRowCapacity(c_NewRowCapacity - c_OldRowCapacity);
         }
-        _increaseNrOfRows(m_NrOfRows);
+        _increaseNrOfRows(c_OldNrOfRows);
 
-        for (size_type row{c_StartingRowNr}; row<m_NrOfRows; ++row)
-        {
-            for (size_type col{0}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row-c_StartingRowNr][col];
-            }
-        }
+        copyElements(*this, c_OldNrOfRows, m_NrOfRows);
     }
     else
     {
-        if (m_ColumnCapacity < c_NrOfColumns)
+        if (c_OldColumnCapacity < firstSrcMatrix.m_NrOfColumns)
         {
-            if (m_RowCapacity < c_NrOfRows)
-            {
-                _deallocMemory();
-                _allocMemory(c_NrOfRows, c_NrOfColumns, c_RowCapacity, c_ColumnCapacity);
-            }
-            else
-            {
-                const size_type c_SameRowCapacity{m_RowCapacity};
-                _deallocMemory();
-                _allocMemory(c_NrOfRows, c_NrOfColumns, c_SameRowCapacity, c_ColumnCapacity);
-            }
-        }
-        else if (m_RowCapacity < c_NrOfRows)
-        {
-            _increaseRowCapacity(c_RowCapacity - m_RowCapacity);
-            _increaseNrOfRows(c_NrOfRows - m_NrOfRows);
-            m_NrOfColumns = c_NrOfColumns;
+            _deallocMemory();
+            _allocMemory(c_NewNrOfRows, firstSrcMatrix.m_NrOfColumns, c_OldRowCapacity < c_NewNrOfRows ? c_NewRowCapacity : c_OldRowCapacity, c_NewColumnCapacity);
         }
         else
         {
-            _increaseNrOfRows(c_NrOfRows - m_NrOfRows);
-            m_NrOfColumns = c_NrOfColumns;
+            if (c_OldRowCapacity < c_NewNrOfRows)
+            {
+                _increaseRowCapacity(c_NewRowCapacity - c_OldRowCapacity);
+            }
+            _increaseNrOfRows(c_NewNrOfRows - c_OldNrOfRows);
+            m_NrOfColumns = firstSrcMatrix.m_NrOfColumns;
         }
 
-        for (size_type row{0}; row<firstSrcMatrix.m_NrOfRows; ++row)
-        {
-            for (size_type col{0}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
-            }
-        }
-
-        for (size_type row{firstSrcMatrix.m_NrOfRows}; row<m_NrOfRows; ++row)
-        {
-            for (size_type col{0}; col<m_NrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row-firstSrcMatrix.m_NrOfRows][col];
-            }
-        }
+        copyElements(firstSrcMatrix, 0, firstSrcMatrix.m_NrOfRows);
+        copyElements(secondSrcMatrix, firstSrcMatrix.m_NrOfRows, m_NrOfRows);
     }
 }
 
