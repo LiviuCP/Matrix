@@ -1263,36 +1263,32 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<Data
     }
 
     const size_type c_FirstDestMatrixNrOfRows{splitRowNr};
-    const size_type c_FirstDestMatrixNrOfColumns{m_NrOfColumns};
-
     const size_type c_SecondDestMatrixNrOfRows{m_NrOfRows - splitRowNr};
-    const size_type c_SecondDestMatrixNrOfColumns{m_NrOfColumns};
+    const size_type c_EachDestMatrixNrOfColumns{m_NrOfColumns};
+    const size_type c_CurrentMatrixOldRowCapacity{m_RowCapacity};
+    const size_type c_CurrentMatrixOldColumnCapacity{m_ColumnCapacity};
 
-    if (&firstDestMatrix == this && (&secondDestMatrix != this))
+    auto copyElements = [this](Matrix& destMatrix, size_type rangeStart, size_type rangeEnd)
     {
-        secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns);
-
-        for (size_type row{splitRowNr}; row<m_NrOfRows; ++row)
+        for (size_type row{rangeStart}; row<rangeEnd; ++row)
         {
             for (size_type col{0}; col<m_NrOfColumns; ++col)
             {
-                secondDestMatrix.m_pBaseArrayPtr[row-splitRowNr][col] = m_pBaseArrayPtr[row][col];
+                destMatrix.m_pBaseArrayPtr[row-rangeStart][col] = m_pBaseArrayPtr[row][col];
             }
         }
+    };
 
+    if (&firstDestMatrix == this && (&secondDestMatrix != this))
+    {
+        secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_EachDestMatrixNrOfColumns);
+        copyElements(secondDestMatrix, splitRowNr, m_NrOfRows);
         firstDestMatrix._decreaseNrOfrows(m_NrOfRows - c_FirstDestMatrixNrOfRows);
     }
     else if (&firstDestMatrix != this && (&secondDestMatrix == this))
     {
-        firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns);
-
-        for (size_type row{0}; row<splitRowNr; ++row)
-        {
-            for (size_type col{0}; col<m_NrOfColumns; ++col)
-            {
-                firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
-            }
-        }
+        firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_EachDestMatrixNrOfColumns);
+        copyElements(firstDestMatrix, 0, splitRowNr);
 
         DataType** pBaseArrayPtr{new DataType*[secondDestMatrix.m_RowCapacity]};
 
@@ -1307,38 +1303,21 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<Data
             pBaseArrayPtr[row] = nullptr;
         }
 
-        size_type sameRowCapacity{secondDestMatrix.m_RowCapacity};
-        size_type sameColumnCapacity{secondDestMatrix.m_ColumnCapacity};
         _deallocMemory();
 
         m_pBaseArrayPtr = pBaseArrayPtr;
         pBaseArrayPtr = nullptr;
-
         m_NrOfRows = c_SecondDestMatrixNrOfRows;
-        m_NrOfColumns = c_SecondDestMatrixNrOfColumns;
-        m_RowCapacity = sameRowCapacity;
-        m_ColumnCapacity = sameColumnCapacity;
+        m_NrOfColumns = c_EachDestMatrixNrOfColumns;
+        m_RowCapacity = c_CurrentMatrixOldRowCapacity;
+        m_ColumnCapacity = c_CurrentMatrixOldColumnCapacity;
     }
     else
     {
-        firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns);
-        secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns);
-
-        for (size_type row{0}; row<splitRowNr; ++row)
-        {
-            for (size_type col{0}; col<m_NrOfColumns; ++col)
-            {
-                firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
-            }
-        }
-
-        for (size_type row{splitRowNr}; row<m_NrOfRows; ++row)
-        {
-            for (size_type col{0}; col<m_NrOfColumns; ++col)
-            {
-                secondDestMatrix.m_pBaseArrayPtr[row-splitRowNr][col] = m_pBaseArrayPtr[row][col];
-            }
-        }
+        firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_EachDestMatrixNrOfColumns);
+        secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_EachDestMatrixNrOfColumns);
+        copyElements(firstDestMatrix, 0, splitRowNr);
+        copyElements(secondDestMatrix, splitRowNr, m_NrOfRows);
     }
 }
 
