@@ -1391,80 +1391,52 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
         throw std::runtime_error{Matr::exceptions[Matr::Error::RESULT_NO_COLUMNS]};
     }
 
-    const size_type c_FirstDestMatrixNrOfRows{m_NrOfRows};
+    const size_type c_EachDestMatrixNrOfRows{m_NrOfRows};
     const size_type c_FirstDestMatrixNrOfColumns{splitColumnNr};
-
-    const size_type c_SecondDestMatrixNrOfRows{m_NrOfRows};
     const size_type c_SecondDestMatrixNrOfColumns{m_NrOfColumns - splitColumnNr};
+
+    auto copyElements = [c_EachDestMatrixNrOfRows](const Matrix& srcMatrix, Matrix& destMatrix, size_type rangeStart, size_type rangeEnd, diff_type srcColumnIndexOffset, diff_type destColumnIndexOffset)
+    {
+        for (size_type row{0}; row<c_EachDestMatrixNrOfRows; ++row)
+        {
+            for (size_type col{rangeStart}; col<rangeEnd; ++col)
+            {
+                destMatrix.m_pBaseArrayPtr[row][col-destColumnIndexOffset] = srcMatrix.m_pBaseArrayPtr[row][col+srcColumnIndexOffset];
+            }
+        }
+    };
 
     if (&firstDestMatrix == this && (&secondDestMatrix != this))
     {
-        secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns);
+        secondDestMatrix._adjustSizeAndCapacity(c_EachDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns);
 
-        for (size_type row{0}; row<m_NrOfRows; ++row)
-        {
-            for (size_type col{splitColumnNr}; col<m_NrOfColumns; ++col)
-            {
-                secondDestMatrix.m_pBaseArrayPtr[row][col-splitColumnNr] = m_pBaseArrayPtr[row][col];
-            }
-        }
+        copyElements(*this, secondDestMatrix, splitColumnNr, m_NrOfColumns, 0, splitColumnNr);
 
         Matrix matrix{std::move(*this)};
-        _deallocMemory();
-        _allocMemory(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
+        _deallocMemory(); // actually not required, just for the good practice's sake!
+        _allocMemory(c_EachDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
 
-        for (size_type row{0}; row<m_NrOfRows; ++row)
-        {
-            for (size_type col{0}; col<splitColumnNr; ++col)
-            {
-                firstDestMatrix.m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col];
-            }
-        }
+        copyElements(matrix, firstDestMatrix, 0, splitColumnNr, 0, 0);
     }
     else if (&firstDestMatrix != this && (&secondDestMatrix == this))
     {
-        firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns);
+        firstDestMatrix._adjustSizeAndCapacity(c_EachDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns);
 
-        for (size_type row{0}; row<m_NrOfRows; ++row)
-        {
-            for (size_type col{0}; col<splitColumnNr; ++col)
-            {
-                firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
-            }
-        }
+        copyElements(*this, firstDestMatrix, 0, splitColumnNr, 0, 0);
 
         Matrix matrix{std::move(*this)};
-        _deallocMemory();
-        _allocMemory(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
+        _deallocMemory(); // actually not required, just for the good practice's sake!
+        _allocMemory(c_EachDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
 
-        for (size_type row{0}; row<c_SecondDestMatrixNrOfRows; ++row)
-        {
-            for (size_type col{0}; col<c_SecondDestMatrixNrOfColumns; ++col)
-            {
-                m_pBaseArrayPtr[row][col] = matrix.m_pBaseArrayPtr[row][col+splitColumnNr];
-            }
-        }
+        copyElements(matrix, *this, 0, c_SecondDestMatrixNrOfColumns, splitColumnNr, 0);
     }
     else
     {
-        firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns);
-        secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns);
+        firstDestMatrix._adjustSizeAndCapacity(c_EachDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns);
+        secondDestMatrix._adjustSizeAndCapacity(c_EachDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns);
 
-        for (size_type row{0}; row<m_NrOfRows; ++row)
-        {
-            for (size_type col{0}; col<splitColumnNr; ++col)
-            {
-                firstDestMatrix.m_pBaseArrayPtr[row][col] = m_pBaseArrayPtr[row][col];
-            }
-        }
-
-        for (size_type row{0}; row<m_NrOfRows; ++row)
-        {
-            for (size_type col{splitColumnNr}; col<m_NrOfColumns; ++col)
-            {
-                secondDestMatrix.m_pBaseArrayPtr[row][col-splitColumnNr] = m_pBaseArrayPtr[row][col];
-            }
-        }
+        copyElements(*this, firstDestMatrix, 0, splitColumnNr, 0, 0);
+        copyElements(*this, secondDestMatrix, splitColumnNr, m_NrOfColumns, 0, splitColumnNr);
     }
 }
 
