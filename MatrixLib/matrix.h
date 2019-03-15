@@ -1940,29 +1940,8 @@ void Matrix<DataType>::_adjustSizeAndCapacity(size_type nrOfRows, size_type nrOf
     const size_type c_OldRowCapacity{m_RowCapacity};
     const size_type c_OldColumnCapacity{m_ColumnCapacity};
 
-    if (m_RowCapacity < nrOfRows)
-    {
-        if (m_ColumnCapacity < nrOfColumns)
-        {
-            _deallocMemory();
-            _allocMemory(nrOfRows, nrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
-        }
-        else
-        {
-            _deallocMemory();
-            _allocMemory(nrOfRows, nrOfColumns, c_NewRowCapacity, c_OldColumnCapacity);
-        }
-    }
-    else if (m_ColumnCapacity < nrOfColumns)
-    {
-        _deallocMemory();
-        _allocMemory(nrOfRows, nrOfColumns, c_OldRowCapacity, c_NewColumnCapacity);
-    }
-    else
-    {
-        _deallocMemory();
-        _allocMemory(nrOfRows, nrOfColumns, c_OldRowCapacity, c_OldColumnCapacity);
-    }
+    _deallocMemory();
+    _allocMemory(nrOfRows, nrOfColumns, c_OldRowCapacity < nrOfRows ? c_NewRowCapacity : c_OldRowCapacity, c_OldColumnCapacity < nrOfColumns ? c_NewColumnCapacity : c_OldColumnCapacity);
 }
 
 #endif // MATRIX_H
