@@ -11,11 +11,9 @@ public:
     ~FractionMatrixTests();
 
 private slots:
-#ifdef FRACTION
     void testBooleanOperator();
     void testMatrixesAreEqual();
     void testMatrixesAreNotEqual();
-#endif
 
 };
 
@@ -30,8 +28,6 @@ FractionMatrixTests::~FractionMatrixTests()
 {
 
 }
-
-#ifdef FRACTION
 
 #include "fraction.h"
 
@@ -137,8 +133,6 @@ void FractionMatrixTests::testMatrixesAreNotEqual()
         QVERIFY2(firstMatrix != secondMatrix && secondMatrix != firstMatrix, "Matrixes are equal");
     }
 }
-
-#endif
 
 QTEST_APPLESS_MAIN(FractionMatrixTests)
 
