@@ -20,7 +20,7 @@ After building and running the tests for the Matrix library the required steps f
 3) From the build directory of the Fractions repo, subdirectory FractionLib copy the whole content to Fractions/lib
 4) From the cloned Fractions repo, subdirectory FractionLib copy the .h files to Fractions/include
 5) In the .pro file of TypeDependentTests uncomment the FractionMatrixTests subproject
-6) Uncomment the DEFINES=FRACTION in FractionMatrixTests.pro, then build and run FractionMatrixTests
+6) Build and run FractionMatrixTests
 
 2. ESSENTIAL FUNCTIONALITY
 
