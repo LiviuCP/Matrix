@@ -68,6 +68,60 @@ public:
         size_type m_NrOfMatrixColumns;
     };
 
+    class ConstZIterator
+    {
+        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
+        friend class Matrix;
+    public:
+        // all these are required for STL compatibility
+        using iterator_category = std::random_access_iterator_tag;
+        using value_type = DataType;
+        using difference_type = diff_type;
+        using pointer = DataType**;
+        using reference = const DataType&;
+
+        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
+        ConstZIterator();
+
+        ConstZIterator operator++();
+        ConstZIterator operator++(int unused);
+        ConstZIterator operator--();
+        ConstZIterator operator--(int unused);
+
+        ConstZIterator operator+(difference_type offset);
+        ConstZIterator operator-(difference_type offset);
+
+        difference_type operator-(const ConstZIterator& it) const;
+
+        bool operator==(const ConstZIterator& it) const;
+        bool operator!=(const ConstZIterator& it) const;
+        bool operator<(const ConstZIterator& it) const;
+        bool operator<=(const ConstZIterator& it) const;
+        bool operator>(const ConstZIterator& it) const;
+        bool operator>=(const ConstZIterator& it) const;
+
+        reference operator*() const;
+        const value_type* operator->() const;
+        reference operator[](difference_type index) const;
+
+        bool isValidWithMatrix(const Matrix& matrix) const;
+
+        size_type getCurrentRowNr() const;
+        size_type getCurrentColumnNr() const;
+
+    private:
+        ConstZIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr);
+
+        void _increment();
+        void _decrement();
+
+        pointer m_pMatrixPtr;
+        size_type m_CurrentRowNr;
+        size_type m_CurrentColumnNr;
+        size_type m_NrOfMatrixRows;
+        size_type m_NrOfMatrixColumns;
+    };
+
     Matrix();
     Matrix(size_type nrOfRows, size_type nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
     Matrix(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType);
@@ -133,9 +187,18 @@ public:
     ZIterator getZIterator(size_type rowNr, size_type columnNr) const;
     ZIterator getZIterator(size_type index) const;
 
+    ConstZIterator constZBegin() const;
+    ConstZIterator constZEnd() const;
+    ConstZIterator constZRowBegin(size_type rowNr) const;
+    ConstZIterator constZRowEnd(size_type rowNr) const;
+    ConstZIterator getConstZIterator(size_type rowNr, size_type columnNr) const;
+    ConstZIterator getConstZIterator(size_type index) const;
+
     // required for being able to use the "auto" keyword for iterating through the matrix elements
     ZIterator begin() const;
     ZIterator end() const;
+    ConstZIterator cbegin() const;
+    ConstZIterator cend() const;
 
 private:
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
@@ -161,6 +224,7 @@ private:
     size_type m_ColumnCapacity;
 };
 
+// 1) ZIterator - iterates within matrix from [0][0] to the end row by row
 template<typename DataType>
 Matrix<DataType>::ZIterator::ZIterator()
     : m_pMatrixPtr{nullptr}
@@ -433,6 +497,285 @@ void Matrix<DataType>::ZIterator::_decrement()
         }
     }
 }
+
+// 2) Const ZIterator
+
+template<typename DataType>
+Matrix<DataType>::ConstZIterator::ConstZIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_CurrentRowNr{-1}
+    , m_CurrentColumnNr{-1}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator++()
+{
+    _increment();
+    return *this;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator++(int unused)
+{
+    (void) unused;
+    ConstZIterator zIterator{*this};
+
+    _increment();
+
+    return zIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator--()
+{
+    _decrement();
+    return *this;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator--(int unused)
+{
+    (void) unused;
+    ConstZIterator zIterator{*this};
+
+    _decrement();
+
+    return zIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator+(ConstZIterator::difference_type offset)
+{
+    ConstZIterator zIterator{};
+
+    if (m_pMatrixPtr)
+    {
+        const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+        const size_type c_ResultingIndex{c_CurrentIndex + offset};
+        const size_type c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
+
+        zIterator.m_pMatrixPtr = m_pMatrixPtr;
+        zIterator.m_NrOfMatrixRows = m_NrOfMatrixRows;
+        zIterator.m_NrOfMatrixColumns = m_NrOfMatrixColumns;
+        zIterator.m_CurrentRowNr = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? m_NrOfMatrixRows - 1 : c_ResultingIndex / m_NrOfMatrixColumns;
+        zIterator.m_CurrentColumnNr = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? m_NrOfMatrixColumns : c_ResultingIndex % m_NrOfMatrixColumns;
+    }
+
+    return zIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator-(ConstZIterator::difference_type offset)
+{
+    ConstZIterator zIterator{};
+
+    if (m_pMatrixPtr)
+    {
+        const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+        const size_type c_ResultingIndex{c_CurrentIndex - offset};
+        const size_type c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
+
+        zIterator.m_pMatrixPtr = m_pMatrixPtr;
+        zIterator.m_NrOfMatrixRows = m_NrOfMatrixRows;
+        zIterator.m_NrOfMatrixColumns = m_NrOfMatrixColumns;
+        zIterator.m_CurrentRowNr = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? m_NrOfMatrixRows - 1 : c_ResultingIndex / m_NrOfMatrixColumns;
+        zIterator.m_CurrentColumnNr = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? m_NrOfMatrixColumns : c_ResultingIndex % m_NrOfMatrixColumns;
+    }
+
+    return zIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator::difference_type Matrix<DataType>::ConstZIterator::operator-(const ConstZIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    const size_type c_FirstItCurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+    const size_type c_SecondItCurrentIndex{it.m_CurrentRowNr * it.m_NrOfMatrixColumns + it.m_CurrentColumnNr};
+
+    return (c_FirstItCurrentIndex - c_SecondItCurrentIndex);
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstZIterator::operator==(const ConstZIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr == it.m_CurrentColumnNr);
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstZIterator::operator!=(const ConstZIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return (m_CurrentRowNr != it.m_CurrentRowNr || m_CurrentColumnNr != it.m_CurrentColumnNr);
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstZIterator::operator<(const ConstZIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return (m_CurrentRowNr < it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr < it.m_CurrentColumnNr));
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstZIterator::operator<=(const ConstZIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return (m_CurrentRowNr < it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr <= it.m_CurrentColumnNr));
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstZIterator::operator>(const ConstZIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return (m_CurrentRowNr > it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr > it.m_CurrentColumnNr));
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstZIterator::operator>=(const ConstZIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return (m_CurrentRowNr > it.m_CurrentRowNr || (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr >= it.m_CurrentColumnNr));
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator::reference Matrix<DataType>::ConstZIterator::operator*() const
+{
+    if (m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
+    }
+
+    return m_pMatrixPtr[m_CurrentRowNr][m_CurrentColumnNr];
+}
+
+template<typename DataType> const
+typename Matrix<DataType>::ConstZIterator::value_type* Matrix<DataType>::ConstZIterator::operator->() const
+{
+    if (m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
+    }
+
+    const value_type* result{m_pMatrixPtr[m_CurrentRowNr] + m_CurrentColumnNr};
+
+    return result;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator::reference Matrix<DataType>::ConstZIterator::operator[](ConstZIterator::difference_type index) const
+{
+    const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
+    const size_type c_ResultingIndex{c_CurrentIndex + index};
+    const size_type c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
+
+    if (c_ResultingIndex < 0 || c_ResultingIndex >= c_UpperBound)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATOR_INDEX_OUT_OF_BOUNDS]};
+    }
+
+    return m_pMatrixPtr[c_ResultingIndex / m_NrOfMatrixColumns][c_ResultingIndex % m_NrOfMatrixColumns];
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstZIterator::isValidWithMatrix(const Matrix &matrix) const
+{
+    return (m_pMatrixPtr == matrix.m_pBaseArrayPtr && m_NrOfMatrixRows == matrix.m_NrOfRows && m_NrOfMatrixColumns == matrix.m_NrOfColumns);
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::ConstZIterator::getCurrentRowNr() const
+{
+    return m_CurrentRowNr;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::ConstZIterator::getCurrentColumnNr() const
+{
+    return m_CurrentColumnNr;
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstZIterator::ConstZIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr)
+    : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
+    , m_NrOfMatrixRows{matrix.m_NrOfRows}
+    , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
+{
+    if (currentRowNr < 0 || currentColumnNr < 0 || currentRowNr >= m_NrOfMatrixRows || currentColumnNr > m_NrOfMatrixColumns ||
+        (currentRowNr < m_NrOfMatrixRows-1 && currentColumnNr == m_NrOfMatrixColumns))
+    {
+        m_CurrentRowNr = -1;
+        m_CurrentColumnNr = -1;
+    }
+    else
+    {
+        m_CurrentRowNr = currentRowNr;
+        m_CurrentColumnNr = currentColumnNr;
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::ConstZIterator::_increment()
+{
+    if (!(m_CurrentColumnNr == m_NrOfMatrixColumns && m_CurrentRowNr == (m_NrOfMatrixRows-1)))
+    {
+        ++m_CurrentColumnNr;
+        if (m_CurrentColumnNr == m_NrOfMatrixColumns && (m_CurrentRowNr != (m_NrOfMatrixRows-1)))
+        {
+            m_CurrentColumnNr = m_CurrentColumnNr - m_NrOfMatrixColumns;
+            ++m_CurrentRowNr;
+        }
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::ConstZIterator::_decrement()
+{
+    if (m_CurrentRowNr > 0 || m_CurrentColumnNr > 0)
+    {
+        if(m_CurrentColumnNr == 0)
+        {
+            --m_CurrentRowNr;
+            m_CurrentColumnNr = m_NrOfMatrixColumns - 1;
+        }
+        else
+        {
+            --m_CurrentColumnNr;
+        }
+    }
+}
+
+// matrix methods
 
 template <typename DataType>
 Matrix<DataType>::Matrix()
@@ -1667,6 +2010,94 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(size_type in
 }
 
 template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZBegin() const
+{
+    return ConstZIterator{*this, 0, 0};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZEnd() const
+{
+    return ConstZIterator{*this, m_NrOfRows-1, m_NrOfColumns};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZRowBegin(size_type rowNr) const
+{
+    if (rowNr < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (rowNr >= m_NrOfRows)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+    }
+
+    return ConstZIterator{*this, rowNr, 0};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZRowEnd(size_type rowNr) const
+{
+    if (rowNr < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (rowNr >= m_NrOfRows)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+    }
+
+    ConstZIterator it{};
+
+    if (rowNr < m_NrOfRows-1)
+    {
+        it = ConstZIterator{*this, rowNr+1, 0};
+    }
+    else
+    {
+        it = ConstZIterator{*this, rowNr, m_NrOfColumns};
+    }
+
+    return it;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::getConstZIterator(size_type rowNr, size_type columnNr) const
+{
+    if (rowNr<0 || columnNr<0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
+    }
+
+    return ConstZIterator{*this, rowNr, columnNr};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::getConstZIterator(size_type index) const
+{
+    if (index < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (index >= m_NrOfRows * m_NrOfColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INVALID_ELEMENT_INDEX]};
+    }
+
+    return ConstZIterator{*this, index / m_NrOfColumns, index % m_NrOfColumns};
+}
+
+
+template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::begin() const
 {
     return zBegin();
@@ -1676,6 +2107,18 @@ template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::end() const
 {
     return zEnd();
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::cbegin() const
+{
+    return constZBegin();
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::cend() const
+{
+    return constZEnd();
 }
 
 template<typename DataType>

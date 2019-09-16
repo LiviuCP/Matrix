@@ -4,8 +4,10 @@
 
 using IntMatrix = Matrix<int>;
 using IntMatrixZIterator = Matrix<int>::ZIterator;
+using IntMatrixConstZIterator = Matrix<int>::ConstZIterator;
 using StringMatrix = Matrix<std::string>;
-using StringMatrixIterator = Matrix<std::string>::ZIterator;
+using StringMatrixZIterator = Matrix<std::string>::ZIterator;
+using StringMatrixConstZIterator = Matrix<std::string>::ConstZIterator;
 
 class ExceptionTests : public QObject
 {
@@ -39,6 +41,7 @@ private slots:
     void testSwapRowColumnExceptions();
     void testCopyExceptions();
     void testZIteratorExceptions();
+    void testConstZIteratorExceptions();
 };
 
 ExceptionTests::ExceptionTests()
@@ -1146,9 +1149,9 @@ void ExceptionTests::testZIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                                                IntMatrixZIterator it{matrix.zEnd()};   *it = -14; }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixZIterator it{matrix.zEnd()};   *it = -14; }, std::runtime_error);
 
-    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix; StringMatrixIterator it{matrix.zBegin()}; Q_UNUSED(it->size()); }, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix; StringMatrixIterator it{matrix.zEnd()}; Q_UNUSED(it->size()); }, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix(2, 3, {"abc", "def", "ghi", "jkl", "mno", "pqr"}); StringMatrixIterator it{matrix.zEnd()}; Q_UNUSED(it->size());}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix; StringMatrixZIterator it{matrix.zBegin()}; Q_UNUSED(it->size()); }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix; StringMatrixZIterator it{matrix.zEnd()}; Q_UNUSED(it->size()); }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix(2, 3, {"abc", "def", "ghi", "jkl", "mno", "pqr"}); StringMatrixZIterator it{matrix.zEnd()}; Q_UNUSED(it->size());}, std::runtime_error);
 
     // test wrong indexes (negative or out-of-bound)
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                           IntMatrixZIterator it = matrix.getZIterator(-1, -1); Q_UNUSED(it)}, std::runtime_error);
@@ -1251,6 +1254,96 @@ void ExceptionTests::testZIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixZIterator it{matrix.zEnd()}; it[-1] = 7;}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixZIterator it{matrix.zEnd()}; it[0] = 7; }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixZIterator it{matrix.zEnd()}; it[1] = 7; }, std::runtime_error);
+}
+
+void ExceptionTests::testConstZIteratorExceptions()
+{
+    // test zBegin() and zEnd() dereference errors
+    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix; StringMatrixConstZIterator it{matrix.constZBegin()}; Q_UNUSED((*it).size());}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix; StringMatrixConstZIterator it{matrix.constZEnd()}; Q_UNUSED((*it).size());}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix(2, 3, {"abc", "def", "ghi", "jkl", "mno", "pqr"}); StringMatrixConstZIterator it{matrix.constZEnd()}; Q_UNUSED((*it).size());}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix; StringMatrixConstZIterator it{matrix.constZBegin()}; Q_UNUSED(it->size()); }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix; StringMatrixConstZIterator it{matrix.constZEnd()}; Q_UNUSED(it->size()); }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix(2, 3, {"abc", "def", "ghi", "jkl", "mno", "pqr"}); StringMatrixConstZIterator it{matrix.constZEnd()}; Q_UNUSED(it->size());}, std::runtime_error);
+
+    // test wrong indexes (negative or out-of-bound)
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                           IntMatrixConstZIterator it = matrix.getConstZIterator(-1, -1); Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                           IntMatrixConstZIterator it = matrix.getConstZIterator(-1, 0);  Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                           IntMatrixConstZIterator it = matrix.getConstZIterator(0, -1);  Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                           IntMatrixConstZIterator it = matrix.getConstZIterator(0, 0);   Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixConstZIterator it = matrix.getConstZIterator(-1, -1); Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixConstZIterator it = matrix.getConstZIterator(-1, 1);  Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixConstZIterator it = matrix.getConstZIterator(-1, 3);  Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixConstZIterator it = matrix.getConstZIterator(1, -1);  Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixConstZIterator it = matrix.getConstZIterator(1, 3);   Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixConstZIterator it = matrix.getConstZIterator(2, -1);  Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixConstZIterator it = matrix.getConstZIterator(2, 1);   Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixConstZIterator it = matrix.getConstZIterator(2, 3);   Q_UNUSED(it)}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                           IntMatrixConstZIterator it = matrix.getConstZIterator(-1); Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                           IntMatrixConstZIterator it = matrix.getConstZIterator(0);  Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixConstZIterator it = matrix.getConstZIterator(-1); Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); IntMatrixConstZIterator it = matrix.getConstZIterator(6);  Q_UNUSED(it)}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                                                IntMatrixConstZIterator it = matrix.constZRowBegin(-1); Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                                                IntMatrixConstZIterator it = matrix.constZRowEnd(-1);   Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                                                IntMatrixConstZIterator it = matrix.constZRowBegin(0);  Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                                                IntMatrixConstZIterator it = matrix.constZRowEnd(0);    Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixConstZIterator it = matrix.constZRowBegin(-1); Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixConstZIterator it = matrix.constZRowEnd(-1);   Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixConstZIterator it = matrix.constZRowBegin(4);  Q_UNUSED(it)}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixConstZIterator it = matrix.constZRowEnd(4);    Q_UNUSED(it)}, std::runtime_error);
+
+    // test iterators pointing to different matrixes
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(2, 3, -5); int diff{firstMatrix.constZEnd() - secondMatrix.getConstZIterator(1, 0)};
+                              Q_UNUSED(diff);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(firstMatrix); int diff{firstMatrix.constZEnd() - secondMatrix.constZBegin()};
+                              Q_UNUSED(diff);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(std::move(firstMatrix)); int diff{firstMatrix.constZBegin() - secondMatrix.constZEnd()};
+                              Q_UNUSED(diff);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(2, 3, -5); bool areEqual{firstMatrix.constZEnd() == secondMatrix.getConstZIterator(1, 0)};
+                              Q_UNUSED(areEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(firstMatrix); bool areEqual{firstMatrix.constZEnd() == secondMatrix.constZBegin()};
+                              Q_UNUSED(areEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(std::move(firstMatrix)); bool areEqual{firstMatrix.constZBegin() == secondMatrix.constZEnd()};
+                              Q_UNUSED(areEqual);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(2, 3, -5); bool areNotEqual{firstMatrix.constZEnd() != secondMatrix.getConstZIterator(1, 0)};
+                              Q_UNUSED(areNotEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(firstMatrix); bool areNotEqual{firstMatrix.constZEnd() != secondMatrix.constZBegin()};
+                              Q_UNUSED(areNotEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(std::move(firstMatrix)); bool areNotEqual{firstMatrix.constZBegin() != secondMatrix.constZEnd()};
+                              Q_UNUSED(areNotEqual);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(2, 3, -5); bool isSmallerThan{firstMatrix.constZEnd() < secondMatrix.getConstZIterator(1, 0)};
+                              Q_UNUSED(isSmallerThan);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(firstMatrix); bool isSmallerThan{firstMatrix.constZEnd() < secondMatrix.constZBegin()};
+                              Q_UNUSED(isSmallerThan);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(std::move(firstMatrix)); bool isSmallerThan{firstMatrix.constZBegin() < secondMatrix.constZEnd()};
+                              Q_UNUSED(isSmallerThan);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(2, 3, -5); bool isSmallerThanOrEqualTo{firstMatrix.constZEnd() <= secondMatrix.getConstZIterator(1, 0)};
+                              Q_UNUSED(isSmallerThanOrEqualTo);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(firstMatrix); bool isSmallerThanOrEqualTo{firstMatrix.constZEnd() <= secondMatrix.constZBegin()};
+                              Q_UNUSED(isSmallerThanOrEqualTo);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(std::move(firstMatrix)); bool isSmallerThanOrEqualTo{firstMatrix.constZBegin() <= secondMatrix.constZEnd()};
+                              Q_UNUSED(isSmallerThanOrEqualTo);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(2, 3, -5); bool isGreaterThan{firstMatrix.constZEnd() > secondMatrix.getConstZIterator(1, 0)};
+                              Q_UNUSED(isGreaterThan);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(firstMatrix); bool isGreaterThan{firstMatrix.constZEnd() > secondMatrix.constZBegin()};
+                              Q_UNUSED(isGreaterThan);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(std::move(firstMatrix)); bool isGreaterThan{firstMatrix.constZBegin() > secondMatrix.constZEnd()};
+                              Q_UNUSED(isGreaterThan);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(2, 3, -5); bool isGreaterThanOrEqualTo{firstMatrix.constZEnd() >= secondMatrix.getConstZIterator(1, 0)};
+                              Q_UNUSED(isGreaterThanOrEqualTo);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(firstMatrix); bool isGreaterThanOrEqualTo{firstMatrix.constZEnd() >= secondMatrix.constZBegin()};
+                              Q_UNUSED(isGreaterThanOrEqualTo);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix firstMatrix(2, 3, 4); IntMatrix secondMatrix(std::move(firstMatrix)); bool isGreaterThanOrEqualTo{firstMatrix.constZBegin() >= secondMatrix.constZEnd()};
+                              Q_UNUSED(isGreaterThanOrEqualTo);}, std::runtime_error);
 }
 
 QTEST_APPLESS_MAIN(ExceptionTests)

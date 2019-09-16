@@ -5,7 +5,7 @@
 using IntMatrix = Matrix<int>;
 using IntMatrixZIterator = Matrix<int>::ZIterator;
 using StringMatrix = Matrix<std::string>;
-using StringMatrixIterator = Matrix<std::string>::ZIterator;
+using StringMatrixZIterator = Matrix<std::string>::ZIterator;
 
 class ZIteratorTests : public QObject
 {
@@ -888,7 +888,7 @@ void ZIteratorTests::testDereferenceArrowOperator()
 {
     {
         StringMatrix matrix{2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-        StringMatrixIterator readIter{matrix.zBegin()};
+        StringMatrixZIterator readIter{matrix.zBegin()};
 
         ++readIter;
 
@@ -897,7 +897,7 @@ void ZIteratorTests::testDereferenceArrowOperator()
 
     {
         StringMatrix matrix{2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-        StringMatrixIterator writeIter{matrix.zBegin()};
+        StringMatrixZIterator writeIter{matrix.zBegin()};
 
         ++writeIter;
         ++writeIter;
