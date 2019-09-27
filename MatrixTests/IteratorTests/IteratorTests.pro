@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     ZIteratorTests \
-    ConstZIteratorTests
+    ConstZIteratorTests \
+    ReverseZIteratorTests
