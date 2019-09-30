@@ -28,13 +28,19 @@ Important functionality contained in the Matrix class is:
 
 1) Matrix capacity. It's similar to the capacity of std::vector, however it's a bidimentional capacity (rows/columns). It is essential for minimizing performance costs when a matrix has to be redimensioned, either by resize() or by another size-changing operation like adding a row, column etc.
 
-2) Iterators. Currently only ZIterators are available, i.e. iterators that pass the matrix row by row. For example if we have following matrix:
+2) Iterators. Currently only Z-Type Iterators are available, i.e. iterators that traverse the matrix row by row. For example if we have following matrix:
 
 0   1   2
 3   4   5
 6   7   8
 
 the matrix will be passed: 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
+
+The Z-Iterators have four sub-types:
+- read-write Z-Iterators (class ZIterator)
+- read-only Z-Iterators (class ConstZIterator)
+- reverse read-write Z-Iterators (class ReverseZIterator)
+- reverse read-only Z-Iterators (class ConstReverseZIterator)
 
 I am planning to add more iterators in the future, like ones that help traversing elements using diagonals (e.g. 0 -> 4 -> 8, 3 -> 7).
 
