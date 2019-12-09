@@ -230,6 +230,63 @@ public:
         size_type m_NrOfMatrixColumns;
     };
 
+    class DIterator
+    {
+        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
+        friend class Matrix;
+
+    public:
+        // all these are required for STL compatibility
+        using iterator_category = std::random_access_iterator_tag;
+        using value_type = DataType;
+        using difference_type = diff_type;
+        using pointer = DataType**;
+        using reference = DataType&;
+
+        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
+        DIterator();
+
+        DIterator operator++();
+        DIterator operator++(int unused);
+        DIterator operator--();
+        DIterator operator--(int unused);
+
+        DIterator operator+(difference_type offset);
+        DIterator operator-(difference_type offset);
+
+        difference_type operator-(const DIterator& it) const;
+
+        bool operator==(const DIterator& it) const;
+        bool operator!=(const DIterator& it) const;
+        bool operator<(const DIterator& it) const;
+        bool operator<=(const DIterator& it) const;
+        bool operator>(const DIterator& it) const;
+        bool operator>=(const DIterator& it) const;
+
+        reference operator*() const;
+        value_type* operator->() const;
+        reference operator[](difference_type index) const;
+
+        bool isValidWithMatrix(const Matrix& matrix) const;
+
+        size_type getCurrentRowNr() const;
+        size_type getCurrentColumnNr() const;
+        size_type getDiagonalNr() const;
+        size_type getDiagonalIndex() const;
+
+    private:
+        DIterator(const Matrix& matrix, size_type diagonalIndex, size_type diagonalNr);
+        DIterator(size_type currentRowNr, size_type currentColumnNr, const Matrix& matrix);
+
+        void _increment();
+        void _decrement();
+
+        pointer m_pMatrixPtr;
+        size_type m_DiagonalIndex;    // relative index within diagonal
+        size_type m_DiagonalNumber;   // index of the diagonal within matrix
+        size_type m_DiagonalSize;     // number of elements contained within diagonal
+    };
+
     Matrix();
     Matrix(size_type nrOfRows, size_type nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
     Matrix(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType);
@@ -315,6 +372,12 @@ public:
     ConstReverseZIterator constReverseZRowEnd(size_type rowNr) const;
     ConstReverseZIterator getConstReverseZIterator(size_type rowNr, size_type columnNr) const;
     ConstReverseZIterator getConstReverseZIterator(size_type index) const;
+
+    DIterator dBegin(int diagIndex) const;
+    DIterator dBegin(int rowNr, int columnNr) const;
+    DIterator dEnd(int diagIndex) const;
+    DIterator dEnd(int rowNr, int columnNr) const;
+    DIterator getDIterator(size_type first, size_type second, bool isRelative = false) const;
 
     // required for being able to use the "auto" keyword for iterating through the matrix elements
     ZIterator begin() const;
@@ -1172,7 +1235,7 @@ void Matrix<DataType>::ReverseZIterator::_decrement()
     }
 }
 
-// 3) Const Reverse ZIterator
+// 4) Const Reverse ZIterator
 
 template<typename DataType>
 Matrix<DataType>::ConstReverseZIterator::ConstReverseZIterator()
@@ -1447,6 +1510,178 @@ void Matrix<DataType>::ConstReverseZIterator::_decrement()
             ++m_CurrentColumnNr;
         }
     }
+}
+
+// 5) DIterator (diagonal iterator, traverses a matrix diagonal)
+
+template<typename DataType>
+Matrix<DataType>::DIterator::DIterator()
+{
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator++()
+{
+    return DIterator{};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator++(int unused)
+{
+    (void)unused;
+    return DIterator{};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator--()
+{
+    return DIterator{};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator--(int unused)
+{
+    (void)unused;
+    return DIterator{};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator+(DIterator::difference_type offset)
+{
+    (void)offset;
+    return DIterator{};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator-(DIterator::difference_type offset)
+{
+    (void)offset;
+    return DIterator{};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator::difference_type Matrix<DataType>::DIterator::operator-(const DIterator& it) const
+{
+    (void)it;
+    return -1;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::DIterator::operator==(const DIterator& it) const
+{
+    (void)it;
+    return false;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::DIterator::operator!=(const DIterator& it) const
+{
+    (void)it;
+    return false;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::DIterator::operator<(const DIterator& it) const
+{
+    (void)it;
+    return false;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::DIterator::operator<=(const DIterator& it) const
+{
+    (void)it;
+    return false;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::DIterator::operator>(const DIterator& it) const
+{
+    (void)it;
+    return false;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::DIterator::operator>=(const DIterator& it) const
+{
+    (void)it;
+    return false;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::operator*() const
+{
+    return DataType{};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator::value_type* Matrix<DataType>::DIterator::operator->() const
+{
+    return nullptr;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::operator[](DIterator::difference_type index) const
+{
+    (void)index;
+    return DataType{};
+}
+
+template<typename DataType>
+bool Matrix<DataType>::DIterator::isValidWithMatrix(const Matrix &matrix) const
+{
+    (void)matrix;
+    return false;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::DIterator::getCurrentRowNr() const
+{
+    return -1;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::DIterator::getCurrentColumnNr() const
+{
+    return -1;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::DIterator::getDiagonalNr() const
+{
+    return 0;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::DIterator::getDiagonalIndex() const
+{
+    return -1;
+}
+
+template<typename DataType>
+Matrix<DataType>::DIterator::DIterator(const Matrix& matrix, size_type diagonalIndex, size_type diagonalNr)
+{
+    (void)matrix;
+    (void)diagonalIndex;
+    (void)diagonalNr;
+}
+
+template<typename DataType>
+Matrix<DataType>::DIterator::DIterator(size_type currentRowNr, size_type currentColumnNr, const Matrix& matrix)
+{
+    (void)currentRowNr;
+    (void)currentColumnNr;
+    (void)matrix;
+}
+
+template<typename DataType>
+void Matrix<DataType>::DIterator::_increment()
+{
+}
+
+template<typename DataType>
+void Matrix<DataType>::DIterator::_decrement()
+{
 }
 
 // matrix methods
@@ -2943,6 +3178,40 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstRever
     }
 
     return ConstReverseZIterator{*this, index / m_NrOfColumns, index % m_NrOfColumns};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(int diagIndex) const
+{
+    (void)diagIndex;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(int rowNr, int columnNr) const
+{
+    (void)rowNr;
+    (void)columnNr;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(int diagIndex) const
+{
+    (void)diagIndex;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(int rowNr, int columnNr) const
+{
+    (void)rowNr;
+    (void)columnNr;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::DIterator Matrix<DataType>::getDIterator(Matrix::size_type first, Matrix::size_type second, bool isRelative) const
+{
+    (void)first;
+    (void)second;
+    (void)isRelative;
 }
 
 template<typename DataType>
