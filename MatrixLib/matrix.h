@@ -275,8 +275,7 @@ public:
         size_type getDiagonalIndex() const;
 
     private:
-        DIterator(const Matrix& matrix, size_type diagonalIndex, size_type diagonalNr);
-        DIterator(size_type currentRowNr, size_type currentColumnNr, const Matrix& matrix);
+        DIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative = false);
 
         void _increment();
         void _decrement();
@@ -373,9 +372,9 @@ public:
     ConstReverseZIterator getConstReverseZIterator(size_type rowNr, size_type columnNr) const;
     ConstReverseZIterator getConstReverseZIterator(size_type index) const;
 
-    DIterator dBegin(int diagIndex) const;
+    DIterator dBegin(int diagNr) const;
     DIterator dBegin(int rowNr, int columnNr) const;
-    DIterator dEnd(int diagIndex) const;
+    DIterator dEnd(int diagNr) const;
     DIterator dEnd(int rowNr, int columnNr) const;
     DIterator getDIterator(size_type first, size_type second, bool isRelative = false) const;
 
@@ -1659,19 +1658,12 @@ typename Matrix<DataType>::size_type Matrix<DataType>::DIterator::getDiagonalInd
 }
 
 template<typename DataType>
-Matrix<DataType>::DIterator::DIterator(const Matrix& matrix, size_type diagonalIndex, size_type diagonalNr)
+Matrix<DataType>::DIterator::DIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative)
 {
     (void)matrix;
-    (void)diagonalIndex;
-    (void)diagonalNr;
-}
-
-template<typename DataType>
-Matrix<DataType>::DIterator::DIterator(size_type currentRowNr, size_type currentColumnNr, const Matrix& matrix)
-{
-    (void)currentRowNr;
-    (void)currentColumnNr;
-    (void)matrix;
+    (void)first;
+    (void)second;
+    (void)isRelative;
 }
 
 template<typename DataType>
@@ -3181,9 +3173,9 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstRever
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(int diagIndex) const
+typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(int diagNr) const
 {
-    (void)diagIndex;
+    (void)diagNr;
 }
 
 template<typename DataType>
@@ -3194,9 +3186,9 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(int rowNr, int col
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(int diagIndex) const
+typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(int diagNr) const
 {
-    (void)diagIndex;
+    (void)diagNr;
 }
 
 template<typename DataType>
