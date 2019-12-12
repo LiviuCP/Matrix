@@ -11,6 +11,7 @@ namespace Matr
         NULL_OR_NEG_DIMENSION,
         ROW_DOES_NOT_EXIST,
         COLUMN_DOES_NOT_EXIST,
+        DIAGONAL_DOES_NOT_EXIST,
         MATRIXES_ROWS_UNEQUAL_COLUMNS,
         MATRIXES_UNEQUAL_COLUMN_LENGTH,
         MATRIXES_UNEQUAL_ROW_LENGTH,
@@ -25,6 +26,7 @@ namespace Matr
         EMPTY_MATRIX,
         DEREFERENCE_END_ITERATOR,
         INCOMPATIBLE_ITERATORS,
+        DIAGONAL_INDEX_OUT_OF_BOUNDS,
         ITERATOR_INDEX_OUT_OF_BOUNDS
     };
 
@@ -36,6 +38,7 @@ namespace Matr
         {    Error::NULL_OR_NEG_DIMENSION,                              string{"At least one null or negative matrix dimension has been entered."}                                                              },
         {    Error::ROW_DOES_NOT_EXIST,                                 string{"For one or more matrixes at least one referenced row does not exist"}                                                           },
         {    Error::COLUMN_DOES_NOT_EXIST,                              string{"For one or more matrixes at least one referenced column does not exist"}                                                        },
+        {    Error::DIAGONAL_DOES_NOT_EXIST,                            string{"The provided matrix diagonal does not exist"}                                                                                   },
         {    Error::MATRIXES_ROWS_UNEQUAL_COLUMNS,                      string{"The number of columns of the first matrix is different from the number of lines of the second one"}                             },
         {    Error::MATRIXES_UNEQUAL_COLUMN_LENGTH,                     string{"The columns of the two matrixes have different lengths. The number of rows is different."}                                      },
         {    Error::MATRIXES_UNEQUAL_ROW_LENGTH,                        string{"The rows of the two matrixes have different lengths. The number of columns is different."}                                      },
@@ -50,6 +53,7 @@ namespace Matr
         {    Error::EMPTY_MATRIX,                                       string{"Illegal operation on empty matrix"}                                                                                             },
         {    Error::DEREFERENCE_END_ITERATOR,                           string{"Attempt to dereference an end iterator"}                                                                                        },
         {    Error::INCOMPATIBLE_ITERATORS,                             string{"The two iterators are incompatible, their matrix parameters differ"}                                                            },
+        {    Error::DIAGONAL_INDEX_OUT_OF_BOUNDS,                       string{"The diagonal index used for obtaining the iterator is out of bounds"}                                                                      },
         {    Error::ITERATOR_INDEX_OUT_OF_BOUNDS,                       string{"The index used for dereferencing the iterator is out of bounds"}                                                                }
     };
 }

@@ -244,7 +244,7 @@ public:
         using reference = DataType&;
 
         // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
-        DIterator();
+        DIterator() = delete;
 
         DIterator operator++();
         DIterator operator++(int unused);
@@ -1514,11 +1514,6 @@ void Matrix<DataType>::ConstReverseZIterator::_decrement()
 // 5) DIterator (diagonal iterator, traverses a matrix diagonal)
 
 template<typename DataType>
-Matrix<DataType>::DIterator::DIterator()
-{
-}
-
-template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator++()
 {
     return DIterator{};
@@ -1636,34 +1631,47 @@ bool Matrix<DataType>::DIterator::isValidWithMatrix(const Matrix &matrix) const
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::DIterator::getCurrentRowNr() const
 {
-    return -1;
+    return m_DiagonalNumber < 0 ? m_DiagonalIndex - m_DiagonalNumber : m_DiagonalIndex;
 }
 
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::DIterator::getCurrentColumnNr() const
 {
-    return -1;
+    return m_DiagonalNumber < 0 ? m_DiagonalIndex : m_DiagonalNumber + m_DiagonalIndex;
 }
 
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::DIterator::getDiagonalNr() const
 {
-    return 0;
+    return m_DiagonalNumber;
 }
 
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::DIterator::getDiagonalIndex() const
 {
-    return -1;
+    return m_DiagonalIndex;
 }
 
 template<typename DataType>
 Matrix<DataType>::DIterator::DIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative)
+    : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
 {
-    (void)matrix;
-    (void)first;
-    (void)second;
-    (void)isRelative;
+    if (isRelative)
+    {
+        // first and second are interpreted as diagonal number and relative index within diagonal
+        size_type currentRowNr{m_DiagonalNumber < 0 ? m_DiagonalIndex - m_DiagonalNumber : m_DiagonalIndex};
+        size_type currentColumnNr{m_DiagonalNumber < 0 ? m_DiagonalIndex : m_DiagonalIndex + m_DiagonalNumber};
+        m_DiagonalNumber = first;
+        m_DiagonalIndex = second;
+        m_DiagonalSize = m_DiagonalIndex + std::min(matrix.getNrOfRows() - currentRowNr, matrix.getNrOfColumns() - currentColumnNr);
+    }
+    else
+    {
+        // first and second are interpreted as (x, y) coordinates
+        m_DiagonalNumber = second - first;
+        m_DiagonalIndex = std::min(first, second);
+        m_DiagonalSize = m_DiagonalIndex + std::min(matrix.getNrOfRows() - first, matrix.getNrOfColumns() - second);
+    }
 }
 
 template<typename DataType>
@@ -3175,35 +3183,114 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstRever
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(int diagNr) const
 {
-    (void)diagNr;
+    if (diagNr < (1-getNrOfRows()) || diagNr > (getNrOfColumns()-1))
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
+    }
+
+    return DIterator{*this, diagNr, 0, true};
 }
 
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(int rowNr, int columnNr) const
 {
-    (void)rowNr;
-    (void)columnNr;
+    if (rowNr < 0 || columnNr < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (rowNr >= getNrOfRows())
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+    }
+
+    if (columnNr >= getNrOfColumns())
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
+    }
+
+    size_type beginRowNr{columnNr < rowNr ? rowNr - columnNr : 0};
+    size_type beginColumnNr{columnNr < rowNr ? 0 : columnNr - rowNr};
+
+    return DIterator{*this, beginRowNr, beginColumnNr};
 }
 
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(int diagNr) const
 {
-    (void)diagNr;
+    if (diagNr < (1-getNrOfRows()) || diagNr > (getNrOfColumns()-1))
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
+    }
+
+    size_type beginRowNr{diagNr < 0 ? -diagNr : 0};
+    size_type beginColumnNr{diagNr < 0 ? 0 : diagNr};
+    size_type step{std::min(getNrOfRows() - beginRowNr, getNrOfColumns() - beginColumnNr)};
+
+    return DIterator{*this, diagNr, step, true};
 }
 
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(int rowNr, int columnNr) const
 {
-    (void)rowNr;
-    (void)columnNr;
+    if (rowNr < 0 || columnNr < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (rowNr >= getNrOfRows())
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+    }
+
+    if (columnNr >= getNrOfColumns())
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
+    }
+
+    return dEnd(columnNr-rowNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::getDIterator(Matrix::size_type first, Matrix::size_type second, bool isRelative) const
 {
-    (void)first;
-    (void)second;
-    (void)isRelative;
+    if (isRelative)
+    {
+        if (first < (1-getNrOfRows()) || first > (getNrOfColumns()-1))
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
+        }
+        if (second < 0)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+        }
+        int beginRowNr{first < 0 ? -first : 0};
+        int beginColumnNr{first < 0 ? 0 : first};
+        int diagSize {std::min(getNrOfRows() - beginRowNr, getNrOfColumns() - beginColumnNr)};
+        if (second >= diagSize)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_INDEX_OUT_OF_BOUNDS]};
+        }
+    }
+    else
+    {
+        if (first < 0 || second < 0)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+        }
+
+        if (first >= getNrOfRows())
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+        }
+
+        if (second >= getNrOfColumns())
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
+        }
+    }
+
+    return DIterator{*this, first, second, isRelative};
 }
 
 template<typename DataType>
