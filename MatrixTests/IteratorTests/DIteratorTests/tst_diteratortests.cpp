@@ -17,6 +17,8 @@ public:
 
 private slots:
     void testIteratorCreation();
+    void testIteratorsAreEqual();
+    void testIteratorsAreNotEqual();
 };
 
 DIteratorTests::DIteratorTests()
@@ -170,6 +172,47 @@ void DIteratorTests::testIteratorCreation()
 
         QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 2, "The DIterator has not been correctly created");
     }
+}
+
+void DIteratorTests::testIteratorsAreEqual()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(1, 2)};
+
+        QVERIFY2(it == it, "The iterators are not equal");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator firstIt{matrix.getDIterator(1, 2)};
+        IntMatrixDIterator secondIt{matrix.getDIterator(1, 1, true)};
+
+        QVERIFY2(firstIt == secondIt, "The iterators are not equal");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator firstIt{matrix.dBegin(-1)};
+        IntMatrixDIterator secondIt{matrix.dBegin(2, 1)};
+        IntMatrixDIterator thirdIt{matrix.getDIterator(1, 0)};
+        IntMatrixDIterator fourthIt{matrix.getDIterator(-1, 0, true)};
+
+        QVERIFY2(firstIt == secondIt && secondIt == thirdIt && thirdIt == fourthIt, "The iterators are not equal");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator firstIt{matrix.dEnd(2)};
+        IntMatrixDIterator secondIt{matrix.dEnd(0, 2)};
+
+        QVERIFY2(firstIt == secondIt, "The iterators are not equal");
+    }
+}
+
+void DIteratorTests::testIteratorsAreNotEqual()
+{
+
 }
 
 QTEST_APPLESS_MAIN(DIteratorTests)
