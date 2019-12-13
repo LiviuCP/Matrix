@@ -19,6 +19,7 @@ private slots:
     void testIteratorCreation();
     void testIteratorsAreEqual();
     void testIteratorsAreNotEqual();
+    void testIncrementOperators();
 };
 
 DIteratorTests::DIteratorTests()
@@ -225,6 +226,81 @@ void DIteratorTests::testIteratorsAreNotEqual()
         IntMatrixDIterator secondIt{matrix.getDIterator(1, 0, true)};
 
         QVERIFY2(firstIt != secondIt, "The iterators are not equal");
+    }
+}
+
+void DIteratorTests::testIncrementOperators()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dBegin(-1)};
+        IntMatrixDIterator preIncrementIt{++it};
+
+        QVERIFY2(it == matrix.getDIterator(2, 1) && preIncrementIt == matrix.getDIterator(2, 1),
+                 "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dBegin(-1)};
+        IntMatrixDIterator prePreIncrementIt{++(++it)};
+
+        QVERIFY2(it == matrix.getDIterator(2, 1) && prePreIncrementIt == matrix.getDIterator(3, 2),
+                 "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dBegin(-1)};
+        IntMatrixDIterator postIncrementIt{it++};
+
+        QVERIFY2(it == matrix.getDIterator(2, 1) && postIncrementIt == matrix.getDIterator(1, 0),
+                 "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dBegin(-1)};
+        IntMatrixDIterator postPostIncrementIt{(it++)++};
+
+        QVERIFY2(it == matrix.getDIterator(2, 1) && postPostIncrementIt == matrix.getDIterator(1, 0),
+                 "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dBegin(-1)};
+        IntMatrixDIterator prePostIncrementIt{(++it)++};
+
+        QVERIFY2(it == matrix.getDIterator(2, 1) && prePostIncrementIt == matrix.getDIterator(2, 1),
+                 "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dBegin(-1)};
+        IntMatrixDIterator postPreIncrementIt{++(it++)};
+
+        QVERIFY2(it == matrix.getDIterator(2, 1) && postPreIncrementIt == matrix.getDIterator(2, 1),
+                 "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dEnd(-1)};
+        IntMatrixDIterator preIncrementIt{++it};
+
+        QVERIFY2(it == matrix.dEnd(2, 1) && preIncrementIt == matrix.dEnd(2, 1),
+                 "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dEnd(-1)};
+        IntMatrixDIterator postIncrementIt{it++};
+
+        QVERIFY2(it == matrix.dEnd(2, 1) && postIncrementIt == matrix.dEnd(2, 1),
+                 "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
     }
 }
 

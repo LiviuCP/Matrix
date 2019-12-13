@@ -1516,14 +1516,19 @@ void Matrix<DataType>::ConstReverseZIterator::_decrement()
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator++()
 {
-    return DIterator{};
+    _increment();
+    return *this;
 }
 
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator++(int unused)
 {
     (void)unused;
-    return DIterator{};
+    DIterator dIterator{*this};
+
+    _increment();
+
+    return dIterator;
 }
 
 template<typename DataType>
@@ -1685,6 +1690,10 @@ Matrix<DataType>::DIterator::DIterator(const Matrix& matrix, size_type first, si
 template<typename DataType>
 void Matrix<DataType>::DIterator::_increment()
 {
+    if (m_DiagonalIndex < m_DiagonalSize)
+    {
+        ++m_DiagonalIndex;
+    }
 }
 
 template<typename DataType>
