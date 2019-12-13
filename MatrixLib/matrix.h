@@ -1659,10 +1659,10 @@ Matrix<DataType>::DIterator::DIterator(const Matrix& matrix, size_type first, si
     if (isRelative)
     {
         // first and second are interpreted as diagonal number and relative index within diagonal
-        size_type currentRowNr{m_DiagonalNumber < 0 ? m_DiagonalIndex - m_DiagonalNumber : m_DiagonalIndex};
-        size_type currentColumnNr{m_DiagonalNumber < 0 ? m_DiagonalIndex : m_DiagonalIndex + m_DiagonalNumber};
         m_DiagonalNumber = first;
         m_DiagonalIndex = second;
+        size_type currentRowNr{m_DiagonalNumber < 0 ? m_DiagonalIndex - m_DiagonalNumber : m_DiagonalIndex};
+        size_type currentColumnNr{m_DiagonalNumber < 0 ? m_DiagonalIndex : m_DiagonalIndex + m_DiagonalNumber};
         m_DiagonalSize = m_DiagonalIndex + std::min(matrix.getNrOfRows() - currentRowNr, matrix.getNrOfColumns() - currentColumnNr);
     }
     else
