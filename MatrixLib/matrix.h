@@ -1534,14 +1534,19 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator++(int
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator--()
 {
-    return DIterator{};
+    _decrement();
+    return *this;
 }
 
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator--(int unused)
 {
     (void)unused;
-    return DIterator{};
+    DIterator dIterator{*this};
+
+    _decrement();
+
+    return dIterator;
 }
 
 template<typename DataType>
@@ -1699,6 +1704,10 @@ void Matrix<DataType>::DIterator::_increment()
 template<typename DataType>
 void Matrix<DataType>::DIterator::_decrement()
 {
+    if (m_DiagonalIndex > 0)
+    {
+        --m_DiagonalIndex;
+    }
 }
 
 // matrix methods

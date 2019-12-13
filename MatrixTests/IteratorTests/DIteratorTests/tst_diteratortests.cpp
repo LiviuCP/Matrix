@@ -20,6 +20,7 @@ private slots:
     void testIteratorsAreEqual();
     void testIteratorsAreNotEqual();
     void testIncrementOperators();
+    void testDecrementOperators();
 };
 
 DIteratorTests::DIteratorTests()
@@ -301,6 +302,136 @@ void DIteratorTests::testIncrementOperators()
 
         QVERIFY2(it == matrix.dEnd(2, 1) && postIncrementIt == matrix.dEnd(2, 1),
                  "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+}
+
+void DIteratorTests::testDecrementOperators()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dEnd(-1)};
+        IntMatrixDIterator preDecrementIt{--it};
+
+        QVERIFY2(it == matrix.getDIterator(3, 2) && preDecrementIt == matrix.getDIterator(3, 2),
+                 "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(3, 2)};
+        IntMatrixDIterator preDecrementIt{--it};
+
+        QVERIFY2(it == matrix.getDIterator(2, 1) && preDecrementIt == matrix.getDIterator(2, 1),
+                 "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dEnd(-1)};
+        IntMatrixDIterator prePreDecrementIt{--(--it)};
+
+        QVERIFY2(it == matrix.getDIterator(3, 2) && prePreDecrementIt == matrix.getDIterator(2, 1),
+                 "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(3, 2)};
+        IntMatrixDIterator prePreDecrementIt{--(--it)};
+
+        QVERIFY2(it == matrix.getDIterator(2, 1) && prePreDecrementIt == matrix.getDIterator(1, 0),
+                 "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dEnd(-1)};
+        IntMatrixDIterator postDecrementIt{it--};
+
+        QVERIFY2(it == matrix.getDIterator(3, 2) && postDecrementIt == matrix.dEnd(1, 0),
+                 "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(3, 2)};
+        IntMatrixDIterator postDecrementIt{it--};
+
+        QVERIFY2(it == matrix.getDIterator(2, 1) && postDecrementIt == matrix.getDIterator(3, 2),
+                 "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dEnd(-1)};
+        IntMatrixDIterator postPostDecrementIt{(it--)--};
+
+        QVERIFY2(it == matrix.getDIterator(3, 2) && postPostDecrementIt == matrix.dEnd(1, 0),
+                 "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(3, 2)};
+        IntMatrixDIterator postPostDecrementIt{(it--)--};
+
+        QVERIFY2(it == matrix.getDIterator(2, 1) && postPostDecrementIt == matrix.getDIterator(3, 2),
+                 "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dEnd(-1)};
+        IntMatrixDIterator prePostDecrementIt{(--it)--};
+
+        QVERIFY2(it == matrix.getDIterator(3, 2) && prePostDecrementIt == matrix.getDIterator(3, 2),
+                 "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(3, 2)};
+        IntMatrixDIterator prePostDecrementIt{(--it)--};
+
+        QVERIFY2(it == matrix.getDIterator(2, 1) && prePostDecrementIt == matrix.getDIterator(2, 1),
+                 "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dEnd(-1)};
+        IntMatrixDIterator postPreDecrementIt{--(it--)};
+
+        QVERIFY2(it == matrix.getDIterator(3, 2) && postPreDecrementIt == matrix.getDIterator(3, 2),
+                 "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(3, 2)};
+        IntMatrixDIterator postPreDecrementIt{--(it--)};
+
+        QVERIFY2(it == matrix.getDIterator(2, 1) && postPreDecrementIt == matrix.getDIterator(2, 1),
+                 "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dBegin(-1)};
+        IntMatrixDIterator preDecrementIt{--it};
+
+        QVERIFY2(it == matrix.getDIterator(1, 0) && preDecrementIt == matrix.getDIterator(1, 0),
+                 "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dBegin(-1)};
+        IntMatrixDIterator postDecrementIt{it--};
+
+        QVERIFY2(it == matrix.getDIterator(1, 0) && postDecrementIt == matrix.getDIterator(1, 0),
+                 "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
     }
 }
 
