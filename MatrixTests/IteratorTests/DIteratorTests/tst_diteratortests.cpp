@@ -212,7 +212,20 @@ void DIteratorTests::testIteratorsAreEqual()
 
 void DIteratorTests::testIteratorsAreNotEqual()
 {
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(1, 2)};
 
+        QVERIFY2(!(it != it), "The iterators are not equal");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator firstIt{matrix.getDIterator(1, 2)};
+        IntMatrixDIterator secondIt{matrix.getDIterator(1, 0, true)};
+
+        QVERIFY2(firstIt != secondIt, "The iterators are not equal");
+    }
 }
 
 QTEST_APPLESS_MAIN(DIteratorTests)

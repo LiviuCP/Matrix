@@ -1681,6 +1681,33 @@ void ExceptionTests::testDIteratorExceptions()
                                  IntMatrixDIterator secondIt{firstMatrix.getDIterator(2, 1)};
                                  bool areEqual{firstIt == secondIt}; Q_UNUSED(areEqual);
                              }, std::runtime_error);
+    // not equal operator
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixDIterator firstIt{matrix.getDIterator(2, 1)};
+                                 IntMatrixDIterator secondIt{matrix.getDIterator(1, 1, true)};
+                                 bool areEqual{firstIt != secondIt}; Q_UNUSED(areEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixDIterator firstIt{matrix.dEnd(1, 2)};
+                                 IntMatrixDIterator secondIt{matrix.dEnd(-1)};
+                                 bool areEqual{firstIt != secondIt}; Q_UNUSED(areEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixDIterator firstIt{firstMatrix.getDIterator(1, 2)};
+                                 IntMatrixDIterator secondIt{secondMatrix.getDIterator(1, 0, true)};
+                                 bool areEqual{firstIt != secondIt}; Q_UNUSED(areEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixDIterator firstIt{firstMatrix.getDIterator(-1, 0, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixDIterator secondIt{firstMatrix.getDIterator(2, 1)};
+                                 bool areEqual{firstIt != secondIt}; Q_UNUSED(areEqual);
+                             }, std::runtime_error);
 }
 
 QTEST_APPLESS_MAIN(ExceptionTests)
