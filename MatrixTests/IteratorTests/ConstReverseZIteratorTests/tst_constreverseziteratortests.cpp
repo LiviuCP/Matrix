@@ -117,20 +117,20 @@ void ConstReverseZIteratorTests::testIncrementOperators()
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
         IntMatrixConstReverseZIterator it{matrix.constReverseZEnd()};
 
-        IntMatrixConstReverseZIterator postPreIncrementIt{++it};
+        IntMatrixConstReverseZIterator preIncrementIt{++it};
 
-        QVERIFY2(it == matrix.constReverseZEnd(), "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(postPreIncrementIt == matrix.constReverseZEnd(), "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(it == matrix.constReverseZEnd(), "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(preIncrementIt == matrix.constReverseZEnd(), "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
     }
 
     {
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
         IntMatrixConstReverseZIterator it{matrix.constReverseZEnd()};
 
-        IntMatrixConstReverseZIterator postPreIncrementIt{it++};
+        IntMatrixConstReverseZIterator postIncrementIt{it++};
 
-        QVERIFY2(it == matrix.constReverseZEnd(), "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(postPreIncrementIt == matrix.constReverseZEnd(), "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(it == matrix.constReverseZEnd(), "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(postIncrementIt == matrix.constReverseZEnd(), "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
     }
 }
 
@@ -260,20 +260,20 @@ void ConstReverseZIteratorTests::testDecrementOperators()
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
         IntMatrixConstReverseZIterator it{matrix.constReverseZBegin()};
 
-        IntMatrixConstReverseZIterator postPreDecrementIt{--it};
+        IntMatrixConstReverseZIterator preDecrementIt{--it};
 
-        QVERIFY2(*it == 6, "The post- and pre-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*postPreDecrementIt == 6, "The post- and pre-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*it == 6, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*preDecrementIt == 6, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
     }
 
     {
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
         IntMatrixConstReverseZIterator it{matrix.constReverseZBegin()};
 
-        IntMatrixConstReverseZIterator postPreDecrementIt{it--};
+        IntMatrixConstReverseZIterator postDecrementIt{it--};
 
-        QVERIFY2(*it == 6, "The post- and pre-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*postPreDecrementIt == 6, "The post- and pre-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*it == 6, "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*postDecrementIt == 6, "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
     }
 }
 

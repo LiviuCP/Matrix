@@ -119,20 +119,20 @@ void ZIteratorTests::testIncrementOperators()
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
         IntMatrixZIterator it{matrix.zEnd()};
 
-        IntMatrixZIterator postPreIncrementIt{++it};
+        IntMatrixZIterator preIncrementIt{++it};
 
-        QVERIFY2(it == matrix.zEnd(), "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(postPreIncrementIt == matrix.zEnd(), "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(it == matrix.zEnd(), "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(preIncrementIt == matrix.zEnd(), "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
     }
 
     {
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
         IntMatrixZIterator it{matrix.zEnd()};
 
-        IntMatrixZIterator postPreIncrementIt{it++};
+        IntMatrixZIterator postIncrementIt{it++};
 
-        QVERIFY2(it == matrix.zEnd(), "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(postPreIncrementIt == matrix.zEnd(), "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(it == matrix.zEnd(), "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(postIncrementIt == matrix.zEnd(), "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
     }
 }
 
@@ -262,20 +262,20 @@ void ZIteratorTests::testDecrementOperators()
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
         IntMatrixZIterator it{matrix.zBegin()};
 
-        IntMatrixZIterator postPreDecrementIt{--it};
+        IntMatrixZIterator preDecrementIt{--it};
 
-        QVERIFY2(*it == 1, "The post- and pre-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*postPreDecrementIt == 1, "The post- and pre-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*it == 1, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*preDecrementIt == 1, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
     }
 
     {
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
         IntMatrixZIterator it{matrix.zBegin()};
 
-        IntMatrixZIterator postPreDecrementIt{it--};
+        IntMatrixZIterator postDecrementIt{it--};
 
-        QVERIFY2(*it == 1, "The post- and pre-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*postPreDecrementIt == 1, "The post- and pre-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*it == 1, "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+        QVERIFY2(*postDecrementIt == 1, "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
     }
 }
 
