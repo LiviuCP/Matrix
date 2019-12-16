@@ -25,6 +25,7 @@ private slots:
     void testGreaterThanOrEqualToOperator();
     void testIncrementOperators();
     void testDecrementOperators();
+    void testDifferenceOperator();
     void testDereferenceAsteriskOperator();
 };
 
@@ -499,6 +500,57 @@ void DIteratorTests::testDecrementOperators()
 
         QVERIFY2(it == matrix.getDIterator(1, 0) && postDecrementIt == matrix.getDIterator(1, 0),
                  "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+}
+
+void DIteratorTests::testDifferenceOperator()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator firstIt{matrix.dBegin(-1)};
+        IntMatrixDIterator secondIt{matrix.dBegin(1, 0)};
+
+        QVERIFY2(firstIt - secondIt == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator firstIt{matrix.dEnd(1)};
+        IntMatrixDIterator secondIt{matrix.dEnd(0, 1)};
+
+        QVERIFY2(firstIt - secondIt == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator firstIt{matrix.getDIterator(2, 1)};
+        IntMatrixDIterator secondIt{matrix.getDIterator(-1, 2, true)};
+
+        QVERIFY2(secondIt - firstIt == 1, "The difference operator does not work correctly, difference between iterators is wrong");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator firstIt{matrix.getDIterator(1, 2)};
+        IntMatrixDIterator secondIt{matrix.getDIterator(1, 0, true)};
+
+        QVERIFY2(secondIt - firstIt == -1, "The difference operator does not work correctly, difference between iterators is wrong");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator firstIt{matrix.getDIterator(-1, 0, true)};
+        IntMatrixDIterator secondIt{matrix.dEnd(-1)};
+
+        QVERIFY2(secondIt - firstIt == 3, "The difference operator does not work correctly, difference between iterators is wrong");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator firstIt{matrix.getDIterator(2, 2)};
+        IntMatrixDIterator secondIt{matrix.dBegin(0, 0)};
+
+        QVERIFY2(secondIt - firstIt == -2, "The difference operator does not work correctly, difference between iterators is wrong");
     }
 }
 

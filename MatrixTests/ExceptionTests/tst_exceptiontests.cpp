@@ -1816,6 +1816,33 @@ void ExceptionTests::testDIteratorExceptions()
                                  IntMatrixDIterator secondIt{firstMatrix.getDIterator(2, 1)};
                                  bool areEqual{firstIt >= secondIt}; Q_UNUSED(areEqual);
                              }, std::runtime_error);
+    // difference operator exceptions
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixDIterator firstIt{matrix.getDIterator(2, 1)};
+                                 IntMatrixDIterator secondIt{matrix.getDIterator(1, 1, true)};
+                                 int difference{firstIt - secondIt}; Q_UNUSED(difference);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixDIterator firstIt{matrix.dEnd(1, 2)};
+                                 IntMatrixDIterator secondIt{matrix.dEnd(-1)};
+                                 int difference{firstIt - secondIt}; Q_UNUSED(difference);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixDIterator firstIt{firstMatrix.getDIterator(1, 2)};
+                                 IntMatrixDIterator secondIt{secondMatrix.getDIterator(1, 1, true)};
+                                 int difference{firstIt - secondIt}; Q_UNUSED(difference);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixDIterator firstIt{firstMatrix.getDIterator(-1, 1, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixDIterator secondIt{firstMatrix.getDIterator(2, 1)};
+                                 int difference{firstIt - secondIt}; Q_UNUSED(difference);
+                             }, std::runtime_error);
     // dereference exceptions
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixDIterator it{matrix.dEnd(-1)};   *it = -14; }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixDIterator it{matrix.dEnd(0, 2)};   *it = -14; }, std::runtime_error);

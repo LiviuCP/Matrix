@@ -1566,8 +1566,12 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator-(DIte
 template<typename DataType>
 typename Matrix<DataType>::DIterator::difference_type Matrix<DataType>::DIterator::operator-(const DIterator& it) const
 {
-    (void)it;
-    return -1;
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return (m_DiagonalIndex - it.m_DiagonalIndex);
 }
 
 template<typename DataType>
