@@ -27,7 +27,7 @@ private slots:
     void testSmallerThanOrEqualToOperator();
     void testGreaterThanOperator();
     void testGreaterThanOrEqualToOperator();
-    void testDereferenceStarOperator();
+    void testDereferenceAsteriskOperator();
     void testDereferenceArrowOperator();
     void testDereferenceSquareBracketsOperator();
     void testIsValidWithMatrix();
@@ -857,7 +857,7 @@ void ConstReverseZIteratorTests::testGreaterThanOrEqualToOperator()
     }
 }
 
-void ConstReverseZIteratorTests::testDereferenceStarOperator()
+void ConstReverseZIteratorTests::testDereferenceAsteriskOperator()
 {
     {
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
