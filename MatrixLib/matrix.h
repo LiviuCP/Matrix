@@ -1623,7 +1623,15 @@ bool Matrix<DataType>::DIterator::operator>=(const DIterator& it) const
 template<typename DataType>
 typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::operator*() const
 {
-    return DataType{};
+    if (m_DiagonalIndex == m_DiagonalSize)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
+    }
+
+    size_type currentRowNr{m_DiagonalNumber < 0 ? m_DiagonalIndex - m_DiagonalNumber : m_DiagonalIndex};
+    size_type currentColumnNr{m_DiagonalNumber < 0 ? m_DiagonalIndex : m_DiagonalIndex + m_DiagonalNumber};
+
+    return m_pMatrixPtr[currentRowNr][currentColumnNr];
 }
 
 template<typename DataType>

@@ -1708,6 +1708,9 @@ void ExceptionTests::testDIteratorExceptions()
                                  IntMatrixDIterator secondIt{firstMatrix.getDIterator(2, 1)};
                                  bool areEqual{firstIt != secondIt}; Q_UNUSED(areEqual);
                              }, std::runtime_error);
+    // dereference exceptions
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixDIterator it{matrix.dEnd(-1)};   *it = -14; }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixDIterator it{matrix.dEnd(0, 2)};   *it = -14; }, std::runtime_error);
 }
 
 QTEST_APPLESS_MAIN(ExceptionTests)

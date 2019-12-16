@@ -21,6 +21,7 @@ private slots:
     void testIteratorsAreNotEqual();
     void testIncrementOperators();
     void testDecrementOperators();
+    void testDereferenceAsteriskOperator();
 };
 
 DIteratorTests::DIteratorTests()
@@ -432,6 +433,25 @@ void DIteratorTests::testDecrementOperators()
 
         QVERIFY2(it == matrix.getDIterator(1, 0) && postDecrementIt == matrix.getDIterator(1, 0),
                  "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+}
+
+void DIteratorTests::testDereferenceAsteriskOperator()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(2, 1)};
+
+        QVERIFY2(*it == -8, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(1, 1, true)};
+
+        *it = 14;
+
+        QVERIFY2(matrix.at(1, 2) == 14, "The dereference (*) operator does not work correctly, the value is not correctly written to the pointed location");
     }
 }
 
