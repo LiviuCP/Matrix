@@ -19,6 +19,10 @@ private slots:
     void testIteratorCreation();
     void testIteratorsAreEqual();
     void testIteratorsAreNotEqual();
+    void testSmallerThanOperator();
+    void testSmallerThanOrEqualToOperator();
+    void testGreaterThanOperator();
+    void testGreaterThanOrEqualToOperator();
     void testIncrementOperators();
     void testDecrementOperators();
     void testDereferenceAsteriskOperator();
@@ -228,6 +232,68 @@ void DIteratorTests::testIteratorsAreNotEqual()
         IntMatrixDIterator secondIt{matrix.getDIterator(1, 0, true)};
 
         QVERIFY2(firstIt != secondIt, "The iterators are not equal");
+    }
+}
+
+void DIteratorTests::testSmallerThanOperator()
+{
+    IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    IntMatrixDIterator firstIt{matrix.dBegin(1)};
+    IntMatrixDIterator secondIt{matrix.getDIterator(1, 2)};
+    IntMatrixDIterator thirdIt{matrix.dEnd(1)};
+
+    QVERIFY2(firstIt < secondIt && secondIt < thirdIt, "The smaller than operator doesn't work correctly");
+}
+
+void DIteratorTests::testSmallerThanOrEqualToOperator()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(1, 2)};
+
+        QVERIFY2(it <= it, "The smaller than or equal operator doesn't work correctly");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator firstIt{matrix.dBegin(-1)};
+        IntMatrixDIterator secondIt{matrix.getDIterator(1, 0)};
+        IntMatrixDIterator thirdIt{matrix.getDIterator(2, 1)};
+        IntMatrixDIterator fourthIt{matrix.getDIterator(-1, 1, true)};
+        IntMatrixDIterator fifthIt{matrix.dEnd(-1)};
+
+        QVERIFY2(firstIt <= secondIt && secondIt <= thirdIt && thirdIt <= fourthIt && fourthIt <= fifthIt, "The smaller than or equal operator doesn't work correctly");
+    }
+}
+
+void DIteratorTests::testGreaterThanOperator()
+{
+    IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    IntMatrixDIterator firstIt{matrix.dBegin(1)};
+    IntMatrixDIterator secondIt{matrix.getDIterator(1, 2)};
+    IntMatrixDIterator thirdIt{matrix.dEnd(1)};
+
+    QVERIFY2(thirdIt > secondIt && secondIt > firstIt, "The greater than operator doesn't work correctly");
+}
+
+void DIteratorTests::testGreaterThanOrEqualToOperator()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(1, 2)};
+
+        QVERIFY2(it >= it, "The greater than or equal operator doesn't work correctly");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator firstIt{matrix.dBegin(-1)};
+        IntMatrixDIterator secondIt{matrix.getDIterator(1, 0)};
+        IntMatrixDIterator thirdIt{matrix.getDIterator(2, 1)};
+        IntMatrixDIterator fourthIt{matrix.getDIterator(-1, 1, true)};
+        IntMatrixDIterator fifthIt{matrix.dEnd(-1)};
+
+        QVERIFY2(fifthIt >= fourthIt && fourthIt >= thirdIt && thirdIt >= secondIt && secondIt >= firstIt, "The greater than or equal operator doesn't work correctly");
     }
 }
 

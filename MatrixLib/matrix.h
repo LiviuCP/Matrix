@@ -1595,29 +1595,45 @@ bool Matrix<DataType>::DIterator::operator!=(const DIterator& it) const
 template<typename DataType>
 bool Matrix<DataType>::DIterator::operator<(const DIterator& it) const
 {
-    (void)it;
-    return false;
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex < it.m_DiagonalIndex;
 }
 
 template<typename DataType>
 bool Matrix<DataType>::DIterator::operator<=(const DIterator& it) const
 {
-    (void)it;
-    return false;
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex <= it.m_DiagonalIndex;
 }
 
 template<typename DataType>
 bool Matrix<DataType>::DIterator::operator>(const DIterator& it) const
 {
-    (void)it;
-    return false;
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex > it.m_DiagonalIndex;
 }
 
 template<typename DataType>
 bool Matrix<DataType>::DIterator::operator>=(const DIterator& it) const
 {
-    (void)it;
-    return false;
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex >= it.m_DiagonalIndex;
 }
 
 template<typename DataType>
