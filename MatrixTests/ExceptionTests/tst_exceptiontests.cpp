@@ -1686,135 +1686,135 @@ void ExceptionTests::testDIteratorExceptions()
                                  IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{matrix.getDIterator(2, 1)};
                                  IntMatrixDIterator secondIt{matrix.getDIterator(1, 1, true)};
-                                 bool areEqual{firstIt != secondIt}; Q_UNUSED(areEqual);
+                                 bool areNotEqual{firstIt != secondIt}; Q_UNUSED(areNotEqual);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{matrix.dEnd(1, 2)};
                                  IntMatrixDIterator secondIt{matrix.dEnd(-1)};
-                                 bool areEqual{firstIt != secondIt}; Q_UNUSED(areEqual);
+                                 bool areNotEqual{firstIt != secondIt}; Q_UNUSED(areNotEqual);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{firstMatrix.getDIterator(1, 2)};
                                  IntMatrixDIterator secondIt{secondMatrix.getDIterator(1, 0, true)};
-                                 bool areEqual{firstIt != secondIt}; Q_UNUSED(areEqual);
+                                 bool areNotEqual{firstIt != secondIt}; Q_UNUSED(areNotEqual);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{firstMatrix.getDIterator(-1, 0, true)};
                                  firstMatrix.insertRow(1);
                                  IntMatrixDIterator secondIt{firstMatrix.getDIterator(2, 1)};
-                                 bool areEqual{firstIt != secondIt}; Q_UNUSED(areEqual);
+                                 bool areNotEqual{firstIt != secondIt}; Q_UNUSED(areNotEqual);
                              }, std::runtime_error);
     // smaller than operator
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{matrix.getDIterator(2, 1)};
                                  IntMatrixDIterator secondIt{matrix.getDIterator(1, 1, true)};
-                                 bool areEqual{firstIt < secondIt}; Q_UNUSED(areEqual);
+                                 bool isSmallerThan{firstIt < secondIt}; Q_UNUSED(isSmallerThan);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{matrix.dEnd(1, 2)};
                                  IntMatrixDIterator secondIt{matrix.dEnd(-1)};
-                                 bool areEqual{firstIt < secondIt}; Q_UNUSED(areEqual);
+                                 bool isSmallerThan{firstIt < secondIt}; Q_UNUSED(isSmallerThan);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{firstMatrix.getDIterator(1, 2)};
                                  IntMatrixDIterator secondIt{secondMatrix.getDIterator(1, 1, true)};
-                                 bool areEqual{firstIt < secondIt}; Q_UNUSED(areEqual);
+                                 bool isSmallerThan{firstIt < secondIt}; Q_UNUSED(isSmallerThan);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{firstMatrix.getDIterator(-1, 1, true)};
                                  firstMatrix.insertRow(1);
                                  IntMatrixDIterator secondIt{firstMatrix.getDIterator(2, 1)};
-                                 bool areEqual{firstIt < secondIt}; Q_UNUSED(areEqual);
+                                 bool isSmallerThan{firstIt < secondIt}; Q_UNUSED(isSmallerThan);
                              }, std::runtime_error);
     // smaller than or equal operator
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{matrix.getDIterator(2, 1)};
                                  IntMatrixDIterator secondIt{matrix.getDIterator(1, 1, true)};
-                                 bool areEqual{firstIt <= secondIt}; Q_UNUSED(areEqual);
+                                 bool isSmallerThanOrEqual{firstIt <= secondIt}; Q_UNUSED(isSmallerThanOrEqual);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{matrix.dEnd(1, 2)};
                                  IntMatrixDIterator secondIt{matrix.dEnd(-1)};
-                                 bool areEqual{firstIt <= secondIt}; Q_UNUSED(areEqual);
+                                 bool isSmallerThanOrEqual{firstIt <= secondIt}; Q_UNUSED(isSmallerThanOrEqual);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{firstMatrix.getDIterator(1, 2)};
                                  IntMatrixDIterator secondIt{secondMatrix.getDIterator(1, 1, true)};
-                                 bool areEqual{firstIt <= secondIt}; Q_UNUSED(areEqual);
+                                 bool isSmallerThanOrEqual{firstIt <= secondIt}; Q_UNUSED(isSmallerThanOrEqual);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{firstMatrix.getDIterator(-1, 1, true)};
                                  firstMatrix.insertRow(1);
                                  IntMatrixDIterator secondIt{firstMatrix.getDIterator(2, 1)};
-                                 bool areEqual{firstIt <= secondIt}; Q_UNUSED(areEqual);
+                                 bool isSmallerThanOrEqual{firstIt <= secondIt}; Q_UNUSED(isSmallerThanOrEqual);
                              }, std::runtime_error);
     // greater than operator
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{matrix.getDIterator(2, 1)};
                                  IntMatrixDIterator secondIt{matrix.getDIterator(1, 1, true)};
-                                 bool areEqual{firstIt > secondIt}; Q_UNUSED(areEqual);
+                                 bool isGreaterThan{firstIt > secondIt}; Q_UNUSED(isGreaterThan);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{matrix.dEnd(1, 2)};
                                  IntMatrixDIterator secondIt{matrix.dEnd(-1)};
-                                 bool areEqual{firstIt > secondIt}; Q_UNUSED(areEqual);
+                                 bool isGreaterThan{firstIt > secondIt}; Q_UNUSED(isGreaterThan);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{firstMatrix.getDIterator(1, 2)};
                                  IntMatrixDIterator secondIt{secondMatrix.getDIterator(1, 1, true)};
-                                 bool areEqual{firstIt > secondIt}; Q_UNUSED(areEqual);
+                                 bool isGreaterThan{firstIt > secondIt}; Q_UNUSED(isGreaterThan);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{firstMatrix.getDIterator(-1, 1, true)};
                                  firstMatrix.insertRow(1);
                                  IntMatrixDIterator secondIt{firstMatrix.getDIterator(2, 1)};
-                                 bool areEqual{firstIt > secondIt}; Q_UNUSED(areEqual);
+                                 bool isGreaterThan{firstIt > secondIt}; Q_UNUSED(isGreaterThan);
                              }, std::runtime_error);
     // greater than or equal operator
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{matrix.getDIterator(2, 1)};
                                  IntMatrixDIterator secondIt{matrix.getDIterator(1, 1, true)};
-                                 bool areEqual{firstIt >= secondIt}; Q_UNUSED(areEqual);
+                                 bool isGreaterThanOrEqual{firstIt >= secondIt}; Q_UNUSED(isGreaterThanOrEqual);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{matrix.dEnd(1, 2)};
                                  IntMatrixDIterator secondIt{matrix.dEnd(-1)};
-                                 bool areEqual{firstIt >= secondIt}; Q_UNUSED(areEqual);
+                                 bool isGreaterThanOrEqual{firstIt >= secondIt}; Q_UNUSED(isGreaterThanOrEqual);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{firstMatrix.getDIterator(1, 2)};
                                  IntMatrixDIterator secondIt{secondMatrix.getDIterator(1, 1, true)};
-                                 bool areEqual{firstIt >= secondIt}; Q_UNUSED(areEqual);
+                                 bool isGreaterThanOrEqual{firstIt >= secondIt}; Q_UNUSED(isGreaterThanOrEqual);
                              }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({
                                  IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
                                  IntMatrixDIterator firstIt{firstMatrix.getDIterator(-1, 1, true)};
                                  firstMatrix.insertRow(1);
                                  IntMatrixDIterator secondIt{firstMatrix.getDIterator(2, 1)};
-                                 bool areEqual{firstIt >= secondIt}; Q_UNUSED(areEqual);
+                                 bool isGreaterThanOrEqual{firstIt >= secondIt}; Q_UNUSED(isGreaterThanOrEqual);
                              }, std::runtime_error);
     // difference operator exceptions
     QVERIFY_EXCEPTION_THROWN({
