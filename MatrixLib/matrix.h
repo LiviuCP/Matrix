@@ -1554,17 +1554,7 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator+(DIte
 {
     DIterator it{*this};
     size_type resultingIndex = it.m_DiagonalIndex + offset;
-
-    if (resultingIndex < 0)
-    {
-        resultingIndex = 0;
-    }
-    else if (resultingIndex > it.m_DiagonalSize)
-    {
-        resultingIndex = it.m_DiagonalSize;
-    }
-
-    it.m_DiagonalIndex = resultingIndex;
+    it.m_DiagonalIndex = resultingIndex < 0 ? 0 : resultingIndex > it.m_DiagonalSize ? it.m_DiagonalSize : resultingIndex;
 
     return it;
 }
@@ -1574,17 +1564,7 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator-(DIte
 {
     DIterator it{*this};
     size_type resultingIndex = it.m_DiagonalIndex - offset;
-
-    if (resultingIndex < 0)
-    {
-        resultingIndex = 0;
-    }
-    else if (resultingIndex > it.m_DiagonalSize)
-    {
-        resultingIndex = it.m_DiagonalSize;
-    }
-
-    it.m_DiagonalIndex = resultingIndex;
+    it.m_DiagonalIndex = resultingIndex < 0 ? 0 : resultingIndex > it.m_DiagonalSize ? it.m_DiagonalSize : resultingIndex;
 
     return it;
 }
