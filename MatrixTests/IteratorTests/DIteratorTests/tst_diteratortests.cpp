@@ -25,6 +25,8 @@ private slots:
     void testGreaterThanOrEqualToOperator();
     void testIncrementOperators();
     void testDecrementOperators();
+    void testOperatorPlus();
+    void testOperatorMinus();
     void testDifferenceOperator();
     void testDereferenceAsteriskOperator();
 };
@@ -500,6 +502,120 @@ void DIteratorTests::testDecrementOperators()
 
         QVERIFY2(it == matrix.getDIterator(1, 0) && postDecrementIt == matrix.getDIterator(1, 0),
                  "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
+    }
+}
+
+void DIteratorTests::testOperatorPlus()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+        IntMatrixDIterator it1{matrix.dBegin(-1)};
+        IntMatrixDIterator it2{it1 + (-1)};
+        IntMatrixDIterator it3{it1 + 2};
+        IntMatrixDIterator it4{it1 + 3};
+        IntMatrixDIterator it5{it1 + 4};
+
+        QVERIFY2(it2 == matrix.dBegin(1, 0) && it3 == matrix.getDIterator(3, 2) && it4 == matrix.dEnd(1, 0) && it5 == matrix.dEnd(1, 0),
+                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+        IntMatrixDIterator it1{matrix.getDIterator(-1, 1, true)};
+        IntMatrixDIterator it2{it1 + (-2)};
+        IntMatrixDIterator it3{it1 + (-1)};
+        IntMatrixDIterator it4{it1 + (0)};
+        IntMatrixDIterator it5{it1 + 1};
+        IntMatrixDIterator it6{it1 + 2};
+        IntMatrixDIterator it7{it1 + 3};
+
+        QVERIFY2(it2 == matrix.dBegin(1, 0) && it3 == matrix.dBegin(1, 0) && it4 == matrix.getDIterator(2, 1) && it5 == matrix.getDIterator(3, 2) &&
+                 it6 == matrix.dEnd(1, 0) && it7 == matrix.dEnd(1, 0), "Operator + does not correctly work, the resulting iterator does not point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+        IntMatrixDIterator it1{matrix.dEnd(-1)};
+        IntMatrixDIterator it2{it1 + (-4)};
+        IntMatrixDIterator it3{it1 + (-3)};
+        IntMatrixDIterator it4{it1 + (-1)};
+        IntMatrixDIterator it5{it1 + 1};
+
+        QVERIFY2(it2 == matrix.dBegin(1, 0) && it3 == matrix.dBegin(1, 0) && it4 == matrix.getDIterator(3, 2) && it5 == matrix.dEnd(1, 0),
+                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+    }
+
+    // additional test to quick check that on the positive diagonals everything is fine too
+    {
+        IntMatrix matrix{3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it1{matrix.dBegin(0, 1)};
+        IntMatrixDIterator it2{it1 + (-2)};
+        IntMatrixDIterator it3{it1 + (-1)};
+        IntMatrixDIterator it4{it1 + 2};
+        IntMatrixDIterator it5{it1 + 3};
+        IntMatrixDIterator it6{it1 + 4};
+        QVERIFY2(it2 == matrix.dBegin(0, 1) && it3 == matrix.dBegin(0, 1) && it4 == matrix.getDIterator(2, 3) && it5 == matrix.dEnd(0, 1) && it6 == matrix.dEnd(0, 1),
+                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+    }
+}
+
+void DIteratorTests::testOperatorMinus()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+        IntMatrixDIterator it1{matrix.dBegin(-1)};
+        IntMatrixDIterator it2{it1 -1};
+        IntMatrixDIterator it3{it1 - (-2)};
+        IntMatrixDIterator it4{it1 - (-3)};
+        IntMatrixDIterator it5{it1 - (-4)};
+
+        QVERIFY2(it2 == matrix.dBegin(1, 0) && it3 == matrix.getDIterator(3, 2) && it4 == matrix.dEnd(1, 0) && it5 == matrix.dEnd(1, 0),
+                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+        IntMatrixDIterator it1{matrix.getDIterator(-1, 1, true)};
+        IntMatrixDIterator it2{it1 - 2};
+        IntMatrixDIterator it3{it1 - 1};
+        IntMatrixDIterator it4{it1 - 0};
+        IntMatrixDIterator it5{it1 - (-1)};
+        IntMatrixDIterator it6{it1 - (-2)};
+        IntMatrixDIterator it7{it1 - (-3)};
+
+        QVERIFY2(it2 == matrix.dBegin(1, 0) && it3 == matrix.dBegin(1, 0) && it4 == matrix.getDIterator(2, 1) && it5 == matrix.getDIterator(3, 2) &&
+                 it6 == matrix.dEnd(1, 0) && it7 == matrix.dEnd(1, 0), "Operator + does not correctly work, the resulting iterator does not point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+        IntMatrixDIterator it1{matrix.dEnd(-1)};
+        IntMatrixDIterator it2{it1 - 4};
+        IntMatrixDIterator it3{it1 - 3};
+        IntMatrixDIterator it4{it1 - 1};
+        IntMatrixDIterator it5{it1 - (-1)};
+
+        QVERIFY2(it2 == matrix.dBegin(1, 0) && it3 == matrix.dBegin(1, 0) && it4 == matrix.getDIterator(3, 2) && it5 == matrix.dEnd(1, 0),
+                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+    }
+
+    // additional test to quick check that on the positive diagonals everything is fine too
+    {
+        IntMatrix matrix{3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it1{matrix.dBegin(0, 1)};
+        IntMatrixDIterator it2{it1 -2};
+        IntMatrixDIterator it3{it1 -1};
+        IntMatrixDIterator it4{it1 - (-2)};
+        IntMatrixDIterator it5{it1 - (-3)};
+        IntMatrixDIterator it6{it1 - (-4)};
+        QVERIFY2(it2 == matrix.dBegin(0, 1) && it3 == matrix.dBegin(0, 1) && it4 == matrix.getDIterator(2, 3) && it5 == matrix.dEnd(0, 1) && it6 == matrix.dEnd(0, 1),
+                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
     }
 }
 

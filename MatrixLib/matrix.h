@@ -1552,15 +1552,41 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator--(int
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator+(DIterator::difference_type offset)
 {
-    (void)offset;
-    return DIterator{};
+    DIterator it{*this};
+    size_type resultingIndex = it.m_DiagonalIndex + offset;
+
+    if (resultingIndex < 0)
+    {
+        resultingIndex = 0;
+    }
+    else if (resultingIndex > it.m_DiagonalSize)
+    {
+        resultingIndex = it.m_DiagonalSize;
+    }
+
+    it.m_DiagonalIndex = resultingIndex;
+
+    return it;
 }
 
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator-(DIterator::difference_type offset)
 {
-    (void)offset;
-    return DIterator{};
+    DIterator it{*this};
+    size_type resultingIndex = it.m_DiagonalIndex - offset;
+
+    if (resultingIndex < 0)
+    {
+        resultingIndex = 0;
+    }
+    else if (resultingIndex > it.m_DiagonalSize)
+    {
+        resultingIndex = it.m_DiagonalSize;
+    }
+
+    it.m_DiagonalIndex = resultingIndex;
+
+    return it;
 }
 
 template<typename DataType>
