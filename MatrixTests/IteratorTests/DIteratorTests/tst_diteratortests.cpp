@@ -29,6 +29,7 @@ private slots:
     void testOperatorMinus();
     void testDifferenceOperator();
     void testDereferenceAsteriskOperator();
+    void testDereferenceArrowOperator();
     void testDereferenceSquareBracketsOperator();
 };
 
@@ -687,6 +688,26 @@ void DIteratorTests::testDereferenceAsteriskOperator()
         *it = 14;
 
         QVERIFY2(matrix.at(1, 2) == 14, "The dereference (*) operator does not work correctly, the value is not correctly written to the pointed location");
+    }
+}
+
+void DIteratorTests::testDereferenceArrowOperator()
+{
+    {
+        StringMatrix matrix{2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+        StringMatrixDIterator readIter{matrix.dBegin(0, 1)};
+
+        QVERIFY2(readIter->size() == 5, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    }
+
+    {
+        StringMatrix matrix{2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+        StringMatrixDIterator writeIter{matrix.getDIterator(1, 2)};
+
+        writeIter->assign("abcdefghij");
+
+        QVERIFY2(*matrix.getDIterator(1, 1, true) == "abcdefghij",
+                 "The dereference (->) operator does not work correctly, the method of the item class does not write the correct value to the expected location");
     }
 }
 
