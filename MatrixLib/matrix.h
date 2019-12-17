@@ -1669,8 +1669,17 @@ typename Matrix<DataType>::DIterator::value_type* Matrix<DataType>::DIterator::o
 template<typename DataType>
 typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::operator[](DIterator::difference_type index) const
 {
-    (void)index;
-    return DataType{};
+    size_type resultingIndex{m_DiagonalIndex + index};
+
+    if (resultingIndex < 0 || resultingIndex >= m_DiagonalSize)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATOR_INDEX_OUT_OF_BOUNDS]};
+    }
+
+    size_type resultingRowNr{m_DiagonalNumber < 0 ? resultingIndex - m_DiagonalNumber : resultingIndex};
+    size_type resultingColumnNr{m_DiagonalNumber < 0 ? resultingIndex : resultingIndex + m_DiagonalNumber};
+
+    return m_pMatrixPtr[resultingRowNr][resultingColumnNr];
 }
 
 template<typename DataType>

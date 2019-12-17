@@ -29,6 +29,7 @@ private slots:
     void testOperatorMinus();
     void testDifferenceOperator();
     void testDereferenceAsteriskOperator();
+    void testDereferenceSquareBracketsOperator();
 };
 
 DIteratorTests::DIteratorTests()
@@ -686,6 +687,39 @@ void DIteratorTests::testDereferenceAsteriskOperator()
         *it = 14;
 
         QVERIFY2(matrix.at(1, 2) == 14, "The dereference (*) operator does not work correctly, the value is not correctly written to the pointed location");
+    }
+}
+
+void DIteratorTests::testDereferenceSquareBracketsOperator()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(2, 1)};
+
+        QVERIFY2(it[-1] == 4 && it[0] == -8 && it[1] == 12, "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dBegin(0, 1)};
+
+        QVERIFY2(it[0] == 2 && it[1] == 6, "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.dEnd(0)};
+
+        QVERIFY2( it[-3] == 1 && it[-2] == -5 && it[-1] == 9, "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixDIterator it{matrix.getDIterator(0, 1)};
+
+        it[1] = 14;
+
+        QVERIFY2(*matrix.getDIterator(1, 1, true) == 14, "The dereference square brackets operator doesn't work correctly");
     }
 }
 
