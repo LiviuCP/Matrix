@@ -1693,8 +1693,27 @@ typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::ope
 template<typename DataType>
 bool Matrix<DataType>::DIterator::isValidWithMatrix(const Matrix &matrix) const
 {
-    (void)matrix;
-    return false;
+    bool isValid{true};
+
+    if (m_pMatrixPtr != matrix.m_pBaseArrayPtr)
+    {
+        isValid = false;
+    }
+    else if ((m_DiagonalNumber < 0 && std::abs(m_DiagonalNumber) >= matrix.getNrOfRows()) || (m_DiagonalNumber >= 0 && m_DiagonalNumber >= matrix.getNrOfColumns()))
+    {
+        isValid = false;
+    }
+    else
+    {
+        int diagonalSize{m_DiagonalNumber < 0 ? std::min(matrix.getNrOfRows() - std::abs(m_DiagonalNumber), matrix.getNrOfColumns())
+                                              : std::min(matrix.getNrOfRows(), matrix.getNrOfColumns() - m_DiagonalNumber)};
+        if (m_DiagonalSize != diagonalSize)
+        {
+            isValid = false;
+        }
+    }
+
+    return isValid;
 }
 
 template<typename DataType>
