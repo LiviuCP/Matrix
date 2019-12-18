@@ -32,6 +32,7 @@ private slots:
     void testDereferenceArrowOperator();
     void testDereferenceSquareBracketsOperator();
     void testIsValidWithMatrix();
+    void testStdCount();
 };
 
 DIteratorTests::DIteratorTests()
@@ -857,6 +858,31 @@ void DIteratorTests::testIsValidWithMatrix()
         firstMatrix.insertColumn(1);
 
         QVERIFY2(!it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (false)");
+    }
+}
+
+void DIteratorTests::testStdCount()
+{
+    {
+        IntMatrix matrix(1, 2, {2, -3});
+
+        QVERIFY2(std::count(matrix.getDIterator(0, 1), matrix.getDIterator(1, 0, true), -3) == 0, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
+        QVERIFY2(std::count(matrix.dBegin(1), matrix.dEnd(1), -3) == 1, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
+    }
+
+    {
+        IntMatrix matrix(6, 7, {
+                             1, -1, -3,  4, -5, 6,  7,
+                             1,  2,  4,  4, -5, 6,  7,
+                             1,  2, -3, -1, -5, 6,  7,
+                             1,  2, -3,  4,  5, 6,  7,
+                             1,  2, -3,  4, -5, 4,  7,
+                             1,  2, -3,  4, -5, 6, -1,
+                         });
+
+        QVERIFY2(std::count(matrix.dBegin(1), matrix.dEnd(1), -1) == 3, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
+        QVERIFY2(std::count(matrix.getDIterator(1, 1, true), matrix.getDIterator(4, 5), 4) == 1, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
+        QVERIFY2(std::count(matrix.getDIterator(2, 3), matrix.getDIterator(1, 4, true), 4) == 0, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
     }
 }
 
