@@ -32,6 +32,7 @@ private slots:
     void testDereferenceArrowOperator();
     void testDereferenceSquareBracketsOperator();
     void testIsValidWithMatrix();
+    void testChangeDiagonal();
     void testStdCount();
     void testStdFind();
     void testStdSort();
@@ -861,6 +862,17 @@ void DIteratorTests::testIsValidWithMatrix()
 
         QVERIFY2(!it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (false)");
     }
+}
+
+void DIteratorTests::testChangeDiagonal()
+{
+    IntMatrix matrix(4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+    IntMatrixDIterator it{matrix.dBegin(1)};
+
+    QVERIFY2(*it == 2, "The iterator does not reference the right value");
+
+    it = matrix.getDIterator(-2, 0, true);
+    QVERIFY2(it[1] == -11, "the iterator index does not reference the right value");
 }
 
 void DIteratorTests::testStdCount()
