@@ -34,6 +34,7 @@ private slots:
     void testIsValidWithMatrix();
     void testStdCount();
     void testStdFind();
+    void testStdSort();
 };
 
 DIteratorTests::DIteratorTests()
@@ -937,6 +938,105 @@ void DIteratorTests::testStdFind()
 
         IntMatrixDIterator it{std::find(matrix.dBegin(1), matrix.dEnd(1), -9)};
         QVERIFY2(it == matrix.dEnd(1), "The iterator doesn't work correctly with std::find, incorrect next element returned");
+    }
+}
+
+void DIteratorTests::testStdSort()
+{
+    {
+        IntMatrix matrix(6, 7, {
+                             1, -1, -3,  4, -5, 6, 7,
+                             1,  2, -3,  4, -5, 6, 7,
+                             1,  2, -3,  1, -5, 6, 7,
+                             1,  2, -3,  4,  0, 6, 7,
+                             1,  2, -3,  4, -5, 5, 7,
+                             1,  2, -3,  4, -5, 6, 2,
+                         });
+
+        IntMatrix matrixRef(6, 7, {
+                             1, -3, -3,  4, -5, 6, 7,
+                             1,  2, -1,  4, -5, 6, 7,
+                             1,  2, -3,  0, -5, 6, 7,
+                             1,  2, -3,  4,  1, 6, 7,
+                             1,  2, -3,  4, -5, 2, 7,
+                             1,  2, -3,  4, -5, 6, 5,
+                         });
+
+        std::sort(matrix.dBegin(1), matrix.dEnd(1));
+
+        QVERIFY2(matrix == matrixRef, "The iterator doesn't work correctly, the matrix diagonal has not been sorted properly");
+    }
+
+    {
+        IntMatrix matrix(6, 7, {
+                             1, -1, -3,  4, -5,  6, 7,
+                             1,  2,  5,  4, -5,  6, 7,
+                             1,  2, -3,  1, -5,  6, 7,
+                             1,  2, -3,  4,  0,  6, 7,
+                             1,  2, -3,  4, -5, -3, 7,
+                             1,  2, -3,  4, -5,  6, 2,
+                         });
+
+        IntMatrix matrixRef(6, 7, {
+                             1, -1, -3,  4, -5,  6, 7,
+                             1,  2,  0,  4, -5,  6, 7,
+                             1,  2, -3,  1, -5,  6, 7,
+                             1,  2, -3,  4,  5,  6, 7,
+                             1,  2, -3,  4, -5, -3, 7,
+                             1,  2, -3,  4, -5,  6, 2,
+                         });
+
+        std::sort(matrix.getDIterator(1, 2), matrix.getDIterator(4, 5));
+
+        QVERIFY2(matrix == matrixRef, "The iterator doesn't work correctly, the matrix diagonal has not been sorted properly");
+    }
+
+    {
+        IntMatrix matrix(6, 7, {
+                             1, -1, -3,  4, -5,  6, 7,
+                             1,  2,  5,  4, -5,  6, 7,
+                             1,  2, -3,  1, -5,  6, 7,
+                             1,  2, -3,  4,  0,  6, 7,
+                             1,  2, -3,  4, -5, -3, 7,
+                             1,  2, -3,  4, -5,  6, 2,
+                         });
+
+        IntMatrix matrixRef(6, 7, {
+                             1, -1, -3,  4, -5,  6, 7,
+                             1,  2,  0,  4, -5,  6, 7,
+                             1,  2, -3,  1, -5,  6, 7,
+                             1,  2, -3,  4,  5,  6, 7,
+                             1,  2, -3,  4, -5, -3, 7,
+                             1,  2, -3,  4, -5,  6, 2,
+                         });
+
+        std::sort(matrix.dBegin(1), matrix.getDIterator(4, 5));
+
+        QVERIFY2(matrix == matrixRef, "The iterator doesn't work correctly, the matrix diagonal has not been sorted properly");
+    }
+
+    {
+        IntMatrix matrix(6, 7, {
+                             1, -1, -3,  4, -5,  6, 7,
+                             1,  2,  5,  4, -5,  6, 7,
+                             1,  2, -3,  1, -5,  6, 7,
+                             1,  2, -3,  4,  0,  6, 7,
+                             1,  2, -3,  4, -5, -3, 7,
+                             1,  2, -3,  4, -5,  6, 2,
+                         });
+
+        IntMatrix matrixRef(6, 7, {
+                             1, -1, -3,  4, -5,  6, 7,
+                             1,  2, -3,  4, -5,  6, 7,
+                             1,  2, -3,  0, -5,  6, 7,
+                             1,  2, -3,  4,  1,  6, 7,
+                             1,  2, -3,  4, -5,  2, 7,
+                             1,  2, -3,  4, -5,  6, 5,
+                         });
+
+        std::sort(matrix.getDIterator(1, 2), matrix.dEnd(1));
+
+        QVERIFY2(matrix == matrixRef, "The iterator doesn't work correctly, the matrix diagonal has not been sorted properly");
     }
 }
 
