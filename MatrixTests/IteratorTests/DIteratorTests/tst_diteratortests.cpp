@@ -33,6 +33,7 @@ private slots:
     void testDereferenceSquareBracketsOperator();
     void testIsValidWithMatrix();
     void testStdCount();
+    void testStdFind();
 };
 
 DIteratorTests::DIteratorTests()
@@ -883,6 +884,59 @@ void DIteratorTests::testStdCount()
         QVERIFY2(std::count(matrix.dBegin(1), matrix.dEnd(1), -1) == 3, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
         QVERIFY2(std::count(matrix.getDIterator(1, 1, true), matrix.getDIterator(4, 5), 4) == 1, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
         QVERIFY2(std::count(matrix.getDIterator(2, 3), matrix.getDIterator(1, 4, true), 4) == 0, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
+    }
+}
+
+void DIteratorTests::testStdFind()
+{
+    {
+        IntMatrix matrix(6, 7, {
+                             1, -1, -3,  4, -5, 6,  7,
+                             1,  2,  4,  4, -5, 6,  7,
+                             1,  2, -3, -1, -5, 6,  7,
+                             1,  2, -3,  4,  5, 6,  7,
+                             1,  2, -3,  4, -5, 4,  7,
+                             1,  2, -3,  4, -5, 6, -1,
+                         });
+
+        IntMatrixDIterator it{std::find(matrix.dBegin(1), matrix.dEnd(1), 5)};
+        QVERIFY2(it == matrix.getDIterator(3, 4), "The iterator doesn't work correctly with std::find, incorrect next element returned");
+    }
+
+    {
+        IntMatrix matrix(6, 7, {
+                             1, -1, -3,  4, -5, 6,  7,
+                             1,  2,  4,  4, -5, 6,  7,
+                             1,  2, -3, -1, -5, 6,  7,
+                             1,  2, -3,  4,  4, 6,  7,
+                             1,  2, -3,  4, -5, 5,  7,
+                             1,  2, -3,  4, -5, 6, -1,
+                         });
+
+        IntMatrixDIterator it{std::find(matrix.dBegin(1), matrix.dEnd(1), 4)};
+        QVERIFY2(it == matrix.getDIterator(1, 2), "The iterator doesn't work correctly with std::find, incorrect next element returned");
+
+        ++it;
+        it = std::find(it, matrix.dEnd(1), 4);
+        QVERIFY2(it == matrix.getDIterator(3, 4), "The iterator doesn't work correctly with std::find, incorrect next element returned");
+
+        ++it;
+        it = std::find(it, matrix.dEnd(1), 4);
+        QVERIFY2(it == matrix.dEnd(1), "The iterator doesn't work correctly with std::find, incorrect next element returned");
+    }
+
+    {
+        IntMatrix matrix(6, 7, {
+                             1, -1, -3,  4, -5, 6,  7,
+                             1,  2,  4,  4, -5, 6,  7,
+                             1,  2, -3, -1, -5, 6,  7,
+                             1,  2, -3,  4,  5, 6,  7,
+                             1,  2, -3,  4, -5, 4,  7,
+                             1,  2, -3,  4, -5, 6, -1,
+                         });
+
+        IntMatrixDIterator it{std::find(matrix.dBegin(1), matrix.dEnd(1), -9)};
+        QVERIFY2(it == matrix.dEnd(1), "The iterator doesn't work correctly with std::find, incorrect next element returned");
     }
 }
 
