@@ -68,8 +68,9 @@ The Z-Iterators have four sub-types:
 - reverse read-write Z-Iterators (class ReverseZIterator)
 - reverse read-only Z-Iterators (class ConstReverseZIterator)
 
-The D-Iterators have only one sub-type at the moment:
+The D-Iterators have following sub-types at the moment:
 - read-write D-Iterator (class DIterator)
+- read-only D-Iterator (class ConstDIterator)
 
 I am planning to add more iterators in the future.
 
