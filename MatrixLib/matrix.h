@@ -286,6 +286,62 @@ public:
         size_type m_DiagonalSize;     // number of elements contained within diagonal
     };
 
+    class ConstDIterator
+    {
+        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
+        friend class Matrix;
+
+    public:
+        // all these are required for STL compatibility
+        using iterator_category = std::random_access_iterator_tag;
+        using value_type = DataType;
+        using difference_type = diff_type;
+        using pointer = DataType**;
+        using reference = const DataType&;
+
+        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
+        ConstDIterator() = delete;
+
+        ConstDIterator operator++();
+        ConstDIterator operator++(int unused);
+        ConstDIterator operator--();
+        ConstDIterator operator--(int unused);
+
+        ConstDIterator operator+(difference_type offset);
+        ConstDIterator operator-(difference_type offset);
+
+        difference_type operator-(const ConstDIterator& it) const;
+
+        bool operator==(const ConstDIterator& it) const;
+        bool operator!=(const ConstDIterator& it) const;
+        bool operator<(const ConstDIterator& it) const;
+        bool operator<=(const ConstDIterator& it) const;
+        bool operator>(const ConstDIterator& it) const;
+        bool operator>=(const ConstDIterator& it) const;
+
+        reference operator*() const;
+        const value_type* operator->() const;
+        reference operator[](difference_type index) const;
+
+        bool isValidWithMatrix(const Matrix& matrix) const;
+
+        size_type getCurrentRowNr() const;
+        size_type getCurrentColumnNr() const;
+        size_type getDiagonalNr() const;
+        size_type getDiagonalIndex() const;
+
+    private:
+        ConstDIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative = false);
+
+        void _increment();
+        void _decrement();
+
+        pointer m_pMatrixPtr;
+        size_type m_DiagonalIndex;    // relative index within diagonal
+        size_type m_DiagonalNumber;   // index of the diagonal within matrix
+        size_type m_DiagonalSize;     // number of elements contained within diagonal
+    };
+
     Matrix();
     Matrix(size_type nrOfRows, size_type nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
     Matrix(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType);
@@ -377,6 +433,12 @@ public:
     DIterator dEnd(int diagNr) const;
     DIterator dEnd(int rowNr, int columnNr) const;
     DIterator getDIterator(size_type first, size_type second, bool isRelative = false) const;
+
+    ConstDIterator constDBegin(int diagNr) const;
+    ConstDIterator constDBegin(int rowNr, int columnNr) const;
+    ConstDIterator constDEnd(int diagNr) const;
+    ConstDIterator constDEnd(int rowNr, int columnNr) const;
+    ConstDIterator getConstDIterator(size_type first, size_type second, bool isRelative = false) const;
 
     // required for being able to use the "auto" keyword for iterating through the matrix elements
     ZIterator begin() const;
@@ -1773,6 +1835,275 @@ void Matrix<DataType>::DIterator::_increment()
 
 template<typename DataType>
 void Matrix<DataType>::DIterator::_decrement()
+{
+    if (m_DiagonalIndex > 0)
+    {
+        --m_DiagonalIndex;
+    }
+}
+
+// 6) ConstDIterator (const diagonal iterator, traverses a matrix diagonal)
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator++()
+{
+    _increment();
+    return *this;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator++(int unused)
+{
+    (void)unused;
+    ConstDIterator dIterator{*this};
+
+    _increment();
+
+    return dIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator--()
+{
+    _decrement();
+    return *this;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator--(int unused)
+{
+    (void)unused;
+    ConstDIterator dIterator{*this};
+
+    _decrement();
+
+    return dIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator+(ConstDIterator::difference_type offset)
+{
+    ConstDIterator it{*this};
+    const size_type c_ResultingIndex = it.m_DiagonalIndex + offset;
+    it.m_DiagonalIndex = c_ResultingIndex < 0 ? 0 : c_ResultingIndex > it.m_DiagonalSize ? it.m_DiagonalSize : c_ResultingIndex;
+
+    return it;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator-(ConstDIterator::difference_type offset)
+{
+    ConstDIterator it{*this};
+    const size_type c_ResultingIndex = it.m_DiagonalIndex - offset;
+    it.m_DiagonalIndex = c_ResultingIndex < 0 ? 0 : c_ResultingIndex > it.m_DiagonalSize ? it.m_DiagonalSize : c_ResultingIndex;
+
+    return it;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator::difference_type Matrix<DataType>::ConstDIterator::operator-(const ConstDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return (m_DiagonalIndex - it.m_DiagonalIndex);
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstDIterator::operator==(const ConstDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex == it.m_DiagonalIndex;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstDIterator::operator!=(const ConstDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex != it.m_DiagonalIndex;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstDIterator::operator<(const ConstDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex < it.m_DiagonalIndex;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstDIterator::operator<=(const ConstDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex <= it.m_DiagonalIndex;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstDIterator::operator>(const ConstDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex > it.m_DiagonalIndex;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstDIterator::operator>=(const ConstDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex >= it.m_DiagonalIndex;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator::reference Matrix<DataType>::ConstDIterator::operator*() const
+{
+    if (m_DiagonalIndex == m_DiagonalSize)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
+    }
+
+    const size_type c_CurrentRowNr{m_DiagonalNumber < 0 ? m_DiagonalIndex - m_DiagonalNumber : m_DiagonalIndex};
+    const size_type c_CurrentColumnNr{m_DiagonalNumber < 0 ? m_DiagonalIndex : m_DiagonalIndex + m_DiagonalNumber};
+
+    return m_pMatrixPtr[c_CurrentRowNr][c_CurrentColumnNr];
+}
+
+template<typename DataType> const
+typename Matrix<DataType>::ConstDIterator::value_type* Matrix<DataType>::ConstDIterator::operator->() const
+{
+    if (m_DiagonalIndex == m_DiagonalSize)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
+    }
+
+    const size_type c_CurrentRowNr{m_DiagonalNumber < 0 ? m_DiagonalIndex - m_DiagonalNumber : m_DiagonalIndex};
+    const size_type c_CurrentColumnNr{m_DiagonalNumber < 0 ? m_DiagonalIndex : m_DiagonalIndex + m_DiagonalNumber};
+
+    return (m_pMatrixPtr[c_CurrentRowNr] + c_CurrentColumnNr);
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator::reference Matrix<DataType>::ConstDIterator::operator[](ConstDIterator::difference_type index) const
+{
+    const size_type c_ResultingIndex{m_DiagonalIndex + index};
+
+    if (c_ResultingIndex < 0 || c_ResultingIndex >= m_DiagonalSize)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATOR_INDEX_OUT_OF_BOUNDS]};
+    }
+
+    const size_type c_ResultingRowNr{m_DiagonalNumber < 0 ? c_ResultingIndex - m_DiagonalNumber : c_ResultingIndex};
+    const size_type c_ResultingColumnNr{m_DiagonalNumber < 0 ? c_ResultingIndex : c_ResultingIndex + m_DiagonalNumber};
+
+    return m_pMatrixPtr[c_ResultingRowNr][c_ResultingColumnNr];
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstDIterator::isValidWithMatrix(const Matrix &matrix) const
+{
+    bool isValid{true};
+
+    if (m_pMatrixPtr != matrix.m_pBaseArrayPtr)
+    {
+        isValid = false;
+    }
+    else if ((m_DiagonalNumber < 0 && std::abs(m_DiagonalNumber) >= matrix.getNrOfRows()) || (m_DiagonalNumber >= 0 && m_DiagonalNumber >= matrix.getNrOfColumns()))
+    {
+        isValid = false;
+    }
+    else
+    {
+        const size_type c_DiagonalSize{m_DiagonalNumber < 0 ? std::min(matrix.getNrOfRows() - std::abs(m_DiagonalNumber), matrix.getNrOfColumns())
+                                              : std::min(matrix.getNrOfRows(), matrix.getNrOfColumns() - m_DiagonalNumber)};
+        if (m_DiagonalSize != c_DiagonalSize)
+        {
+            isValid = false;
+        }
+    }
+
+    return isValid;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::ConstDIterator::getCurrentRowNr() const
+{
+    return m_DiagonalNumber < 0 ? m_DiagonalIndex - m_DiagonalNumber : m_DiagonalIndex;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::ConstDIterator::getCurrentColumnNr() const
+{
+    return m_DiagonalNumber < 0 ? m_DiagonalIndex : m_DiagonalNumber + m_DiagonalIndex;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::ConstDIterator::getDiagonalNr() const
+{
+    return m_DiagonalNumber;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::ConstDIterator::getDiagonalIndex() const
+{
+    return m_DiagonalIndex;
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstDIterator::ConstDIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative)
+    : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
+{
+    if (isRelative)
+    {
+        // first and second are interpreted as diagonal number and relative index within diagonal
+        m_DiagonalNumber = first;
+        m_DiagonalIndex = second;
+        const size_type c_CurrentRowNr{m_DiagonalNumber < 0 ? m_DiagonalIndex - m_DiagonalNumber : m_DiagonalIndex};
+        const size_type c_CurrentColumnNr{m_DiagonalNumber < 0 ? m_DiagonalIndex : m_DiagonalIndex + m_DiagonalNumber};
+        m_DiagonalSize = m_DiagonalIndex + std::min(matrix.getNrOfRows() - c_CurrentRowNr, matrix.getNrOfColumns() - c_CurrentColumnNr);
+    }
+    else
+    {
+        // first and second are interpreted as (x, y) coordinates
+        m_DiagonalNumber = second - first;
+        m_DiagonalIndex = std::min(first, second);
+        m_DiagonalSize = m_DiagonalIndex + std::min(matrix.getNrOfRows() - first, matrix.getNrOfColumns() - second);
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::ConstDIterator::_increment()
+{
+    if (m_DiagonalIndex < m_DiagonalSize)
+    {
+        ++m_DiagonalIndex;
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::ConstDIterator::_decrement()
 {
     if (m_DiagonalIndex > 0)
     {
@@ -3387,6 +3718,119 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::getDIterator(Matrix::size
     }
 
     return DIterator{*this, first, second, isRelative};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(int diagNr) const
+{
+    if (diagNr < (1-getNrOfRows()) || diagNr > (getNrOfColumns()-1))
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
+    }
+
+    return ConstDIterator{*this, diagNr, 0, true};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(int rowNr, int columnNr) const
+{
+    if (rowNr < 0 || columnNr < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (rowNr >= getNrOfRows())
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+    }
+
+    if (columnNr >= getNrOfColumns())
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
+    }
+
+    size_type beginRowNr{columnNr < rowNr ? rowNr - columnNr : 0};
+    size_type beginColumnNr{columnNr < rowNr ? 0 : columnNr - rowNr};
+
+    return ConstDIterator{*this, beginRowNr, beginColumnNr};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(int diagNr) const
+{
+    if (diagNr < (1-getNrOfRows()) || diagNr > (getNrOfColumns()-1))
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
+    }
+
+    size_type beginRowNr{diagNr < 0 ? -diagNr : 0};
+    size_type beginColumnNr{diagNr < 0 ? 0 : diagNr};
+    size_type step{std::min(getNrOfRows() - beginRowNr, getNrOfColumns() - beginColumnNr)};
+
+    return ConstDIterator{*this, diagNr, step, true};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(int rowNr, int columnNr) const
+{
+    if (rowNr < 0 || columnNr < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (rowNr >= getNrOfRows())
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+    }
+
+    if (columnNr >= getNrOfColumns())
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
+    }
+
+    return constDEnd(columnNr-rowNr);
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::getConstDIterator(Matrix::size_type first, Matrix::size_type second, bool isRelative) const
+{
+    if (isRelative)
+    {
+        if (first < (1-getNrOfRows()) || first > (getNrOfColumns()-1))
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
+        }
+        if (second < 0)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+        }
+        int beginRowNr{first < 0 ? -first : 0};
+        int beginColumnNr{first < 0 ? 0 : first};
+        int diagSize {std::min(getNrOfRows() - beginRowNr, getNrOfColumns() - beginColumnNr)};
+        if (second >= diagSize)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_INDEX_OUT_OF_BOUNDS]};
+        }
+    }
+    else
+    {
+        if (first < 0 || second < 0)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+        }
+
+        if (first >= getNrOfRows())
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+        }
+
+        if (second >= getNrOfColumns())
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
+        }
+    }
+
+    return ConstDIterator{*this, first, second, isRelative};
 }
 
 template<typename DataType>
