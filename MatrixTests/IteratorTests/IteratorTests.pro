@@ -6,4 +6,5 @@ SUBDIRS += \
     ReverseZIteratorTests \
     ConstReverseZIteratorTests \
     DIteratorTests \
-    ConstDIteratorTests
+    ConstDIteratorTests \
+    ReverseDIteratorTests

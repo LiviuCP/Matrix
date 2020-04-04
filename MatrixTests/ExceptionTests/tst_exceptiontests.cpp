@@ -9,6 +9,7 @@ using IntMatrixReverseZIterator = Matrix<int>::ReverseZIterator;
 using IntMatrixConstReverseZIterator = Matrix<int>::ConstReverseZIterator;
 using IntMatrixDIterator = Matrix<int>::DIterator;
 using IntMatrixConstDIterator = Matrix<int>::ConstDIterator;
+using IntMatrixReverseDIterator = Matrix<int>::ReverseDIterator;
 using StringMatrix = Matrix<std::string>;
 using StringMatrixZIterator = Matrix<std::string>::ZIterator;
 using StringMatrixConstZIterator = Matrix<std::string>::ConstZIterator;
@@ -16,6 +17,7 @@ using StringMatrixReverseZIterator = Matrix<std::string>::ReverseZIterator;
 using StringMatrixConstReverseZIterator = Matrix<std::string>::ConstReverseZIterator;
 using StringMatrixDIterator = Matrix<std::string>::DIterator;
 using StringMatrixConstDIterator = Matrix<std::string>::ConstDIterator;
+using StringMatrixReverseDIterator = Matrix<std::string>::ReverseDIterator;
 
 class ExceptionTests : public QObject
 {
@@ -54,6 +56,7 @@ private slots:
     void testConstReverseZIteratorExceptions();
     void testDIteratorExceptions();
     void testConstDIteratorExceptions();
+    void testReverseDIteratorExceptions();
 };
 
 ExceptionTests::ExceptionTests()
@@ -2362,6 +2365,383 @@ void ExceptionTests::testConstDIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixConstDIterator it{matrix.getConstDIterator(0, 1, true)};   Q_UNUSED(it[-2]); }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixConstDIterator it{matrix.getConstDIterator(1, 0, true)};   Q_UNUSED(it[3]); }, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixConstDIterator it{matrix.constDBegin(-1)};   Q_UNUSED(it[-2]); }, std::runtime_error);
+}
+
+void ExceptionTests::testReverseDIteratorExceptions()
+{
+    // iterator creation
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixReverseDIterator it{matrix.reverseDBegin(0)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixReverseDIterator it{matrix.reverseDBegin(0, 0)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixReverseDIterator it{matrix.reverseDEnd(0)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixReverseDIterator it{matrix.reverseDEnd(0, 0)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixReverseDIterator it{matrix.getReverseDIterator(0, 0)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixReverseDIterator it{matrix.getReverseDIterator(0, 0, true)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDBegin(-2)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDBegin(3)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDBegin(0, 3)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDBegin(2, 0)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDBegin(2, 3)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDBegin(-1, 0)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDBegin(0, -1)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDBegin(-1, -1)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDBegin(-1, 3)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDBegin(2, -1)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDEnd(-2)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDEnd(3)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDEnd(0, 3)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDEnd(2, 0)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDEnd(2, 3)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDEnd(-1, 0)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDEnd(0, -1)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDEnd(-1, -1)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDEnd(-1, 3)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.reverseDEnd(2, -1)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(0, 3)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(2, 0)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(2, 3)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(-1, 0)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(0, -1)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(-1, -1)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(-1, 3)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(2, -1)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(-2, 0, true)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(-2, -1, true)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(3, 0, true)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(3, -1, true)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(0, 2, true)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(0, -1, true)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(1, 2, true)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(1, -1, true)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(-1, 1, true)}; Q_UNUSED(it);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, -3, 4, -5, 6}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(-1, -1, true)}; Q_UNUSED(it);}, std::runtime_error);
+    // equal operator
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.getReverseDIterator(2, 1)};
+                                 IntMatrixReverseDIterator secondIt{matrix.getReverseDIterator(1, 1, true)};
+                                 bool areEqual{firstIt == secondIt}; Q_UNUSED(areEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.reverseDEnd(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{matrix.reverseDEnd(-1)};
+                                 bool areEqual{firstIt == secondIt}; Q_UNUSED(areEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{secondMatrix.getReverseDIterator(1, 1, true)};
+                                 bool areEqual{firstIt == secondIt}; Q_UNUSED(areEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 1, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 bool areEqual{firstIt == secondIt}; Q_UNUSED(areEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 1, true)};
+                                 firstMatrix.insertColumn(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(2, 1)};
+                                 bool areEqual{firstIt == secondIt}; Q_UNUSED(areEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 0, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(-1, 0, true)};
+                                 bool areEqual{firstIt == secondIt}; Q_UNUSED(areEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 0, true)};
+                                 firstMatrix.insertColumn(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(1, 0, true)};
+                                 bool areEqual{firstIt == secondIt}; Q_UNUSED(areEqual);
+                             }, std::runtime_error);
+    // not equal operator
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.getReverseDIterator(2, 1)};
+                                 IntMatrixReverseDIterator secondIt{matrix.getReverseDIterator(1, 1, true)};
+                                 bool areNotEqual{firstIt != secondIt}; Q_UNUSED(areNotEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.reverseDEnd(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{matrix.reverseDEnd(-1)};
+                                 bool areNotEqual{firstIt != secondIt}; Q_UNUSED(areNotEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{secondMatrix.getReverseDIterator(1, 1, true)};
+                                 bool areNotEqual{firstIt != secondIt}; Q_UNUSED(areNotEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 1, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 bool areNotEqual{firstIt != secondIt}; Q_UNUSED(areNotEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 1, true)};
+                                 firstMatrix.insertColumn(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(2, 1)};
+                                 bool areNotEqual{firstIt != secondIt}; Q_UNUSED(areNotEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 0, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(-1, 0, true)};
+                                 bool areNotEqual{firstIt != secondIt}; Q_UNUSED(areNotEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 0, true)};
+                                 firstMatrix.insertColumn(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(1, 0, true)};
+                                 bool areNotEqual{firstIt != secondIt}; Q_UNUSED(areNotEqual);
+                             }, std::runtime_error);
+    // smaller than operator
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.getReverseDIterator(2, 1)};
+                                 IntMatrixReverseDIterator secondIt{matrix.getReverseDIterator(1, 1, true)};
+                                 bool isSmallerThan{firstIt < secondIt}; Q_UNUSED(isSmallerThan);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.reverseDEnd(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{matrix.reverseDEnd(-1)};
+                                 bool isSmallerThan{firstIt < secondIt}; Q_UNUSED(isSmallerThan);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{secondMatrix.getReverseDIterator(1, 1, true)};
+                                 bool isSmallerThan{firstIt < secondIt}; Q_UNUSED(isSmallerThan);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 1, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 bool isSmallerThan{firstIt < secondIt}; Q_UNUSED(isSmallerThan);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 1, true)};
+                                 firstMatrix.insertColumn(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(2, 1)};
+                                 bool isSmallerThan{firstIt < secondIt}; Q_UNUSED(isSmallerThan);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 0, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(-1, 0, true)};
+                                 bool isSmallerThan{firstIt < secondIt}; Q_UNUSED(isSmallerThan);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 0, true)};
+                                 firstMatrix.insertColumn(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(1, 0, true)};
+                                 bool isSmallerThan{firstIt < secondIt}; Q_UNUSED(isSmallerThan);
+                             }, std::runtime_error);
+    // smaller than or equal operator
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.getReverseDIterator(2, 1)};
+                                 IntMatrixReverseDIterator secondIt{matrix.getReverseDIterator(1, 1, true)};
+                                 bool isSmallerThanOrEqual{firstIt <= secondIt}; Q_UNUSED(isSmallerThanOrEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.reverseDEnd(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{matrix.reverseDEnd(-1)};
+                                 bool isSmallerThanOrEqual{firstIt <= secondIt}; Q_UNUSED(isSmallerThanOrEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{secondMatrix.getReverseDIterator(1, 1, true)};
+                                 bool isSmallerThanOrEqual{firstIt <= secondIt}; Q_UNUSED(isSmallerThanOrEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 1, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 bool isSmallerThanOrEqual{firstIt <= secondIt}; Q_UNUSED(isSmallerThanOrEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 1, true)};
+                                 firstMatrix.insertColumn(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(2, 1)};
+                                 bool isSmallerThanOrEqual{firstIt <= secondIt}; Q_UNUSED(isSmallerThanOrEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 0, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(-1, 0, true)};
+                                 bool isSmallerThanOrEqual{firstIt <= secondIt}; Q_UNUSED(isSmallerThanOrEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 0, true)};
+                                 firstMatrix.insertColumn(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(1, 0, true)};
+                                 bool isSmallerThanOrEqual{firstIt <= secondIt}; Q_UNUSED(isSmallerThanOrEqual);
+                             }, std::runtime_error);
+    // greater than operator
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.getReverseDIterator(2, 1)};
+                                 IntMatrixReverseDIterator secondIt{matrix.getReverseDIterator(1, 1, true)};
+                                 bool isGreaterThan{firstIt > secondIt}; Q_UNUSED(isGreaterThan);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.reverseDEnd(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{matrix.reverseDEnd(-1)};
+                                 bool isGreaterThan{firstIt > secondIt}; Q_UNUSED(isGreaterThan);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{secondMatrix.getReverseDIterator(1, 1, true)};
+                                 bool isGreaterThan{firstIt > secondIt}; Q_UNUSED(isGreaterThan);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 1, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 bool isGreaterThan{firstIt > secondIt}; Q_UNUSED(isGreaterThan);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 1, true)};
+                                 firstMatrix.insertColumn(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(2, 1)};
+                                 bool isGreaterThan{firstIt > secondIt}; Q_UNUSED(isGreaterThan);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 0, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(-1, 0, true)};
+                                 bool isGreaterThan{firstIt > secondIt}; Q_UNUSED(isGreaterThan);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 0, true)};
+                                 firstMatrix.insertColumn(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(1, 0, true)};
+                                 bool isGreaterThan{firstIt > secondIt}; Q_UNUSED(isGreaterThan);
+                             }, std::runtime_error);
+    // greater than or equal operator
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.getReverseDIterator(2, 1)};
+                                 IntMatrixReverseDIterator secondIt{matrix.getReverseDIterator(1, 1, true)};
+                                 bool isGreaterThanOrEqual{firstIt >= secondIt}; Q_UNUSED(isGreaterThanOrEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.reverseDEnd(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{matrix.reverseDEnd(-1)};
+                                 bool isGreaterThanOrEqual{firstIt >= secondIt}; Q_UNUSED(isGreaterThanOrEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{secondMatrix.getReverseDIterator(1, 1, true)};
+                                 bool isGreaterThanOrEqual{firstIt >= secondIt}; Q_UNUSED(isGreaterThanOrEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 1, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 bool isGreaterThanOrEqual{firstIt >= secondIt}; Q_UNUSED(isGreaterThanOrEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 1, true)};
+                                 firstMatrix.insertColumn(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(2, 1)};
+                                 bool isGreaterThanOrEqual{firstIt >= secondIt}; Q_UNUSED(isGreaterThanOrEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 0, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(-1, 0, true)};
+                                 bool isGreaterThanOrEqual{firstIt >= secondIt}; Q_UNUSED(isGreaterThanOrEqual);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 0, true)};
+                                 firstMatrix.insertColumn(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(1, 0, true)};
+                                 bool isGreaterThanOrEqual{firstIt >= secondIt}; Q_UNUSED(isGreaterThanOrEqual);
+                             }, std::runtime_error);
+    // difference operator exceptions
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.getReverseDIterator(2, 1)};
+                                 IntMatrixReverseDIterator secondIt{matrix.getReverseDIterator(1, 1, true)};
+                                 int difference{firstIt - secondIt}; Q_UNUSED(difference);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix matrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{matrix.reverseDEnd(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{matrix.reverseDEnd(-1)};
+                                 int difference{firstIt - secondIt}; Q_UNUSED(difference);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrix secondMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(1, 2)};
+                                 IntMatrixReverseDIterator secondIt{secondMatrix.getReverseDIterator(1, 1, true)};
+                                 int difference{firstIt - secondIt}; Q_UNUSED(difference);
+                             }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({
+                                 IntMatrix firstMatrix(3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
+                                 IntMatrixReverseDIterator firstIt{firstMatrix.getReverseDIterator(-1, 1, true)};
+                                 firstMatrix.insertRow(1);
+                                 IntMatrixReverseDIterator secondIt{firstMatrix.getReverseDIterator(2, 1)};
+                                 int difference{firstIt - secondIt}; Q_UNUSED(difference);
+                             }, std::runtime_error);
+    // dereference exceptions
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixReverseDIterator it{matrix.reverseDEnd(-1)};   *it = -14; }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixReverseDIterator it{matrix.reverseDEnd(0, 2)};   *it = -14; }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix(4, 3, {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"}); StringMatrixReverseDIterator it{matrix.reverseDEnd(-1)};  it->assign("c"); },
+                             std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({StringMatrix matrix(4, 3, {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"}); StringMatrixReverseDIterator it{matrix.reverseDEnd(0, 2)}; it->assign("c"); },
+                             std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixReverseDIterator it{matrix.reverseDBegin(0, 1)};   it[-1] = -14; }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixReverseDIterator it{matrix.reverseDEnd(0, 0)};   it[0] = 14; }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(2, 1)};   it[2] = -14; }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(0, 1, true)};   it[-2] = 14; }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixReverseDIterator it{matrix.getReverseDIterator(1, 0, true)};   it[3] = -14; }, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixReverseDIterator it{matrix.reverseDBegin(-1)};   it[-2] = 14; }, std::runtime_error);
 }
 
 QTEST_APPLESS_MAIN(ExceptionTests)
