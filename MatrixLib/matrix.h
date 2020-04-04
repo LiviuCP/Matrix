@@ -484,22 +484,22 @@ public:
     ConstReverseZIterator getConstReverseZIterator(size_type rowNr, size_type columnNr) const;
     ConstReverseZIterator getConstReverseZIterator(size_type index) const;
 
-    DIterator dBegin(int diagNr) const;
-    DIterator dBegin(int rowNr, int columnNr) const;
-    DIterator dEnd(int diagNr) const;
-    DIterator dEnd(int rowNr, int columnNr) const;
+    DIterator dBegin(size_type diagNr) const;
+    DIterator dBegin(size_type rowNr, int columnNr) const;
+    DIterator dEnd(size_type diagNr) const;
+    DIterator dEnd(size_type rowNr, int columnNr) const;
     DIterator getDIterator(size_type first, size_type second, bool isRelative = false) const;
 
-    ConstDIterator constDBegin(int diagNr) const;
-    ConstDIterator constDBegin(int rowNr, int columnNr) const;
-    ConstDIterator constDEnd(int diagNr) const;
-    ConstDIterator constDEnd(int rowNr, int columnNr) const;
+    ConstDIterator constDBegin(size_type diagNr) const;
+    ConstDIterator constDBegin(size_type rowNr, size_type columnNr) const;
+    ConstDIterator constDEnd(size_type diagNr) const;
+    ConstDIterator constDEnd(size_type rowNr, size_type columnNr) const;
     ConstDIterator getConstDIterator(size_type first, size_type second, bool isRelative = false) const;
 
-    ReverseDIterator reverseDBegin(int diagNr) const;
-    ReverseDIterator reverseDBegin(int rowNr, int columnNr) const;
-    ReverseDIterator reverseDEnd(int diagNr) const;
-    ReverseDIterator reverseDEnd(int rowNr, int columnNr) const;
+    ReverseDIterator reverseDBegin(size_type diagNr) const;
+    ReverseDIterator reverseDBegin(size_type rowNr, size_type columnNr) const;
+    ReverseDIterator reverseDEnd(size_type diagNr) const;
+    ReverseDIterator reverseDEnd(size_type rowNr, size_type columnNr) const;
     ReverseDIterator getReverseDIterator(size_type first, size_type second, bool isRelative = false) const;
 
     // required for being able to use the "auto" keyword for iterating through the matrix elements
@@ -3933,7 +3933,7 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstRever
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(int diagNr) const
+typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(size_type diagNr) const
 {
     if (diagNr < (1-getNrOfRows()) || diagNr > (getNrOfColumns()-1))
     {
@@ -3944,7 +3944,7 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(int diagNr) const
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(int rowNr, int columnNr) const
+typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(size_type rowNr, size_type columnNr) const
 {
     if (rowNr < 0 || columnNr < 0)
     {
@@ -3968,7 +3968,7 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(int rowNr, int col
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(int diagNr) const
+typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(size_type diagNr) const
 {
     if (diagNr < (1-getNrOfRows()) || diagNr > (getNrOfColumns()-1))
     {
@@ -3983,7 +3983,7 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(int diagNr) const
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(int rowNr, int columnNr) const
+typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(size_type rowNr, size_type columnNr) const
 {
     if (rowNr < 0 || columnNr < 0)
     {
@@ -4046,7 +4046,7 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::getDIterator(Matrix::size
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(int diagNr) const
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(size_type diagNr) const
 {
     if (diagNr < (1-getNrOfRows()) || diagNr > (getNrOfColumns()-1))
     {
@@ -4057,7 +4057,7 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(int diag
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(int rowNr, int columnNr) const
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(size_type rowNr, size_type columnNr) const
 {
     if (rowNr < 0 || columnNr < 0)
     {
@@ -4081,7 +4081,7 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(int rowN
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(int diagNr) const
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(size_type diagNr) const
 {
     if (diagNr < (1-getNrOfRows()) || diagNr > (getNrOfColumns()-1))
     {
@@ -4096,7 +4096,7 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(int diagNr
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(int rowNr, int columnNr) const
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(size_type rowNr, size_type columnNr) const
 {
     if (rowNr < 0 || columnNr < 0)
     {
@@ -4159,7 +4159,7 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::getConstDIterator(Ma
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(int diagNr) const
+typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(size_type diagNr) const
 {
     if (diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1))
     {
@@ -4170,7 +4170,7 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(int 
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(int rowNr, int columnNr) const
+typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(size_type rowNr, size_type columnNr) const
 {
     if (rowNr < 0 || columnNr < 0)
     {
@@ -4192,7 +4192,7 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(int 
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(int diagNr) const
+typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(size_type diagNr) const
 {
     if (diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1))
     {
@@ -4207,7 +4207,7 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(int di
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(int rowNr, int columnNr) const
+typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(size_type rowNr, size_type columnNr) const
 {
     if (rowNr < 0 || columnNr < 0)
     {
