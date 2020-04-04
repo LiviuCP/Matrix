@@ -3935,7 +3935,7 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstRever
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(size_type diagNr) const
 {
-    if (diagNr < (1-getNrOfRows()) || diagNr > (getNrOfColumns()-1))
+    if (diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1))
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
     }
@@ -3951,35 +3951,35 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(size_type rowNr, s
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    if (rowNr >= getNrOfRows())
+    if (rowNr >= m_NrOfRows)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
     }
 
-    if (columnNr >= getNrOfColumns())
+    if (columnNr >= m_NrOfColumns)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
     }
 
-    size_type beginRowNr{columnNr < rowNr ? rowNr - columnNr : 0};
-    size_type beginColumnNr{columnNr < rowNr ? 0 : columnNr - rowNr};
+    const size_type c_BeginRowNr{columnNr < rowNr ? rowNr - columnNr : 0};
+    const size_type c_BeginColumnNr{columnNr < rowNr ? 0 : columnNr - rowNr};
 
-    return DIterator{*this, beginRowNr, beginColumnNr};
+    return DIterator{*this, c_BeginRowNr, c_BeginColumnNr};
 }
 
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(size_type diagNr) const
 {
-    if (diagNr < (1-getNrOfRows()) || diagNr > (getNrOfColumns()-1))
+    if (diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1))
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
     }
 
-    size_type beginRowNr{diagNr < 0 ? -diagNr : 0};
-    size_type beginColumnNr{diagNr < 0 ? 0 : diagNr};
-    size_type step{std::min(getNrOfRows() - beginRowNr, getNrOfColumns() - beginColumnNr)};
+    const size_type c_BeginRowNr{diagNr < 0 ? -diagNr : 0};
+    const size_type c_BeginColumnNr{diagNr < 0 ? 0 : diagNr};
+    const size_type c_EndDiagIndex{std::min(m_NrOfRows - c_BeginRowNr, m_NrOfColumns - c_BeginColumnNr)};
 
-    return DIterator{*this, diagNr, step, true};
+    return DIterator{*this, diagNr, c_EndDiagIndex, true};
 }
 
 template<typename DataType>
@@ -3990,12 +3990,12 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(size_type rowNr, siz
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    if (rowNr >= getNrOfRows())
+    if (rowNr >= m_NrOfRows)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
     }
 
-    if (columnNr >= getNrOfColumns())
+    if (columnNr >= m_NrOfColumns)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
     }
@@ -4008,7 +4008,7 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::getDIterator(Matrix::size
 {
     if (isRelative)
     {
-        if (first < (1-getNrOfRows()) || first > (getNrOfColumns()-1))
+        if (first < (1-m_NrOfRows) || first > (m_NrOfColumns-1))
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
         }
@@ -4016,10 +4016,12 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::getDIterator(Matrix::size
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
         }
-        int beginRowNr{first < 0 ? -first : 0};
-        int beginColumnNr{first < 0 ? 0 : first};
-        int diagSize {std::min(getNrOfRows() - beginRowNr, getNrOfColumns() - beginColumnNr)};
-        if (second >= diagSize)
+
+        const size_type c_BeginRowNr{first < 0 ? -first : 0};
+        const size_type c_BeginColumnNr{first < 0 ? 0 : first};
+        const size_type c_DiagSize {std::min(m_NrOfRows - c_BeginRowNr, m_NrOfColumns - c_BeginColumnNr)};
+
+        if (second >= c_DiagSize)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_INDEX_OUT_OF_BOUNDS]};
         }
@@ -4031,12 +4033,12 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::getDIterator(Matrix::size
             throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
         }
 
-        if (first >= getNrOfRows())
+        if (first >= m_NrOfRows)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
         }
 
-        if (second >= getNrOfColumns())
+        if (second >= m_NrOfColumns)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
         }
@@ -4048,7 +4050,7 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::getDIterator(Matrix::size
 template<typename DataType>
 typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(size_type diagNr) const
 {
-    if (diagNr < (1-getNrOfRows()) || diagNr > (getNrOfColumns()-1))
+    if (diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1))
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
     }
@@ -4064,35 +4066,35 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(size_typ
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    if (rowNr >= getNrOfRows())
+    if (rowNr >= m_NrOfRows)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
     }
 
-    if (columnNr >= getNrOfColumns())
+    if (columnNr >= m_NrOfColumns)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
     }
 
-    size_type beginRowNr{columnNr < rowNr ? rowNr - columnNr : 0};
-    size_type beginColumnNr{columnNr < rowNr ? 0 : columnNr - rowNr};
+    const size_type c_BeginRowNr{columnNr < rowNr ? rowNr - columnNr : 0};
+    const size_type c_BeginColumnNr{columnNr < rowNr ? 0 : columnNr - rowNr};
 
-    return ConstDIterator{*this, beginRowNr, beginColumnNr};
+    return ConstDIterator{*this, c_BeginRowNr, c_BeginColumnNr};
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(size_type diagNr) const
 {
-    if (diagNr < (1-getNrOfRows()) || diagNr > (getNrOfColumns()-1))
+    if (diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1))
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
     }
 
-    size_type beginRowNr{diagNr < 0 ? -diagNr : 0};
-    size_type beginColumnNr{diagNr < 0 ? 0 : diagNr};
-    size_type step{std::min(getNrOfRows() - beginRowNr, getNrOfColumns() - beginColumnNr)};
+    const size_type c_BeginRowNr{diagNr < 0 ? -diagNr : 0};
+    const size_type c_BeginColumnNr{diagNr < 0 ? 0 : diagNr};
+    const size_type c_EndDiagIndex{std::min(m_NrOfRows - c_BeginRowNr, m_NrOfColumns - c_BeginColumnNr)};
 
-    return ConstDIterator{*this, diagNr, step, true};
+    return ConstDIterator{*this, diagNr, c_EndDiagIndex, true};
 }
 
 template<typename DataType>
@@ -4103,12 +4105,12 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(size_type 
         throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
     }
 
-    if (rowNr >= getNrOfRows())
+    if (rowNr >= m_NrOfRows)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
     }
 
-    if (columnNr >= getNrOfColumns())
+    if (columnNr >= m_NrOfColumns)
     {
         throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
     }
@@ -4121,7 +4123,7 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::getConstDIterator(Ma
 {
     if (isRelative)
     {
-        if (first < (1-getNrOfRows()) || first > (getNrOfColumns()-1))
+        if (first < (1-m_NrOfRows) || first > (m_NrOfColumns-1))
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
         }
@@ -4129,10 +4131,12 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::getConstDIterator(Ma
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
         }
-        int beginRowNr{first < 0 ? -first : 0};
-        int beginColumnNr{first < 0 ? 0 : first};
-        int diagSize {std::min(getNrOfRows() - beginRowNr, getNrOfColumns() - beginColumnNr)};
-        if (second >= diagSize)
+
+        const size_type c_BeginRowNr{first < 0 ? -first : 0};
+        const size_type c_BeginColumnNr{first < 0 ? 0 : first};
+        const size_type c_DiagSize {std::min(m_NrOfRows - c_BeginRowNr, m_NrOfColumns - c_BeginColumnNr)};
+
+        if (second >= c_DiagSize)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_INDEX_OUT_OF_BOUNDS]};
         }
@@ -4144,12 +4148,12 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::getConstDIterator(Ma
             throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
         }
 
-        if (first >= getNrOfRows())
+        if (first >= m_NrOfRows)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
         }
 
-        if (second >= getNrOfColumns())
+        if (second >= m_NrOfColumns)
         {
             throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
         }
@@ -4187,7 +4191,8 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(size
         throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
     }
 
-    const int c_DiagNr{columnNr - rowNr};
+    const size_type c_DiagNr{columnNr - rowNr};
+
     return ReverseDIterator{*this, c_DiagNr, 0, true};
 }
 
