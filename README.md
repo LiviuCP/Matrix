@@ -51,7 +51,7 @@ It has following diagonals:
 - diagonal 2 with elements 2, 7
 - diagonal 3 with element 3
 
-Each diagonal is traversed from the first element (with diagonal index 0) to the last element. For example for diagonal 1 the traversing order is: 1 -> 6 -> 11.
+Each diagonal is traversed from the first element (with diagonal index 0) to the last element. For example for diagonal 1 the traversing order is: 1 -> 6 -> 11 for a direct D-Iterator. For a reverse D-Iterator the order would be 11 -> 6 -> 1.
 
 Consequently a matrix element can be defined in two ways:
 - by line and column nuber
@@ -71,7 +71,7 @@ The Z-Iterators have four sub-types:
 The D-Iterators have following sub-types at the moment:
 - read-write D-Iterator (class DIterator)
 - read-only D-Iterator (class ConstDIterator)
-
-I am planning to add more iterators in the future.
+- read-write reverse D-Iterator (class ReverseDIterator)
+- read-only reverse D-Iterator (class ConstReverseDIterator)
 
 For any questions please feel free to comment on my repo.
