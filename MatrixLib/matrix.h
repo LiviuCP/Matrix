@@ -398,6 +398,62 @@ public:
         size_type m_DiagonalSize;     // number of elements contained within diagonal
     };
 
+    class ConstReverseDIterator
+    {
+        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
+        friend class Matrix;
+
+    public:
+        // all these are required for STL compatibility
+        using iterator_category = std::random_access_iterator_tag;
+        using value_type = DataType;
+        using difference_type = diff_type;
+        using pointer = DataType**;
+        using reference = const DataType&;
+
+        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
+        ConstReverseDIterator() = delete;
+
+        ConstReverseDIterator operator++();
+        ConstReverseDIterator operator++(int unused);
+        ConstReverseDIterator operator--();
+        ConstReverseDIterator operator--(int unused);
+
+        ConstReverseDIterator operator+(difference_type offset);
+        ConstReverseDIterator operator-(difference_type offset);
+
+        difference_type operator-(const ConstReverseDIterator& it) const;
+
+        bool operator==(const ConstReverseDIterator& it) const;
+        bool operator!=(const ConstReverseDIterator& it) const;
+        bool operator<(const ConstReverseDIterator& it) const;
+        bool operator<=(const ConstReverseDIterator& it) const;
+        bool operator>(const ConstReverseDIterator& it) const;
+        bool operator>=(const ConstReverseDIterator& it) const;
+
+        reference operator*() const;
+        const value_type* operator->() const;
+        reference operator[](difference_type index) const;
+
+        bool isValidWithMatrix(const Matrix& matrix) const;
+
+        size_type getCurrentRowNr() const;
+        size_type getCurrentColumnNr() const;
+        size_type getDiagonalNr() const;
+        size_type getDiagonalIndex() const;
+
+    private:
+        ConstReverseDIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative = false);
+
+        void _increment();
+        void _decrement();
+
+        pointer m_pMatrixPtr;
+        size_type m_DiagonalIndex;    // relative index within diagonal
+        size_type m_DiagonalNumber;   // index of the diagonal within matrix
+        size_type m_DiagonalSize;     // number of elements contained within diagonal
+    };
+
     Matrix();
     Matrix(size_type nrOfRows, size_type nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
     Matrix(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType);
@@ -501,6 +557,12 @@ public:
     ReverseDIterator reverseDEnd(size_type diagNr) const;
     ReverseDIterator reverseDEnd(size_type rowNr, size_type columnNr) const;
     ReverseDIterator getReverseDIterator(size_type first, size_type second, bool isRelative = false) const;
+
+    ConstReverseDIterator constReverseDBegin(size_type diagNr) const;
+    ConstReverseDIterator constReverseDBegin(size_type rowNr, size_type columnNr) const;
+    ConstReverseDIterator constReverseDEnd(size_type diagNr) const;
+    ConstReverseDIterator constReverseDEnd(size_type rowNr, size_type columnNr) const;
+    ConstReverseDIterator getConstReverseDIterator(size_type first, size_type second, bool isRelative = false) const;
 
     // required for being able to use the "auto" keyword for iterating through the matrix elements
     ZIterator begin() const;
@@ -2173,7 +2235,7 @@ void Matrix<DataType>::ConstDIterator::_decrement()
     }
 }
 
-// 5) ReverseDIterator (diagonal iterator, traverses a matrix diagonal in reverse direction comparing to the DIterator)
+// 7) ReverseDIterator (diagonal iterator, traverses a matrix diagonal in reverse direction comparing to the DIterator)
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::operator++()
@@ -2429,6 +2491,269 @@ void Matrix<DataType>::ReverseDIterator::_increment()
 
 template<typename DataType>
 void Matrix<DataType>::ReverseDIterator::_decrement()
+{
+    if (m_DiagonalIndex > 0)
+    {
+        --m_DiagonalIndex;
+    }
+}
+
+// 8) ConstReverseDIterator (const diagonal iterator, traverses a matrix diagonal in reverse direction comparing to the DIterator)
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator++()
+{
+    _increment();
+    return *this;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator++(int unused)
+{
+    (void)unused;
+    ConstReverseDIterator dIterator{*this};
+
+    _increment();
+
+    return dIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator--()
+{
+    _decrement();
+    return *this;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator--(int unused)
+{
+    (void)unused;
+    ConstReverseDIterator dIterator{*this};
+
+    _decrement();
+
+    return dIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator+(ConstReverseDIterator::difference_type offset)
+{
+    ConstReverseDIterator it{*this};
+    const size_type c_ResultingIndex = it.m_DiagonalIndex + offset;
+    it.m_DiagonalIndex = c_ResultingIndex < 0 ? 0 : c_ResultingIndex > it.m_DiagonalSize ? it.m_DiagonalSize : c_ResultingIndex;
+
+    return it;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator-(ConstReverseDIterator::difference_type offset)
+{
+    ConstReverseDIterator it{*this};
+    const size_type c_ResultingIndex = it.m_DiagonalIndex - offset;
+    it.m_DiagonalIndex = c_ResultingIndex < 0 ? 0 : c_ResultingIndex > it.m_DiagonalSize ? it.m_DiagonalSize : c_ResultingIndex;
+
+    return it;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator::difference_type Matrix<DataType>::ConstReverseDIterator::operator-(const ConstReverseDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return (m_DiagonalIndex - it.m_DiagonalIndex);
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstReverseDIterator::operator==(const ConstReverseDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex == it.m_DiagonalIndex;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstReverseDIterator::operator!=(const ConstReverseDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex != it.m_DiagonalIndex;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstReverseDIterator::operator<(const ConstReverseDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex < it.m_DiagonalIndex;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstReverseDIterator::operator<=(const ConstReverseDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex <= it.m_DiagonalIndex;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstReverseDIterator::operator>(const ConstReverseDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex > it.m_DiagonalIndex;
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstReverseDIterator::operator>=(const ConstReverseDIterator& it) const
+{
+    if (m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::INCOMPATIBLE_ITERATORS]};
+    }
+
+    return m_DiagonalIndex >= it.m_DiagonalIndex;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator::reference Matrix<DataType>::ConstReverseDIterator::operator*() const
+{
+    if (m_DiagonalIndex == m_DiagonalSize)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
+    }
+
+    const size_type c_CurrentRowNr{m_DiagonalNumber < 0 ? m_DiagonalSize - 1 - m_DiagonalIndex - m_DiagonalNumber : m_DiagonalSize - m_DiagonalIndex - 1};
+    const size_type c_CurrentColumnNr{m_DiagonalNumber < 0 ? m_DiagonalSize - m_DiagonalIndex - 1 : m_DiagonalSize - 1 - m_DiagonalIndex + m_DiagonalNumber};
+
+    return m_pMatrixPtr[c_CurrentRowNr][c_CurrentColumnNr];
+}
+
+template<typename DataType> const
+typename Matrix<DataType>::ConstReverseDIterator::value_type* Matrix<DataType>::ConstReverseDIterator::operator->() const
+{
+    if (m_DiagonalIndex == m_DiagonalSize)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DEREFERENCE_END_ITERATOR]};
+    }
+
+    const size_type c_CurrentRowNr{m_DiagonalNumber < 0 ? m_DiagonalSize - 1 - m_DiagonalIndex - m_DiagonalNumber : m_DiagonalSize - m_DiagonalIndex - 1};
+    const size_type c_CurrentColumnNr{m_DiagonalNumber < 0 ? m_DiagonalSize - m_DiagonalIndex - 1 : m_DiagonalSize - 1 - m_DiagonalIndex + m_DiagonalNumber};
+
+    return (m_pMatrixPtr[c_CurrentRowNr] + c_CurrentColumnNr);
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator::reference Matrix<DataType>::ConstReverseDIterator::operator[](ConstReverseDIterator::difference_type index) const
+{
+    const size_type c_ResultingIndex{m_DiagonalIndex + index};
+
+    if (c_ResultingIndex < 0 || c_ResultingIndex >= m_DiagonalSize)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ITERATOR_INDEX_OUT_OF_BOUNDS]};
+    }
+
+    const size_type c_ResultingRowNr{m_DiagonalNumber < 0 ? m_DiagonalSize - 1 - c_ResultingIndex - m_DiagonalNumber : m_DiagonalSize - c_ResultingIndex - 1};
+    const size_type c_ResultingColumnNr{m_DiagonalNumber < 0 ? m_DiagonalSize - c_ResultingIndex - 1 : m_DiagonalSize - 1 - c_ResultingIndex + m_DiagonalNumber};
+
+    return m_pMatrixPtr[c_ResultingRowNr][c_ResultingColumnNr];
+}
+
+template<typename DataType>
+bool Matrix<DataType>::ConstReverseDIterator::isValidWithMatrix(const Matrix &matrix) const
+{
+    bool isValid{true};
+
+    if (m_pMatrixPtr != matrix.m_pBaseArrayPtr)
+    {
+        isValid = false;
+    }
+    else if ((m_DiagonalNumber < 0 && std::abs(m_DiagonalNumber) >= matrix.getNrOfRows()) || (m_DiagonalNumber >= 0 && m_DiagonalNumber >= matrix.getNrOfColumns()))
+    {
+        isValid = false;
+    }
+    else
+    {
+        const size_type c_DiagonalSize{m_DiagonalNumber < 0 ? std::min(matrix.getNrOfRows() - std::abs(m_DiagonalNumber), matrix.getNrOfColumns())
+                                              : std::min(matrix.getNrOfRows(), matrix.getNrOfColumns() - m_DiagonalNumber)};
+        if (m_DiagonalSize != c_DiagonalSize)
+        {
+            isValid = false;
+        }
+    }
+
+    return isValid;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseDIterator::getCurrentRowNr() const
+{
+    return m_DiagonalNumber < 0 ? m_DiagonalSize - 1 - m_DiagonalIndex - m_DiagonalNumber : m_DiagonalSize - m_DiagonalIndex - 1;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseDIterator::getCurrentColumnNr() const
+{
+    return m_DiagonalNumber < 0 ? m_DiagonalSize - m_DiagonalIndex - 1 : m_DiagonalSize - 1 - m_DiagonalIndex + m_DiagonalNumber;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseDIterator::getDiagonalNr() const
+{
+    return m_DiagonalNumber;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseDIterator::getDiagonalIndex() const
+{
+    return m_DiagonalIndex;
+}
+
+// first and second can be interpreted either as diagonal number and (relative) diagonal index (isRelative is true) or as row/column number ((x, y) coordinates)
+template<typename DataType>
+Matrix<DataType>::ConstReverseDIterator::ConstReverseDIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative)
+    : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
+{
+    const size_type c_NrOfRows{matrix.getNrOfRows()};
+    const size_type c_NrOfColumns{matrix.getNrOfColumns()};
+    const size_type c_MaxSize{std::max(c_NrOfRows, c_NrOfColumns)};
+    const difference_type c_Delta{c_NrOfRows - c_NrOfColumns};
+
+    m_DiagonalNumber = isRelative ? first : second - first;
+    m_DiagonalSize = (c_Delta >= 0) ? (m_DiagonalNumber < 0 ? c_MaxSize + m_DiagonalNumber : c_MaxSize - m_DiagonalNumber - c_Delta)
+                                    : (m_DiagonalNumber <= 0 ? c_MaxSize + m_DiagonalNumber + c_Delta : c_MaxSize - m_DiagonalNumber);
+    m_DiagonalIndex = isRelative ? second : (m_DiagonalNumber < 0 ? m_DiagonalSize - 1 - second : m_DiagonalSize - 1 - first);
+}
+
+template<typename DataType>
+void Matrix<DataType>::ConstReverseDIterator::_increment()
+{
+    if (m_DiagonalIndex < m_DiagonalSize)
+    {
+        ++m_DiagonalIndex;
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::ConstReverseDIterator::_decrement()
 {
     if (m_DiagonalIndex > 0)
     {
@@ -4274,6 +4599,120 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::getReverseDIterato
     }
 
     return ReverseDIterator{*this, first, second, isRelative};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDBegin(size_type diagNr) const
+{
+    if (diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1))
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
+    }
+
+    return ConstReverseDIterator{*this, diagNr, 0, true};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDBegin(size_type rowNr, size_type columnNr) const
+{
+    if (rowNr < 0 || columnNr < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (rowNr >= getNrOfRows())
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+    }
+
+    if (columnNr >= getNrOfColumns())
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
+    }
+
+    const size_type c_DiagNr{columnNr - rowNr};
+
+    return ConstReverseDIterator{*this, c_DiagNr, 0, true};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDEnd(size_type diagNr) const
+{
+    if (diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1))
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
+    }
+
+    const size_type c_DiagBeginRowNr{diagNr < 0 ? -diagNr : 0};
+    const size_type c_DiagBeginColumnNr{diagNr < 0 ? 0 : diagNr};
+    const size_type c_EndDiagIndex{std::min(m_NrOfRows - c_DiagBeginRowNr, m_NrOfColumns - c_DiagBeginColumnNr)};
+
+    return ConstReverseDIterator{*this, diagNr, c_EndDiagIndex, true};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDEnd(size_type rowNr, size_type columnNr) const
+{
+    if (rowNr < 0 || columnNr < 0)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+    }
+
+    if (rowNr >= m_NrOfRows)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+    }
+
+    if (columnNr >= m_NrOfColumns)
+    {
+        throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
+    }
+
+    return constReverseDEnd(columnNr-rowNr);
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::getConstReverseDIterator(Matrix::size_type first, Matrix::size_type second, bool isRelative) const
+{
+    if (isRelative)
+    {
+        if (first < (1-m_NrOfRows) || first > (m_NrOfColumns-1))
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_DOES_NOT_EXIST]};
+        }
+        if (second < 0)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+        }
+
+        const size_type c_BeginRowNr{first < 0 ? -first : 0};
+        const size_type c_BeginColumnNr{first < 0 ? 0 : first};
+        const size_type c_DiagSize {std::min(m_NrOfRows - c_BeginRowNr, m_NrOfColumns - c_BeginColumnNr)};
+
+        if (second >= c_DiagSize)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::DIAGONAL_INDEX_OUT_OF_BOUNDS]};
+        }
+    }
+    else
+    {
+        if (first < 0 || second < 0)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::NEGATIVE_ARG]};
+        }
+
+        if (first >= m_NrOfRows)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::ROW_DOES_NOT_EXIST]};
+        }
+
+        if (second >= m_NrOfColumns)
+        {
+            throw std::runtime_error{Matr::exceptions[Matr::Error::COLUMN_DOES_NOT_EXIST]};
+        }
+    }
+
+    return ConstReverseDIterator{*this, first, second, isRelative};
 }
 
 template<typename DataType>
