@@ -54,140 +54,140 @@ void DIteratorTests::testIteratorCreation()
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.dBegin(-2)};
 
-        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == -2 && it.getDiagonalIndex() == 0, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == -2 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.dEnd(-2)};
 
-        QVERIFY2(it.getCurrentRowNr() == 4 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == -2  && it.getDiagonalIndex() == 2, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 4 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == -2  && it.getDiagonalIndex() == 2, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.dBegin(0)};
 
-        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 0, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.dEnd(0)};
 
-        QVERIFY2(it.getCurrentRowNr() == 3 && it.getCurrentColumnNr() == 3 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 3, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 3 && it.getCurrentColumnNr() == 3 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 3, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.dBegin(1)};
 
-        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 0, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.dEnd(1)};
 
-        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 3 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 2, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 3 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 2, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.dBegin(0, 0)};
 
-        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 0, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.dEnd(0, 0)};
 
-        QVERIFY2(it.getCurrentRowNr() == 3 && it.getCurrentColumnNr() == 3 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 3, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 3 && it.getCurrentColumnNr() == 3 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 3, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.dBegin(2, 1)};
 
-        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.dEnd(2, 1)};
 
-        QVERIFY2(it.getCurrentRowNr() == 4 && it.getCurrentColumnNr() == 3 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 3, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 4 && it.getCurrentColumnNr() == 3 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 3, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.dBegin(1, 2)};
 
-        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 0, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.dEnd(1, 2)};
 
-        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 3 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 2, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 3 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 2, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.getDIterator(1, 0)};
 
-        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.getDIterator(0, 2)};
 
-        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 2 && it.getDiagonalIndex() == 0, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 2 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.getDIterator(2, 1)};
 
-        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 1, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 1, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.getDIterator(2, 2)};
 
-        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 2, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 2, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.getDIterator(-1, 0, true)};
 
-        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.getDIterator(2, 0, true)};
 
-        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 2 && it.getDiagonalIndex() == 0, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 2 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.getDIterator(-1, 1, true)};
 
-        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 1, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 1, "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixDIterator it{matrix.getDIterator(0, 2, true)};
 
-        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 2, "The DIterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 2, "The iterator has not been correctly created");
     }
 }
 
@@ -880,8 +880,8 @@ void DIteratorTests::testStdCount()
     {
         IntMatrix matrix(1, 2, {2, -3});
 
-        QVERIFY2(std::count(matrix.getDIterator(0, 1), matrix.getDIterator(1, 0, true), -3) == 0, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
-        QVERIFY2(std::count(matrix.dBegin(1), matrix.dEnd(1), -3) == 1, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
+        QVERIFY2(std::count(matrix.getDIterator(0, 1), matrix.getDIterator(1, 0, true), -3) == 0, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
+        QVERIFY2(std::count(matrix.dBegin(1), matrix.dEnd(1), -3) == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
     }
 
     {
@@ -894,9 +894,9 @@ void DIteratorTests::testStdCount()
                              1,  2, -3,  4, -5, 6, -1,
                          });
 
-        QVERIFY2(std::count(matrix.dBegin(1), matrix.dEnd(1), -1) == 3, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
-        QVERIFY2(std::count(matrix.getDIterator(1, 1, true), matrix.getDIterator(4, 5), 4) == 1, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
-        QVERIFY2(std::count(matrix.getDIterator(2, 3), matrix.getDIterator(1, 4, true), 4) == 0, "The std::count doesn't work correctly with DIterator, incorrect number of matches returned");
+        QVERIFY2(std::count(matrix.dBegin(1), matrix.dEnd(1), -1) == 3, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
+        QVERIFY2(std::count(matrix.getDIterator(1, 1, true), matrix.getDIterator(4, 5), 4) == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
+        QVERIFY2(std::count(matrix.getDIterator(2, 3), matrix.getDIterator(1, 4, true), 4) == 0, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
     }
 }
 
