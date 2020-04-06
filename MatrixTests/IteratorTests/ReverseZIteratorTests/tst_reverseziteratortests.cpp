@@ -605,8 +605,8 @@ void ReverseZIteratorTests::testIteratorsAreNotEqual()
     {
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        QVERIFY2(matrix.reverseZRowBegin(2) != matrix.reverseZRowBegin(1), "The matrix begin ZIterator of the first row equals the begin ZIterator of the second row");
-        QVERIFY2(matrix.reverseZRowEnd(2) != matrix.reverseZRowEnd(1), "The matrix end ZIterator of the first row equals the end ZIterator of the second row");
+        QVERIFY2(matrix.reverseZRowBegin(2) != matrix.reverseZRowBegin(1), "The matrix begin iterator of the first row equals the begin iterator of the second row");
+        QVERIFY2(matrix.reverseZRowEnd(2) != matrix.reverseZRowEnd(1), "The matrix end iterator of the first row equals the end iterator of the second row");
     }
 
     {
@@ -1086,8 +1086,8 @@ void ReverseZIteratorTests::testPassingThroughAllElements()
             sum += *it;
         }
 
-        QVERIFY2(count == 12, "Passing through through all matrix elements by using the Z iterator does not work correctly, total elements count is not correct");
-        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the Z iterator does not work correctly, sum of the elements is not correct");
+        QVERIFY2(count == 12, "Passing through through all matrix elements by using the iterator does not work correctly, total elements count is not correct");
+        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the iterator does not work correctly, sum of the elements is not correct");
     }
 
     {
@@ -1104,8 +1104,8 @@ void ReverseZIteratorTests::testPassingThroughAllElements()
             sum += *it;
         }
 
-        QVERIFY2(count == 12, "Passing through through all matrix elements by using the Z iterator does not work correctly, total elements count is not correct");
-        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the Z iterator does not work correctly, sum of the elements is not correct");
+        QVERIFY2(count == 12, "Passing through through all matrix elements by using the iterator does not work correctly, total elements count is not correct");
+        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the iterator does not work correctly, sum of the elements is not correct");
     }
 
     {
@@ -1121,7 +1121,7 @@ void ReverseZIteratorTests::testPassingThroughAllElements()
             sum += *it;
         }
 
-        QVERIFY2(sum == 78, "Passing through through all matrix elements by using the Z iterator and calculating their absolute values does not work correctly, sum of the absolute values is not correct");
+        QVERIFY2(sum == 78, "Passing through through all matrix elements by using the iterator and calculating their absolute values does not work correctly, sum of the absolute values is not correct");
     }
 
     {
@@ -1140,7 +1140,7 @@ void ReverseZIteratorTests::testPassingThroughAllElements()
             sum += *it;
         }
 
-        QVERIFY2(sum == 78, "Passing through through all matrix elements by using the Z iterator and calculating their absolute values does not work correctly, sum of the absolute values is not correct");
+        QVERIFY2(sum == 78, "Passing through through all matrix elements by using the iterator and calculating their absolute values does not work correctly, sum of the absolute values is not correct");
     }
 }
 
@@ -1179,82 +1179,82 @@ void ReverseZIteratorTests::testStdCount()
     IntMatrix matrix{4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 1, 2, -2, 2, 8, 9, -7, 7, 2, 9, 8}};
 
     int matchCount{count(matrix.reverseZBegin(), matrix.reverseZEnd(), 2)};
-    QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZBegin(), matrix.reverseZEnd(), -5);
-    QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getReverseZIterator(1, 4), matrix.getReverseZIterator(0, 3), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getReverseZIterator(2, 0), matrix.getReverseZIterator(0, 2), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getReverseZIterator(2, 0), matrix.getReverseZIterator(0, 3), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getReverseZIterator(1, 4), matrix.getReverseZIterator(0, 2), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZBegin(), matrix.getReverseZIterator(2, 3), 2);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getReverseZIterator(2, 3), matrix.reverseZEnd(), 2);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZBegin(), matrix.getReverseZIterator(2, 2), 2);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getReverseZIterator(2, 2), matrix.reverseZEnd(), 2);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getReverseZIterator(9), matrix.getReverseZIterator(2), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getReverseZIterator(10), matrix.getReverseZIterator(2), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getReverseZIterator(9), matrix.getReverseZIterator(3), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getReverseZIterator(10), matrix.getReverseZIterator(3), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZBegin(), matrix.getReverseZIterator(13), 2);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getReverseZIterator(13), matrix.reverseZEnd(), 2);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZBegin(), matrix.getReverseZIterator(12), 2);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getReverseZIterator(12), matrix.reverseZEnd(), 2);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), 5);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZRowEnd(3), matrix.reverseZRowBegin(0), 8);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZRowBegin(3), matrix.reverseZRowEnd(3), 9);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZRowBegin(3), matrix.reverseZRowEnd(2), 9);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZRowEnd(1), matrix.reverseZEnd(), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZBegin(), matrix.reverseZRowEnd(1), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZRowBegin(2), matrix.reverseZEnd(), 1);
-    QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.reverseZBegin(), matrix.reverseZRowBegin(2), 1);
-    QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with ZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 }
 
 void ReverseZIteratorTests::testStdFind()
@@ -1274,7 +1274,7 @@ void ReverseZIteratorTests::testStdFind()
     {
         IntMatrix matrix{4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 1, 2, -2, 2, 8, 9, -7, 7, 2, 9, 8}};
 
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZEnd(), 10) == matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, a non existing value has been found in the matrix");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZEnd(), 10) == matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, a non existing value has been found in the matrix");
 
         IntMatrixReverseZIterator it{matrix.reverseZBegin()};
 
@@ -1296,46 +1296,46 @@ void ReverseZIteratorTests::testStdFind()
     {
         IntMatrix matrix{4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 6, 2, -2, 2, 8, 9, -7, 7, 2, 9, 11}};
 
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZEnd(), 5) != matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZEnd(), 10) == matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZEnd(), 5) != matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZEnd(), 10) == matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), 6) != matrix.reverseZRowEnd(1), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), 5) != matrix.reverseZRowEnd(1), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), 8) != matrix.reverseZRowEnd(1), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), -1) == matrix.reverseZRowEnd(1), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), 1) == matrix.reverseZRowEnd(1), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), 10) == matrix.reverseZRowEnd(1), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), 6) != matrix.reverseZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), 5) != matrix.reverseZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), 8) != matrix.reverseZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), -1) == matrix.reverseZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), 1) == matrix.reverseZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZRowEnd(1), 10) == matrix.reverseZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZEnd(), 6) != matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZEnd(), -1) != matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZEnd(), 3) != matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZEnd(), -2) == matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZEnd(), 10) == matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZEnd(), 6) != matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZEnd(), -1) != matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZEnd(), 3) != matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZEnd(), -2) == matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.reverseZRowBegin(1), matrix.reverseZEnd(), 10) == matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZRowEnd(1), 11) != matrix.reverseZRowEnd(1), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZRowEnd(1), 5) != matrix.reverseZRowEnd(1), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZRowEnd(1), 0) != matrix.reverseZRowEnd(1), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZRowEnd(1), 1) == matrix.reverseZRowEnd(1), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZRowEnd(1), 10) == matrix.reverseZRowEnd(1), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZRowEnd(1), 11) != matrix.reverseZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZRowEnd(1), 5) != matrix.reverseZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZRowEnd(1), 0) != matrix.reverseZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZRowEnd(1), 1) == matrix.reverseZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.reverseZRowEnd(1), 10) == matrix.reverseZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.getReverseZIterator(3, 1), matrix.getReverseZIterator(1, 3), 7) != matrix.getReverseZIterator(1, 3), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getReverseZIterator(3, 1), matrix.getReverseZIterator(1, 3), -7) != matrix.getReverseZIterator(1, 3), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getReverseZIterator(3, 1), matrix.getReverseZIterator(1, 3), -2) != matrix.getReverseZIterator(1, 3), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getReverseZIterator(3, 1), matrix.getReverseZIterator(1, 3), -1) == matrix.getReverseZIterator(1, 3), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.getReverseZIterator(3, 1), matrix.getReverseZIterator(1, 3), 11) == matrix.getReverseZIterator(1, 3), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.getReverseZIterator(3, 1), matrix.getReverseZIterator(1, 3), 10) == matrix.getReverseZIterator(1, 3), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getReverseZIterator(3, 1), matrix.getReverseZIterator(1, 3), 7) != matrix.getReverseZIterator(1, 3), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getReverseZIterator(3, 1), matrix.getReverseZIterator(1, 3), -7) != matrix.getReverseZIterator(1, 3), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getReverseZIterator(3, 1), matrix.getReverseZIterator(1, 3), -2) != matrix.getReverseZIterator(1, 3), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getReverseZIterator(3, 1), matrix.getReverseZIterator(1, 3), -1) == matrix.getReverseZIterator(1, 3), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getReverseZIterator(3, 1), matrix.getReverseZIterator(1, 3), 11) == matrix.getReverseZIterator(1, 3), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getReverseZIterator(3, 1), matrix.getReverseZIterator(1, 3), 10) == matrix.getReverseZIterator(1, 3), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.getReverseZIterator(1, 3), matrix.reverseZEnd(), 0) != matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getReverseZIterator(1, 3), matrix.reverseZEnd(), -1) != matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getReverseZIterator(1, 3), matrix.reverseZEnd(), 4) != matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getReverseZIterator(1, 3), matrix.reverseZEnd(), 11) == matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.getReverseZIterator(1, 3), matrix.reverseZEnd(), 10) == matrix.reverseZEnd(), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getReverseZIterator(1, 3), matrix.reverseZEnd(), 0) != matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getReverseZIterator(1, 3), matrix.reverseZEnd(), -1) != matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getReverseZIterator(1, 3), matrix.reverseZEnd(), 4) != matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getReverseZIterator(1, 3), matrix.reverseZEnd(), 11) == matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getReverseZIterator(1, 3), matrix.reverseZEnd(), 10) == matrix.reverseZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.getReverseZIterator(3, 1), 11) != matrix.getReverseZIterator(3, 1), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.getReverseZIterator(3, 1), 2) != matrix.getReverseZIterator(3, 1), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.getReverseZIterator(3, 1), 9) != matrix.getReverseZIterator(3, 1), "The ZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.getReverseZIterator(3, 1), 0) == matrix.getReverseZIterator(3, 1), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.reverseZBegin(), matrix.getReverseZIterator(3, 1), 10) == matrix.getReverseZIterator(3, 1), "The ZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.getReverseZIterator(3, 1), 11) != matrix.getReverseZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.getReverseZIterator(3, 1), 2) != matrix.getReverseZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.getReverseZIterator(3, 1), 9) != matrix.getReverseZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.getReverseZIterator(3, 1), 0) == matrix.getReverseZIterator(3, 1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.reverseZBegin(), matrix.getReverseZIterator(3, 1), 10) == matrix.getReverseZIterator(3, 1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
     }
 }
 
@@ -1351,7 +1351,7 @@ void ReverseZIteratorTests::testStdSort()
                  matrix.at(2, 0) ==  3 && matrix.at(2, 1) ==  2 && matrix.at(2, 2) ==  2 && matrix.at(2, 3) == 2 && matrix.at(2, 4) == 1 &&
                  matrix.at(3, 0) ==  1 && matrix.at(3, 1) ==  0 && matrix.at(3, 2) ==  -1 && matrix.at(3, 3) == -2 && matrix.at(3, 4) == -7,
 
-                 "The ZIterator objects don't work correctly, the matrix has not been sorted properly");
+                 "The iterator objects don't work correctly, the matrix has not been sorted properly");
 
     }
 
@@ -1373,7 +1373,7 @@ void ReverseZIteratorTests::testStdSort()
                  matrix.at(2, 0) == 9 && matrix.at(2, 1) == 8 && matrix.at(2, 2) == 2 && matrix.at(2, 3) == 2 && matrix.at(2, 4) == -2 &&
                  matrix.at(3, 0) == 11 && matrix.at(3, 1) == 9 && matrix.at(3, 2) == 7 && matrix.at(3, 3) == 2 && matrix.at(3, 4) == -7,
 
-                 "The ZIterator objects don't work correctly, the per row sorting has not been done properly");
+                 "The iterator objects don't work correctly, the per row sorting has not been done properly");
 
     }
 
@@ -1387,7 +1387,7 @@ void ReverseZIteratorTests::testStdSort()
                  matrix.at(2, 0) ==  8 && matrix.at(2, 1) == 7   && matrix.at(2, 2) == 6 && matrix.at(2, 3) == 2    && matrix.at(2, 4) ==  2 &&
                  matrix.at(3, 0) ==  -2 && matrix.at(3, 1) == (-7) && matrix.at(3, 2) == 2 && matrix.at(3, 3) == 9    && matrix.at(3, 4) == 11,
 
-                 "The ZIterator objects don't work correctly, the matrix has not been sorted properly");
+                 "The iterator objects don't work correctly, the matrix has not been sorted properly");
 
     }
 
@@ -1401,7 +1401,7 @@ void ReverseZIteratorTests::testStdSort()
                  matrix.at(2, 0) ==  2 && matrix.at(2, 1) == (-2) && matrix.at(2, 2) == 11 && matrix.at(2, 3) == 9 && matrix.at(2, 4) == 9 &&
                  matrix.at(3, 0) == 8 && matrix.at(3, 1) == 7    && matrix.at(3, 2) == 2 && matrix.at(3, 3) == 2 && matrix.at(3, 4) == -7,
 
-                 "The ZIterator objects don't work correctly, the matrix has not been sorted properly");
+                 "The iterator objects don't work correctly, the matrix has not been sorted properly");
 
     }
 
@@ -1415,7 +1415,7 @@ void ReverseZIteratorTests::testStdSort()
                  matrix.at(2, 0) ==  -1 && matrix.at(2, 1) == (-2) && matrix.at(2, 2) == 2 && matrix.at(2, 3) == 8 && matrix.at(2, 4) == 9 &&
                  matrix.at(3, 0) ==  -7 && matrix.at(3, 1) == 7    && matrix.at(3, 2) == 2  && matrix.at(3, 3) == 9 && matrix.at(3, 4) == 11,
 
-                 "The ZIterator objects don't work correctly, the matrix has not been sorted properly");
+                 "The iterator objects don't work correctly, the matrix has not been sorted properly");
 
     }
 }

@@ -605,8 +605,8 @@ void ConstZIteratorTests::testIteratorsAreNotEqual()
     {
         IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-        QVERIFY2(matrix.constZRowBegin(0) != matrix.constZRowBegin(1), "The matrix begin ConstZIterator of the first row equals the begin ConstZIterator of the second row");
-        QVERIFY2(matrix.constZRowEnd(0) != matrix.constZRowEnd(1), "The matrix end ConstZIterator of the first row equals the end ConstZIterator of the second row");
+        QVERIFY2(matrix.constZRowBegin(0) != matrix.constZRowBegin(1), "The matrix begin iterator of the first row equals the begin iterator of the second row");
+        QVERIFY2(matrix.constZRowEnd(0) != matrix.constZRowEnd(1), "The matrix end iterator of the first row equals the end iterator of the second row");
     }
 
     {
@@ -1018,8 +1018,8 @@ void ConstZIteratorTests::testPassingThroughAllElements()
             sum += *it;
         }
 
-        QVERIFY2(count == 12, "Passing through through all matrix elements by using the Z iterator does not work correctly, total elements count is not correct");
-        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the Z iterator does not work correctly, sum of the elements is not correct");
+        QVERIFY2(count == 12, "Passing through through all matrix elements by using the iterator does not work correctly, total elements count is not correct");
+        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the iterator does not work correctly, sum of the elements is not correct");
     }
 
     {
@@ -1036,8 +1036,8 @@ void ConstZIteratorTests::testPassingThroughAllElements()
             sum += *it;
         }
 
-        QVERIFY2(count == 12, "Passing through through all matrix elements by using the Z iterator does not work correctly, total elements count is not correct");
-        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the Z iterator does not work correctly, sum of the elements is not correct");
+        QVERIFY2(count == 12, "Passing through through all matrix elements by using the iterator does not work correctly, total elements count is not correct");
+        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the iterator does not work correctly, sum of the elements is not correct");
     }
 }
 
@@ -1048,8 +1048,8 @@ void ConstZIteratorTests::testRowBeginEndIterators()
     IntMatrixConstZIterator firstRowBeginIter{matrix.constZRowBegin(0)};
     IntMatrixConstZIterator secondRowEndIter{matrix.constZRowEnd(1)};
 
-    QVERIFY2(*firstRowBeginIter == 1, "The matrix begin ConstZIterator of the first row does not point to the right element");
-    QVERIFY2(*secondRowEndIter == -5, "The matrix end ConstZIterator of the second row does not point to the right element");
+    QVERIFY2(*firstRowBeginIter == 1, "The matrix begin iterator of the first row does not point to the right element");
+    QVERIFY2(*secondRowEndIter == -5, "The matrix end iterator of the second row does not point to the right element");
 }
 
 void ConstZIteratorTests::testGetZIterator()
@@ -1113,82 +1113,82 @@ void ConstZIteratorTests::testStdCount()
     IntMatrix matrix{4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 1, 2, -2, 2, 8, 9, -7, 7, 2, 9, 8}};
 
     int matchCount{count(matrix.constZBegin(), matrix.constZEnd(), 2)};
-    QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZBegin(), matrix.constZEnd(), -5);
-    QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getConstZIterator(0, 2), matrix.getConstZIterator(1, 4), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getConstZIterator(0, 2), matrix.getConstZIterator(2, 0), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getConstZIterator(0, 3), matrix.getConstZIterator(1, 4), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getConstZIterator(0, 3), matrix.getConstZIterator(2, 0), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZBegin(), matrix.getConstZIterator(2, 3), 2);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getConstZIterator(2, 3), matrix.constZEnd(), 2);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZBegin(), matrix.getConstZIterator(2, 2), 2);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getConstZIterator(2, 2), matrix.constZEnd(), 2);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getConstZIterator(2), matrix.getConstZIterator(9), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getConstZIterator(2), matrix.getConstZIterator(10), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getConstZIterator(3), matrix.getConstZIterator(9), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getConstZIterator(3), matrix.getConstZIterator(10), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZBegin(), matrix.getConstZIterator(13), 2);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getConstZIterator(13), matrix.constZEnd(), 2);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZBegin(), matrix.getConstZIterator(12), 2);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.getConstZIterator(12), matrix.constZEnd(), 2);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZRowBegin(1), matrix.constZRowEnd(2), 8);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZRowBegin(2), matrix.constZRowEnd(2), 9);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZRowBegin(2), matrix.constZRowEnd(3), 9);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZBegin(), matrix.constZRowBegin(1), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZRowBegin(1), matrix.constZEnd(), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZBegin(), matrix.constZRowEnd(1), 1);
-    QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 
     matchCount = count(matrix.constZRowEnd(1), matrix.constZEnd(), 1);
-    QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with ConstZIterator, incorrect number of matches returned");
+    QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 }
 
 void ConstZIteratorTests::testStdFind()
@@ -1207,52 +1207,52 @@ void ConstZIteratorTests::testStdFind()
 
     {
         IntMatrix matrix{4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 1, 2, -2, 2, 8, 9, -7, 7, 2, 9, 8}};
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZEnd(), 10) == matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, a non existing value has been found in the matrix");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZEnd(), 10) == matrix.constZEnd(), "The iterator doesn't correctly work with std::find, a non existing value has been found in the matrix");
     }
 
     {
         IntMatrix matrix{4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 6, 2, -2, 2, 8, 9, -7, 7, 2, 9, 11}};
 
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZEnd(), 5) != matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZEnd(), 10) == matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZEnd(), 5) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZEnd(), 10) == matrix.constZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 5) != matrix.constZRowEnd(1), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 6) != matrix.constZRowEnd(1), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 8) != matrix.constZRowEnd(1), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), -1) == matrix.constZRowEnd(1), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), -2) == matrix.constZRowEnd(1), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 10) == matrix.constZRowEnd(1), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 5) != matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 6) != matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 8) != matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), -1) == matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), -2) == matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 10) == matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), 5) != matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), 11) != matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), -2) != matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), -1) == matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), 10) == matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), 5) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), 11) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), -2) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), -1) == matrix.constZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), 10) == matrix.constZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), -1) != matrix.constZRowEnd(1), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), 6) != matrix.constZRowEnd(1), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), 8) != matrix.constZRowEnd(1), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), -2) == matrix.constZRowEnd(1), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), 10) == matrix.constZRowEnd(1), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), -1) != matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), 6) != matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), 8) != matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), -2) == matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), 10) == matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), 0) != matrix.getConstZIterator(3, 1), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), -7) != matrix.getConstZIterator(3, 1), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), -2) != matrix.getConstZIterator(3, 1), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), -1) == matrix.getConstZIterator(3, 1), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), 11) == matrix.getConstZIterator(3, 1), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), 10) == matrix.getConstZIterator(3, 1), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), 0) != matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), -7) != matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), -2) != matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), -1) == matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), 11) == matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), 10) == matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), 0) != matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), 11) != matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), -2) != matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), -1) == matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), 10) == matrix.constZEnd(), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), 0) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), 11) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), -2) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), -1) == matrix.constZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), 10) == matrix.constZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), -1) != matrix.getConstZIterator(3, 1), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), -7) != matrix.getConstZIterator(3, 1), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), -2) != matrix.getConstZIterator(3, 1), "The ConstZIterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), 11) == matrix.getConstZIterator(3, 1), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), 10) == matrix.getConstZIterator(3, 1), "The ConstZIterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), -1) != matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), -7) != matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), -2) != matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), 11) == matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), 10) == matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
     }
 }
 
