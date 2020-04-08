@@ -19,7 +19,7 @@
             /*printf("checking error condition, assertion\n");*/                            \
             if (condition)                                                                  \
             {                                                                               \
-                printf("ASSERTION ERROR TRIGERRED! %s\n", errorMessage.c_str());            \
+                fprintf(stderr, "ASSERTION ERROR TRIGERRED! %s\n", errorMessage.c_str());   \
                 assert(false);                                                              \
             }                                                                               \
         }
