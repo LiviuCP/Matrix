@@ -32,8 +32,8 @@ macx {
 
 HEADERS += \
         matrix.h \
-        matrix_exceptions.h \
-        matrix_template_specializations.h
+        matrix_template_specializations.h \
+        errorhandling.h
 
 unix {
     target.path = /usr/lib

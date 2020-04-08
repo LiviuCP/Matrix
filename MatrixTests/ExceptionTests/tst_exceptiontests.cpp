@@ -1,3 +1,6 @@
+#define ERROR_CHECKING
+#define CONVERT_TO_EXCEPTIONS
+
 #include <QtTest>
 
 #include "../../MatrixLib/matrix.h"

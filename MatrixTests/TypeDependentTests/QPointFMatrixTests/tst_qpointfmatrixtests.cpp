@@ -1,3 +1,5 @@
+#define ERROR_CHECKING
+
 #include <QtTest>
 #include <QPointF>
 
