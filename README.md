@@ -74,4 +74,10 @@ The D-Iterators have following sub-types at the moment:
 - read-write reverse D-Iterator (class ReverseDIterator)
 - read-only reverse D-Iterator (class ConstReverseDIterator)
 
+3. Error handling
+
+The Matrix library contains error handling functionality that deals with various situations like: index out of bound, negative arguments provided as indexes, etc. This functionality is by default disabled. It can be enabled by adding #define ERROR_CHECKING before the matrix.h include statement. It is obviously recommended to do this only when in debug mode. For the list of possible errors please consult errorhandling.h.
+
+There are two ways of triggering the errors: by assertion or by exception. By default assertions are made so each error will terminate the code immediately. They can be turned into exceptions by adding #define CONVERT_TO_EXCEPTIONS right after the previously mentioned define statement (and obviously before the matrix.h include). Exceptions should only be used when you necessarily need to capture an error with a try-catch block. I only enabled them in tst_exceptionstests.cpp where I tested that all necessary errors are triggered by the library code. In real application scenarios you would normally not require them but instead use asserts for debugging.
+
 For any questions please feel free to comment on my repo.
