@@ -29,6 +29,7 @@ private slots:
     void testDecrementOperators();
     void testOperatorPlus();
     void testOperatorMinus();
+    void testOperatorPlusEqual();
     void testDifferenceOperator();
     void testDereferenceAsteriskOperator();
     void testDereferenceArrowOperator();
@@ -624,6 +625,87 @@ void ConstReverseDIteratorTests::testOperatorMinus()
         IntMatrixConstReverseDIterator it6{it1 - (-4)};
         QVERIFY2(it2 == matrix.constReverseDBegin(2, 3) && it3 == matrix.constReverseDBegin(2, 3) && it4 == matrix.getConstReverseDIterator(0, 1) && it5 == matrix.constReverseDEnd(2, 3) && it6 == matrix.constReverseDEnd(2, 3),
                  "Operator + does not correctly work, the resulting iterator does not point to the right element");
+    }
+}
+
+void ConstReverseDIteratorTests::testOperatorPlusEqual()
+{
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+        IntMatrixConstReverseDIterator it1{matrix.constReverseDBegin(-1)};
+        IntMatrixConstReverseDIterator it2{it1};
+        IntMatrixConstReverseDIterator it3{it1};
+        IntMatrixConstReverseDIterator it4{it1};
+        IntMatrixConstReverseDIterator it5{it1};
+
+        it2 += -1;
+        it3 += 2;
+        it4 += 3;
+        it5 += 4;
+
+        QVERIFY2(it2 == matrix.constReverseDBegin(3, 2) && it3 == matrix.getConstReverseDIterator(1, 0) && it4 == matrix.constReverseDEnd(3, 2) && it5 == matrix.constReverseDEnd(3, 2),
+                 "Operator += does not work correctly, the resulting iterator does not point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+        IntMatrixConstReverseDIterator it1{matrix.getConstReverseDIterator(-1, 1, true)};
+        IntMatrixConstReverseDIterator it2{it1};
+        IntMatrixConstReverseDIterator it3{it1};
+        IntMatrixConstReverseDIterator it4{it1};
+        IntMatrixConstReverseDIterator it5{it1};
+        IntMatrixConstReverseDIterator it6{it1};
+        IntMatrixConstReverseDIterator it7{it1};
+
+        it2 += -2;
+        it3 += -1;
+        it4 += 0;
+        it5 += 1;
+        it6 += 2;
+        it7 += 3;
+
+        QVERIFY2(it2 == matrix.constReverseDBegin(3, 2) && it3 == matrix.constReverseDBegin(3, 2) && it4 == matrix.getConstReverseDIterator(2, 1) && it5 == matrix.getConstReverseDIterator(1, 0) &&
+                 it6 == matrix.constReverseDEnd(3, 2) && it7 == matrix.constReverseDEnd(3, 2), "Operator += does not correctly work, the resulting iterator does not point to the right element");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+        IntMatrixConstReverseDIterator it1{matrix.constReverseDEnd(-1)};
+        IntMatrixConstReverseDIterator it2{it1};
+        IntMatrixConstReverseDIterator it3{it1};
+        IntMatrixConstReverseDIterator it4{it1};
+        IntMatrixConstReverseDIterator it5{it1};
+
+        it2 += -4;
+        it3 += -3;
+        it4 += -1;
+        it5 += 1;
+
+        QVERIFY2(it2 == matrix.constReverseDBegin(3, 2) && it3 == matrix.constReverseDBegin(3, 2) && it4 == matrix.getConstReverseDIterator(1, 0) && it5 == matrix.constReverseDEnd(3, 2),
+                 "Operator += does not work correctly, the resulting iterator does not point to the right element");
+    }
+
+    // additional test to quick check that on the positive diagonals everything is fine too
+    {
+        IntMatrix matrix{3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrixConstReverseDIterator it1{matrix.constReverseDBegin(2, 3)};
+        IntMatrixConstReverseDIterator it2{it1};
+        IntMatrixConstReverseDIterator it3{it1};
+        IntMatrixConstReverseDIterator it4{it1};
+        IntMatrixConstReverseDIterator it5{it1};
+        IntMatrixConstReverseDIterator it6{it1};
+
+        it2 += -2;
+        it3 += -1;
+        it4 += 2;
+        it5 += 3;
+        it6 += 4;
+
+        QVERIFY2(it2 == matrix.constReverseDBegin(2, 3) && it3 == matrix.constReverseDBegin(2, 3) && it4 == matrix.getConstReverseDIterator(0, 1) && it5 == matrix.constReverseDEnd(2, 3) && it6 == matrix.constReverseDEnd(2, 3),
+                 "Operator += does not work correctly, the resulting iterator does not point to the right element");
     }
 }
 

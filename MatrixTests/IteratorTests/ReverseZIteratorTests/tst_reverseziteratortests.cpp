@@ -22,6 +22,7 @@ private slots:
     void testDecrementOperators();
     void testOperatorPlus();
     void testOperatorMinus();
+    void testOperatorPlusEqual();
     void testDifferenceOperator();
     void testIteratorsAreEqual();
     void testIteratorsAreNotEqual();
@@ -453,6 +454,108 @@ void ReverseZIteratorTests::testOperatorMinus()
 
         QVERIFY2(firstIter == it, "Operator - does not correctly work, the resulting iterator is not the right one");
         QVERIFY2(secondIter == it, "Operator - does not correctly work, the resulting iterator is not the right one");
+    }
+}
+
+void ReverseZIteratorTests::testOperatorPlusEqual()
+{
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+
+        IntMatrixReverseZIterator firstIter{matrix.reverseZBegin()};
+        IntMatrixReverseZIterator secondIter{matrix.reverseZBegin()};
+
+        firstIter += 2;
+        secondIter += -2;
+
+        QVERIFY2(*firstIter == 4, "Operator += does not work correctly, the resulting iterator does not return the right value");
+        QVERIFY2(*secondIter == 6, "Operator += does not work correctly, the resulting iterator does not return the right value");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+
+        IntMatrixReverseZIterator firstIter{matrix.getReverseZIterator(1, 0)};
+        IntMatrixReverseZIterator secondIter{matrix.getReverseZIterator(1, 0)};
+
+        firstIter += 2;
+        secondIter += -2;
+
+        QVERIFY2(*firstIter == 2, "Operator += does not work correctly, the resulting iterator does not return the right value");
+        QVERIFY2(*secondIter == 6, "Operator += does not work correctly, the resulting iterator does not return the right value");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+
+        IntMatrixReverseZIterator firstIter{matrix.reverseZEnd()};
+        IntMatrixReverseZIterator secondIter{matrix.reverseZEnd()};
+
+        firstIter += -3;
+        secondIter += -6;
+
+        QVERIFY2(*firstIter == -3, "Operator += does not work correctly, the resulting iterator does not return the right value");
+        QVERIFY2(*secondIter == 6, "Operator += does not work correctly, the resulting iterator does not return the right value");
+    }
+
+    {
+        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
+        IntMatrixReverseZIterator it;
+
+        it = matrix.reverseZBegin(); it  += -2; QVERIFY2(it == matrix.reverseZBegin(), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZBegin(); it += -1; QVERIFY2(it == matrix.reverseZBegin(), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZBegin(); it += 6; QVERIFY2(it == matrix.reverseZEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZBegin(); it += 7; QVERIFY2(it == matrix.reverseZEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZEnd(); it += 1; QVERIFY2(it == matrix.reverseZEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZEnd(); it += 2; QVERIFY2(it == matrix.reverseZEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZEnd(); it += -7; QVERIFY2(it == matrix.reverseZBegin(), "Operator += does not work correctly, the resulting iterator is not the right one");
+
+        it = matrix.reverseZBegin(); it += 0; QVERIFY2(it == matrix.getReverseZIterator(1, 2), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZBegin(); it += 1; QVERIFY2(it == matrix.getReverseZIterator(1, 1), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZBegin(); it += 2; QVERIFY2(it == matrix.getReverseZIterator(1, 0), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZBegin(); it += 3; QVERIFY2(it == matrix.getReverseZIterator(0, 2), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZBegin(); it += 4; QVERIFY2(it == matrix.getReverseZIterator(0, 1), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZBegin(); it += 5; QVERIFY2(it == matrix.getReverseZIterator(0, 0), "Operator += does not work correctly, the resulting iterator is not the right one");
+
+        it = matrix.reverseZEnd(); it += -6; QVERIFY2(it == matrix.getReverseZIterator(1, 2), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZEnd(); it += -5; QVERIFY2(it == matrix.getReverseZIterator(1, 1), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZEnd(); it += -4; QVERIFY2(it == matrix.getReverseZIterator(1, 0), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZEnd(); it += -3; QVERIFY2(it == matrix.getReverseZIterator(0, 2), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZEnd(); it += -2; QVERIFY2(it == matrix.getReverseZIterator(0, 1), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZEnd(); it += -1; QVERIFY2(it == matrix.getReverseZIterator(0, 0), "Operator += does not work correctly, the resulting iterator is not the right one");
+
+        it = matrix.getReverseZIterator(1, 0); it += 2; QVERIFY2(it == matrix.getReverseZIterator(0, 1), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.getReverseZIterator(0, 1); it += -2; QVERIFY2(it == matrix.getReverseZIterator(1, 0), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.getReverseZIterator(1, 2); it += 1; QVERIFY2(it == matrix.getReverseZIterator(0, 2) + (-2), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.getReverseZIterator(0, 1); it += -3; QVERIFY2(it == matrix.getReverseZIterator(0, 2) + (-2), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.getReverseZIterator(1, 2); it += 2; QVERIFY2(it == matrix.getReverseZIterator(1, 1) + (1), "Operator += does not work correctly, the resulting iterator is not the right one");
+
+        it = matrix.getReverseZIterator(1, 1); it += -2; QVERIFY2(it == matrix.reverseZBegin(), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.getReverseZIterator(1, 1); it += -1; QVERIFY2(it == matrix.reverseZBegin(), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.getReverseZIterator(1, 1); it += 5; QVERIFY2(it == matrix.reverseZEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.getReverseZIterator(1, 1); it += 6; QVERIFY2(it == matrix.reverseZEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
+    }
+
+    {
+        IntMatrix matrix{};
+        IntMatrixReverseZIterator it;
+
+        it = matrix.reverseZBegin(); it += -1; QVERIFY2(it == matrix.reverseZEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZBegin(); it += 1; QVERIFY2(it == matrix.reverseZEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZEnd(); it += 1; QVERIFY2(it == matrix.reverseZEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
+        it = matrix.reverseZEnd(); it += -1; QVERIFY2(it == matrix.reverseZEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
+    }
+
+    {
+        IntMatrixReverseZIterator it{};
+        IntMatrixReverseZIterator firstIter{it};
+        IntMatrixReverseZIterator secondIter{it};
+
+        firstIter += -1;
+        secondIter += 1;
+
+        QVERIFY2(firstIter == it, "Operator += does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(secondIter == it, "Operator += does not work correctly, the resulting iterator is not the right one");
     }
 }
 
