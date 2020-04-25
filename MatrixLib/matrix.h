@@ -41,6 +41,7 @@ public:
         ZIterator operator-(difference_type offset);
 
         void operator+=(difference_type offset);
+        void operator-=(difference_type offset);
 
         difference_type operator-(const ZIterator& it) const;
 
@@ -97,6 +98,7 @@ public:
         ConstZIterator operator-(difference_type offset);
 
         void operator+=(difference_type offset);
+        void operator-=(difference_type offset);
 
         difference_type operator-(const ConstZIterator& it) const;
 
@@ -153,6 +155,7 @@ public:
         ReverseZIterator operator-(difference_type offset);
 
         void operator+=(difference_type offset);
+        void operator-=(difference_type offset);
 
         difference_type operator-(const ReverseZIterator& it) const;
 
@@ -209,6 +212,7 @@ public:
         ConstReverseZIterator operator-(difference_type offset);
 
         void operator+=(difference_type offset);
+        void operator-=(difference_type offset);
 
         difference_type operator-(const ConstReverseZIterator& it) const;
 
@@ -266,6 +270,7 @@ public:
         DIterator operator-(difference_type offset);
 
         void operator+=(difference_type offset);
+        void operator-=(difference_type offset);
 
         difference_type operator-(const DIterator& it) const;
 
@@ -324,6 +329,7 @@ public:
         ConstDIterator operator-(difference_type offset);
 
         void operator+=(difference_type offset);
+        void operator-=(difference_type offset);
 
         difference_type operator-(const ConstDIterator& it) const;
 
@@ -382,6 +388,7 @@ public:
         ReverseDIterator operator-(difference_type offset);
 
         void operator+=(difference_type offset);
+        void operator-=(difference_type offset);
 
         difference_type operator-(const ReverseDIterator& it) const;
 
@@ -440,6 +447,7 @@ public:
         ConstReverseDIterator operator-(difference_type offset);
 
         void operator+=(difference_type offset);
+        void operator-=(difference_type offset);
 
         difference_type operator-(const ConstReverseDIterator& it) const;
 
@@ -709,6 +717,12 @@ void Matrix<DataType>::ZIterator::operator+=(ZIterator::difference_type offset)
 }
 
 template<typename DataType>
+void Matrix<DataType>::ZIterator::operator-=(ZIterator::difference_type offset)
+{
+    *this = *this - offset;
+}
+
+template<typename DataType>
 typename Matrix<DataType>::ZIterator::difference_type Matrix<DataType>::ZIterator::operator-(const ZIterator& it) const
 {
 #ifdef ERROR_CHECKING
@@ -973,6 +987,12 @@ template<typename DataType>
 void Matrix<DataType>::ConstZIterator::operator+=(ConstZIterator::difference_type offset)
 {
     *this = *this + offset;
+}
+
+template<typename DataType>
+void Matrix<DataType>::ConstZIterator::operator-=(ConstZIterator::difference_type offset)
+{
+    *this = *this - offset;
 }
 
 template<typename DataType>
@@ -1245,6 +1265,12 @@ void Matrix<DataType>::ReverseZIterator::operator+=(ReverseZIterator::difference
 }
 
 template<typename DataType>
+void Matrix<DataType>::ReverseZIterator::operator-=(ReverseZIterator::difference_type offset)
+{
+    *this = *this - offset;
+}
+
+template<typename DataType>
 typename Matrix<DataType>::ReverseZIterator::difference_type Matrix<DataType>::ReverseZIterator::operator-(const ReverseZIterator& it) const
 {
 #ifdef ERROR_CHECKING
@@ -1512,6 +1538,12 @@ void Matrix<DataType>::ConstReverseZIterator::operator+=(ConstReverseZIterator::
 }
 
 template<typename DataType>
+void Matrix<DataType>::ConstReverseZIterator::operator-=(ConstReverseZIterator::difference_type offset)
+{
+    *this = *this - offset;
+}
+
+template<typename DataType>
 typename Matrix<DataType>::ConstReverseZIterator::difference_type Matrix<DataType>::ConstReverseZIterator::operator-(const ConstReverseZIterator& it) const
 {
 #ifdef ERROR_CHECKING
@@ -1746,6 +1778,12 @@ template<typename DataType>
 void Matrix<DataType>::DIterator::operator+=(DIterator::difference_type offset)
 {
     *this = *this + offset;
+}
+
+template<typename DataType>
+void Matrix<DataType>::DIterator::operator-=(DIterator::difference_type offset)
+{
+    *this = *this - offset;
 }
 
 template<typename DataType>
@@ -2011,6 +2049,12 @@ void Matrix<DataType>::ConstDIterator::operator+=(ConstDIterator::difference_typ
 }
 
 template<typename DataType>
+void Matrix<DataType>::ConstDIterator::operator-=(ConstDIterator::difference_type offset)
+{
+    *this = *this - offset;
+}
+
+template<typename DataType>
 typename Matrix<DataType>::ConstDIterator::difference_type Matrix<DataType>::ConstDIterator::operator-(const ConstDIterator& it) const
 {
 #ifdef ERROR_CHECKING
@@ -2272,6 +2316,12 @@ void Matrix<DataType>::ReverseDIterator::operator+=(ReverseDIterator::difference
 }
 
 template<typename DataType>
+void Matrix<DataType>::ReverseDIterator::operator-=(ReverseDIterator::difference_type offset)
+{
+    *this = *this - offset;
+}
+
+template<typename DataType>
 typename Matrix<DataType>::ReverseDIterator::difference_type Matrix<DataType>::ReverseDIterator::operator-(const ReverseDIterator& it) const
 {
 #ifdef ERROR_CHECKING
@@ -2524,6 +2574,12 @@ template<typename DataType>
 void Matrix<DataType>::ConstReverseDIterator::operator+=(ConstReverseDIterator::difference_type offset)
 {
     *this = *this + offset;
+}
+
+template<typename DataType>
+void Matrix<DataType>::ConstReverseDIterator::operator-=(ConstReverseDIterator::difference_type offset)
+{
+    *this = *this - offset;
 }
 
 template<typename DataType>
