@@ -528,7 +528,7 @@ void ReverseDIteratorTests::testOperatorPlus()
         IntMatrixReverseDIterator it5{it1 + 4};
 
         QVERIFY2(it2 == matrix.reverseDBegin(3, 2) && it3 == matrix.getReverseDIterator(1, 0) && it4 == matrix.reverseDEnd(3, 2) && it5 == matrix.reverseDEnd(3, 2),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -543,7 +543,7 @@ void ReverseDIteratorTests::testOperatorPlus()
         IntMatrixReverseDIterator it7{it1 + 3};
 
         QVERIFY2(it2 == matrix.reverseDBegin(3, 2) && it3 == matrix.reverseDBegin(3, 2) && it4 == matrix.getReverseDIterator(2, 1) && it5 == matrix.getReverseDIterator(1, 0) &&
-                 it6 == matrix.reverseDEnd(3, 2) && it7 == matrix.reverseDEnd(3, 2), "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 it6 == matrix.reverseDEnd(3, 2) && it7 == matrix.reverseDEnd(3, 2), "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -556,7 +556,7 @@ void ReverseDIteratorTests::testOperatorPlus()
         IntMatrixReverseDIterator it5{it1 + 1};
 
         QVERIFY2(it2 == matrix.reverseDBegin(3, 2) && it3 == matrix.reverseDBegin(3, 2) && it4 == matrix.getReverseDIterator(1, 0) && it5 == matrix.reverseDEnd(3, 2),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     // additional test to quick check that on the positive diagonals everything is fine too
@@ -569,7 +569,7 @@ void ReverseDIteratorTests::testOperatorPlus()
         IntMatrixReverseDIterator it5{it1 + 3};
         IntMatrixReverseDIterator it6{it1 + 4};
         QVERIFY2(it2 == matrix.reverseDBegin(2, 3) && it3 == matrix.reverseDBegin(2, 3) && it4 == matrix.getReverseDIterator(0, 1) && it5 == matrix.reverseDEnd(2, 3) && it6 == matrix.reverseDEnd(2, 3),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 }
 
@@ -585,7 +585,7 @@ void ReverseDIteratorTests::testOperatorMinus()
         IntMatrixReverseDIterator it5{it1 - (-4)};
 
         QVERIFY2(it2 == matrix.reverseDBegin(3, 2) && it3 == matrix.getReverseDIterator(1, 0) && it4 == matrix.reverseDEnd(3, 2) && it5 == matrix.reverseDEnd(3, 2),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -600,7 +600,7 @@ void ReverseDIteratorTests::testOperatorMinus()
         IntMatrixReverseDIterator it7{it1 - (-3)};
 
         QVERIFY2(it2 == matrix.reverseDBegin(3, 2) && it3 == matrix.reverseDBegin(3, 2) && it4 == matrix.getReverseDIterator(2, 1) && it5 == matrix.getReverseDIterator(1, 0) &&
-                 it6 == matrix.reverseDEnd(3, 2) && it7 == matrix.reverseDEnd(3, 2), "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 it6 == matrix.reverseDEnd(3, 2) && it7 == matrix.reverseDEnd(3, 2), "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -613,7 +613,7 @@ void ReverseDIteratorTests::testOperatorMinus()
         IntMatrixReverseDIterator it5{it1 - (-1)};
 
         QVERIFY2(it2 == matrix.reverseDBegin(3, 2) && it3 == matrix.reverseDBegin(3, 2) && it4 == matrix.getReverseDIterator(1, 0) && it5 == matrix.reverseDEnd(3, 2),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     // additional test to quick check that on the positive diagonals everything is fine too
@@ -626,7 +626,7 @@ void ReverseDIteratorTests::testOperatorMinus()
         IntMatrixReverseDIterator it5{it1 - (-3)};
         IntMatrixReverseDIterator it6{it1 - (-4)};
         QVERIFY2(it2 == matrix.reverseDBegin(2, 3) && it3 == matrix.reverseDBegin(2, 3) && it4 == matrix.getReverseDIterator(0, 1) && it5 == matrix.reverseDEnd(2, 3) && it6 == matrix.reverseDEnd(2, 3),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 }
 
@@ -669,7 +669,7 @@ void ReverseDIteratorTests::testOperatorPlusEqual()
         it7 += 3;
 
         QVERIFY2(it2 == matrix.reverseDBegin(3, 2) && it3 == matrix.reverseDBegin(3, 2) && it4 == matrix.getReverseDIterator(2, 1) && it5 == matrix.getReverseDIterator(1, 0) &&
-                 it6 == matrix.reverseDEnd(3, 2) && it7 == matrix.reverseDEnd(3, 2), "Operator += does not correctly work, the resulting iterator does not point to the right element");
+                 it6 == matrix.reverseDEnd(3, 2) && it7 == matrix.reverseDEnd(3, 2), "Operator += does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -750,7 +750,7 @@ void ReverseDIteratorTests::testOperatorMinusEqual()
         it7 -= -3;
 
         QVERIFY2(it2 == matrix.reverseDBegin(3, 2) && it3 == matrix.reverseDBegin(3, 2) && it4 == matrix.getReverseDIterator(2, 1) && it5 == matrix.getReverseDIterator(1, 0) &&
-                 it6 == matrix.reverseDEnd(3, 2) && it7 == matrix.reverseDEnd(3, 2), "Operator -= does not correctly work, the resulting iterator does not point to the right element");
+                 it6 == matrix.reverseDEnd(3, 2) && it7 == matrix.reverseDEnd(3, 2), "Operator -= does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {

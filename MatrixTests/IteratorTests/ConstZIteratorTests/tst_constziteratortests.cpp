@@ -290,8 +290,8 @@ void ConstZIteratorTests::testOperatorPlus()
         IntMatrixConstZIterator firstIter{matrix.constZBegin() + 2};
         IntMatrixConstZIterator secondIter{matrix.constZBegin() + (-2)};
 
-        QVERIFY2(*firstIter == -3, "Operator + does not correctly work, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "operator + does not correctly work, the resulting iterator does not return the right value");
+        QVERIFY2(*firstIter == -3, "Operator + does not work correctly, the resulting iterator does not return the right value");
+        QVERIFY2(*secondIter == 1, "operator + does not work correctly, the resulting iterator does not return the right value");
     }
 
     {
@@ -300,8 +300,8 @@ void ConstZIteratorTests::testOperatorPlus()
         IntMatrixConstZIterator firstIter{matrix.getConstZIterator(0, 2) + 2};
         IntMatrixConstZIterator secondIter{matrix.getConstZIterator(0, 2) + (-2)};
 
-        QVERIFY2(*firstIter == -5, "Operator + does not correctly work, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "operator + does not correctly work, the resulting iterator does not return the right value");
+        QVERIFY2(*firstIter == -5, "Operator + does not work correctly, the resulting iterator does not return the right value");
+        QVERIFY2(*secondIter == 1, "operator + does not work correctly, the resulting iterator does not return the right value");
     }
 
     {
@@ -310,54 +310,54 @@ void ConstZIteratorTests::testOperatorPlus()
         IntMatrixConstZIterator firstIter{matrix.constZEnd() + (-3)};
         IntMatrixConstZIterator secondIter{matrix.constZEnd() + (-6)};
 
-        QVERIFY2(*firstIter == 4, "Operator + does not correctly work, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "operator + does not correctly work, the resulting iterator does not return the right value");
+        QVERIFY2(*firstIter == 4, "Operator + does not work correctly, the resulting iterator does not return the right value");
+        QVERIFY2(*secondIter == 1, "operator + does not work correctly, the resulting iterator does not return the right value");
     }
 
     {
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
 
-        QVERIFY2(matrix.constZBegin() == matrix.constZBegin() + (-2), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZBegin() == matrix.constZBegin() + (-1), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZEnd() == matrix.constZBegin() + 6, "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZEnd() == matrix.constZBegin() + 7, "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZEnd() == matrix.constZEnd() + 1, "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZEnd() == matrix.constZEnd() + 2, "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZBegin() == matrix.constZEnd() + (-7), "Operator + does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZBegin() == matrix.constZBegin() + (-2), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZBegin() == matrix.constZBegin() + (-1), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZEnd() == matrix.constZBegin() + 6, "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZEnd() == matrix.constZBegin() + 7, "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZEnd() == matrix.constZEnd() + 1, "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZEnd() == matrix.constZEnd() + 2, "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZBegin() == matrix.constZEnd() + (-7), "Operator + does not work correctly, the resulting iterator is not the right one");
 
-        QVERIFY2(matrix.getConstZIterator(0, 0) == matrix.constZBegin() + 0, "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 1) == matrix.constZBegin() + 1, "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 2) == matrix.constZBegin() + 2, "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 0) == matrix.constZBegin() + 3, "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 1) == matrix.constZBegin() + 4, "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 2) == matrix.constZBegin() + 5, "Operator + does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 0) == matrix.constZBegin() + 0, "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) == matrix.constZBegin() + 1, "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 2) == matrix.constZBegin() + 2, "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 0) == matrix.constZBegin() + 3, "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 1) == matrix.constZBegin() + 4, "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 2) == matrix.constZBegin() + 5, "Operator + does not work correctly, the resulting iterator is not the right one");
 
-        QVERIFY2(matrix.getConstZIterator(0, 0) == matrix.constZEnd() + (-6), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 1) == matrix.constZEnd() + (-5), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 2) == matrix.constZEnd() + (-4), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 0) == matrix.constZEnd() + (-3), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 1) == matrix.constZEnd() + (-2), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 2) == matrix.constZEnd() + (-1), "Operator + does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 0) == matrix.constZEnd() + (-6), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) == matrix.constZEnd() + (-5), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 2) == matrix.constZEnd() + (-4), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 0) == matrix.constZEnd() + (-3), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 1) == matrix.constZEnd() + (-2), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 2) == matrix.constZEnd() + (-1), "Operator + does not work correctly, the resulting iterator is not the right one");
 
-        QVERIFY2(matrix.getConstZIterator(0, 1) + 2 == matrix.getConstZIterator(1, 0), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 0) + (-2) == matrix.getConstZIterator(0, 1), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 2) + 2 == matrix.getConstZIterator(1, 2) + (-1), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 2) + 2 == matrix.getConstZIterator(0, 1) + (3), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 1) + (-1) == matrix.getConstZIterator(1, 2) + (-2), "Operator + does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) + 2 == matrix.getConstZIterator(1, 0), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 0) + (-2) == matrix.getConstZIterator(0, 1), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 2) + 2 == matrix.getConstZIterator(1, 2) + (-1), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 2) + 2 == matrix.getConstZIterator(0, 1) + (3), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 1) + (-1) == matrix.getConstZIterator(1, 2) + (-2), "Operator + does not work correctly, the resulting iterator is not the right one");
 
-        QVERIFY2(matrix.getConstZIterator(0, 1) + (-2) == matrix.constZBegin(), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 1) + (-1) == matrix.constZBegin(), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 1) + 5 == matrix.constZEnd(), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 1) + 6 == matrix.constZEnd(), "Operator + does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) + (-2) == matrix.constZBegin(), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) + (-1) == matrix.constZBegin(), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) + 5 == matrix.constZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) + 6 == matrix.constZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
     }
 
     {
         IntMatrix matrix{};
 
-        QVERIFY2(matrix.constZBegin() + (-1) == matrix.constZEnd(), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZBegin() + 1 == matrix.constZEnd(), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZEnd() + 1 == matrix.constZEnd(), "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZEnd() + (-1) == matrix.constZEnd(), "Operator + does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZBegin() + (-1) == matrix.constZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZBegin() + 1 == matrix.constZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZEnd() + 1 == matrix.constZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZEnd() + (-1) == matrix.constZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
     }
 
     {
@@ -365,8 +365,8 @@ void ConstZIteratorTests::testOperatorPlus()
         IntMatrixConstZIterator firstIter{it + (-1)};
         IntMatrixConstZIterator secondIter{it + 1};
 
-        QVERIFY2(firstIter == it, "Operator + does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(secondIter == it, "Operator + does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(firstIter == it, "Operator + does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(secondIter == it, "Operator + does not work correctly, the resulting iterator is not the right one");
     }
 }
 
@@ -378,8 +378,8 @@ void ConstZIteratorTests::testOperatorMinus()
         IntMatrixConstZIterator firstIter{matrix.constZBegin() - (-2)};
         IntMatrixConstZIterator secondIter{matrix.constZBegin() - 2};
 
-        QVERIFY2(*firstIter == -3, "Operator - does not correctly work, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "operator - does not correctly work, the resulting iterator does not return the right value");
+        QVERIFY2(*firstIter == -3, "Operator - does not work correctly, the resulting iterator does not return the right value");
+        QVERIFY2(*secondIter == 1, "operator - does not work correctly, the resulting iterator does not return the right value");
     }
 
     {
@@ -388,8 +388,8 @@ void ConstZIteratorTests::testOperatorMinus()
         IntMatrixConstZIterator firstIter{matrix.getConstZIterator(0, 2) - (-2)};
         IntMatrixConstZIterator secondIter{matrix.getConstZIterator(0, 2) - 2};
 
-        QVERIFY2(*firstIter == -5, "Operator - does not correctly work, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "operator - does not correctly work, the resulting iterator does not return the right value");
+        QVERIFY2(*firstIter == -5, "Operator - does not work correctly, the resulting iterator does not return the right value");
+        QVERIFY2(*secondIter == 1, "operator - does not work correctly, the resulting iterator does not return the right value");
     }
 
     {
@@ -398,54 +398,54 @@ void ConstZIteratorTests::testOperatorMinus()
         IntMatrixConstZIterator firstIter{matrix.constZEnd() - 3};
         IntMatrixConstZIterator secondIter{matrix.constZEnd() - 6};
 
-        QVERIFY2(*firstIter == 4, "Operator - does not correctly work, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "operator - does not correctly work, the resulting iterator does not return the right value");
+        QVERIFY2(*firstIter == 4, "Operator - does not work correctly, the resulting iterator does not return the right value");
+        QVERIFY2(*secondIter == 1, "operator - does not work correctly, the resulting iterator does not return the right value");
     }
 
     {
         IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
 
-        QVERIFY2(matrix.constZBegin() == matrix.constZBegin() - 2, "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZBegin() == matrix.constZBegin() - 1, "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZEnd() == matrix.constZBegin() - (-6), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZEnd() == matrix.constZBegin() - (-7), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZEnd() == matrix.constZEnd() - (-1), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZEnd() == matrix.constZEnd() - (-2), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZBegin() == matrix.constZEnd() - 7, "Operator - does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZBegin() == matrix.constZBegin() - 2, "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZBegin() == matrix.constZBegin() - 1, "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZEnd() == matrix.constZBegin() - (-6), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZEnd() == matrix.constZBegin() - (-7), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZEnd() == matrix.constZEnd() - (-1), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZEnd() == matrix.constZEnd() - (-2), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZBegin() == matrix.constZEnd() - 7, "Operator - does not work correctly, the resulting iterator is not the right one");
 
-        QVERIFY2(matrix.getConstZIterator(0, 0) == matrix.constZBegin() - 0, "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 1) == matrix.constZBegin() - (-1), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 2) == matrix.constZBegin() - (-2), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 0) == matrix.constZBegin() - (-3), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 1) == matrix.constZBegin() - (-4), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 2) == matrix.constZBegin() - (-5), "Operator - does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 0) == matrix.constZBegin() - 0, "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) == matrix.constZBegin() - (-1), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 2) == matrix.constZBegin() - (-2), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 0) == matrix.constZBegin() - (-3), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 1) == matrix.constZBegin() - (-4), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 2) == matrix.constZBegin() - (-5), "Operator - does not work correctly, the resulting iterator is not the right one");
 
-        QVERIFY2(matrix.getConstZIterator(0, 0) == matrix.constZEnd() - 6, "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 1) == matrix.constZEnd() - 5, "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 2) == matrix.constZEnd() - 4, "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 0) == matrix.constZEnd() - 3, "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 1) == matrix.constZEnd() - 2, "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 2) == matrix.constZEnd() - 1, "Operator - does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 0) == matrix.constZEnd() - 6, "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) == matrix.constZEnd() - 5, "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 2) == matrix.constZEnd() - 4, "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 0) == matrix.constZEnd() - 3, "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 1) == matrix.constZEnd() - 2, "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 2) == matrix.constZEnd() - 1, "Operator - does not work correctly, the resulting iterator is not the right one");
 
-        QVERIFY2(matrix.getConstZIterator(0, 1) - (-2) == matrix.getConstZIterator(1, 0), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 0) - 2 == matrix.getConstZIterator(0, 1), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 2) - (-2) == matrix.getConstZIterator(1, 2) + (-1), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 2) - (-2) == matrix.getConstZIterator(0, 1) + (3), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(1, 1) - 1 == matrix.getConstZIterator(1, 2) + (-2), "Operator - does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) - (-2) == matrix.getConstZIterator(1, 0), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 0) - 2 == matrix.getConstZIterator(0, 1), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 2) - (-2) == matrix.getConstZIterator(1, 2) + (-1), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 2) - (-2) == matrix.getConstZIterator(0, 1) + (3), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(1, 1) - 1 == matrix.getConstZIterator(1, 2) + (-2), "Operator - does not work correctly, the resulting iterator is not the right one");
 
-        QVERIFY2(matrix.getConstZIterator(0, 1) - 2 == matrix.constZBegin(), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 1) - 1 == matrix.constZBegin(), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 1) - (-5) == matrix.constZEnd(), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstZIterator(0, 1) - (-6) == matrix.constZEnd(), "Operator - does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) - 2 == matrix.constZBegin(), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) - 1 == matrix.constZBegin(), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) - (-5) == matrix.constZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.getConstZIterator(0, 1) - (-6) == matrix.constZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
     }
 
     {
         IntMatrix matrix{};
 
-        QVERIFY2(matrix.constZBegin() - 1 == matrix.constZEnd(), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZBegin() - (-1) == matrix.constZEnd(), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZEnd() - (-1) == matrix.constZEnd(), "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constZEnd() - 1 == matrix.constZEnd(), "Operator - does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZBegin() - 1 == matrix.constZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZBegin() - (-1) == matrix.constZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZEnd() - (-1) == matrix.constZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(matrix.constZEnd() - 1 == matrix.constZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
     }
 
     {
@@ -453,8 +453,8 @@ void ConstZIteratorTests::testOperatorMinus()
         IntMatrixConstZIterator firstIter{it - 1};
         IntMatrixConstZIterator secondIter{it - (-1)};
 
-        QVERIFY2(firstIter == it, "Operator - does not correctly work, the resulting iterator is not the right one");
-        QVERIFY2(secondIter == it, "Operator - does not correctly work, the resulting iterator is not the right one");
+        QVERIFY2(firstIter == it, "Operator - does not work correctly, the resulting iterator is not the right one");
+        QVERIFY2(secondIter == it, "Operator - does not work correctly, the resulting iterator is not the right one");
     }
 }
 
@@ -1415,52 +1415,52 @@ void ConstZIteratorTests::testStdFind()
 
     {
         IntMatrix matrix{4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 1, 2, -2, 2, 8, 9, -7, 7, 2, 9, 8}};
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZEnd(), 10) == matrix.constZEnd(), "The iterator doesn't correctly work with std::find, a non existing value has been found in the matrix");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZEnd(), 10) == matrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non existing value has been found in the matrix");
     }
 
     {
         IntMatrix matrix{4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 6, 2, -2, 2, 8, 9, -7, 7, 2, 9, 11}};
 
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZEnd(), 5) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZEnd(), 10) == matrix.constZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZEnd(), 5) != matrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZEnd(), 10) == matrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 5) != matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 6) != matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 8) != matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), -1) == matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), -2) == matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 10) == matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 5) != matrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 6) != matrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 8) != matrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), -1) == matrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), -2) == matrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZRowEnd(1), 10) == matrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), 5) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), 11) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), -2) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), -1) == matrix.constZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), 10) == matrix.constZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), 5) != matrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), 11) != matrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), -2) != matrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), -1) == matrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZRowBegin(1), matrix.constZEnd(), 10) == matrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), -1) != matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), 6) != matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), 8) != matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), -2) == matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), 10) == matrix.constZRowEnd(1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), -1) != matrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), 6) != matrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), 8) != matrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), -2) == matrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.constZRowEnd(1), 10) == matrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), 0) != matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), -7) != matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), -2) != matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), -1) == matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), 11) == matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), 10) == matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), 0) != matrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), -7) != matrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), -2) != matrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), -1) == matrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), 11) == matrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.getConstZIterator(3, 1), 10) == matrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), 0) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), 11) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), -2) != matrix.constZEnd(), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), -1) == matrix.constZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), 10) == matrix.constZEnd(), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), 0) != matrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), 11) != matrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), -2) != matrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), -1) == matrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.getConstZIterator(1, 3), matrix.constZEnd(), 10) == matrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
 
-        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), -1) != matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), -7) != matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), -2) != matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), 11) == matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), 10) == matrix.getConstZIterator(3, 1), "The iterator doesn't correctly work with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), -1) != matrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), -7) != matrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), -2) != matrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), 11) == matrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+        QVERIFY2(find(matrix.constZBegin(), matrix.getConstZIterator(3, 1), 10) == matrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
     }
 }
 

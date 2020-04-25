@@ -527,7 +527,7 @@ void ConstDIteratorTests::testOperatorPlus()
         IntMatrixConstDIterator it5{it1 + 4};
 
         QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.getConstDIterator(3, 2) && it4 == matrix.constDEnd(1, 0) && it5 == matrix.constDEnd(1, 0),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -542,7 +542,7 @@ void ConstDIteratorTests::testOperatorPlus()
         IntMatrixConstDIterator it7{it1 + 3};
 
         QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.constDBegin(1, 0) && it4 == matrix.getConstDIterator(2, 1) && it5 == matrix.getConstDIterator(3, 2) &&
-                 it6 == matrix.constDEnd(1, 0) && it7 == matrix.constDEnd(1, 0), "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 it6 == matrix.constDEnd(1, 0) && it7 == matrix.constDEnd(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -555,7 +555,7 @@ void ConstDIteratorTests::testOperatorPlus()
         IntMatrixConstDIterator it5{it1 + 1};
 
         QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.constDBegin(1, 0) && it4 == matrix.getConstDIterator(3, 2) && it5 == matrix.constDEnd(1, 0),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     // additional test to quick check that on the positive diagonals everything is fine too
@@ -568,7 +568,7 @@ void ConstDIteratorTests::testOperatorPlus()
         IntMatrixConstDIterator it5{it1 + 3};
         IntMatrixConstDIterator it6{it1 + 4};
         QVERIFY2(it2 == matrix.constDBegin(0, 1) && it3 == matrix.constDBegin(0, 1) && it4 == matrix.getConstDIterator(2, 3) && it5 == matrix.constDEnd(0, 1) && it6 == matrix.constDEnd(0, 1),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 }
 
@@ -584,7 +584,7 @@ void ConstDIteratorTests::testOperatorMinus()
         IntMatrixConstDIterator it5{it1 - (-4)};
 
         QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.getConstDIterator(3, 2) && it4 == matrix.constDEnd(1, 0) && it5 == matrix.constDEnd(1, 0),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -599,7 +599,7 @@ void ConstDIteratorTests::testOperatorMinus()
         IntMatrixConstDIterator it7{it1 - (-3)};
 
         QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.constDBegin(1, 0) && it4 == matrix.getConstDIterator(2, 1) && it5 == matrix.getConstDIterator(3, 2) &&
-                 it6 == matrix.constDEnd(1, 0) && it7 == matrix.constDEnd(1, 0), "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 it6 == matrix.constDEnd(1, 0) && it7 == matrix.constDEnd(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -612,7 +612,7 @@ void ConstDIteratorTests::testOperatorMinus()
         IntMatrixConstDIterator it5{it1 - (-1)};
 
         QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.constDBegin(1, 0) && it4 == matrix.getConstDIterator(3, 2) && it5 == matrix.constDEnd(1, 0),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     // additional test to quick check that on the positive diagonals everything is fine too
@@ -625,7 +625,7 @@ void ConstDIteratorTests::testOperatorMinus()
         IntMatrixConstDIterator it5{it1 - (-3)};
         IntMatrixConstDIterator it6{it1 - (-4)};
         QVERIFY2(it2 == matrix.constDBegin(0, 1) && it3 == matrix.constDBegin(0, 1) && it4 == matrix.getConstDIterator(2, 3) && it5 == matrix.constDEnd(0, 1) && it6 == matrix.constDEnd(0, 1),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 }
 

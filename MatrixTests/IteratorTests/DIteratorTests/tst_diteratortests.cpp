@@ -528,7 +528,7 @@ void DIteratorTests::testOperatorPlus()
         IntMatrixDIterator it5{it1 + 4};
 
         QVERIFY2(it2 == matrix.dBegin(1, 0) && it3 == matrix.getDIterator(3, 2) && it4 == matrix.dEnd(1, 0) && it5 == matrix.dEnd(1, 0),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -543,7 +543,7 @@ void DIteratorTests::testOperatorPlus()
         IntMatrixDIterator it7{it1 + 3};
 
         QVERIFY2(it2 == matrix.dBegin(1, 0) && it3 == matrix.dBegin(1, 0) && it4 == matrix.getDIterator(2, 1) && it5 == matrix.getDIterator(3, 2) &&
-                 it6 == matrix.dEnd(1, 0) && it7 == matrix.dEnd(1, 0), "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 it6 == matrix.dEnd(1, 0) && it7 == matrix.dEnd(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -556,7 +556,7 @@ void DIteratorTests::testOperatorPlus()
         IntMatrixDIterator it5{it1 + 1};
 
         QVERIFY2(it2 == matrix.dBegin(1, 0) && it3 == matrix.dBegin(1, 0) && it4 == matrix.getDIterator(3, 2) && it5 == matrix.dEnd(1, 0),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     // additional test to quick check that on the positive diagonals everything is fine too
@@ -569,7 +569,7 @@ void DIteratorTests::testOperatorPlus()
         IntMatrixDIterator it5{it1 + 3};
         IntMatrixDIterator it6{it1 + 4};
         QVERIFY2(it2 == matrix.dBegin(0, 1) && it3 == matrix.dBegin(0, 1) && it4 == matrix.getDIterator(2, 3) && it5 == matrix.dEnd(0, 1) && it6 == matrix.dEnd(0, 1),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 }
 
@@ -585,7 +585,7 @@ void DIteratorTests::testOperatorMinus()
         IntMatrixDIterator it5{it1 - (-4)};
 
         QVERIFY2(it2 == matrix.dBegin(1, 0) && it3 == matrix.getDIterator(3, 2) && it4 == matrix.dEnd(1, 0) && it5 == matrix.dEnd(1, 0),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -600,7 +600,7 @@ void DIteratorTests::testOperatorMinus()
         IntMatrixDIterator it7{it1 - (-3)};
 
         QVERIFY2(it2 == matrix.dBegin(1, 0) && it3 == matrix.dBegin(1, 0) && it4 == matrix.getDIterator(2, 1) && it5 == matrix.getDIterator(3, 2) &&
-                 it6 == matrix.dEnd(1, 0) && it7 == matrix.dEnd(1, 0), "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 it6 == matrix.dEnd(1, 0) && it7 == matrix.dEnd(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     {
@@ -613,7 +613,7 @@ void DIteratorTests::testOperatorMinus()
         IntMatrixDIterator it5{it1 - (-1)};
 
         QVERIFY2(it2 == matrix.dBegin(1, 0) && it3 == matrix.dBegin(1, 0) && it4 == matrix.getDIterator(3, 2) && it5 == matrix.dEnd(1, 0),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 
     // additional test to quick check that on the positive diagonals everything is fine too
@@ -626,7 +626,7 @@ void DIteratorTests::testOperatorMinus()
         IntMatrixDIterator it5{it1 - (-3)};
         IntMatrixDIterator it6{it1 - (-4)};
         QVERIFY2(it2 == matrix.dBegin(0, 1) && it3 == matrix.dBegin(0, 1) && it4 == matrix.getDIterator(2, 3) && it5 == matrix.dEnd(0, 1) && it6 == matrix.dEnd(0, 1),
-                 "Operator + does not correctly work, the resulting iterator does not point to the right element");
+                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
     }
 }
 
