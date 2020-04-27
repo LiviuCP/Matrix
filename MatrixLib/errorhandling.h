@@ -4,27 +4,32 @@
 #include <map>
 #include <assert.h>
 
-#ifdef CONVERT_TO_EXCEPTIONS
-#define CHECK_ERROR_CONDITION(condition, errorMessage)                                      \
-        {                                                                                   \
-            /*printf("checking error condition, trigger exception\n");*/                    \
-            if (condition)                                                                  \
-            {                                                                               \
-                throw std::runtime_error(errorMessage);                                     \
-            }                                                                               \
-        }
+#ifdef ERROR_CHECKING
+    #ifdef CONVERT_TO_EXCEPTIONS
+    #define CHECK_ERROR_CONDITION(condition, errorMessage)                                      \
+            {                                                                                   \
+                /*printf("checking error condition, trigger exception\n");*/                    \
+                if (condition)                                                                  \
+                {                                                                               \
+                    throw std::runtime_error(errorMessage);                                     \
+                }                                                                               \
+            }
+    #else
+    #define CHECK_ERROR_CONDITION(condition, errorMessage)                                      \
+            {                                                                                   \
+                /*printf("checking error condition, assertion\n");*/                            \
+                if (condition)                                                                  \
+                {                                                                               \
+                    fprintf(stderr, "ASSERTION ERROR TRIGERRED! %s\n", errorMessage.c_str());   \
+                    assert(false);                                                              \
+                }                                                                               \
+            }
+    #endif
 #else
-#define CHECK_ERROR_CONDITION(condition, errorMessage)                                      \
-        {                                                                                   \
-            /*printf("checking error condition, assertion\n");*/                            \
-            if (condition)                                                                  \
-            {                                                                               \
-                fprintf(stderr, "ASSERTION ERROR TRIGERRED! %s\n", errorMessage.c_str());   \
-                assert(false);                                                              \
-            }                                                                               \
-        }
+    #define CHECK_ERROR_CONDITION(condition, errorMessage)
 #endif
 
+#ifdef ERROR_CHECKING
 namespace Matr
 {
     enum class Errors
@@ -79,5 +84,6 @@ namespace Matr
         {    Errors::ITERATOR_INDEX_OUT_OF_BOUNDS,                       string{"The index used for dereferencing the iterator is out of bounds"}                                                                }
     };
 }
+#endif
 
 #endif // ERROR_HANDLING_H
