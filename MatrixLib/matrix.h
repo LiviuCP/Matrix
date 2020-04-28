@@ -3424,7 +3424,7 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<Data
         firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_EachDestMatrixNrOfColumns);
         copyElements(firstDestMatrix, 0, splitRowNr);
 
-        DataType** pBaseArrayPtr{new DataType*[secondDestMatrix.m_RowCapacity]};
+        DataType** pBaseArrayPtr{new DataType*[m_RowCapacity]};
 
         for (size_type row{splitRowNr}; row<m_NrOfRows; ++row)
         {
@@ -3432,7 +3432,7 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<Data
             m_pBaseArrayPtr[row] = nullptr;
         }
 
-        for (size_type row{splitRowNr}; row < secondDestMatrix.m_RowCapacity; ++row)
+        for (size_type row{m_NrOfRows-splitRowNr}; row < m_RowCapacity; ++row)
         {
             pBaseArrayPtr[row] = nullptr;
         }
