@@ -2802,19 +2802,27 @@ Matrix<DataType>& Matrix<DataType>::operator=(const Matrix<DataType>& matrix)
 template<typename DataType>
 Matrix<DataType>& Matrix<DataType>::operator=(Matrix<DataType>&& matrix)
 {
-    if (&matrix != this && (m_pBaseArrayPtr || matrix.m_pBaseArrayPtr))
+    if (&matrix != this)
     {
-        m_pBaseArrayPtr = matrix.m_pBaseArrayPtr;
-        m_NrOfRows = matrix.m_NrOfRows;
-        m_NrOfColumns = matrix.m_NrOfColumns;
-        m_RowCapacity = matrix.m_RowCapacity;
-        m_ColumnCapacity = matrix.m_ColumnCapacity;
+        if (m_pBaseArrayPtr)
+        {
+            _deallocMemory();
+        }
 
-        matrix.m_pBaseArrayPtr = nullptr;
-        matrix.m_NrOfRows = 0;
-        matrix.m_NrOfColumns = 0;
-        matrix.m_RowCapacity = 0;
-        matrix.m_ColumnCapacity = 0;
+        if (matrix.m_pBaseArrayPtr)
+        {
+            m_pBaseArrayPtr = matrix.m_pBaseArrayPtr;
+            m_NrOfRows = matrix.m_NrOfRows;
+            m_NrOfColumns = matrix.m_NrOfColumns;
+            m_RowCapacity = matrix.m_RowCapacity;
+            m_ColumnCapacity = matrix.m_ColumnCapacity;
+
+            matrix.m_pBaseArrayPtr = nullptr;
+            matrix.m_NrOfRows = 0;
+            matrix.m_NrOfColumns = 0;
+            matrix.m_RowCapacity = 0;
+            matrix.m_ColumnCapacity = 0;
+        }
     }
 
     return *this;
