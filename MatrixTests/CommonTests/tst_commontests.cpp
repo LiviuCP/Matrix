@@ -487,11 +487,13 @@ void CommonTests::testSquareBracketsOperator()
 
                 "The square brackets operator did not write the correct values!");
 
-        for (int rowIndex{0}; rowIndex < nrOfRows; ++rowIndex)
+        delete []matrixPtr[0]; // use first row pointer to delete the whole array
+        matrixPtr[0] = nullptr;
+
+        for (int rowIndex{1}; rowIndex < nrOfRows; ++rowIndex)
         {
             if (matrixPtr[rowIndex])
             {
-                delete []matrixPtr[rowIndex];
                 matrixPtr[rowIndex] = nullptr;
             }
         }
@@ -1071,11 +1073,13 @@ void CommonTests::testGetBaseArrayPtr()
 
                 "Passing resources outside the matrix failed, the element values are not correct!");
 
-        for (int rowIndex{0}; rowIndex < nrOfRows; ++rowIndex)
+        delete []matrixPtr[0]; // use the first row pointer to de-allocate the whole array
+        matrixPtr[0] = nullptr;
+
+        for (int rowIndex{1}; rowIndex < nrOfRows; ++rowIndex)
         {
             if (matrixPtr[rowIndex])
             {
-                delete []matrixPtr[rowIndex];
                 matrixPtr[rowIndex] = nullptr;
             }
         }
