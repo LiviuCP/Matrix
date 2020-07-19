@@ -495,7 +495,7 @@ public:
     Matrix<DataType>& operator= (Matrix<DataType>&& matrix);
 
     // transfers ownership of the data to the user (object becomes empty and user becomes responsible for de-allocating the data properly)
-    DataType** getBaseArrayPtr(size_type& nrOfRows, size_type& nrOfColumns, size_type& rowCapacity, size_type& columnCapacity);
+    DataType* getBaseArray(size_type& nrOfElements);
 	
     size_type getNrOfRows() const;
     size_type getNrOfColumns() const;
@@ -2819,21 +2819,25 @@ Matrix<DataType>& Matrix<DataType>::operator=(Matrix<DataType>&& matrix)
     return *this;
 }
 
+// a contiguous unidimensional array with the matrix elements (in row order) is returned to user
 template<typename DataType>
-DataType** Matrix<DataType>::getBaseArrayPtr(size_type& nrOfRows, size_type& nrOfColumns, size_type& rowCapacity, size_type& columnCapacity)
+DataType* Matrix<DataType>::getBaseArray(size_type& nrOfElements)
 {
-    DataType** pBaseArrayPtr{nullptr};
+    DataType* pAllocPtr{nullptr};
 
     if (m_pBaseArrayPtr)
     {
-        nrOfRows = m_NrOfRows;
-        nrOfColumns = m_NrOfColumns;
-        rowCapacity = m_RowCapacity;
-        columnCapacity = m_ColumnCapacity;
-        pBaseArrayPtr = m_pBaseArrayPtr;
+        // when transfering ownership user should get exactly the number of elements contained in the used lines and columns (no extra capacity to be included)
+        shrinkToFit();
 
-        m_pAllocPtr = nullptr; // no longer required, the first row pointer actually holds the whole array
+        // effective transfer of ownership
+        nrOfElements = m_NrOfRows * m_NrOfColumns;
+        pAllocPtr = m_pAllocPtr;
+
+        // empty the matrix object
+        delete []m_pBaseArrayPtr;
         m_pBaseArrayPtr = nullptr;
+        m_pAllocPtr = nullptr;
         m_NrOfRows = 0;
         m_NrOfColumns = 0;
         m_RowCapacity = 0;
@@ -2841,13 +2845,10 @@ DataType** Matrix<DataType>::getBaseArrayPtr(size_type& nrOfRows, size_type& nrO
     }
     else
     {
-        nrOfRows = 0;
-        nrOfColumns = 0;
-        rowCapacity = 0;
-        columnCapacity = 0;
+        nrOfElements = 0;
     }
 
-    return pBaseArrayPtr;
+    return pAllocPtr;
 }
 
 template<typename DataType>

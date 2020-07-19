@@ -30,7 +30,7 @@ private slots:
     void testCapacityWithCopyAssignmentOperator();
     void testMoveAssignmentOperator();
     void testCapacityWithMoveAssignmentOperator();
-    void testGetBaseArrayPtr();
+    void testGetBaseArray();
     void testTranspose();
     void testCapacityWithTranspose();
     void testClear();
@@ -469,37 +469,26 @@ void CommonTests::testSquareBracketsOperator()
         matrix[10] = 110;
         matrix[11] = 120;
 
-        int nrOfRows, nrOfColumns, rowCapacity, columnCapacity;
-        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns, rowCapacity, columnCapacity)};
+        int nrOfElements;
+        int* baseArrayPtr{matrix.getBaseArray(nrOfElements)};
 
-        QVERIFY2(matrixPtr[0][0] == 10 &&
-                 matrixPtr[0][1] == 20 &&
-                 matrixPtr[0][2] == 30 &&
-                 matrixPtr[1][0] == 40 &&
-                 matrixPtr[1][1] == 50 &&
-                 matrixPtr[1][2] == 60 &&
-                 matrixPtr[2][0] == 70 &&
-                 matrixPtr[2][1] == 80 &&
-                 matrixPtr[2][2] == 90 &&
-                 matrixPtr[3][0] == 100 &&
-                 matrixPtr[3][1] == 110 &&
-                 matrixPtr[3][2] == 120,
+        QVERIFY2(baseArrayPtr[0] == 10 &&
+                 baseArrayPtr[1] == 20 &&
+                 baseArrayPtr[2] == 30 &&
+                 baseArrayPtr[3] == 40 &&
+                 baseArrayPtr[4] == 50 &&
+                 baseArrayPtr[5] == 60 &&
+                 baseArrayPtr[6] == 70 &&
+                 baseArrayPtr[7] == 80 &&
+                 baseArrayPtr[8] == 90 &&
+                 baseArrayPtr[9] == 100 &&
+                 baseArrayPtr[10] == 110 &&
+                 baseArrayPtr[11] == 120,
 
                 "The square brackets operator did not write the correct values!");
 
-        delete []matrixPtr[0]; // use first row pointer to delete the whole array
-        matrixPtr[0] = nullptr;
-
-        for (int rowIndex{1}; rowIndex < nrOfRows; ++rowIndex)
-        {
-            if (matrixPtr[rowIndex])
-            {
-                matrixPtr[rowIndex] = nullptr;
-            }
-        }
-
-        delete []matrixPtr;
-        matrixPtr = nullptr;
+        delete []baseArrayPtr;
+        baseArrayPtr = nullptr;
     }
 }
 
@@ -1039,53 +1028,42 @@ void CommonTests::testCapacityWithMoveAssignmentOperator()
     }
 }
 
-void CommonTests::testGetBaseArrayPtr()
+void CommonTests::testGetBaseArray()
 {
     {
         IntMatrix matrix{};
 
-        int nrOfRows, nrOfColumns, rowCapacity, columnCapacity;
-        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns, rowCapacity, columnCapacity)};
+        int nrOfElements;
+        int* baseArrayPtr{matrix.getBaseArray(nrOfElements)};
 
-        if (matrixPtr || nrOfRows != 0 || nrOfColumns != 0 || rowCapacity != 0 || columnCapacity != 0)
+        if (baseArrayPtr || nrOfElements != 0)
         {
-            QFAIL("Passing resources outside the matrix failed, either the pointer is not null or the number of rows and columns of the empty matrix is different from 0!");
+            QFAIL("Passing resources outside the matrix failed, either the pointer is not null or the number of elements is different from 0!");
         }
     }
 
     {
         IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
 
-        int nrOfRows, nrOfColumns, rowCapacity, columnCapacity;
-        int** matrixPtr{matrix.getBaseArrayPtr(nrOfRows, nrOfColumns, rowCapacity, columnCapacity)};
+        int nrOfElements;
+        int* baseArrayPtr{matrix.getBaseArray(nrOfElements)};
 
-        if (!matrixPtr || nrOfRows != 2 || nrOfColumns != 3 || rowCapacity != 2 || columnCapacity != 3)
+        if (!baseArrayPtr || nrOfElements != 6)
         {
-            QFAIL("Passing resources outside the matrix failed, either the pointer is null or the number of rows and columns is not correct!");
+            QFAIL("Passing resources outside the matrix failed, either the pointer is null or the number of elements is not correct!");
         }
 
-        QVERIFY2(matrixPtr[0][0] == 1 &&
-                 matrixPtr[0][1] == 2 &&
-                 matrixPtr[0][2] == 3 &&
-                 matrixPtr[1][0] == 4 &&
-                 matrixPtr[1][1] == 5 &&
-                 matrixPtr[1][2] == 6,
+        QVERIFY2(baseArrayPtr[0] == 1 &&
+                 baseArrayPtr[1] == 2 &&
+                 baseArrayPtr[2] == 3 &&
+                 baseArrayPtr[3] == 4 &&
+                 baseArrayPtr[4] == 5 &&
+                 baseArrayPtr[5] == 6,
 
                 "Passing resources outside the matrix failed, the element values are not correct!");
 
-        delete []matrixPtr[0]; // use the first row pointer to de-allocate the whole array
-        matrixPtr[0] = nullptr;
-
-        for (int rowIndex{1}; rowIndex < nrOfRows; ++rowIndex)
-        {
-            if (matrixPtr[rowIndex])
-            {
-                matrixPtr[rowIndex] = nullptr;
-            }
-        }
-
-        delete []matrixPtr;
-        matrixPtr = nullptr;
+        delete []baseArrayPtr;
+        baseArrayPtr = nullptr;
     }
 }
 
