@@ -842,7 +842,7 @@ Matrix<DataType>::ZIterator::ZIterator(const Matrix& matrix, size_type currentRo
 template<typename DataType>
 void Matrix<DataType>::ZIterator::_increment()
 {
-    if (!(m_CurrentColumnNr == m_NrOfMatrixColumns && m_CurrentRowNr == (m_NrOfMatrixRows-1)))
+    if (m_CurrentColumnNr != m_NrOfMatrixColumns || m_CurrentRowNr != (m_NrOfMatrixRows-1))
     {
         ++m_CurrentColumnNr;
         if (m_CurrentColumnNr == m_NrOfMatrixColumns && (m_CurrentRowNr != (m_NrOfMatrixRows-1)))
@@ -1101,7 +1101,7 @@ Matrix<DataType>::ConstZIterator::ConstZIterator(const Matrix& matrix, size_type
 template<typename DataType>
 void Matrix<DataType>::ConstZIterator::_increment()
 {
-    if (!(m_CurrentColumnNr == m_NrOfMatrixColumns && m_CurrentRowNr == (m_NrOfMatrixRows-1)))
+    if (m_CurrentColumnNr != m_NrOfMatrixColumns || m_CurrentRowNr != (m_NrOfMatrixRows-1))
     {
         ++m_CurrentColumnNr;
         if (m_CurrentColumnNr == m_NrOfMatrixColumns && (m_CurrentRowNr != (m_NrOfMatrixRows-1)))
@@ -1358,7 +1358,7 @@ Matrix<DataType>::ReverseZIterator::ReverseZIterator(const Matrix& matrix, size_
 template<typename DataType>
 void Matrix<DataType>::ReverseZIterator::_increment()
 {
-    if (!(m_CurrentColumnNr == -1 && m_CurrentRowNr == 0))
+    if (m_CurrentColumnNr != -1 || m_CurrentRowNr != 0)
     {
         --m_CurrentColumnNr;
         if (m_CurrentColumnNr < 0 && (m_CurrentRowNr != 0))
@@ -1617,7 +1617,7 @@ Matrix<DataType>::ConstReverseZIterator::ConstReverseZIterator(const Matrix& mat
 template<typename DataType>
 void Matrix<DataType>::ConstReverseZIterator::_increment()
 {
-    if (!(m_CurrentColumnNr == -1 && m_CurrentRowNr == 0))
+    if (m_CurrentColumnNr != -1 || m_CurrentRowNr != 0)
     {
         --m_CurrentColumnNr;
         if (m_CurrentColumnNr < 0 && (m_CurrentRowNr != 0))
