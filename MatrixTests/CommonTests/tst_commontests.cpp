@@ -430,6 +430,20 @@ void CommonTests::testFunctionAt()
 
                  "The at() method does not work correctly, read values are wrong!");
     }
+
+    // test the "const" at() method too
+    {
+        const IntMatrix matrix{2, 3, {70, 80, 90, 100, 110, 120}};
+
+        QVERIFY2(matrix.at(0, 0) == 70 &&
+                 matrix.at(0, 1) == 80 &&
+                 matrix.at(0, 2) == 90 &&
+                 matrix.at(1, 0) == 100 &&
+                 matrix.at(1, 1) == 110 &&
+                 matrix.at(1, 2) == 120,
+
+                 "The const at() method does not work correctly, read values are wrong!");
+    }
 }
 
 void CommonTests::testSquareBracketsOperator()

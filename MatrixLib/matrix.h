@@ -489,6 +489,8 @@ public:
     ~Matrix();
 
     DataType& at(size_type rowNr, size_type columnNr);
+    const DataType& at(size_type rowNr, size_type columnNr) const;
+
     DataType& operator[] (size_type index);
 
     Matrix<DataType>& operator= (const Matrix<DataType>& matrix);
@@ -2741,6 +2743,15 @@ Matrix<DataType>::~Matrix()
 
 template<typename DataType>
 DataType& Matrix<DataType>::at(size_type rowNr, size_type columnNr)
+{
+    CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG])
+    CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX])
+
+    return m_pBaseArrayPtr[rowNr][columnNr];
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::at(size_type rowNr, Matrix::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG])
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX])
