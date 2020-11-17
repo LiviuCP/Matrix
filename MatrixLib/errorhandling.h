@@ -4,7 +4,7 @@
 #include <map>
 #include <assert.h>
 
-#ifdef ERROR_CHECKING
+#ifndef ERROR_CHECKING_DISABLED
     #ifdef CONVERT_TO_EXCEPTIONS
     #define CHECK_ERROR_CONDITION(condition, errorMessage)                                      \
             {                                                                                   \
@@ -29,7 +29,7 @@
     #define CHECK_ERROR_CONDITION(condition, errorMessage)
 #endif
 
-#ifdef ERROR_CHECKING
+#ifndef ERROR_CHECKING_DISABLED
 namespace Matr
 {
     enum class Errors
