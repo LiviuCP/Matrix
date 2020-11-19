@@ -480,6 +480,63 @@ public:
         size_type m_DiagonalSize;     // number of elements contained within diagonal
     };
 
+    class NIterator
+    {
+        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
+        friend class Matrix;
+    public:
+        // all these are required for STL compatibility
+        using iterator_category = std::random_access_iterator_tag;
+        using value_type = DataType;
+        using difference_type = diff_type;
+        using pointer = DataType**;
+        using reference = DataType&;
+
+        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
+        NIterator();
+
+        NIterator operator++();
+        NIterator operator++(int unused);
+        NIterator operator--();
+        NIterator operator--(int unused);
+
+        NIterator operator+(difference_type offset);
+        NIterator operator-(difference_type offset);
+
+        void operator+=(difference_type offset);
+        void operator-=(difference_type offset);
+
+        difference_type operator-(const NIterator& it) const;
+
+        bool operator==(const NIterator& it) const;
+        bool operator!=(const NIterator& it) const;
+        bool operator<(const NIterator& it) const;
+        bool operator<=(const NIterator& it) const;
+        bool operator>(const NIterator& it) const;
+        bool operator>=(const NIterator& it) const;
+
+        reference operator*() const;
+        value_type* operator->() const;
+        reference operator[](difference_type index) const;
+
+        bool isValidWithMatrix(const Matrix& matrix) const;
+
+        size_type getCurrentRowNr() const;
+        size_type getCurrentColumnNr() const;
+
+    private:
+        NIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr);
+
+        void _increment();
+        void _decrement();
+
+        pointer m_pMatrixPtr;
+        size_type m_CurrentRowNr;
+        size_type m_CurrentColumnNr;
+        size_type m_NrOfMatrixRows;
+        size_type m_NrOfMatrixColumns;
+    };
+
     Matrix();
     Matrix(size_type nrOfRows, size_type nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
     Matrix(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType);
@@ -591,6 +648,13 @@ public:
     ConstReverseDIterator constReverseDEnd(size_type diagNr) const;
     ConstReverseDIterator constReverseDEnd(size_type rowNr, size_type columnNr) const;
     ConstReverseDIterator getConstReverseDIterator(size_type first, size_type second, bool isRelative = false) const;
+
+    NIterator nBegin();
+    NIterator nEnd();
+    NIterator nColumnBegin(size_type columnNr);
+    NIterator nColumnEnd(size_type columnNr);
+    NIterator getNIterator(size_type rowNr, size_type columnNr);
+    NIterator getNIterator(size_type index);
 
     // required for being able to use the "auto" keyword for iterating through the matrix elements
     ZIterator begin();
@@ -2691,6 +2755,268 @@ void Matrix<DataType>::ConstReverseDIterator::_decrement()
     }
 }
 
+// 9) NIterator - iterates within matrix from [0][0] to the end column by column
+template<typename DataType>
+Matrix<DataType>::NIterator::NIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_CurrentRowNr{-1}
+    , m_CurrentColumnNr{-1}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator++()
+{
+    _increment();
+    return *this;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator++(int unused)
+{
+    (void) unused;
+    NIterator nIterator{*this};
+
+    _increment();
+
+    return nIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator--()
+{
+    _decrement();
+    return *this;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator--(int unused)
+{
+    (void) unused;
+    NIterator nIterator{*this};
+
+    _decrement();
+
+    return nIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator+(NIterator::difference_type offset)
+{
+    NIterator nIterator{};
+
+    if (m_pMatrixPtr)
+    {
+        const size_type c_CurrentIndex{m_CurrentColumnNr * m_NrOfMatrixRows + m_CurrentRowNr};
+        const size_type c_ResultingIndex{c_CurrentIndex + offset};
+        const size_type c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
+
+        nIterator.m_pMatrixPtr = m_pMatrixPtr;
+        nIterator.m_NrOfMatrixRows = m_NrOfMatrixRows;
+        nIterator.m_NrOfMatrixColumns = m_NrOfMatrixColumns;
+        nIterator.m_CurrentRowNr = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? m_NrOfMatrixRows : c_ResultingIndex % m_NrOfMatrixRows;
+        nIterator.m_CurrentColumnNr = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? m_NrOfMatrixColumns - 1 : c_ResultingIndex / m_NrOfMatrixRows;
+    }
+
+    return nIterator;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator-(NIterator::difference_type offset)
+{
+    NIterator nIterator{};
+
+    if (m_pMatrixPtr)
+    {
+        const size_type c_CurrentIndex{m_CurrentColumnNr * m_NrOfMatrixRows + m_CurrentRowNr};
+        const size_type c_ResultingIndex{c_CurrentIndex - offset};
+        const size_type c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
+
+        nIterator.m_pMatrixPtr = m_pMatrixPtr;
+        nIterator.m_NrOfMatrixRows = m_NrOfMatrixRows;
+        nIterator.m_NrOfMatrixColumns = m_NrOfMatrixColumns;
+        nIterator.m_CurrentRowNr = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? m_NrOfMatrixRows : c_ResultingIndex % m_NrOfMatrixRows;
+        nIterator.m_CurrentColumnNr = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? m_NrOfMatrixColumns - 1 : c_ResultingIndex / m_NrOfMatrixRows;
+    }
+
+    return nIterator;
+}
+
+template<typename DataType>
+void Matrix<DataType>::NIterator::operator+=(NIterator::difference_type offset)
+{
+    *this = *this + offset;
+}
+
+template<typename DataType>
+void Matrix<DataType>::NIterator::operator-=(NIterator::difference_type offset)
+{
+    *this = *this - offset;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator::difference_type Matrix<DataType>::NIterator::operator-(const NIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    const size_type c_FirstItCurrentIndex{m_CurrentColumnNr * m_NrOfMatrixRows + m_CurrentRowNr};
+    const size_type c_SecondItCurrentIndex{it.m_CurrentColumnNr * it.m_NrOfMatrixRows + it.m_CurrentRowNr};
+
+    return (c_FirstItCurrentIndex - c_SecondItCurrentIndex);
+}
+
+template<typename DataType>
+bool Matrix<DataType>::NIterator::operator==(const NIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return (m_CurrentRowNr == it.m_CurrentRowNr && m_CurrentColumnNr == it.m_CurrentColumnNr);
+}
+
+template<typename DataType>
+bool Matrix<DataType>::NIterator::operator!=(const NIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return (m_CurrentRowNr != it.m_CurrentRowNr || m_CurrentColumnNr != it.m_CurrentColumnNr);
+}
+
+template<typename DataType>
+bool Matrix<DataType>::NIterator::operator<(const NIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return (m_CurrentColumnNr < it.m_CurrentColumnNr || (m_CurrentColumnNr == it.m_CurrentColumnNr && m_CurrentRowNr < it.m_CurrentRowNr));
+}
+
+template<typename DataType>
+bool Matrix<DataType>::NIterator::operator<=(const NIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return (m_CurrentColumnNr < it.m_CurrentColumnNr || (m_CurrentColumnNr == it.m_CurrentColumnNr && m_CurrentRowNr <= it.m_CurrentRowNr));
+}
+
+template<typename DataType>
+bool Matrix<DataType>::NIterator::operator>(const NIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return (m_CurrentColumnNr > it.m_CurrentColumnNr || (m_CurrentColumnNr == it.m_CurrentColumnNr && m_CurrentRowNr > it.m_CurrentRowNr));
+}
+
+template<typename DataType>
+bool Matrix<DataType>::NIterator::operator>=(const NIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return (m_CurrentColumnNr > it.m_CurrentColumnNr || (m_CurrentColumnNr == it.m_CurrentColumnNr && m_CurrentRowNr >= it.m_CurrentRowNr));
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator::reference Matrix<DataType>::NIterator::operator*() const
+{
+    CHECK_ERROR_CONDITION(m_CurrentRowNr == m_NrOfMatrixRows || m_NrOfMatrixRows == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+    return m_pMatrixPtr[m_CurrentRowNr][m_CurrentColumnNr];
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator::value_type* Matrix<DataType>::NIterator::operator->() const
+{
+    CHECK_ERROR_CONDITION(m_CurrentRowNr == m_NrOfMatrixRows || m_NrOfMatrixRows == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+    return (m_pMatrixPtr[m_CurrentRowNr] + m_CurrentColumnNr);
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator::reference Matrix<DataType>::NIterator::operator[](NIterator::difference_type index) const
+{
+    const size_type c_CurrentIndex{m_CurrentColumnNr * m_NrOfMatrixRows + m_CurrentRowNr};
+    const size_type c_ResultingIndex{c_CurrentIndex + index};
+    const size_type c_UpperBound{m_NrOfMatrixRows * m_NrOfMatrixColumns};
+    (void) c_UpperBound;
+
+    CHECK_ERROR_CONDITION(c_ResultingIndex < 0 || c_ResultingIndex >= c_UpperBound, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    return m_pMatrixPtr[c_ResultingIndex % m_NrOfMatrixRows][c_ResultingIndex / m_NrOfMatrixRows];
+}
+
+template<typename DataType>
+bool Matrix<DataType>::NIterator::isValidWithMatrix(const Matrix &matrix) const
+{
+    return (m_pMatrixPtr == matrix.m_pBaseArrayPtr && m_NrOfMatrixRows == matrix.m_NrOfRows && m_NrOfMatrixColumns == matrix.m_NrOfColumns);
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::NIterator::getCurrentRowNr() const
+{
+    return m_CurrentRowNr;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::NIterator::getCurrentColumnNr() const
+{
+    return m_CurrentColumnNr;
+}
+
+template<typename DataType>
+Matrix<DataType>::NIterator::NIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr)
+    : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
+    , m_NrOfMatrixRows{matrix.m_NrOfRows}
+    , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
+{
+    if (currentRowNr < 0 || currentColumnNr < 0 || currentColumnNr >= m_NrOfMatrixColumns || currentRowNr > m_NrOfMatrixRows ||
+        (currentColumnNr < m_NrOfMatrixColumns-1 && currentRowNr == m_NrOfMatrixRows))
+    {
+        m_CurrentRowNr = -1;
+        m_CurrentColumnNr = -1;
+    }
+    else
+    {
+        m_CurrentRowNr = currentRowNr;
+        m_CurrentColumnNr = currentColumnNr;
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::NIterator::_increment()
+{
+    if (m_CurrentRowNr != m_NrOfMatrixRows || m_CurrentColumnNr != (m_NrOfMatrixColumns-1))
+    {
+        ++m_CurrentRowNr;
+        if (m_CurrentRowNr == m_NrOfMatrixRows && (m_CurrentColumnNr != (m_NrOfMatrixColumns-1)))
+        {
+            m_CurrentRowNr = m_CurrentRowNr - m_NrOfMatrixRows;
+            ++m_CurrentColumnNr;
+        }
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::NIterator::_decrement()
+{
+    if (m_CurrentRowNr > 0 || m_CurrentColumnNr > 0)
+    {
+        if(m_CurrentRowNr == 0)
+        {
+            --m_CurrentColumnNr;
+            m_CurrentRowNr = m_NrOfMatrixRows - 1;
+        }
+        else
+        {
+            --m_CurrentRowNr;
+        }
+    }
+}
+
 // matrix methods
 
 template <typename DataType>
@@ -4105,6 +4431,65 @@ typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::getConstRever
         CHECK_ERROR_CONDITION(second >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
     }
     return ConstReverseDIterator{*this, first, second, isRelative};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator Matrix<DataType>::nBegin()
+{
+    return NIterator{*this, 0, 0};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator Matrix<DataType>::nEnd()
+{
+    return NIterator{*this, m_NrOfRows, m_NrOfColumns-1};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator Matrix<DataType>::nColumnBegin(size_type columnNr)
+{
+    CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
+    CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+
+    return NIterator{*this, 0, columnNr};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator Matrix<DataType>::nColumnEnd(size_type columnNr)
+{
+    CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
+    CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+
+    NIterator it{};
+
+    if (columnNr < m_NrOfColumns-1)
+    {
+        it = NIterator{*this, 0, columnNr+1};
+    }
+    else
+    {
+        it = NIterator{*this, m_NrOfRows, columnNr};
+    }
+
+    return it;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator Matrix<DataType>::getNIterator(size_type rowNr, size_type columnNr)
+{
+    CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
+    CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
+
+    return NIterator{*this, rowNr, columnNr};
+}
+
+template<typename DataType>
+typename Matrix<DataType>::NIterator Matrix<DataType>::getNIterator(size_type index)
+{
+    CHECK_ERROR_CONDITION(index < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
+    CHECK_ERROR_CONDITION(index >= m_NrOfRows * m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
+
+    return NIterator{*this, index % m_NrOfRows, index / m_NrOfRows};
 }
 
 template<typename DataType>

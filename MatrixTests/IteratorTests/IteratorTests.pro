@@ -8,4 +8,5 @@ SUBDIRS += \
     DIteratorTests \
     ConstDIteratorTests \
     ReverseDIteratorTests \
-    ConstReverseDIteratorTests
+    ConstReverseDIteratorTests \
+    NIteratorTests
