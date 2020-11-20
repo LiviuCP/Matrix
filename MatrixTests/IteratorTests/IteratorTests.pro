@@ -9,4 +9,5 @@ SUBDIRS += \
     ConstDIteratorTests \
     ReverseDIteratorTests \
     ConstReverseDIteratorTests \
-    NIteratorTests
+    NIteratorTests \
+    ConstNIteratorTests
