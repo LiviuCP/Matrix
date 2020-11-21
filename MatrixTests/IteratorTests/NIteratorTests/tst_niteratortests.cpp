@@ -1205,7 +1205,7 @@ void NIteratorTests::testIsValidWithMatrix()
         IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
         IntMatrixNIterator it{matrix.getNIterator(0, 1)};
 
-        matrix.resizeWithValue(2, 4, -5);
+        matrix.resizeWithValue(4, 2, -5);
 
         QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
     }
@@ -1214,7 +1214,7 @@ void NIteratorTests::testIsValidWithMatrix()
         IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
         IntMatrixNIterator it{matrix.getNIterator(0, 1)};
 
-        matrix.resizeWithValue(4, 3, -5);
+        matrix.resizeWithValue(3, 4, -5);
 
         QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
     }
@@ -1223,7 +1223,7 @@ void NIteratorTests::testIsValidWithMatrix()
         IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
         IntMatrixNIterator it{matrix.getNIterator(0, 1)};
 
-        matrix.resizeWithValue(4, 5, -5);
+        matrix.resizeWithValue(5, 4, -5);
 
         QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
     }
