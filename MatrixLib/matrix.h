@@ -851,8 +851,6 @@ public:
     // required for being able to use the "auto" keyword for iterating through the matrix elements
     ZIterator begin();
     ZIterator end();
-    ConstZIterator cbegin() const;
-    ConstZIterator cend() const;
 
 private:
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
@@ -5659,18 +5657,6 @@ template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::end()
 {
     return zEnd();
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::cbegin() const
-{
-    return constZBegin();
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::cend() const
-{
-    return constZEnd();
 }
 
 template<typename DataType>
