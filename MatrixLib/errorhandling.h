@@ -3,6 +3,7 @@
 
 #include <map>
 #include <assert.h>
+#include <string>
 
 #ifndef ERROR_CHECKING_DISABLED
     #ifdef CONVERT_TO_EXCEPTIONS
@@ -80,7 +81,7 @@ namespace Matr
         {    Errors::EMPTY_MATRIX,                                       string{"Illegal operation on empty matrix"}                                                                                             },
         {    Errors::DEREFERENCE_END_ITERATOR,                           string{"Attempt to dereference an end iterator"}                                                                                        },
         {    Errors::INCOMPATIBLE_ITERATORS,                             string{"The two iterators are incompatible, their matrix parameters differ"}                                                            },
-        {    Errors::DIAGONAL_INDEX_OUT_OF_BOUNDS,                       string{"The diagonal index used for obtaining the iterator is out of bounds"}                                                                      },
+        {    Errors::DIAGONAL_INDEX_OUT_OF_BOUNDS,                       string{"The diagonal index used for obtaining the iterator is out of bounds"}                                                           },
         {    Errors::ITERATOR_INDEX_OUT_OF_BOUNDS,                       string{"The index used for dereferencing the iterator is out of bounds"}                                                                }
     };
 }
