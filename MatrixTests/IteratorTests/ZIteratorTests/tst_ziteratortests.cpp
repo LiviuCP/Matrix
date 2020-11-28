@@ -1247,6 +1247,33 @@ void ZIteratorTests::testIteratingWithAuto()
         QVERIFY(count == 6);
     }
 
+    // test const auto
+    {
+        m_MainMatrix = {2, 3, {-1, 2, -3, 4, -5, 6}};
+
+        int sum{0};
+        int prod{1};
+        int count{0};
+
+        for (const auto element : m_MainMatrix)
+        {
+            sum += element;
+            prod *= element;
+            ++count;
+        }
+
+        QVERIFY2(sum == 3 && prod == -720 && count == 6, "Iterating through the matrix elements by using the auto keyword does not work correctly");
+
+        m_MainMatrix.clear();
+
+        for (const auto element : m_MainMatrix)
+        {
+            Q_UNUSED(element);
+            ++count;
+        }
+
+        QVERIFY(count == 6);
+    }
 
     // test const auto&
     {
