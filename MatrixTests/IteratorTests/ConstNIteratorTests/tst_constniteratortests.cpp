@@ -16,6 +16,13 @@ public:
     ~ConstNIteratorTests();
 
 private slots:
+    void testIteratorCreation();
+    void testIteratorsAreEqual();
+    void testIteratorsAreNotEqual();
+    void testSmallerThanOperator();
+    void testSmallerThanOrEqualToOperator();
+    void testGreaterThanOperator();
+    void testGreaterThanOrEqualToOperator();
     void testIncrementOperators();
     void testDecrementOperators();
     void testOperatorPlus();
@@ -23,1339 +30,1068 @@ private slots:
     void testOperatorPlusEqual();
     void testOperatorMinusEqual();
     void testDifferenceOperator();
-    void testIteratorsAreEqual();
-    void testIteratorsAreNotEqual();
-    void testSmallerThanOperator();
-    void testSmallerThanOrEqualToOperator();
-    void testGreaterThanOperator();
-    void testGreaterThanOrEqualToOperator();
     void testDereferenceAsteriskOperator();
     void testDereferenceArrowOperator();
     void testDereferenceSquareBracketsOperator();
     void testIsValidWithMatrix();
     void testPositionGetters();
 
-    void testPassingThroughAllElements();
-    void testColumnBeginEndIterators();
-    void testGetNIterator();
-
+    // "bonus" tests, demonstrate the integration of the Matrix iterators with algorithms of the standard library
     void testStdCount();
     void testStdFind();
+
+private:
+    IntMatrix m_MainMatrix;
+    IntMatrix m_AuxIntMatrix;
+    StringMatrix m_AuxStringMatrix;
 };
 
 ConstNIteratorTests::ConstNIteratorTests()
 {
-
 }
 
 ConstNIteratorTests::~ConstNIteratorTests()
 {
-
 }
 
-void ConstNIteratorTests::testIncrementOperators()
+void ConstNIteratorTests::testIteratorCreation()
 {
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNBegin()};
-
-        IntMatrixConstNIterator preIncrementIt{++it};
-
-        QVERIFY2(*it == 2, "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*preIncrementIt == 2, "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNBegin()};
-
-        IntMatrixConstNIterator prePreIncrementIt{++(++it)};
-
-        QVERIFY2(*it == 2, "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*prePreIncrementIt == -3, "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNBegin()};
-
-        IntMatrixConstNIterator postIncrementIt{it++};
-
-        QVERIFY2(*it == 2, "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*postIncrementIt == 1, "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNBegin()};
-
-        IntMatrixConstNIterator postPostIncrementIt{(it++)++};
-
-        QVERIFY2(*it == 2, "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*postPostIncrementIt == 1, "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNBegin()};
-
-        IntMatrixConstNIterator prePostIncrementIt{(++it)++};
-
-        QVERIFY2(*it == 2, "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*prePostIncrementIt == 2, "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNBegin()};
-
-        IntMatrixConstNIterator postPreIncrementIt{++(it++)};
-
-        QVERIFY2(*it == 2, "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*postPreIncrementIt == 2, "The post- and pre-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNEnd()};
-
-        IntMatrixConstNIterator preIncrementIt{++it};
-
-        QVERIFY2(it == matrix.constNEnd(), "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(preIncrementIt == matrix.constNEnd(), "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNEnd()};
-
-        IntMatrixConstNIterator postIncrementIt{it++};
-
-        QVERIFY2(it == matrix.constNEnd(), "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(postIncrementIt == matrix.constNEnd(), "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-}
-
-void ConstNIteratorTests::testDecrementOperators()
-{
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNEnd()};
-
-        IntMatrixConstNIterator preDecrementIt{--it};
-
-        QVERIFY2(*it == 6, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*preDecrementIt == 6, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(2, 1)};
-
-        IntMatrixConstNIterator preDecrementIt{--it};
-
-        QVERIFY2(*it == -5, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*preDecrementIt == -5, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNEnd()};
-
-        IntMatrixConstNIterator prePreDecrementIt{--(--it)};
-
-        QVERIFY2(*it == 6, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*prePreDecrementIt == -5, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(2, 1)};
-
-        IntMatrixConstNIterator prePreDecrementIt{--(--it)};
-
-        QVERIFY2(*it == -5, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*prePreDecrementIt == 4, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNEnd()};
-
-        IntMatrixConstNIterator postDecrementIt{it--};
-
-        QVERIFY2(*it == 6, "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(postDecrementIt == matrix.constNEnd(), "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(2, 1)};
-
-        IntMatrixConstNIterator postDecrementIt{it--};
-
-        QVERIFY2(*it == -5, "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*postDecrementIt == 6, "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNEnd()};
-
-        IntMatrixConstNIterator postPostDecrementIt{(it--)--};
-
-        QVERIFY2(*it == 6, "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(postPostDecrementIt == matrix.constNEnd(), "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(2, 1)};
-
-        IntMatrixConstNIterator postPostDecrementIt{(it--)--};
-
-        QVERIFY2(*it == -5, "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*postPostDecrementIt == 6, "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNEnd()};
-
-        IntMatrixConstNIterator prePostDecrementIt{(--it)--};
-
-        QVERIFY2(*it == 6, "The pre- and post-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*prePostDecrementIt == 6, "The pre- and post-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(2, 1)};
-
-        IntMatrixConstNIterator prePostDecrementIt{(--it)--};
-
-        QVERIFY2(*it == -5, "The pre- and post-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*prePostDecrementIt == -5, "The pre- and post-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNEnd()};
-
-        IntMatrixConstNIterator postPreDecrementIt{--(it--)};
-
-        QVERIFY2(*it == 6, "The post- and pre-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*postPreDecrementIt == 6, "The post- and pre-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(2, 1)};
-
-        IntMatrixConstNIterator postPreDecrementIt{--(it--)};
-
-        QVERIFY2(*it == -5, "The post- and pre-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*postPreDecrementIt == -5, "The post- and pre-decrement operators do not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNBegin()};
-
-        IntMatrixConstNIterator preDecrementIt{--it};
-
-        QVERIFY2(*it == 1, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*preDecrementIt == 1, "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.constNBegin()};
-
-        IntMatrixConstNIterator postDecrementIt{it--};
-
-        QVERIFY2(*it == 1, "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-        QVERIFY2(*postDecrementIt == 1, "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
-}
-
-void ConstNIteratorTests::testOperatorPlus()
-{
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        IntMatrixConstNIterator firstIter{matrix.constNBegin() + 2};
-        IntMatrixConstNIterator secondIter{matrix.constNBegin() + (-2)};
-
-        QVERIFY2(*firstIter == -3, "Operator + does not work correctly, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "operator + does not work correctly, the resulting iterator does not return the right value");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        IntMatrixConstNIterator firstIter{matrix.getConstNIterator(2, 0) + 2};
-        IntMatrixConstNIterator secondIter{matrix.getConstNIterator(2, 0) + (-2)};
-
-        QVERIFY2(*firstIter == -5, "Operator + does not work correctly, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "operator + does not work correctly, the resulting iterator does not return the right value");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        IntMatrixConstNIterator firstIter{matrix.constNEnd() + (-3)};
-        IntMatrixConstNIterator secondIter{matrix.constNEnd() + (-6)};
-
-        QVERIFY2(*firstIter == 4, "Operator + does not work correctly, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "operator + does not work correctly, the resulting iterator does not return the right value");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        QVERIFY2(matrix.constNBegin() == matrix.constNBegin() + (-2), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNBegin() == matrix.constNBegin() + (-1), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNEnd() == matrix.constNBegin() + 6, "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNEnd() == matrix.constNBegin() + 7, "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNEnd() == matrix.constNEnd() + 1, "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNEnd() == matrix.constNEnd() + 2, "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNBegin() == matrix.constNEnd() + (-7), "Operator + does not work correctly, the resulting iterator is not the right one");
-
-        QVERIFY2(matrix.getConstNIterator(0, 0) == matrix.constNBegin() + 0, "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 0) == matrix.constNBegin() + 1, "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(2, 0) == matrix.constNBegin() + 2, "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(0, 1) == matrix.constNBegin() + 3, "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 1) == matrix.constNBegin() + 4, "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(2, 1) == matrix.constNBegin() + 5, "Operator + does not work correctly, the resulting iterator is not the right one");
-
-        QVERIFY2(matrix.getConstNIterator(0, 0) == matrix.constNEnd() + (-6), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 0) == matrix.constNEnd() + (-5), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(2, 0) == matrix.constNEnd() + (-4), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(0, 1) == matrix.constNEnd() + (-3), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 1) == matrix.constNEnd() + (-2), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(2, 1) == matrix.constNEnd() + (-1), "Operator + does not work correctly, the resulting iterator is not the right one");
-
-        QVERIFY2(matrix.getConstNIterator(1, 0) + 2 == matrix.getConstNIterator(0, 1), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(0, 1) + (-2) == matrix.getConstNIterator(1, 0), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(2, 0) + 2 == matrix.getConstNIterator(2, 1) + (-1), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(2, 0) + 2 == matrix.getConstNIterator(1, 0) + (3), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 1) + (-1) == matrix.getConstNIterator(2, 1) + (-2), "Operator + does not work correctly, the resulting iterator is not the right one");
-
-        QVERIFY2(matrix.getConstNIterator(1, 0) + (-2) == matrix.constNBegin(), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 0) + (-1) == matrix.constNBegin(), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 0) + 5 == matrix.constNEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 0) + 6 == matrix.constNEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
-    }
-
-    {
-        IntMatrix matrix{};
-
-        QVERIFY2(matrix.constNBegin() + (-1) == matrix.constNEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNBegin() + 1 == matrix.constNEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNEnd() + 1 == matrix.constNEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNEnd() + (-1) == matrix.constNEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
-    }
-
-    {
-        IntMatrixConstNIterator it{};
-        IntMatrixConstNIterator firstIter{it + (-1)};
-        IntMatrixConstNIterator secondIter{it + 1};
-
-        QVERIFY2(firstIter == it, "Operator + does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(secondIter == it, "Operator + does not work correctly, the resulting iterator is not the right one");
-    }
-}
-
-void ConstNIteratorTests::testOperatorMinus()
-{
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        IntMatrixConstNIterator firstIter{matrix.constNBegin() - (-2)};
-        IntMatrixConstNIterator secondIter{matrix.constNBegin() - 2};
-
-        QVERIFY2(*firstIter == -3, "Operator - does not work correctly, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "operator - does not work correctly, the resulting iterator does not return the right value");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        IntMatrixConstNIterator firstIter{matrix.getConstNIterator(2, 0) - (-2)};
-        IntMatrixConstNIterator secondIter{matrix.getConstNIterator(2, 0) - 2};
-
-        QVERIFY2(*firstIter == -5, "Operator - does not work correctly, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "operator - does not work correctly, the resulting iterator does not return the right value");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        IntMatrixConstNIterator firstIter{matrix.constNEnd() - 3};
-        IntMatrixConstNIterator secondIter{matrix.constNEnd() - 6};
-
-        QVERIFY2(*firstIter == 4, "Operator - does not work correctly, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "operator - does not work correctly, the resulting iterator does not return the right value");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        QVERIFY2(matrix.constNBegin() == matrix.constNBegin() - 2, "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNBegin() == matrix.constNBegin() - 1, "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNEnd() == matrix.constNBegin() - (-6), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNEnd() == matrix.constNBegin() - (-7), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNEnd() == matrix.constNEnd() - (-1), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNEnd() == matrix.constNEnd() - (-2), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNBegin() == matrix.constNEnd() - 7, "Operator - does not work correctly, the resulting iterator is not the right one");
-
-        QVERIFY2(matrix.getConstNIterator(0, 0) == matrix.constNBegin() - 0, "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 0) == matrix.constNBegin() - (-1), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(2, 0) == matrix.constNBegin() - (-2), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(0, 1) == matrix.constNBegin() - (-3), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 1) == matrix.constNBegin() - (-4), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(2, 1) == matrix.constNBegin() - (-5), "Operator - does not work correctly, the resulting iterator is not the right one");
-
-        QVERIFY2(matrix.getConstNIterator(0, 0) == matrix.constNEnd() - 6, "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 0) == matrix.constNEnd() - 5, "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(2, 0) == matrix.constNEnd() - 4, "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(0, 1) == matrix.constNEnd() - 3, "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 1) == matrix.constNEnd() - 2, "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(2, 1) == matrix.constNEnd() - 1, "Operator - does not work correctly, the resulting iterator is not the right one");
-
-        QVERIFY2(matrix.getConstNIterator(1, 0) - (-2) == matrix.getConstNIterator(0, 1), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(0, 1) - 2 == matrix.getConstNIterator(1, 0), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(2, 0) - (-2) == matrix.getConstNIterator(2, 1) + (-1), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(2, 0) - (-2) == matrix.getConstNIterator(1, 0) + (3), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 1) - 1 == matrix.getConstNIterator(2, 1) + (-2), "Operator - does not work correctly, the resulting iterator is not the right one");
-
-        QVERIFY2(matrix.getConstNIterator(1, 0) - 2 == matrix.constNBegin(), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 0) - 1 == matrix.constNBegin(), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 0) - (-5) == matrix.constNEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.getConstNIterator(1, 0) - (-6) == matrix.constNEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
-    }
-
-    {
-        IntMatrix matrix{};
-
-        QVERIFY2(matrix.constNBegin() - 1 == matrix.constNEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNBegin() - (-1) == matrix.constNEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNEnd() - (-1) == matrix.constNEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(matrix.constNEnd() - 1 == matrix.constNEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
-    }
-
-    {
-        IntMatrixConstNIterator it{};
-        IntMatrixConstNIterator firstIter{it - 1};
-        IntMatrixConstNIterator secondIter{it - (-1)};
-
-        QVERIFY2(firstIter == it, "Operator - does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(secondIter == it, "Operator - does not work correctly, the resulting iterator is not the right one");
-    }
-}
-
-void ConstNIteratorTests::testOperatorPlusEqual()
-{
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        IntMatrixConstNIterator firstIter{matrix.constNBegin()};
-        IntMatrixConstNIterator secondIter{matrix.constNBegin()};
-
-        firstIter += 2;
-        secondIter += -2;
-
-        QVERIFY2(*firstIter == -3, "Operator += does not work correctly, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "Operator += does not work correctly, the resulting iterator does not return the right value");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        IntMatrixConstNIterator firstIter{matrix.getConstNIterator(2, 0)};
-        IntMatrixConstNIterator secondIter{matrix.getConstNIterator(2, 0)};
-
-        firstIter += 2;
-        secondIter += -2;
-
-        QVERIFY2(*firstIter == -5, "Operator += does not work correctly, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "Operator += does not work correctly, the resulting iterator does not return the right value");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        IntMatrixConstNIterator firstIter{matrix.constNEnd()};
-        IntMatrixConstNIterator secondIter{matrix.constNEnd()};
-
-        firstIter += -3;
-        secondIter += -6;
-
-        QVERIFY2(*firstIter == 4, "Operator += does not work correctly, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "Operator += does not work correctly, the resulting iterator does not return the right value");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it;
-
-        it = matrix.constNBegin(); it += -2; QVERIFY2(it == matrix.constNBegin(), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it += -1; QVERIFY2(it == matrix.constNBegin(), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it += 6; QVERIFY2(it == matrix.constNEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it += 7; QVERIFY2(it == matrix.constNEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it += 1; QVERIFY2(it == matrix.constNEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it += 2; QVERIFY2(it == matrix.constNEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it += -7; QVERIFY2(it == matrix.constNBegin(), "Operator += does not work correctly, the resulting iterator is not the right one");
-
-        it = matrix.constNBegin(); it += 0; QVERIFY2(it == matrix.getConstNIterator(0, 0), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it += 1; QVERIFY2(it == matrix.getConstNIterator(1, 0), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it += 2; QVERIFY2(it == matrix.getConstNIterator(2, 0), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it += 3; QVERIFY2(it == matrix.getConstNIterator(0, 1), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it += 4; QVERIFY2(it == matrix.getConstNIterator(1, 1), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it += 5; QVERIFY2(it == matrix.getConstNIterator(2, 1), "Operator += does not work correctly, the resulting iterator is not the right one");
-
-        it = matrix.constNEnd(); it += -6; QVERIFY2(it == matrix.getConstNIterator(0, 0), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it += -5; QVERIFY2(it == matrix.getConstNIterator(1, 0), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it += -4; QVERIFY2(it == matrix.getConstNIterator(2, 0), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it += -3; QVERIFY2(it == matrix.getConstNIterator(0, 1), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it += -2; QVERIFY2(it == matrix.getConstNIterator(1, 1), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it += -1; QVERIFY2(it == matrix.getConstNIterator(2, 1), "Operator += does not work correctly, the resulting iterator is not the right one");
-
-        it = matrix.getConstNIterator(1, 0); it += 2; QVERIFY2(it == matrix.getConstNIterator(0, 1), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(0, 1); it += -2; QVERIFY2(it == matrix.getConstNIterator(1, 0), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(2, 0); it += 2; QVERIFY2(it == matrix.getConstNIterator(2, 1) + (-1), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(2, 0); it += 2; QVERIFY2(it == matrix.getConstNIterator(1, 0) + (3), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(1, 1); it += (-1); QVERIFY2(it == matrix.getConstNIterator(2, 1) + (-2), "Operator += does not work correctly, the resulting iterator is not the right one");
-
-        it = matrix.getConstNIterator(1, 0); it += -2; QVERIFY2(it == matrix.constNBegin(), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(1, 0); it += -1; QVERIFY2(it == matrix.constNBegin(), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(1, 0); it += 5; QVERIFY2(it == matrix.constNEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(1, 0); it += 6; QVERIFY2(it == matrix.constNEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
-    }
-
-    {
-        IntMatrix matrix{};
-        IntMatrixConstNIterator it;
-
-        it = matrix.constNBegin(); it += -1; QVERIFY2(it == matrix.constNEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it += 1; QVERIFY2(it == matrix.constNEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it += 1; QVERIFY2(it == matrix.constNEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it += -1; QVERIFY2(it == matrix.constNEnd(), "Operator += does not work correctly, the resulting iterator is not the right one");
-    }
-
-    {
-        IntMatrixConstNIterator it;
-        IntMatrixConstNIterator firstIter{it};
-        IntMatrixConstNIterator secondIter{it};
-
-        firstIter += -1;
-        secondIter += 1;
-
-        QVERIFY2(firstIter == it, "Operator += does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(secondIter == it, "Operator += does not work correctly, the resulting iterator is not the right one");
-    }
-}
-
-void ConstNIteratorTests::testOperatorMinusEqual()
-{
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        IntMatrixConstNIterator firstIter{matrix.constNBegin()};
-        IntMatrixConstNIterator secondIter{matrix.constNBegin()};
-
-        firstIter -= -2;
-        secondIter -= 2;
-
-        QVERIFY2(*firstIter == -3, "Operator -= does not work correctly, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "Operator -= does not work correctly, the resulting iterator does not return the right value");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        IntMatrixConstNIterator firstIter{matrix.getConstNIterator(2, 0)};
-        IntMatrixConstNIterator secondIter{matrix.getConstNIterator(2, 0)};
-
-        firstIter -= -2;
-        secondIter -= 2;
-
-        QVERIFY2(*firstIter == -5, "Operator -= does not work correctly, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "Operator -= does not work correctly, the resulting iterator does not return the right value");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        IntMatrixConstNIterator firstIter{matrix.constNEnd()};
-        IntMatrixConstNIterator secondIter{matrix.constNEnd()};
-
-        firstIter -= 3;
-        secondIter -= 6;
-
-        QVERIFY2(*firstIter == 4, "Operator -= does not work correctly, the resulting iterator does not return the right value");
-        QVERIFY2(*secondIter == 1, "Operator -= does not work correctly, the resulting iterator does not return the right value");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it;
-
-        it = matrix.constNBegin(); it -= 2; QVERIFY2(it == matrix.constNBegin(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it -= 1; QVERIFY2(it == matrix.constNBegin(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it -= -6; QVERIFY2(it == matrix.constNEnd(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it -= -7; QVERIFY2(it == matrix.constNEnd(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it -= -1; QVERIFY2(it == matrix.constNEnd(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it -= -2; QVERIFY2(it == matrix.constNEnd(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it -= 7; QVERIFY2(it == matrix.constNBegin(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-
-        it = matrix.constNBegin(); it -= 0; QVERIFY2(it == matrix.getConstNIterator(0, 0), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it -= -1; QVERIFY2(it == matrix.getConstNIterator(1, 0), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it -= -2; QVERIFY2(it == matrix.getConstNIterator(2, 0), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it -= -3; QVERIFY2(it == matrix.getConstNIterator(0, 1), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it -= -4; QVERIFY2(it == matrix.getConstNIterator(1, 1), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it -= -5; QVERIFY2(it == matrix.getConstNIterator(2, 1), "Operator -= does not work correctly, the resulting iterator is not the right one");
-
-        it = matrix.constNEnd(); it -= 6; QVERIFY2(it == matrix.getConstNIterator(0, 0), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it -= 5; QVERIFY2(it == matrix.getConstNIterator(1, 0), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it -= 4; QVERIFY2(it == matrix.getConstNIterator(2, 0), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it -= 3; QVERIFY2(it == matrix.getConstNIterator(0, 1), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it -= 2; QVERIFY2(it == matrix.getConstNIterator(1, 1), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it -= 1; QVERIFY2(it == matrix.getConstNIterator(2, 1), "Operator -= does not work correctly, the resulting iterator is not the right one");
-
-        it = matrix.getConstNIterator(1, 0); it -= -2; QVERIFY2(it == matrix.getConstNIterator(0, 1), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(0, 1); it -= 2; QVERIFY2(it == matrix.getConstNIterator(1, 0), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(2, 0); it -= -2; QVERIFY2(it == matrix.getConstNIterator(2, 1) + (-1), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(2, 0); it -= -2; QVERIFY2(it == matrix.getConstNIterator(1, 0) + (3), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(1, 1); it -= 1; QVERIFY2(it == matrix.getConstNIterator(2, 1) + (-2), "Operator -= does not work correctly, the resulting iterator is not the right one");
-
-        it = matrix.getConstNIterator(1, 0); it -= 2; QVERIFY2(it == matrix.constNBegin(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(1, 0); it -= 1; QVERIFY2(it == matrix.constNBegin(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(1, 0); it -= -5; QVERIFY2(it == matrix.constNEnd(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.getConstNIterator(1, 0); it -= -6; QVERIFY2(it == matrix.constNEnd(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-    }
-
-    {
-        IntMatrix matrix{};
-        IntMatrixConstNIterator it;
-
-        it = matrix.constNBegin(); it += -1; QVERIFY2(it == matrix.constNEnd(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNBegin(); it += 1; QVERIFY2(it == matrix.constNEnd(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it += 1; QVERIFY2(it == matrix.constNEnd(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-        it = matrix.constNEnd(); it += -1; QVERIFY2(it == matrix.constNEnd(), "Operator -= does not work correctly, the resulting iterator is not the right one");
-    }
-
-    {
-        IntMatrixConstNIterator it;
-        IntMatrixConstNIterator firstIter{it};
-        IntMatrixConstNIterator secondIter{it};
-
-        firstIter -= 1;
-        secondIter -= -1;
-
-        QVERIFY2(firstIter == it, "Operator -= does not work correctly, the resulting iterator is not the right one");
-        QVERIFY2(secondIter == it, "Operator -= does not work correctly, the resulting iterator is not the right one");
-    }
-}
-
-void ConstNIteratorTests::testDifferenceOperator()
-{
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        QVERIFY2(matrix.constNEnd() - matrix.constNBegin() == 6, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.constNBegin() - matrix.constNEnd() == -6, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.constNBegin() - matrix.constNBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.constNEnd() - matrix.constNEnd() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.getConstNIterator(0, 1) - matrix.getConstNIterator(1, 0) == 2, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.getConstNIterator(1, 0) - matrix.getConstNIterator(0, 1) == -2, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.getConstNIterator(0, 1) - matrix.constNBegin() == 3, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.constNBegin() - matrix.getConstNIterator(0, 1) == -3, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.getConstNIterator(1, 0) - matrix.constNEnd() == -5, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.constNEnd() - matrix.getConstNIterator(1, 0) == 5, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.getConstNIterator(0, 1) - matrix.getConstNIterator(0, 1) == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    }
-
-    {
-        IntMatrix matrix{};
-
-        QVERIFY2(matrix.constNEnd() - matrix.constNBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.constNEnd() - matrix.constNBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.constNBegin() - matrix.constNBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(matrix.constNEnd() - matrix.constNEnd() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    }
-
-    {
-        IntMatrixConstNIterator firstIter{};
-        IntMatrixConstNIterator secondIter{};
-
-        QVERIFY2(firstIter - secondIter == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-        QVERIFY2(secondIter - firstIter == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    }
+    m_MainMatrix = {8, 9, -5};
+
+    IntMatrixConstNIterator it{m_MainMatrix.constNBegin()};
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0, "The iterator has not been correctly created");
+    it = m_MainMatrix.constNEnd();
+    QVERIFY2(it.getCurrentRowNr() == 8 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    it = m_MainMatrix.constNColumnBegin(0);
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0, "The iterator has not been correctly created");
+    it = m_MainMatrix.constNColumnBegin(1);
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 1, "The iterator has not been correctly created");
+    it = m_MainMatrix.constNColumnBegin(4);
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 4, "The iterator has not been correctly created");
+    it = m_MainMatrix.constNColumnBegin(7);
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 7, "The iterator has not been correctly created");
+    it = m_MainMatrix.constNColumnBegin(8);
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    it = m_MainMatrix.constNColumnEnd(0);
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 1, "The iterator has not been correctly created");
+    it = m_MainMatrix.constNColumnEnd(1);
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 2, "The iterator has not been correctly created");
+    it = m_MainMatrix.constNColumnEnd(4);
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 5, "The iterator has not been correctly created");
+    it = m_MainMatrix.constNColumnEnd(7);
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    it = m_MainMatrix.constNColumnEnd(8);
+    QVERIFY2(it.getCurrentRowNr() == 8 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    it = m_MainMatrix.getConstNIterator(0, 0);
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0, "The iterator has not been correctly created");
+    it = m_MainMatrix.getConstNIterator(1, 0);
+    QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0, "The iterator has not been correctly created");
+    it = m_MainMatrix.getConstNIterator(4, 5);
+    QVERIFY2(it.getCurrentRowNr() == 4 && it.getCurrentColumnNr() == 5, "The iterator has not been correctly created");
+    it = m_MainMatrix.getConstNIterator(6, 8);
+    QVERIFY2(it.getCurrentRowNr() == 6 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    it = m_MainMatrix.getConstNIterator(7, 8);
+    QVERIFY2(it.getCurrentRowNr() == 7 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    it = m_MainMatrix.getConstNIterator(0);
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0, "The iterator has not been correctly created");
+    it = m_MainMatrix.getConstNIterator(1);
+    QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0, "The iterator has not been correctly created");
+    it = m_MainMatrix.getConstNIterator(44);
+    QVERIFY2(it.getCurrentRowNr() == 4 && it.getCurrentColumnNr() == 5, "The iterator has not been correctly created");
+    it = m_MainMatrix.getConstNIterator(70);
+    QVERIFY2(it.getCurrentRowNr() == 6 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    it = m_MainMatrix.getConstNIterator(71);
+    QVERIFY2(it.getCurrentRowNr() == 7 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
 }
 
 void ConstNIteratorTests::testIteratorsAreEqual()
 {
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNBegin()};
-        IntMatrixConstNIterator secondIter{matrix.constNBegin()};
 
-        QVERIFY2(firstIter == secondIter, "The two iterators are not equal");
-        QVERIFY2(firstIter == matrix.constNBegin(), "The two iterators are not equal");
+    m_MainMatrix = {8, 9, -5};
 
-        ++firstIter;
-        ++firstIter;
-        ++secondIter;
-        ++secondIter;
+    // test different iterators for equality
+    QVERIFY2((m_MainMatrix.constNBegin() == m_MainMatrix.getConstNIterator(0, 0) && !(m_MainMatrix.constNBegin() != m_MainMatrix.getConstNIterator(0, 0))), "The two iterators are not equal");
+    QVERIFY2((m_MainMatrix.getConstNIterator(0) == m_MainMatrix.getConstNIterator(0, 0)) && !(m_MainMatrix.getConstNIterator(0) != m_MainMatrix.getConstNIterator(0, 0)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.getConstNIterator(1) == m_MainMatrix.getConstNIterator(1, 0)) && !(m_MainMatrix.getConstNIterator(1) != m_MainMatrix.getConstNIterator(1, 0)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.getConstNIterator(44) == m_MainMatrix.getConstNIterator(4, 5)) && !(m_MainMatrix.getConstNIterator(44) != m_MainMatrix.getConstNIterator(4, 5)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.getConstNIterator(70) == m_MainMatrix.getConstNIterator(6, 8)) && !(m_MainMatrix.getConstNIterator(70) != m_MainMatrix.getConstNIterator(6, 8)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.getConstNIterator(71) == m_MainMatrix.getConstNIterator(7, 8)) && !(m_MainMatrix.getConstNIterator(71) != m_MainMatrix.getConstNIterator(7, 8)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.constNColumnBegin(0) == m_MainMatrix.getConstNIterator(0, 0)) && !(m_MainMatrix.constNColumnBegin(0) != m_MainMatrix.getConstNIterator(0, 0)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.constNColumnBegin(1) == m_MainMatrix.getConstNIterator(0, 1)) && !(m_MainMatrix.constNColumnBegin(1) != m_MainMatrix.getConstNIterator(0, 1)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.constNColumnBegin(5) == m_MainMatrix.getConstNIterator(0, 5)) && !(m_MainMatrix.constNColumnBegin(5) != m_MainMatrix.getConstNIterator(0, 5)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.constNColumnBegin(7) == m_MainMatrix.getConstNIterator(0, 7)) && !(m_MainMatrix.constNColumnBegin(7) != m_MainMatrix.getConstNIterator(0, 7)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.constNColumnBegin(8) == m_MainMatrix.getConstNIterator(0, 8)) && !(m_MainMatrix.constNColumnBegin(8) != m_MainMatrix.getConstNIterator(0, 8)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.constNColumnEnd(0) == m_MainMatrix.getConstNIterator(0, 1)) && !(m_MainMatrix.constNColumnEnd(0) != m_MainMatrix.getConstNIterator(0, 1)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.constNColumnEnd(1) == m_MainMatrix.getConstNIterator(0, 2)) && !(m_MainMatrix.constNColumnEnd(1) != m_MainMatrix.getConstNIterator(0, 2)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.constNColumnEnd(5) == m_MainMatrix.getConstNIterator(0, 6)) && !(m_MainMatrix.constNColumnEnd(5) != m_MainMatrix.getConstNIterator(0, 6)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.constNColumnEnd(7) == m_MainMatrix.getConstNIterator(0, 8)) && !(m_MainMatrix.constNColumnEnd(7) != m_MainMatrix.getConstNIterator(0, 8)), "The two iterators are NOT equal");
+    QVERIFY2((m_MainMatrix.constNColumnEnd(8) == m_MainMatrix.constNEnd()) && !(m_MainMatrix.constNColumnEnd(8) != m_MainMatrix.constNEnd()), "The two iterators are NOT equal");
 
-        QVERIFY2(firstIter == secondIter, "The two iterators are not equal");
+    // test iterator equality to itself
+    IntMatrixConstNIterator it{m_MainMatrix.constNBegin()};
+    QVERIFY2((it == it) && (it == m_MainMatrix.constNBegin()) && !(it != it) && !(it != m_MainMatrix.constNBegin()), "The iterator is NOT equal to itself and/or to source iterator");
+    it = m_MainMatrix.getConstNIterator(1, 0);
+    QVERIFY2((it == it) && (it == m_MainMatrix.getConstNIterator(1, 0)) && !(it != it) && !(it != m_MainMatrix.getConstNIterator(1, 0)),  "The iterator is NOT equal to itself and/or to source iterator");
+    it = m_MainMatrix.getConstNIterator(4, 5);
+    QVERIFY2((it == it) && (it == m_MainMatrix.getConstNIterator(4, 5)) && !(it != it) && !(it != m_MainMatrix.getConstNIterator(4, 5)),  "The iterator is NOT equal to itself and/or to source iterator");
+    it = m_MainMatrix.getConstNIterator(6, 8);
+    QVERIFY2((it == it) && (it == m_MainMatrix.getConstNIterator(6, 8)) && !(it != it) && !(it != m_MainMatrix.getConstNIterator(6, 8)),  "The iterator is NOT equal to itself and/or to source iterator");
+    it = m_MainMatrix.getConstNIterator(7, 8);
+    QVERIFY2((it == it) && (it == m_MainMatrix.getConstNIterator(7, 8)) && !(it != it) && !(it != m_MainMatrix.getConstNIterator(7, 8)),  "The iterator is NOT equal to itself and/or to source iterator");
+    it = m_MainMatrix.constNEnd();
+    QVERIFY2((it == it) && (it == m_MainMatrix.constNEnd()) && !(it != it) && !(it != m_MainMatrix.constNEnd()),  "The iterator is NOT equal to itself and/or to source iterator");
 
-        ++firstIter;
-        ++firstIter;
-        ++firstIter;
-        ++firstIter;
-
-        QVERIFY2(firstIter == matrix.constNEnd(), "The two iterators are not equal");
-
-        secondIter = matrix.constNEnd();
-
-        QVERIFY2(firstIter == secondIter, "The two iterators are not equal");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(0, 0)};
-
-        QVERIFY2(it == matrix.constNBegin(), "The two iterators are not equal");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(0)};
-
-        QVERIFY2(it == matrix.constNBegin(), "The two iterators are not equal");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.getConstNIterator(2, 1)};
-        IntMatrixConstNIterator secondIter{matrix.getConstNIterator(5)};
-
-        QVERIFY2(firstIter == secondIter, "The two iterators are not equal");
-    }
-
-    {
-        IntMatrix matrix{};
-
-        QVERIFY2(matrix.constNBegin() == matrix.constNEnd(), "The two iterators are not equal");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-
-        QVERIFY2(matrix.constNBegin() == matrix.constNColumnBegin(0), "The two iterators are not equal");
-        QVERIFY2(matrix.constNColumnEnd(0) == matrix.constNColumnBegin(1), "The two iterators are not equal");
-        QVERIFY2(matrix.constNColumnEnd(1) == matrix.constNEnd(), "The two iterators are not equal");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, -3, -5, 2, 4, 6}};
-
-        QVERIFY2(matrix.constNColumnBegin(1) == matrix.getConstNIterator(0, 1), "The two iterators are not equal");
-        QVERIFY2(matrix.constNColumnEnd(1) == matrix.getConstNIterator(0, 2), "The two iterators are not equal");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, -3, -5, 2, 4, 6}};
-
-        QVERIFY2(matrix.constNColumnBegin(1) == matrix.getConstNIterator(2), "The two iterators are not equal");
-        QVERIFY2(matrix.constNColumnEnd(1) == matrix.getConstNIterator(4), "The two iterators are not equal");
-    }
+    // test empty matrix iterator creation
+    m_MainMatrix.clear();
+    QVERIFY2((m_MainMatrix.constNBegin() == m_MainMatrix.constNEnd()) && !(m_MainMatrix.constNBegin() != m_MainMatrix.constNEnd()), "The two iterators are NOT equal");
 }
 
 void ConstNIteratorTests::testIteratorsAreNotEqual()
 {
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNBegin()};
-        IntMatrixConstNIterator secondIter{matrix.constNBegin()};
+    m_MainMatrix = {8, 9, -5};
 
-        QVERIFY2(matrix.constNBegin() != matrix.constNEnd(), "The begin iterator equals the end iterator");
-
-        ++firstIter;
-        ++secondIter;
-        ++secondIter;
-
-        QVERIFY2(firstIter != secondIter, "The two iterators are equal");
-        QVERIFY2(firstIter != matrix.constNBegin(), "The first iterator equals the begin iterator");
-        QVERIFY2(secondIter != matrix.constNBegin(), "The second iterator equals the begin iterator");
-        QVERIFY2(firstIter != matrix.constNEnd(), "The first iterator equals the end iterator");
-        QVERIFY2(secondIter != matrix.constNEnd(), "The second iterator equals the end iterator");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.getConstNIterator(1, 0)};
-        IntMatrixConstNIterator secondIter{matrix.getConstNIterator(2, 1)};
-
-        QVERIFY2(firstIter != secondIter, "The begin iterator equals the end iterator");
-        QVERIFY2(firstIter != matrix.constNBegin(), "The first iterator equals the begin iterator");
-        QVERIFY2(secondIter != matrix.constNBegin(), "The second iterator equals the begin iterator");
-        QVERIFY2(firstIter != matrix.constNEnd(), "The first iterator equals the end iterator");
-        QVERIFY2(secondIter != matrix.constNEnd(), "The second iterator equals the end iterator");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12}};
-
-        QVERIFY2(matrix.constNColumnBegin(0) != matrix.constNColumnBegin(1), "The matrix begin iterator of the first column equals the begin iterator of the second column");
-        QVERIFY2(matrix.constNColumnEnd(0) != matrix.constNColumnEnd(1), "The matrix end iterator of the first column equals the end iterator of the second column");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.getConstNIterator(1)};
-        IntMatrixConstNIterator secondIter{matrix.getConstNIterator(5)};
-
-        QVERIFY2(firstIter != secondIter, "The begin iterator equals the end iterator");
-        QVERIFY2(firstIter != matrix.constNBegin(), "The first iterator equals the begin iterator");
-        QVERIFY2(secondIter != matrix.constNBegin(), "The second iterator equals the begin iterator");
-        QVERIFY2(firstIter != matrix.constNEnd(), "The first iterator equals the end iterator");
-        QVERIFY2(secondIter != matrix.constNEnd(), "The second iterator equals the end iterator");
-    }
+    QVERIFY2((m_MainMatrix.constNBegin() != m_MainMatrix.getConstNIterator(1, 0)) && !(m_MainMatrix.constNBegin() == m_MainMatrix.getConstNIterator(1, 0)), "The two iterators are NOT different");
+    QVERIFY2((m_MainMatrix.getConstNIterator(1, 0) != m_MainMatrix.getConstNIterator(2, 0)) && !(m_MainMatrix.getConstNIterator(1, 0) == m_MainMatrix.getConstNIterator(2, 0)), "The two iterators are NOT different");
+    QVERIFY2((m_MainMatrix.getConstNIterator(2, 0) != m_MainMatrix.getConstNIterator(4, 5)) && !(m_MainMatrix.getConstNIterator(2, 0) == m_MainMatrix.getConstNIterator(4, 5)), "The two iterators are NOT different");
+    QVERIFY2((m_MainMatrix.getConstNIterator(4, 5) != m_MainMatrix.getConstNIterator(6, 8)) && !(m_MainMatrix.getConstNIterator(4, 5) == m_MainMatrix.getConstNIterator(6, 8)), "The two iterators are NOT different");
+    QVERIFY2((m_MainMatrix.getConstNIterator(6, 8) != m_MainMatrix.getConstNIterator(7, 8)) && !(m_MainMatrix.getConstNIterator(6, 8) == m_MainMatrix.getConstNIterator(7, 8)), "The two iterators are NOT different");
+    QVERIFY2((m_MainMatrix.getConstNIterator(7, 8) != m_MainMatrix.constNEnd()) && !(m_MainMatrix.getConstNIterator(7, 8) == m_MainMatrix.constNEnd()), "The two iterators are NOT different");
 }
 
 void ConstNIteratorTests::testSmallerThanOperator()
 {
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNBegin()};
-        IntMatrixConstNIterator secondIter{matrix.constNBegin()};
+    m_MainMatrix = {8, 9, -5};
 
-        ++firstIter;
-        ++secondIter;
-        ++secondIter;
-
-        QVERIFY2(matrix.constNBegin() < firstIter, "The first iterator is greater than or equal to the second iterator");
-        QVERIFY2(firstIter < secondIter, "The first iterator is greater than or equal to the second iterator");
-        QVERIFY2(secondIter < matrix.constNEnd(), "The first iterator is greater than or equal to the second iterator");
-
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNEnd()};
-        IntMatrixConstNIterator secondIter{matrix.constNEnd()};
-
-        --firstIter;
-        --firstIter;
-        --secondIter;
-
-        QVERIFY2(matrix.constNBegin() < firstIter, "The first iterator is greater than or equal to the second iterator");
-        QVERIFY2(firstIter < secondIter, "The first iterator is greater than or equal to the second iterator");
-        QVERIFY2(secondIter < matrix.constNEnd(), "The first iterator is greater than or equal to the second iterator");
-
-    }
-
-    {
-        IntMatrix matrix{3, 4, {1, -5, 9, 2, 6, -10, -3, 7, 11, 4, -8, 12}};
-
-        QVERIFY2(matrix.constNBegin() < matrix.getConstNIterator(1, 0), "The first iterator is greater than or equal to the second iterator");
-        QVERIFY2(matrix.getConstNIterator(1, 0) < matrix.constNColumnBegin(1), "The first iterator is greater than or equal to the second iterator");
-        QVERIFY2(matrix.constNColumnBegin(1) < matrix.getConstNIterator(1, 1), "The first iterator is greater than or equal to the second iterator");
-        QVERIFY2(matrix.getConstNIterator(1, 1) < matrix.constNColumnEnd(1), "The first iterator is greater than or equal to the second iterator");
-        QVERIFY2(matrix.constNColumnEnd(1) < matrix.getConstNIterator(1, 2), "The first iterator is greater than or equal to the second iterator");
-        QVERIFY2(matrix.getConstNIterator(1, 2) < matrix.constNColumnBegin(3), "The first iterator is greater than or equal to the second iterator");
-        QVERIFY2(matrix.constNColumnBegin(3) < matrix.constNEnd(), "The first iterator is greater than or equal to the second iterator");
-    }
+    QVERIFY2((m_MainMatrix.constNBegin() < m_MainMatrix.getConstNIterator(1, 0)) && !(m_MainMatrix.constNBegin() >= m_MainMatrix.getConstNIterator(1, 0)), "The first iterator is NOT smaller than the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(1, 0) < m_MainMatrix.getConstNIterator(2, 0)) && !(m_MainMatrix.getConstNIterator(1, 0) >= m_MainMatrix.getConstNIterator(2, 0)), "The first iterator is NOT smaller than the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(2, 0) < m_MainMatrix.getConstNIterator(4, 5)) && !(m_MainMatrix.getConstNIterator(2, 0) >= m_MainMatrix.getConstNIterator(4, 5)), "The first iterator is NOT smaller than the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(4, 5) < m_MainMatrix.getConstNIterator(6, 8)) && !(m_MainMatrix.getConstNIterator(4, 5) >= m_MainMatrix.getConstNIterator(6, 8)), "The first iterator is NOT smaller than the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(6, 8) < m_MainMatrix.getConstNIterator(7, 8)) && !(m_MainMatrix.getConstNIterator(6, 8) >= m_MainMatrix.getConstNIterator(7, 8)), "The first iterator is NOT smaller than the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(7, 8) < m_MainMatrix.constNEnd()) && !(m_MainMatrix.getConstNIterator(7, 8) >= m_MainMatrix.constNEnd()), "The first iterator is NOT smaller than the second iterator");
 }
 
 void ConstNIteratorTests::testSmallerThanOrEqualToOperator()
 {
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNBegin()};
-        IntMatrixConstNIterator secondIter{matrix.constNBegin()};
+    m_MainMatrix = {8, 9, -5};
 
-        ++firstIter;
-        ++secondIter;
-        ++secondIter;
+    // test operator with different iterators
+    QVERIFY2((m_MainMatrix.constNBegin() <= m_MainMatrix.constNBegin()) && !(m_MainMatrix.constNBegin() > m_MainMatrix.constNEnd()), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.constNBegin() <= m_MainMatrix.getConstNIterator(1, 0)) && !(m_MainMatrix.getConstNIterator(7, 8) > m_MainMatrix.constNEnd()), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(1, 0) <= m_MainMatrix.getConstNIterator(1, 0)) && !(m_MainMatrix.getConstNIterator(1, 0) > m_MainMatrix.getConstNIterator(1, 0)), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(1, 0) <= m_MainMatrix.getConstNIterator(2, 0)) && !(m_MainMatrix.getConstNIterator(1, 0) > m_MainMatrix.getConstNIterator(2, 0)), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(2, 0) <= m_MainMatrix.getConstNIterator(2, 0)) && !(m_MainMatrix.getConstNIterator(2, 0) > m_MainMatrix.getConstNIterator(2, 0)), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(2, 0) <= m_MainMatrix.getConstNIterator(4, 5)) && !(m_MainMatrix.getConstNIterator(2, 0) > m_MainMatrix.getConstNIterator(4, 5)), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(4, 5) <= m_MainMatrix.getConstNIterator(4, 5)) && !(m_MainMatrix.getConstNIterator(4, 5) > m_MainMatrix.getConstNIterator(4, 5)), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(4, 5) <= m_MainMatrix.getConstNIterator(6, 8)) && !(m_MainMatrix.getConstNIterator(4, 5) > m_MainMatrix.getConstNIterator(6, 8)), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(6, 8) <= m_MainMatrix.getConstNIterator(6, 8)) && !(m_MainMatrix.getConstNIterator(6, 8) > m_MainMatrix.getConstNIterator(6, 8)), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(6, 8) <= m_MainMatrix.getConstNIterator(7, 8)) && !(m_MainMatrix.getConstNIterator(6, 8) > m_MainMatrix.getConstNIterator(7, 8)), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(7, 8) <= m_MainMatrix.getConstNIterator(7, 8)) && !(m_MainMatrix.getConstNIterator(7, 8) > m_MainMatrix.getConstNIterator(7, 8)), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(7, 8) <= m_MainMatrix.constNEnd()) && !(m_MainMatrix.getConstNIterator(7, 8) > m_MainMatrix.constNEnd()), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.constNEnd() <= m_MainMatrix.constNEnd()) && !(m_MainMatrix.constNEnd() > m_MainMatrix.constNEnd()), "The first iterator is NOT smaller than or equal to the second iterator");
 
-        QVERIFY2(matrix.constNBegin() <= firstIter, "The first iterator is greater than the second iterator");
-        QVERIFY2(firstIter <= secondIter, "The first iterator is greater than the second iterator");
-        QVERIFY2(secondIter <= matrix.constNEnd(), "The first iterator is greater than the second iterator");
+    // test if iterator is smaller than or equal to itself
+    IntMatrixConstNIterator it{m_MainMatrix.constNBegin()};
+    QVERIFY2((it <= it) && (it <= m_MainMatrix.constNBegin()) && !(it > it) && !(it > m_MainMatrix.constNBegin()),  "The iterator is NOT smaller than or equal to itself and/or the source iterator");
+    it = m_MainMatrix.getConstNIterator(1, 0);
+    QVERIFY2((it <= it) && (it <= m_MainMatrix.getConstNIterator(1, 0)) && !(it > it) && !(it > m_MainMatrix.getConstNIterator(1, 0)),  "The iterator is NOT smaller than or equal to itself and/or the source iterator");
+    it = m_MainMatrix.getConstNIterator(4, 5);
+    QVERIFY2((it <= it) && (it <= m_MainMatrix.getConstNIterator(4, 5)) && !(it > it) && !(it > m_MainMatrix.getConstNIterator(4, 5)),  "The iterator is NOT smaller than or equal to itself and/or the source iterator");
+    it = m_MainMatrix.getConstNIterator(6, 8);
+    QVERIFY2((it <= it) && (it <= m_MainMatrix.getConstNIterator(6, 8)) && !(it > it) && !(it > m_MainMatrix.getConstNIterator(6, 8)),  "The iterator is NOT smaller than or equal to itself and/or the source iterator");
+    it = m_MainMatrix.getConstNIterator(7, 8);
+    QVERIFY2((it <= it) && (it <= m_MainMatrix.getConstNIterator(7, 8) && !(it > it) && !(it > m_MainMatrix.getConstNIterator(7, 8))),  "The iterator is NOT smaller than or equal to itself and/or the source iterator");
+    it = m_MainMatrix.constNEnd();
+    QVERIFY2((it <= it) && (it <= m_MainMatrix.constNEnd()) && !(it > it) && !(it > m_MainMatrix.constNEnd()),  "The iterator is NOT smaller than or equal to itself and/or the source iterator");
 
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNBegin()};
-        IntMatrixConstNIterator secondIter{matrix.constNBegin()};
-
-        ++firstIter;
-        ++secondIter;
-
-        QVERIFY2(matrix.constNBegin() <= firstIter, "The first iterator is greater than the second iterator");
-        QVERIFY2(firstIter <= secondIter, "The first iterator is greater than the second iterator");
-        QVERIFY2(secondIter <= matrix.constNEnd(), "The first iterator is greater than the second iterator");
-
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNEnd()};
-        IntMatrixConstNIterator secondIter{matrix.constNEnd()};
-
-        --firstIter;
-        --firstIter;
-        --secondIter;
-
-        QVERIFY2(matrix.constNBegin() <= firstIter, "The first iterator is greater than the second iterator");
-        QVERIFY2(firstIter <= secondIter, "The first iterator is greater than the second iterator");
-        QVERIFY2(secondIter <= matrix.constNEnd(), "The first iterator is greater than the second iterator");
-
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNEnd()};
-        IntMatrixConstNIterator secondIter{matrix.constNEnd()};
-
-        --firstIter;
-        --secondIter;
-
-        QVERIFY2(matrix.constNBegin() <= firstIter, "The first iterator is greater than the second iterator");
-        QVERIFY2(firstIter <= secondIter, "The first iterator is greater than the second iterator");
-        QVERIFY2(secondIter <= matrix.constNEnd(), "The first iterator is greater than the second iterator");
-
-    }
-
-    {
-        IntMatrix matrix{3, 4, {1, -5, 9, 2, 6, -10, -3, 7, 11, 4, -8, 12}};
-
-        QVERIFY2(matrix.constNBegin() <= matrix.getConstNIterator(0, 0), "The first iterator is greater than the second iterator");
-        QVERIFY2(matrix.getConstNIterator(0, 0) <= matrix.getConstNIterator(1, 0), "The first iterator is greater than the second iterator");
-        QVERIFY2(matrix.getConstNIterator(1, 0) <= matrix.constNColumnBegin(1), "The first iterator is greater than the second iterator");
-        QVERIFY2(matrix.constNColumnBegin(1) <= matrix.getConstNIterator(1, 1), "The first iterator is greater than the second iterator");
-        QVERIFY2(matrix.getConstNIterator(1, 1) <= matrix.constNColumnEnd(1), "The first iterator is greater than the second iterator");
-        QVERIFY2(matrix.constNColumnEnd(1) <= matrix.getConstNIterator(0, 2), "The first iterator is greater than the second iterator");
-        QVERIFY2(matrix.getConstNIterator(0, 2) <= matrix.constNColumnBegin(3), "The first iterator is greater than the second iterator");
-        QVERIFY2(matrix.constNColumnBegin(3) <= matrix.getConstNIterator(0, 3), "The first iterator is greater than the second iterator");
-        QVERIFY2(matrix.getConstNIterator(0, 3) <= matrix.constNColumnEnd(3), "The first iterator is greater than the second iterator");
-        QVERIFY2(matrix.constNColumnEnd(3) <= matrix.constNEnd(), "The first iterator is greater than the second iterator");
-    }
+    // test with empty matrix
+    m_MainMatrix.clear();
+    QVERIFY2(m_MainMatrix.constNBegin() <= m_MainMatrix.constNEnd(), "The first iterator is NOT smaller than or equal to the second iterator");
 }
 
 void ConstNIteratorTests::testGreaterThanOperator()
 {
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNBegin()};
-        IntMatrixConstNIterator secondIter{matrix.constNBegin()};
+    m_MainMatrix = {8, 9, -5};
 
-        ++firstIter;
-        ++secondIter;
-        ++secondIter;
-
-        QVERIFY2(matrix.constNEnd() > secondIter, "The first iterator is smaller than or equal to the second iterator");
-        QVERIFY2(secondIter > firstIter, "The first iterator is smaller than or equal to the second iterator");
-        QVERIFY2(firstIter > matrix.constNBegin(), "The first iterator is smaller than or equal to the second iterator");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNEnd()};
-        IntMatrixConstNIterator secondIter{matrix.constNEnd()};
-
-        --firstIter;
-        --firstIter;
-        --secondIter;
-
-        QVERIFY2(matrix.constNEnd() > secondIter, "The first iterator is smaller than or equal to the second iterator");
-        QVERIFY2(secondIter > firstIter, "The first iterator is smaller than or equal to the second iterator");
-        QVERIFY2(firstIter > matrix.constNBegin(), "The first iterator is smaller than or equal to the second iterator");
-    }
-
-    {
-        IntMatrix matrix{3, 4, {1, -5, 9, 2, 6, -10, -3, 7, 11, 4, -8, 12}};
-
-        QVERIFY2(matrix.constNEnd() > matrix.constNColumnBegin(3), "The first iterator is smaller than or equal to the second iterator");
-        QVERIFY2(matrix.constNColumnBegin(3) > matrix.getConstNIterator(1, 2), "The first iterator is smaller than or equal to the second iterator");
-        QVERIFY2(matrix.getConstNIterator(1, 2) > matrix.constNColumnEnd(1), "The first iterator is smaller than or equal to the second iterator");
-        QVERIFY2(matrix.constNColumnEnd(1) > matrix.getConstNIterator(1, 1), "The first iterator is smaller than or equal to the second iterator");
-        QVERIFY2(matrix.getConstNIterator(1, 1) > matrix.constNColumnBegin(1), "The first iterator is smaller than or equal to the second iterator");
-        QVERIFY2(matrix.constNColumnBegin(1) > matrix.getConstNIterator(1, 0), "The first iterator is smaller than or equal to the second iterator");
-        QVERIFY2(matrix.getConstNIterator(1, 0) > matrix.constNBegin(), "The first iterator is smaller than or equal to the second iterator");
-    }
+    QVERIFY2((m_MainMatrix.constNEnd() > m_MainMatrix.getConstNIterator(7, 8)) && !(m_MainMatrix.constNEnd() <= m_MainMatrix.getConstNIterator(7, 8)), "TThe first iterator is NOT greater than the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(7, 8) > m_MainMatrix.getConstNIterator(6, 8)) && !(m_MainMatrix.getConstNIterator(7, 8) <= m_MainMatrix.getConstNIterator(6, 8)), "The first iterator is NOT greater than the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(6, 8) > m_MainMatrix.getConstNIterator(4, 5)) && !(m_MainMatrix.getConstNIterator(6, 8) <= m_MainMatrix.getConstNIterator(4, 5)), "The first iterator is NOT greater than the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(4, 5) > m_MainMatrix.getConstNIterator(2, 0)) && !(m_MainMatrix.getConstNIterator(4, 5) <= m_MainMatrix.getConstNIterator(2, 0)), "The first iterator is NOT greater than the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(2, 0) > m_MainMatrix.getConstNIterator(1, 0)) && !(m_MainMatrix.getConstNIterator(2, 0) <= m_MainMatrix.getConstNIterator(1, 0)), "The first iterator is NOT greater than the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(1, 0) > m_MainMatrix.constNBegin()) && !(m_MainMatrix.getConstNIterator(1, 0) <= m_MainMatrix.constNBegin()), "The first iterator is NOT greater than the second iterator");
 }
 
 void ConstNIteratorTests::testGreaterThanOrEqualToOperator()
 {
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNBegin()};
-        IntMatrixConstNIterator secondIter{matrix.constNBegin()};
+    m_MainMatrix = {8, 9, -5};
 
-        ++firstIter;
-        ++secondIter;
-        ++secondIter;
+    // test operator with different iterators
+    QVERIFY2((m_MainMatrix.constNEnd() >= m_MainMatrix.constNEnd()) && !(m_MainMatrix.constNEnd() < m_MainMatrix.constNEnd()), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.constNEnd() >= m_MainMatrix.getConstNIterator(7, 8)) && !(m_MainMatrix.constNEnd() < m_MainMatrix.getConstNIterator(7, 8)), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(7, 8) >= m_MainMatrix.getConstNIterator(7, 8)) && !(m_MainMatrix.getConstNIterator(7, 8) < m_MainMatrix.getConstNIterator(7, 8)), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(7, 8) >= m_MainMatrix.getConstNIterator(6, 8)) && !(m_MainMatrix.getConstNIterator(7, 8) < m_MainMatrix.getConstNIterator(6, 8)), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(6, 8) >= m_MainMatrix.getConstNIterator(6, 8)) && !(m_MainMatrix.getConstNIterator(6, 8) < m_MainMatrix.getConstNIterator(6, 8)), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(6, 8) >= m_MainMatrix.getConstNIterator(4, 5)) && !(m_MainMatrix.getConstNIterator(6, 8) < m_MainMatrix.getConstNIterator(4, 5)), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(4, 5) >= m_MainMatrix.getConstNIterator(4, 5)) && !(m_MainMatrix.getConstNIterator(4, 5) < m_MainMatrix.getConstNIterator(4, 5)), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(4, 5) >= m_MainMatrix.getConstNIterator(2, 0)) && !(m_MainMatrix.getConstNIterator(4, 5) < m_MainMatrix.getConstNIterator(2, 0)), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(2, 0) >= m_MainMatrix.getConstNIterator(2, 0)) && !(m_MainMatrix.getConstNIterator(2, 0) < m_MainMatrix.getConstNIterator(2, 0)), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(2, 0) >= m_MainMatrix.getConstNIterator(1, 0)) && !(m_MainMatrix.getConstNIterator(2, 0) < m_MainMatrix.getConstNIterator(1, 0)), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(1, 0) >= m_MainMatrix.getConstNIterator(1, 0)) && !(m_MainMatrix.getConstNIterator(1, 0) < m_MainMatrix.getConstNIterator(1, 0)), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.getConstNIterator(1, 0) >= m_MainMatrix.constNBegin()) && !(m_MainMatrix.getConstNIterator(1, 0) < m_MainMatrix.constNBegin()), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2((m_MainMatrix.constNBegin() >= m_MainMatrix.constNBegin()) && !(m_MainMatrix.constNBegin() < m_MainMatrix.constNBegin()), "The first iterator is NOT greater than or equal to the second iterator");
 
-        QVERIFY2(matrix.constNEnd() >= secondIter, "The first iterator is smaller than the second iterator");
-        QVERIFY2(secondIter >= firstIter, "The first iterator is smaller than the second iterator");
-        QVERIFY2(firstIter >= matrix.constNBegin(), "The first iterator is smaller than the second iterator");
-    }
+    // test if iterator is greater than or equal to itself
+    IntMatrixConstNIterator it{m_MainMatrix.constNEnd()};
+    QVERIFY2((it >= it) && (it >= m_MainMatrix.constNEnd()) && !(it < it) && !(it < m_MainMatrix.constNEnd()),  "The iterator is NOT greater than or equal to itself and/or the source iterator");
+    it = m_MainMatrix.getConstNIterator(7, 8);
+    QVERIFY2((it >= it) && (it >= m_MainMatrix.getConstNIterator(7, 8)) && !(it < it) && !(it < m_MainMatrix.getConstNIterator(7, 8)),  "The iterator is NOT greater than or equal to itself and/or the source iterator");
+    it = m_MainMatrix.getConstNIterator(6, 8);
+    QVERIFY2((it >= it) && (it >= m_MainMatrix.getConstNIterator(6, 8)) && !(it < it) && !(it < m_MainMatrix.getConstNIterator(6, 8)),  "The iterator is NOT greater than or equal to itself and/or the source iterator");
+    it = m_MainMatrix.getConstNIterator(4, 5);
+    QVERIFY2((it >= it) && (it >= m_MainMatrix.getConstNIterator(4, 5)) && !(it < it) && !(it < m_MainMatrix.getConstNIterator(4, 5)),  "The iterator is NOT greater than or equal to itself and/or the source iterator");
+    it = m_MainMatrix.getConstNIterator(1, 0);
+    QVERIFY2((it >= it) && (it >= m_MainMatrix.getConstNIterator(1, 0)) && !(it < it) && !(it < m_MainMatrix.getConstNIterator(1, 0)),  "The iterator is NOT greater than or equal to itself and/or the source iterator");
+    it = m_MainMatrix.constNBegin();
+    QVERIFY2((it >= it) && (it >= m_MainMatrix.constNBegin()) && !(it < it) && !(it < m_MainMatrix.constNBegin()),  "The iterator is NOT greater than or equal to itself and/or the source iterator");
 
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNBegin()};
-        IntMatrixConstNIterator secondIter{matrix.constNBegin()};
+    // test with empty matrix
+    m_MainMatrix.clear();
+    QVERIFY2((m_MainMatrix.constNBegin() >= m_MainMatrix.constNEnd()) && !(m_MainMatrix.constNBegin() < m_MainMatrix.constNEnd()), "The first iterator is NOT greater than or equal to the second iterator");
+}
 
-        ++firstIter;
-        ++secondIter;
+void ConstNIteratorTests::testIncrementOperators()
+{
+    m_MainMatrix = {8, 9, -5};
 
-        QVERIFY2(matrix.constNEnd() >= secondIter, "The first iterator is smaller than the second iterator");
-        QVERIFY2(secondIter >= firstIter, "The first iterator is smaller than the second iterator");
-        QVERIFY2(firstIter >= matrix.constNBegin(), "The first iterator is smaller than the second iterator");
-    }
+    // pre-increment
+    IntMatrixConstNIterator it{m_MainMatrix.constNBegin()};
+    ++it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Incorrect pre-incrementation");
+    ++it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(2, 0), "Incorrect pre-incrementation");
+    it = m_MainMatrix.getConstNIterator(6, 4);
+    ++it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 4), "Incorrect pre-incrementation");
+    ++it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(0, 5), "Incorrect pre-incrementation");
+    ++it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 5), "Incorrect pre-incrementation");
+    ++it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(2, 5), "Incorrect pre-incrementation");
+    it = m_MainMatrix.getConstNIterator(4, 5);
+    ++it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(5, 5), "Incorrect pre-incrementation");
+    it = m_MainMatrix.getConstNIterator(6, 8);
+    ++it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Incorrect pre-incrementation");
+    ++it;
+    QVERIFY2(it == m_MainMatrix.constNEnd(), "Incorrect pre-incrementation");
+    ++it;
+    QVERIFY2(it == m_MainMatrix.constNEnd(), "Incorrect pre-incrementation");
 
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNEnd()};
-        IntMatrixConstNIterator secondIter{matrix.constNEnd()};
+    // post-increment
+    it = m_MainMatrix.constNBegin();
+    it++;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Incorrect post-incrementation");
+    it++;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(2, 0), "Incorrect post-incrementation");
+    it = m_MainMatrix.getConstNIterator(6, 4);
+    it++;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 4), "Incorrect post-incrementation");
+    it++;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(0, 5), "Incorrect post-incrementation");
+    it++;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 5), "Incorrect post-incrementation");
+    it++;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(2, 5), "Incorrect post-incrementation");
+    it = m_MainMatrix.getConstNIterator(4, 5);
+    it++;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(5, 5), "Incorrect post-incrementation");
+    it = m_MainMatrix.getConstNIterator(6, 8);
+    it++;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Incorrect post-incrementation");
+    it++;
+    QVERIFY2(it == m_MainMatrix.constNEnd(), "Incorrect post-incrementation");
+    it++;
+    QVERIFY2(it == m_MainMatrix.constNEnd(), "Incorrect post-incrementation");
 
-        --firstIter;
-        --firstIter;
-        --secondIter;
+    // test a combination of "pre" and "post" behaviors
+    IntMatrixConstNIterator it1{m_MainMatrix.getConstNIterator(4, 5)};
+    IntMatrixConstNIterator it2{++(++it1)};
+    QVERIFY2(it1 == m_MainMatrix.getConstNIterator(5, 5) && it2 == m_MainMatrix.getConstNIterator(6, 5), "Incorrect pre-pre-incrementation");
+    it1 = m_MainMatrix.getConstNIterator(4, 5);
+    it2 = (it1++)++;
+    QVERIFY2(it1 == m_MainMatrix.getConstNIterator(5, 5) && it2 == m_MainMatrix.getConstNIterator(4, 5), "Incorrect post-post-incrementation");
+    it1 = m_MainMatrix.getConstNIterator(4, 5);
+    it2 = (++it1)++;
+    QVERIFY2(it1 == m_MainMatrix.getConstNIterator(5, 5) && it2 == m_MainMatrix.getConstNIterator(5, 5), "Incorrect post-pre-incrementation");
+    it1 = m_MainMatrix.getConstNIterator(4, 5);
+    it2 = ++(it1++);
+    QVERIFY2(it1 == m_MainMatrix.getConstNIterator(5, 5) && it2 == m_MainMatrix.getConstNIterator(5, 5), "Incorrect pre-post-incrementation");
+}
 
-        QVERIFY2(matrix.constNEnd() >= secondIter, "The first iterator is smaller than the second iterator");
-        QVERIFY2(secondIter >= firstIter, "The first iterator is smaller than the second iterator");
-        QVERIFY2(firstIter >= matrix.constNBegin(), "The first iterator is smaller than the second iterator");
-    }
+void ConstNIteratorTests::testDecrementOperators()
+{
+    m_MainMatrix = {8, 9, -5};
 
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator firstIter{matrix.constNEnd()};
-        IntMatrixConstNIterator secondIter{matrix.constNEnd()};
+    // pre-decrement
+    IntMatrixConstNIterator it{m_MainMatrix.constNEnd()};
+    --it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Incorrect pre-decrementation");
+    --it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Incorrect pre-decrementation");
+    it = m_MainMatrix.getConstNIterator(5, 5);
+    --it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(4, 5), "Incorrect pre-decrementation");
+    it = m_MainMatrix.getConstNIterator(2, 5);
+    --it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 5), "Incorrect pre-decrementation");
+    --it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(0, 5), "Incorrect pre-decrementation");
+    --it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 4), "Incorrect pre-decrementation");
+    --it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 4), "Incorrect pre-decrementation");
+    it = m_MainMatrix.getConstNIterator(2, 0);
+    --it;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Incorrect pre-decrementation");
+    --it;
+    QVERIFY2(it == m_MainMatrix.constNBegin(), "Incorrect pre-decrementation");
+    --it;
+    QVERIFY2(it == m_MainMatrix.constNBegin(), "Incorrect pre-decrementation");
 
-        --firstIter;
-        --secondIter;
 
-        QVERIFY2(matrix.constNEnd() >= secondIter, "The first iterator is smaller than the second iterator");
-        QVERIFY2(secondIter >= firstIter, "The first iterator is smaller than the second iterator");
-        QVERIFY2(firstIter >= matrix.constNBegin(), "The first iterator is smaller than the second iterator");
-    }
+    // post-decrement
+    it = m_MainMatrix.constNEnd();
+    it--;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Incorrect post-decrementation");
+    it--;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Incorrect post-decrementation");
+    it = m_MainMatrix.getConstNIterator(5, 5);
+    it--;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(4, 5), "Incorrect post-decrementation");
+    it = m_MainMatrix.getConstNIterator(2, 5);
+    it--;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 5), "Incorrect post-decrementation");
+    it--;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(0, 5), "Incorrect post-decrementation");
+    it--;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 4), "Incorrect post-decrementation");
+    it--;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 4), "Incorrect post-decrementation");
+    it = m_MainMatrix.getConstNIterator(2, 0);
+    it--;
+    QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Incorrect post-decrementation");
+    it--;
+    QVERIFY2(it == m_MainMatrix.constNBegin(), "Incorrect post-decrementation");
+    it--;
+    QVERIFY2(it == m_MainMatrix.constNBegin(), "Incorrect post-decrementation");
 
-    {
-        IntMatrix matrix{3, 4, {1, -5, 9, 2, 6, -10, -3, 7, 11, 4, -8, 12}};
+    // test a combination of "pre" and "post" behaviors
+    IntMatrixConstNIterator it1{m_MainMatrix.getConstNIterator(6, 5)};
+    IntMatrixConstNIterator it2{--(--it1)};
+    QVERIFY2(it1 == m_MainMatrix.getConstNIterator(5, 5) && it2 == m_MainMatrix.getConstNIterator(4, 5), "Incorrect pre-pre-decrementation");
+    it1 = m_MainMatrix.getConstNIterator(6, 5);
+    it2 = (it1--)--;
+    QVERIFY2(it1 == m_MainMatrix.getConstNIterator(5, 5) && it2 == m_MainMatrix.getConstNIterator(6, 5), "Incorrect post-post-decrementation");
+    it1 = m_MainMatrix.getConstNIterator(6, 5);
+    it2 = (--it1)--;
+    QVERIFY2(it1 == m_MainMatrix.getConstNIterator(5, 5) && it2 == m_MainMatrix.getConstNIterator(5, 5), "Incorrect post-pre-decrementation");
+    it1 = m_MainMatrix.getConstNIterator(6, 5);
+    it2 = --(it1--);
+    QVERIFY2(it1 == m_MainMatrix.getConstNIterator(5, 5) && it2 == m_MainMatrix.getConstNIterator(5, 5), "Incorrect pre-post-decrementation");
+}
 
-        QVERIFY2(matrix.constNEnd() >= matrix.constNColumnEnd(3), "The first iterator is smaller than the second iterator");
-        QVERIFY2(matrix.constNColumnEnd(3) >= matrix.getConstNIterator(0, 3), "The first iterator is smaller than the second iterator");
-        QVERIFY2(matrix.getConstNIterator(0, 3) >= matrix.constNColumnBegin(3), "The first iterator is smaller than the second iterator");
-        QVERIFY2(matrix.constNColumnBegin(3) >= matrix.getConstNIterator(0, 2), "The first iterator is smaller than the second iterator");
-        QVERIFY2(matrix.getConstNIterator(0, 2) >= matrix.constNColumnEnd(1), "The first iterator is smaller than the second iterator");
-        QVERIFY2(matrix.constNColumnEnd(1) >= matrix.getConstNIterator(1, 1), "The first iterator is smaller than the second iterator");
-        QVERIFY2(matrix.getConstNIterator(1, 1) >= matrix.constNColumnBegin(1), "The first iterator is smaller than the second iterator");
-        QVERIFY2(matrix.constNColumnBegin(1) >= matrix.getConstNIterator(0, 1), "The first iterator is smaller than the second iterator");
-        QVERIFY2(matrix.getConstNIterator(1, 0) >= matrix.getConstNIterator(0, 0), "The first iterator is smaller than the second iterator");
-        QVERIFY2(matrix.getConstNIterator(0, 0) >= matrix.constNBegin(), "The first iterator is smaller than the second iterator");
-    }
+void ConstNIteratorTests::testOperatorPlus()
+{
+    m_MainMatrix = {8, 9, -5};
+
+    // test for non-empty matrix
+    IntMatrixConstNIterator it{m_MainMatrix.constNBegin()};
+    QVERIFY2(it + (-3) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-1) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 0 == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 1 == m_MainMatrix.getConstNIterator(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 4 == m_MainMatrix.getConstNIterator(4, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 10 == m_MainMatrix.getConstNIterator(2, 1), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 70 == m_MainMatrix.getConstNIterator(6, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 71 == m_MainMatrix.getConstNIterator(7, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 72 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 73 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 75 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+
+    it = m_MainMatrix.getConstNIterator(1, 0);
+    QVERIFY2(it + (-4) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-2) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-1) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 0 == m_MainMatrix.getConstNIterator(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 3 == m_MainMatrix.getConstNIterator(4, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 9 == m_MainMatrix.getConstNIterator(2, 1), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 69 == m_MainMatrix.getConstNIterator(6, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 70 == m_MainMatrix.getConstNIterator(7, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 71 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 72 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 74 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+
+    it = m_MainMatrix.getConstNIterator(4, 5);
+    QVERIFY2(it + (-47) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-45) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-44) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-43) == m_MainMatrix.getConstNIterator(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-6) == m_MainMatrix.getConstNIterator(6, 4), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-2) == m_MainMatrix.getConstNIterator(2, 5), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 0 == m_MainMatrix.getConstNIterator(4, 5), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 2 == m_MainMatrix.getConstNIterator(6, 5), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 6 == m_MainMatrix.getConstNIterator(2, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 26 == m_MainMatrix.getConstNIterator(6, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 27 == m_MainMatrix.getConstNIterator(7, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 28 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 29 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 31 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+
+    it = m_MainMatrix.getConstNIterator(6, 8);
+    QVERIFY2(it + (-73) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-71) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-70) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-69) == m_MainMatrix.getConstNIterator(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-24) == m_MainMatrix.getConstNIterator(6, 5), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-3) == m_MainMatrix.getConstNIterator(3, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 0 == m_MainMatrix.getConstNIterator(6, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 1 == m_MainMatrix.getConstNIterator(7, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 2 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 3 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 5 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+
+    it = m_MainMatrix.getConstNIterator(7, 8);
+    QVERIFY2(it + (-74) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-72) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-71) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-70) == m_MainMatrix.getConstNIterator(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-25) == m_MainMatrix.getConstNIterator(6, 5), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-4) == m_MainMatrix.getConstNIterator(3, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-1) == m_MainMatrix.getConstNIterator(6, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 0 == m_MainMatrix.getConstNIterator(7, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 1 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 2 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 4 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+
+    it = m_MainMatrix.constNEnd();
+    QVERIFY2(it + (-75) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-73) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-72) == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-71) == m_MainMatrix.getConstNIterator(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-26) == m_MainMatrix.getConstNIterator(6, 5), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-5) == m_MainMatrix.getConstNIterator(3, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-2) == m_MainMatrix.getConstNIterator(6, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + (-1) == m_MainMatrix.getConstNIterator(7, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 0 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 1 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it + 3 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+
+    // test for empty matrix
+    m_MainMatrix.clear();
+    QVERIFY2(m_MainMatrix.constNBegin() + (-1) == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(m_MainMatrix.constNBegin() + 1 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(m_MainMatrix.constNEnd() + 0 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(m_MainMatrix.constNEnd() + 1 == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(m_MainMatrix.constNEnd() + (-1) == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
+
+    // test for empty iterators
+    IntMatrixConstNIterator it1{};
+    IntMatrixConstNIterator it2{};
+    IntMatrixConstNIterator it3{};
+    it1 = it3 + (-1);
+    it2 = it3 + 1;
+    QVERIFY2(it1 == it3, "Operator + does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(it2 == it3, "Operator + does not work correctly, the resulting iterator is not the right one");
+}
+
+void ConstNIteratorTests::testOperatorMinus()
+{
+    m_MainMatrix = {8, 9, -5};
+
+    // test for non-empty matrix
+    IntMatrixConstNIterator it{m_MainMatrix.constNBegin()};
+    QVERIFY2(it - 3 == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 1 == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 0 == m_MainMatrix.constNBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-1) == m_MainMatrix.getConstNIterator(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-4) == m_MainMatrix.getConstNIterator(4, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-10) == m_MainMatrix.getConstNIterator(2, 1), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-70) == m_MainMatrix.getConstNIterator(6, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-71) == m_MainMatrix.getConstNIterator(7, 8), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-72) == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-73) == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-75) == m_MainMatrix.constNEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+
+    it = m_MainMatrix.getConstNIterator(1, 0);
+    QVERIFY2(it - 4 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 2 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 1 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 0 == m_MainMatrix.getConstNIterator(1, 0), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-3) == m_MainMatrix.getConstNIterator(4, 0), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-9) == m_MainMatrix.getConstNIterator(2, 1), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-69) == m_MainMatrix.getConstNIterator(6, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-70) == m_MainMatrix.getConstNIterator(7, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-71) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-72) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-74) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+
+    it = m_MainMatrix.getConstNIterator(4, 5);
+    QVERIFY2(it - 47 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 45 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 44 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 43 == m_MainMatrix.getConstNIterator(1, 0), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 6 == m_MainMatrix.getConstNIterator(6, 4), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 2 == m_MainMatrix.getConstNIterator(2, 5), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 0 == m_MainMatrix.getConstNIterator(4, 5), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-2) == m_MainMatrix.getConstNIterator(6, 5), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-6) == m_MainMatrix.getConstNIterator(2, 6), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-26) == m_MainMatrix.getConstNIterator(6, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-27) == m_MainMatrix.getConstNIterator(7, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-28) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-29) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-31) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+
+    it = m_MainMatrix.getConstNIterator(6, 8);
+    QVERIFY2(it - 73 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 71 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 70 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 69 == m_MainMatrix.getConstNIterator(1, 0), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 24 == m_MainMatrix.getConstNIterator(6, 5), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 3 == m_MainMatrix.getConstNIterator(3, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 0 == m_MainMatrix.getConstNIterator(6, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-1) == m_MainMatrix.getConstNIterator(7, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-2) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-3) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-5) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+
+    it = m_MainMatrix.getConstNIterator(7, 8);
+    QVERIFY2(it - 74 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 72 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 71 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 70 == m_MainMatrix.getConstNIterator(1, 0), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 25 == m_MainMatrix.getConstNIterator(6, 5), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 4 == m_MainMatrix.getConstNIterator(3, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 1 == m_MainMatrix.getConstNIterator(6, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 0 == m_MainMatrix.getConstNIterator(7, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-1) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-2) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-4) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+
+    it = m_MainMatrix.constNEnd();
+    QVERIFY2(it - 75 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 73 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 72 == m_MainMatrix.constNBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 71 == m_MainMatrix.getConstNIterator(1, 0), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 26 == m_MainMatrix.getConstNIterator(6, 5), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 5 == m_MainMatrix.getConstNIterator(3, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 2 == m_MainMatrix.getConstNIterator(6, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 1 == m_MainMatrix.getConstNIterator(7, 8), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - 0 == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-1) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+    QVERIFY2(it - (-3) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
+
+    // test for empty matrix
+    m_MainMatrix.clear();
+    QVERIFY2(m_MainMatrix.constNBegin() - 1 == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(m_MainMatrix.constNBegin() - (-1) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(m_MainMatrix.constNEnd() - 0 == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(m_MainMatrix.constNEnd() - (-1) == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(m_MainMatrix.constNEnd() - 1 == m_MainMatrix.constNEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
+
+    // test for empty iterator
+    IntMatrixConstNIterator it1{};
+    IntMatrixConstNIterator it2{};
+    IntMatrixConstNIterator it3{};
+    it1 = it3 - 1;
+    it2 = it3 - (-1);
+    QVERIFY2(it1 == it3, "Operator - does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(it2 == it3, "Operator - does not work correctly, the resulting iterator is not the right one");
+}
+
+void ConstNIteratorTests::testOperatorPlusEqual()
+{
+    IntMatrixConstNIterator it;
+
+    // test for non-empty matrix
+    m_MainMatrix = {8, 9, -5};
+
+    IntMatrixConstNIterator it1{m_MainMatrix.constNBegin()};
+    it = it1; it += (-3); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-1); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 0; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 1; QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 4; QVERIFY2(it == m_MainMatrix.getConstNIterator(4, 0), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 10; QVERIFY2(it == m_MainMatrix.getConstNIterator(2, 1), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 70; QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 71; QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 72; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 73; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 75; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+
+    it1 = m_MainMatrix.getConstNIterator(1, 0);
+    it = it1; it += (-4); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-2); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-1); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 0; QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 3; QVERIFY2(it == m_MainMatrix.getConstNIterator(4, 0), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 9; QVERIFY2(it == m_MainMatrix.getConstNIterator(2, 1), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 69; QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 70; QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 71; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 72; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 74; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+
+    it1 = m_MainMatrix.getConstNIterator(4, 5);
+    it = it1; it += (-47); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-45); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-44); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-43); QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-6); QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 4), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-2); QVERIFY2(it == m_MainMatrix.getConstNIterator(2, 5), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 0; QVERIFY2(it == m_MainMatrix.getConstNIterator(4, 5), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 2; QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 5), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 6; QVERIFY2(it == m_MainMatrix.getConstNIterator(2, 6), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 26; QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 27; QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 28; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 29; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 31; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+
+    it1 = m_MainMatrix.getConstNIterator(6, 8);
+    it = it1; it += (-73); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-71); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-70); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-69); QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-24); QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 5), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-3); QVERIFY2(it == m_MainMatrix.getConstNIterator(3, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 0; QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 1; QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 2; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 3; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 5; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+
+    it1 = m_MainMatrix.getConstNIterator(7, 8);
+    it = it1; it += (-74); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-72); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-71); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-70); QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-25); QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 5), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-4); QVERIFY2(it == m_MainMatrix.getConstNIterator(3, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-1); QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 0; QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 1; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 2; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 4; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+
+    it1 = m_MainMatrix.constNEnd();
+    it = it1; it += (-75); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-73); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-72); QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-71); QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-26); QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 5), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-5); QVERIFY2(it == m_MainMatrix.getConstNIterator(3, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-2); QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += (-1); QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 0; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 1; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it += 3; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
+
+    // test for empty matrix
+    m_MainMatrix.clear();
+    it1 = m_MainMatrix.constNBegin();
+    it1 = m_MainMatrix.constNEnd();
+    it = it1; it += (-1); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator is not the right one");
+    it = it1; it += 1; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator is not the right one");
+    it = it1; it += 0; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator is not the right one");
+    it = it1; it += 1; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator is not the right one");
+    it = it1; it += (-1); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator += does not work correctly, the updated iterator is not the right one");
+
+    // test for empty iterator
+    IntMatrixConstNIterator it2{};
+    IntMatrixConstNIterator it3{};
+    IntMatrixConstNIterator it4{};
+    it3 += (-1); QVERIFY2(it3 == it2, "Operator += does not work correctly, the resulting updated is not the right one");
+    it4 += 1; QVERIFY2(it4 == it2, "Operator += does not work correctly, the resulting updated is not the right one");
+}
+
+void ConstNIteratorTests::testOperatorMinusEqual()
+{
+    IntMatrixConstNIterator it;
+
+    // test for non-empty matrix
+    m_MainMatrix = {8, 9, -5};
+
+    IntMatrixConstNIterator it1{m_MainMatrix.constNBegin()};
+    it = it1; it -= 3; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 1; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 0; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-1); QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-4); QVERIFY2(it == m_MainMatrix.getConstNIterator(4, 0), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-10); QVERIFY2(it == m_MainMatrix.getConstNIterator(2, 1), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-70); QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-71); QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-72); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-73); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-75); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+
+    it1 = m_MainMatrix.getConstNIterator(1, 0);
+    it = it1; it -= 4; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 2; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 1; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 0; QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-3); QVERIFY2(it == m_MainMatrix.getConstNIterator(4, 0), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-9); QVERIFY2(it == m_MainMatrix.getConstNIterator(2, 1), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-69); QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-70); QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-71); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-72); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-74); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+
+    it1 = m_MainMatrix.getConstNIterator(4, 5);
+    it = it1; it -= 47; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 45; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 44; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 43; QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 6; QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 4), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 2; QVERIFY2(it == m_MainMatrix.getConstNIterator(2, 5), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 0; QVERIFY2(it == m_MainMatrix.getConstNIterator(4, 5), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-2); QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 5), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-6); QVERIFY2(it == m_MainMatrix.getConstNIterator(2, 6), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-26); QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-27); QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-28); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-29); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-31); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+
+    it1 = m_MainMatrix.getConstNIterator(6, 8);
+    it = it1; it -= 73; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 71; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 70; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 69; QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 24; QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 5), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 3; QVERIFY2(it == m_MainMatrix.getConstNIterator(3, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 0; QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-1); QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-2); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-3); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-5); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+
+    it1 = m_MainMatrix.getConstNIterator(7, 8);
+    it = it1; it -= 74; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 72; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 71; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 70; QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 25; QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 5), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 4; QVERIFY2(it == m_MainMatrix.getConstNIterator(3, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 1; QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 0; QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-1); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-2); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-4); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+
+    it1 = m_MainMatrix.constNEnd();
+    it = it1; it -= 75; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 73; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 72; QVERIFY2(it == m_MainMatrix.constNBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 71; QVERIFY2(it == m_MainMatrix.getConstNIterator(1, 0), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 26; QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 5), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 5; QVERIFY2(it == m_MainMatrix.getConstNIterator(3, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 2; QVERIFY2(it == m_MainMatrix.getConstNIterator(6, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 1; QVERIFY2(it == m_MainMatrix.getConstNIterator(7, 8), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= 0; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-1); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+    it = it1; it -= (-3); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
+
+    // test for empty matrix
+    m_MainMatrix.clear();
+    it1 = m_MainMatrix.constNBegin();
+    it1 = m_MainMatrix.constNEnd();
+    it = it1; it -= 1; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator is not the right one");
+    it = it1; it -= (-1); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator is not the right one");
+    it = it1; it -= 0; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator is not the right one");
+    it = it1; it -= (-1); QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator is not the right one");
+    it = it1; it -= 1; QVERIFY2(it == m_MainMatrix.constNEnd(), "Operator -= does not work correctly, the updated iterator is not the right one");
+
+    // test for empty iterator
+    IntMatrixConstNIterator it2{};
+    IntMatrixConstNIterator it3{};
+    IntMatrixConstNIterator it4{};
+    it3 -= 1; QVERIFY2(it3 == it2, "Operator -= does not work correctly, the updated iterator is not the right one");
+    it4 -= (-1); QVERIFY2(it4 == it2, "Operator -= does not work correctly, the updated iterator is not the right one");
+}
+
+void ConstNIteratorTests::testDifferenceOperator()
+{
+    // test for non-empty matrix
+    m_MainMatrix = {8, 9, -5};
+
+    QVERIFY2(m_MainMatrix.constNEnd() - m_MainMatrix.constNEnd() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNEnd() - m_MainMatrix.getConstNIterator(7, 8) == 1, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNEnd() - m_MainMatrix.getConstNIterator(6, 8) == 2, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNEnd() - m_MainMatrix.getConstNIterator(4, 5) == 28, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNEnd() - m_MainMatrix.getConstNIterator(1, 0) == 71, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNEnd() - m_MainMatrix.constNBegin() == 72, "The difference operator does not work correctly, difference between iterators is wrong");
+
+    QVERIFY2(m_MainMatrix.getConstNIterator(7, 8) - m_MainMatrix.constNEnd() == -1, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(7, 8) - m_MainMatrix.getConstNIterator(7, 8) == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(7, 8) - m_MainMatrix.getConstNIterator(6, 8) == 1, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(7, 8) - m_MainMatrix.getConstNIterator(4, 5) == 27, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(7, 8) - m_MainMatrix.getConstNIterator(1, 0) == 70, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(7, 8) - m_MainMatrix.constNBegin() == 71, "The difference operator does not work correctly, difference between iterators is wrong");
+
+    QVERIFY2(m_MainMatrix.getConstNIterator(6, 8) - m_MainMatrix.constNEnd() == -2, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(6, 8) - m_MainMatrix.getConstNIterator(7, 8) == -1, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(6, 8) - m_MainMatrix.getConstNIterator(6, 8) == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(6, 8) - m_MainMatrix.getConstNIterator(4, 5) == 26, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(6, 8) - m_MainMatrix.getConstNIterator(1, 0) == 69, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(6, 8) - m_MainMatrix.constNBegin() == 70, "The difference operator does not work correctly, difference between iterators is wrong");
+
+    QVERIFY2(m_MainMatrix.getConstNIterator(4, 5) - m_MainMatrix.constNEnd() == -28, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(4, 5) - m_MainMatrix.getConstNIterator(7, 8) == -27, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(4, 5) - m_MainMatrix.getConstNIterator(6, 8) == -26, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(4, 5) - m_MainMatrix.getConstNIterator(4, 5) == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(4, 5) - m_MainMatrix.getConstNIterator(1, 0) == 43, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(4, 5) - m_MainMatrix.constNBegin() == 44, "The difference operator does not work correctly, difference between iterators is wrong");
+
+    QVERIFY2(m_MainMatrix.getConstNIterator(1, 0) - m_MainMatrix.constNEnd() == -71, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(1, 0) - m_MainMatrix.getConstNIterator(7, 8) == -70, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(1, 0) - m_MainMatrix.getConstNIterator(6, 8) == -69, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(1, 0) - m_MainMatrix.getConstNIterator(4, 5) == -43, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(1, 0) - m_MainMatrix.getConstNIterator(1, 0) == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(1, 0) - m_MainMatrix.constNBegin() == 1, "The difference operator does not work correctly, difference between iterators is wrong");
+
+    QVERIFY2(m_MainMatrix.constNBegin() - m_MainMatrix.constNEnd() == -72, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNBegin() - m_MainMatrix.getConstNIterator(7, 8) == -71, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNBegin() - m_MainMatrix.getConstNIterator(6, 8) == -70, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNBegin() - m_MainMatrix.getConstNIterator(4, 5) == -44, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNBegin() - m_MainMatrix.getConstNIterator(1, 0) == -1, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNBegin() - m_MainMatrix.constNBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+
+    // additional tests with "random" elements from same column/different columns
+    QVERIFY2(m_MainMatrix.getConstNIterator(4, 5) - m_MainMatrix.getConstNIterator(2, 7) == -14, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(2, 7) - m_MainMatrix.getConstNIterator(4, 5) == 14, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(4, 5) - m_MainMatrix.getConstNIterator(2, 5) == 2, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.getConstNIterator(2, 5) - m_MainMatrix.getConstNIterator(4, 5) == -2, "The difference operator does not work correctly, difference between iterators is wrong");
+
+    // test for empty matrix
+    m_MainMatrix.clear();
+    QVERIFY2(m_MainMatrix.constNEnd() - m_MainMatrix.constNBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNBegin() - m_MainMatrix.constNEnd() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNBegin() - m_MainMatrix.constNBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(m_MainMatrix.constNEnd() - m_MainMatrix.constNEnd() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+
+    // test for empty iterator
+    IntMatrixConstNIterator it1{};
+    IntMatrixConstNIterator it2{};
+    QVERIFY2(it1 - it2 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(it2 - it1 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(it1 - it1 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
 }
 
 void ConstNIteratorTests::testDereferenceAsteriskOperator()
 {
-    IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-    IntMatrixConstNIterator readIter{matrix.constNBegin()};
+    // test reading element
+    m_MainMatrix = {3, 4, {1, -4, 7, -10, -2, 5, -8, 11, 3, -6, 9, -12}};
+    QVERIFY2(*m_MainMatrix.constNBegin() == 1, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
+    QVERIFY2(*m_MainMatrix.getConstNIterator(1, 0) == -2, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
+    QVERIFY2(*m_MainMatrix.getConstNIterator(2, 1) == -6, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
+    QVERIFY2(*m_MainMatrix.getConstNIterator(1, 3) == 11, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
+    QVERIFY2(*m_MainMatrix.getConstNIterator(2, 3) == -12, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
 
-    matrix.at(2, 0) = 10;
-    ++readIter;
-    ++readIter;
-
+    // additional tests
+    m_MainMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
+    IntMatrixConstNIterator readIter{m_MainMatrix.constNBegin()};
+    m_MainMatrix.at(2, 0) = 10;
+    readIter += 2;
     QVERIFY2(*readIter == 10, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
 }
 
 void ConstNIteratorTests::testDereferenceArrowOperator()
 {
-    StringMatrix matrix{3, 2, {"abc", "jkl", "defed", "mno", "ghi", "pqr"}};
-    StringMatrixConstNIterator readIter{matrix.constNBegin()};
+    // test reading element
+    m_AuxStringMatrix = {3, 4, {"abc", "jihgfedcba", "abcde", "", "ba", "a", "ihgfedcba", "abcdefghijk", "abcd", "gfedcba", "abcdefgh", "fedcba"}};
+    QVERIFY2(m_AuxStringMatrix.constNBegin()->size() == 3, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    QVERIFY2(m_AuxStringMatrix.getConstNIterator(1, 0)->size() == 2, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    QVERIFY2(m_AuxStringMatrix.getConstNIterator(2, 1)->size() == 7, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    QVERIFY2(m_AuxStringMatrix.getConstNIterator(1, 3)->size() == 11, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    QVERIFY2(m_AuxStringMatrix.getConstNIterator(2, 3)->size() == 6, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
 
-    ++readIter;
-
-    QVERIFY2(readIter->size() == 5, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    // additional tests
+    m_AuxStringMatrix = {3, 2, {"abc", "jkl", "defed", "mno", "ghi", "pqr"}};
+    StringMatrixConstNIterator it{m_AuxStringMatrix.constNBegin()};
+    ++it;
+    QVERIFY2(it->size() == 5, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
 }
 
 void ConstNIteratorTests::testDereferenceSquareBracketsOperator()
 {
-    IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
+    // test reading element
+    m_MainMatrix = {3, 4, {1, -4, 7, -10, -2, 5, -8, 11, 3, -6, 9, -12}};
 
-    IntMatrixConstNIterator firstReadIter{matrix.constNBegin()};
-    IntMatrixConstNIterator secondReadIter{matrix.getConstNIterator(0, 1)};
-    IntMatrixConstNIterator thirdReadIter{matrix.constNEnd()};
+    IntMatrixConstNIterator it{m_MainMatrix.constNBegin()};
+    QVERIFY2(it[0] == 1, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[1] == -2, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[5] == -6, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[10] == 11, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[11] == -12, "The dereference square brackets operator doesn't work correctly when reading the element");
 
-    QVERIFY2(firstReadIter[0] == 1 && firstReadIter[1] == 2 && firstReadIter[2] == -3 && firstReadIter[3] == 4 && firstReadIter[4] == -5 && firstReadIter[5] == 6,
-            "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
+    it = m_MainMatrix.getConstNIterator(1, 0);
+    QVERIFY2(it[-1] == 1, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[0] == -2, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[4] == -6, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[9] == 11, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[10] == -12, "The dereference square brackets operator doesn't work correctly when reading the element");
 
-    QVERIFY2(secondReadIter[-3] == 1 && secondReadIter[-2] == 2 && secondReadIter[-1] == -3 && secondReadIter[0] == 4 && secondReadIter[1] == -5 && secondReadIter[2] == 6,
-            "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
+    it = m_MainMatrix.getConstNIterator(2, 1);
+    QVERIFY2(it[-5] == 1, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[-4] == -2, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[0] == -6, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[5] == 11, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[6] == -12, "The dereference square brackets operator doesn't work correctly when reading the element");
 
-    QVERIFY2(thirdReadIter[-6] == 1 && thirdReadIter[-5] == 2 && thirdReadIter[-4] == -3 && thirdReadIter[-3] == 4 && thirdReadIter[-2] == -5 && thirdReadIter[-1] == 6,
-            "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
+    it = m_MainMatrix.getConstNIterator(1, 3);
+    QVERIFY2(it[-10] == 1, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[-9] == -2, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[-5] == -6, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[0] == 11, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[1] == -12, "The dereference square brackets operator doesn't work correctly when reading the element");
+
+    it = m_MainMatrix.getConstNIterator(2, 3);
+    QVERIFY2(it[-11] == 1, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[-10] == -2, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[-6] == -6, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[-1] == 11, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(it[0] == -12, "The dereference square brackets operator doesn't work correctly when reading the element");
 }
 
 void ConstNIteratorTests::testIsValidWithMatrix()
 {
-    {
-        IntMatrix firstMatrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrix secondMatrix{2, 3, {7, -9, -11, 8, 10, 12}};
-        IntMatrixConstNIterator it{firstMatrix.getConstNIterator(0, 1)};
+    m_MainMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
+    IntMatrixConstNIterator it{m_MainMatrix.getConstNIterator(0, 1)};
+    QVERIFY2(it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (true)");
 
-        QVERIFY2(it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (true)");
-        QVERIFY2(!it.isValidWithMatrix(secondMatrix), "The validity function does not return the right value (false)");
-    }
+    m_MainMatrix = {2, 3, {7, -9, -11, 8, 10, 12}};
+    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
 
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(0, 1)};
+    m_MainMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
+    it = m_MainMatrix.getConstNIterator(0, 1);
+    m_MainMatrix.clear();
+    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
 
-        matrix.clear();
+    m_MainMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
+    it = m_MainMatrix.getConstNIterator(0, 1);
+    m_MainMatrix.resize(3, 2);
+    QVERIFY2(it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (true)");
 
-        QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
-    }
+    m_MainMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
+    it = m_MainMatrix.getConstNIterator(0, 1);
+    m_MainMatrix.resizeWithValue(4, 2, -5);
+    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
 
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(0, 1)};
+    m_MainMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
+    it = m_MainMatrix.getConstNIterator(0, 1);
+    m_MainMatrix.resizeWithValue(3, 4, -5);
+    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
 
-        matrix.resize(3, 2);
+    m_MainMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
+    it = m_MainMatrix.getConstNIterator(0, 1);
+    m_MainMatrix.resizeWithValue(5, 4, -5);
+    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
 
-        QVERIFY2(it.isValidWithMatrix(matrix), "The validity function does not return the right value (true)");
-    }
+    m_MainMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
+    m_AuxIntMatrix = {2, 3, 5};
+    it = m_MainMatrix.getConstNIterator(0, 1);
+    m_AuxIntMatrix = std::move(m_MainMatrix);
+    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
+    QVERIFY2(it.isValidWithMatrix(m_AuxIntMatrix), "The validity function does not return the right value (true)");
 
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(0, 1)};
+    m_MainMatrix = std::move(m_AuxIntMatrix);
+    QVERIFY2(it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (true)");
+    QVERIFY2(!it.isValidWithMatrix(m_AuxIntMatrix), "The validity function does not return the right value (false)");
 
-        matrix.resizeWithValue(4, 2, -5);
+    m_MainMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
+    m_AuxIntMatrix = {3, 2, 5};
+    it = m_MainMatrix.getConstNIterator(0, 1);
+    m_MainMatrix = std::move(m_AuxIntMatrix);
+    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
 
-        QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(0, 1)};
-
-        matrix.resizeWithValue(3, 4, -5);
-
-        QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(0, 1)};
-
-        matrix.resizeWithValue(5, 4, -5);
-
-        QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix firstMatrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrix secondMatrix{2, 3, 5};
-        IntMatrixConstNIterator it{firstMatrix.getConstNIterator(0, 1)};
-
-        secondMatrix = std::move(firstMatrix);
-
-        QVERIFY2(!it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (false)");
-        QVERIFY2(it.isValidWithMatrix(secondMatrix), "The validity function does not return the right value (true)");
-
-        firstMatrix = std::move(secondMatrix);
-
-        QVERIFY2(it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (true)");
-        QVERIFY2(!it.isValidWithMatrix(secondMatrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix firstMatrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrix secondMatrix{3, 2, 5};
-        IntMatrixConstNIterator it{firstMatrix.getConstNIterator(0, 1)};
-
-        firstMatrix = std::move(secondMatrix);
-
-        QVERIFY2(!it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix firstMatrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrix secondMatrix{3, 2, 5};
-        IntMatrixConstNIterator it{firstMatrix.getConstNIterator(0, 1)};
-
-        firstMatrix = secondMatrix;
-
-        QVERIFY2(it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (true)");
-    }
+    m_MainMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
+    m_AuxIntMatrix = {3, 2, 5};
+    it = m_MainMatrix.getConstNIterator(0, 1);
+    m_MainMatrix = m_AuxIntMatrix;
+    QVERIFY2(it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (true)");
 }
 
 void ConstNIteratorTests::testPositionGetters()
 {
-    IntMatrix firstMatrix{3, 2, {1, 4, 2, -5, -3, 6}};
-    IntMatrix secondMatrix{3, 2, {7, 10, 8, -11, -9, 12}};
+    m_MainMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
+    m_AuxIntMatrix = {3, 2, {7, 10, 8, -11, -9, 12}};
 
-    IntMatrixConstNIterator it{firstMatrix.getConstNIterator(0, 1)};
-
-    firstMatrix = std::move(secondMatrix);
-
-    IntMatrixConstNIterator newIt{firstMatrix.getConstNIterator(it.getCurrentRowNr(), it.getCurrentColumnNr())};
+    IntMatrixConstNIterator it{m_MainMatrix.getConstNIterator(0, 1)};
+    m_MainMatrix = std::move(m_AuxIntMatrix);
+    IntMatrixConstNIterator newIt{m_MainMatrix.getConstNIterator(it.getCurrentRowNr(), it.getCurrentColumnNr())};
 
     QVERIFY2(*newIt == 10, "The position getters do not work correctly, iterator dereferencing does not return the right value");
-}
-
-void ConstNIteratorTests::testPassingThroughAllElements()
-{
-    {
-        IntMatrix matrix{3, 4, {1, 4, -7, 10, 2, -5, 8, -11, -3, 6, 9, 12}};
-        int count{0};
-        int sum{0};
-
-        for (IntMatrixConstNIterator it{matrix.constNBegin()}; it != matrix.constNEnd(); ++it)
-        {
-            ++count;
-            sum += *it;
-        }
-
-        QVERIFY2(count == 12, "Passing through through all matrix elements by using the iterator does not work correctly, total elements count is not correct");
-        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the iterator does not work correctly, sum of the elements is not correct");
-    }
-
-    {
-        IntMatrix matrix{3, 4, {1, 4, -7, 10, 2, -5, 8, -11, -3, 6, 9, 12}};
-        int count{0};
-        int sum{0};
-
-        IntMatrixConstNIterator it{matrix.constNEnd()};
-
-        while (it != matrix.constNBegin())
-        {
-            --it;
-            ++count;
-            sum += *it;
-        }
-
-        QVERIFY2(count == 12, "Passing through through all matrix elements by using the iterator does not work correctly, total elements count is not correct");
-        QVERIFY2(sum == 26, "Passing through through all matrix elements by using the iterator does not work correctly, sum of the elements is not correct");
-    }
-}
-
-void ConstNIteratorTests::testColumnBeginEndIterators()
-{
-    IntMatrix matrix{2, 3, {1, -3, -5, 2, 4, 6}};
-
-    IntMatrixConstNIterator firstColBeginIter{matrix.constNColumnBegin(0)};
-    IntMatrixConstNIterator secondColEndIter{matrix.constNColumnEnd(1)};
-
-    QVERIFY2(*firstColBeginIter == 1, "The matrix begin iterator of the first column does not point to the right element");
-    QVERIFY2(*secondColEndIter == -5, "The matrix end iterator of the second column does not point to the right element");
-}
-
-void ConstNIteratorTests::testGetNIterator()
-{
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(1, 0)};
-
-        QVERIFY2(*it == 2, "The getIterator() method does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    {
-        IntMatrix matrix{3, 2, {1, 4, 2, -5, -3, 6}};
-        IntMatrixConstNIterator it{matrix.getConstNIterator(1)};
-
-        QVERIFY2(*it == 2, "The getIterator() method does not work correctly, the resulting iterator does not point to the right element");
-    }
 }
 
 void ConstNIteratorTests::testStdCount()
 {
     using namespace std;
 
-    IntMatrix matrix{5, 4, {-1, 5, 2, -7, 1, 9, -2, 7, 3, 8, 2, 2, 1, 0, 8, 9, 4, 1, 9, 8}};
+    m_MainMatrix = {5, 4, {-1, 5, 2, 7, 1, 9, -2, 7, 3, 8, 2, 2, 1, 0, 8, 9, 4, 1, 9, 8 }};
 
-    int matchCount{count(matrix.constNBegin(), matrix.constNEnd(), 2)};
+    int matchCount{count(m_MainMatrix.constNBegin(), m_MainMatrix.constNEnd(), 2)};
     QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNBegin(), matrix.constNEnd(), -5);
+    matchCount = count(m_MainMatrix.constNBegin(), m_MainMatrix.constNEnd(), -5);
     QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.getConstNIterator(2, 0), matrix.getConstNIterator(4, 1), 1);
+    matchCount = count(m_MainMatrix.getConstNIterator(2, 0), m_MainMatrix.getConstNIterator(4, 1), 1);
     QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.getConstNIterator(2, 0), matrix.getConstNIterator(0, 2), 1);
+    matchCount = count(m_MainMatrix.getConstNIterator(2, 0), m_MainMatrix.getConstNIterator(0, 2), 1);
     QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.getConstNIterator(3, 0), matrix.getConstNIterator(4, 1), 1);
+    matchCount = count(m_MainMatrix.getConstNIterator(3, 0), m_MainMatrix.getConstNIterator(4, 1), 1);
     QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.getConstNIterator(3, 0), matrix.getConstNIterator(0, 2), 1);
+    matchCount = count(m_MainMatrix.getConstNIterator(3, 0), m_MainMatrix.getConstNIterator(0, 2), 1);
     QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNBegin(), matrix.getConstNIterator(3, 2), 2);
+    matchCount = count(m_MainMatrix.constNBegin(), m_MainMatrix.getConstNIterator(3, 2), 2);
     QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.getConstNIterator(3, 2), matrix.constNEnd(), 2);
+    matchCount = count(m_MainMatrix.getConstNIterator(3, 2), m_MainMatrix.constNEnd(), 2);
     QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNBegin(), matrix.getConstNIterator(2, 2), 2);
+    matchCount = count(m_MainMatrix.constNBegin(), m_MainMatrix.getConstNIterator(2, 2), 2);
     QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.getConstNIterator(2, 2), matrix.constNEnd(), 2);
+    matchCount = count(m_MainMatrix.getConstNIterator(2, 2), m_MainMatrix.constNEnd(), 2);
     QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.getConstNIterator(2), matrix.getConstNIterator(9), 1);
+    matchCount = count(m_MainMatrix.getConstNIterator(2), m_MainMatrix.getConstNIterator(9), 1);
     QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.getConstNIterator(2), matrix.getConstNIterator(10), 1);
+    matchCount = count(m_MainMatrix.getConstNIterator(2), m_MainMatrix.getConstNIterator(10), 1);
     QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.getConstNIterator(3), matrix.getConstNIterator(9), 1);
+    matchCount = count(m_MainMatrix.getConstNIterator(3), m_MainMatrix.getConstNIterator(9), 1);
     QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.getConstNIterator(3), matrix.getConstNIterator(10), 1);
+    matchCount = count(m_MainMatrix.getConstNIterator(3), m_MainMatrix.getConstNIterator(10), 1);
     QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNBegin(), matrix.getConstNIterator(13), 2);
+    matchCount = count(m_MainMatrix.constNBegin(), m_MainMatrix.getConstNIterator(13), 2);
     QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.getConstNIterator(13), matrix.constNEnd(), 2);
+    matchCount = count(m_MainMatrix.getConstNIterator(13), m_MainMatrix.constNEnd(), 2);
     QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNBegin(), matrix.getConstNIterator(12), 2);
+    matchCount = count(m_MainMatrix.constNBegin(), m_MainMatrix.getConstNIterator(12), 2);
     QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.getConstNIterator(12), matrix.constNEnd(), 2);
+    matchCount = count(m_MainMatrix.getConstNIterator(12), m_MainMatrix.constNEnd(), 2);
     QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNColumnBegin(1), matrix.constNColumnEnd(1), 1);
+    matchCount = count(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNColumnEnd(1), 1);
     QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNColumnBegin(1), matrix.constNColumnEnd(2), 8);
+    matchCount = count(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNColumnEnd(2), 8);
     QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNColumnBegin(2), matrix.constNColumnEnd(2), 9);
+    matchCount = count(m_MainMatrix.constNColumnBegin(2), m_MainMatrix.constNColumnEnd(2), 9);
     QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNColumnBegin(2), matrix.constNColumnEnd(3), 9);
+    matchCount = count(m_MainMatrix.constNColumnBegin(2), m_MainMatrix.constNColumnEnd(3), 9);
     QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNBegin(), matrix.constNColumnBegin(1), 1);
+    matchCount = count(m_MainMatrix.constNBegin(), m_MainMatrix.constNColumnBegin(1), 1);
     QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNColumnBegin(1), matrix.constNEnd(), 1);
+    matchCount = count(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNEnd(), 1);
     QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNBegin(), matrix.constNColumnEnd(1), 1);
+    matchCount = count(m_MainMatrix.constNBegin(), m_MainMatrix.constNColumnEnd(1), 1);
     QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-
-    matchCount = count(matrix.constNColumnEnd(1), matrix.constNEnd(), 1);
+    matchCount = count(m_MainMatrix.constNColumnEnd(1), m_MainMatrix.constNEnd(), 1);
     QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
 }
 
@@ -1363,65 +1099,52 @@ void ConstNIteratorTests::testStdFind()
 {
     using namespace std;
 
-    {
-        IntMatrix matrix{5, 4, {-1, 5, 2, -7, 1, 9, -2, 7, 3, 8, 2, 2, 1, 0, 8, 9, 4, 1, 9, 8}};
+    // test finding elements in specific ranges within unempty matrix
+    m_MainMatrix = {5, 4, {-1, 5, 2, -7, 1, 9, -2, 7, 3, 8, 2, 2, 1, 0, 8, 9, 4, 6, 9, 11}};
 
-        IntMatrixConstNIterator it{find(matrix.constNBegin(), matrix.constNEnd(), 4)};
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.constNEnd(), 5) != m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.constNEnd(), 10) == m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNColumnEnd(1), 5) != m_MainMatrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNColumnEnd(1), 6) != m_MainMatrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNColumnEnd(1), 8) != m_MainMatrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNColumnEnd(1), -1) == m_MainMatrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNColumnEnd(1), -2) == m_MainMatrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNColumnEnd(1), 10) == m_MainMatrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNEnd(), 5) != m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNEnd(), 11) != m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNEnd(), -2) != m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNEnd(), -1) == m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNColumnBegin(1), m_MainMatrix.constNEnd(), 10) == m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.constNColumnEnd(1), -1) != m_MainMatrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.constNColumnEnd(1), 6) != m_MainMatrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.constNColumnEnd(1), 8) != m_MainMatrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.constNColumnEnd(1), -2) == m_MainMatrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.constNColumnEnd(1), 10) == m_MainMatrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.getConstNIterator(3, 1), m_MainMatrix.getConstNIterator(1, 3), 0) != m_MainMatrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.getConstNIterator(3, 1), m_MainMatrix.getConstNIterator(1, 3), -7) != m_MainMatrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.getConstNIterator(3, 1), m_MainMatrix.getConstNIterator(1, 3), -2) != m_MainMatrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.getConstNIterator(3, 1), m_MainMatrix.getConstNIterator(1, 3), -1) == m_MainMatrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.getConstNIterator(3, 1), m_MainMatrix.getConstNIterator(1, 3), 11) == m_MainMatrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.getConstNIterator(3, 1), m_MainMatrix.getConstNIterator(1, 3), 10) == m_MainMatrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.getConstNIterator(3, 1), m_MainMatrix.constNEnd(), 0) != m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.getConstNIterator(3, 1), m_MainMatrix.constNEnd(), 11) != m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.getConstNIterator(3, 1), m_MainMatrix.constNEnd(), -2) != m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.getConstNIterator(3, 1), m_MainMatrix.constNEnd(), -1) == m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.getConstNIterator(3, 1), m_MainMatrix.constNEnd(), 10) == m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.getConstNIterator(1, 3), -1) != m_MainMatrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.getConstNIterator(1, 3), -7) != m_MainMatrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.getConstNIterator(1, 3), -2) != m_MainMatrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.getConstNIterator(1, 3), 11) == m_MainMatrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.getConstNIterator(1, 3), 10) == m_MainMatrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
 
-        ++it;
+    // other tests
+    m_MainMatrix = {5, 4, {-1, 5, 2, -7, 1, 9, -2, 7, 3, 8, 2, 2, 1, 0, 8, 9, 4, 1, 9, 8}};
+    IntMatrixConstNIterator it{find(m_MainMatrix.constNBegin(), m_MainMatrix.constNEnd(), 4)};
+    ++it;
+    QVERIFY2(*it == 5, "The iterator doesn't work correctly with std::find, incorrect next element returned");
 
-        QVERIFY2(*it == 5, "The iterator doesn't work correctly with std::find, incorrect next element returned");
-    }
-
-    {
-        IntMatrix matrix{5, 4, {-1, 5, 2, -7, 1, 9, -2, 7, 3, 8, 2, 2, 1, 0, 8, 9, 4, 1, 9, 8}};
-        QVERIFY2(find(matrix.constNBegin(), matrix.constNEnd(), 10) == matrix.constNEnd(), "The iterator doesn't work correctly with std::find, a non existing value has been found in the matrix");
-    }
-
-    {
-        IntMatrix matrix{5, 4, {-1, 5, 2, -7,   1, 9, -2, 7,   3, 8, 2, 2,   1, 0, 8, 9,   4, 6, 9, 11}};
-
-        QVERIFY2(find(matrix.constNBegin(), matrix.constNEnd(), 5) != matrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNBegin(), matrix.constNEnd(), 10) == matrix.constNEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-
-        QVERIFY2(find(matrix.constNColumnBegin(1), matrix.constNColumnEnd(1), 5) != matrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNColumnBegin(1), matrix.constNColumnEnd(1), 6) != matrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNColumnBegin(1), matrix.constNColumnEnd(1), 8) != matrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNColumnBegin(1), matrix.constNColumnEnd(1), -1) == matrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constNColumnBegin(1), matrix.constNColumnEnd(1), -2) == matrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constNColumnBegin(1), matrix.constNColumnEnd(1), 10) == matrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-
-        QVERIFY2(find(matrix.constNColumnBegin(1), matrix.constNEnd(), 5) != matrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNColumnBegin(1), matrix.constNEnd(), 11) != matrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNColumnBegin(1), matrix.constNEnd(), -2) != matrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNColumnBegin(1), matrix.constNEnd(), -1) == matrix.constNEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constNColumnBegin(1), matrix.constNEnd(), 10) == matrix.constNEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-
-        QVERIFY2(find(matrix.constNBegin(), matrix.constNColumnEnd(1), -1) != matrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNBegin(), matrix.constNColumnEnd(1), 6) != matrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNBegin(), matrix.constNColumnEnd(1), 8) != matrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNBegin(), matrix.constNColumnEnd(1), -2) == matrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constNBegin(), matrix.constNColumnEnd(1), 10) == matrix.constNColumnEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-
-        QVERIFY2(find(matrix.getConstNIterator(3, 1), matrix.getConstNIterator(1, 3), 0) != matrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstNIterator(3, 1), matrix.getConstNIterator(1, 3), -7) != matrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstNIterator(3, 1), matrix.getConstNIterator(1, 3), -2) != matrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstNIterator(3, 1), matrix.getConstNIterator(1, 3), -1) == matrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.getConstNIterator(3, 1), matrix.getConstNIterator(1, 3), 11) == matrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.getConstNIterator(3, 1), matrix.getConstNIterator(1, 3), 10) == matrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-
-        QVERIFY2(find(matrix.getConstNIterator(3, 1), matrix.constNEnd(), 0) != matrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstNIterator(3, 1), matrix.constNEnd(), 11) != matrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstNIterator(3, 1), matrix.constNEnd(), -2) != matrix.constNEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.getConstNIterator(3, 1), matrix.constNEnd(), -1) == matrix.constNEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.getConstNIterator(3, 1), matrix.constNEnd(), 10) == matrix.constNEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-
-        QVERIFY2(find(matrix.constNBegin(), matrix.getConstNIterator(1, 3), -1) != matrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNBegin(), matrix.getConstNIterator(1, 3), -7) != matrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNBegin(), matrix.getConstNIterator(1, 3), -2) != matrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-        QVERIFY2(find(matrix.constNBegin(), matrix.getConstNIterator(1, 3), 11) == matrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-        QVERIFY2(find(matrix.constNBegin(), matrix.getConstNIterator(1, 3), 10) == matrix.getConstNIterator(1, 3), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    }
+    m_MainMatrix = {5, 4, {-1, 5, 2, -7, 1, 9, -2, 7, 3, 8, 2, 2, 1, 0, 8, 9, 4, 1, 9, 8}};
+    QVERIFY2(find(m_MainMatrix.constNBegin(), m_MainMatrix.constNEnd(), 10) == m_MainMatrix.constNEnd(), "The iterator doesn't work correctly with std::find, a non existing value has been found in the matrix");
 }
 
 QTEST_APPLESS_MAIN(ConstNIteratorTests)
