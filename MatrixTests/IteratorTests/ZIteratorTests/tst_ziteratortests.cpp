@@ -1431,17 +1431,6 @@ void ZIteratorTests::testStdFind()
 
 void ZIteratorTests::testStdSort()
 {
-    m_MainMatrix = {4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 6, 2, -2, 2, 8, 9, -7, 7, 2, 9, 11}};
-
-    std::sort(m_MainMatrix.zBegin(), m_MainMatrix.zEnd());
-
-    QVERIFY2(m_MainMatrix.at(0, 0) == -7 && m_MainMatrix.at(0, 1) == -2 && m_MainMatrix.at(0, 2) == -1 && m_MainMatrix.at(0, 3) == 0 && m_MainMatrix.at(0, 4) == 1 &&
-             m_MainMatrix.at(1, 0) ==  1 && m_MainMatrix.at(1, 1) ==  2 && m_MainMatrix.at(1, 2) ==  2 && m_MainMatrix.at(1, 3) == 2 && m_MainMatrix.at(1, 4) == 3 &&
-             m_MainMatrix.at(2, 0) ==  4 && m_MainMatrix.at(2, 1) ==  5 && m_MainMatrix.at(2, 2) ==  6 && m_MainMatrix.at(2, 3) == 7 && m_MainMatrix.at(2, 4) == 8 &&
-             m_MainMatrix.at(3, 0) ==  8 && m_MainMatrix.at(3, 1) ==  9 && m_MainMatrix.at(3, 2) ==  9 && m_MainMatrix.at(3, 3) == 9 && m_MainMatrix.at(3, 4) == 11,
-
-             "The iterator objects don't work correctly, the matrix has not been sorted properly");
-
     m_MainMatrix = {4, 5, {
                       -1,  1, 3, 1, 4,
                        5,  9, 8, 0, 6,
@@ -1461,6 +1450,17 @@ void ZIteratorTests::testStdSort()
 
              "The iterator objects don't work correctly, the per row sorting has not been done properly");
 
+    m_MainMatrix = {4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 6, 2, -2, 2, 8, 9, -7, 7, 2, 9, 11}};
+
+    std::sort(m_MainMatrix.zBegin(), m_MainMatrix.zEnd());
+
+    QVERIFY2(m_MainMatrix.at(0, 0) == -7 && m_MainMatrix.at(0, 1) == -2 && m_MainMatrix.at(0, 2) == -1 && m_MainMatrix.at(0, 3) == 0 && m_MainMatrix.at(0, 4) == 1 &&
+             m_MainMatrix.at(1, 0) ==  1 && m_MainMatrix.at(1, 1) ==  2 && m_MainMatrix.at(1, 2) ==  2 && m_MainMatrix.at(1, 3) == 2 && m_MainMatrix.at(1, 4) == 3 &&
+             m_MainMatrix.at(2, 0) ==  4 && m_MainMatrix.at(2, 1) ==  5 && m_MainMatrix.at(2, 2) ==  6 && m_MainMatrix.at(2, 3) == 7 && m_MainMatrix.at(2, 4) == 8 &&
+             m_MainMatrix.at(3, 0) ==  8 && m_MainMatrix.at(3, 1) ==  9 && m_MainMatrix.at(3, 2) ==  9 && m_MainMatrix.at(3, 3) == 9 && m_MainMatrix.at(3, 4) == 11,
+
+             "The iterator objects don't work correctly, the matrix has not been sorted properly");
+
     m_MainMatrix = {4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, (0), 6, 2, -2, 2, 8, 9, -7, (7), 2, 9, 11}};
 
     std::sort(m_MainMatrix.getZIterator(1, 3), m_MainMatrix.getZIterator(3, 1));
@@ -1476,10 +1476,10 @@ void ZIteratorTests::testStdSort()
 
     std::sort(m_MainMatrix.zBegin(), m_MainMatrix.getZIterator(2, 1));
 
-    QVERIFY2(m_MainMatrix.at(0, 0) == -1 && m_MainMatrix.at(0, 1) == 0    && m_MainMatrix.at(0, 2) == 1 && m_MainMatrix.at(0, 3) == 1 && m_MainMatrix.at(0, 4) == 2 &&
-             m_MainMatrix.at(1, 0) ==  3 && m_MainMatrix.at(1, 1) == 4    && m_MainMatrix.at(1, 2) == 5 && m_MainMatrix.at(1, 3) == 6 && m_MainMatrix.at(1, 4) == 8 &&
-             m_MainMatrix.at(2, 0) ==  9 && m_MainMatrix.at(2, 1) == (-2) && m_MainMatrix.at(2, 2) == 2 && m_MainMatrix.at(2, 3) == 8 && m_MainMatrix.at(2, 4) == 9 &&
-             m_MainMatrix.at(3, 0) == -7 && m_MainMatrix.at(3, 1) == 7    && m_MainMatrix.at(3, 2) == 2 && m_MainMatrix.at(3, 3) == 9 && m_MainMatrix.at(3, 4) == 11,
+    QVERIFY2(m_MainMatrix.at(0, 0) == (-1) && m_MainMatrix.at(0, 1) ==  0  && m_MainMatrix.at(0, 2) == 1 && m_MainMatrix.at(0, 3) == 1 && m_MainMatrix.at(0, 4) == 2 &&
+             m_MainMatrix.at(1, 0) ==   3 && m_MainMatrix.at(1, 1) ==   4  && m_MainMatrix.at(1, 2) == 5 && m_MainMatrix.at(1, 3) == 6 && m_MainMatrix.at(1, 4) == 8 &&
+             m_MainMatrix.at(2, 0) ==   9 && m_MainMatrix.at(2, 1) == (-2) && m_MainMatrix.at(2, 2) == 2 && m_MainMatrix.at(2, 3) == 8 && m_MainMatrix.at(2, 4) == 9 &&
+             m_MainMatrix.at(3, 0) ==  -7 && m_MainMatrix.at(3, 1) ==   7  && m_MainMatrix.at(3, 2) == 2 && m_MainMatrix.at(3, 3) == 9 && m_MainMatrix.at(3, 4) == 11,
 
              "The iterator objects don't work correctly, the matrix has not been sorted properly");
 
@@ -1487,10 +1487,10 @@ void ZIteratorTests::testStdSort()
 
     std::sort(m_MainMatrix.getZIterator(2, 1), m_MainMatrix.zEnd());
 
-    QVERIFY2(m_MainMatrix.at(0, 0) == -1 && m_MainMatrix.at(0, 1) == 1    && m_MainMatrix.at(0, 2) == 3  && m_MainMatrix.at(0, 3) == 1 && m_MainMatrix.at(0, 4) == 4 &&
-             m_MainMatrix.at(1, 0) ==  5 && m_MainMatrix.at(1, 1) == 9    && m_MainMatrix.at(1, 2) == 8  && m_MainMatrix.at(1, 3) == 0 && m_MainMatrix.at(1, 4) == 6 &&
-             m_MainMatrix.at(2, 0) ==  2 && m_MainMatrix.at(2, 1) == (-7) && m_MainMatrix.at(2, 2) == -2 && m_MainMatrix.at(2, 3) == 2 && m_MainMatrix.at(2, 4) == 2 &&
-             m_MainMatrix.at(3, 0) ==  7 && m_MainMatrix.at(3, 1) == 8    && m_MainMatrix.at(3, 2) == 9  && m_MainMatrix.at(3, 3) == 9 && m_MainMatrix.at(3, 4) == 11,
+    QVERIFY2(m_MainMatrix.at(0, 0) == -1 && m_MainMatrix.at(0, 1) == 1    && m_MainMatrix.at(0, 2) ==  3  && m_MainMatrix.at(0, 3) == 1 && m_MainMatrix.at(0, 4) == 4 &&
+             m_MainMatrix.at(1, 0) ==  5 && m_MainMatrix.at(1, 1) == 9    && m_MainMatrix.at(1, 2) ==  8  && m_MainMatrix.at(1, 3) == 0 && m_MainMatrix.at(1, 4) == 6 &&
+             m_MainMatrix.at(2, 0) ==  2 && m_MainMatrix.at(2, 1) == (-7) && m_MainMatrix.at(2, 2) == -2  && m_MainMatrix.at(2, 3) == 2 && m_MainMatrix.at(2, 4) == 2 &&
+             m_MainMatrix.at(3, 0) ==  7 && m_MainMatrix.at(3, 1) == 8    && m_MainMatrix.at(3, 2) ==  9  && m_MainMatrix.at(3, 3) == 9 && m_MainMatrix.at(3, 4) == 11,
 
              "The iterator objects don't work correctly, the matrix has not been sorted properly");
 }

@@ -1279,18 +1279,6 @@ void ReverseNIteratorTests::testStdFind()
 
 void ReverseNIteratorTests::testStdSort()
 {
-    m_MainMatrix = {5, 4, {-1, 5, 2, -7, 1, 9, -2, 7, 3, 8, 2, 2, 1, 0, 8, 9, 4, 6, 9, 11}};
-
-    std::sort(m_MainMatrix.reverseNBegin(), m_MainMatrix.reverseNEnd());
-
-    QVERIFY2(m_MainMatrix.at(0, 0) == 11 && m_MainMatrix.at(0, 1) == 8 && m_MainMatrix.at(0, 2) == 3 && m_MainMatrix.at(0, 3) ==  1 &&
-             m_MainMatrix.at(1, 0) ==  9 && m_MainMatrix.at(1, 1) == 7 && m_MainMatrix.at(1, 2) == 2 && m_MainMatrix.at(1, 3) ==  0 &&
-             m_MainMatrix.at(2, 0) ==  9 && m_MainMatrix.at(2, 1) == 6 && m_MainMatrix.at(2, 2) == 2 && m_MainMatrix.at(2, 3) == -1 &&
-             m_MainMatrix.at(3, 0) ==  9 && m_MainMatrix.at(3, 1) == 5 && m_MainMatrix.at(3, 2) == 2 && m_MainMatrix.at(3, 3) == -2 &&
-             m_MainMatrix.at(4, 0) ==  8 && m_MainMatrix.at(4, 1) == 4 && m_MainMatrix.at(4, 2) == 1 && m_MainMatrix.at(4, 3) == -7,
-
-             "The iterator objects don't work correctly, the matrix has not been sorted properly");
-
     m_MainMatrix = {5, 4, {
                       -1, 5,  2, -7,
                        1, 9, -2,  7,
@@ -1312,6 +1300,18 @@ void ReverseNIteratorTests::testStdSort()
 
              "The iterator objects don't work correctly, the per column sorting has not been done properly");
 
+    m_MainMatrix = {5, 4, {-1, 5, 2, -7, 1, 9, -2, 7, 3, 8, 2, 2, 1, 0, 8, 9, 4, 6, 9, 11}};
+
+    std::sort(m_MainMatrix.reverseNBegin(), m_MainMatrix.reverseNEnd());
+
+    QVERIFY2(m_MainMatrix.at(0, 0) == 11 && m_MainMatrix.at(0, 1) == 8 && m_MainMatrix.at(0, 2) == 3 && m_MainMatrix.at(0, 3) ==  1 &&
+             m_MainMatrix.at(1, 0) ==  9 && m_MainMatrix.at(1, 1) == 7 && m_MainMatrix.at(1, 2) == 2 && m_MainMatrix.at(1, 3) ==  0 &&
+             m_MainMatrix.at(2, 0) ==  9 && m_MainMatrix.at(2, 1) == 6 && m_MainMatrix.at(2, 2) == 2 && m_MainMatrix.at(2, 3) == -1 &&
+             m_MainMatrix.at(3, 0) ==  9 && m_MainMatrix.at(3, 1) == 5 && m_MainMatrix.at(3, 2) == 2 && m_MainMatrix.at(3, 3) == -2 &&
+             m_MainMatrix.at(4, 0) ==  8 && m_MainMatrix.at(4, 1) == 4 && m_MainMatrix.at(4, 2) == 1 && m_MainMatrix.at(4, 3) == -7,
+
+             "The iterator objects don't work correctly, the matrix has not been sorted properly");
+
     m_MainMatrix = {5, 4, {-1, 5, 2, -7, 1, 9, -2, (7), 3, 8, 2, 2, 1, (0), 8, 9, 4, 6, 9, 11}};
 
     std::sort(m_MainMatrix.getReverseNIterator(1, 3), m_MainMatrix.getReverseNIterator(3, 1));
@@ -1328,10 +1328,10 @@ void ReverseNIteratorTests::testStdSort()
 
     std::sort(m_MainMatrix.reverseNBegin(), m_MainMatrix.getReverseNIterator(1, 2));
 
-    QVERIFY2(m_MainMatrix.at(0, 0) == -1 && m_MainMatrix.at(0, 1) == 5 && m_MainMatrix.at(0, 2) ==   2  && m_MainMatrix.at(0, 3) == 8   &&
-             m_MainMatrix.at(1, 0) ==  1 && m_MainMatrix.at(1, 1) == 9 && m_MainMatrix.at(1, 2) == (-2) && m_MainMatrix.at(1, 3) == 7   &&
-             m_MainMatrix.at(2, 0) ==  3 && m_MainMatrix.at(2, 1) == 8 && m_MainMatrix.at(2, 2) ==  11  && m_MainMatrix.at(2, 3) == 2   &&
-             m_MainMatrix.at(3, 0) ==  1 && m_MainMatrix.at(3, 1) == 0 && m_MainMatrix.at(3, 2) ==   9  && m_MainMatrix.at(3, 3) == 2   &&
+    QVERIFY2(m_MainMatrix.at(0, 0) == -1 && m_MainMatrix.at(0, 1) == 5 && m_MainMatrix.at(0, 2) ==   2  && m_MainMatrix.at(0, 3) ==   8 &&
+             m_MainMatrix.at(1, 0) ==  1 && m_MainMatrix.at(1, 1) == 9 && m_MainMatrix.at(1, 2) == (-2) && m_MainMatrix.at(1, 3) ==   7 &&
+             m_MainMatrix.at(2, 0) ==  3 && m_MainMatrix.at(2, 1) == 8 && m_MainMatrix.at(2, 2) ==  11  && m_MainMatrix.at(2, 3) ==   2 &&
+             m_MainMatrix.at(3, 0) ==  1 && m_MainMatrix.at(3, 1) == 0 && m_MainMatrix.at(3, 2) ==   9  && m_MainMatrix.at(3, 3) ==   2 &&
              m_MainMatrix.at(4, 0) ==  4 && m_MainMatrix.at(4, 1) == 6 && m_MainMatrix.at(4, 2) ==   9  && m_MainMatrix.at(4, 3) == (-7),
 
              "The iterator objects don't work correctly, the matrix has not been sorted properly");

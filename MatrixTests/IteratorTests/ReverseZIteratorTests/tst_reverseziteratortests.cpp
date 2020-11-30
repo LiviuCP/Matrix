@@ -1279,17 +1279,6 @@ void ReverseZIteratorTests::testStdFind()
 
 void ReverseZIteratorTests::testStdSort()
 {
-    m_MainMatrix = {4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 6, 2, -2, 2, 8, 9, -7, 7, 2, 9, 11}};
-
-    std::sort(m_MainMatrix.reverseZBegin(), m_MainMatrix.reverseZEnd());
-
-    QVERIFY2(m_MainMatrix.at(0, 0) == 11 && m_MainMatrix.at(0, 1) == 9 && m_MainMatrix.at(0, 2) == 9 && m_MainMatrix.at(0, 3) == 9 && m_MainMatrix.at(0, 4) == 8 &&
-             m_MainMatrix.at(1, 0) ==  8 && m_MainMatrix.at(1, 1) ==  7 && m_MainMatrix.at(1, 2) ==  6 && m_MainMatrix.at(1, 3) == 5 && m_MainMatrix.at(1, 4) == 4 &&
-             m_MainMatrix.at(2, 0) ==  3 && m_MainMatrix.at(2, 1) ==  2 && m_MainMatrix.at(2, 2) ==  2 && m_MainMatrix.at(2, 3) == 2 && m_MainMatrix.at(2, 4) == 1 &&
-             m_MainMatrix.at(3, 0) ==  1 && m_MainMatrix.at(3, 1) ==  0 && m_MainMatrix.at(3, 2) ==  -1 && m_MainMatrix.at(3, 3) == -2 && m_MainMatrix.at(3, 4) == -7,
-
-             "The iterator objects don't work correctly, the matrix has not been sorted properly");
-
     m_MainMatrix = {4, 5, {
                       -1,  1, 3, 1, 4,
                        5,  9, 8, 0, 6,
@@ -1308,6 +1297,17 @@ void ReverseZIteratorTests::testStdSort()
              m_MainMatrix.at(3, 0) == 11 && m_MainMatrix.at(3, 1) == 9 && m_MainMatrix.at(3, 2) == 7 && m_MainMatrix.at(3, 3) == 2 && m_MainMatrix.at(3, 4) == -7,
 
              "The iterator objects don't work correctly, the per row sorting has not been done properly");
+
+    m_MainMatrix = {4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 6, 2, -2, 2, 8, 9, -7, 7, 2, 9, 11}};
+
+    std::sort(m_MainMatrix.reverseZBegin(), m_MainMatrix.reverseZEnd());
+
+    QVERIFY2(m_MainMatrix.at(0, 0) == 11 && m_MainMatrix.at(0, 1) == 9 && m_MainMatrix.at(0, 2) == 9 && m_MainMatrix.at(0, 3) == 9 && m_MainMatrix.at(0, 4) == 8 &&
+             m_MainMatrix.at(1, 0) ==  8 && m_MainMatrix.at(1, 1) ==  7 && m_MainMatrix.at(1, 2) ==  6 && m_MainMatrix.at(1, 3) == 5 && m_MainMatrix.at(1, 4) == 4 &&
+             m_MainMatrix.at(2, 0) ==  3 && m_MainMatrix.at(2, 1) ==  2 && m_MainMatrix.at(2, 2) ==  2 && m_MainMatrix.at(2, 3) == 2 && m_MainMatrix.at(2, 4) == 1 &&
+             m_MainMatrix.at(3, 0) ==  1 && m_MainMatrix.at(3, 1) ==  0 && m_MainMatrix.at(3, 2) ==  -1 && m_MainMatrix.at(3, 3) == -2 && m_MainMatrix.at(3, 4) == -7,
+
+             "The iterator objects don't work correctly, the matrix has not been sorted properly");
 
     m_MainMatrix = {4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, (0), 6, 2, -2, 2, 8, 9, -7, (7), 2, 9, 11}};
 

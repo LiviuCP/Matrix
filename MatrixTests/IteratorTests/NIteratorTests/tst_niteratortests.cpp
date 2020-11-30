@@ -1279,18 +1279,6 @@ void NIteratorTests::testStdFind()
 
 void NIteratorTests::testStdSort()
 {
-    m_MainMatrix = {5, 4, {-1, 5, 2, -7, 1, 9, -2, 7, 3, 8, 2, 2, 1, 0, 8, 9, 4, 6, 9, 11}};
-
-    std::sort(m_MainMatrix.nBegin(), m_MainMatrix.nEnd());
-
-    QVERIFY2(m_MainMatrix.at(0, 0) == -7 && m_MainMatrix.at(0, 1) == 1 && m_MainMatrix.at(0, 2) == 4 && m_MainMatrix.at(0, 3) == 8 &&
-             m_MainMatrix.at(1, 0) == -2 && m_MainMatrix.at(1, 1) == 2 && m_MainMatrix.at(1, 2) == 5 && m_MainMatrix.at(1, 3) == 9 &&
-             m_MainMatrix.at(2, 0) == -1 && m_MainMatrix.at(2, 1) == 2 && m_MainMatrix.at(2, 2) == 6 && m_MainMatrix.at(2, 3) == 9 &&
-             m_MainMatrix.at(3, 0) ==  0 && m_MainMatrix.at(3, 1) == 2 && m_MainMatrix.at(3, 2) == 7 && m_MainMatrix.at(3, 3) == 9 &&
-             m_MainMatrix.at(4, 0) ==  1 && m_MainMatrix.at(4, 1) == 3 && m_MainMatrix.at(4, 2) == 8 && m_MainMatrix.at(4, 3) == 11,
-
-             "The iterator objects don't work correctly, the matrix has not been sorted properly");
-
     m_MainMatrix = {5, 4, {
                       -1, 5,  2, -7,
                        1, 9, -2,  7,
@@ -1310,6 +1298,18 @@ void NIteratorTests::testStdSort()
              m_MainMatrix.at(3, 0) ==  3 && m_MainMatrix.at(3, 1) == 8 && m_MainMatrix.at(3, 2) ==  8 && m_MainMatrix.at(3, 3) ==  9 &&
              m_MainMatrix.at(4, 0) ==  4 && m_MainMatrix.at(4, 1) == 9 && m_MainMatrix.at(4, 2) ==  9 && m_MainMatrix.at(4, 3) ==  11,
 
+             "The iterator objects don't work correctly, the per column sorting has not been done properly");
+
+    m_MainMatrix = {5, 4, {-1, 5, 2, -7, 1, 9, -2, 7, 3, 8, 2, 2, 1, 0, 8, 9, 4, 6, 9, 11}};
+
+    std::sort(m_MainMatrix.nBegin(), m_MainMatrix.nEnd());
+
+    QVERIFY2(m_MainMatrix.at(0, 0) == -7 && m_MainMatrix.at(0, 1) == 1 && m_MainMatrix.at(0, 2) == 4 && m_MainMatrix.at(0, 3) == 8 &&
+             m_MainMatrix.at(1, 0) == -2 && m_MainMatrix.at(1, 1) == 2 && m_MainMatrix.at(1, 2) == 5 && m_MainMatrix.at(1, 3) == 9 &&
+             m_MainMatrix.at(2, 0) == -1 && m_MainMatrix.at(2, 1) == 2 && m_MainMatrix.at(2, 2) == 6 && m_MainMatrix.at(2, 3) == 9 &&
+             m_MainMatrix.at(3, 0) ==  0 && m_MainMatrix.at(3, 1) == 2 && m_MainMatrix.at(3, 2) == 7 && m_MainMatrix.at(3, 3) == 9 &&
+             m_MainMatrix.at(4, 0) ==  1 && m_MainMatrix.at(4, 1) == 3 && m_MainMatrix.at(4, 2) == 8 && m_MainMatrix.at(4, 3) == 11,
+
              "The iterator objects don't work correctly, the matrix has not been sorted properly");
 
     m_MainMatrix = {5, 4, {-1, 5, 2, -7, 1, 9, -2, (7), 3, 8, 2, 2, 1, (0), 8, 9, 4, 6, 9, 11}};
@@ -1328,11 +1328,11 @@ void NIteratorTests::testStdSort()
 
     std::sort(m_MainMatrix.nBegin(), m_MainMatrix.getNIterator(1, 2));
 
-    QVERIFY2(m_MainMatrix.at(0, 0) == -1 && m_MainMatrix.at(0, 1) == 3 && m_MainMatrix.at(0, 2) ==   9  && m_MainMatrix.at(0, 3) == -7 &&
-             m_MainMatrix.at(1, 0) ==  0 && m_MainMatrix.at(1, 1) == 4 && m_MainMatrix.at(1, 2) == (-2) && m_MainMatrix.at(1, 3) ==  7 &&
-             m_MainMatrix.at(2, 0) ==  1 && m_MainMatrix.at(2, 1) == 5 && m_MainMatrix.at(2, 2) ==   2  && m_MainMatrix.at(2, 3) ==  2 &&
-             m_MainMatrix.at(3, 0) ==  1 && m_MainMatrix.at(3, 1) == 6 && m_MainMatrix.at(3, 2) ==   8  && m_MainMatrix.at(3, 3) ==  9 &&
-             m_MainMatrix.at(4, 0) ==  2 && m_MainMatrix.at(4, 1) == 8 && m_MainMatrix.at(4, 2) ==   9  && m_MainMatrix.at(4, 3) ==  11,
+    QVERIFY2(m_MainMatrix.at(0, 0) == (-1) && m_MainMatrix.at(0, 1) == 3 && m_MainMatrix.at(0, 2) ==   9  && m_MainMatrix.at(0, 3) == -7 &&
+             m_MainMatrix.at(1, 0) ==   0  && m_MainMatrix.at(1, 1) == 4 && m_MainMatrix.at(1, 2) == (-2) && m_MainMatrix.at(1, 3) ==  7 &&
+             m_MainMatrix.at(2, 0) ==   1  && m_MainMatrix.at(2, 1) == 5 && m_MainMatrix.at(2, 2) ==   2  && m_MainMatrix.at(2, 3) ==  2 &&
+             m_MainMatrix.at(3, 0) ==   1  && m_MainMatrix.at(3, 1) == 6 && m_MainMatrix.at(3, 2) ==   8  && m_MainMatrix.at(3, 3) ==  9 &&
+             m_MainMatrix.at(4, 0) ==   2  && m_MainMatrix.at(4, 1) == 8 && m_MainMatrix.at(4, 2) ==   9  && m_MainMatrix.at(4, 3) ==  11,
 
              "The iterator objects don't work correctly, the matrix has not been sorted properly");
 
