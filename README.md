@@ -37,6 +37,7 @@ Important functionality contained in the Matrix class is:
 
 the matrix will be traversed: 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
+- N-Iterators. These traverse the matrix column by column. For example by using a NIterator pointing to the first element ([0][0]) of the above matrix it will be traversed as follows: 0 -> 3 -> 6 -> 1 -> 4 -> 7 -> 2 -> 5 -> 8. Using N-Iterators is equivalent to using Z-Iterators on the transposed matrix.
 - D-Iterators. These traverse the matrix diagonally. A matrix can be divided into m + n - 1 diagonals where m is the number of lines and n is the number of columns. The diagonal starting at [0][0] has diagonal number 0 while the lower ones are numbered negatively and the upper ones are numbered positively. Take the below matrix for example:
 
 0   1   2   3
@@ -68,15 +69,23 @@ The Z-Iterators have four sub-types:
 - reverse read-write Z-Iterators (class ReverseZIterator)
 - reverse read-only Z-Iterators (class ConstReverseZIterator)
 
+The N-Iterators have four sub-types:
+- read-write N-Iterators (class NIterator)
+- read-only N-Iterators (class ConstNIterator)
+- reverse read-write N-Iterators (class ReverseNIterator)
+- reverse read-only N-Iterators (class ConstReverseNIterator)
+
 The D-Iterators have following sub-types at the moment:
 - read-write D-Iterator (class DIterator)
 - read-only D-Iterator (class ConstDIterator)
 - read-write reverse D-Iterator (class ReverseDIterator)
 - read-only reverse D-Iterator (class ConstReverseDIterator)
 
+Last note: the begin() function has been implemented to make it possible to pass through matrix elements by using the auto keyword. This can only be done in the "Z" direction starting with element [0][0] as begin() returns a ZIterator object.
+
 3. Error handling
 
-The Matrix library contains error handling functionality that deals with various situations like: index out of bound, negative arguments provided as indexes, etc. This functionality is by default disabled. It can be enabled by adding #define ERROR_CHECKING before the matrix.h include statement. It is obviously recommended to do this only when in debug mode. For the list of possible errors please consult errorhandling.h.
+The Matrix library contains error handling functionality that deals with various situations like: index out of bounds, negative arguments provided as indexes, etc. This functionality is by default enabled as a safety measure especially when newly using the class. It can be disabled by adding #define ERROR_CHECKING_DISABLED before the matrix.h include statement. It is obviously recommended to do this only when the code implementation has been finished and all bugs and crashes have been corrected. For the list of possible errors please consult errorhandling.h.
 
 There are two ways of triggering the errors: by assertion or by exception. By default assertions are made so each error will terminate the code immediately. They can be turned into exceptions by adding #define CONVERT_TO_EXCEPTIONS right after the previously mentioned define statement (and obviously before the matrix.h include). Exceptions should only be used when you necessarily need to capture an error with a try-catch block. I only enabled them in tst_exceptionstests.cpp where I tested that all necessary errors are triggered by the library code. In real application scenarios you would normally not require them but instead use asserts for debugging.
 
