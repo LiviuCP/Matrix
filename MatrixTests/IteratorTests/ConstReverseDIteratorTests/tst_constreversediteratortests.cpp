@@ -55,140 +55,149 @@ void ConstReverseDIteratorTests::testIteratorCreation()
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.constReverseDBegin(-2)};
 
-        QVERIFY2(it.getCurrentRowNr() == 3 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == -2 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 3 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == -2 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.constReverseDEnd(-2)};
 
-        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == -1 && it.getDiagonalNr() == -2  && it.getDiagonalIndex() == 2, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == -1 && it.getDiagonalNr() == -2  && it.getDiagonalIndex() == 2 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.constReverseDBegin(0)};
 
-        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.constReverseDEnd(0)};
 
-        QVERIFY2(it.getCurrentRowNr() == -1 && it.getCurrentColumnNr() == -1 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 3, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == -1 && it.getCurrentColumnNr() == -1 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 3 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.constReverseDBegin(1)};
 
-        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.constReverseDEnd(1)};
 
-        QVERIFY2(it.getCurrentRowNr() == -1 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 2, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == -1 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 2 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.constReverseDBegin(0, 0)};
 
-        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.constReverseDEnd(0, 0)};
 
-        QVERIFY2(it.getCurrentRowNr() == -1 && it.getCurrentColumnNr() == -1 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 3, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == -1 && it.getCurrentColumnNr() == -1 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 3 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.constReverseDBegin(2, 1)};
 
-        QVERIFY2(it.getCurrentRowNr() == 3 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 3 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.constReverseDEnd(2, 1)};
 
-        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == -1 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 3, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == -1 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 3 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.constReverseDBegin(1, 2)};
 
-        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.constReverseDEnd(1, 2)};
 
-        QVERIFY2(it.getCurrentRowNr() == -1 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 2, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == -1 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 2 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.getConstReverseDIterator(1, 0)};
 
-        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 2, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 2 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.getConstReverseDIterator(0, 2)};
 
-        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 2 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 2 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.getConstReverseDIterator(2, 1)};
 
-        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 1, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 1 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.getConstReverseDIterator(2, 2)};
 
-        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.getConstReverseDIterator(-1, 0, true)};
 
-        QVERIFY2(it.getCurrentRowNr() == 3 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 3 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.getConstReverseDIterator(2, 0, true)};
 
-        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 2 && it.getDiagonalIndex() == 0, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 2 && it.getDiagonalNr() == 2 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.getConstReverseDIterator(-1, 1, true)};
 
-        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 1, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 2 && it.getCurrentColumnNr() == 1 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 1 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
     {
         IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
         IntMatrixConstReverseDIterator it{matrix.getConstReverseDIterator(0, 2, true)};
 
-        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 2, "The iterator has not been correctly created");
+        QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 2 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
+    }
+
+    // additional test for checking that an iterator is only valid with the matrix with which it is created
+    {
+        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+        IntMatrix matrixCopy{matrix};
+        IntMatrixConstReverseDIterator it{matrix.getConstReverseDIterator(2, 1)};
+
+        QVERIFY(!it.isValidWithMatrix(matrixCopy));
     }
 }
 

@@ -265,7 +265,7 @@ public:
         using pointer = DataType**;
         using reference = DataType&;
 
-        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
+        // "empty" iterator creation is not allowed with DIterators (only for ZIterators and NIterators)
         DIterator() = delete;
 
         DIterator operator++();
@@ -324,7 +324,7 @@ public:
         using pointer = DataType**;
         using reference = const DataType&;
 
-        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
+        // "empty" iterator creation is not allowed with DIterators (only for ZIterators and NIterators)
         ConstDIterator() = delete;
 
         ConstDIterator operator++();
@@ -383,7 +383,7 @@ public:
         using pointer = DataType**;
         using reference = DataType&;
 
-        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
+        // "empty" iterator creation is not allowed with DIterators (only for ZIterators and NIterators)
         ReverseDIterator() = delete;
 
         ReverseDIterator operator++();
@@ -442,7 +442,7 @@ public:
         using pointer = DataType**;
         using reference = const DataType&;
 
-        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
+        // "empty" iterator creation is not allowed with DIterators (only for ZIterators and NIterators)
         ConstReverseDIterator() = delete;
 
         ConstReverseDIterator operator++();
