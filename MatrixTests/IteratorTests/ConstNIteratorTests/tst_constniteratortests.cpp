@@ -59,49 +59,77 @@ void ConstNIteratorTests::testIteratorCreation()
     m_MainMatrix = {8, 9, -5};
 
     IntMatrixConstNIterator it{m_MainMatrix.constNBegin()};
-    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.constNEnd();
-    QVERIFY2(it.getCurrentRowNr() == 8 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 8 && it.getCurrentColumnNr() == 8 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.constNColumnBegin(0);
-    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.constNColumnBegin(1);
-    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 1, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 1 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.constNColumnBegin(4);
-    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 4, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 4 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.constNColumnBegin(7);
-    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 7, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 7 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.constNColumnBegin(8);
-    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 8 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.constNColumnEnd(0);
-    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 1, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 1 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.constNColumnEnd(1);
-    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 2, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 2 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.constNColumnEnd(4);
-    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 5, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 5 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.constNColumnEnd(7);
-    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 8 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.constNColumnEnd(8);
-    QVERIFY2(it.getCurrentRowNr() == 8 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 8 && it.getCurrentColumnNr() == 8 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.getConstNIterator(0, 0);
-    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.getConstNIterator(1, 0);
-    QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.getConstNIterator(4, 5);
-    QVERIFY2(it.getCurrentRowNr() == 4 && it.getCurrentColumnNr() == 5, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 4 && it.getCurrentColumnNr() == 5 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.getConstNIterator(6, 8);
-    QVERIFY2(it.getCurrentRowNr() == 6 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 6 && it.getCurrentColumnNr() == 8 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.getConstNIterator(7, 8);
-    QVERIFY2(it.getCurrentRowNr() == 7 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 7 && it.getCurrentColumnNr() == 8 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.getConstNIterator(0);
-    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 0 && it.getCurrentColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.getConstNIterator(1);
-    QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 1 && it.getCurrentColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.getConstNIterator(44);
-    QVERIFY2(it.getCurrentRowNr() == 4 && it.getCurrentColumnNr() == 5, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 4 && it.getCurrentColumnNr() == 5 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.getConstNIterator(70);
-    QVERIFY2(it.getCurrentRowNr() == 6 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 6 && it.getCurrentColumnNr() == 8 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
     it = m_MainMatrix.getConstNIterator(71);
-    QVERIFY2(it.getCurrentRowNr() == 7 && it.getCurrentColumnNr() == 8, "The iterator has not been correctly created");
+    QVERIFY2(it.getCurrentRowNr() == 7 && it.getCurrentColumnNr() == 8 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
+
+    // test iterator creation for empty matrix
+    m_MainMatrix.clear();
+    it = m_MainMatrix.constNBegin();
+    QVERIFY2(it.getCurrentRowNr() == -1 && it.getCurrentColumnNr() == -1 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
+    it = m_MainMatrix.constNEnd();
+    QVERIFY2(it.getCurrentRowNr() == -1 && it.getCurrentColumnNr() == -1 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
+
+    // test empty iterator creation (not bound to any matrix) - an empty iterator should be valid for any empty matrix
+    IntMatrixConstNIterator emptyIt;
+    QVERIFY2(emptyIt.getCurrentRowNr() == -1 && emptyIt.getCurrentColumnNr() == -1 && emptyIt.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
+
+    // additional test
+    m_MainMatrix = {8, 9, -5};
+    m_AuxIntMatrix = {8, 9, -5};
+    it = m_MainMatrix.getConstNIterator(4, 5);
+    QVERIFY(!it.isValidWithMatrix(m_AuxIntMatrix));
+    m_AuxIntMatrix.clear();
+    QVERIFY(!it.isValidWithMatrix(m_AuxIntMatrix));
+    it = m_AuxIntMatrix.constNBegin();
+    QVERIFY(!it.isValidWithMatrix(m_MainMatrix));
+    it = m_AuxIntMatrix.constNEnd();
+    QVERIFY(!it.isValidWithMatrix(m_MainMatrix));
+    m_MainMatrix.clear();
+    it = m_MainMatrix.constNBegin();
+    QVERIFY(it.isValidWithMatrix(m_AuxIntMatrix)); // an iterator of an empty matrix is valid with any other empty matrix
+    it = m_MainMatrix.constNEnd();
+    QVERIFY(it.isValidWithMatrix(m_AuxIntMatrix));
 }
 
 void ConstNIteratorTests::testIteratorsAreEqual()
@@ -141,7 +169,7 @@ void ConstNIteratorTests::testIteratorsAreEqual()
     it = m_MainMatrix.constNEnd();
     QVERIFY2((it == it) && (it == m_MainMatrix.constNEnd()) && !(it != it) && !(it != m_MainMatrix.constNEnd()),  "The iterator is NOT equal to itself and/or to source iterator");
 
-    // test empty matrix iterator creation
+    // test empty matrix iterator equality
     m_MainMatrix.clear();
     QVERIFY2((m_MainMatrix.constNBegin() == m_MainMatrix.constNEnd()) && !(m_MainMatrix.constNBegin() != m_MainMatrix.constNEnd()), "The two iterators are NOT equal");
 }
