@@ -292,6 +292,8 @@ public:
         value_type* operator->() const;
         reference operator[](difference_type index) const;
 
+        /* This function was created mainly for testing purposes although it can be used in "production" as well.
+           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
         bool isValidWithMatrix(const Matrix& matrix) const;
 
         size_type getCurrentRowNr() const;
@@ -351,6 +353,8 @@ public:
         const value_type* operator->() const;
         reference operator[](difference_type index) const;
 
+        /* This function was created mainly for testing purposes although it can be used in "production" as well.
+           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
         bool isValidWithMatrix(const Matrix& matrix) const;
 
         size_type getCurrentRowNr() const;
@@ -410,6 +414,8 @@ public:
         value_type* operator->() const;
         reference operator[](difference_type index) const;
 
+        /* This function was created mainly for testing purposes although it can be used in "production" as well.
+           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
         bool isValidWithMatrix(const Matrix& matrix) const;
 
         size_type getCurrentRowNr() const;
@@ -469,6 +475,8 @@ public:
         const value_type* operator->() const;
         reference operator[](difference_type index) const;
 
+        /* This function was created mainly for testing purposes although it can be used in "production" as well.
+           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
         bool isValidWithMatrix(const Matrix& matrix) const;
 
         size_type getCurrentRowNr() const;
@@ -2110,7 +2118,7 @@ typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::ope
 }
 
 template<typename DataType>
-bool Matrix<DataType>::DIterator::isValidWithMatrix(const Matrix &matrix) const
+bool Matrix<DataType>::DIterator::isValidWithMatrix(const Matrix& matrix) const
 {
     bool isValid{true};
 
@@ -2368,7 +2376,7 @@ typename Matrix<DataType>::ConstDIterator::reference Matrix<DataType>::ConstDIte
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::isValidWithMatrix(const Matrix &matrix) const
+bool Matrix<DataType>::ConstDIterator::isValidWithMatrix(const Matrix& matrix) const
 {
     bool isValid{true};
 
@@ -2626,7 +2634,7 @@ typename Matrix<DataType>::ReverseDIterator::reference Matrix<DataType>::Reverse
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::isValidWithMatrix(const Matrix &matrix) const
+bool Matrix<DataType>::ReverseDIterator::isValidWithMatrix(const Matrix& matrix) const
 {
     bool isValid{true};
 
@@ -2878,7 +2886,7 @@ typename Matrix<DataType>::ConstReverseDIterator::reference Matrix<DataType>::Co
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::isValidWithMatrix(const Matrix &matrix) const
+bool Matrix<DataType>::ConstReverseDIterator::isValidWithMatrix(const Matrix& matrix) const
 {
     bool isValid{true};
 

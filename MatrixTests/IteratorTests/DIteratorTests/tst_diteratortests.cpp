@@ -33,7 +33,6 @@ private slots:
     void testDereferenceAsteriskOperator();
     void testDereferenceArrowOperator();
     void testDereferenceSquareBracketsOperator();
-    void testIsValidWithMatrix();
     void testChangeDiagonal();
     void testStdCount();
     void testStdFind();
@@ -919,121 +918,6 @@ void DIteratorTests::testDereferenceSquareBracketsOperator()
         it[1] = 14;
 
         QVERIFY2(*matrix.getDIterator(1, 1, true) == 14, "The dereference square brackets operator doesn't work correctly");
-    }
-}
-
-void DIteratorTests::testIsValidWithMatrix()
-{
-    {
-        IntMatrix firstMatrix{2, 3, {1, 2, -3, 4, -5, 6}};
-        IntMatrix secondMatrix{3, 2, {7, 8, -9, 10, -11, 12}};
-        IntMatrixDIterator it{firstMatrix.getDIterator(1, 0)};
-
-        QVERIFY2(it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (true)");
-        QVERIFY2(!it.isValidWithMatrix(secondMatrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
-        IntMatrixDIterator it{matrix.getDIterator(0, 1)};
-
-        matrix.clear();
-
-        QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
-        IntMatrixDIterator it{matrix.getDIterator(0, 0)};
-
-        matrix.resize(2, 3);
-
-        QVERIFY2(it.isValidWithMatrix(matrix), "The validity function does not return the right value (true)");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
-        IntMatrixDIterator it{matrix.getDIterator(1, 1)};
-
-        matrix.resizeWithValue(2, 4, -5);
-
-        QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
-        IntMatrixDIterator it{matrix.getDIterator(1, 1, true)};
-
-        matrix.resizeWithValue(4, 3, -5);
-
-        QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, 2, -3, 4, -5, 6}};
-        IntMatrixDIterator it{matrix.getDIterator(-1, 0, true)};
-
-        matrix.resizeWithValue(4, 5, -5);
-
-        QVERIFY2(!it.isValidWithMatrix(matrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 3, {1, 2, -3, 4, -5, 6}};
-        IntMatrix secondMatrix{3, 2, 5};
-        IntMatrixDIterator it{firstMatrix.getDIterator(1, 0, true)};
-
-        secondMatrix = std::move(firstMatrix);
-
-        QVERIFY2(!it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (false)");
-        QVERIFY2(it.isValidWithMatrix(secondMatrix), "The validity function does not return the right value (true)");
-
-        firstMatrix = std::move(secondMatrix);
-
-        QVERIFY2(it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (true)");
-        QVERIFY2(!it.isValidWithMatrix(secondMatrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 3, {1, 2, -3, 4, -5, 6}};
-        IntMatrix secondMatrix{2, 3, 5};
-        IntMatrixDIterator it{firstMatrix.getDIterator(1, 0)};
-
-        firstMatrix = std::move(secondMatrix);
-
-        QVERIFY2(!it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix firstMatrix{2, 3, {1, 2, -3, 4, -5, 6}};
-        IntMatrix secondMatrix{2, 3, 5};
-        IntMatrixDIterator it{firstMatrix.getDIterator(0, 1)};
-
-        firstMatrix = secondMatrix;
-
-        QVERIFY2(it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (true)");
-    }
-
-    {
-        IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
-        IntMatrixDIterator it{firstMatrix.getDIterator(-1, 0, true)};
-
-        QVERIFY2(it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (true)");
-
-        firstMatrix.insertRow(1);
-
-        QVERIFY2(!it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (false)");
-    }
-
-    {
-        IntMatrix firstMatrix(4, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12, 13, -14, 15, -16});
-        IntMatrixDIterator it{firstMatrix.getDIterator(1, 0, true)};
-
-        QVERIFY2(it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (true)");
-
-        firstMatrix.insertColumn(1);
-
-        QVERIFY2(!it.isValidWithMatrix(firstMatrix), "The validity function does not return the right value (false)");
     }
 }
 
