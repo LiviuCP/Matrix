@@ -55,6 +55,8 @@ public:
         value_type* operator->() const;
         reference operator[](difference_type index) const;
 
+        /* This function was created mainly for testing purposes although it can be used in "production" as well.
+           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
         bool isValidWithMatrix(const Matrix& matrix) const;
 
         size_type getCurrentRowNr() const;
@@ -112,6 +114,8 @@ public:
         const value_type* operator->() const;
         reference operator[](difference_type index) const;
 
+        /* This function was created mainly for testing purposes although it can be used in "production" as well.
+           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
         bool isValidWithMatrix(const Matrix& matrix) const;
 
         size_type getCurrentRowNr() const;
@@ -169,6 +173,8 @@ public:
         value_type* operator->() const;
         reference operator[](difference_type index) const;
 
+        /* This function was created mainly for testing purposes although it can be used in "production" as well.
+           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
         bool isValidWithMatrix(const Matrix& matrix) const;
 
         size_type getCurrentRowNr() const;
@@ -226,6 +232,8 @@ public:
         const value_type* operator->() const;
         reference operator[](difference_type index) const;
 
+        /* This function was created mainly for testing purposes although it can be used in "production" as well.
+           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
         bool isValidWithMatrix(const Matrix& matrix) const;
 
         size_type getCurrentRowNr() const;
@@ -519,6 +527,8 @@ public:
         value_type* operator->() const;
         reference operator[](difference_type index) const;
 
+        /* This function was created mainly for testing purposes although it can be used in "production" as well.
+           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
         bool isValidWithMatrix(const Matrix& matrix) const;
 
         size_type getCurrentRowNr() const;
@@ -576,6 +586,8 @@ public:
         const value_type* operator->() const;
         reference operator[](difference_type index) const;
 
+        /* This function was created mainly for testing purposes although it can be used in "production" as well.
+           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
         bool isValidWithMatrix(const Matrix& matrix) const;
 
         size_type getCurrentRowNr() const;
@@ -633,6 +645,8 @@ public:
         value_type* operator->() const;
         reference operator[](difference_type index) const;
 
+        /* This function was created mainly for testing purposes although it can be used in "production" as well.
+           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
         bool isValidWithMatrix(const Matrix& matrix) const;
 
         size_type getCurrentRowNr() const;
@@ -690,6 +704,8 @@ public:
         const value_type* operator->() const;
         reference operator[](difference_type index) const;
 
+        /* This function was created mainly for testing purposes although it can be used in "production" as well.
+           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
         bool isValidWithMatrix(const Matrix& matrix) const;
 
         size_type getCurrentRowNr() const;

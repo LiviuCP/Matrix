@@ -33,7 +33,6 @@ private slots:
     void testDereferenceAsteriskOperator();
     void testDereferenceArrowOperator();
     void testDereferenceSquareBracketsOperator();
-    void testIsValidWithMatrix();
     void testPositionGetters();
 
     // "bonus" tests, demonstrate the integration of the Matrix iterators with algorithms of the standard library
@@ -1108,64 +1107,6 @@ void ReverseZIteratorTests::testDereferenceSquareBracketsOperator()
     QVERIFY2(m_MainMatrix.at(3, 1) == 11, "The dereference square brackets operator doesn't work correctly when writing the element");
     QVERIFY2(m_MainMatrix.at(3, 2) == -12, "The dereference square brackets operator doesn't work correctly when writing the element");
     QVERIFY(m_MainMatrix.at(2, 1) == -20);
-}
-
-void ReverseZIteratorTests::testIsValidWithMatrix()
-{
-    m_MainMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    IntMatrixReverseZIterator it{m_MainMatrix.getReverseZIterator(1, 0)};
-    QVERIFY2(it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (true)");
-
-    m_MainMatrix = {3, 2, {7, 8, -9, 10, -11, 12}};
-    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
-
-    m_MainMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    it = m_MainMatrix.getReverseZIterator(1, 0);
-    m_MainMatrix.clear();
-    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
-
-    m_MainMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    it = m_MainMatrix.getReverseZIterator(1, 0);
-    m_MainMatrix.resize(2, 3);
-    QVERIFY2(it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (true)");
-
-    m_MainMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    it = m_MainMatrix.getReverseZIterator(1, 0);
-    m_MainMatrix.resizeWithValue(2, 4, -5);
-    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
-
-    m_MainMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    it = m_MainMatrix.getReverseZIterator(1, 0);
-    m_MainMatrix.resizeWithValue(4, 3, -5);
-    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
-
-    m_MainMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    it = m_MainMatrix.getReverseZIterator(1, 0);
-    m_MainMatrix.resizeWithValue(4, 5, -5);
-    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
-
-    m_MainMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    m_AuxIntMatrix = {3, 2, 5};
-    it = m_MainMatrix.getReverseZIterator(1, 0);
-    m_AuxIntMatrix = std::move(m_MainMatrix);
-    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
-    QVERIFY2(it.isValidWithMatrix(m_AuxIntMatrix), "The validity function does not return the right value (true)");
-
-    m_MainMatrix = std::move(m_AuxIntMatrix);
-    QVERIFY2(it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (true)");
-    QVERIFY2(!it.isValidWithMatrix(m_AuxIntMatrix), "The validity function does not return the right value (false)");
-
-    m_MainMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    m_AuxIntMatrix = {2, 3, 5};
-    it = m_MainMatrix.getReverseZIterator(1, 0);
-    m_MainMatrix = std::move(m_AuxIntMatrix);
-    QVERIFY2(!it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (false)");
-
-    m_MainMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    m_AuxIntMatrix = {2, 3, 5};
-    it = m_MainMatrix.getReverseZIterator(1, 0);
-    m_MainMatrix = m_AuxIntMatrix;
-    QVERIFY2(it.isValidWithMatrix(m_MainMatrix), "The validity function does not return the right value (true)");
 }
 
 void ReverseZIteratorTests::testPositionGetters()
