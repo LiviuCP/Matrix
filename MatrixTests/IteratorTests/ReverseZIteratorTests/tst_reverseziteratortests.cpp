@@ -523,13 +523,13 @@ void ReverseZIteratorTests::testOperatorPlus()
     QVERIFY2(m_MainMatrix.reverseZEnd() + (-1) == m_MainMatrix.reverseZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
 
     // test for empty iterators
-    IntMatrixReverseZIterator it1{};
-    IntMatrixReverseZIterator it2{};
-    IntMatrixReverseZIterator it3{};
-    it1 = it3 + (-1);
-    it2 = it3 + 1;
-    QVERIFY2(it1 == it3, "Operator + does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(it2 == it3, "Operator + does not work correctly, the resulting iterator is not the right one");
+    IntMatrixReverseZIterator emptyIt1{};
+    IntMatrixReverseZIterator emptyIt2{};
+    IntMatrixReverseZIterator emptyIt3{};
+    emptyIt1 = emptyIt3 + (-1);
+    emptyIt2 = emptyIt3 + 1;
+    QVERIFY2(emptyIt1 == emptyIt3, "Operator + does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(emptyIt2 == emptyIt3, "Operator + does not work correctly, the resulting iterator is not the right one");
 }
 
 void ReverseZIteratorTests::testOperatorMinus()
@@ -627,13 +627,13 @@ void ReverseZIteratorTests::testOperatorMinus()
     QVERIFY2(m_MainMatrix.reverseZEnd() - 1 == m_MainMatrix.reverseZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
 
     // test for empty iterators
-    IntMatrixReverseZIterator it1{};
-    IntMatrixReverseZIterator it2{};
-    IntMatrixReverseZIterator it3{};
-    it1 = it3 - 1;
-    it2 = it3 - (-1);
-    QVERIFY2(it1 == it3, "Operator - does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(it2 == it3, "Operator - does not work correctly, the resulting iterator is not the right one");
+    IntMatrixReverseZIterator emptyIt1{};
+    IntMatrixReverseZIterator emptyIt2{};
+    IntMatrixReverseZIterator emptyIt3{};
+    emptyIt1 = emptyIt3 - 1;
+    emptyIt2 = emptyIt3 - (-1);
+    QVERIFY2(emptyIt1 == emptyIt3, "Operator - does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(emptyIt2 == emptyIt3, "Operator - does not work correctly, the resulting iterator is not the right one");
 }
 
 void ReverseZIteratorTests::testOperatorPlusEqual()

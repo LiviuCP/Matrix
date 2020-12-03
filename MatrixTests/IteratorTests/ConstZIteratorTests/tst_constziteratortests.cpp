@@ -522,13 +522,13 @@ void ConstZIteratorTests::testOperatorPlus()
     QVERIFY2(m_MainMatrix.constZEnd() + (-1) == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
 
     // test for empty iterators
-    IntMatrixConstZIterator it1{};
-    IntMatrixConstZIterator it2{};
-    IntMatrixConstZIterator it3{};
-    it1 = it3 + (-1);
-    it2 = it3 + 1;
-    QVERIFY2(it1 == it3, "Operator + does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(it2 == it3, "Operator + does not work correctly, the resulting iterator is not the right one");
+    IntMatrixConstZIterator emptyIt1{};
+    IntMatrixConstZIterator emptyIt2{};
+    IntMatrixConstZIterator emptyIt3{};
+    emptyIt1 = emptyIt3 + (-1);
+    emptyIt2 = emptyIt3 + 1;
+    QVERIFY2(emptyIt1 == emptyIt3, "Operator + does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(emptyIt2 == emptyIt3, "Operator + does not work correctly, the resulting iterator is not the right one");
 }
 
 void ConstZIteratorTests::testOperatorMinus()
@@ -626,13 +626,13 @@ void ConstZIteratorTests::testOperatorMinus()
     QVERIFY2(m_MainMatrix.constZEnd() - 1 == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
 
     // test for empty iterator
-    IntMatrixConstZIterator it1{};
-    IntMatrixConstZIterator it2{};
-    IntMatrixConstZIterator it3{};
-    it1 = it3 - 1;
-    it2 = it3 - (-1);
-    QVERIFY2(it1 == it3, "Operator - does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(it2 == it3, "Operator - does not work correctly, the resulting iterator is not the right one");
+    IntMatrixConstZIterator emptyIt1{};
+    IntMatrixConstZIterator emptyIt2{};
+    IntMatrixConstZIterator emptyIt3{};
+    emptyIt1 = emptyIt3 - 1;
+    emptyIt2 = emptyIt3 - (-1);
+    QVERIFY2(emptyIt1 == emptyIt3, "Operator - does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(emptyIt2 == emptyIt3, "Operator - does not work correctly, the resulting iterator is not the right one");
 }
 
 void ConstZIteratorTests::testOperatorPlusEqual()

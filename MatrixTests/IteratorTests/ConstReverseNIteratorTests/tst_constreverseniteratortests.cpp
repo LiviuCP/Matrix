@@ -522,13 +522,13 @@ void ConstReverseNIteratorTests::testOperatorPlus()
     QVERIFY2(m_MainMatrix.constReverseNEnd() + (-1) == m_MainMatrix.constReverseNEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
 
     // test for empty iterators
-    IntMatrixConstReverseNIterator it1{};
-    IntMatrixConstReverseNIterator it2{};
-    IntMatrixConstReverseNIterator it3{};
-    it1 = it3 + (-1);
-    it2 = it3 + 1;
-    QVERIFY2(it1 == it3, "Operator + does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(it2 == it3, "Operator + does not work correctly, the resulting iterator is not the right one");
+    IntMatrixConstReverseNIterator emptyIt1{};
+    IntMatrixConstReverseNIterator emptyIt2{};
+    IntMatrixConstReverseNIterator emptyIt3{};
+    emptyIt1 = emptyIt3 + (-1);
+    emptyIt2 = emptyIt3 + 1;
+    QVERIFY2(emptyIt1 == emptyIt3, "Operator + does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(emptyIt2 == emptyIt3, "Operator + does not work correctly, the resulting iterator is not the right one");
 }
 
 void ConstReverseNIteratorTests::testOperatorMinus()
@@ -626,13 +626,13 @@ void ConstReverseNIteratorTests::testOperatorMinus()
     QVERIFY2(m_MainMatrix.constReverseNEnd() - 1 == m_MainMatrix.constReverseNEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
 
     // test for empty iterators
-    IntMatrixConstReverseNIterator it1{};
-    IntMatrixConstReverseNIterator it2{};
-    IntMatrixConstReverseNIterator it3{};
-    it1 = it3 - 1;
-    it2 = it3 - (-1);
-    QVERIFY2(it1 == it3, "Operator - does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(it2 == it3, "Operator - does not work correctly, the resulting iterator is not the right one");
+    IntMatrixConstReverseNIterator emptyIt1{};
+    IntMatrixConstReverseNIterator emptyIt2{};
+    IntMatrixConstReverseNIterator emptyIt3{};
+    emptyIt1 = emptyIt3 - 1;
+    emptyIt2 = emptyIt3 - (-1);
+    QVERIFY2(emptyIt1 == emptyIt3, "Operator - does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(emptyIt2 == emptyIt3, "Operator - does not work correctly, the resulting iterator is not the right one");
 }
 
 void ConstReverseNIteratorTests::testOperatorPlusEqual()

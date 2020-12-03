@@ -523,13 +523,13 @@ void NIteratorTests::testOperatorPlus()
     QVERIFY2(m_MainMatrix.nEnd() + (-1) == m_MainMatrix.nEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
 
     // test for empty iterators
-    IntMatrixNIterator it1{};
-    IntMatrixNIterator it2{};
-    IntMatrixNIterator it3{};
-    it1 = it3 + (-1);
-    it2 = it3 + 1;
-    QVERIFY2(it1 == it3, "Operator + does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(it2 == it3, "Operator + does not work correctly, the resulting iterator is not the right one");
+    IntMatrixNIterator emptyIt1{};
+    IntMatrixNIterator emptyIt2{};
+    IntMatrixNIterator emptyIt3{};
+    emptyIt1 = emptyIt3 + (-1);
+    emptyIt2 = emptyIt3 + 1;
+    QVERIFY2(emptyIt1 == emptyIt3, "Operator + does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(emptyIt2 == emptyIt3, "Operator + does not work correctly, the resulting iterator is not the right one");
 }
 
 void NIteratorTests::testOperatorMinus()
@@ -627,13 +627,13 @@ void NIteratorTests::testOperatorMinus()
     QVERIFY2(m_MainMatrix.nEnd() - 1 == m_MainMatrix.nEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
 
     // test for empty iterator
-    IntMatrixNIterator it1{};
-    IntMatrixNIterator it2{};
-    IntMatrixNIterator it3{};
-    it1 = it3 - 1;
-    it2 = it3 - (-1);
-    QVERIFY2(it1 == it3, "Operator - does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(it2 == it3, "Operator - does not work correctly, the resulting iterator is not the right one");
+    IntMatrixNIterator emptyIt1{};
+    IntMatrixNIterator emptyIt2{};
+    IntMatrixNIterator emptyIt3{};
+    emptyIt1 = emptyIt3 - 1;
+    emptyIt2 = emptyIt3 - (-1);
+    QVERIFY2(emptyIt1 == emptyIt3, "Operator - does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(emptyIt2 == emptyIt3, "Operator - does not work correctly, the resulting iterator is not the right one");
 }
 
 void NIteratorTests::testOperatorPlusEqual()
