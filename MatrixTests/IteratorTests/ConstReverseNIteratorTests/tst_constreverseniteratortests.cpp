@@ -1101,6 +1101,19 @@ void ConstReverseNIteratorTests::testStdFind()
 
     m_MainMatrix = {5, 4, {-1, 5, 2, -7, 1, 9, -2, 7, 3, 8, 2, 2, 1, 0, 8, 9, 4, 1, 9, 8}};
     QVERIFY2(find(m_MainMatrix.constReverseNBegin(), m_MainMatrix.constReverseNEnd(), 10) == m_MainMatrix.constReverseNEnd(), "The iterator doesn't work correctly with std::find, a non existing value has been found in the matrix");
+
+    it = m_MainMatrix.constReverseNBegin();
+    while(it != m_MainMatrix.constReverseNEnd())
+    {
+        it = find(it, m_MainMatrix.constReverseNEnd(), 9);
+
+        if (it != m_MainMatrix.constReverseNEnd())
+        {
+            m_MainMatrix.at(it.getCurrentRowNr(), it.getCurrentColumnNr()) = 10;
+        }
+    }
+    int expectedNumber{std::count(m_MainMatrix.constReverseNBegin(), m_MainMatrix.constReverseNEnd(), 10)};
+    QVERIFY2(expectedNumber == 3, "The iterator doesn't work properly with std::find, element values haven't been correctly replaced");
 }
 
 QTEST_APPLESS_MAIN(ConstReverseNIteratorTests)

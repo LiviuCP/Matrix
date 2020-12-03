@@ -1101,6 +1101,19 @@ void ConstZIteratorTests::testStdFind()
 
     m_MainMatrix = {4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 1, 2, -2, 2, 8, 9, -7, 7, 2, 9, 8}};
     QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.constZEnd(), 10) == m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non existing value has been found in the matrix");
+
+    it = m_MainMatrix.constZBegin();
+    while(it != m_MainMatrix.constZEnd())
+    {
+        it = find(it, m_MainMatrix.constZEnd(), 9);
+
+        if (it != m_MainMatrix.constZEnd())
+        {
+            m_MainMatrix.at(it.getCurrentRowNr(), it.getCurrentColumnNr()) = 10;
+        }
+    }
+    int expectedNumber{std::count(m_MainMatrix.constZBegin(), m_MainMatrix.constZEnd(), 10)};
+    QVERIFY2(expectedNumber == 3, "The iterator doesn't work properly with std::find, element values haven't been correctly replaced");
 }
 
 QTEST_APPLESS_MAIN(ConstZIteratorTests)
