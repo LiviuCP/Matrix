@@ -908,11 +908,11 @@ void ConstNIteratorTests::testDifferenceOperator()
     QVERIFY2(m_MainMatrix.constNEnd() - m_MainMatrix.constNEnd() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
 
     // test for empty iterator
-    IntMatrixConstNIterator it1{};
-    IntMatrixConstNIterator it2{};
-    QVERIFY2(it1 - it2 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(it2 - it1 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(it1 - it1 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    IntMatrixConstNIterator emptyIt1{};
+    IntMatrixConstNIterator emptyIt2{};
+    QVERIFY2(emptyIt1 - emptyIt2 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(emptyIt2 - emptyIt1 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(emptyIt1 - emptyIt1 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
 }
 
 void ConstNIteratorTests::testDereferenceAsteriskOperator()

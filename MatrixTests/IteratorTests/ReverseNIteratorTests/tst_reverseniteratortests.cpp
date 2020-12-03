@@ -909,11 +909,11 @@ void ReverseNIteratorTests::testDifferenceOperator()
     QVERIFY2(m_MainMatrix.reverseNEnd() - m_MainMatrix.reverseNEnd() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
 
     // test for empty iterator
-    IntMatrixReverseNIterator it1{};
-    IntMatrixReverseNIterator it2{};
-    QVERIFY2(it1 - it2 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(it2 - it1 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(it1 - it1 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    IntMatrixReverseNIterator emptyIt1{};
+    IntMatrixReverseNIterator emptyIt2{};
+    QVERIFY2(emptyIt1 - emptyIt2 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(emptyIt2 - emptyIt1 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(emptyIt1 - emptyIt1 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
 }
 
 void ReverseNIteratorTests::testDereferenceAsteriskOperator()
