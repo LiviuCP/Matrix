@@ -33,7 +33,6 @@ private slots:
     void testDereferenceAsteriskOperator();
     void testDereferenceArrowOperator();
     void testDereferenceSquareBracketsOperator();
-    void testPositionGetters();
 
     // "bonus" tests, demonstrate the integration of the Matrix iterators with algorithms of the standard library
     void testStdCount();
@@ -1107,18 +1106,6 @@ void ReverseZIteratorTests::testDereferenceSquareBracketsOperator()
     QVERIFY2(m_MainMatrix.at(3, 1) == 11, "The dereference square brackets operator doesn't work correctly when writing the element");
     QVERIFY2(m_MainMatrix.at(3, 2) == -12, "The dereference square brackets operator doesn't work correctly when writing the element");
     QVERIFY(m_MainMatrix.at(2, 1) == -20);
-}
-
-void ReverseZIteratorTests::testPositionGetters()
-{
-    m_MainMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    m_AuxIntMatrix = {2, 3, {7, 8, -9, 10, -11, 12}};
-
-    IntMatrixReverseZIterator it{m_MainMatrix.getReverseZIterator(1, 0)};
-    m_MainMatrix = std::move(m_AuxIntMatrix);
-    IntMatrixReverseZIterator newIt{m_MainMatrix.getReverseZIterator(it.getCurrentRowNr(), it.getCurrentColumnNr())};
-
-    QVERIFY2(*newIt == 10, "The position getters do not work correctly, iterator dereferencing does not return the right value");
 }
 
 void ReverseZIteratorTests::testStdCount()

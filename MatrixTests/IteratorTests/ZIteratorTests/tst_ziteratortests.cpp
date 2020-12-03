@@ -33,7 +33,6 @@ private slots:
     void testDereferenceAsteriskOperator();
     void testDereferenceArrowOperator();
     void testDereferenceSquareBracketsOperator();
-    void testPositionGetters();
 
     void testIteratingWithAuto(); // tests the begin() and end() functions
 
@@ -1109,18 +1108,6 @@ void ZIteratorTests::testDereferenceSquareBracketsOperator()
     QVERIFY2(m_MainMatrix.at(3, 1) == 11, "The dereference square brackets operator doesn't work correctly when writing the element");
     QVERIFY2(m_MainMatrix.at(3, 2) == -12, "The dereference square brackets operator doesn't work correctly when writing the element");
     QVERIFY(m_MainMatrix.at(2, 1) == -20);
-}
-
-void ZIteratorTests::testPositionGetters()
-{
-    m_MainMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    m_AuxIntMatrix = {2, 3, {7, 8, -9, 10, -11, 12}};
-
-    IntMatrixZIterator it{m_MainMatrix.getZIterator(1, 0)};
-    m_MainMatrix = std::move(m_AuxIntMatrix);
-    IntMatrixZIterator newIt{m_MainMatrix.getZIterator(it.getCurrentRowNr(), it.getCurrentColumnNr())};
-
-    QVERIFY2(*newIt == 10, "The position getters do not work correctly, iterator dereferencing does not return the right value");
 }
 
 void ZIteratorTests::testIteratingWithAuto()
