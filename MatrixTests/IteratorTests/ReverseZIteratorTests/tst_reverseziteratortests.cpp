@@ -342,18 +342,18 @@ void ReverseZIteratorTests::testIncrementOperators()
     QVERIFY2(it == m_MainMatrix.reverseZEnd(), "Incorrect post-incrementation");
 
     // test a combination of "pre" and "post" behaviors
-    IntMatrixReverseZIterator it1{m_MainMatrix.getReverseZIterator(5, 6)};
-    IntMatrixReverseZIterator it2{++(++it1)};
-    QVERIFY2(it1 == m_MainMatrix.getReverseZIterator(5, 5) && it2 == m_MainMatrix.getReverseZIterator(5, 4), "Incorrect pre-pre-incrementation");
-    it1 = m_MainMatrix.getReverseZIterator(5, 6);
-    it2 = (it1++)++;
-    QVERIFY2(it1 == m_MainMatrix.getReverseZIterator(5, 5) && it2 == m_MainMatrix.getReverseZIterator(5, 6), "Incorrect post-post-incrementation");
-    it1 = m_MainMatrix.getReverseZIterator(5, 6);
-    it2 = (++it1)++;
-    QVERIFY2(it1 == m_MainMatrix.getReverseZIterator(5, 5) && it2 == m_MainMatrix.getReverseZIterator(5, 5), "Incorrect post-pre-incrementation");
-    it1 = m_MainMatrix.getReverseZIterator(5, 6);
-    it2 = ++(it1++);
-    QVERIFY2(it1 == m_MainMatrix.getReverseZIterator(5, 5) && it2 == m_MainMatrix.getReverseZIterator(5, 5), "Incorrect pre-post-incrementation");
+    IntMatrixReverseZIterator srcIt{m_MainMatrix.getReverseZIterator(5, 6)};
+    IntMatrixReverseZIterator destIt{++(++srcIt)};
+    QVERIFY2(srcIt == m_MainMatrix.getReverseZIterator(5, 5) && destIt == m_MainMatrix.getReverseZIterator(5, 4), "Incorrect pre-pre-incrementation");
+    srcIt = m_MainMatrix.getReverseZIterator(5, 6);
+    destIt = (srcIt++)++;
+    QVERIFY2(srcIt == m_MainMatrix.getReverseZIterator(5, 5) && destIt == m_MainMatrix.getReverseZIterator(5, 6), "Incorrect post-post-incrementation");
+    srcIt = m_MainMatrix.getReverseZIterator(5, 6);
+    destIt = (++srcIt)++;
+    QVERIFY2(srcIt == m_MainMatrix.getReverseZIterator(5, 5) && destIt == m_MainMatrix.getReverseZIterator(5, 5), "Incorrect post-pre-incrementation");
+    srcIt = m_MainMatrix.getReverseZIterator(5, 6);
+    destIt = ++(srcIt++);
+    QVERIFY2(srcIt == m_MainMatrix.getReverseZIterator(5, 5) && destIt == m_MainMatrix.getReverseZIterator(5, 5), "Incorrect pre-post-incrementation");
 }
 
 void ReverseZIteratorTests::testDecrementOperators()
@@ -414,18 +414,18 @@ void ReverseZIteratorTests::testDecrementOperators()
     QVERIFY2(it == m_MainMatrix.reverseZBegin(), "Incorrect post-decrementation");
 
     // test a combination of "pre" and "post" behaviors
-    IntMatrixReverseZIterator it1{m_MainMatrix.getReverseZIterator(5, 4)};
-    IntMatrixReverseZIterator it2{--(--it1)};
-    QVERIFY2(it1 == m_MainMatrix.getReverseZIterator(5, 5) && it2 == m_MainMatrix.getReverseZIterator(5, 6), "Incorrect pre-pre-decrementation");
-    it1 = m_MainMatrix.getReverseZIterator(5, 4);
-    it2 = (it1--)--;
-    QVERIFY2(it1 == m_MainMatrix.getReverseZIterator(5, 5) && it2 == m_MainMatrix.getReverseZIterator(5, 4), "Incorrect post-post-decrementation");
-    it1 = m_MainMatrix.getReverseZIterator(5, 4);
-    it2 = (--it1)--;
-    QVERIFY2(it1 == m_MainMatrix.getReverseZIterator(5, 5) && it2 == m_MainMatrix.getReverseZIterator(5, 5), "Incorrect post-pre-decrementation");
-    it1 = m_MainMatrix.getReverseZIterator(5, 4);
-    it2 = --(it1--);
-    QVERIFY2(it1 == m_MainMatrix.getReverseZIterator(5, 5) && it2 == m_MainMatrix.getReverseZIterator(5, 5), "Incorrect pre-post-decrementation");
+    IntMatrixReverseZIterator srcIt{m_MainMatrix.getReverseZIterator(5, 4)};
+    IntMatrixReverseZIterator destIt{--(--srcIt)};
+    QVERIFY2(srcIt == m_MainMatrix.getReverseZIterator(5, 5) && destIt == m_MainMatrix.getReverseZIterator(5, 6), "Incorrect pre-pre-decrementation");
+    srcIt = m_MainMatrix.getReverseZIterator(5, 4);
+    destIt = (srcIt--)--;
+    QVERIFY2(srcIt == m_MainMatrix.getReverseZIterator(5, 5) && destIt == m_MainMatrix.getReverseZIterator(5, 4), "Incorrect post-post-decrementation");
+    srcIt = m_MainMatrix.getReverseZIterator(5, 4);
+    destIt = (--srcIt)--;
+    QVERIFY2(srcIt == m_MainMatrix.getReverseZIterator(5, 5) && destIt == m_MainMatrix.getReverseZIterator(5, 5), "Incorrect post-pre-decrementation");
+    srcIt = m_MainMatrix.getReverseZIterator(5, 4);
+    destIt = --(srcIt--);
+    QVERIFY2(srcIt == m_MainMatrix.getReverseZIterator(5, 5) && destIt == m_MainMatrix.getReverseZIterator(5, 5), "Incorrect pre-post-decrementation");
 }
 
 void ReverseZIteratorTests::testOperatorPlus()

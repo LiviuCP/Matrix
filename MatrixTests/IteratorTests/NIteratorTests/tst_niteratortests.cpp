@@ -342,18 +342,18 @@ void NIteratorTests::testIncrementOperators()
     QVERIFY2(it == m_MainMatrix.nEnd(), "Incorrect post-incrementation");
 
     // test a combination of "pre" and "post" behaviors
-    IntMatrixNIterator it1{m_MainMatrix.getNIterator(4, 5)};
-    IntMatrixNIterator it2{++(++it1)};
-    QVERIFY2(it1 == m_MainMatrix.getNIterator(5, 5) && it2 == m_MainMatrix.getNIterator(6, 5), "Incorrect pre-pre-incrementation");
-    it1 = m_MainMatrix.getNIterator(4, 5);
-    it2 = (it1++)++;
-    QVERIFY2(it1 == m_MainMatrix.getNIterator(5, 5) && it2 == m_MainMatrix.getNIterator(4, 5), "Incorrect post-post-incrementation");
-    it1 = m_MainMatrix.getNIterator(4, 5);
-    it2 = (++it1)++;
-    QVERIFY2(it1 == m_MainMatrix.getNIterator(5, 5) && it2 == m_MainMatrix.getNIterator(5, 5), "Incorrect post-pre-incrementation");
-    it1 = m_MainMatrix.getNIterator(4, 5);
-    it2 = ++(it1++);
-    QVERIFY2(it1 == m_MainMatrix.getNIterator(5, 5) && it2 == m_MainMatrix.getNIterator(5, 5), "Incorrect pre-post-incrementation");
+    IntMatrixNIterator srcIt{m_MainMatrix.getNIterator(4, 5)};
+    IntMatrixNIterator destIt{++(++srcIt)};
+    QVERIFY2(srcIt == m_MainMatrix.getNIterator(5, 5) && destIt == m_MainMatrix.getNIterator(6, 5), "Incorrect pre-pre-incrementation");
+    srcIt = m_MainMatrix.getNIterator(4, 5);
+    destIt = (srcIt++)++;
+    QVERIFY2(srcIt == m_MainMatrix.getNIterator(5, 5) && destIt == m_MainMatrix.getNIterator(4, 5), "Incorrect post-post-incrementation");
+    srcIt = m_MainMatrix.getNIterator(4, 5);
+    destIt = (++srcIt)++;
+    QVERIFY2(srcIt == m_MainMatrix.getNIterator(5, 5) && destIt == m_MainMatrix.getNIterator(5, 5), "Incorrect post-pre-incrementation");
+    srcIt = m_MainMatrix.getNIterator(4, 5);
+    destIt = ++(srcIt++);
+    QVERIFY2(srcIt == m_MainMatrix.getNIterator(5, 5) && destIt == m_MainMatrix.getNIterator(5, 5), "Incorrect pre-post-incrementation");
 }
 
 void NIteratorTests::testDecrementOperators()
@@ -414,18 +414,18 @@ void NIteratorTests::testDecrementOperators()
     QVERIFY2(it == m_MainMatrix.nBegin(), "Incorrect post-decrementation");
 
     // test a combination of "pre" and "post" behaviors
-    IntMatrixNIterator it1{m_MainMatrix.getNIterator(6, 5)};
-    IntMatrixNIterator it2{--(--it1)};
-    QVERIFY2(it1 == m_MainMatrix.getNIterator(5, 5) && it2 == m_MainMatrix.getNIterator(4, 5), "Incorrect pre-pre-decrementation");
-    it1 = m_MainMatrix.getNIterator(6, 5);
-    it2 = (it1--)--;
-    QVERIFY2(it1 == m_MainMatrix.getNIterator(5, 5) && it2 == m_MainMatrix.getNIterator(6, 5), "Incorrect post-post-decrementation");
-    it1 = m_MainMatrix.getNIterator(6, 5);
-    it2 = (--it1)--;
-    QVERIFY2(it1 == m_MainMatrix.getNIterator(5, 5) && it2 == m_MainMatrix.getNIterator(5, 5), "Incorrect post-pre-decrementation");
-    it1 = m_MainMatrix.getNIterator(6, 5);
-    it2 = --(it1--);
-    QVERIFY2(it1 == m_MainMatrix.getNIterator(5, 5) && it2 == m_MainMatrix.getNIterator(5, 5), "Incorrect pre-post-decrementation");
+    IntMatrixNIterator srcIt{m_MainMatrix.getNIterator(6, 5)};
+    IntMatrixNIterator destIt{--(--srcIt)};
+    QVERIFY2(srcIt == m_MainMatrix.getNIterator(5, 5) && destIt == m_MainMatrix.getNIterator(4, 5), "Incorrect pre-pre-decrementation");
+    srcIt = m_MainMatrix.getNIterator(6, 5);
+    destIt = (srcIt--)--;
+    QVERIFY2(srcIt == m_MainMatrix.getNIterator(5, 5) && destIt == m_MainMatrix.getNIterator(6, 5), "Incorrect post-post-decrementation");
+    srcIt = m_MainMatrix.getNIterator(6, 5);
+    destIt = (--srcIt)--;
+    QVERIFY2(srcIt == m_MainMatrix.getNIterator(5, 5) && destIt == m_MainMatrix.getNIterator(5, 5), "Incorrect post-pre-decrementation");
+    srcIt = m_MainMatrix.getNIterator(6, 5);
+    destIt = --(srcIt--);
+    QVERIFY2(srcIt == m_MainMatrix.getNIterator(5, 5) && destIt == m_MainMatrix.getNIterator(5, 5), "Incorrect pre-post-decrementation");
 }
 
 void NIteratorTests::testOperatorPlus()
