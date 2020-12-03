@@ -981,8 +981,9 @@ void NIteratorTests::testDereferenceArrowOperator()
     // additional tests
     m_AuxStringMatrix = {3, 2, {"abc", "jkl", "defed", "mno", "ghi", "pqr"}};
     StringMatrixNIterator it{m_AuxStringMatrix.nBegin()};
-    ++it;
-    QVERIFY2(it->size() == 5, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    m_AuxStringMatrix.at(2, 0) = "abcdefghi";
+    it += 2;
+    QVERIFY2(it->size() == 9, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
 
     m_AuxStringMatrix = {3, 2, {"abc", "jkl", "defed", "mno", "ghi", "pqr"}};
     it = m_AuxStringMatrix.nBegin();

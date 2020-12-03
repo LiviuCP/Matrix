@@ -981,8 +981,9 @@ void ReverseNIteratorTests::testDereferenceArrowOperator()
     // additional tests
     m_AuxStringMatrix = {3, 2, {"abc", "jkl", "defed", "mnop", "ghi", "qr"}};
     StringMatrixReverseNIterator it{m_AuxStringMatrix.reverseNBegin()};
-    ++it;
-    QVERIFY2(it->size() == 4, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    m_AuxStringMatrix.at(0, 1) = "abcdefghi";
+    it += 2;
+    QVERIFY2(it->size() == 9, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
 
     m_AuxStringMatrix = {3, 2, {"abc", "jkl", "defed", "mnop", "ghi", "qr"}};
     it = m_AuxStringMatrix.reverseNBegin();

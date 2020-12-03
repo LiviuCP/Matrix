@@ -946,8 +946,9 @@ void ConstReverseZIteratorTests::testDereferenceArrowOperator()
     // additional test
     m_AuxStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mnop", "qr"}};
     StringMatrixConstReverseZIterator it{m_AuxStringMatrix.constReverseZBegin()};
-    ++it;
-    QVERIFY2(it->size() == 4, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    m_AuxStringMatrix.at(1, 0) = "abcdefghi";
+    it += 2;
+    QVERIFY2(it->size() == 9, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
 }
 
 void ConstReverseZIteratorTests::testDereferenceSquareBracketsOperator()
