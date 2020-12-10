@@ -502,6 +502,26 @@ void CommonTests::testSquareBracketsOperator()
         delete []baseArrayPtr;
         baseArrayPtr = nullptr;
     }
+
+    // test the "const" square brackets operator too
+    {
+        const IntMatrix matrix{4, 3, {10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120}};
+
+        QVERIFY2(matrix[0] == 10 &&
+                 matrix[1] == 20 &&
+                 matrix[2] == 30 &&
+                 matrix[3] == 40 &&
+                 matrix[4] == 50 &&
+                 matrix[5] == 60 &&
+                 matrix[6] == 70 &&
+                 matrix[7] == 80 &&
+                 matrix[8] == 90 &&
+                 matrix[9] == 100 &&
+                 matrix[10] == 110 &&
+                 matrix[11] == 120,
+
+                "The const square brackets operator does not work correctly, read values are wrong!");
+    }
 }
 
 void CommonTests::testCopyAssignmentOperator()

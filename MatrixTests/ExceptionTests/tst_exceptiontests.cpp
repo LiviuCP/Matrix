@@ -150,6 +150,10 @@ void ExceptionTests::testSquareBracketsOperatorExceptions()
 {
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix[-1] = 0;}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix[6] = 0;}, std::runtime_error);
+
+    // test for the "const" square brackets operator too
+    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); (void)matrix[-1];}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); (void)matrix[6];}, std::runtime_error);
 }
 
 void ExceptionTests::testResizeAndRemoveOldValuesExceptions()
