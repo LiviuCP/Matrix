@@ -5001,7 +5001,7 @@ bool Matrix<DataType>::operator==(const Matrix<DataType>& matrix) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::operator!=(const Matrix<DataType> &matrix) const
+bool Matrix<DataType>::operator!=(const Matrix<DataType>& matrix) const
 {
     return !_isEqualTo(matrix);
 }
