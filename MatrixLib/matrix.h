@@ -19,7 +19,7 @@ public:
     class ZIterator
     {
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix;
+        friend class Matrix<DataType>;
     public:
         // all these are required for STL compatibility
         using iterator_category = std::random_access_iterator_tag;
@@ -57,13 +57,13 @@ public:
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix& matrix) const;
+        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
 
         size_type getCurrentRowNr() const;
         size_type getCurrentColumnNr() const;
 
     private:
-        ZIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr);
+        ZIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
 
         void _increment();
         void _decrement();
@@ -78,7 +78,7 @@ public:
     class ConstZIterator
     {
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix;
+        friend class Matrix<DataType>;
     public:
         // all these are required for STL compatibility
         using iterator_category = std::random_access_iterator_tag;
@@ -116,13 +116,13 @@ public:
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix& matrix) const;
+        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
 
         size_type getCurrentRowNr() const;
         size_type getCurrentColumnNr() const;
 
     private:
-        ConstZIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr);
+        ConstZIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
 
         void _increment();
         void _decrement();
@@ -137,7 +137,7 @@ public:
     class ReverseZIterator
     {
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix;
+        friend class Matrix<DataType>;
     public:
         // all these are required for STL compatibility
         using iterator_category = std::random_access_iterator_tag;
@@ -175,13 +175,13 @@ public:
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix& matrix) const;
+        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
 
         size_type getCurrentRowNr() const;
         size_type getCurrentColumnNr() const;
 
     private:
-        ReverseZIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr);
+        ReverseZIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
 
         void _increment();
         void _decrement();
@@ -196,7 +196,7 @@ public:
     class ConstReverseZIterator
     {
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix;
+        friend class Matrix<DataType>;
     public:
         // all these are required for STL compatibility
         using iterator_category = std::random_access_iterator_tag;
@@ -234,13 +234,13 @@ public:
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix& matrix) const;
+        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
 
         size_type getCurrentRowNr() const;
         size_type getCurrentColumnNr() const;
 
     private:
-        ConstReverseZIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr);
+        ConstReverseZIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
 
         void _increment();
         void _decrement();
@@ -255,7 +255,7 @@ public:
     class DIterator
     {
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix;
+        friend class Matrix<DataType>;
 
     public:
         // all these are required for STL compatibility
@@ -294,7 +294,7 @@ public:
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix& matrix) const;
+        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
 
         size_type getCurrentRowNr() const;
         size_type getCurrentColumnNr() const;
@@ -302,7 +302,7 @@ public:
         size_type getDiagonalIndex() const;
 
     private:
-        DIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative = false);
+        DIterator(const Matrix<DataType>& matrix, size_type first, size_type second, bool isRelative = false);
 
         void _increment();
         void _decrement();
@@ -316,7 +316,7 @@ public:
     class ConstDIterator
     {
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix;
+        friend class Matrix<DataType>;
 
     public:
         // all these are required for STL compatibility
@@ -355,7 +355,7 @@ public:
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix& matrix) const;
+        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
 
         size_type getCurrentRowNr() const;
         size_type getCurrentColumnNr() const;
@@ -363,7 +363,7 @@ public:
         size_type getDiagonalIndex() const;
 
     private:
-        ConstDIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative = false);
+        ConstDIterator(const Matrix<DataType>& matrix, size_type first, size_type second, bool isRelative = false);
 
         void _increment();
         void _decrement();
@@ -377,7 +377,7 @@ public:
     class ReverseDIterator
     {
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix;
+        friend class Matrix<DataType>;
 
     public:
         // all these are required for STL compatibility
@@ -416,7 +416,7 @@ public:
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix& matrix) const;
+        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
 
         size_type getCurrentRowNr() const;
         size_type getCurrentColumnNr() const;
@@ -424,7 +424,7 @@ public:
         size_type getDiagonalIndex() const;
 
     private:
-        ReverseDIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative = false);
+        ReverseDIterator(const Matrix<DataType>& matrix, size_type first, size_type second, bool isRelative = false);
 
         void _increment();
         void _decrement();
@@ -438,7 +438,7 @@ public:
     class ConstReverseDIterator
     {
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix;
+        friend class Matrix<DataType>;
 
     public:
         // all these are required for STL compatibility
@@ -477,7 +477,7 @@ public:
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix& matrix) const;
+        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
 
         size_type getCurrentRowNr() const;
         size_type getCurrentColumnNr() const;
@@ -485,7 +485,7 @@ public:
         size_type getDiagonalIndex() const;
 
     private:
-        ConstReverseDIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative = false);
+        ConstReverseDIterator(const Matrix<DataType>& matrix, size_type first, size_type second, bool isRelative = false);
 
         void _increment();
         void _decrement();
@@ -499,7 +499,7 @@ public:
     class NIterator
     {
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix;
+        friend class Matrix<DataType>;
     public:
         // all these are required for STL compatibility
         using iterator_category = std::random_access_iterator_tag;
@@ -537,13 +537,13 @@ public:
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix& matrix) const;
+        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
 
         size_type getCurrentRowNr() const;
         size_type getCurrentColumnNr() const;
 
     private:
-        NIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr);
+        NIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
 
         void _increment();
         void _decrement();
@@ -558,7 +558,7 @@ public:
     class ConstNIterator
     {
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix;
+        friend class Matrix<DataType>;
     public:
         // all these are required for STL compatibility
         using iterator_category = std::random_access_iterator_tag;
@@ -596,13 +596,13 @@ public:
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix& matrix) const;
+        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
 
         size_type getCurrentRowNr() const;
         size_type getCurrentColumnNr() const;
 
     private:
-        ConstNIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr);
+        ConstNIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
 
         void _increment();
         void _decrement();
@@ -617,7 +617,7 @@ public:
     class ReverseNIterator
     {
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix;
+        friend class Matrix<DataType>;
     public:
         // all these are required for STL compatibility
         using iterator_category = std::random_access_iterator_tag;
@@ -655,13 +655,13 @@ public:
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix& matrix) const;
+        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
 
         size_type getCurrentRowNr() const;
         size_type getCurrentColumnNr() const;
 
     private:
-        ReverseNIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr);
+        ReverseNIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
 
         void _increment();
         void _decrement();
@@ -676,7 +676,7 @@ public:
     class ConstReverseNIterator
     {
         // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix;
+        friend class Matrix<DataType>;
     public:
         // all these are required for STL compatibility
         using iterator_category = std::random_access_iterator_tag;
@@ -714,13 +714,13 @@ public:
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix& matrix) const;
+        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
 
         size_type getCurrentRowNr() const;
         size_type getCurrentColumnNr() const;
 
     private:
-        ConstReverseNIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr);
+        ConstReverseNIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
 
         void _increment();
         void _decrement();
@@ -943,7 +943,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator--(int
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator+(ZIterator::difference_type offset)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator+(Matrix<DataType>::ZIterator::difference_type offset)
 {
     ZIterator zIterator{};
 
@@ -964,7 +964,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator+(ZIte
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator-(ZIterator::difference_type offset)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator-(Matrix<DataType>::ZIterator::difference_type offset)
 {
     ZIterator zIterator{};
 
@@ -985,19 +985,19 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator-(ZIte
 }
 
 template<typename DataType>
-void Matrix<DataType>::ZIterator::operator+=(ZIterator::difference_type offset)
+void Matrix<DataType>::ZIterator::operator+=(Matrix<DataType>::ZIterator::difference_type offset)
 {
     *this = *this + offset;
 }
 
 template<typename DataType>
-void Matrix<DataType>::ZIterator::operator-=(ZIterator::difference_type offset)
+void Matrix<DataType>::ZIterator::operator-=(Matrix<DataType>::ZIterator::difference_type offset)
 {
     *this = *this - offset;
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator::difference_type Matrix<DataType>::ZIterator::operator-(const ZIterator& it) const
+typename Matrix<DataType>::ZIterator::difference_type Matrix<DataType>::ZIterator::operator-(const Matrix<DataType>::ZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1009,7 +1009,7 @@ typename Matrix<DataType>::ZIterator::difference_type Matrix<DataType>::ZIterato
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ZIterator::operator==(const ZIterator& it) const
+bool Matrix<DataType>::ZIterator::operator==(const Matrix<DataType>::ZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1018,7 +1018,7 @@ bool Matrix<DataType>::ZIterator::operator==(const ZIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ZIterator::operator!=(const ZIterator& it) const
+bool Matrix<DataType>::ZIterator::operator!=(const Matrix<DataType>::ZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1027,7 +1027,7 @@ bool Matrix<DataType>::ZIterator::operator!=(const ZIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ZIterator::operator<(const ZIterator& it) const
+bool Matrix<DataType>::ZIterator::operator<(const Matrix<DataType>::ZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1036,7 +1036,7 @@ bool Matrix<DataType>::ZIterator::operator<(const ZIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ZIterator::operator<=(const ZIterator& it) const
+bool Matrix<DataType>::ZIterator::operator<=(const Matrix<DataType>::ZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1045,7 +1045,7 @@ bool Matrix<DataType>::ZIterator::operator<=(const ZIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ZIterator::operator>(const ZIterator& it) const
+bool Matrix<DataType>::ZIterator::operator>(const Matrix<DataType>::ZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1054,7 +1054,7 @@ bool Matrix<DataType>::ZIterator::operator>(const ZIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ZIterator::operator>=(const ZIterator& it) const
+bool Matrix<DataType>::ZIterator::operator>=(const Matrix<DataType>::ZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1077,7 +1077,7 @@ typename Matrix<DataType>::ZIterator::value_type* Matrix<DataType>::ZIterator::o
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator[](ZIterator::difference_type index) const
+typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator[](Matrix<DataType>::ZIterator::difference_type index) const
 {
     const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
     const size_type c_ResultingIndex{c_CurrentIndex + index};
@@ -1090,7 +1090,7 @@ typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::ope
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ZIterator::isValidWithMatrix(const Matrix &matrix) const
+bool Matrix<DataType>::ZIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     return (m_pMatrixPtr == matrix.m_pBaseArrayPtr && m_NrOfMatrixRows == matrix.m_NrOfRows && m_NrOfMatrixColumns == matrix.m_NrOfColumns);
 }
@@ -1108,7 +1108,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ZIterator::getCurrentColu
 }
 
 template<typename DataType>
-Matrix<DataType>::ZIterator::ZIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr)
+Matrix<DataType>::ZIterator::ZIterator(const Matrix<DataType>& matrix,
+                                       Matrix<DataType>::size_type currentRowNr,
+                                       Matrix<DataType>::size_type currentColumnNr)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfMatrixRows{matrix.m_NrOfRows}
     , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
@@ -1206,7 +1208,7 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator+(ConstZIterator::difference_type offset)
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator+(Matrix<DataType>::ConstZIterator::difference_type offset)
 {
     ConstZIterator zIterator{};
 
@@ -1227,7 +1229,7 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator-(ConstZIterator::difference_type offset)
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator-(Matrix<DataType>::ConstZIterator::difference_type offset)
 {
     ConstZIterator zIterator{};
 
@@ -1248,19 +1250,19 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::oper
 }
 
 template<typename DataType>
-void Matrix<DataType>::ConstZIterator::operator+=(ConstZIterator::difference_type offset)
+void Matrix<DataType>::ConstZIterator::operator+=(Matrix<DataType>::ConstZIterator::difference_type offset)
 {
     *this = *this + offset;
 }
 
 template<typename DataType>
-void Matrix<DataType>::ConstZIterator::operator-=(ConstZIterator::difference_type offset)
+void Matrix<DataType>::ConstZIterator::operator-=(Matrix<DataType>::ConstZIterator::difference_type offset)
 {
     *this = *this - offset;
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator::difference_type Matrix<DataType>::ConstZIterator::operator-(const ConstZIterator& it) const
+typename Matrix<DataType>::ConstZIterator::difference_type Matrix<DataType>::ConstZIterator::operator-(const Matrix<DataType>::ConstZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1272,7 +1274,7 @@ typename Matrix<DataType>::ConstZIterator::difference_type Matrix<DataType>::Con
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstZIterator::operator==(const ConstZIterator& it) const
+bool Matrix<DataType>::ConstZIterator::operator==(const Matrix<DataType>::ConstZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1281,7 +1283,7 @@ bool Matrix<DataType>::ConstZIterator::operator==(const ConstZIterator& it) cons
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstZIterator::operator!=(const ConstZIterator& it) const
+bool Matrix<DataType>::ConstZIterator::operator!=(const Matrix<DataType>::ConstZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1290,7 +1292,7 @@ bool Matrix<DataType>::ConstZIterator::operator!=(const ConstZIterator& it) cons
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstZIterator::operator<(const ConstZIterator& it) const
+bool Matrix<DataType>::ConstZIterator::operator<(const Matrix<DataType>::ConstZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1299,7 +1301,7 @@ bool Matrix<DataType>::ConstZIterator::operator<(const ConstZIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstZIterator::operator<=(const ConstZIterator& it) const
+bool Matrix<DataType>::ConstZIterator::operator<=(const Matrix<DataType>::ConstZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1308,7 +1310,7 @@ bool Matrix<DataType>::ConstZIterator::operator<=(const ConstZIterator& it) cons
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstZIterator::operator>(const ConstZIterator& it) const
+bool Matrix<DataType>::ConstZIterator::operator>(const Matrix<DataType>::ConstZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1317,7 +1319,7 @@ bool Matrix<DataType>::ConstZIterator::operator>(const ConstZIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstZIterator::operator>=(const ConstZIterator& it) const
+bool Matrix<DataType>::ConstZIterator::operator>=(const Matrix<DataType>::ConstZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1342,7 +1344,7 @@ typename Matrix<DataType>::ConstZIterator::value_type* Matrix<DataType>::ConstZI
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator::reference Matrix<DataType>::ConstZIterator::operator[](ConstZIterator::difference_type index) const
+typename Matrix<DataType>::ConstZIterator::reference Matrix<DataType>::ConstZIterator::operator[](Matrix<DataType>::ConstZIterator::difference_type index) const
 {
     const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
     const size_type c_ResultingIndex{c_CurrentIndex + index};
@@ -1355,7 +1357,7 @@ typename Matrix<DataType>::ConstZIterator::reference Matrix<DataType>::ConstZIte
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstZIterator::isValidWithMatrix(const Matrix &matrix) const
+bool Matrix<DataType>::ConstZIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     return (m_pMatrixPtr == matrix.m_pBaseArrayPtr && m_NrOfMatrixRows == matrix.m_NrOfRows && m_NrOfMatrixColumns == matrix.m_NrOfColumns);
 }
@@ -1373,7 +1375,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ConstZIterator::getCurren
 }
 
 template<typename DataType>
-Matrix<DataType>::ConstZIterator::ConstZIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr)
+Matrix<DataType>::ConstZIterator::ConstZIterator(const Matrix<DataType>& matrix,
+                                                 Matrix<DataType>::size_type currentRowNr,
+                                                 Matrix<DataType>::size_type currentColumnNr)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfMatrixRows{matrix.m_NrOfRows}
     , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
@@ -1471,7 +1475,7 @@ typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::operator+(ReverseZIterator::difference_type offset)
+typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::operator+(Matrix<DataType>::ReverseZIterator::difference_type offset)
 {
     ReverseZIterator zIterator{};
 
@@ -1492,7 +1496,7 @@ typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::operator-(ReverseZIterator::difference_type offset)
+typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::operator-(Matrix<DataType>::ReverseZIterator::difference_type offset)
 {
     ReverseZIterator zIterator{};
 
@@ -1513,19 +1517,19 @@ typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::
 }
 
 template<typename DataType>
-void Matrix<DataType>::ReverseZIterator::operator+=(ReverseZIterator::difference_type offset)
+void Matrix<DataType>::ReverseZIterator::operator+=(Matrix<DataType>::ReverseZIterator::difference_type offset)
 {
     *this = *this + offset;
 }
 
 template<typename DataType>
-void Matrix<DataType>::ReverseZIterator::operator-=(ReverseZIterator::difference_type offset)
+void Matrix<DataType>::ReverseZIterator::operator-=(Matrix<DataType>::ReverseZIterator::difference_type offset)
 {
     *this = *this - offset;
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator::difference_type Matrix<DataType>::ReverseZIterator::operator-(const ReverseZIterator& it) const
+typename Matrix<DataType>::ReverseZIterator::difference_type Matrix<DataType>::ReverseZIterator::operator-(const Matrix<DataType>::ReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1537,7 +1541,7 @@ typename Matrix<DataType>::ReverseZIterator::difference_type Matrix<DataType>::R
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseZIterator::operator==(const ReverseZIterator& it) const
+bool Matrix<DataType>::ReverseZIterator::operator==(const Matrix<DataType>::ReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1546,7 +1550,7 @@ bool Matrix<DataType>::ReverseZIterator::operator==(const ReverseZIterator& it) 
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseZIterator::operator!=(const ReverseZIterator& it) const
+bool Matrix<DataType>::ReverseZIterator::operator!=(const Matrix<DataType>::ReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1555,7 +1559,7 @@ bool Matrix<DataType>::ReverseZIterator::operator!=(const ReverseZIterator& it) 
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseZIterator::operator<(const ReverseZIterator& it) const
+bool Matrix<DataType>::ReverseZIterator::operator<(const Matrix<DataType>::ReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1564,7 +1568,7 @@ bool Matrix<DataType>::ReverseZIterator::operator<(const ReverseZIterator& it) c
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseZIterator::operator<=(const ReverseZIterator& it) const
+bool Matrix<DataType>::ReverseZIterator::operator<=(const Matrix<DataType>::ReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1573,7 +1577,7 @@ bool Matrix<DataType>::ReverseZIterator::operator<=(const ReverseZIterator& it) 
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseZIterator::operator>(const ReverseZIterator& it) const
+bool Matrix<DataType>::ReverseZIterator::operator>(const Matrix<DataType>::ReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1582,7 +1586,7 @@ bool Matrix<DataType>::ReverseZIterator::operator>(const ReverseZIterator& it) c
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseZIterator::operator>=(const ReverseZIterator& it) const
+bool Matrix<DataType>::ReverseZIterator::operator>=(const Matrix<DataType>::ReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1605,7 +1609,7 @@ typename Matrix<DataType>::ReverseZIterator::value_type* Matrix<DataType>::Rever
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator::reference Matrix<DataType>::ReverseZIterator::operator[](ReverseZIterator::difference_type index) const
+typename Matrix<DataType>::ReverseZIterator::reference Matrix<DataType>::ReverseZIterator::operator[](Matrix<DataType>::ReverseZIterator::difference_type index) const
 {
     const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
     const size_type c_ResultingIndex{c_CurrentIndex - index};
@@ -1618,7 +1622,7 @@ typename Matrix<DataType>::ReverseZIterator::reference Matrix<DataType>::Reverse
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseZIterator::isValidWithMatrix(const Matrix &matrix) const
+bool Matrix<DataType>::ReverseZIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     return (m_pMatrixPtr == matrix.m_pBaseArrayPtr && m_NrOfMatrixRows == matrix.m_NrOfRows && m_NrOfMatrixColumns == matrix.m_NrOfColumns);
 }
@@ -1636,7 +1640,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ReverseZIterator::getCurr
 }
 
 template<typename DataType>
-Matrix<DataType>::ReverseZIterator::ReverseZIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr)
+Matrix<DataType>::ReverseZIterator::ReverseZIterator(const Matrix<DataType>& matrix,
+                                                     Matrix<DataType>::size_type currentRowNr,
+                                                     Matrix<DataType>::size_type currentColumnNr)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfMatrixRows{matrix.m_NrOfRows}
     , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
@@ -1734,7 +1740,7 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZ
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZIterator::operator+(ConstReverseZIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZIterator::operator+(Matrix<DataType>::ConstReverseZIterator::difference_type offset)
 {
     ConstReverseZIterator zIterator{};
 
@@ -1755,7 +1761,7 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZ
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZIterator::operator-(ConstReverseZIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZIterator::operator-(Matrix<DataType>::ConstReverseZIterator::difference_type offset)
 {
     ConstReverseZIterator zIterator{};
 
@@ -1776,19 +1782,19 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZ
 }
 
 template<typename DataType>
-void Matrix<DataType>::ConstReverseZIterator::operator+=(ConstReverseZIterator::difference_type offset)
+void Matrix<DataType>::ConstReverseZIterator::operator+=(Matrix<DataType>::ConstReverseZIterator::difference_type offset)
 {
     *this = *this + offset;
 }
 
 template<typename DataType>
-void Matrix<DataType>::ConstReverseZIterator::operator-=(ConstReverseZIterator::difference_type offset)
+void Matrix<DataType>::ConstReverseZIterator::operator-=(Matrix<DataType>::ConstReverseZIterator::difference_type offset)
 {
     *this = *this - offset;
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator::difference_type Matrix<DataType>::ConstReverseZIterator::operator-(const ConstReverseZIterator& it) const
+typename Matrix<DataType>::ConstReverseZIterator::difference_type Matrix<DataType>::ConstReverseZIterator::operator-(const Matrix<DataType>::ConstReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1800,7 +1806,7 @@ typename Matrix<DataType>::ConstReverseZIterator::difference_type Matrix<DataTyp
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseZIterator::operator==(const ConstReverseZIterator& it) const
+bool Matrix<DataType>::ConstReverseZIterator::operator==(const Matrix<DataType>::ConstReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1809,7 +1815,7 @@ bool Matrix<DataType>::ConstReverseZIterator::operator==(const ConstReverseZIter
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseZIterator::operator!=(const ConstReverseZIterator& it) const
+bool Matrix<DataType>::ConstReverseZIterator::operator!=(const Matrix<DataType>::ConstReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1818,7 +1824,7 @@ bool Matrix<DataType>::ConstReverseZIterator::operator!=(const ConstReverseZIter
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseZIterator::operator<(const ConstReverseZIterator& it) const
+bool Matrix<DataType>::ConstReverseZIterator::operator<(const Matrix<DataType>::ConstReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1827,7 +1833,7 @@ bool Matrix<DataType>::ConstReverseZIterator::operator<(const ConstReverseZItera
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseZIterator::operator<=(const ConstReverseZIterator& it) const
+bool Matrix<DataType>::ConstReverseZIterator::operator<=(const Matrix<DataType>::ConstReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1836,7 +1842,7 @@ bool Matrix<DataType>::ConstReverseZIterator::operator<=(const ConstReverseZIter
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseZIterator::operator>(const ConstReverseZIterator& it) const
+bool Matrix<DataType>::ConstReverseZIterator::operator>(const Matrix<DataType>::ConstReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1845,7 +1851,7 @@ bool Matrix<DataType>::ConstReverseZIterator::operator>(const ConstReverseZItera
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseZIterator::operator>=(const ConstReverseZIterator& it) const
+bool Matrix<DataType>::ConstReverseZIterator::operator>=(const Matrix<DataType>::ConstReverseZIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -1870,7 +1876,7 @@ typename Matrix<DataType>::ConstReverseZIterator::value_type* Matrix<DataType>::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator::reference Matrix<DataType>::ConstReverseZIterator::operator[](ConstReverseZIterator::difference_type index) const
+typename Matrix<DataType>::ConstReverseZIterator::reference Matrix<DataType>::ConstReverseZIterator::operator[](Matrix<DataType>::ConstReverseZIterator::difference_type index) const
 {
     const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
     const size_type c_ResultingIndex{c_CurrentIndex - index};
@@ -1883,7 +1889,7 @@ typename Matrix<DataType>::ConstReverseZIterator::reference Matrix<DataType>::Co
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseZIterator::isValidWithMatrix(const Matrix &matrix) const
+bool Matrix<DataType>::ConstReverseZIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     return (m_pMatrixPtr == matrix.m_pBaseArrayPtr && m_NrOfMatrixRows == matrix.m_NrOfRows && m_NrOfMatrixColumns == matrix.m_NrOfColumns);
 }
@@ -1901,7 +1907,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseZIterator::ge
 }
 
 template<typename DataType>
-Matrix<DataType>::ConstReverseZIterator::ConstReverseZIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr)
+Matrix<DataType>::ConstReverseZIterator::ConstReverseZIterator(const Matrix<DataType>& matrix,
+                                                               Matrix<DataType>::size_type currentRowNr,
+                                                               Matrix<DataType>::size_type currentColumnNr)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfMatrixRows{matrix.m_NrOfRows}
     , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
@@ -1989,7 +1997,7 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator--(int
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator+(DIterator::difference_type offset)
+typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator+(Matrix<DataType>::DIterator::difference_type offset)
 {
     DIterator it{*this};
     const size_type c_ResultingIndex = it.m_DiagonalIndex + offset;
@@ -1999,7 +2007,7 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator+(DIte
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator-(DIterator::difference_type offset)
+typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator-(Matrix<DataType>::DIterator::difference_type offset)
 {
     DIterator it{*this};
     const size_type c_ResultingIndex = it.m_DiagonalIndex - offset;
@@ -2009,19 +2017,19 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator-(DIte
 }
 
 template<typename DataType>
-void Matrix<DataType>::DIterator::operator+=(DIterator::difference_type offset)
+void Matrix<DataType>::DIterator::operator+=(Matrix<DataType>::DIterator::difference_type offset)
 {
     *this = *this + offset;
 }
 
 template<typename DataType>
-void Matrix<DataType>::DIterator::operator-=(DIterator::difference_type offset)
+void Matrix<DataType>::DIterator::operator-=(Matrix<DataType>::DIterator::difference_type offset)
 {
     *this = *this - offset;
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator::difference_type Matrix<DataType>::DIterator::operator-(const DIterator& it) const
+typename Matrix<DataType>::DIterator::difference_type Matrix<DataType>::DIterator::operator-(const Matrix<DataType>::DIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2030,7 +2038,7 @@ typename Matrix<DataType>::DIterator::difference_type Matrix<DataType>::DIterato
 }
 
 template<typename DataType>
-bool Matrix<DataType>::DIterator::operator==(const DIterator& it) const
+bool Matrix<DataType>::DIterator::operator==(const Matrix<DataType>::DIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2039,7 +2047,7 @@ bool Matrix<DataType>::DIterator::operator==(const DIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::DIterator::operator!=(const DIterator& it) const
+bool Matrix<DataType>::DIterator::operator!=(const Matrix<DataType>::DIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2048,7 +2056,7 @@ bool Matrix<DataType>::DIterator::operator!=(const DIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::DIterator::operator<(const DIterator& it) const
+bool Matrix<DataType>::DIterator::operator<(const Matrix<DataType>::DIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2057,7 +2065,7 @@ bool Matrix<DataType>::DIterator::operator<(const DIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::DIterator::operator<=(const DIterator& it) const
+bool Matrix<DataType>::DIterator::operator<=(const Matrix<DataType>::DIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2066,7 +2074,7 @@ bool Matrix<DataType>::DIterator::operator<=(const DIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::DIterator::operator>(const DIterator& it) const
+bool Matrix<DataType>::DIterator::operator>(const Matrix<DataType>::DIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2075,7 +2083,7 @@ bool Matrix<DataType>::DIterator::operator>(const DIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::DIterator::operator>=(const DIterator& it) const
+bool Matrix<DataType>::DIterator::operator>=(const Matrix<DataType>::DIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2106,7 +2114,7 @@ typename Matrix<DataType>::DIterator::value_type* Matrix<DataType>::DIterator::o
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::operator[](DIterator::difference_type index) const
+typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::operator[](Matrix<DataType>::DIterator::difference_type index) const
 {
     const size_type c_ResultingIndex{m_DiagonalIndex + index};
 
@@ -2119,7 +2127,7 @@ typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::ope
 }
 
 template<typename DataType>
-bool Matrix<DataType>::DIterator::isValidWithMatrix(const Matrix& matrix) const
+bool Matrix<DataType>::DIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     bool isValid{true};
 
@@ -2169,7 +2177,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::DIterator::getDiagonalInd
 }
 
 template<typename DataType>
-Matrix<DataType>::DIterator::DIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative)
+Matrix<DataType>::DIterator::DIterator(const Matrix<DataType>& matrix,
+                                       Matrix<DataType>::size_type first,
+                                       Matrix<DataType>::size_type second, bool isRelative)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
 {
     if (isRelative)
@@ -2247,7 +2257,7 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator+(ConstDIterator::difference_type offset)
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator+(Matrix<DataType>::ConstDIterator::difference_type offset)
 {
     ConstDIterator it{*this};
     const size_type c_ResultingIndex = it.m_DiagonalIndex + offset;
@@ -2257,7 +2267,7 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator-(ConstDIterator::difference_type offset)
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator-(Matrix<DataType>::ConstDIterator::difference_type offset)
 {
     ConstDIterator it{*this};
     const size_type c_ResultingIndex = it.m_DiagonalIndex - offset;
@@ -2267,19 +2277,19 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::oper
 }
 
 template<typename DataType>
-void Matrix<DataType>::ConstDIterator::operator+=(ConstDIterator::difference_type offset)
+void Matrix<DataType>::ConstDIterator::operator+=(Matrix<DataType>::ConstDIterator::difference_type offset)
 {
     *this = *this + offset;
 }
 
 template<typename DataType>
-void Matrix<DataType>::ConstDIterator::operator-=(ConstDIterator::difference_type offset)
+void Matrix<DataType>::ConstDIterator::operator-=(Matrix<DataType>::ConstDIterator::difference_type offset)
 {
     *this = *this - offset;
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator::difference_type Matrix<DataType>::ConstDIterator::operator-(const ConstDIterator& it) const
+typename Matrix<DataType>::ConstDIterator::difference_type Matrix<DataType>::ConstDIterator::operator-(const Matrix<DataType>::ConstDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2288,7 +2298,7 @@ typename Matrix<DataType>::ConstDIterator::difference_type Matrix<DataType>::Con
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::operator==(const ConstDIterator& it) const
+bool Matrix<DataType>::ConstDIterator::operator==(const Matrix<DataType>::ConstDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2297,7 +2307,7 @@ bool Matrix<DataType>::ConstDIterator::operator==(const ConstDIterator& it) cons
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::operator!=(const ConstDIterator& it) const
+bool Matrix<DataType>::ConstDIterator::operator!=(const Matrix<DataType>::ConstDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2306,7 +2316,7 @@ bool Matrix<DataType>::ConstDIterator::operator!=(const ConstDIterator& it) cons
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::operator<(const ConstDIterator& it) const
+bool Matrix<DataType>::ConstDIterator::operator<(const Matrix<DataType>::ConstDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2315,7 +2325,7 @@ bool Matrix<DataType>::ConstDIterator::operator<(const ConstDIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::operator<=(const ConstDIterator& it) const
+bool Matrix<DataType>::ConstDIterator::operator<=(const Matrix<DataType>::ConstDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2324,7 +2334,7 @@ bool Matrix<DataType>::ConstDIterator::operator<=(const ConstDIterator& it) cons
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::operator>(const ConstDIterator& it) const
+bool Matrix<DataType>::ConstDIterator::operator>(const Matrix<DataType>::ConstDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2333,7 +2343,7 @@ bool Matrix<DataType>::ConstDIterator::operator>(const ConstDIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::operator>=(const ConstDIterator& it) const
+bool Matrix<DataType>::ConstDIterator::operator>=(const Matrix<DataType>::ConstDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2364,7 +2374,7 @@ typename Matrix<DataType>::ConstDIterator::value_type* Matrix<DataType>::ConstDI
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator::reference Matrix<DataType>::ConstDIterator::operator[](ConstDIterator::difference_type index) const
+typename Matrix<DataType>::ConstDIterator::reference Matrix<DataType>::ConstDIterator::operator[](Matrix<DataType>::ConstDIterator::difference_type index) const
 {
     const size_type c_ResultingIndex{m_DiagonalIndex + index};
 
@@ -2377,7 +2387,7 @@ typename Matrix<DataType>::ConstDIterator::reference Matrix<DataType>::ConstDIte
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::isValidWithMatrix(const Matrix& matrix) const
+bool Matrix<DataType>::ConstDIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     bool isValid{true};
 
@@ -2427,7 +2437,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ConstDIterator::getDiagon
 }
 
 template<typename DataType>
-Matrix<DataType>::ConstDIterator::ConstDIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative)
+Matrix<DataType>::ConstDIterator::ConstDIterator(const Matrix<DataType>& matrix,
+                                                 Matrix<DataType>::size_type first,
+                                                 Matrix<DataType>::size_type second, bool isRelative)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
 {
     if (isRelative)
@@ -2505,7 +2517,7 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::operator+(ReverseDIterator::difference_type offset)
+typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::operator+(Matrix<DataType>::ReverseDIterator::difference_type offset)
 {
     ReverseDIterator it{*this};
     const size_type c_ResultingIndex = it.m_DiagonalIndex + offset;
@@ -2515,7 +2527,7 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::operator-(ReverseDIterator::difference_type offset)
+typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::operator-(Matrix<DataType>::ReverseDIterator::difference_type offset)
 {
     ReverseDIterator it{*this};
     const size_type c_ResultingIndex = it.m_DiagonalIndex - offset;
@@ -2525,19 +2537,19 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::
 }
 
 template<typename DataType>
-void Matrix<DataType>::ReverseDIterator::operator+=(ReverseDIterator::difference_type offset)
+void Matrix<DataType>::ReverseDIterator::operator+=(Matrix<DataType>::ReverseDIterator::difference_type offset)
 {
     *this = *this + offset;
 }
 
 template<typename DataType>
-void Matrix<DataType>::ReverseDIterator::operator-=(ReverseDIterator::difference_type offset)
+void Matrix<DataType>::ReverseDIterator::operator-=(Matrix<DataType>::ReverseDIterator::difference_type offset)
 {
     *this = *this - offset;
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator::difference_type Matrix<DataType>::ReverseDIterator::operator-(const ReverseDIterator& it) const
+typename Matrix<DataType>::ReverseDIterator::difference_type Matrix<DataType>::ReverseDIterator::operator-(const Matrix<DataType>::ReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2546,7 +2558,7 @@ typename Matrix<DataType>::ReverseDIterator::difference_type Matrix<DataType>::R
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::operator==(const ReverseDIterator& it) const
+bool Matrix<DataType>::ReverseDIterator::operator==(const Matrix<DataType>::ReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2555,7 +2567,7 @@ bool Matrix<DataType>::ReverseDIterator::operator==(const ReverseDIterator& it) 
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::operator!=(const ReverseDIterator& it) const
+bool Matrix<DataType>::ReverseDIterator::operator!=(const Matrix<DataType>::ReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2564,7 +2576,7 @@ bool Matrix<DataType>::ReverseDIterator::operator!=(const ReverseDIterator& it) 
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::operator<(const ReverseDIterator& it) const
+bool Matrix<DataType>::ReverseDIterator::operator<(const Matrix<DataType>::ReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2573,7 +2585,7 @@ bool Matrix<DataType>::ReverseDIterator::operator<(const ReverseDIterator& it) c
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::operator<=(const ReverseDIterator& it) const
+bool Matrix<DataType>::ReverseDIterator::operator<=(const Matrix<DataType>::ReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2582,7 +2594,7 @@ bool Matrix<DataType>::ReverseDIterator::operator<=(const ReverseDIterator& it) 
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::operator>(const ReverseDIterator& it) const
+bool Matrix<DataType>::ReverseDIterator::operator>(const Matrix<DataType>::ReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2591,7 +2603,7 @@ bool Matrix<DataType>::ReverseDIterator::operator>(const ReverseDIterator& it) c
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::operator>=(const ReverseDIterator& it) const
+bool Matrix<DataType>::ReverseDIterator::operator>=(const Matrix<DataType>::ReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2622,7 +2634,7 @@ typename Matrix<DataType>::ReverseDIterator::value_type* Matrix<DataType>::Rever
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator::reference Matrix<DataType>::ReverseDIterator::operator[](ReverseDIterator::difference_type index) const
+typename Matrix<DataType>::ReverseDIterator::reference Matrix<DataType>::ReverseDIterator::operator[](Matrix<DataType>::ReverseDIterator::difference_type index) const
 {
     const size_type c_ResultingIndex{m_DiagonalIndex + index};
 
@@ -2635,7 +2647,7 @@ typename Matrix<DataType>::ReverseDIterator::reference Matrix<DataType>::Reverse
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::isValidWithMatrix(const Matrix& matrix) const
+bool Matrix<DataType>::ReverseDIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     bool isValid{true};
 
@@ -2686,7 +2698,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ReverseDIterator::getDiag
 
 // first and second can be interpreted either as diagonal number and (relative) diagonal index (isRelative is true) or as row/column number ((x, y) coordinates)
 template<typename DataType>
-Matrix<DataType>::ReverseDIterator::ReverseDIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative)
+Matrix<DataType>::ReverseDIterator::ReverseDIterator(const Matrix<DataType>& matrix,
+                                                     Matrix<DataType>::size_type first,
+                                                     Matrix<DataType>::size_type second, bool isRelative)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
 {
     const size_type c_NrOfRows{matrix.getNrOfRows()};
@@ -2757,7 +2771,7 @@ typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseD
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator+(ConstReverseDIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator+(Matrix<DataType>::ConstReverseDIterator::difference_type offset)
 {
     ConstReverseDIterator it{*this};
     const size_type c_ResultingIndex = it.m_DiagonalIndex + offset;
@@ -2767,7 +2781,7 @@ typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseD
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator-(ConstReverseDIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator-(Matrix<DataType>::ConstReverseDIterator::difference_type offset)
 {
     ConstReverseDIterator it{*this};
     const size_type c_ResultingIndex = it.m_DiagonalIndex - offset;
@@ -2777,19 +2791,19 @@ typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseD
 }
 
 template<typename DataType>
-void Matrix<DataType>::ConstReverseDIterator::operator+=(ConstReverseDIterator::difference_type offset)
+void Matrix<DataType>::ConstReverseDIterator::operator+=(Matrix<DataType>::ConstReverseDIterator::difference_type offset)
 {
     *this = *this + offset;
 }
 
 template<typename DataType>
-void Matrix<DataType>::ConstReverseDIterator::operator-=(ConstReverseDIterator::difference_type offset)
+void Matrix<DataType>::ConstReverseDIterator::operator-=(Matrix<DataType>::ConstReverseDIterator::difference_type offset)
 {
     *this = *this - offset;
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator::difference_type Matrix<DataType>::ConstReverseDIterator::operator-(const ConstReverseDIterator& it) const
+typename Matrix<DataType>::ConstReverseDIterator::difference_type Matrix<DataType>::ConstReverseDIterator::operator-(const Matrix<DataType>::ConstReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2798,7 +2812,7 @@ typename Matrix<DataType>::ConstReverseDIterator::difference_type Matrix<DataTyp
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::operator==(const ConstReverseDIterator& it) const
+bool Matrix<DataType>::ConstReverseDIterator::operator==(const Matrix<DataType>::ConstReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2807,7 +2821,7 @@ bool Matrix<DataType>::ConstReverseDIterator::operator==(const ConstReverseDIter
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::operator!=(const ConstReverseDIterator& it) const
+bool Matrix<DataType>::ConstReverseDIterator::operator!=(const Matrix<DataType>::ConstReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2816,7 +2830,7 @@ bool Matrix<DataType>::ConstReverseDIterator::operator!=(const ConstReverseDIter
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::operator<(const ConstReverseDIterator& it) const
+bool Matrix<DataType>::ConstReverseDIterator::operator<(const Matrix<DataType>::ConstReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2825,7 +2839,7 @@ bool Matrix<DataType>::ConstReverseDIterator::operator<(const ConstReverseDItera
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::operator<=(const ConstReverseDIterator& it) const
+bool Matrix<DataType>::ConstReverseDIterator::operator<=(const Matrix<DataType>::ConstReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2834,7 +2848,7 @@ bool Matrix<DataType>::ConstReverseDIterator::operator<=(const ConstReverseDIter
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::operator>(const ConstReverseDIterator& it) const
+bool Matrix<DataType>::ConstReverseDIterator::operator>(const Matrix<DataType>::ConstReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2843,7 +2857,7 @@ bool Matrix<DataType>::ConstReverseDIterator::operator>(const ConstReverseDItera
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::operator>=(const ConstReverseDIterator& it) const
+bool Matrix<DataType>::ConstReverseDIterator::operator>=(const Matrix<DataType>::ConstReverseDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize || m_DiagonalNumber != it.m_DiagonalNumber,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -2874,7 +2888,7 @@ typename Matrix<DataType>::ConstReverseDIterator::value_type* Matrix<DataType>::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator::reference Matrix<DataType>::ConstReverseDIterator::operator[](ConstReverseDIterator::difference_type index) const
+typename Matrix<DataType>::ConstReverseDIterator::reference Matrix<DataType>::ConstReverseDIterator::operator[](Matrix<DataType>::ConstReverseDIterator::difference_type index) const
 {
     const size_type c_ResultingIndex{m_DiagonalIndex + index};
 
@@ -2887,7 +2901,7 @@ typename Matrix<DataType>::ConstReverseDIterator::reference Matrix<DataType>::Co
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::isValidWithMatrix(const Matrix& matrix) const
+bool Matrix<DataType>::ConstReverseDIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     bool isValid{true};
 
@@ -2938,7 +2952,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseDIterator::ge
 
 // first and second can be interpreted either as diagonal number and (relative) diagonal index (isRelative is true) or as row/column number ((x, y) coordinates)
 template<typename DataType>
-Matrix<DataType>::ConstReverseDIterator::ConstReverseDIterator(const Matrix& matrix, size_type first, size_type second, bool isRelative)
+Matrix<DataType>::ConstReverseDIterator::ConstReverseDIterator(const Matrix<DataType>& matrix,
+                                                               Matrix<DataType>::size_type first,
+                                                               Matrix<DataType>::size_type second, bool isRelative)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
 {
     const size_type c_NrOfRows{matrix.getNrOfRows()};
@@ -3018,7 +3034,7 @@ typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator--(int
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator+(NIterator::difference_type offset)
+typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator+(Matrix<DataType>::NIterator::difference_type offset)
 {
     NIterator nIterator{};
 
@@ -3039,7 +3055,7 @@ typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator+(NIte
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator-(NIterator::difference_type offset)
+typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator-(Matrix<DataType>::NIterator::difference_type offset)
 {
     NIterator nIterator{};
 
@@ -3060,19 +3076,19 @@ typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator-(NIte
 }
 
 template<typename DataType>
-void Matrix<DataType>::NIterator::operator+=(NIterator::difference_type offset)
+void Matrix<DataType>::NIterator::operator+=(Matrix<DataType>::NIterator::difference_type offset)
 {
     *this = *this + offset;
 }
 
 template<typename DataType>
-void Matrix<DataType>::NIterator::operator-=(NIterator::difference_type offset)
+void Matrix<DataType>::NIterator::operator-=(Matrix<DataType>::NIterator::difference_type offset)
 {
     *this = *this - offset;
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator::difference_type Matrix<DataType>::NIterator::operator-(const NIterator& it) const
+typename Matrix<DataType>::NIterator::difference_type Matrix<DataType>::NIterator::operator-(const Matrix<DataType>::NIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3084,7 +3100,7 @@ typename Matrix<DataType>::NIterator::difference_type Matrix<DataType>::NIterato
 }
 
 template<typename DataType>
-bool Matrix<DataType>::NIterator::operator==(const NIterator& it) const
+bool Matrix<DataType>::NIterator::operator==(const Matrix<DataType>::NIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3093,7 +3109,7 @@ bool Matrix<DataType>::NIterator::operator==(const NIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::NIterator::operator!=(const NIterator& it) const
+bool Matrix<DataType>::NIterator::operator!=(const Matrix<DataType>::NIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3102,7 +3118,7 @@ bool Matrix<DataType>::NIterator::operator!=(const NIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::NIterator::operator<(const NIterator& it) const
+bool Matrix<DataType>::NIterator::operator<(const Matrix<DataType>::NIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3111,7 +3127,7 @@ bool Matrix<DataType>::NIterator::operator<(const NIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::NIterator::operator<=(const NIterator& it) const
+bool Matrix<DataType>::NIterator::operator<=(const Matrix<DataType>::NIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3120,7 +3136,7 @@ bool Matrix<DataType>::NIterator::operator<=(const NIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::NIterator::operator>(const NIterator& it) const
+bool Matrix<DataType>::NIterator::operator>(const Matrix<DataType>::NIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3129,7 +3145,7 @@ bool Matrix<DataType>::NIterator::operator>(const NIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::NIterator::operator>=(const NIterator& it) const
+bool Matrix<DataType>::NIterator::operator>=(const Matrix<DataType>::NIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3152,7 +3168,7 @@ typename Matrix<DataType>::NIterator::value_type* Matrix<DataType>::NIterator::o
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator::reference Matrix<DataType>::NIterator::operator[](NIterator::difference_type index) const
+typename Matrix<DataType>::NIterator::reference Matrix<DataType>::NIterator::operator[](Matrix<DataType>::NIterator::difference_type index) const
 {
     const size_type c_CurrentIndex{m_CurrentColumnNr * m_NrOfMatrixRows + m_CurrentRowNr};
     const size_type c_ResultingIndex{c_CurrentIndex + index};
@@ -3165,7 +3181,7 @@ typename Matrix<DataType>::NIterator::reference Matrix<DataType>::NIterator::ope
 }
 
 template<typename DataType>
-bool Matrix<DataType>::NIterator::isValidWithMatrix(const Matrix &matrix) const
+bool Matrix<DataType>::NIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     return (m_pMatrixPtr == matrix.m_pBaseArrayPtr && m_NrOfMatrixRows == matrix.m_NrOfRows && m_NrOfMatrixColumns == matrix.m_NrOfColumns);
 }
@@ -3183,7 +3199,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::NIterator::getCurrentColu
 }
 
 template<typename DataType>
-Matrix<DataType>::NIterator::NIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr)
+Matrix<DataType>::NIterator::NIterator(const Matrix<DataType>& matrix,
+                                       Matrix<DataType>::size_type currentRowNr,
+                                       Matrix<DataType>::size_type currentColumnNr)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfMatrixRows{matrix.m_NrOfRows}
     , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
@@ -3280,7 +3298,7 @@ typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::operator+(ConstNIterator::difference_type offset)
+typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::operator+(Matrix<DataType>::ConstNIterator::difference_type offset)
 {
     ConstNIterator nIterator{};
 
@@ -3301,7 +3319,7 @@ typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::operator-(ConstNIterator::difference_type offset)
+typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::operator-(Matrix<DataType>::ConstNIterator::difference_type offset)
 {
     ConstNIterator nIterator{};
 
@@ -3322,19 +3340,19 @@ typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::oper
 }
 
 template<typename DataType>
-void Matrix<DataType>::ConstNIterator::operator+=(ConstNIterator::difference_type offset)
+void Matrix<DataType>::ConstNIterator::operator+=(Matrix<DataType>::ConstNIterator::difference_type offset)
 {
     *this = *this + offset;
 }
 
 template<typename DataType>
-void Matrix<DataType>::ConstNIterator::operator-=(ConstNIterator::difference_type offset)
+void Matrix<DataType>::ConstNIterator::operator-=(Matrix<DataType>::ConstNIterator::difference_type offset)
 {
     *this = *this - offset;
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator::difference_type Matrix<DataType>::ConstNIterator::operator-(const ConstNIterator& it) const
+typename Matrix<DataType>::ConstNIterator::difference_type Matrix<DataType>::ConstNIterator::operator-(const Matrix<DataType>::ConstNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3346,7 +3364,7 @@ typename Matrix<DataType>::ConstNIterator::difference_type Matrix<DataType>::Con
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstNIterator::operator==(const ConstNIterator& it) const
+bool Matrix<DataType>::ConstNIterator::operator==(const Matrix<DataType>::ConstNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3355,7 +3373,7 @@ bool Matrix<DataType>::ConstNIterator::operator==(const ConstNIterator& it) cons
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstNIterator::operator!=(const ConstNIterator& it) const
+bool Matrix<DataType>::ConstNIterator::operator!=(const Matrix<DataType>::ConstNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3364,7 +3382,7 @@ bool Matrix<DataType>::ConstNIterator::operator!=(const ConstNIterator& it) cons
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstNIterator::operator<(const ConstNIterator& it) const
+bool Matrix<DataType>::ConstNIterator::operator<(const Matrix<DataType>::ConstNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3373,7 +3391,7 @@ bool Matrix<DataType>::ConstNIterator::operator<(const ConstNIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstNIterator::operator<=(const ConstNIterator& it) const
+bool Matrix<DataType>::ConstNIterator::operator<=(const Matrix<DataType>::ConstNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3382,7 +3400,7 @@ bool Matrix<DataType>::ConstNIterator::operator<=(const ConstNIterator& it) cons
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstNIterator::operator>(const ConstNIterator& it) const
+bool Matrix<DataType>::ConstNIterator::operator>(const Matrix<DataType>::ConstNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3391,7 +3409,7 @@ bool Matrix<DataType>::ConstNIterator::operator>(const ConstNIterator& it) const
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstNIterator::operator>=(const ConstNIterator& it) const
+bool Matrix<DataType>::ConstNIterator::operator>=(const Matrix<DataType>::ConstNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3414,7 +3432,7 @@ typename Matrix<DataType>::ConstNIterator::value_type* Matrix<DataType>::ConstNI
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator::reference Matrix<DataType>::ConstNIterator::operator[](ConstNIterator::difference_type index) const
+typename Matrix<DataType>::ConstNIterator::reference Matrix<DataType>::ConstNIterator::operator[](Matrix<DataType>::ConstNIterator::difference_type index) const
 {
     const size_type c_CurrentIndex{m_CurrentColumnNr * m_NrOfMatrixRows + m_CurrentRowNr};
     const size_type c_ResultingIndex{c_CurrentIndex + index};
@@ -3427,7 +3445,7 @@ typename Matrix<DataType>::ConstNIterator::reference Matrix<DataType>::ConstNIte
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstNIterator::isValidWithMatrix(const Matrix &matrix) const
+bool Matrix<DataType>::ConstNIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     return (m_pMatrixPtr == matrix.m_pBaseArrayPtr && m_NrOfMatrixRows == matrix.m_NrOfRows && m_NrOfMatrixColumns == matrix.m_NrOfColumns);
 }
@@ -3445,7 +3463,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ConstNIterator::getCurren
 }
 
 template<typename DataType>
-Matrix<DataType>::ConstNIterator::ConstNIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr)
+Matrix<DataType>::ConstNIterator::ConstNIterator(const Matrix<DataType>& matrix,
+                                                 Matrix<DataType>::size_type currentRowNr,
+                                                 Matrix<DataType>::size_type currentColumnNr)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfMatrixRows{matrix.m_NrOfRows}
     , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
@@ -3543,7 +3563,7 @@ typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::operator+(ReverseNIterator::difference_type offset)
+typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::operator+(Matrix<DataType>::ReverseNIterator::difference_type offset)
 {
     ReverseNIterator nIterator{};
 
@@ -3564,7 +3584,7 @@ typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::operator-(ReverseNIterator::difference_type offset)
+typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::operator-(Matrix<DataType>::ReverseNIterator::difference_type offset)
 {
     ReverseNIterator nIterator{};
 
@@ -3585,19 +3605,19 @@ typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::
 }
 
 template<typename DataType>
-void Matrix<DataType>::ReverseNIterator::operator+=(ReverseNIterator::difference_type offset)
+void Matrix<DataType>::ReverseNIterator::operator+=(Matrix<DataType>::ReverseNIterator::difference_type offset)
 {
     *this = *this + offset;
 }
 
 template<typename DataType>
-void Matrix<DataType>::ReverseNIterator::operator-=(ReverseNIterator::difference_type offset)
+void Matrix<DataType>::ReverseNIterator::operator-=(Matrix<DataType>::ReverseNIterator::difference_type offset)
 {
     *this = *this - offset;
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator::difference_type Matrix<DataType>::ReverseNIterator::operator-(const ReverseNIterator& it) const
+typename Matrix<DataType>::ReverseNIterator::difference_type Matrix<DataType>::ReverseNIterator::operator-(const Matrix<DataType>::ReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3609,7 +3629,7 @@ typename Matrix<DataType>::ReverseNIterator::difference_type Matrix<DataType>::R
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseNIterator::operator==(const ReverseNIterator& it) const
+bool Matrix<DataType>::ReverseNIterator::operator==(const Matrix<DataType>::ReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3618,7 +3638,7 @@ bool Matrix<DataType>::ReverseNIterator::operator==(const ReverseNIterator& it) 
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseNIterator::operator!=(const ReverseNIterator& it) const
+bool Matrix<DataType>::ReverseNIterator::operator!=(const Matrix<DataType>::ReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3627,7 +3647,7 @@ bool Matrix<DataType>::ReverseNIterator::operator!=(const ReverseNIterator& it) 
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseNIterator::operator<(const ReverseNIterator& it) const
+bool Matrix<DataType>::ReverseNIterator::operator<(const Matrix<DataType>::ReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3636,7 +3656,7 @@ bool Matrix<DataType>::ReverseNIterator::operator<(const ReverseNIterator& it) c
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseNIterator::operator<=(const ReverseNIterator& it) const
+bool Matrix<DataType>::ReverseNIterator::operator<=(const Matrix<DataType>::ReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3645,7 +3665,7 @@ bool Matrix<DataType>::ReverseNIterator::operator<=(const ReverseNIterator& it) 
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseNIterator::operator>(const ReverseNIterator& it) const
+bool Matrix<DataType>::ReverseNIterator::operator>(const Matrix<DataType>::ReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3654,7 +3674,7 @@ bool Matrix<DataType>::ReverseNIterator::operator>(const ReverseNIterator& it) c
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseNIterator::operator>=(const ReverseNIterator& it) const
+bool Matrix<DataType>::ReverseNIterator::operator>=(const Matrix<DataType>::ReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3677,7 +3697,7 @@ typename Matrix<DataType>::ReverseNIterator::value_type* Matrix<DataType>::Rever
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator::reference Matrix<DataType>::ReverseNIterator::operator[](ReverseNIterator::difference_type index) const
+typename Matrix<DataType>::ReverseNIterator::reference Matrix<DataType>::ReverseNIterator::operator[](Matrix<DataType>::ReverseNIterator::difference_type index) const
 {
     const size_type c_CurrentIndex{m_CurrentColumnNr * m_NrOfMatrixRows + m_CurrentRowNr};
     const size_type c_ResultingIndex{c_CurrentIndex - index};
@@ -3690,7 +3710,7 @@ typename Matrix<DataType>::ReverseNIterator::reference Matrix<DataType>::Reverse
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ReverseNIterator::isValidWithMatrix(const Matrix &matrix) const
+bool Matrix<DataType>::ReverseNIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     return (m_pMatrixPtr == matrix.m_pBaseArrayPtr && m_NrOfMatrixRows == matrix.m_NrOfRows && m_NrOfMatrixColumns == matrix.m_NrOfColumns);
 }
@@ -3708,7 +3728,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ReverseNIterator::getCurr
 }
 
 template<typename DataType>
-Matrix<DataType>::ReverseNIterator::ReverseNIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr)
+Matrix<DataType>::ReverseNIterator::ReverseNIterator(const Matrix<DataType>& matrix,
+                                                     Matrix<DataType>::size_type currentRowNr,
+                                                     Matrix<DataType>::size_type currentColumnNr)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfMatrixRows{matrix.m_NrOfRows}
     , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
@@ -3806,7 +3828,7 @@ typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseN
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseNIterator::operator+(ConstReverseNIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseNIterator::operator+(Matrix<DataType>::ConstReverseNIterator::difference_type offset)
 {
     ConstReverseNIterator nIterator{};
 
@@ -3827,7 +3849,7 @@ typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseN
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseNIterator::operator-(ConstReverseNIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseNIterator::operator-(Matrix<DataType>::ConstReverseNIterator::difference_type offset)
 {
     ConstReverseNIterator nIterator{};
 
@@ -3848,19 +3870,19 @@ typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseN
 }
 
 template<typename DataType>
-void Matrix<DataType>::ConstReverseNIterator::operator+=(ConstReverseNIterator::difference_type offset)
+void Matrix<DataType>::ConstReverseNIterator::operator+=(Matrix<DataType>::ConstReverseNIterator::difference_type offset)
 {
     *this = *this + offset;
 }
 
 template<typename DataType>
-void Matrix<DataType>::ConstReverseNIterator::operator-=(ConstReverseNIterator::difference_type offset)
+void Matrix<DataType>::ConstReverseNIterator::operator-=(Matrix<DataType>::ConstReverseNIterator::difference_type offset)
 {
     *this = *this - offset;
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator::difference_type Matrix<DataType>::ConstReverseNIterator::operator-(const ConstReverseNIterator& it) const
+typename Matrix<DataType>::ConstReverseNIterator::difference_type Matrix<DataType>::ConstReverseNIterator::operator-(const Matrix<DataType>::ConstReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3872,7 +3894,7 @@ typename Matrix<DataType>::ConstReverseNIterator::difference_type Matrix<DataTyp
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseNIterator::operator==(const ConstReverseNIterator& it) const
+bool Matrix<DataType>::ConstReverseNIterator::operator==(const Matrix<DataType>::ConstReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3881,7 +3903,7 @@ bool Matrix<DataType>::ConstReverseNIterator::operator==(const ConstReverseNIter
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseNIterator::operator!=(const ConstReverseNIterator& it) const
+bool Matrix<DataType>::ConstReverseNIterator::operator!=(const Matrix<DataType>::ConstReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3890,7 +3912,7 @@ bool Matrix<DataType>::ConstReverseNIterator::operator!=(const ConstReverseNIter
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseNIterator::operator<(const ConstReverseNIterator& it) const
+bool Matrix<DataType>::ConstReverseNIterator::operator<(const Matrix<DataType>::ConstReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3899,7 +3921,7 @@ bool Matrix<DataType>::ConstReverseNIterator::operator<(const ConstReverseNItera
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseNIterator::operator<=(const ConstReverseNIterator& it) const
+bool Matrix<DataType>::ConstReverseNIterator::operator<=(const Matrix<DataType>::ConstReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3908,7 +3930,7 @@ bool Matrix<DataType>::ConstReverseNIterator::operator<=(const ConstReverseNIter
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseNIterator::operator>(const ConstReverseNIterator& it) const
+bool Matrix<DataType>::ConstReverseNIterator::operator>(const Matrix<DataType>::ConstReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3917,7 +3939,7 @@ bool Matrix<DataType>::ConstReverseNIterator::operator>(const ConstReverseNItera
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseNIterator::operator>=(const ConstReverseNIterator& it) const
+bool Matrix<DataType>::ConstReverseNIterator::operator>=(const Matrix<DataType>::ConstReverseNIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows || m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
@@ -3940,7 +3962,7 @@ typename Matrix<DataType>::ConstReverseNIterator::value_type* Matrix<DataType>::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator::reference Matrix<DataType>::ConstReverseNIterator::operator[](ConstReverseNIterator::difference_type index) const
+typename Matrix<DataType>::ConstReverseNIterator::reference Matrix<DataType>::ConstReverseNIterator::operator[](Matrix<DataType>::ConstReverseNIterator::difference_type index) const
 {
     const size_type c_CurrentIndex{m_CurrentColumnNr * m_NrOfMatrixRows + m_CurrentRowNr};
     const size_type c_ResultingIndex{c_CurrentIndex - index};
@@ -3953,7 +3975,7 @@ typename Matrix<DataType>::ConstReverseNIterator::reference Matrix<DataType>::Co
 }
 
 template<typename DataType>
-bool Matrix<DataType>::ConstReverseNIterator::isValidWithMatrix(const Matrix &matrix) const
+bool Matrix<DataType>::ConstReverseNIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     return (m_pMatrixPtr == matrix.m_pBaseArrayPtr && m_NrOfMatrixRows == matrix.m_NrOfRows && m_NrOfMatrixColumns == matrix.m_NrOfColumns);
 }
@@ -3971,7 +3993,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseNIterator::ge
 }
 
 template<typename DataType>
-Matrix<DataType>::ConstReverseNIterator::ConstReverseNIterator(const Matrix& matrix, size_type currentRowNr, size_type currentColumnNr)
+Matrix<DataType>::ConstReverseNIterator::ConstReverseNIterator(const Matrix<DataType>& matrix,
+                                                               Matrix<DataType>::size_type currentRowNr,
+                                                               Matrix<DataType>::size_type currentColumnNr)
     : m_pMatrixPtr{matrix.m_pBaseArrayPtr}
     , m_NrOfMatrixRows{matrix.m_NrOfRows}
     , m_NrOfMatrixColumns{matrix.m_NrOfColumns}
@@ -4034,7 +4058,9 @@ Matrix<DataType>::Matrix()
 }
 
 template<typename DataType>
-Matrix<DataType>::Matrix(size_type nrOfRows, size_type nrOfColumns, std::initializer_list<DataType> dataTypeInitList)
+Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
+                         Matrix<DataType>::size_type nrOfColumns,
+                         std::initializer_list<DataType> dataTypeInitList)
 {
     CHECK_ERROR_CONDITION(nrOfRows <= 0 || nrOfColumns <= 0, Matr::errorMessages[Matr::Errors::NULL_OR_NEG_DIMENSION]);
     CHECK_ERROR_CONDITION(nrOfRows * nrOfColumns > static_cast<size_type>(dataTypeInitList.size()), Matr::errorMessages[Matr::Errors::INSUFFICIENT_ELEMENTS_FOR_INIT]);
@@ -4055,7 +4081,8 @@ Matrix<DataType>::Matrix(size_type nrOfRows, size_type nrOfColumns, std::initial
 }
 
 template <typename DataType>
-Matrix<DataType>::Matrix(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType)
+Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
+                         Matrix<DataType>::size_type nrOfColumns, const DataType& dataType)
 {
     CHECK_ERROR_CONDITION(nrOfRows <= 0 || nrOfColumns <= 0, Matr::errorMessages[Matr::Errors::NULL_OR_NEG_DIMENSION]);
 
@@ -4074,7 +4101,8 @@ Matrix<DataType>::Matrix(size_type nrOfRows, size_type nrOfColumns, const DataTy
 }
 
 template <typename DataType>
-Matrix<DataType>::Matrix(size_type nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues)
+Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRowsColumns,
+                         const std::pair<DataType, DataType>& diagMatrixValues)
     : Matrix<DataType>{nrOfRowsColumns, nrOfRowsColumns, diagMatrixValues.first}
 {
     for (size_type diag{0}; diag<m_NrOfRows; ++diag)
@@ -4124,7 +4152,8 @@ Matrix<DataType>::~Matrix()
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::at(size_type rowNr, size_type columnNr)
+DataType& Matrix<DataType>::at(Matrix<DataType>::size_type rowNr,
+                               Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -4133,7 +4162,8 @@ DataType& Matrix<DataType>::at(size_type rowNr, size_type columnNr)
 }
 
 template<typename DataType>
-const DataType& Matrix<DataType>::at(size_type rowNr, Matrix::size_type columnNr) const
+const DataType& Matrix<DataType>::at(Matrix<DataType>::size_type rowNr,
+                                     Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -4142,7 +4172,7 @@ const DataType& Matrix<DataType>::at(size_type rowNr, Matrix::size_type columnNr
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::operator[](size_type index)
+DataType& Matrix<DataType>::operator[](Matrix<DataType>::size_type index)
 {
     CHECK_ERROR_CONDITION(index<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(index>=m_NrOfRows*m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -4151,7 +4181,7 @@ DataType& Matrix<DataType>::operator[](size_type index)
 }
 
 template<typename DataType>
-const DataType& Matrix<DataType>::operator[](Matrix::size_type index) const
+const DataType& Matrix<DataType>::operator[](Matrix<DataType>::size_type index) const
 {
     CHECK_ERROR_CONDITION(index<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(index>=m_NrOfRows*m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -4223,7 +4253,7 @@ Matrix<DataType>& Matrix<DataType>::operator=(Matrix<DataType>&& matrix)
 
 // a contiguous unidimensional array with the matrix elements (in row order) is returned to user
 template<typename DataType>
-DataType* Matrix<DataType>::getBaseArray(size_type& nrOfElements)
+DataType* Matrix<DataType>::getBaseArray(Matrix<DataType>::size_type& nrOfElements)
 {
     DataType* pAllocPtr{nullptr};
 
@@ -4326,7 +4356,10 @@ void Matrix<DataType>::clear()
 }
 
 template<typename DataType>
-void Matrix<DataType>::resize(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity, size_type columnCapacity)
+void Matrix<DataType>::resize(Matrix<DataType>::size_type nrOfRows,
+                              Matrix<DataType>::size_type nrOfColumns,
+                              Matrix<DataType>::size_type rowCapacity,
+                              Matrix<DataType>::size_type columnCapacity)
 {
     CHECK_ERROR_CONDITION(nrOfRows<=0 || nrOfColumns<=0, Matr::errorMessages[Matr::Errors::NULL_OR_NEG_DIMENSION]);
 
@@ -4358,7 +4391,10 @@ void Matrix<DataType>::resize(size_type nrOfRows, size_type nrOfColumns, size_ty
 }
 
 template <typename DataType>
-void Matrix<DataType>::resizeWithValue(size_type nrOfRows, size_type nrOfColumns, const DataType& value, size_type rowCapacity, size_type columnCapacity)
+void Matrix<DataType>::resizeWithValue(Matrix<DataType>::size_type nrOfRows,
+                                       Matrix<DataType>::size_type nrOfColumns,
+                                       const DataType& value, Matrix<DataType>::size_type rowCapacity,
+                                       Matrix<DataType>::size_type columnCapacity)
 {
     // DataType should support the assign (=) operator
     auto fillNewItems = [this, &value](size_type beginRowIndex, size_type endRowIndex, size_type beginColumnIndex, size_type endColumnIndex)
@@ -4416,7 +4452,7 @@ void Matrix<DataType>::shrinkToFit()
 }
 
 template <typename DataType>
-void Matrix<DataType>::insertRow (size_type rowNr)
+void Matrix<DataType>::insertRow (Matrix<DataType>::size_type rowNr)
 {
     CHECK_ERROR_CONDITION(!m_NrOfRows, Matr::errorMessages[Matr::Errors::EMPTY_MATRIX]);
     CHECK_ERROR_CONDITION(rowNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
@@ -4445,7 +4481,8 @@ void Matrix<DataType>::insertRow (size_type rowNr)
 }
 
 template<typename DataType>
-void Matrix<DataType>::insertRow(size_type rowNr, const DataType &dataType)
+void Matrix<DataType>::insertRow(Matrix<DataType>::size_type rowNr,
+                                 const DataType &dataType)
 {
     insertRow(rowNr);
 
@@ -4456,7 +4493,7 @@ void Matrix<DataType>::insertRow(size_type rowNr, const DataType &dataType)
 }
 
 template <typename DataType>
-void Matrix<DataType>::insertColumn(size_type columnNr)
+void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(!m_NrOfRows, Matr::errorMessages[Matr::Errors::EMPTY_MATRIX]);
     CHECK_ERROR_CONDITION(columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
@@ -4497,7 +4534,8 @@ void Matrix<DataType>::insertColumn(size_type columnNr)
 }
 
 template<typename DataType>
-void Matrix<DataType>::insertColumn(size_type columnNr, const DataType &dataType)
+void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr,
+                                    const DataType &dataType)
 {
     insertColumn(columnNr);
 
@@ -4508,7 +4546,7 @@ void Matrix<DataType>::insertColumn(size_type columnNr, const DataType &dataType
 }
 
 template <typename DataType>
-void Matrix<DataType>::eraseRow (size_type rowNr)
+void Matrix<DataType>::eraseRow (Matrix<DataType>::size_type rowNr)
 {
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
     CHECK_ERROR_CONDITION(rowNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
@@ -4541,7 +4579,7 @@ void Matrix<DataType>::eraseRow (size_type rowNr)
 }
 
 template <typename DataType>
-void Matrix<DataType>::eraseColumn(size_type columnNr)
+void Matrix<DataType>::eraseColumn(Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
@@ -4585,7 +4623,8 @@ void Matrix<DataType>::eraseColumn(size_type columnNr)
 }
 
 template<typename DataType>
-void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix)
+void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix,
+                                Matrix<DataType>& secondSrcMatrix)
 {
     CHECK_ERROR_CONDITION(firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
 
@@ -4662,7 +4701,8 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataTyp
 }
 
 template<typename DataType>
-void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix)
+void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix,
+                                   Matrix<DataType>& secondSrcMatrix)
 {
     CHECK_ERROR_CONDITION(firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_COLUMN_LENGTH]);
 
@@ -4709,7 +4749,9 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<Data
 }
 
 template<typename DataType>
-void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, size_type splitRowNr)
+void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix,
+                                  Matrix<DataType>& secondDestMatrix,
+                                  Matrix<DataType>::size_type splitRowNr)
 {
     CHECK_ERROR_CONDITION(&firstDestMatrix == &secondDestMatrix, Matr::errorMessages[Matr::Errors::SAME_VARIABLE_TWO_ARGS]);
     CHECK_ERROR_CONDITION(splitRowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
@@ -4759,7 +4801,9 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<Data
 }
 
 template<typename DataType>
-void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, size_type splitColumnNr)
+void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix,
+                                     Matrix<DataType>& secondDestMatrix,
+                                     Matrix<DataType>::size_type splitColumnNr)
 {
     CHECK_ERROR_CONDITION(&firstDestMatrix == &secondDestMatrix, Matr::errorMessages[Matr::Errors::SAME_VARIABLE_TWO_ARGS]);
     CHECK_ERROR_CONDITION(splitColumnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
@@ -4816,7 +4860,11 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<D
 }
 
 template <typename DataType>
-void Matrix<DataType>::swapItems(size_type rowNr, size_type columnNr, Matrix<DataType>& matrix, size_type matrixRowNr, size_type matrixColumnNr)
+void Matrix<DataType>::swapItems(Matrix<DataType>::size_type rowNr,
+                                 Matrix<DataType>::size_type columnNr,
+                                 Matrix<DataType>& matrix,
+                                 Matrix<DataType>::size_type matrixRowNr,
+                                 Matrix<DataType>::size_type matrixColumnNr)
 {
     CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0 || matrixRowNr<0 || matrixColumnNr<0,  Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns || matrixRowNr>=matrix.m_NrOfRows || matrixColumnNr>=matrix.m_NrOfColumns,
@@ -4829,7 +4877,9 @@ void Matrix<DataType>::swapItems(size_type rowNr, size_type columnNr, Matrix<Dat
 }
 
 template <typename DataType>
-void Matrix<DataType>::swapRows(size_type rowNr, Matrix& matrix, size_type matrixRowNr)
+void Matrix<DataType>::swapRows(Matrix<DataType>::size_type rowNr,
+                                Matrix<DataType>& matrix,
+                                Matrix<DataType>::size_type matrixRowNr)
 {
     CHECK_ERROR_CONDITION(rowNr<0 || matrixRowNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || matrixRowNr>=matrix.m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -4842,7 +4892,9 @@ void Matrix<DataType>::swapRows(size_type rowNr, Matrix& matrix, size_type matri
 }
 
 template <typename DataType>
-void Matrix<DataType>::swapColumns(size_type columnNr, Matrix& matrix, size_type matrixColumnNr)
+void Matrix<DataType>::swapColumns(Matrix<DataType>::size_type columnNr,
+                                   Matrix<DataType>& matrix,
+                                   Matrix<DataType>::size_type matrixColumnNr)
 {
     CHECK_ERROR_CONDITION(columnNr<0 || matrixColumnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr>=m_NrOfColumns || matrixColumnNr>=matrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
@@ -4861,7 +4913,9 @@ void Matrix<DataType>::swapColumns(size_type columnNr, Matrix& matrix, size_type
 }
 
 template <typename DataType>
-void Matrix<DataType>::swapRowColumn(size_type rowNr, Matrix<DataType>& matrix, size_type matrixColumnNr)
+void Matrix<DataType>::swapRowColumn(Matrix<DataType>::size_type rowNr,
+                                     Matrix<DataType>& matrix,
+                                     Matrix<DataType>::size_type matrixColumnNr)
 {
     CHECK_ERROR_CONDITION(&matrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARG]);
     CHECK_ERROR_CONDITION(rowNr<0 || matrixColumnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
@@ -4878,7 +4932,8 @@ void Matrix<DataType>::swapRowColumn(size_type rowNr, Matrix<DataType>& matrix, 
     }
 }
 
-template <typename DataType> void Matrix<DataType>::setAllItemsToValue(const DataType& value)
+template <typename DataType>
+void Matrix<DataType>::setAllItemsToValue(const DataType& value)
 {
     for (size_type row{0}; row<m_NrOfRows; ++row)
     {
@@ -4890,7 +4945,13 @@ template <typename DataType> void Matrix<DataType>::setAllItemsToValue(const Dat
 }
 
 template <typename DataType>
-void Matrix<DataType>::copy(const Matrix<DataType>& srcMatrix, size_type nrOfRows, size_type nrOfColumns, size_type srcMatrixRowNr, size_type srcMatrixColumnNr, size_type rowNr, size_type columnNr)
+void Matrix<DataType>::copy(const Matrix<DataType>& srcMatrix,
+                            Matrix<DataType>::size_type nrOfRows,
+                            Matrix<DataType>::size_type nrOfColumns,
+                            Matrix<DataType>::size_type srcMatrixRowNr,
+                            Matrix<DataType>::size_type srcMatrixColumnNr,
+                            Matrix<DataType>::size_type rowNr,
+                            Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(&srcMatrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARG]);
     CHECK_ERROR_CONDITION(nrOfRows<0 || nrOfColumns<0 || srcMatrixRowNr<0 || srcMatrixColumnNr<0 || rowNr<0 || columnNr<0,
@@ -4958,7 +5019,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::zEnd()
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowBegin(size_type rowNr)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowBegin(Matrix<DataType>::size_type rowNr)
 {
     CHECK_ERROR_CONDITION(rowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -4967,7 +5028,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowBegin(size_type rowNr
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowEnd(size_type rowNr)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowEnd(Matrix<DataType>::size_type rowNr)
 {
     CHECK_ERROR_CONDITION(rowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -4987,7 +5048,8 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowEnd(size_type rowNr)
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(size_type rowNr, size_type columnNr)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(Matrix<DataType>::size_type rowNr,
+                                                                    Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -4996,7 +5058,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(size_type ro
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(size_type index)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(Matrix<DataType>::size_type index)
 {
     CHECK_ERROR_CONDITION(index < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(index >= m_NrOfRows * m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5017,7 +5079,7 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZEnd() const
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZRowBegin(size_type rowNr) const
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZRowBegin(Matrix<DataType>::size_type rowNr) const
 {
     CHECK_ERROR_CONDITION(rowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5026,7 +5088,7 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZRowBegin(size_
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZRowEnd(size_type rowNr) const
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZRowEnd(Matrix<DataType>::size_type rowNr) const
 {
     CHECK_ERROR_CONDITION(rowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5046,7 +5108,8 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZRowEnd(size_ty
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::getConstZIterator(size_type rowNr, size_type columnNr) const
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::getConstZIterator(Matrix<DataType>::size_type rowNr,
+                                                                              Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5055,7 +5118,7 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::getConstZIterator(si
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::getConstZIterator(size_type index) const
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::getConstZIterator(Matrix<DataType>::size_type index) const
 {
     CHECK_ERROR_CONDITION(index < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(index >= m_NrOfRows * m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5077,7 +5140,7 @@ typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::reverseZEnd()
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::reverseZRowBegin(size_type rowNr)
+typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::reverseZRowBegin(Matrix<DataType>::size_type rowNr)
 {
     CHECK_ERROR_CONDITION(rowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5086,7 +5149,7 @@ typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::reverseZRowBegin(s
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::reverseZRowEnd(size_type rowNr)
+typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::reverseZRowEnd(Matrix<DataType>::size_type rowNr)
 {
     CHECK_ERROR_CONDITION(rowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5106,7 +5169,8 @@ typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::reverseZRowEnd(siz
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::getReverseZIterator(size_type rowNr, size_type columnNr)
+typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::getReverseZIterator(Matrix<DataType>::size_type rowNr,
+                                                                                  Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5115,7 +5179,7 @@ typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::getReverseZIterato
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::getReverseZIterator(size_type index)
+typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::getReverseZIterator(Matrix<DataType>::size_type index)
 {
     CHECK_ERROR_CONDITION(index < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(index >= m_NrOfRows * m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5136,7 +5200,7 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::constReverseZ
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::constReverseZRowBegin(size_type rowNr) const
+typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::constReverseZRowBegin(Matrix<DataType>::size_type rowNr) const
 {
     CHECK_ERROR_CONDITION(rowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5145,7 +5209,7 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::constReverseZ
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::constReverseZRowEnd(size_type rowNr) const
+typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::constReverseZRowEnd(Matrix<DataType>::size_type rowNr) const
 {
     CHECK_ERROR_CONDITION(rowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5165,7 +5229,8 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::constReverseZ
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstReverseZIterator(size_type rowNr, size_type columnNr) const
+typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstReverseZIterator(Matrix<DataType>::size_type rowNr,
+                                                                                            Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5174,7 +5239,7 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstRever
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstReverseZIterator(size_type index) const
+typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstReverseZIterator(Matrix<DataType>::size_type index) const
 {
     CHECK_ERROR_CONDITION(index < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(index >= m_NrOfRows * m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5183,14 +5248,15 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstRever
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(size_type diagNr)
+typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(Matrix<DataType>::size_type diagNr)
 {
     CHECK_ERROR_CONDITION(diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
     return DIterator{*this, diagNr, 0, true};
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(size_type rowNr, size_type columnNr)
+typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(Matrix<DataType>::size_type rowNr,
+                                                              Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(rowNr < 0 || columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5203,7 +5269,7 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(size_type rowNr, s
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(size_type diagNr)
+typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(Matrix<DataType>::size_type diagNr)
 {
     CHECK_ERROR_CONDITION(diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
 
@@ -5215,7 +5281,8 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(size_type diagNr)
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(size_type rowNr, size_type columnNr)
+typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(Matrix<DataType>::size_type rowNr,
+                                                            Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(rowNr < 0 || columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5225,7 +5292,9 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(size_type rowNr, siz
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::getDIterator(Matrix::size_type first, Matrix::size_type second, bool isRelative)
+typename Matrix<DataType>::DIterator Matrix<DataType>::getDIterator(Matrix<DataType>::size_type first,
+                                                                    Matrix<DataType>::size_type second,
+                                                                    bool isRelative)
 {
     if (isRelative)
     {
@@ -5249,14 +5318,15 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::getDIterator(Matrix::size
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(size_type diagNr) const
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(Matrix<DataType>::size_type diagNr) const
 {
     CHECK_ERROR_CONDITION(diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
     return ConstDIterator{*this, diagNr, 0, true};
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(size_type rowNr, size_type columnNr) const
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(Matrix<DataType>::size_type rowNr,
+                                                                        Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(rowNr < 0 || columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5269,7 +5339,7 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(size_typ
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(size_type diagNr) const
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(Matrix<DataType>::size_type diagNr) const
 {
     CHECK_ERROR_CONDITION(diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
 
@@ -5281,7 +5351,8 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(size_type 
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(size_type rowNr, size_type columnNr) const
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(Matrix<DataType>::size_type rowNr,
+                                                                      Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(rowNr < 0 || columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5291,7 +5362,9 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(size_type 
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::getConstDIterator(Matrix::size_type first, Matrix::size_type second, bool isRelative) const
+typename Matrix<DataType>::ConstDIterator Matrix<DataType>::getConstDIterator(Matrix<DataType>::size_type first,
+                                                                              Matrix<DataType>::size_type second,
+                                                                              bool isRelative) const
 {
     if (isRelative)
     {
@@ -5315,14 +5388,15 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::getConstDIterator(Ma
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(size_type diagNr)
+typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(Matrix<DataType>::size_type diagNr)
 {
     CHECK_ERROR_CONDITION(diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
     return ReverseDIterator{*this, diagNr, 0, true};
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(size_type rowNr, size_type columnNr)
+typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(Matrix<DataType>::size_type rowNr,
+                                                                            Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(rowNr < 0 || columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= getNrOfRows(), Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5334,7 +5408,7 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(size
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(size_type diagNr)
+typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(Matrix<DataType>::size_type diagNr)
 {
     CHECK_ERROR_CONDITION(diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
 
@@ -5346,7 +5420,8 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(size_t
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(size_type rowNr, size_type columnNr)
+typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(Matrix<DataType>::size_type rowNr,
+                                                                          Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(rowNr < 0 || columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5356,7 +5431,9 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(size_t
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::getReverseDIterator(Matrix::size_type first, Matrix::size_type second, bool isRelative)
+typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::getReverseDIterator(Matrix<DataType>::size_type first,
+                                                                                  Matrix<DataType>::size_type second,
+                                                                                  bool isRelative)
 {
     if (isRelative)
     {
@@ -5381,14 +5458,15 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::getReverseDIterato
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDBegin(size_type diagNr) const
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDBegin(Matrix<DataType>::size_type diagNr) const
 {
     CHECK_ERROR_CONDITION(diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
     return ConstReverseDIterator{*this, diagNr, 0, true};
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDBegin(size_type rowNr, size_type columnNr) const
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDBegin(Matrix<DataType>::size_type rowNr,
+                                                                                      Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(rowNr < 0 || columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= getNrOfRows(), Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5400,7 +5478,7 @@ typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseD
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDEnd(size_type diagNr) const
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDEnd(Matrix<DataType>::size_type diagNr) const
 {
     CHECK_ERROR_CONDITION(diagNr < (1-m_NrOfRows) || diagNr > (m_NrOfColumns-1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
 
@@ -5412,7 +5490,8 @@ typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseD
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDEnd(size_type rowNr, size_type columnNr) const
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDEnd(Matrix<DataType>::size_type rowNr,
+                                                                                    Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(rowNr < 0 || columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -5422,7 +5501,9 @@ typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseD
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::getConstReverseDIterator(Matrix::size_type first, Matrix::size_type second, bool isRelative) const
+typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::getConstReverseDIterator(Matrix<DataType>::size_type first,
+                                                                                            Matrix<DataType>::size_type second,
+                                                                                            bool isRelative) const
 {
     if (isRelative)
     {
@@ -5458,7 +5539,7 @@ typename Matrix<DataType>::NIterator Matrix<DataType>::nEnd()
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator Matrix<DataType>::nColumnBegin(size_type columnNr)
+typename Matrix<DataType>::NIterator Matrix<DataType>::nColumnBegin(Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
@@ -5467,7 +5548,7 @@ typename Matrix<DataType>::NIterator Matrix<DataType>::nColumnBegin(size_type co
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator Matrix<DataType>::nColumnEnd(size_type columnNr)
+typename Matrix<DataType>::NIterator Matrix<DataType>::nColumnEnd(Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
@@ -5487,7 +5568,8 @@ typename Matrix<DataType>::NIterator Matrix<DataType>::nColumnEnd(size_type colu
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator Matrix<DataType>::getNIterator(size_type rowNr, size_type columnNr)
+typename Matrix<DataType>::NIterator Matrix<DataType>::getNIterator(Matrix<DataType>::size_type rowNr,
+                                                                    Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5496,7 +5578,7 @@ typename Matrix<DataType>::NIterator Matrix<DataType>::getNIterator(size_type ro
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator Matrix<DataType>::getNIterator(size_type index)
+typename Matrix<DataType>::NIterator Matrix<DataType>::getNIterator(Matrix<DataType>::size_type index)
 {
     CHECK_ERROR_CONDITION(index < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(index >= m_NrOfRows * m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5517,7 +5599,7 @@ typename Matrix<DataType>::ConstNIterator Matrix<DataType>::constNEnd() const
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator Matrix<DataType>::constNColumnBegin(size_type columnNr) const
+typename Matrix<DataType>::ConstNIterator Matrix<DataType>::constNColumnBegin(Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
@@ -5526,7 +5608,7 @@ typename Matrix<DataType>::ConstNIterator Matrix<DataType>::constNColumnBegin(si
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator Matrix<DataType>::constNColumnEnd(size_type columnNr) const
+typename Matrix<DataType>::ConstNIterator Matrix<DataType>::constNColumnEnd(Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
@@ -5546,7 +5628,8 @@ typename Matrix<DataType>::ConstNIterator Matrix<DataType>::constNColumnEnd(size
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator Matrix<DataType>::getConstNIterator(size_type rowNr, size_type columnNr) const
+typename Matrix<DataType>::ConstNIterator Matrix<DataType>::getConstNIterator(Matrix<DataType>::size_type rowNr,
+                                                                              Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5555,7 +5638,7 @@ typename Matrix<DataType>::ConstNIterator Matrix<DataType>::getConstNIterator(si
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator Matrix<DataType>::getConstNIterator(size_type index) const
+typename Matrix<DataType>::ConstNIterator Matrix<DataType>::getConstNIterator(Matrix<DataType>::size_type index) const
 {
     CHECK_ERROR_CONDITION(index < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(index >= m_NrOfRows * m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5576,7 +5659,7 @@ typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::reverseNEnd()
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::reverseNColumnBegin(size_type columnNr)
+typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::reverseNColumnBegin(Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
@@ -5585,7 +5668,7 @@ typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::reverseNColumnBegi
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::reverseNColumnEnd(size_type columnNr)
+typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::reverseNColumnEnd(Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
@@ -5605,7 +5688,8 @@ typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::reverseNColumnEnd(
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::getReverseNIterator(size_type rowNr, size_type columnNr)
+typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::getReverseNIterator(Matrix<DataType>::size_type rowNr,
+                                                                                  Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5614,7 +5698,7 @@ typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::getReverseNIterato
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::getReverseNIterator(size_type index)
+typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::getReverseNIterator(Matrix<DataType>::size_type index)
 {
     CHECK_ERROR_CONDITION(index < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(index >= m_NrOfRows * m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5635,7 +5719,7 @@ typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::constReverseN
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::constReverseNColumnBegin(size_type columnNr) const
+typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::constReverseNColumnBegin(Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
@@ -5644,7 +5728,7 @@ typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::constReverseN
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::constReverseNColumnEnd(size_type columnNr) const
+typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::constReverseNColumnEnd(Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
@@ -5664,7 +5748,8 @@ typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::constReverseN
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::getConstReverseNIterator(size_type rowNr, size_type columnNr) const
+typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::getConstReverseNIterator(Matrix<DataType>::size_type rowNr,
+                                                                                            Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5673,7 +5758,7 @@ typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::getConstRever
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::getConstReverseNIterator(size_type index) const
+typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::getConstReverseNIterator(Matrix<DataType>::size_type index) const
 {
     CHECK_ERROR_CONDITION(index < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(index >= m_NrOfRows * m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
@@ -5694,7 +5779,10 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::end()
 }
 
 template<typename DataType>
-void Matrix<DataType>::_allocMemory(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity, size_type columnCapacity)
+void Matrix<DataType>::_allocMemory(Matrix<DataType>::size_type nrOfRows,
+                                    Matrix<DataType>::size_type nrOfColumns,
+                                    Matrix<DataType>::size_type rowCapacity,
+                                    Matrix<DataType>::size_type columnCapacity)
 {
     if (nrOfRows > 0 && nrOfColumns > 0)
     {
@@ -5787,7 +5875,8 @@ bool Matrix<DataType>::_isEqualTo(const Matrix<DataType>& matrix) const
 }
 
 template<typename DataType>
-void Matrix<DataType>::_adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns)
+void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRows,
+                                              Matrix<DataType>::size_type nrOfColumns)
 {
     const size_type c_NewRowCapacity{nrOfRows + nrOfRows/4};
     const size_type c_NewColumnCapacity{nrOfColumns + nrOfColumns/4};
