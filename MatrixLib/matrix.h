@@ -4437,7 +4437,7 @@ void Matrix<DataType>::shrinkToFit()
 {
     if (m_RowCapacity != m_NrOfRows || m_ColumnCapacity != m_NrOfColumns)
     {
-        Matrix matrix{std::move(*this)};
+        Matrix<DataType> matrix{std::move(*this)};
         _deallocMemory(); // just for safety purposes, not actually needed
         _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
 
@@ -4501,7 +4501,7 @@ void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr)
 
     if (m_NrOfColumns == m_ColumnCapacity)
     {
-        Matrix matrix{};
+        Matrix<DataType> matrix{};
         std::swap(*this, matrix);
         _deallocMemory();
         _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns + 1, matrix.m_RowCapacity, 2 * matrix.m_NrOfColumns);
@@ -4590,7 +4590,7 @@ void Matrix<DataType>::eraseColumn(Matrix<DataType>::size_type columnNr)
     }
     else if (m_NrOfColumns-1 <= m_ColumnCapacity/4)
     {
-        Matrix matrix{};
+        Matrix<DataType> matrix{};
         std::swap(*this, matrix);
         _deallocMemory();
         _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns-1, matrix.m_RowCapacity, (matrix.m_NrOfColumns - 1) * 2);
@@ -4732,7 +4732,7 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix,
     const size_type c_OldRowCapacity{m_RowCapacity};
     const size_type c_OldColumnCapacity{m_ColumnCapacity};
 
-    Matrix matrix{};
+    Matrix<DataType> matrix{};
 
     if (&firstSrcMatrix == this || (&secondSrcMatrix == this))
     {
@@ -4831,7 +4831,7 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix,
 
         copyElements(*this, secondDestMatrix, splitColumnNr, m_NrOfColumns, 0, splitColumnNr);
 
-        Matrix matrix{std::move(*this)};
+        Matrix<DataType> matrix{std::move(*this)};
         _deallocMemory(); // actually not required, just for the good practice's sake!
         _allocMemory(c_EachDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
 
@@ -4843,7 +4843,7 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix,
 
         copyElements(*this, firstDestMatrix, 0, splitColumnNr, 0, 0);
 
-        Matrix matrix{std::move(*this)};
+        Matrix<DataType> matrix{std::move(*this)};
         _deallocMemory(); // actually not required, just for the good practice's sake!
         _allocMemory(c_EachDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
 
