@@ -51,9 +51,9 @@ public:
         bool operator>(const ZIterator& it) const;
         bool operator>=(const ZIterator& it) const;
 
-        reference operator*() const;
-        value_type* operator->() const;
-        reference operator[](difference_type index) const;
+        reference operator*();
+        value_type* operator->();
+        reference operator[](difference_type index);
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
@@ -169,9 +169,9 @@ public:
         bool operator>(const ReverseZIterator& it) const;
         bool operator>=(const ReverseZIterator& it) const;
 
-        reference operator*() const;
-        value_type* operator->() const;
-        reference operator[](difference_type index) const;
+        reference operator*();
+        value_type* operator->();
+        reference operator[](difference_type index);
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
@@ -288,9 +288,9 @@ public:
         bool operator>(const DIterator& it) const;
         bool operator>=(const DIterator& it) const;
 
-        reference operator*() const;
-        value_type* operator->() const;
-        reference operator[](difference_type index) const;
+        reference operator*();
+        value_type* operator->();
+        reference operator[](difference_type index);
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
@@ -410,9 +410,9 @@ public:
         bool operator>(const ReverseDIterator& it) const;
         bool operator>=(const ReverseDIterator& it) const;
 
-        reference operator*() const;
-        value_type* operator->() const;
-        reference operator[](difference_type index) const;
+        reference operator*();
+        value_type* operator->();
+        reference operator[](difference_type index);
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
@@ -531,9 +531,9 @@ public:
         bool operator>(const NIterator& it) const;
         bool operator>=(const NIterator& it) const;
 
-        reference operator*() const;
-        value_type* operator->() const;
-        reference operator[](difference_type index) const;
+        reference operator*();
+        value_type* operator->();
+        reference operator[](difference_type index);
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
@@ -649,9 +649,9 @@ public:
         bool operator>(const ReverseNIterator& it) const;
         bool operator>=(const ReverseNIterator& it) const;
 
-        reference operator*() const;
-        value_type* operator->() const;
-        reference operator[](difference_type index) const;
+        reference operator*();
+        value_type* operator->();
+        reference operator[](difference_type index);
 
         /* This function was created mainly for testing purposes although it can be used in "production" as well.
            However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
@@ -1063,21 +1063,21 @@ bool Matrix<DataType>::ZIterator::operator>=(const Matrix<DataType>::ZIterator& 
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator*() const
+typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator*()
 {
     CHECK_ERROR_CONDITION(m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
     return m_pMatrixPtr[m_CurrentRowNr][m_CurrentColumnNr];
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator::value_type* Matrix<DataType>::ZIterator::operator->() const
+typename Matrix<DataType>::ZIterator::value_type* Matrix<DataType>::ZIterator::operator->()
 {
     CHECK_ERROR_CONDITION(m_CurrentColumnNr == m_NrOfMatrixColumns || m_NrOfMatrixColumns == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
     return (m_pMatrixPtr[m_CurrentRowNr] + m_CurrentColumnNr);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator[](Matrix<DataType>::ZIterator::difference_type index) const
+typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator[](Matrix<DataType>::ZIterator::difference_type index)
 {
     const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
     const size_type c_ResultingIndex{c_CurrentIndex + index};
@@ -1595,21 +1595,21 @@ bool Matrix<DataType>::ReverseZIterator::operator>=(const Matrix<DataType>::Reve
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator::reference Matrix<DataType>::ReverseZIterator::operator*() const
+typename Matrix<DataType>::ReverseZIterator::reference Matrix<DataType>::ReverseZIterator::operator*()
 {
     CHECK_ERROR_CONDITION(m_CurrentColumnNr == -1 || m_NrOfMatrixColumns == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
     return m_pMatrixPtr[m_CurrentRowNr][m_CurrentColumnNr];
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator::value_type* Matrix<DataType>::ReverseZIterator::operator->() const
+typename Matrix<DataType>::ReverseZIterator::value_type* Matrix<DataType>::ReverseZIterator::operator->()
 {
     CHECK_ERROR_CONDITION(m_CurrentColumnNr == -1 || m_NrOfMatrixColumns == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
     return (m_pMatrixPtr[m_CurrentRowNr] + m_CurrentColumnNr);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator::reference Matrix<DataType>::ReverseZIterator::operator[](Matrix<DataType>::ReverseZIterator::difference_type index) const
+typename Matrix<DataType>::ReverseZIterator::reference Matrix<DataType>::ReverseZIterator::operator[](Matrix<DataType>::ReverseZIterator::difference_type index)
 {
     const size_type c_CurrentIndex{m_CurrentRowNr * m_NrOfMatrixColumns + m_CurrentColumnNr};
     const size_type c_ResultingIndex{c_CurrentIndex - index};
@@ -2092,7 +2092,7 @@ bool Matrix<DataType>::DIterator::operator>=(const Matrix<DataType>::DIterator& 
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::operator*() const
+typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::operator*()
 {
     CHECK_ERROR_CONDITION(m_DiagonalIndex == m_DiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
 
@@ -2103,7 +2103,7 @@ typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::ope
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator::value_type* Matrix<DataType>::DIterator::operator->() const
+typename Matrix<DataType>::DIterator::value_type* Matrix<DataType>::DIterator::operator->()
 {
     CHECK_ERROR_CONDITION(m_DiagonalIndex == m_DiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
 
@@ -2114,7 +2114,7 @@ typename Matrix<DataType>::DIterator::value_type* Matrix<DataType>::DIterator::o
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::operator[](Matrix<DataType>::DIterator::difference_type index) const
+typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::operator[](Matrix<DataType>::DIterator::difference_type index)
 {
     const size_type c_ResultingIndex{m_DiagonalIndex + index};
 
@@ -2612,7 +2612,7 @@ bool Matrix<DataType>::ReverseDIterator::operator>=(const Matrix<DataType>::Reve
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator::reference Matrix<DataType>::ReverseDIterator::operator*() const
+typename Matrix<DataType>::ReverseDIterator::reference Matrix<DataType>::ReverseDIterator::operator*()
 {
     CHECK_ERROR_CONDITION(m_DiagonalIndex == m_DiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
 
@@ -2623,7 +2623,7 @@ typename Matrix<DataType>::ReverseDIterator::reference Matrix<DataType>::Reverse
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator::value_type* Matrix<DataType>::ReverseDIterator::operator->() const
+typename Matrix<DataType>::ReverseDIterator::value_type* Matrix<DataType>::ReverseDIterator::operator->()
 {
     CHECK_ERROR_CONDITION(m_DiagonalIndex == m_DiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
 
@@ -2634,7 +2634,7 @@ typename Matrix<DataType>::ReverseDIterator::value_type* Matrix<DataType>::Rever
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator::reference Matrix<DataType>::ReverseDIterator::operator[](Matrix<DataType>::ReverseDIterator::difference_type index) const
+typename Matrix<DataType>::ReverseDIterator::reference Matrix<DataType>::ReverseDIterator::operator[](Matrix<DataType>::ReverseDIterator::difference_type index)
 {
     const size_type c_ResultingIndex{m_DiagonalIndex + index};
 
@@ -3154,21 +3154,21 @@ bool Matrix<DataType>::NIterator::operator>=(const Matrix<DataType>::NIterator& 
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator::reference Matrix<DataType>::NIterator::operator*() const
+typename Matrix<DataType>::NIterator::reference Matrix<DataType>::NIterator::operator*()
 {
     CHECK_ERROR_CONDITION(m_CurrentRowNr == m_NrOfMatrixRows || m_NrOfMatrixRows == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
     return m_pMatrixPtr[m_CurrentRowNr][m_CurrentColumnNr];
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator::value_type* Matrix<DataType>::NIterator::operator->() const
+typename Matrix<DataType>::NIterator::value_type* Matrix<DataType>::NIterator::operator->()
 {
     CHECK_ERROR_CONDITION(m_CurrentRowNr == m_NrOfMatrixRows || m_NrOfMatrixRows == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
     return (m_pMatrixPtr[m_CurrentRowNr] + m_CurrentColumnNr);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator::reference Matrix<DataType>::NIterator::operator[](Matrix<DataType>::NIterator::difference_type index) const
+typename Matrix<DataType>::NIterator::reference Matrix<DataType>::NIterator::operator[](Matrix<DataType>::NIterator::difference_type index)
 {
     const size_type c_CurrentIndex{m_CurrentColumnNr * m_NrOfMatrixRows + m_CurrentRowNr};
     const size_type c_ResultingIndex{c_CurrentIndex + index};
@@ -3683,21 +3683,21 @@ bool Matrix<DataType>::ReverseNIterator::operator>=(const Matrix<DataType>::Reve
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator::reference Matrix<DataType>::ReverseNIterator::operator*() const
+typename Matrix<DataType>::ReverseNIterator::reference Matrix<DataType>::ReverseNIterator::operator*()
 {
     CHECK_ERROR_CONDITION(m_CurrentRowNr == -1 || m_NrOfMatrixRows == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
     return m_pMatrixPtr[m_CurrentRowNr][m_CurrentColumnNr];
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator::value_type* Matrix<DataType>::ReverseNIterator::operator->() const
+typename Matrix<DataType>::ReverseNIterator::value_type* Matrix<DataType>::ReverseNIterator::operator->()
 {
     CHECK_ERROR_CONDITION(m_CurrentRowNr == -1 || m_NrOfMatrixRows == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
     return (m_pMatrixPtr[m_CurrentRowNr] + m_CurrentColumnNr);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator::reference Matrix<DataType>::ReverseNIterator::operator[](Matrix<DataType>::ReverseNIterator::difference_type index) const
+typename Matrix<DataType>::ReverseNIterator::reference Matrix<DataType>::ReverseNIterator::operator[](Matrix<DataType>::ReverseNIterator::difference_type index)
 {
     const size_type c_CurrentIndex{m_CurrentColumnNr * m_NrOfMatrixRows + m_CurrentRowNr};
     const size_type c_ResultingIndex{c_CurrentIndex - index};
