@@ -1004,6 +1004,7 @@ void MIteratorTests::testStdFind()
                               7, 4, -5,  4, -3,  2, 1,
                              -1, 6, -5,  4, -3,  2, 1,
                          });
+
         IntMatrixMIterator it{std::find(matrix.mBegin(1), matrix.mEnd(1), -9)};
         QVERIFY2(it == matrix.mEnd(1), "The iterator doesn't work correctly with std::find, incorrect next element returned");
     }
@@ -1020,6 +1021,7 @@ void MIteratorTests::testStdSort()
                              7,  5, -5,  4, -3,  2, 1,
                              2,  6, -5,  4, -3,  2, 1,
                          });
+
         IntMatrix matrixRef(6, 7, {
                              7,  6, -5,  4, -3, -3, 1,
                              7,  6, -5,  4, -1,  2, 1,

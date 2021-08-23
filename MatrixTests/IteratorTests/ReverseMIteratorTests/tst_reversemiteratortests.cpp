@@ -1055,7 +1055,6 @@ void ReverseMIteratorTests::testStdSort()
                              2,  6, -5, 4, -3,  2, 1,
                          });
 
-
         std::sort(matrix.getReverseMIterator(4, 1), matrix.getReverseMIterator(1, 4));
 
         QVERIFY2(matrix == matrixRef, "The iterator doesn't work correctly, the matrix diagonal has not been sorted properly");
