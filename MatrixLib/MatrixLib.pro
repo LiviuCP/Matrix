@@ -32,8 +32,9 @@ macx {
 
 HEADERS += \
         matrix.h \
-        matrix_template_specializations.h \
-        errorhandling.h
+        iteratorutils.h \
+        errorhandling.h \
+        matrix_template_specializations.h
 
 unix {
     target.path = /usr/lib
