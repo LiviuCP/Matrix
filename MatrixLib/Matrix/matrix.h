@@ -19,158 +19,158 @@ public:
     class ZIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ZIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ZIterator);
-        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ZIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ZIterator)
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ZIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ZIterator, DataType, size_type)
     };
 
     class ConstZIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstZIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstZIterator);
-        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstZIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstZIterator)
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstZIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstZIterator, DataType, size_type)
     };
 
     class ReverseZIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseZIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseZIterator);
-        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseZIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseZIterator)
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseZIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseZIterator, DataType, size_type)
     };
 
     class ConstReverseZIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator);
-        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator)
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator, DataType, size_type)
     };
 
     class DIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(DIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
-        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(DIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type)
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(DIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(DIterator, DataType, size_type)
 
     };
 
     class ConstDIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstDIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
-        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstDIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type)
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstDIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstDIterator, DataType, size_type)
     };
 
     class ReverseDIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseDIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
-        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseDIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type)
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseDIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseDIterator, DataType, size_type)
     };
 
     class ConstReverseDIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseDIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
-        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseDIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type)
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseDIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseDIterator, DataType, size_type)
     };
 
     class NIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(NIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(NIterator);
-        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(NIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(NIterator)
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(NIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(NIterator, DataType, size_type)
     };
 
     class ConstNIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstNIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstNIterator);
-        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstNIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstNIterator)
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstNIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstNIterator, DataType, size_type)
     };
 
     class ReverseNIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseNIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseNIterator);
-        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseNIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseNIterator)
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseNIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseNIterator, DataType, size_type)
     };
 
     class ConstReverseNIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator);
-        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator)
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator, DataType, size_type)
     };
 
     class MIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(MIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
-        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(MIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type)
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(MIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(MIterator, DataType, size_type)
 
         size_type m_NrOfMatrixColumns;      // number of matrix columns is required for mirrored iterators because the origin (diagonal 0) does no longer pass through element (0, 0)
     };
@@ -178,13 +178,13 @@ public:
     class ConstMIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstMIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
-        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstMIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type)
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstMIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstMIterator, DataType, size_type)
 
         size_type m_NrOfMatrixColumns;      // number of matrix columns is required for mirrored iterators because the origin (diagonal 0) does no longer pass through element (0, 0)
     };
@@ -192,13 +192,13 @@ public:
     class ReverseMIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseMIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
-        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseMIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type)
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseMIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseMIterator, DataType, size_type)
 
         size_type m_NrOfMatrixColumns;      // number of matrix columns is required for mirrored iterators because the origin (diagonal 0) does no longer pass through element (0, 0)
     };
@@ -206,13 +206,13 @@ public:
     class ConstReverseMIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseMIterator, DataType, diff_type, size_type);
-        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
-        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseMIterator, DataType, diff_type, size_type)
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type)
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
-        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseMIterator, DataType, size_type);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseMIterator, DataType, size_type)
 
         size_type m_NrOfMatrixColumns;      // number of matrix columns is required for mirrored iterators because the origin (diagonal 0) does no longer pass through element (0, 0)
     };
