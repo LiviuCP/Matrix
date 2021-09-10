@@ -18,965 +18,202 @@ public:
 
     class ZIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = DataType&;
-
-        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
-        ZIterator();
-
-        ZIterator operator++();
-        ZIterator operator++(int unused);
-        ZIterator operator--();
-        ZIterator operator--(int unused);
-
-        ZIterator operator+(difference_type offset);
-        ZIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ZIterator& it) const;
-
-        bool operator==(const ZIterator& it) const;
-        bool operator!=(const ZIterator& it) const;
-        bool operator<(const ZIterator& it) const;
-        bool operator<=(const ZIterator& it) const;
-        bool operator>(const ZIterator& it) const;
-        bool operator>=(const ZIterator& it) const;
-
-        reference operator*();
-        value_type* operator->();
-        reference operator[](difference_type index);
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ZIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ZIterator);
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ZIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
-
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_CurrentRowNr;
-        size_type m_CurrentColumnNr;
-        size_type m_NrOfMatrixRows;
-        size_type m_NrOfMatrixColumns;
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ZIterator, DataType, size_type);
     };
 
     class ConstZIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = const DataType&;
-
-        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
-        ConstZIterator();
-
-        ConstZIterator operator++();
-        ConstZIterator operator++(int unused);
-        ConstZIterator operator--();
-        ConstZIterator operator--(int unused);
-
-        ConstZIterator operator+(difference_type offset);
-        ConstZIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ConstZIterator& it) const;
-
-        bool operator==(const ConstZIterator& it) const;
-        bool operator!=(const ConstZIterator& it) const;
-        bool operator<(const ConstZIterator& it) const;
-        bool operator<=(const ConstZIterator& it) const;
-        bool operator>(const ConstZIterator& it) const;
-        bool operator>=(const ConstZIterator& it) const;
-
-        reference operator*() const;
-        const value_type* operator->() const;
-        reference operator[](difference_type index) const;
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstZIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstZIterator);
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ConstZIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
-
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_CurrentRowNr;
-        size_type m_CurrentColumnNr;
-        size_type m_NrOfMatrixRows;
-        size_type m_NrOfMatrixColumns;
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstZIterator, DataType, size_type);
     };
 
     class ReverseZIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = DataType&;
-
-        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
-        ReverseZIterator();
-
-        ReverseZIterator operator++();
-        ReverseZIterator operator++(int unused);
-        ReverseZIterator operator--();
-        ReverseZIterator operator--(int unused);
-
-        ReverseZIterator operator+(difference_type offset);
-        ReverseZIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ReverseZIterator& it) const;
-
-        bool operator==(const ReverseZIterator& it) const;
-        bool operator!=(const ReverseZIterator& it) const;
-        bool operator<(const ReverseZIterator& it) const;
-        bool operator<=(const ReverseZIterator& it) const;
-        bool operator>(const ReverseZIterator& it) const;
-        bool operator>=(const ReverseZIterator& it) const;
-
-        reference operator*();
-        value_type* operator->();
-        reference operator[](difference_type index);
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseZIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseZIterator);
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ReverseZIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
-
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_CurrentRowNr;
-        size_type m_CurrentColumnNr;
-        size_type m_NrOfMatrixRows;
-        size_type m_NrOfMatrixColumns;
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseZIterator, DataType, size_type);
     };
 
     class ConstReverseZIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = const DataType&;
-
-        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
-        ConstReverseZIterator();
-
-        ConstReverseZIterator operator++();
-        ConstReverseZIterator operator++(int unused);
-        ConstReverseZIterator operator--();
-        ConstReverseZIterator operator--(int unused);
-
-        ConstReverseZIterator operator+(difference_type offset);
-        ConstReverseZIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ConstReverseZIterator& it) const;
-
-        bool operator==(const ConstReverseZIterator& it) const;
-        bool operator!=(const ConstReverseZIterator& it) const;
-        bool operator<(const ConstReverseZIterator& it) const;
-        bool operator<=(const ConstReverseZIterator& it) const;
-        bool operator>(const ConstReverseZIterator& it) const;
-        bool operator>=(const ConstReverseZIterator& it) const;
-
-        reference operator*() const;
-        const value_type* operator->() const;
-        reference operator[](difference_type index) const;
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator);
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ConstReverseZIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
-
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_CurrentRowNr;
-        size_type m_CurrentColumnNr;
-        size_type m_NrOfMatrixRows;
-        size_type m_NrOfMatrixColumns;
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator, DataType, size_type);
     };
 
     class DIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
-
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = DataType&;
-
-        // "empty" iterator creation is not allowed with DIterators (only for ZIterators and NIterators)
-        DIterator() = delete;
-
-        DIterator operator++();
-        DIterator operator++(int unused);
-        DIterator operator--();
-        DIterator operator--(int unused);
-
-        DIterator operator+(difference_type offset);
-        DIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const DIterator& it) const;
-
-        bool operator==(const DIterator& it) const;
-        bool operator!=(const DIterator& it) const;
-        bool operator<(const DIterator& it) const;
-        bool operator<=(const DIterator& it) const;
-        bool operator>(const DIterator& it) const;
-        bool operator>=(const DIterator& it) const;
-
-        reference operator*();
-        value_type* operator->();
-        reference operator[](difference_type index);
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
-        size_type getDiagonalNr() const;
-        size_type getDiagonalIndex() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(DIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        DIterator(const Matrix<DataType>& matrix, size_type first, size_type second, bool isRelative = false);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(DIterator, DataType, size_type);
 
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_DiagonalIndex;    // relative index within diagonal
-        size_type m_DiagonalNr;   // index of the diagonal within matrix
-        size_type m_DiagonalSize;     // number of elements contained within diagonal
     };
 
     class ConstDIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
-
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = const DataType&;
-
-        // "empty" iterator creation is not allowed with DIterators (only for ZIterators and NIterators)
-        ConstDIterator() = delete;
-
-        ConstDIterator operator++();
-        ConstDIterator operator++(int unused);
-        ConstDIterator operator--();
-        ConstDIterator operator--(int unused);
-
-        ConstDIterator operator+(difference_type offset);
-        ConstDIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ConstDIterator& it) const;
-
-        bool operator==(const ConstDIterator& it) const;
-        bool operator!=(const ConstDIterator& it) const;
-        bool operator<(const ConstDIterator& it) const;
-        bool operator<=(const ConstDIterator& it) const;
-        bool operator>(const ConstDIterator& it) const;
-        bool operator>=(const ConstDIterator& it) const;
-
-        reference operator*() const;
-        const value_type* operator->() const;
-        reference operator[](difference_type index) const;
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
-        size_type getDiagonalNr() const;
-        size_type getDiagonalIndex() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstDIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ConstDIterator(const Matrix<DataType>& matrix, size_type first, size_type second, bool isRelative = false);
-
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_DiagonalIndex;    // relative index within diagonal
-        size_type m_DiagonalNr;   // index of the diagonal within matrix
-        size_type m_DiagonalSize;     // number of elements contained within diagonal
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstDIterator, DataType, size_type);
     };
 
     class ReverseDIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
-
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = DataType&;
-
-        // "empty" iterator creation is not allowed with DIterators (only for ZIterators and NIterators)
-        ReverseDIterator() = delete;
-
-        ReverseDIterator operator++();
-        ReverseDIterator operator++(int unused);
-        ReverseDIterator operator--();
-        ReverseDIterator operator--(int unused);
-
-        ReverseDIterator operator+(difference_type offset);
-        ReverseDIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ReverseDIterator& it) const;
-
-        bool operator==(const ReverseDIterator& it) const;
-        bool operator!=(const ReverseDIterator& it) const;
-        bool operator<(const ReverseDIterator& it) const;
-        bool operator<=(const ReverseDIterator& it) const;
-        bool operator>(const ReverseDIterator& it) const;
-        bool operator>=(const ReverseDIterator& it) const;
-
-        reference operator*();
-        value_type* operator->();
-        reference operator[](difference_type index);
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
-        size_type getDiagonalNr() const;
-        size_type getDiagonalIndex() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseDIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ReverseDIterator(const Matrix<DataType>& matrix, size_type first, size_type second, bool isRelative = false);
-
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_DiagonalIndex;    // relative index within diagonal
-        size_type m_DiagonalNr;   // index of the diagonal within matrix
-        size_type m_DiagonalSize;     // number of elements contained within diagonal
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseDIterator, DataType, size_type);
     };
 
     class ConstReverseDIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
-
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = const DataType&;
-
-        // "empty" iterator creation is not allowed with DIterators (only for ZIterators and NIterators)
-        ConstReverseDIterator() = delete;
-
-        ConstReverseDIterator operator++();
-        ConstReverseDIterator operator++(int unused);
-        ConstReverseDIterator operator--();
-        ConstReverseDIterator operator--(int unused);
-
-        ConstReverseDIterator operator+(difference_type offset);
-        ConstReverseDIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ConstReverseDIterator& it) const;
-
-        bool operator==(const ConstReverseDIterator& it) const;
-        bool operator!=(const ConstReverseDIterator& it) const;
-        bool operator<(const ConstReverseDIterator& it) const;
-        bool operator<=(const ConstReverseDIterator& it) const;
-        bool operator>(const ConstReverseDIterator& it) const;
-        bool operator>=(const ConstReverseDIterator& it) const;
-
-        reference operator*() const;
-        const value_type* operator->() const;
-        reference operator[](difference_type index) const;
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
-        size_type getDiagonalNr() const;
-        size_type getDiagonalIndex() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseDIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ConstReverseDIterator(const Matrix<DataType>& matrix, size_type first, size_type second, bool isRelative = false);
-
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_DiagonalIndex;    // relative index within diagonal
-        size_type m_DiagonalNr;   // index of the diagonal within matrix
-        size_type m_DiagonalSize;     // number of elements contained within diagonal
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseDIterator, DataType, size_type);
     };
 
     class NIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = DataType&;
-
-        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
-        NIterator();
-
-        NIterator operator++();
-        NIterator operator++(int unused);
-        NIterator operator--();
-        NIterator operator--(int unused);
-
-        NIterator operator+(difference_type offset);
-        NIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const NIterator& it) const;
-
-        bool operator==(const NIterator& it) const;
-        bool operator!=(const NIterator& it) const;
-        bool operator<(const NIterator& it) const;
-        bool operator<=(const NIterator& it) const;
-        bool operator>(const NIterator& it) const;
-        bool operator>=(const NIterator& it) const;
-
-        reference operator*();
-        value_type* operator->();
-        reference operator[](difference_type index);
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(NIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(NIterator);
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        NIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
-
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_CurrentRowNr;
-        size_type m_CurrentColumnNr;
-        size_type m_NrOfMatrixRows;
-        size_type m_NrOfMatrixColumns;
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(NIterator, DataType, size_type);
     };
 
     class ConstNIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = const DataType&;
-
-        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
-        ConstNIterator();
-
-        ConstNIterator operator++();
-        ConstNIterator operator++(int unused);
-        ConstNIterator operator--();
-        ConstNIterator operator--(int unused);
-
-        ConstNIterator operator+(difference_type offset);
-        ConstNIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ConstNIterator& it) const;
-
-        bool operator==(const ConstNIterator& it) const;
-        bool operator!=(const ConstNIterator& it) const;
-        bool operator<(const ConstNIterator& it) const;
-        bool operator<=(const ConstNIterator& it) const;
-        bool operator>(const ConstNIterator& it) const;
-        bool operator>=(const ConstNIterator& it) const;
-
-        reference operator*() const;
-        const value_type* operator->() const;
-        reference operator[](difference_type index) const;
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstNIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstNIterator);
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ConstNIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
-
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_CurrentRowNr;
-        size_type m_CurrentColumnNr;
-        size_type m_NrOfMatrixRows;
-        size_type m_NrOfMatrixColumns;
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstNIterator, DataType, size_type);
     };
 
     class ReverseNIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = DataType&;
-
-        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
-        ReverseNIterator();
-
-        ReverseNIterator operator++();
-        ReverseNIterator operator++(int unused);
-        ReverseNIterator operator--();
-        ReverseNIterator operator--(int unused);
-
-        ReverseNIterator operator+(difference_type offset);
-        ReverseNIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ReverseNIterator& it) const;
-
-        bool operator==(const ReverseNIterator& it) const;
-        bool operator!=(const ReverseNIterator& it) const;
-        bool operator<(const ReverseNIterator& it) const;
-        bool operator<=(const ReverseNIterator& it) const;
-        bool operator>(const ReverseNIterator& it) const;
-        bool operator>=(const ReverseNIterator& it) const;
-
-        reference operator*();
-        value_type* operator->();
-        reference operator[](difference_type index);
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseNIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseNIterator);
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ReverseNIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
-
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_CurrentRowNr;
-        size_type m_CurrentColumnNr;
-        size_type m_NrOfMatrixRows;
-        size_type m_NrOfMatrixColumns;
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseNIterator, DataType, size_type);
     };
 
     class ConstReverseNIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = const DataType&;
-
-        // creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix
-        ConstReverseNIterator();
-
-        ConstReverseNIterator operator++();
-        ConstReverseNIterator operator++(int unused);
-        ConstReverseNIterator operator--();
-        ConstReverseNIterator operator--(int unused);
-
-        ConstReverseNIterator operator+(difference_type offset);
-        ConstReverseNIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ConstReverseNIterator& it) const;
-
-        bool operator==(const ConstReverseNIterator& it) const;
-        bool operator!=(const ConstReverseNIterator& it) const;
-        bool operator<(const ConstReverseNIterator& it) const;
-        bool operator<=(const ConstReverseNIterator& it) const;
-        bool operator>(const ConstReverseNIterator& it) const;
-        bool operator>=(const ConstReverseNIterator& it) const;
-
-        reference operator*() const;
-        const value_type* operator->() const;
-        reference operator[](difference_type index) const;
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator);
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ConstReverseNIterator(const Matrix<DataType>& matrix, size_type currentRowNr, size_type currentColumnNr);
-
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_CurrentRowNr;
-        size_type m_CurrentColumnNr;
-        size_type m_NrOfMatrixRows;
-        size_type m_NrOfMatrixColumns;
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator, DataType, size_type);
     };
 
     class MIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
-
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = DataType&;
-
-        // "empty" iterator creation is not allowed with MIterators (only for ZIterators and NIterators)
-        MIterator() = delete;
-
-        MIterator operator++();
-        MIterator operator++(int unused);
-        MIterator operator--();
-        MIterator operator--(int unused);
-
-        MIterator operator+(difference_type offset);
-        MIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const MIterator& it) const;
-
-        bool operator==(const MIterator& it) const;
-        bool operator!=(const MIterator& it) const;
-        bool operator<(const MIterator& it) const;
-        bool operator<=(const MIterator& it) const;
-        bool operator>(const MIterator& it) const;
-        bool operator>=(const MIterator& it) const;
-
-        reference operator*();
-        value_type* operator->();
-        reference operator[](difference_type index);
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
-        size_type getDiagonalNr() const;
-        size_type getDiagonalIndex() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(MIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        MIterator(const Matrix<DataType>& matrix, size_type first, size_type second, bool isRelative = false);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(MIterator, DataType, size_type);
 
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_DiagonalIndex;    // relative index within diagonal
-        size_type m_DiagonalNr;   // index of the diagonal within matrix
-        size_type m_DiagonalSize;     // number of elements contained within diagonal
         size_type m_NrOfMatrixColumns;      // number of matrix columns is required for mirrored iterators because the origin (diagonal 0) does no longer pass through element (0, 0)
     };
 
     class ConstMIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
-
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = const DataType&;
-
-        // "empty" iterator creation is not allowed with MIterators (only for ZIterators and NIterators)
-        ConstMIterator() = delete;
-
-        ConstMIterator operator++();
-        ConstMIterator operator++(int unused);
-        ConstMIterator operator--();
-        ConstMIterator operator--(int unused);
-
-        ConstMIterator operator+(difference_type offset);
-        ConstMIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ConstMIterator& it) const;
-
-        bool operator==(const ConstMIterator& it) const;
-        bool operator!=(const ConstMIterator& it) const;
-        bool operator<(const ConstMIterator& it) const;
-        bool operator<=(const ConstMIterator& it) const;
-        bool operator>(const ConstMIterator& it) const;
-        bool operator>=(const ConstMIterator& it) const;
-
-        reference operator*() const;
-        const value_type* operator->() const;
-        reference operator[](difference_type index) const;
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
-        size_type getDiagonalNr() const;
-        size_type getDiagonalIndex() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstMIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ConstMIterator(const Matrix<DataType>& matrix, size_type first, size_type second, bool isRelative = false);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstMIterator, DataType, size_type);
 
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_DiagonalIndex;    // relative index within diagonal
-        size_type m_DiagonalNr;   // index of the diagonal within matrix
-        size_type m_DiagonalSize;     // number of elements contained within diagonal
         size_type m_NrOfMatrixColumns;      // number of matrix columns is required for mirrored iterators because the origin (diagonal 0) does no longer pass through element (0, 0)
     };
 
     class ReverseMIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
-
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = DataType&;
-
-        // "empty" iterator creation is not allowed with MIterators (only for ZIterators and NIterators)
-        ReverseMIterator() = delete;
-
-        ReverseMIterator operator++();
-        ReverseMIterator operator++(int unused);
-        ReverseMIterator operator--();
-        ReverseMIterator operator--(int unused);
-
-        ReverseMIterator operator+(difference_type offset);
-        ReverseMIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ReverseMIterator& it) const;
-
-        bool operator==(const ReverseMIterator& it) const;
-        bool operator!=(const ReverseMIterator& it) const;
-        bool operator<(const ReverseMIterator& it) const;
-        bool operator<=(const ReverseMIterator& it) const;
-        bool operator>(const ReverseMIterator& it) const;
-        bool operator>=(const ReverseMIterator& it) const;
-
-        reference operator*();
-        value_type* operator->();
-        reference operator[](difference_type index);
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
-        size_type getDiagonalNr() const;
-        size_type getDiagonalIndex() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseMIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ReverseMIterator(const Matrix<DataType>& matrix, size_type first, size_type second, bool isRelative = false);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseMIterator, DataType, size_type);
 
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_DiagonalIndex;    // relative index within diagonal
-        size_type m_DiagonalNr;   // index of the diagonal within matrix
-        size_type m_DiagonalSize;     // number of elements contained within diagonal
         size_type m_NrOfMatrixColumns;      // number of matrix columns is required for mirrored iterators because the origin (diagonal 0) does no longer pass through element (0, 0)
     };
 
     class ConstReverseMIterator
     {
-        // Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege"
-        friend class Matrix<DataType>;
-
     public:
-        // all these are required for STL compatibility
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = DataType;
-        using difference_type = diff_type;
-        using pointer = DataType**;
-        using reference = const DataType&;
-
-        // "empty" iterator creation is not allowed with MIterators (only for ZIterators and NIterators)
-        ConstReverseMIterator() = delete;
-
-        ConstReverseMIterator operator++();
-        ConstReverseMIterator operator++(int unused);
-        ConstReverseMIterator operator--();
-        ConstReverseMIterator operator--(int unused);
-
-        ConstReverseMIterator operator+(difference_type offset);
-        ConstReverseMIterator operator-(difference_type offset);
-
-        void operator+=(difference_type offset);
-        void operator-=(difference_type offset);
-
-        difference_type operator-(const ConstReverseMIterator& it) const;
-
-        bool operator==(const ConstReverseMIterator& it) const;
-        bool operator!=(const ConstReverseMIterator& it) const;
-        bool operator<(const ConstReverseMIterator& it) const;
-        bool operator<=(const ConstReverseMIterator& it) const;
-        bool operator>(const ConstReverseMIterator& it) const;
-        bool operator>=(const ConstReverseMIterator& it) const;
-
-        reference operator*() const;
-        const value_type* operator->() const;
-        reference operator[](difference_type index) const;
-
-        /* This function was created mainly for testing purposes although it can be used in "production" as well.
-           However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */
-        bool isValidWithMatrix(const Matrix<DataType>& matrix) const;
-
-        size_type getCurrentRowNr() const;
-        size_type getCurrentColumnNr() const;
-        size_type getDiagonalNr() const;
-        size_type getDiagonalIndex() const;
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseMIterator, DataType, diff_type, size_type);
+        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type);
+        COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type);
 
     private:
-        ConstReverseMIterator(const Matrix<DataType>& matrix, size_type first, size_type second, bool isRelative = false);
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType);
+        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseMIterator, DataType, size_type);
 
-        void _increment();
-        void _decrement();
-
-        pointer m_pMatrixPtr;
-        size_type m_DiagonalIndex;    // relative index within diagonal
-        size_type m_DiagonalNr;   // index of the diagonal within matrix
-        size_type m_DiagonalSize;     // number of elements contained within diagonal
         size_type m_NrOfMatrixColumns;      // number of matrix columns is required for mirrored iterators because the origin (diagonal 0) does no longer pass through element (0, 0)
     };
 
@@ -1169,16 +406,6 @@ private:
 
 // 1) ZIterator - iterates within matrix from [0][0] to the end row by row
 template<typename DataType>
-Matrix<DataType>::ZIterator::ZIterator()
-    : m_pMatrixPtr{nullptr}
-    , m_CurrentRowNr{-1}
-    , m_CurrentColumnNr{-1}
-    , m_NrOfMatrixRows{0}
-    , m_NrOfMatrixColumns{0}
-{
-}
-
-template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
@@ -1269,24 +496,6 @@ bool Matrix<DataType>::ZIterator::operator>=(const Matrix<DataType>::ZIterator& 
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator*()
-{
-    FORWARD_ZITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ZIterator::value_type* Matrix<DataType>::ZIterator::operator->()
-{
-    FORWARD_ZITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ZIterator::reference Matrix<DataType>::ZIterator::operator[](Matrix<DataType>::ZIterator::difference_type index)
-{
-    ZITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, +, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ZIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     NON_DIAG_ITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -1302,6 +511,34 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ZIterator::getCurrentColumnNr() const
 {
     return m_CurrentColumnNr;
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::ZIterator::operator*()
+{
+    FORWARD_ZITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+DataType* Matrix<DataType>::ZIterator::operator->()
+{
+    FORWARD_ZITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::ZIterator::operator[](Matrix<DataType>::ZIterator::difference_type index)
+{
+    ZITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, +, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::ZIterator::ZIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_CurrentRowNr{-1}
+    , m_CurrentColumnNr{-1}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
 }
 
 template<typename DataType>
@@ -1328,16 +565,6 @@ void Matrix<DataType>::ZIterator::_decrement()
 }
 
 // 2) Const ZIterator
-
-template<typename DataType>
-Matrix<DataType>::ConstZIterator::ConstZIterator()
-    : m_pMatrixPtr{nullptr}
-    , m_CurrentRowNr{-1}
-    , m_CurrentColumnNr{-1}
-    , m_NrOfMatrixRows{0}
-    , m_NrOfMatrixColumns{0}
-{
-}
 
 template<typename DataType>
 typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator++()
@@ -1430,24 +657,6 @@ bool Matrix<DataType>::ConstZIterator::operator>=(const Matrix<DataType>::ConstZ
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator::reference Matrix<DataType>::ConstZIterator::operator*() const
-{
-    FORWARD_ZITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType> const
-typename Matrix<DataType>::ConstZIterator::value_type* Matrix<DataType>::ConstZIterator::operator->() const
-{
-    FORWARD_ZITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ConstZIterator::reference Matrix<DataType>::ConstZIterator::operator[](Matrix<DataType>::ConstZIterator::difference_type index) const
-{
-    ZITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, +, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ConstZIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     NON_DIAG_ITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -1463,6 +672,34 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ConstZIterator::getCurrentColumnNr() const
 {
     return m_CurrentColumnNr;
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstZIterator::operator*() const
+{
+    FORWARD_ZITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+const DataType* Matrix<DataType>::ConstZIterator::operator->() const
+{
+    FORWARD_ZITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstZIterator::operator[](Matrix<DataType>::ConstZIterator::difference_type index) const
+{
+    ZITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, +, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstZIterator::ConstZIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_CurrentRowNr{-1}
+    , m_CurrentColumnNr{-1}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
 }
 
 template<typename DataType>
@@ -1489,16 +726,6 @@ void Matrix<DataType>::ConstZIterator::_decrement()
 }
 
 // 3) Reverse ZIterator - iterates within matrix from end to [0][0] row by row (in reverse direction comparing to ZIterator)
-
-template<typename DataType>
-Matrix<DataType>::ReverseZIterator::ReverseZIterator()
-    : m_pMatrixPtr{nullptr}
-    , m_CurrentRowNr{-1}
-    , m_CurrentColumnNr{-1}
-    , m_NrOfMatrixRows{0}
-    , m_NrOfMatrixColumns{0}
-{
-}
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::operator++()
@@ -1591,24 +818,6 @@ bool Matrix<DataType>::ReverseZIterator::operator>=(const Matrix<DataType>::Reve
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator::reference Matrix<DataType>::ReverseZIterator::operator*()
-{
-    REVERSE_ZITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator::value_type* Matrix<DataType>::ReverseZIterator::operator->()
-{
-    REVERSE_ZITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator::reference Matrix<DataType>::ReverseZIterator::operator[](Matrix<DataType>::ReverseZIterator::difference_type index)
-{
-    ZITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, -, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ReverseZIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     NON_DIAG_ITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -1624,6 +833,34 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ReverseZIterator::getCurrentColumnNr() const
 {
     return m_CurrentColumnNr;
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::ReverseZIterator::operator*()
+{
+    REVERSE_ZITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+DataType* Matrix<DataType>::ReverseZIterator::operator->()
+{
+    REVERSE_ZITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::ReverseZIterator::operator[](Matrix<DataType>::ReverseZIterator::difference_type index)
+{
+    ZITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, -, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::ReverseZIterator::ReverseZIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_CurrentRowNr{-1}
+    , m_CurrentColumnNr{-1}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
 }
 
 template<typename DataType>
@@ -1650,16 +887,6 @@ void Matrix<DataType>::ReverseZIterator::_decrement()
 }
 
 // 4) Const Reverse ZIterator
-
-template<typename DataType>
-Matrix<DataType>::ConstReverseZIterator::ConstReverseZIterator()
-    : m_pMatrixPtr{nullptr}
-    , m_CurrentRowNr{-1}
-    , m_CurrentColumnNr{-1}
-    , m_NrOfMatrixRows{0}
-    , m_NrOfMatrixColumns{0}
-{
-}
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZIterator::operator++()
@@ -1752,24 +979,6 @@ bool Matrix<DataType>::ConstReverseZIterator::operator>=(const Matrix<DataType>:
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator::reference Matrix<DataType>::ConstReverseZIterator::operator*() const
-{
-    REVERSE_ZITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType> const
-typename Matrix<DataType>::ConstReverseZIterator::value_type* Matrix<DataType>::ConstReverseZIterator::operator->() const
-{
-    REVERSE_ZITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator::reference Matrix<DataType>::ConstReverseZIterator::operator[](Matrix<DataType>::ConstReverseZIterator::difference_type index) const
-{
-    ZITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, -, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ConstReverseZIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     NON_DIAG_ITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -1785,6 +994,34 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseZIterator::getCurrentColumnNr() const
 {
     return m_CurrentColumnNr;
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstReverseZIterator::operator*() const
+{
+    REVERSE_ZITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+const DataType* Matrix<DataType>::ConstReverseZIterator::operator->() const
+{
+    REVERSE_ZITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstReverseZIterator::operator[](Matrix<DataType>::ConstReverseZIterator::difference_type index) const
+{
+    ZITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, -, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstReverseZIterator::ConstReverseZIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_CurrentRowNr{-1}
+    , m_CurrentColumnNr{-1}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
 }
 
 template<typename DataType>
@@ -1903,24 +1140,6 @@ bool Matrix<DataType>::DIterator::operator>=(const Matrix<DataType>::DIterator& 
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::operator*()
-{
-    FORWARD_DITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::DIterator::value_type* Matrix<DataType>::DIterator::operator->()
-{
-    FORWARD_DITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::DIterator::reference Matrix<DataType>::DIterator::operator[](Matrix<DataType>::DIterator::difference_type index)
-{
-    FORWARD_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::DIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     DITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -1948,6 +1167,24 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::DIterator::getDiagonalIndex() const
 {
     return m_DiagonalIndex;
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::DIterator::operator*()
+{
+    FORWARD_DITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
+}
+
+template<typename DataType>
+DataType* Matrix<DataType>::DIterator::operator->()
+{
+    FORWARD_DITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::DIterator::operator[](Matrix<DataType>::DIterator::difference_type index)
+{
+    FORWARD_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
 }
 
 template<typename DataType>
@@ -2064,24 +1301,6 @@ bool Matrix<DataType>::ConstDIterator::operator>=(const Matrix<DataType>::ConstD
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator::reference Matrix<DataType>::ConstDIterator::operator*() const
-{
-    FORWARD_DITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
-}
-
-template<typename DataType> const
-typename Matrix<DataType>::ConstDIterator::value_type* Matrix<DataType>::ConstDIterator::operator->() const
-{
-    FORWARD_DITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ConstDIterator::reference Matrix<DataType>::ConstDIterator::operator[](Matrix<DataType>::ConstDIterator::difference_type index) const
-{
-    FORWARD_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ConstDIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     DITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -2109,6 +1328,24 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ConstDIterator::getDiagonalIndex() const
 {
     return m_DiagonalIndex;
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstDIterator::operator*() const
+{
+    FORWARD_DITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
+}
+
+template<typename DataType>
+const DataType* Matrix<DataType>::ConstDIterator::operator->() const
+{
+    FORWARD_DITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstDIterator::operator[](Matrix<DataType>::ConstDIterator::difference_type index) const
+{
+    FORWARD_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
 }
 
 template<typename DataType>
@@ -2225,24 +1462,6 @@ bool Matrix<DataType>::ReverseDIterator::operator>=(const Matrix<DataType>::Reve
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator::reference Matrix<DataType>::ReverseDIterator::operator*()
-{
-    REVERSE_DITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator::value_type* Matrix<DataType>::ReverseDIterator::operator->()
-{
-    REVERSE_DITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator::reference Matrix<DataType>::ReverseDIterator::operator[](Matrix<DataType>::ReverseDIterator::difference_type index)
-{
-    REVERSE_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ReverseDIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     DITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -2270,6 +1489,24 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ReverseDIterator::getDiagonalIndex() const
 {
     return m_DiagonalIndex;
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::ReverseDIterator::operator*()
+{
+    REVERSE_DITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
+}
+
+template<typename DataType>
+DataType* Matrix<DataType>::ReverseDIterator::operator->()
+{
+    REVERSE_DITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::ReverseDIterator::operator[](Matrix<DataType>::ReverseDIterator::difference_type index)
+{
+    REVERSE_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
 }
 
 // first and second can be interpreted either as diagonal number and (relative) diagonal index (isRelative is true) or as row/column number ((x, y) coordinates)
@@ -2387,24 +1624,6 @@ bool Matrix<DataType>::ConstReverseDIterator::operator>=(const Matrix<DataType>:
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator::reference Matrix<DataType>::ConstReverseDIterator::operator*() const
-{
-    REVERSE_DITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
-}
-
-template<typename DataType> const
-typename Matrix<DataType>::ConstReverseDIterator::value_type* Matrix<DataType>::ConstReverseDIterator::operator->() const
-{
-    REVERSE_DITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator::reference Matrix<DataType>::ConstReverseDIterator::operator[](Matrix<DataType>::ConstReverseDIterator::difference_type index) const
-{
-    REVERSE_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ConstReverseDIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     DITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -2434,6 +1653,24 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseDIterator::ge
     return m_DiagonalIndex;
 }
 
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstReverseDIterator::operator*() const
+{
+    REVERSE_DITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
+}
+
+template<typename DataType>
+const DataType* Matrix<DataType>::ConstReverseDIterator::operator->() const
+{
+    REVERSE_DITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstReverseDIterator::operator[](Matrix<DataType>::ConstReverseDIterator::difference_type index) const
+{
+    REVERSE_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
+}
+
 // first and second can be interpreted either as diagonal number and (relative) diagonal index (isRelative is true) or as row/column number ((x, y) coordinates)
 template<typename DataType>
 Matrix<DataType>::ConstReverseDIterator::ConstReverseDIterator(const Matrix<DataType>& matrix,
@@ -2457,16 +1694,6 @@ void Matrix<DataType>::ConstReverseDIterator::_decrement()
 }
 
 // 9) NIterator - iterates within matrix from [0][0] to the end column by column
-template<typename DataType>
-Matrix<DataType>::NIterator::NIterator()
-    : m_pMatrixPtr{nullptr}
-    , m_CurrentRowNr{-1}
-    , m_CurrentColumnNr{-1}
-    , m_NrOfMatrixRows{0}
-    , m_NrOfMatrixColumns{0}
-{
-}
-
 template<typename DataType>
 typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator++()
 {
@@ -2558,24 +1785,6 @@ bool Matrix<DataType>::NIterator::operator>=(const Matrix<DataType>::NIterator& 
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator::reference Matrix<DataType>::NIterator::operator*()
-{
-    FORWARD_NITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::NIterator::value_type* Matrix<DataType>::NIterator::operator->()
-{
-    FORWARD_NITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::NIterator::reference Matrix<DataType>::NIterator::operator[](Matrix<DataType>::NIterator::difference_type index)
-{
-    NITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, +, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::NIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     NON_DIAG_ITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -2591,6 +1800,34 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::NIterator::getCurrentColumnNr() const
 {
     return m_CurrentColumnNr;
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::NIterator::operator*()
+{
+    FORWARD_NITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+DataType* Matrix<DataType>::NIterator::operator->()
+{
+    FORWARD_NITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::NIterator::operator[](Matrix<DataType>::NIterator::difference_type index)
+{
+    NITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, +, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::NIterator::NIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_CurrentRowNr{-1}
+    , m_CurrentColumnNr{-1}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
 }
 
 template<typename DataType>
@@ -2617,16 +1854,6 @@ void Matrix<DataType>::NIterator::_decrement()
 }
 
 // 10) Const NIterator
-template<typename DataType>
-Matrix<DataType>::ConstNIterator::ConstNIterator()
-    : m_pMatrixPtr{nullptr}
-    , m_CurrentRowNr{-1}
-    , m_CurrentColumnNr{-1}
-    , m_NrOfMatrixRows{0}
-    , m_NrOfMatrixColumns{0}
-{
-}
-
 template<typename DataType>
 typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::operator++()
 {
@@ -2718,24 +1945,6 @@ bool Matrix<DataType>::ConstNIterator::operator>=(const Matrix<DataType>::ConstN
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator::reference Matrix<DataType>::ConstNIterator::operator*() const
-{
-    FORWARD_NITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType> const
-typename Matrix<DataType>::ConstNIterator::value_type* Matrix<DataType>::ConstNIterator::operator->() const
-{
-    FORWARD_NITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ConstNIterator::reference Matrix<DataType>::ConstNIterator::operator[](Matrix<DataType>::ConstNIterator::difference_type index) const
-{
-    NITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, +, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ConstNIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     NON_DIAG_ITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -2751,6 +1960,34 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ConstNIterator::getCurrentColumnNr() const
 {
     return m_CurrentColumnNr;
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstNIterator::operator*() const
+{
+    FORWARD_NITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+const DataType* Matrix<DataType>::ConstNIterator::operator->() const
+{
+    FORWARD_NITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstNIterator::operator[](Matrix<DataType>::ConstNIterator::difference_type index) const
+{
+    NITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, +, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstNIterator::ConstNIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_CurrentRowNr{-1}
+    , m_CurrentColumnNr{-1}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
 }
 
 template<typename DataType>
@@ -2777,16 +2014,6 @@ void Matrix<DataType>::ConstNIterator::_decrement()
 }
 
 // 11) Reverse NIterator - iterates within matrix from end to [0][0] column by column (in reverse direction comparing to NIterator)
-
-template<typename DataType>
-Matrix<DataType>::ReverseNIterator::ReverseNIterator()
-    : m_pMatrixPtr{nullptr}
-    , m_CurrentRowNr{-1}
-    , m_CurrentColumnNr{-1}
-    , m_NrOfMatrixRows{0}
-    , m_NrOfMatrixColumns{0}
-{
-}
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::operator++()
@@ -2879,24 +2106,6 @@ bool Matrix<DataType>::ReverseNIterator::operator>=(const Matrix<DataType>::Reve
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator::reference Matrix<DataType>::ReverseNIterator::operator*()
-{
-    REVERSE_NITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator::value_type* Matrix<DataType>::ReverseNIterator::operator->()
-{
-    REVERSE_NITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator::reference Matrix<DataType>::ReverseNIterator::operator[](Matrix<DataType>::ReverseNIterator::difference_type index)
-{
-    NITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, -, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ReverseNIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     NON_DIAG_ITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -2912,6 +2121,34 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ReverseNIterator::getCurrentColumnNr() const
 {
     return m_CurrentColumnNr;
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::ReverseNIterator::operator*()
+{
+    REVERSE_NITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+DataType* Matrix<DataType>::ReverseNIterator::operator->()
+{
+    REVERSE_NITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::ReverseNIterator::operator[](Matrix<DataType>::ReverseNIterator::difference_type index)
+{
+    NITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, -, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::ReverseNIterator::ReverseNIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_CurrentRowNr{-1}
+    , m_CurrentColumnNr{-1}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
 }
 
 template<typename DataType>
@@ -2938,16 +2175,6 @@ void Matrix<DataType>::ReverseNIterator::_decrement()
 }
 
 // 12) ConstReverseNIterator
-
-template<typename DataType>
-Matrix<DataType>::ConstReverseNIterator::ConstReverseNIterator()
-    : m_pMatrixPtr{nullptr}
-    , m_CurrentRowNr{-1}
-    , m_CurrentColumnNr{-1}
-    , m_NrOfMatrixRows{0}
-    , m_NrOfMatrixColumns{0}
-{
-}
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseNIterator::operator++()
@@ -3040,24 +2267,6 @@ bool Matrix<DataType>::ConstReverseNIterator::operator>=(const Matrix<DataType>:
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator::reference Matrix<DataType>::ConstReverseNIterator::operator*() const
-{
-    REVERSE_NITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType> const
-typename Matrix<DataType>::ConstReverseNIterator::value_type* Matrix<DataType>::ConstReverseNIterator::operator->() const
-{
-    REVERSE_NITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator::reference Matrix<DataType>::ConstReverseNIterator::operator[](Matrix<DataType>::ConstReverseNIterator::difference_type index) const
-{
-    NITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, -, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ConstReverseNIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     NON_DIAG_ITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -3073,6 +2282,34 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseNIterator::getCurrentColumnNr() const
 {
     return m_CurrentColumnNr;
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstReverseNIterator::operator*() const
+{
+    REVERSE_NITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+const DataType* Matrix<DataType>::ConstReverseNIterator::operator->() const
+{
+    REVERSE_NITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_CurrentRowNr, m_CurrentColumnNr);
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstReverseNIterator::operator[](Matrix<DataType>::ConstReverseNIterator::difference_type index) const
+{
+    NITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_CurrentRowNr, m_CurrentColumnNr, -, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstReverseNIterator::ConstReverseNIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_CurrentRowNr{-1}
+    , m_CurrentColumnNr{-1}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
 }
 
 template<typename DataType>
@@ -3191,24 +2428,6 @@ bool Matrix<DataType>::MIterator::operator>=(const Matrix<DataType>::MIterator& 
 }
 
 template<typename DataType>
-typename Matrix<DataType>::MIterator::reference Matrix<DataType>::MIterator::operator*()
-{
-    FORWARD_MITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::MIterator::value_type* Matrix<DataType>::MIterator::operator->()
-{
-    FORWARD_MITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::MIterator::reference Matrix<DataType>::MIterator::operator[](Matrix<DataType>::MIterator::difference_type index)
-{
-    FORWARD_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::MIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     MITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_NrOfMatrixColumns, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -3236,6 +2455,24 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::MIterator::getDiagonalIndex() const
 {
     return m_DiagonalIndex;
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::MIterator::operator*()
+{
+    FORWARD_MITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
+}
+
+template<typename DataType>
+DataType* Matrix<DataType>::MIterator::operator->()
+{
+    FORWARD_MITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::MIterator::operator[](Matrix<DataType>::MIterator::difference_type index)
+{
+    FORWARD_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
 }
 
 template<typename DataType>
@@ -3353,24 +2590,6 @@ bool Matrix<DataType>::ConstMIterator::operator>=(const Matrix<DataType>::ConstM
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstMIterator::reference Matrix<DataType>::ConstMIterator::operator*() const
-{
-    FORWARD_MITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
-}
-
-template<typename DataType> const
-typename Matrix<DataType>::ConstMIterator::value_type* Matrix<DataType>::ConstMIterator::operator->() const
-{
-    FORWARD_MITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ConstMIterator::reference Matrix<DataType>::ConstMIterator::operator[](Matrix<DataType>::ConstMIterator::difference_type index) const
-{
-    FORWARD_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ConstMIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     MITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_NrOfMatrixColumns, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -3398,6 +2617,24 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ConstMIterator::getDiagonalIndex() const
 {
     return m_DiagonalIndex;
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstMIterator::operator*() const
+{
+    FORWARD_MITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
+}
+
+template<typename DataType>
+const DataType* Matrix<DataType>::ConstMIterator::operator->() const
+{
+    FORWARD_MITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstMIterator::operator[](Matrix<DataType>::ConstMIterator::difference_type index) const
+{
+    FORWARD_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
 }
 
 template<typename DataType>
@@ -3515,24 +2752,6 @@ bool Matrix<DataType>::ReverseMIterator::operator>=(const Matrix<DataType>::Reve
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseMIterator::reference Matrix<DataType>::ReverseMIterator::operator*()
-{
-    REVERSE_MITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ReverseMIterator::value_type* Matrix<DataType>::ReverseMIterator::operator->()
-{
-    REVERSE_MITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ReverseMIterator::reference Matrix<DataType>::ReverseMIterator::operator[](Matrix<DataType>::ReverseMIterator::difference_type index)
-{
-    REVERSE_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ReverseMIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     MITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_NrOfMatrixColumns, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -3560,6 +2779,24 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ReverseMIterator::getDiagonalIndex() const
 {
     return m_DiagonalIndex;
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::ReverseMIterator::operator*()
+{
+    REVERSE_MITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
+}
+
+template<typename DataType>
+DataType* Matrix<DataType>::ReverseMIterator::operator->()
+{
+    REVERSE_MITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
+}
+
+template<typename DataType>
+DataType& Matrix<DataType>::ReverseMIterator::operator[](Matrix<DataType>::ReverseMIterator::difference_type index)
+{
+    REVERSE_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
 }
 
 // first and second can be interpreted either as diagonal number and (relative) diagonal index (isRelative is true) or as row/column number ((x, y) coordinates)
@@ -3678,24 +2915,6 @@ bool Matrix<DataType>::ConstReverseMIterator::operator>=(const Matrix<DataType>:
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseMIterator::reference Matrix<DataType>::ConstReverseMIterator::operator*() const
-{
-    REVERSE_MITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
-}
-
-template<typename DataType> const
-typename Matrix<DataType>::ConstReverseMIterator::value_type* Matrix<DataType>::ConstReverseMIterator::operator->() const
-{
-    REVERSE_MITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
-}
-
-template<typename DataType>
-typename Matrix<DataType>::ConstReverseMIterator::reference Matrix<DataType>::ConstReverseMIterator::operator[](Matrix<DataType>::ConstReverseMIterator::difference_type index) const
-{
-    REVERSE_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
-}
-
-template<typename DataType>
 bool Matrix<DataType>::ConstReverseMIterator::isValidWithMatrix(const Matrix<DataType>& matrix) const
 {
     MITERATOR_IS_VALID_WITH_MATRIX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_NrOfMatrixColumns, matrix.m_pBaseArrayPtr, matrix.m_NrOfRows, matrix.m_NrOfColumns);
@@ -3723,6 +2942,24 @@ template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseMIterator::getDiagonalIndex() const
 {
     return m_DiagonalIndex;
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstReverseMIterator::operator*() const
+{
+    REVERSE_MITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
+}
+
+template<typename DataType>
+const DataType* Matrix<DataType>::ConstReverseMIterator::operator->() const
+{
+    REVERSE_MITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
+}
+
+template<typename DataType>
+const DataType& Matrix<DataType>::ConstReverseMIterator::operator[](Matrix<DataType>::ConstReverseMIterator::difference_type index) const
+{
+    REVERSE_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
 }
 
 // first and second can be interpreted either as diagonal number and (relative) diagonal index (isRelative is true) or as row/column number ((x, y) coordinates)
@@ -5401,6 +4638,15 @@ void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRo
 }
 
 #undef CHECK_ERROR_CONDITION
+
+#undef COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS
+#undef COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS
+#undef COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS
+#undef COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS
+#undef COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS
+#undef COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS
+#undef COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS
+#undef COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS
 
 #undef ITERATOR_PRE_INCREMENT
 #undef ITERATOR_POST_INCREMENT

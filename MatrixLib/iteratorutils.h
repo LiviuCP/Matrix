@@ -3,6 +3,88 @@
 
 /* These macros are meant solely meant for internal use within the Matrix class */
 
+// macros used for declaring iterator class members
+
+#define COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(IteratorType, IterableType, DifferenceType, SizeType) \
+    /* Matrix should be allowed to use the private constructor of the iterator, but no other class should have this "privilege" */ \
+    friend class Matrix<IterableType>; \
+\
+    /* all these are required for STL compatibility */ \
+    using iterator_category = std::random_access_iterator_tag; \
+    using value_type = IterableType; \
+    using difference_type = DifferenceType; \
+    using pointer = IterableType**; \
+\
+    IteratorType operator++(); \
+    IteratorType operator++(int unused); \
+    IteratorType operator--(); \
+    IteratorType operator--(int unused); \
+\
+    IteratorType operator+(DifferenceType offset); \
+    IteratorType operator-(DifferenceType offset); \
+\
+    void operator+=(DifferenceType offset); \
+    void operator-=(DifferenceType offset); \
+\
+    DifferenceType operator-(const IteratorType& it) const; \
+\
+    bool operator==(const IteratorType& it) const; \
+    bool operator!=(const IteratorType& it) const; \
+    bool operator<(const IteratorType& it) const; \
+    bool operator<=(const IteratorType& it) const; \
+    bool operator>(const IteratorType& it) const; \
+    bool operator>=(const IteratorType& it) const; \
+\
+    /* This function was created mainly for testing purposes although it can be used in "production" as well. */ \
+    /* However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */ \
+    bool isValidWithMatrix(const Matrix<IterableType>& matrix) const; \
+\
+    SizeType getCurrentRowNr() const; \
+    SizeType getCurrentColumnNr() const; \
+
+#define COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(IterableType, DifferenceType) \
+    using reference = IterableType&; \
+\
+    IterableType& operator*(); \
+    IterableType* operator->(); \
+    IterableType& operator[](DifferenceType index);
+
+#define COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(IterableType, DifferenceType) \
+    using reference = const IterableType&; \
+\
+    const IterableType& operator*() const; \
+    const IterableType* operator->() const; \
+    const IterableType& operator[](DifferenceType index) const;
+
+#define COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType) \
+    /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix */ \
+    IteratorType();
+
+#define COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(SizeType) \
+    SizeType getDiagonalNr() const; \
+    SizeType getDiagonalIndex() const;
+
+#define COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(IterableType) \
+    void _increment(); \
+    void _decrement(); \
+\
+    IterableType** m_pMatrixPtr;
+
+#define COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType, IterableType, SizeType) \
+    IteratorType(const Matrix<IterableType>& matrix, SizeType currentRowNr, SizeType currentColumnNr); \
+\
+    SizeType m_CurrentRowNr; \
+    SizeType m_CurrentColumnNr; \
+    SizeType m_NrOfMatrixRows; \
+    SizeType m_NrOfMatrixColumns;
+
+#define COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType, IterableType, SizeType) \
+    IteratorType(const Matrix<IterableType>& matrix, SizeType first, SizeType second, bool isRelative = false); \
+\
+    size_type m_DiagonalIndex;    /* relative index within diagonal */ \
+    size_type m_DiagonalNr;   /* index of the diagonal within matrix */ \
+    size_type m_DiagonalSize;     /* number of elements contained within diagonal */
+
 // generic iterator macros
 
 #define ITERATOR_PRE_INCREMENT() \
