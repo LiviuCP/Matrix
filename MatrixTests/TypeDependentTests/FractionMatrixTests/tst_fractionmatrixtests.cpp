@@ -2,7 +2,7 @@
 
 #include <QtTest>
 
-#include "../../../MatrixLib/matrix.h"
+#include "matrix.h"
 
 class FractionMatrixTests : public QObject
 {

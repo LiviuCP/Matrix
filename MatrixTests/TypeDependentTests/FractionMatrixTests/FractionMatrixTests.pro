@@ -12,4 +12,7 @@ SOURCES += \
 QMAKE_LFLAGS = "-Wl,-rpath,\'$$top_srcdir/ThirdParty/Fractions/lib\'"
 
 LIBS += -L"$$top_srcdir/ThirdParty/Fractions/lib" -lFractionLib
+
 INCLUDEPATH += $$top_srcdir/ThirdParty/Fractions/include
+INCLUDEPATH += ../../../MatrixLib/Matrix
+INCLUDEPATH += ../../../MatrixLib/Utils
