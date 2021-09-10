@@ -1,7 +1,7 @@
 #include <QtTest>
 
-#include "../../../MatrixLib/matrix.h"
-#include "../../../MatrixLib/matrix_template_specializations.h"
+#include "matrix.h"
+#include "matrix_template_specializations.h"
 
 using StringMatrix = Matrix<std::string>;
 

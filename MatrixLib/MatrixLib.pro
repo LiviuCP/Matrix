@@ -27,16 +27,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
 
 macx {
-    SOURCES += matrix.cpp
+    SOURCES += Matrix/matrix.cpp
 }
 
 HEADERS += \
-        matrix.h \
-        iteratorutils.h \
-        errorhandling.h \
-        matrix_template_specializations.h
+        Matrix/matrix.h \
+        Matrix/matrix_template_specializations.h \
+        Utils/iteratorutils.h \
+        Utils/errorhandling.h
 
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+INCLUDEPATH += Matrix
+INCLUDEPATH += Utils

@@ -1,6 +1,6 @@
 #include <QtTest>
 
-#include "../../../MatrixLib/matrix.h"
+#include "matrix.h"
 
 using IntMatrix = Matrix<int>;
 using IntMatrixConstReverseNIterator = Matrix<int>::ConstReverseNIterator;

@@ -7,3 +7,6 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES +=  tst_commontests.cpp
+
+INCLUDEPATH += ../../MatrixLib/Matrix
+INCLUDEPATH += ../../MatrixLib/Utils

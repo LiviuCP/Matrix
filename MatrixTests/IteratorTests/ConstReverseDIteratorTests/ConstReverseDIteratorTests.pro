@@ -8,3 +8,6 @@ TEMPLATE = app
 
 SOURCES += \
     tst_constreversediteratortests.cpp
+
+INCLUDEPATH += ../../../MatrixLib/Matrix
+INCLUDEPATH += ../../../MatrixLib/Utils

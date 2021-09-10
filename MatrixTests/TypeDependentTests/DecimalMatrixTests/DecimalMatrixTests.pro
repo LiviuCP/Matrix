@@ -7,3 +7,6 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES +=  tst_decimalmatrixtests.cpp
+
+INCLUDEPATH += ../../../MatrixLib/Matrix
+INCLUDEPATH += ../../../MatrixLib/Utils

@@ -1,8 +1,8 @@
 #include <QtTest>
 #include <QPointF>
 
-#include "../../../MatrixLib/matrix.h"
-#include "../../../MatrixLib/matrix_template_specializations.h"
+#include "matrix.h"
+#include "matrix_template_specializations.h"
 
 using QPointFMatrix = Matrix<QPointF>;
 

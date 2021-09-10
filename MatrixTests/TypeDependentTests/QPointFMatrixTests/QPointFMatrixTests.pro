@@ -10,3 +10,6 @@ SOURCES += \
     tst_qpointfmatrixtests.cpp
 
 DEFINES = QT
+
+INCLUDEPATH += ../../../MatrixLib/Matrix
+INCLUDEPATH += ../../../MatrixLib/Utils
