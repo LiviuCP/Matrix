@@ -9,11 +9,19 @@ However please do not use it in critical applications. Although I tested the fun
 
 To conclude: use it at your own risk, I will not be held accountable for any damages it might cause whatsoever. Thanks for understanding!
 
-1. RUNNING the FractionMatrixTests
+1. INSTALLATION SCENARIOS
 
-Note: for running the tests for fraction matrixes (FractionMatrixTests) first a ThirdParty library should be set.
+1.1. Running the Tests (excluding FractionMatrixTests)
 
-After building and running the tests for the Matrix library the required steps for successfully testing fraction matrixes are:
+1) Git clone the Matrix repo: https://github.com/LiviuCP/Matrix.git
+2) Build it with Qt Creator
+3) Run the tests
+
+1.2. Running the FractionMatrixTests
+
+For running the tests for fraction matrixes (FractionMatrixTests) first a ThirdParty library should be set.
+
+After building and running the tests for the Matrix library (see section 1.1) the required steps for successfully testing fraction matrixes are:
 
 1) Clone and build the Fractions repo: https://github.com/LiviuCP/Fractions.git
 2) Inside the Matrix source directory create a ThirdParty directory with subdirectories Fractions/lib and Fractions/include
@@ -21,6 +29,23 @@ After building and running the tests for the Matrix library the required steps f
 4) From the cloned Fractions repo, subdirectory FractionLib copy the .h files to Fractions/include
 5) In the .pro file of TypeDependentTests uncomment the FractionMatrixTests subproject
 6) Build and run FractionMatrixTests
+
+1.3. Using the Matrix library within an application
+
+The below instructions are not necessarily the only solution but the one I've been using/testing so far. It assumes you are using Qt Creator as IDE and Git as VCS. For other setups different workarounds would be required.
+
+Please follow these steps:
+
+1) Download the Matrix repository as submodule in a "third-party" directory belonging to your application. For more details regarding submodules please check: https://git-scm.com/book/en/v2/Git-Tools-Submodules
+2) Add following paths to your INCLUDEPATH project variable in any project you wish to include the Matrix code:
+
+[PATH TO THIRD-PARTY DIR]/Matrix/MatrixLib/Matrix
+[PATH TO THIRD-PARTY DIR]/Matrix/MatrixLib/Utils
+
+3) #include "matrix.h" (and/or any other file belonging to MatrixLib/Matrix) into the code files where it is required.
+4) Update your code as per requirements and build the project
+
+Note: please do NOT directly #include any of the files belonging to MatrixLib/Utils into your code files! These are only meant for internal use by the Matrix library.
 
 2. ESSENTIAL FUNCTIONALITY
 
@@ -101,7 +126,7 @@ Final iterator notes:
 - the begin() function has been implemented to make it possible to pass through matrix elements by using the auto keyword. This can only be done in the "Z" direction starting with element [0][0] as begin() returns a ZIterator object.
 - the isValidWithMatrix() method of all iterator classes has been created mainly as a helper function for writing unit tests for iterators. Although it can be used in "production" scenarios it is not recommended to do so. Instead it should be assumed that an iterator becomes invalid once the structure of the matrix it points to changes. Examples of structure modifications are: matrix resize, using the move constructor, using assignment operators, removing a row/column, clearing the matrix content, etc. In this case the iterator should be reset (e.g. to matrix begin) or a new one should be created.
 
-3. Error handling
+3. ERROR HANDLING
 
 The Matrix library contains error handling functionality that deals with various situations like: index out of bounds, negative arguments provided as indexes, etc. This functionality is by default enabled as a safety measure especially when newly using the class. It can be disabled by adding #define ERROR_CHECKING_DISABLED before the matrix.h include statement. It is obviously recommended to do this only when the code implementation has been finished and all bugs and crashes have been corrected. For the list of possible errors please consult errorhandling.h.
 
