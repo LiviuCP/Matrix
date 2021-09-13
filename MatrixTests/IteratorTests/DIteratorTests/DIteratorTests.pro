@@ -10,4 +10,3 @@ SOURCES += \
     tst_diteratortests.cpp
 
 INCLUDEPATH += ../../../MatrixLib/Matrix
-INCLUDEPATH += ../../../MatrixLib/Utils

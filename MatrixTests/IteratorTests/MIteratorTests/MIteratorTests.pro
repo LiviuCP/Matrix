@@ -9,4 +9,3 @@ TEMPLATE = app
 SOURCES +=  tst_miteratortests.cpp
 
 INCLUDEPATH += ../../../MatrixLib/Matrix
-INCLUDEPATH += ../../../MatrixLib/Utils

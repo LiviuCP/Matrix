@@ -9,4 +9,3 @@ TEMPLATE = app
 SOURCES +=  tst_commontests.cpp
 
 INCLUDEPATH += ../../MatrixLib/Matrix
-INCLUDEPATH += ../../MatrixLib/Utils

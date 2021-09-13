@@ -12,4 +12,3 @@ SOURCES += \
 DEFINES = QT
 
 INCLUDEPATH += ../../../MatrixLib/Matrix
-INCLUDEPATH += ../../../MatrixLib/Utils

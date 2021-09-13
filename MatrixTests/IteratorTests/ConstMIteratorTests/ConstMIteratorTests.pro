@@ -10,4 +10,3 @@ SOURCES +=  \
     tst_constmiteratortests.cpp
 
 INCLUDEPATH += ../../../MatrixLib/Matrix
-INCLUDEPATH += ../../../MatrixLib/Utils

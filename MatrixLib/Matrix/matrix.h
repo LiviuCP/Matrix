@@ -6,8 +6,8 @@
 #include <utility>
 #include <cmath>
 
-#include "iteratorutils.h"
-#include "errorhandling.h"
+#include "../Utils/iteratorutils.h"
+#include "../Utils/errorhandling.h"
 
 template <typename DataType>
 class Matrix

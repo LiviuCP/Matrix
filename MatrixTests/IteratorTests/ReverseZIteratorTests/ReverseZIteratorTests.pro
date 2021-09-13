@@ -10,4 +10,3 @@ SOURCES += \
     tst_reverseziteratortests.cpp
 
 INCLUDEPATH += ../../../MatrixLib/Matrix
-INCLUDEPATH += ../../../MatrixLib/Utils

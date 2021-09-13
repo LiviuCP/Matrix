@@ -40,6 +40,3 @@ unix {
     target.path = /usr/lib
     INSTALLS += target
 }
-
-INCLUDEPATH += Matrix
-INCLUDEPATH += Utils

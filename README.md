@@ -37,12 +37,8 @@ The below instructions are not necessarily the only solution but the one I've be
 Please follow these steps:
 
 1) Download the Matrix repository as submodule in a "third-party" directory belonging to your application. For more details regarding submodules please check: https://git-scm.com/book/en/v2/Git-Tools-Submodules
-2) Add following paths to your INCLUDEPATH project variable in any project you wish to include the Matrix code:
-
-[PATH TO THIRD-PARTY DIR]/Matrix/MatrixLib/Matrix
-[PATH TO THIRD-PARTY DIR]/Matrix/MatrixLib/Utils
-
-3) #include "matrix.h" (and/or any other file belonging to MatrixLib/Matrix) into the code files where it is required.
+2) Add following path to the INCLUDEPATH variable of any project where the Matrix code should be used: [PATH TO THIRD-PARTY DIR]/Matrix/MatrixLib/Matrix
+3) #include "matrix.h" (and/or any other file contained in MatrixLib/Matrix) into the code files where it is required.
 4) Update your code as per requirements and build the project
 
 Note: please do NOT directly #include any of the files belonging to MatrixLib/Utils into your code files! These are only meant for internal use by the Matrix library.

@@ -10,4 +10,3 @@ SOURCES += \
     tst_reversediteratortests.cpp
 
 INCLUDEPATH += ../../../MatrixLib/Matrix
-INCLUDEPATH += ../../../MatrixLib/Utils

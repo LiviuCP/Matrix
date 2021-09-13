@@ -10,4 +10,3 @@ SOURCES += \
     tst_constreverseziteratortests.cpp
 
 INCLUDEPATH += ../../../MatrixLib/Matrix
-INCLUDEPATH += ../../../MatrixLib/Utils

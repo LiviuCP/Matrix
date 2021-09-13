@@ -10,4 +10,3 @@ SOURCES += \
     tst_stringmatrixtests.cpp
 
 INCLUDEPATH += ../../../MatrixLib/Matrix
-INCLUDEPATH += ../../../MatrixLib/Utils

@@ -10,4 +10,3 @@ SOURCES += \
     tst_ziteratortests.cpp
 
 INCLUDEPATH += ../../../MatrixLib/Matrix
-INCLUDEPATH += ../../../MatrixLib/Utils
