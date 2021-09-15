@@ -247,9 +247,10 @@ public:
     void clear();
 
     // resize and don't init new elements (user has the responsibility to init them), existing elements retain their old values
-    void resize(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity=0, size_type columnCapacity=0);
+    void resize(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity = 0, size_type columnCapacity = 0);
+
     // resize and fill new elements with value of dataType, existing elements retain their old values
-    void resizeWithValue(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType, size_type rowCapacity=0, size_type columnCapacity=0);
+    void resizeWithValue(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType, size_type rowCapacity = 0, size_type columnCapacity = 0);
 
     void shrinkToFit();
 
@@ -257,7 +258,7 @@ public:
     void insertRow(size_type rowNr, const DataType& dataType);
     void insertColumn(size_type columnNr);
     void insertColumn(size_type columnNr, const DataType& dataType);
-    void eraseRow (size_type rowNr);
+    void eraseRow(size_type rowNr);
     void eraseColumn(size_type columnNr);
 
     void catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
@@ -271,7 +272,7 @@ public:
     void swapRowColumn(size_type rowNr, Matrix<DataType>& matrix, size_type matrixColumnNr);
 
     void setAllItemsToValue(const DataType& value);
-    void copy(const Matrix<DataType>& src, size_type nrOfRows, size_type nrOfColumns, size_type srcMatrixRowNr=0, size_type srcMatrixColumnNr=0, size_type rowNr=0, size_type columnNr=0);
+    void copy(const Matrix<DataType>& src, size_type nrOfRows, size_type nrOfColumns, size_type srcMatrixRowNr = 0, size_type srcMatrixColumnNr = 0, size_type rowNr = 0, size_type columnNr = 0);
 
     // logical operators (DataType should have them implemented, otherwise a template specialization is required)
     operator bool() const;
@@ -3487,7 +3488,7 @@ void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr,
 }
 
 template <typename DataType>
-void Matrix<DataType>::eraseRow (Matrix<DataType>::size_type rowNr)
+void Matrix<DataType>::eraseRow(Matrix<DataType>::size_type rowNr)
 {
     CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
     CHECK_ERROR_CONDITION(rowNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
