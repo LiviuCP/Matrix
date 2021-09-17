@@ -3951,324 +3951,324 @@ bool Matrix<DataType>::operator!=(const Matrix<DataType>& matrix) const
 template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::zBegin()
 {
-    FORWARD_NON_DIAG_ITERATOR_BEGIN(ZIterator);
+    GET_FORWARD_NON_DIAG_BEGIN_ITERATOR(ZIterator);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::zEnd()
 {
-    FORWARD_ZITERATOR_END(ZIterator, m_NrOfRows, m_NrOfColumns);
+    GET_FORWARD_END_ZITERATOR(ZIterator, m_NrOfRows, m_NrOfColumns);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowBegin(Matrix<DataType>::size_type rowNr)
 {
-    FORWARD_ZITERATOR_ROW_BEGIN(ZIterator, m_NrOfRows, rowNr);
+    GET_FORWARD_ROW_BEGIN_ZITERATOR(ZIterator, m_NrOfRows, rowNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::zRowEnd(Matrix<DataType>::size_type rowNr)
 {
-    FORWARD_ZITERATOR_ROW_END(ZIterator, m_NrOfRows, m_NrOfColumns, rowNr);
+    GET_FORWARD_ROW_END_ZITERATOR(ZIterator, m_NrOfRows, m_NrOfColumns, rowNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(Matrix<DataType>::size_type rowNr,
                                                                     Matrix<DataType>::size_type columnNr)
 {
-    NON_DIAG_ITERATOR_ROW_COLUMN_NUMBER(ZIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_NON_DIAG_ITERATOR_BY_ROW_COLUMN_NUMBER(ZIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(Matrix<DataType>::size_type index)
 {
-    NON_DIAG_ITERATOR_INDEX(ZIterator, m_NrOfRows, m_NrOfColumns, /, %, index);
+    GET_NON_DIAG_ITERATOR_BY_INDEX(ZIterator, m_NrOfRows, m_NrOfColumns, /, %, index);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZBegin() const
 {
-    FORWARD_NON_DIAG_ITERATOR_BEGIN(ConstZIterator);
+    GET_FORWARD_NON_DIAG_BEGIN_ITERATOR(ConstZIterator);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZEnd() const
 {
-    FORWARD_ZITERATOR_END(ConstZIterator, m_NrOfRows, m_NrOfColumns);
+    GET_FORWARD_END_ZITERATOR(ConstZIterator, m_NrOfRows, m_NrOfColumns);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZRowBegin(Matrix<DataType>::size_type rowNr) const
 {
-    FORWARD_ZITERATOR_ROW_BEGIN(ConstZIterator, m_NrOfRows, rowNr);
+    GET_FORWARD_ROW_BEGIN_ZITERATOR(ConstZIterator, m_NrOfRows, rowNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstZIterator Matrix<DataType>::constZRowEnd(Matrix<DataType>::size_type rowNr) const
 {
-    FORWARD_ZITERATOR_ROW_END(ConstZIterator, m_NrOfRows, m_NrOfColumns, rowNr);
+    GET_FORWARD_ROW_END_ZITERATOR(ConstZIterator, m_NrOfRows, m_NrOfColumns, rowNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstZIterator Matrix<DataType>::getConstZIterator(Matrix<DataType>::size_type rowNr,
                                                                               Matrix<DataType>::size_type columnNr) const
 {
-    NON_DIAG_ITERATOR_ROW_COLUMN_NUMBER(ConstZIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_NON_DIAG_ITERATOR_BY_ROW_COLUMN_NUMBER(ConstZIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstZIterator Matrix<DataType>::getConstZIterator(Matrix<DataType>::size_type index) const
 {
-    NON_DIAG_ITERATOR_INDEX(ConstZIterator, m_NrOfRows, m_NrOfColumns, /, %, index);
+    GET_NON_DIAG_ITERATOR_BY_INDEX(ConstZIterator, m_NrOfRows, m_NrOfColumns, /, %, index);
 }
 
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::reverseZBegin()
 {
-    REVERSE_NON_DIAG_ITERATOR_BEGIN(ReverseZIterator, m_NrOfRows, m_NrOfColumns);
+    GET_REVERSE_NON_DIAG_BEGIN_ITERATOR(ReverseZIterator, m_NrOfRows, m_NrOfColumns);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::reverseZEnd()
 {
-    REVERSE_ZITERATOR_END(ReverseZIterator);
+    GET_REVERSE_END_ZITERATOR(ReverseZIterator);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::reverseZRowBegin(Matrix<DataType>::size_type rowNr)
 {
-    REVERSE_ZITERATOR_ROW_BEGIN(ReverseZIterator, m_NrOfRows, m_NrOfColumns, rowNr);
+    GET_REVERSE_ROW_BEGIN_ZITERATOR(ReverseZIterator, m_NrOfRows, m_NrOfColumns, rowNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::reverseZRowEnd(Matrix<DataType>::size_type rowNr)
 {
-    REVERSE_ZITERATOR_ROW_END(ReverseZIterator, m_NrOfRows, m_NrOfColumns, rowNr);
+    GET_REVERSE_ROW_END_ZITERATOR(ReverseZIterator, m_NrOfRows, m_NrOfColumns, rowNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::getReverseZIterator(Matrix<DataType>::size_type rowNr,
                                                                                   Matrix<DataType>::size_type columnNr)
 {
-    NON_DIAG_ITERATOR_ROW_COLUMN_NUMBER(ReverseZIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_NON_DIAG_ITERATOR_BY_ROW_COLUMN_NUMBER(ReverseZIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::getReverseZIterator(Matrix<DataType>::size_type index)
 {
-    NON_DIAG_ITERATOR_INDEX(ReverseZIterator, m_NrOfRows, m_NrOfColumns, /, %, index);
+    GET_NON_DIAG_ITERATOR_BY_INDEX(ReverseZIterator, m_NrOfRows, m_NrOfColumns, /, %, index);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::constReverseZBegin() const
 {
-    REVERSE_NON_DIAG_ITERATOR_BEGIN(ConstReverseZIterator, m_NrOfRows, m_NrOfColumns);
+    GET_REVERSE_NON_DIAG_BEGIN_ITERATOR(ConstReverseZIterator, m_NrOfRows, m_NrOfColumns);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::constReverseZEnd() const
 {
-    REVERSE_ZITERATOR_END(ConstReverseZIterator);
+    GET_REVERSE_END_ZITERATOR(ConstReverseZIterator);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::constReverseZRowBegin(Matrix<DataType>::size_type rowNr) const
 {
-    REVERSE_ZITERATOR_ROW_BEGIN(ConstReverseZIterator, m_NrOfRows, m_NrOfColumns, rowNr);
+    GET_REVERSE_ROW_BEGIN_ZITERATOR(ConstReverseZIterator, m_NrOfRows, m_NrOfColumns, rowNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::constReverseZRowEnd(Matrix<DataType>::size_type rowNr) const
 {
-    REVERSE_ZITERATOR_ROW_END(ConstReverseZIterator, m_NrOfRows, m_NrOfColumns, rowNr);
+    GET_REVERSE_ROW_END_ZITERATOR(ConstReverseZIterator, m_NrOfRows, m_NrOfColumns, rowNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstReverseZIterator(Matrix<DataType>::size_type rowNr,
                                                                                             Matrix<DataType>::size_type columnNr) const
 {
-    NON_DIAG_ITERATOR_ROW_COLUMN_NUMBER(ConstReverseZIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_NON_DIAG_ITERATOR_BY_ROW_COLUMN_NUMBER(ConstReverseZIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstReverseZIterator(Matrix<DataType>::size_type index) const
 {
-    NON_DIAG_ITERATOR_INDEX(ConstReverseZIterator, m_NrOfRows, m_NrOfColumns, /, %, index);
+    GET_NON_DIAG_ITERATOR_BY_INDEX(ConstReverseZIterator, m_NrOfRows, m_NrOfColumns, /, %, index);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::NIterator Matrix<DataType>::nBegin()
 {
-    FORWARD_NON_DIAG_ITERATOR_BEGIN(NIterator);
+    GET_FORWARD_NON_DIAG_BEGIN_ITERATOR(NIterator);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::NIterator Matrix<DataType>::nEnd()
 {
-    FORWARD_NITERATOR_END(NIterator, m_NrOfRows, m_NrOfColumns);
+    GET_FORWARD_END_NITERATOR(NIterator, m_NrOfRows, m_NrOfColumns);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::NIterator Matrix<DataType>::nColumnBegin(Matrix<DataType>::size_type columnNr)
 {
-    FORWARD_NITERATOR_COLUMN_BEGIN(NIterator, m_NrOfColumns, columnNr);
+    GET_FORWARD_COLUMN_BEGIN_NITERATOR(NIterator, m_NrOfColumns, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::NIterator Matrix<DataType>::nColumnEnd(Matrix<DataType>::size_type columnNr)
 {
-    FORWARD_NITERATOR_COLUMN_END(NIterator, m_NrOfRows, m_NrOfColumns, columnNr);
+    GET_FORWARD_COLUMN_END_NITERATOR(NIterator, m_NrOfRows, m_NrOfColumns, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::NIterator Matrix<DataType>::getNIterator(Matrix<DataType>::size_type rowNr,
                                                                     Matrix<DataType>::size_type columnNr)
 {
-    NON_DIAG_ITERATOR_ROW_COLUMN_NUMBER(NIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_NON_DIAG_ITERATOR_BY_ROW_COLUMN_NUMBER(NIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::NIterator Matrix<DataType>::getNIterator(Matrix<DataType>::size_type index)
 {
-    NON_DIAG_ITERATOR_INDEX(NIterator, m_NrOfColumns, m_NrOfRows, %, /, index);
+    GET_NON_DIAG_ITERATOR_BY_INDEX(NIterator, m_NrOfColumns, m_NrOfRows, %, /, index);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstNIterator Matrix<DataType>::constNBegin() const
 {
-    FORWARD_NON_DIAG_ITERATOR_BEGIN(ConstNIterator);
+    GET_FORWARD_NON_DIAG_BEGIN_ITERATOR(ConstNIterator);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstNIterator Matrix<DataType>::constNEnd() const
 {
-    FORWARD_NITERATOR_END(ConstNIterator, m_NrOfRows, m_NrOfColumns);
+    GET_FORWARD_END_NITERATOR(ConstNIterator, m_NrOfRows, m_NrOfColumns);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstNIterator Matrix<DataType>::constNColumnBegin(Matrix<DataType>::size_type columnNr) const
 {
-    FORWARD_NITERATOR_COLUMN_BEGIN(ConstNIterator, m_NrOfColumns, columnNr);
+    GET_FORWARD_COLUMN_BEGIN_NITERATOR(ConstNIterator, m_NrOfColumns, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstNIterator Matrix<DataType>::constNColumnEnd(Matrix<DataType>::size_type columnNr) const
 {
-    FORWARD_NITERATOR_COLUMN_END(ConstNIterator, m_NrOfRows, m_NrOfColumns, columnNr);
+    GET_FORWARD_COLUMN_END_NITERATOR(ConstNIterator, m_NrOfRows, m_NrOfColumns, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstNIterator Matrix<DataType>::getConstNIterator(Matrix<DataType>::size_type rowNr,
                                                                               Matrix<DataType>::size_type columnNr) const
 {
-    NON_DIAG_ITERATOR_ROW_COLUMN_NUMBER(ConstNIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_NON_DIAG_ITERATOR_BY_ROW_COLUMN_NUMBER(ConstNIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstNIterator Matrix<DataType>::getConstNIterator(Matrix<DataType>::size_type index) const
 {
-    NON_DIAG_ITERATOR_INDEX(ConstNIterator, m_NrOfColumns, m_NrOfRows, %, /, index);
+    GET_NON_DIAG_ITERATOR_BY_INDEX(ConstNIterator, m_NrOfColumns, m_NrOfRows, %, /, index);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::reverseNBegin()
 {
-    REVERSE_NON_DIAG_ITERATOR_BEGIN(ReverseNIterator, m_NrOfRows, m_NrOfColumns);
+    GET_REVERSE_NON_DIAG_BEGIN_ITERATOR(ReverseNIterator, m_NrOfRows, m_NrOfColumns);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::reverseNEnd()
 {
-    REVERSE_NITERATOR_END(ReverseNIterator);
+    GET_REVERSE_END_NITERATOR(ReverseNIterator);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::reverseNColumnBegin(Matrix<DataType>::size_type columnNr)
 {
-    REVERSE_NITERATOR_COLUMN_BEGIN(ReverseNIterator, m_NrOfRows, m_NrOfColumns, columnNr);
+    GET_REVERSE_COLUMN_BEGIN_NITERATOR(ReverseNIterator, m_NrOfRows, m_NrOfColumns, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::reverseNColumnEnd(Matrix<DataType>::size_type columnNr)
 {
-    REVERSE_NITERATOR_COLUMN_END(ReverseNIterator, m_NrOfRows, m_NrOfColumns, columnNr);
+    GET_REVERSE_COLUMN_END_NITERATOR(ReverseNIterator, m_NrOfRows, m_NrOfColumns, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::getReverseNIterator(Matrix<DataType>::size_type rowNr,
                                                                                   Matrix<DataType>::size_type columnNr)
 {
-    NON_DIAG_ITERATOR_ROW_COLUMN_NUMBER(ReverseNIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_NON_DIAG_ITERATOR_BY_ROW_COLUMN_NUMBER(ReverseNIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::getReverseNIterator(Matrix<DataType>::size_type index)
 {
-    NON_DIAG_ITERATOR_INDEX(ReverseNIterator, m_NrOfColumns, m_NrOfRows, %, /, index);
+    GET_NON_DIAG_ITERATOR_BY_INDEX(ReverseNIterator, m_NrOfColumns, m_NrOfRows, %, /, index);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::constReverseNBegin() const
 {
-    REVERSE_NON_DIAG_ITERATOR_BEGIN(ConstReverseNIterator, m_NrOfRows, m_NrOfColumns);
+    GET_REVERSE_NON_DIAG_BEGIN_ITERATOR(ConstReverseNIterator, m_NrOfRows, m_NrOfColumns);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::constReverseNEnd() const
 {
-    REVERSE_NITERATOR_END(ConstReverseNIterator);
+    GET_REVERSE_END_NITERATOR(ConstReverseNIterator);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::constReverseNColumnBegin(Matrix<DataType>::size_type columnNr) const
 {
-    REVERSE_NITERATOR_COLUMN_BEGIN(ConstReverseNIterator, m_NrOfRows, m_NrOfColumns, columnNr);
+    GET_REVERSE_COLUMN_BEGIN_NITERATOR(ConstReverseNIterator, m_NrOfRows, m_NrOfColumns, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::constReverseNColumnEnd(Matrix<DataType>::size_type columnNr) const
 {
-    REVERSE_NITERATOR_COLUMN_END(ConstReverseNIterator, m_NrOfRows, m_NrOfColumns, columnNr);
+    GET_REVERSE_COLUMN_END_NITERATOR(ConstReverseNIterator, m_NrOfRows, m_NrOfColumns, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::getConstReverseNIterator(Matrix<DataType>::size_type rowNr,
                                                                                             Matrix<DataType>::size_type columnNr) const
 {
-    NON_DIAG_ITERATOR_ROW_COLUMN_NUMBER(ConstReverseNIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_NON_DIAG_ITERATOR_BY_ROW_COLUMN_NUMBER(ConstReverseNIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::getConstReverseNIterator(Matrix<DataType>::size_type index) const
 {
-    NON_DIAG_ITERATOR_INDEX(ConstReverseNIterator, m_NrOfColumns, m_NrOfRows, %, /, index);
+    GET_NON_DIAG_ITERATOR_BY_INDEX(ConstReverseNIterator, m_NrOfColumns, m_NrOfRows, %, /, index);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(Matrix<DataType>::size_type diagNr)
 {
-    DIAG_ITERATOR_DIAG_BEGIN(DIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_DIAG_BEGIN_ITERATOR(DIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::dBegin(Matrix<DataType>::size_type rowNr,
                                                               Matrix<DataType>::size_type columnNr)
 {
-    DITERATOR_BEGIN_ROW_COLUMN_NUMBER(DIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_BEGIN_DITERATOR_BY_ROW_COLUMN_NUMBER(DIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(Matrix<DataType>::size_type diagNr)
 {
-    DITERATOR_DIAG_END(DIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_END_DITERATOR_BY_DIAG_NUMBER(DIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::DIterator Matrix<DataType>::dEnd(Matrix<DataType>::size_type rowNr,
                                                             Matrix<DataType>::size_type columnNr)
 {
-    DITERATOR_END_ROW_COLUMN_NUMBER(DIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_END_DITERATOR_BY_ROW_COLUMN_NUMBER(DIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
@@ -4276,33 +4276,33 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::getDIterator(Matrix<DataT
                                                                     Matrix<DataType>::size_type second,
                                                                     bool isRelative)
 {
-    DITERATOR_RANDOM(DIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
+    GET_RANDOM_DITERATOR(DIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(Matrix<DataType>::size_type diagNr) const
 {
-    DIAG_ITERATOR_DIAG_BEGIN(ConstDIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_DIAG_BEGIN_ITERATOR(ConstDIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDBegin(Matrix<DataType>::size_type rowNr,
                                                                         Matrix<DataType>::size_type columnNr) const
 {
-    DITERATOR_BEGIN_ROW_COLUMN_NUMBER(ConstDIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_BEGIN_DITERATOR_BY_ROW_COLUMN_NUMBER(ConstDIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(Matrix<DataType>::size_type diagNr) const
 {
-    DITERATOR_DIAG_END(ConstDIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_END_DITERATOR_BY_DIAG_NUMBER(ConstDIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstDIterator Matrix<DataType>::constDEnd(Matrix<DataType>::size_type rowNr,
                                                                       Matrix<DataType>::size_type columnNr) const
 {
-    DITERATOR_END_ROW_COLUMN_NUMBER(ConstDIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_END_DITERATOR_BY_ROW_COLUMN_NUMBER(ConstDIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
@@ -4310,33 +4310,33 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::getConstDIterator(Ma
                                                                               Matrix<DataType>::size_type second,
                                                                               bool isRelative) const
 {
-    DITERATOR_RANDOM(ConstDIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
+    GET_RANDOM_DITERATOR(ConstDIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(Matrix<DataType>::size_type diagNr)
 {
-    DIAG_ITERATOR_DIAG_BEGIN(ReverseDIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_DIAG_BEGIN_ITERATOR(ReverseDIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDBegin(Matrix<DataType>::size_type rowNr,
                                                                             Matrix<DataType>::size_type columnNr)
 {
-    DITERATOR_BEGIN_ROW_COLUMN_NUMBER(ReverseDIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_BEGIN_DITERATOR_BY_ROW_COLUMN_NUMBER(ReverseDIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(Matrix<DataType>::size_type diagNr)
 {
-    DITERATOR_DIAG_END(ReverseDIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_END_DITERATOR_BY_DIAG_NUMBER(ReverseDIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::reverseDEnd(Matrix<DataType>::size_type rowNr,
                                                                           Matrix<DataType>::size_type columnNr)
 {
-    DITERATOR_END_ROW_COLUMN_NUMBER(ReverseDIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_END_DITERATOR_BY_ROW_COLUMN_NUMBER(ReverseDIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
@@ -4344,33 +4344,33 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::getReverseDIterato
                                                                                   Matrix<DataType>::size_type second,
                                                                                   bool isRelative)
 {
-    DITERATOR_RANDOM(ReverseDIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
+    GET_RANDOM_DITERATOR(ReverseDIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDBegin(Matrix<DataType>::size_type diagNr) const
 {
-    DIAG_ITERATOR_DIAG_BEGIN(ConstReverseDIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_DIAG_BEGIN_ITERATOR(ConstReverseDIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDBegin(Matrix<DataType>::size_type rowNr,
                                                                                       Matrix<DataType>::size_type columnNr) const
 {
-    DITERATOR_BEGIN_ROW_COLUMN_NUMBER(ConstReverseDIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_BEGIN_DITERATOR_BY_ROW_COLUMN_NUMBER(ConstReverseDIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDEnd(Matrix<DataType>::size_type diagNr) const
 {
-    DITERATOR_DIAG_END(ConstReverseDIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_END_DITERATOR_BY_DIAG_NUMBER(ConstReverseDIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::constReverseDEnd(Matrix<DataType>::size_type rowNr,
                                                                                     Matrix<DataType>::size_type columnNr) const
 {
-    DITERATOR_END_ROW_COLUMN_NUMBER(ConstReverseDIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_END_DITERATOR_BY_ROW_COLUMN_NUMBER(ConstReverseDIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
@@ -4378,33 +4378,33 @@ typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::getConstRever
                                                                                             Matrix<DataType>::size_type second,
                                                                                             bool isRelative) const
 {
-    DITERATOR_RANDOM(ConstReverseDIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
+    GET_RANDOM_DITERATOR(ConstReverseDIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::MIterator Matrix<DataType>::mBegin(Matrix<DataType>::size_type diagNr)
 {
-    DIAG_ITERATOR_DIAG_BEGIN(MIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_DIAG_BEGIN_ITERATOR(MIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::MIterator Matrix<DataType>::mBegin(Matrix<DataType>::size_type rowNr,
                                                               Matrix<DataType>::size_type columnNr)
 {
-    MITERATOR_BEGIN_ROW_COLUMN_NUMBER(MIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_BEGIN_MITERATOR_BY_ROW_COLUMN_NUMBER(MIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::MIterator Matrix<DataType>::mEnd(Matrix<DataType>::size_type diagNr)
 {
-    MITERATOR_DIAG_END(MIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_END_MITERATOR_BY_DIAG_NUMBER(MIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::MIterator Matrix<DataType>::mEnd(Matrix<DataType>::size_type rowNr,
                                                             Matrix<DataType>::size_type columnNr)
 {
-    MITERATOR_END_ROW_COLUMN_NUMBER(MIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_END_MITERATOR_BY_ROW_COLUMN_NUMBER(MIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
@@ -4412,33 +4412,33 @@ typename Matrix<DataType>::MIterator Matrix<DataType>::getMIterator(Matrix<DataT
                                                                     Matrix<DataType>::size_type second,
                                                                     bool isRelative)
 {
-    MITERATOR_RANDOM(MIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
+    GET_RANDOM_MITERATOR(MIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstMIterator Matrix<DataType>::constMBegin(Matrix<DataType>::size_type diagNr)
 {
-    DIAG_ITERATOR_DIAG_BEGIN(ConstMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_DIAG_BEGIN_ITERATOR(ConstMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstMIterator Matrix<DataType>::constMBegin(Matrix<DataType>::size_type rowNr,
                                                               Matrix<DataType>::size_type columnNr)
 {
-    MITERATOR_BEGIN_ROW_COLUMN_NUMBER(ConstMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_BEGIN_MITERATOR_BY_ROW_COLUMN_NUMBER(ConstMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstMIterator Matrix<DataType>::constMEnd(Matrix<DataType>::size_type diagNr)
 {
-    MITERATOR_DIAG_END(ConstMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_END_MITERATOR_BY_DIAG_NUMBER(ConstMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstMIterator Matrix<DataType>::constMEnd(Matrix<DataType>::size_type rowNr,
                                                             Matrix<DataType>::size_type columnNr)
 {
-    MITERATOR_END_ROW_COLUMN_NUMBER(ConstMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_END_MITERATOR_BY_ROW_COLUMN_NUMBER(ConstMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
@@ -4446,33 +4446,33 @@ typename Matrix<DataType>::ConstMIterator Matrix<DataType>::getConstMIterator(Ma
                                                                     Matrix<DataType>::size_type second,
                                                                     bool isRelative)
 {
-    MITERATOR_RANDOM(ConstMIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
+    GET_RANDOM_MITERATOR(ConstMIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseMIterator Matrix<DataType>::reverseMBegin(Matrix<DataType>::size_type diagNr)
 {
-    DIAG_ITERATOR_DIAG_BEGIN(ReverseMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_DIAG_BEGIN_ITERATOR(ReverseMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseMIterator Matrix<DataType>::reverseMBegin(Matrix<DataType>::size_type rowNr,
                                                                             Matrix<DataType>::size_type columnNr)
 {
-    MITERATOR_BEGIN_ROW_COLUMN_NUMBER(ReverseMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_BEGIN_MITERATOR_BY_ROW_COLUMN_NUMBER(ReverseMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseMIterator Matrix<DataType>::reverseMEnd(Matrix<DataType>::size_type diagNr)
 {
-    MITERATOR_DIAG_END(ReverseMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_END_MITERATOR_BY_DIAG_NUMBER(ReverseMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ReverseMIterator Matrix<DataType>::reverseMEnd(Matrix<DataType>::size_type rowNr,
                                                                           Matrix<DataType>::size_type columnNr)
 {
-    MITERATOR_END_ROW_COLUMN_NUMBER(ReverseMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_END_MITERATOR_BY_ROW_COLUMN_NUMBER(ReverseMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
@@ -4480,33 +4480,33 @@ typename Matrix<DataType>::ReverseMIterator Matrix<DataType>::getReverseMIterato
                                                                                   Matrix<DataType>::size_type second,
                                                                                   bool isRelative)
 {
-    MITERATOR_RANDOM(ReverseMIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
+    GET_RANDOM_MITERATOR(ReverseMIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::constReverseMBegin(Matrix<DataType>::size_type diagNr)
 {
-    DIAG_ITERATOR_DIAG_BEGIN(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_DIAG_BEGIN_ITERATOR(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::constReverseMBegin(Matrix<DataType>::size_type rowNr,
                                                                             Matrix<DataType>::size_type columnNr)
 {
-    MITERATOR_BEGIN_ROW_COLUMN_NUMBER(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_BEGIN_MITERATOR_BY_ROW_COLUMN_NUMBER(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::constReverseMEnd(Matrix<DataType>::size_type diagNr)
 {
-    MITERATOR_DIAG_END(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
+    GET_END_MITERATOR_BY_DIAG_NUMBER(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::constReverseMEnd(Matrix<DataType>::size_type rowNr,
                                                                           Matrix<DataType>::size_type columnNr)
 {
-    MITERATOR_END_ROW_COLUMN_NUMBER(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    GET_END_MITERATOR_BY_ROW_COLUMN_NUMBER(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
@@ -4514,7 +4514,7 @@ typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::getConstRever
                                                                                   Matrix<DataType>::size_type second,
                                                                                   bool isRelative)
 {
-    MITERATOR_RANDOM(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
+    GET_RANDOM_MITERATOR(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
 }
 
 template<typename DataType>
@@ -4675,28 +4675,28 @@ void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRo
 #undef REVERSE_NON_DIAG_ITERATOR_DO_INCREMENT
 #undef FORWARD_NON_DIAG_ITERATOR_DO_DECREMENT
 #undef REVERSE_NON_DIAG_ITERATOR_DO_DECREMENT
-#undef FORWARD_NON_DIAG_ITERATOR_BEGIN
-#undef REVERSE_NON_DIAG_ITERATOR_BEGIN
-#undef NON_DIAG_ITERATOR_ROW_COLUMN_NUMBER
-#undef NON_DIAG_ITERATOR_INDEX
+#undef GET_FORWARD_NON_DIAG_BEGIN_ITERATOR
+#undef GET_REVERSE_NON_DIAG_BEGIN_ITERATOR
+#undef GET_NON_DIAG_ITERATOR_BY_ROW_COLUMN_NUMBER
+#undef GET_NON_DIAG_ITERATOR_BY_INDEX
 #undef DIAG_ITERATOR_ADD_SCALAR
 #undef DIAG_ITERATOR_DO_INCREMENT
 #undef DIAG_ITERATOR_DO_DECREMENT
 #undef DIAG_ITERATOR_COMPUTE_DIFFERENCE
 #undef DIAG_ITERATOR_COMPARE
-#undef DIAG_ITERATOR_DIAG_BEGIN
-#undef FORWARD_ZITERATOR_END
-#undef REVERSE_ZITERATOR_END
-#undef FORWARD_ZITERATOR_ROW_BEGIN
-#undef REVERSE_ZITERATOR_ROW_BEGIN
-#undef FORWARD_ZITERATOR_ROW_END
-#undef REVERSE_ZITERATOR_ROW_END
-#undef FORWARD_NITERATOR_END
-#undef REVERSE_NITERATOR_END
-#undef FORWARD_NITERATOR_COLUMN_BEGIN
-#undef REVERSE_NITERATOR_COLUMN_BEGIN
-#undef FORWARD_NITERATOR_COLUMN_END
-#undef REVERSE_NITERATOR_COLUMN_END
+#undef GET_DIAG_BEGIN_ITERATOR
+#undef GET_FORWARD_END_ZITERATOR
+#undef GET_REVERSE_END_ZITERATOR
+#undef GET_FORWARD_ROW_BEGIN_ZITERATOR
+#undef GET_REVERSE_ROW_BEGIN_ZITERATOR
+#undef GET_FORWARD_ROW_END_ZITERATOR
+#undef GET_REVERSE_ROW_END_ZITERATOR
+#undef GET_FORWARD_END_NITERATOR
+#undef GET_REVERSE_END_NITERATOR
+#undef GET_FORWARD_COLUMN_BEGIN_NITERATOR
+#undef GET_REVERSE_COLUMN_BEGIN_NITERATOR
+#undef GET_FORWARD_COLUMN_END_NITERATOR
+#undef GET_REVERSE_COLUMN_END_NITERATOR
 #undef CONSTRUCT_FORWARD_DITERATOR
 #undef CONSTRUCT_REVERSE_DITERATOR
 #undef DITERATOR_IS_VALID_WITH_MATRIX
@@ -4706,10 +4706,10 @@ void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRo
 #undef REVERSE_DITERATOR_ARROW_DEREFERENCE
 #undef FORWARD_DITERATOR_INDEX_DEREFERENCE
 #undef REVERSE_DITERATOR_INDEX_DEREFERENCE
-#undef DITERATOR_BEGIN_ROW_COLUMN_NUMBER
-#undef DITERATOR_DIAG_END
-#undef DITERATOR_END_ROW_COLUMN_NUMBER
-#undef DITERATOR_RANDOM
+#undef GET_BEGIN_DITERATOR_BY_ROW_COLUMN_NUMBER
+#undef GET_END_DITERATOR_BY_DIAG_NUMBER
+#undef GET_END_DITERATOR_BY_ROW_COLUMN_NUMBER
+#undef GET_RANDOM_DITERATOR
 #undef CONSTRUCT_FORWARD_MITERATOR
 #undef CONSTRUCT_REVERSE_MITERATOR
 #undef MITERATOR_IS_VALID_WITH_MATRIX
@@ -4719,9 +4719,9 @@ void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRo
 #undef REVERSE_MITERATOR_ARROW_DEREFERENCE
 #undef FORWARD_MITERATOR_INDEX_DEREFERENCE
 #undef REVERSE_MITERATOR_INDEX_DEREFERENCE
-#undef MITERATOR_BEGIN_ROW_COLUMN_NUMBER
-#undef MITERATOR_DIAG_END
-#undef MITERATOR_END_ROW_COLUMN_NUMBER
-#undef MITERATOR_RANDOM
+#undef GET_BEGIN_MITERATOR_BY_ROW_COLUMN_NUMBER
+#undef GET_END_MITERATOR_BY_DIAG_NUMBER
+#undef GET_END_MITERATOR_BY_ROW_COLUMN_NUMBER
+#undef GET_RANDOM_MITERATOR
 
 #endif // MATRIX_H

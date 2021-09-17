@@ -312,19 +312,19 @@
         } \
     }
 
-#define FORWARD_NON_DIAG_ITERATOR_BEGIN(IteratorType) \
+#define GET_FORWARD_NON_DIAG_BEGIN_ITERATOR(IteratorType) \
     return IteratorType{*this, 0, 0};
 
-#define REVERSE_NON_DIAG_ITERATOR_BEGIN(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns) \
+#define GET_REVERSE_NON_DIAG_BEGIN_ITERATOR(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns) \
     return IteratorType{*this, mMatrixNrOfRows - 1, mMatrixNrOfColumns - 1};
 
-#define NON_DIAG_ITERATOR_ROW_COLUMN_NUMBER(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr) \
+#define GET_NON_DIAG_ITERATOR_BY_ROW_COLUMN_NUMBER(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixRowNr < 0 || matrixColumnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows || matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]); \
 \
     return IteratorType{*this, matrixRowNr, matrixColumnNr};
 
-#define NON_DIAG_ITERATOR_INDEX(IteratorType, mMatrixPrimaryDimension, mMatrixSecondaryDimension, FirstOperator, SecondOperator, arrayIndex) \
+#define GET_NON_DIAG_ITERATOR_BY_INDEX(IteratorType, mMatrixPrimaryDimension, mMatrixSecondaryDimension, FirstOperator, SecondOperator, arrayIndex) \
     CHECK_ERROR_CONDITION(arrayIndex < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(arrayIndex >= mMatrixPrimaryDimension * mMatrixSecondaryDimension, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]); \
 \
@@ -363,31 +363,31 @@
 \
     return mIteratorDiagonalIndex Operator secondIterator.mIteratorDiagonalIndex;
 
-#define DIAG_ITERATOR_DIAG_BEGIN(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixDiagonalNr) \
+#define GET_DIAG_BEGIN_ITERATOR(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixDiagonalNr) \
     CHECK_ERROR_CONDITION(matrixDiagonalNr < (1 - mMatrixNrOfRows) || matrixDiagonalNr > (mMatrixNrOfColumns-1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]); \
     return IteratorType{*this, matrixDiagonalNr, 0, true};
 
 // specialized ZIterator macros
 
-#define FORWARD_ZITERATOR_END(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns) \
+#define GET_FORWARD_END_ZITERATOR(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns) \
     return IteratorType{*this, mMatrixNrOfRows - 1, mMatrixNrOfColumns};
 
-#define REVERSE_ZITERATOR_END(IteratorType) \
+#define GET_REVERSE_END_ZITERATOR(IteratorType) \
     return IteratorType{*this, 0, -1};
 
-#define FORWARD_ZITERATOR_ROW_BEGIN(IteratorType, mMatrixNrOfRows, matrixRowNr) \
+#define GET_FORWARD_ROW_BEGIN_ZITERATOR(IteratorType, mMatrixNrOfRows, matrixRowNr) \
     CHECK_ERROR_CONDITION(matrixRowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
 \
     return IteratorType{*this, matrixRowNr, 0};
 
-#define REVERSE_ZITERATOR_ROW_BEGIN(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr) \
+#define GET_REVERSE_ROW_BEGIN_ZITERATOR(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr) \
     CHECK_ERROR_CONDITION(matrixRowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
 \
     return IteratorType{*this, matrixRowNr, mMatrixNrOfColumns - 1};
 
-#define FORWARD_ZITERATOR_ROW_END(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr) \
+#define GET_FORWARD_ROW_END_ZITERATOR(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr) \
     CHECK_ERROR_CONDITION(matrixRowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
 \
@@ -404,7 +404,7 @@
 \
     return it;
 
-#define REVERSE_ZITERATOR_ROW_END(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr) \
+#define GET_REVERSE_ROW_END_ZITERATOR(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr) \
     CHECK_ERROR_CONDITION(matrixRowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
 \
@@ -423,25 +423,25 @@
 
 // specialized NIterator macros
 
-#define FORWARD_NITERATOR_END(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns) \
+#define GET_FORWARD_END_NITERATOR(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns) \
     return IteratorType{*this, mMatrixNrOfRows, mMatrixNrOfColumns - 1};
 
-#define REVERSE_NITERATOR_END(IteratorType) \
+#define GET_REVERSE_END_NITERATOR(IteratorType) \
     return IteratorType{*this, -1, 0};
 
-#define FORWARD_NITERATOR_COLUMN_BEGIN(IteratorType, mMatrixNrOfColumns, matrixColumnNr) \
+#define GET_FORWARD_COLUMN_BEGIN_NITERATOR(IteratorType, mMatrixNrOfColumns, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixColumnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
 \
     return IteratorType{*this, 0, matrixColumnNr};
 
-#define REVERSE_NITERATOR_COLUMN_BEGIN(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixColumnNr) \
+#define GET_REVERSE_COLUMN_BEGIN_NITERATOR(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixColumnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
 \
     return IteratorType{*this, mMatrixNrOfRows - 1, matrixColumnNr};
 
-#define FORWARD_NITERATOR_COLUMN_END(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixColumnNr) \
+#define GET_FORWARD_COLUMN_END_NITERATOR(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixColumnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
 \
@@ -458,7 +458,7 @@
 \
     return it;
 
-#define REVERSE_NITERATOR_COLUMN_END(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixColumnNr) \
+#define GET_REVERSE_COLUMN_END_NITERATOR(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixColumnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
 \
@@ -581,7 +581,7 @@
 \
     return mpIteratorPtr[c_ResultingRowNr][c_ResultingColumnNr];
 
-#define DITERATOR_BEGIN_ROW_COLUMN_NUMBER(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr) \
+#define GET_BEGIN_DITERATOR_BY_ROW_COLUMN_NUMBER(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixRowNr < 0 || matrixColumnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
@@ -590,7 +590,7 @@
 \
     return IteratorType{*this, c_DiagonalNr, 0, true};
 
-#define DITERATOR_DIAG_END(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixDiagonalNr) \
+#define GET_END_DITERATOR_BY_DIAG_NUMBER(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixDiagonalNr) \
     CHECK_ERROR_CONDITION(matrixDiagonalNr < (1 - mMatrixNrOfRows) || matrixDiagonalNr > (mMatrixNrOfColumns - 1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]); \
 \
     const size_type c_BeginRowNr{matrixDiagonalNr < 0 ? -matrixDiagonalNr : 0}; \
@@ -599,7 +599,7 @@
 \
     return IteratorType{*this, matrixDiagonalNr, c_EndDiagonalIndex, true};
 
-#define DITERATOR_END_ROW_COLUMN_NUMBER(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr) \
+#define GET_END_DITERATOR_BY_ROW_COLUMN_NUMBER(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixRowNr < 0 || matrixColumnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
@@ -611,7 +611,7 @@
 \
     return IteratorType{*this, c_DiagonalNr, c_EndDiagonalIndex, true};
 
-#define DITERATOR_RANDOM(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, firstParam, secondParam, relativeParamsUsed) \
+#define GET_RANDOM_DITERATOR(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, firstParam, secondParam, relativeParamsUsed) \
     if (relativeParamsUsed) \
     { \
         CHECK_ERROR_CONDITION(firstParam < (1 - mMatrixNrOfRows) || firstParam > (mMatrixNrOfColumns - 1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]); \
@@ -736,7 +736,7 @@
 \
     return mpIteratorPtr[c_ResultingRowNr][c_ResultingColumnNr];
 
-#define MITERATOR_BEGIN_ROW_COLUMN_NUMBER(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr) \
+#define GET_BEGIN_MITERATOR_BY_ROW_COLUMN_NUMBER(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixRowNr < 0 || matrixColumnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
@@ -745,7 +745,7 @@
 \
     return IteratorType{*this, c_DiagonalNr, 0, true};
 
-#define MITERATOR_DIAG_END(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixDiagonalNr) \
+#define GET_END_MITERATOR_BY_DIAG_NUMBER(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixDiagonalNr) \
     CHECK_ERROR_CONDITION(matrixDiagonalNr < (1 - mMatrixNrOfRows) || matrixDiagonalNr > (mMatrixNrOfColumns - 1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]); \
 \
     const size_type c_BeginRowNr{matrixDiagonalNr < 0 ? -matrixDiagonalNr : 0}; \
@@ -754,7 +754,7 @@
 \
     return IteratorType{*this, matrixDiagonalNr, c_EndDiagonalIndex, true};
 
-#define MITERATOR_END_ROW_COLUMN_NUMBER(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr) \
+#define GET_END_MITERATOR_BY_ROW_COLUMN_NUMBER(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixRowNr < 0 || matrixColumnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]); \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
@@ -766,7 +766,7 @@
 \
     return IteratorType{*this, c_DiagonalNr, c_EndDiagonalIndex, true};
 
-#define MITERATOR_RANDOM(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, firstParam, secondParam, relativeParamsUsed) \
+#define GET_RANDOM_MITERATOR(IteratorType, mMatrixNrOfRows, mMatrixNrOfColumns, firstParam, secondParam, relativeParamsUsed) \
     if (relativeParamsUsed) \
     { \
         CHECK_ERROR_CONDITION(firstParam < (1 - mMatrixNrOfRows) || firstParam > (mMatrixNrOfColumns - 1), Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]); \
