@@ -39,8 +39,8 @@
     /* However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */ \
     bool isValidWithMatrix(const Matrix<IterableType>& matrix) const; \
 \
-    SizeType getCurrentRowNr() const; \
-    SizeType getCurrentColumnNr() const; \
+    SizeType getRowNr() const; \
+    SizeType getColumnNr() const; \
 
 #define COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(IterableType, DifferenceType) \
     using reference = IterableType&; \
@@ -71,10 +71,10 @@
     IterableType** m_pMatrixPtr;
 
 #define COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType, IterableType, SizeType) \
-    IteratorType(const Matrix<IterableType>& matrix, SizeType currentRowNr, SizeType currentColumnNr); \
+    IteratorType(const Matrix<IterableType>& matrix, SizeType rowNr, SizeType columnNr); \
 \
-    SizeType m_CurrentRowNr; \
-    SizeType m_CurrentColumnNr; \
+    SizeType m_RowNr; \
+    SizeType m_ColumnNr; \
     SizeType m_NrOfMatrixRows; \
     SizeType m_NrOfMatrixColumns;
 
@@ -179,19 +179,19 @@
     CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr || mIteratorPrimaryDimension != secondIterator.mIteratorPrimaryDimension || mIteratorSecondaryDimension != secondIterator.mIteratorSecondaryDimension, \
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]); \
 \
-    const size_type c_FirstItCurrentIndex{mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + mIteratorSecondaryCoordinate}; \
-    const size_type c_SecondItCurrentIndex{secondIterator.mIteratorPrimaryCoordinate * secondIterator.mIteratorSecondaryDimension + secondIterator.mIteratorSecondaryCoordinate}; \
+    const size_type c_FirstItIndex{mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + mIteratorSecondaryCoordinate}; \
+    const size_type c_SecondItIndex{secondIterator.mIteratorPrimaryCoordinate * secondIterator.mIteratorSecondaryDimension + secondIterator.mIteratorSecondaryCoordinate}; \
 \
-    return (c_FirstItCurrentIndex - c_SecondItCurrentIndex);
+    return (c_FirstItIndex - c_SecondItIndex);
 
 #define REVERSE_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, secondIterator) \
     CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr || mIteratorPrimaryDimension != secondIterator.mIteratorPrimaryDimension || mIteratorSecondaryDimension != secondIterator.mIteratorSecondaryDimension, \
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]); \
 \
-    const size_type c_FirstItCurrentIndex{mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + mIteratorSecondaryCoordinate}; \
-    const size_type c_SecondItCurrentIndex{secondIterator.mIteratorPrimaryCoordinate * it.mIteratorSecondaryDimension + secondIterator.mIteratorSecondaryCoordinate}; \
+    const size_type c_FirstItIndex{mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + mIteratorSecondaryCoordinate}; \
+    const size_type c_SecondItIndex{secondIterator.mIteratorPrimaryCoordinate * it.mIteratorSecondaryDimension + secondIterator.mIteratorSecondaryCoordinate}; \
 \
-    return (c_SecondItCurrentIndex - c_FirstItCurrentIndex);
+    return (c_SecondItIndex - c_FirstItIndex);
 
 #define FORWARD_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, Operator, secondIterator) \
     CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr || mIteratorPrimaryDimension != secondIterator.mIteratorPrimaryDimension || mIteratorSecondaryDimension != secondIterator.mIteratorSecondaryDimension, \
@@ -221,33 +221,33 @@
     return (secondIterator.mIteratorPrimaryCoordinate Operator mIteratorPrimaryCoordinate) || \
            (secondIterator.mIteratorPrimaryCoordinate == mIteratorPrimaryCoordinate && (secondIterator.mIteratorSecondaryCoordinate Operator mIteratorSecondaryCoordinate || secondIterator.mIteratorSecondaryCoordinate == mIteratorSecondaryCoordinate));
 
-#define NON_DIAG_ITERATOR_CHECK_EQUAL(mpIteratorPtr, mIteratorRowsCount, mIteratorColumnsCount, mIteratorCurrentRowNr, mIteratorCurrentColumnNr, secondIterator) \
+#define NON_DIAG_ITERATOR_CHECK_EQUAL(mpIteratorPtr, mIteratorRowsCount, mIteratorColumnsCount, mIteratorRowNr, mIteratorColumnNr, secondIterator) \
     CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr || mIteratorRowsCount != secondIterator.mIteratorRowsCount || mIteratorColumnsCount != secondIterator.mIteratorColumnsCount, \
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]); \
 \
-    return (mIteratorCurrentRowNr == secondIterator.mIteratorCurrentRowNr && mIteratorCurrentColumnNr == secondIterator.mIteratorCurrentColumnNr);
+    return (mIteratorRowNr == secondIterator.mIteratorRowNr && mIteratorColumnNr == secondIterator.mIteratorColumnNr);
 
-#define NON_DIAG_ITERATOR_CHECK_DIFFERENT(mpIteratorPtr, mIteratorRowsCount, mIteratorColumnsCount, mIteratorCurrentRowNr, mIteratorCurrentColumnNr, secondIterator) \
+#define NON_DIAG_ITERATOR_CHECK_DIFFERENT(mpIteratorPtr, mIteratorRowsCount, mIteratorColumnsCount, mIteratorRowNr, mIteratorColumnNr, secondIterator) \
     CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr || mIteratorRowsCount != secondIterator.mIteratorRowsCount || mIteratorColumnsCount != secondIterator.mIteratorColumnsCount, \
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]); \
 \
-    return (mIteratorCurrentRowNr != secondIterator.mIteratorCurrentRowNr || mIteratorCurrentColumnNr != secondIterator.mIteratorCurrentColumnNr);
+    return (mIteratorRowNr != secondIterator.mIteratorRowNr || mIteratorColumnNr != secondIterator.mIteratorColumnNr);
 
-#define FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorCurrentRowNr, mIteratorCurrentColumnNr, mIteratorSecondaryCoordinate) \
+#define FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorRowNr, mIteratorColumnNr, mIteratorSecondaryCoordinate) \
     CHECK_ERROR_CONDITION(mIteratorSecondaryCoordinate == mIteratorSecondaryDimension || mIteratorSecondaryDimension == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
-    return mpIteratorPtr[mIteratorCurrentRowNr][mIteratorCurrentColumnNr];
+    return mpIteratorPtr[mIteratorRowNr][mIteratorColumnNr];
 
-#define REVERSE_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorCurrentRowNr, mIteratorCurrentColumnNr, mIteratorSecondaryCoordinate) \
+#define REVERSE_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorRowNr, mIteratorColumnNr, mIteratorSecondaryCoordinate) \
     CHECK_ERROR_CONDITION(mIteratorSecondaryCoordinate == -1 || mIteratorSecondaryDimension == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
-    return mpIteratorPtr[mIteratorCurrentRowNr][mIteratorCurrentColumnNr];
+    return mpIteratorPtr[mIteratorRowNr][mIteratorColumnNr];
 
-#define FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorCurrentRowNr, mIteratorCurrentColumnNr, mIteratorSecondaryCoordinate) \
+#define FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorRowNr, mIteratorColumnNr, mIteratorSecondaryCoordinate) \
     CHECK_ERROR_CONDITION(mIteratorSecondaryCoordinate == mIteratorSecondaryDimension || mIteratorSecondaryDimension == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
-    return (mpIteratorPtr[mIteratorCurrentRowNr] + mIteratorCurrentColumnNr); \
+    return (mpIteratorPtr[mIteratorRowNr] + mIteratorColumnNr); \
 
-#define REVERSE_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorCurrentRowNr, mIteratorCurrentColumnNr, mIteratorSecondaryCoordinate) \
+#define REVERSE_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorRowNr, mIteratorColumnNr, mIteratorSecondaryCoordinate) \
     CHECK_ERROR_CONDITION(mIteratorSecondaryCoordinate == -1 || mIteratorSecondaryDimension == 0, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
-    return (mpIteratorPtr[mIteratorCurrentRowNr] + mIteratorCurrentColumnNr); \
+    return (mpIteratorPtr[mIteratorRowNr] + mIteratorColumnNr); \
 
 #define NON_DIAG_ITERATOR_INDEX_DEREFERENCE(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, Sign, FirstOperator, SecondOperator, arrayIndex) \
     const size_type c_CurrentIndex{mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + mIteratorSecondaryCoordinate}; \
@@ -483,9 +483,9 @@
         /* firstParam and secondParam are interpreted as diagonal number and relative arrayIndex within diagonal */ \
         mIteratorDiagonalNr = firstParam; \
         mIteratorDiagonalIndex = secondParam; \
-        const size_type c_CurrentRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalIndex}; \
-        const size_type c_CurrentColumnNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex : mIteratorDiagonalIndex + mIteratorDiagonalNr}; \
-        mIteratorDiagonalSize = mIteratorDiagonalIndex + std::min(matrixRowsCount - c_CurrentRowNr, matrixColumnsCount - c_CurrentColumnNr); \
+        const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalIndex}; \
+        const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex : mIteratorDiagonalIndex + mIteratorDiagonalNr}; \
+        mIteratorDiagonalSize = mIteratorDiagonalIndex + std::min(matrixRowsCount - c_IteratorRowNr, matrixColumnsCount - c_IteratorColumnNr); \
     } \
     else \
     { \
@@ -532,34 +532,34 @@
 #define FORWARD_DITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex) \
     CHECK_ERROR_CONDITION(mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
-    const size_type c_CurrentRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalIndex}; \
-    const size_type c_CurrentColumnNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex : mIteratorDiagonalIndex + mIteratorDiagonalNr}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalIndex}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex : mIteratorDiagonalIndex + mIteratorDiagonalNr}; \
 \
-    return mpIteratorPtr[c_CurrentRowNr][c_CurrentColumnNr];
+    return mpIteratorPtr[c_IteratorRowNr][c_IteratorColumnNr];
 
 #define REVERSE_DITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex) \
     CHECK_ERROR_CONDITION(mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
-    const size_type c_CurrentRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - 1 - mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalSize - mIteratorDiagonalIndex - 1}; \
-    const size_type c_CurrentColumnNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - mIteratorDiagonalIndex - 1 : mIteratorDiagonalSize - 1 - mIteratorDiagonalIndex + mIteratorDiagonalNr}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - 1 - mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalSize - mIteratorDiagonalIndex - 1}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - mIteratorDiagonalIndex - 1 : mIteratorDiagonalSize - 1 - mIteratorDiagonalIndex + mIteratorDiagonalNr}; \
 \
-    return mpIteratorPtr[c_CurrentRowNr][c_CurrentColumnNr];
+    return mpIteratorPtr[c_IteratorRowNr][c_IteratorColumnNr];
 
 #define FORWARD_DITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex) \
     CHECK_ERROR_CONDITION(mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
-    const size_type c_CurrentRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalIndex}; \
-    const size_type c_CurrentColumnNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex : mIteratorDiagonalIndex + mIteratorDiagonalNr}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalIndex}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex : mIteratorDiagonalIndex + mIteratorDiagonalNr}; \
 \
-    return (mpIteratorPtr[c_CurrentRowNr] + c_CurrentColumnNr);
+    return (mpIteratorPtr[c_IteratorRowNr] + c_IteratorColumnNr);
 
 #define REVERSE_DITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex) \
     CHECK_ERROR_CONDITION(mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
-    const size_type c_CurrentRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - 1 - mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalSize - mIteratorDiagonalIndex - 1}; \
-    const size_type c_CurrentColumnNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - mIteratorDiagonalIndex - 1 : mIteratorDiagonalSize - 1 - mIteratorDiagonalIndex + mIteratorDiagonalNr}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - 1 - mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalSize - mIteratorDiagonalIndex - 1}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - mIteratorDiagonalIndex - 1 : mIteratorDiagonalSize - 1 - mIteratorDiagonalIndex + mIteratorDiagonalNr}; \
 \
-    return (mpIteratorPtr[c_CurrentRowNr] + c_CurrentColumnNr);
+    return (mpIteratorPtr[c_IteratorRowNr] + c_IteratorColumnNr);
 
 #define FORWARD_DITERATOR_INDEX_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, arrayIndex) \
     const size_type c_ResultingDiagonalIndex{mIteratorDiagonalIndex + arrayIndex}; \
@@ -640,9 +640,9 @@
         /* firstParam and secondParam are interpreted as diagonal number and relative arrayIndex within diagonal */ \
         mIteratorDiagonalNr = firstParam; \
         mIteratorDiagonalIndex = secondParam; \
-        const size_type c_CurrentRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalIndex}; \
-        const size_type c_CurrentColumnNr{mIteratorDiagonalNr < 0 ? mIteratorColumnsCount - mIteratorDiagonalIndex - 1 : mIteratorColumnsCount - mIteratorDiagonalNr - mIteratorDiagonalIndex - 1}; \
-        mIteratorDiagonalSize = mIteratorDiagonalIndex + std::min(matrixRowsCount - c_CurrentRowNr, c_CurrentColumnNr + 1); \
+        const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalIndex}; \
+        const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? mIteratorColumnsCount - mIteratorDiagonalIndex - 1 : mIteratorColumnsCount - mIteratorDiagonalNr - mIteratorDiagonalIndex - 1}; \
+        mIteratorDiagonalSize = mIteratorDiagonalIndex + std::min(matrixRowsCount - c_IteratorRowNr, c_IteratorColumnNr + 1); \
     } \
     else \
     { \
@@ -687,34 +687,34 @@
 #define FORWARD_MITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount) \
     CHECK_ERROR_CONDITION(mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
-    const size_type c_CurrentRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalIndex}; \
-    const size_type c_CurrentColumnNr{mIteratorDiagonalNr < 0 ? mIteratorColumnsCount - mIteratorDiagonalIndex - 1 : mIteratorColumnsCount - mIteratorDiagonalNr - mIteratorDiagonalIndex - 1}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalIndex}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? mIteratorColumnsCount - mIteratorDiagonalIndex - 1 : mIteratorColumnsCount - mIteratorDiagonalNr - mIteratorDiagonalIndex - 1}; \
 \
-    return mpIteratorPtr[c_CurrentRowNr][c_CurrentColumnNr];
+    return mpIteratorPtr[c_IteratorRowNr][c_IteratorColumnNr];
 
 #define REVERSE_MITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount) \
     CHECK_ERROR_CONDITION(mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
-    const size_type c_CurrentRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - 1 - mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalSize - mIteratorDiagonalIndex - 1}; \
-    const size_type c_CurrentColumnNr{mIteratorDiagonalNr < 0 ? mIteratorColumnsCount - mIteratorDiagonalSize + mIteratorDiagonalIndex : mIteratorColumnsCount - mIteratorDiagonalSize + mIteratorDiagonalIndex - mIteratorDiagonalNr}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - 1 - mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalSize - mIteratorDiagonalIndex - 1}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? mIteratorColumnsCount - mIteratorDiagonalSize + mIteratorDiagonalIndex : mIteratorColumnsCount - mIteratorDiagonalSize + mIteratorDiagonalIndex - mIteratorDiagonalNr}; \
 \
-    return mpIteratorPtr[c_CurrentRowNr][c_CurrentColumnNr];
+    return mpIteratorPtr[c_IteratorRowNr][c_IteratorColumnNr];
 
 #define FORWARD_MITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount) \
     CHECK_ERROR_CONDITION(mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
-    const size_type c_CurrentRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalIndex}; \
-    const size_type c_CurrentColumnNr{mIteratorDiagonalNr < 0 ? mIteratorColumnsCount - mIteratorDiagonalIndex - 1 : mIteratorColumnsCount - mIteratorDiagonalNr - mIteratorDiagonalIndex - 1}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalIndex}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? mIteratorColumnsCount - mIteratorDiagonalIndex - 1 : mIteratorColumnsCount - mIteratorDiagonalNr - mIteratorDiagonalIndex - 1}; \
 \
-    return (mpIteratorPtr[c_CurrentRowNr] + c_CurrentColumnNr);
+    return (mpIteratorPtr[c_IteratorRowNr] + c_IteratorColumnNr);
 
 #define REVERSE_MITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount) \
     CHECK_ERROR_CONDITION(mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
-    const size_type c_CurrentRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - 1 - mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalSize - mIteratorDiagonalIndex - 1}; \
-    const size_type c_CurrentColumnNr{mIteratorDiagonalNr < 0 ? mIteratorColumnsCount - mIteratorDiagonalSize + mIteratorDiagonalIndex : mIteratorColumnsCount - mIteratorDiagonalSize + mIteratorDiagonalIndex - mIteratorDiagonalNr}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - 1 - mIteratorDiagonalIndex - mIteratorDiagonalNr : mIteratorDiagonalSize - mIteratorDiagonalIndex - 1}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? mIteratorColumnsCount - mIteratorDiagonalSize + mIteratorDiagonalIndex : mIteratorColumnsCount - mIteratorDiagonalSize + mIteratorDiagonalIndex - mIteratorDiagonalNr}; \
 \
-    return (mpIteratorPtr[c_CurrentRowNr] + c_CurrentColumnNr);
+    return (mpIteratorPtr[c_IteratorRowNr] + c_IteratorColumnNr);
 
 #define FORWARD_MITERATOR_INDEX_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount, arrayIndex) \
     const size_type c_ResultingDiagonalIndex{mIteratorDiagonalIndex + arrayIndex}; \
