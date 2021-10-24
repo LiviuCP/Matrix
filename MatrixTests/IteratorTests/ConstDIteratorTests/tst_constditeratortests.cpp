@@ -4,6 +4,8 @@
 
 using IntMatrix = Matrix<int>;
 using IntMatrixConstDIterator = Matrix<int>::ConstDIterator;
+using IntMatrixSizeType = IntMatrix::size_type;
+using IntMatrixDiffType = IntMatrix::diff_type;
 using StringMatrix = Matrix<std::string>;
 using StringMatrixConstDIterator = Matrix<std::string>::ConstDIterator;
 
@@ -13,14 +15,17 @@ class ConstDIteratorTests : public QObject
 
 public:
     ConstDIteratorTests();
-    ~ConstDIteratorTests();
 
 private slots:
+    // test functions
+    void initTestCase();
     void testIteratorCreation();
+    void testIteratorIsValid();
     void testIteratorsAreEqual();
+    void testIteratorEqualToItself();
     void testIteratorsAreNotEqual();
-    void testSmallerThanOperator();
-    void testSmallerThanOrEqualToOperator();
+    void testLessThanOperator();
+    void testLessThanOrEqualToOperator();
     void testGreaterThanOperator();
     void testGreaterThanOrEqualToOperator();
     void testIncrementOperators();
@@ -30,956 +35,661 @@ private slots:
     void testOperatorPlusEqual();
     void testOperatorMinusEqual();
     void testDifferenceOperator();
-    void testDereferenceAsteriskOperator();
-    void testDereferenceArrowOperator();
-    void testDereferenceSquareBracketsOperator();
+    void testAsteriskOperator();
+    void testArrowOperator();
+    void testSquareBracketsOperator();
     void testChangeDiagonal();
     void testStdCount();
     void testStdFind();
+    void testStdFindWithIncrement();
+
+    // test data
+    void testIteratorCreation_data();
+    void testIteratorsAreEqual_data();
+    void testLessThanOperator_data();
+    void testLessThanOrEqualToOperator_data();
+    void testGreaterThanOperator_data();
+    void testGreaterThanOrEqualToOperator_data();
+    void testOperatorPlus_data();
+    void testOperatorMinus_data();
+    void testOperatorPlusEqual_data();
+    void testOperatorMinusEqual_data();
+    void testDifferenceOperator_data();
+    void testSquareBracketsOperator_data();
+    void testStdCount_data();
+    void testStdFind_data();
+
+private:
+    // test data helper methods
+    void _buildLessThanOperatorTestingTable();
+    void _buildLessThanOrEqualOperatorTestingTable();
+    void _buildOperatorPlusTestingTable();
+
+    IntMatrix m_PrimaryIntMatrix;
+    IntMatrix m_SecondaryIntMatrix;
+    StringMatrix m_StringMatrix;
+
+    IntMatrixConstDIterator m_PrimaryIntIterator;
+    IntMatrixConstDIterator m_SecondaryIntIterator;
+    StringMatrixConstDIterator m_StringIterator;
 };
 
+/* Initialization of the test should be made by constructor and not by initTestCase() function for following reasons:
+   - the diagonal iterator objects can only be initialized via Matrix functions (their constructors are private)
+   - non-empty matrixes are required for creating diagonal iterators
+   A minimal initialization is required to make iterators functional. These can then be modified by any of the type-compatible matrixes.
+*/
 ConstDIteratorTests::ConstDIteratorTests()
+    : m_PrimaryIntMatrix{1, 1, 0}
+    , m_SecondaryIntMatrix{1, 1, 0}
+    , m_StringMatrix{1, 1, ""}
+    , m_PrimaryIntIterator{m_PrimaryIntMatrix.constDEnd(0)}
+    , m_SecondaryIntIterator{m_SecondaryIntMatrix.constDEnd(0)}
+    , m_StringIterator{m_StringMatrix.constDEnd(0)}
 {
-
 }
 
-ConstDIteratorTests::~ConstDIteratorTests()
+/* Initialization has been made through constructor, this special method should only check that it has been done correctly */
+void ConstDIteratorTests::initTestCase()
 {
+    QVERIFY(m_PrimaryIntIterator.isValidWithMatrix(m_PrimaryIntMatrix));
+    QVERIFY(m_SecondaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
+    QVERIFY(m_StringIterator.isValidWithMatrix(m_StringMatrix));
 
+    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
 void ConstDIteratorTests::testIteratorCreation()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(-2)};
+    QFETCH(IntMatrixConstDIterator, iterator);
+    QFETCH(IntMatrix::size_type, expectedRowNr);
+    QFETCH(IntMatrix::size_type, expectedColumnNr);
+    QFETCH(IntMatrix::size_type, expectedDiagonalNr);
+    QFETCH(IntMatrix::size_type, expectedDiagonalIndex);
 
-        QVERIFY2(it.getRowNr() == 2 && it.getColumnNr() == 0 && it.getDiagonalNr() == -2 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
+    QVERIFY2(iterator.getRowNr() == expectedRowNr &&
+             iterator.getColumnNr() == expectedColumnNr &&
+             iterator.getDiagonalNr() == expectedDiagonalNr &&
+             iterator.getDiagonalIndex() == expectedDiagonalIndex &&
+             iterator.isValidWithMatrix(m_PrimaryIntMatrix),
+             "The iterator has not been correctly created!");
+}
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(-2)};
+// additional test for checking that an iterator is only valid with the matrix with which it is created
+void ConstDIteratorTests::testIteratorIsValid()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    m_SecondaryIntMatrix = m_PrimaryIntMatrix;
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(2, 1);
 
-        QVERIFY2(it.getRowNr() == 4 && it.getColumnNr() == 2 && it.getDiagonalNr() == -2  && it.getDiagonalIndex() == 2 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(0)};
-
-        QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 0 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(0)};
-
-        QVERIFY2(it.getRowNr() == 3 && it.getColumnNr() == 3 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 3 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(1)};
-
-        QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 1 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(1)};
-
-        QVERIFY2(it.getRowNr() == 2 && it.getColumnNr() == 3 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 2 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(0, 0)};
-
-        QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 0 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(0, 0)};
-
-        QVERIFY2(it.getRowNr() == 3 && it.getColumnNr() == 3 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 3 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(2, 1)};
-
-        QVERIFY2(it.getRowNr() == 1 && it.getColumnNr() == 0 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(2, 1)};
-
-        QVERIFY2(it.getRowNr() == 4 && it.getColumnNr() == 3 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 3 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(1, 2)};
-
-        QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 1 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(1, 2)};
-
-        QVERIFY2(it.getRowNr() == 2 && it.getColumnNr() == 3 && it.getDiagonalNr() == 1 && it.getDiagonalIndex() == 2 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(1, 0)};
-
-        QVERIFY2(it.getRowNr() == 1 && it.getColumnNr() == 0 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(0, 2)};
-
-        QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 2 && it.getDiagonalNr() == 2 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(2, 1)};
-
-        QVERIFY2(it.getRowNr() == 2 && it.getColumnNr() == 1 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 1 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(2, 2)};
-
-        QVERIFY2(it.getRowNr() == 2 && it.getColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 2 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(-1, 0, true)};
-
-        QVERIFY2(it.getRowNr() == 1 && it.getColumnNr() == 0 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(2, 0, true)};
-
-        QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 2 && it.getDiagonalNr() == 2 && it.getDiagonalIndex() == 0 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(-1, 1, true)};
-
-        QVERIFY2(it.getRowNr() == 2 && it.getColumnNr() == 1 && it.getDiagonalNr() == -1 && it.getDiagonalIndex() == 1 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(0, 2, true)};
-
-        QVERIFY2(it.getRowNr() == 2 && it.getColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 2 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
-    }
-
-    // additional test for checking that an iterator is only valid with the matrix with which it is created
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrix matrixCopy{matrix};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(2, 1)};
-
-        QVERIFY(!it.isValidWithMatrix(matrixCopy));
-    }
+    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
 void ConstDIteratorTests::testIteratorsAreEqual()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(1, 2)};
+    QFETCH(IntMatrixConstDIterator, firstIterator);
+    QFETCH(IntMatrixConstDIterator, secondIterator);
 
-        QVERIFY2(it == it, "The iterators are not equal");
-    }
+    QVERIFY2(firstIterator == secondIterator, "The iterators should be equal!");
+}
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator firstIt{matrix.getConstDIterator(1, 2)};
-        IntMatrixConstDIterator secondIt{matrix.getConstDIterator(1, 1, true)};
+void ConstDIteratorTests::testIteratorEqualToItself()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(1, 2);
 
-        QVERIFY2(firstIt == secondIt, "The iterators are not equal");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator firstIt{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator secondIt{matrix.constDBegin(2, 1)};
-        IntMatrixConstDIterator thirdIt{matrix.getConstDIterator(1, 0)};
-        IntMatrixConstDIterator fourthIt{matrix.getConstDIterator(-1, 0, true)};
-
-        QVERIFY2(firstIt == secondIt && secondIt == thirdIt && thirdIt == fourthIt, "The iterators are not equal");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator firstIt{matrix.constDEnd(2)};
-        IntMatrixConstDIterator secondIt{matrix.constDEnd(0, 2)};
-
-        QVERIFY2(firstIt == secondIt, "The iterators are not equal");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntIterator &&
+             m_PrimaryIntIterator <= m_PrimaryIntIterator &&
+             m_PrimaryIntIterator >= m_PrimaryIntIterator &&
+             !(m_PrimaryIntIterator != m_PrimaryIntIterator),
+             "The iterator should be equal to itself!");
 }
 
 void ConstDIteratorTests::testIteratorsAreNotEqual()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(1, 2)};
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(1, 2);
+    m_SecondaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(1, 0, true);
 
-        QVERIFY2(!(it != it), "The iterators are not equal");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator firstIt{matrix.getConstDIterator(1, 2)};
-        IntMatrixConstDIterator secondIt{matrix.getConstDIterator(1, 0, true)};
-
-        QVERIFY2(firstIt != secondIt, "The iterators are not equal");
-    }
+    QVERIFY2(m_PrimaryIntIterator != m_SecondaryIntIterator, "The iterators should not be equal!");
 }
 
-void ConstDIteratorTests::testSmallerThanOperator()
+void ConstDIteratorTests::testLessThanOperator()
 {
-    IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-    IntMatrixConstDIterator firstIt{matrix.constDBegin(1)};
-    IntMatrixConstDIterator secondIt{matrix.getConstDIterator(1, 2)};
-    IntMatrixConstDIterator thirdIt{matrix.constDEnd(1)};
+    QFETCH(IntMatrixConstDIterator, firstIterator);
+    QFETCH(IntMatrixConstDIterator, secondIterator);
 
-    QVERIFY2(firstIt < secondIt && secondIt < thirdIt, "The smaller than operator doesn't work correctly");
+    QVERIFY2(firstIterator < secondIterator, "The first iterator should be less than the second one!");
 }
 
-void ConstDIteratorTests::testSmallerThanOrEqualToOperator()
+void ConstDIteratorTests::testLessThanOrEqualToOperator()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(1, 2)};
+    QFETCH(IntMatrixConstDIterator, firstIterator);
+    QFETCH(IntMatrixConstDIterator, secondIterator);
 
-        QVERIFY2(it <= it, "The smaller than or equal operator doesn't work correctly");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator firstIt{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator secondIt{matrix.getConstDIterator(1, 0)};
-        IntMatrixConstDIterator thirdIt{matrix.getConstDIterator(2, 1)};
-        IntMatrixConstDIterator fourthIt{matrix.getConstDIterator(-1, 1, true)};
-        IntMatrixConstDIterator fifthIt{matrix.constDEnd(-1)};
-
-        QVERIFY2(firstIt <= secondIt && secondIt <= thirdIt && thirdIt <= fourthIt && fourthIt <= fifthIt, "The smaller than or equal operator doesn't work correctly");
-    }
+    QVERIFY2(firstIterator <= secondIterator, "The first iterator should be less than or equal to the second one!");
 }
 
 void ConstDIteratorTests::testGreaterThanOperator()
 {
-    IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-    IntMatrixConstDIterator firstIt{matrix.constDBegin(1)};
-    IntMatrixConstDIterator secondIt{matrix.getConstDIterator(1, 2)};
-    IntMatrixConstDIterator thirdIt{matrix.constDEnd(1)};
+    QFETCH(IntMatrixConstDIterator, firstIterator);
+    QFETCH(IntMatrixConstDIterator, secondIterator);
 
-    QVERIFY2(thirdIt > secondIt && secondIt > firstIt, "The greater than operator doesn't work correctly");
+    QVERIFY2(secondIterator > firstIterator, "The second iterator should be greater than the first one!");
 }
 
 void ConstDIteratorTests::testGreaterThanOrEqualToOperator()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(1, 2)};
+    QFETCH(IntMatrixConstDIterator, firstIterator);
+    QFETCH(IntMatrixConstDIterator, secondIterator);
 
-        QVERIFY2(it >= it, "The greater than or equal operator doesn't work correctly");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator firstIt{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator secondIt{matrix.getConstDIterator(1, 0)};
-        IntMatrixConstDIterator thirdIt{matrix.getConstDIterator(2, 1)};
-        IntMatrixConstDIterator fourthIt{matrix.getConstDIterator(-1, 1, true)};
-        IntMatrixConstDIterator fifthIt{matrix.constDEnd(-1)};
-
-        QVERIFY2(fifthIt >= fourthIt && fourthIt >= thirdIt && thirdIt >= secondIt && secondIt >= firstIt, "The greater than or equal operator doesn't work correctly");
-    }
+    QVERIFY2(secondIterator >= firstIterator, "The second iterator should be greater than or equal to the second one!");
 }
 
 void ConstDIteratorTests::testIncrementOperators()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator preIncrementIt{++it};
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
 
-        QVERIFY2(it == matrix.getConstDIterator(2, 1) && preIncrementIt == matrix.getConstDIterator(2, 1),
-                 "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDBegin(-1);
+    m_SecondaryIntIterator = ++m_PrimaryIntIterator;
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator prePreIncrementIt{++(++it)};
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1),
+             "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-        QVERIFY2(it == matrix.getConstDIterator(2, 1) && prePreIncrementIt == matrix.getConstDIterator(3, 2),
-                 "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDBegin(-1);
+    m_SecondaryIntIterator = ++(++m_PrimaryIntIterator);
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator postIncrementIt{it++};
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 2),
+             "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-        QVERIFY2(it == matrix.getConstDIterator(2, 1) && postIncrementIt == matrix.getConstDIterator(1, 0),
-                 "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator postPostIncrementIt{(it++)++};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDBegin(-1);
+    m_SecondaryIntIterator = m_PrimaryIntIterator++;
 
-        QVERIFY2(it == matrix.getConstDIterator(2, 1) && postPostIncrementIt == matrix.getConstDIterator(1, 0),
-                 "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(1, 0),
+             "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator prePostIncrementIt{(++it)++};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDBegin(-1);
+    m_SecondaryIntIterator = (m_PrimaryIntIterator++)++;
 
-        QVERIFY2(it == matrix.getConstDIterator(2, 1) && prePostIncrementIt == matrix.getConstDIterator(2, 1),
-                 "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(1, 0),
+             "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator postPreIncrementIt{++(it++)};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDBegin(-1);
+    m_SecondaryIntIterator = (++m_PrimaryIntIterator)++;
 
-        QVERIFY2(it == matrix.getConstDIterator(2, 1) && postPreIncrementIt == matrix.getConstDIterator(2, 1),
-                 "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1),
+             "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(-1)};
-        IntMatrixConstDIterator preIncrementIt{++it};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDBegin(-1);
+    IntMatrixConstDIterator postPreIncrementIt{++(m_PrimaryIntIterator++)};
 
-        QVERIFY2(it == matrix.constDEnd(2, 1) && preIncrementIt == matrix.constDEnd(2, 1),
-                 "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && postPreIncrementIt == m_PrimaryIntMatrix.getConstDIterator(2, 1),
+             "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(-1)};
-        IntMatrixConstDIterator postIncrementIt{it++};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDEnd(-1);
+    m_SecondaryIntIterator = ++m_PrimaryIntIterator;
 
-        QVERIFY2(it == matrix.constDEnd(2, 1) && postIncrementIt == matrix.constDEnd(2, 1),
-                 "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.constDEnd(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.constDEnd(2, 1),
+             "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDEnd(-1);
+    m_SecondaryIntIterator = m_PrimaryIntIterator++;
+
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.constDEnd(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.constDEnd(2, 1),
+             "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
 }
 
 void ConstDIteratorTests::testDecrementOperators()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(-1)};
-        IntMatrixConstDIterator preDecrementIt{--it};
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
 
-        QVERIFY2(it == matrix.getConstDIterator(3, 2) && preDecrementIt == matrix.getConstDIterator(3, 2),
-                 "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDEnd(-1);
+    m_SecondaryIntIterator = --m_PrimaryIntIterator;
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(3, 2)};
-        IntMatrixConstDIterator preDecrementIt{--it};
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 2) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 2),
+             "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-        QVERIFY2(it == matrix.getConstDIterator(2, 1) && preDecrementIt == matrix.getConstDIterator(2, 1),
-                 "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(3, 2);
+    m_SecondaryIntIterator = --m_PrimaryIntIterator;
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(-1)};
-        IntMatrixConstDIterator prePreDecrementIt{--(--it)};
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1),
+             "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-        QVERIFY2(it == matrix.getConstDIterator(3, 2) && prePreDecrementIt == matrix.getConstDIterator(2, 1),
-                 "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDEnd(-1);
+    m_SecondaryIntIterator = --(--m_PrimaryIntIterator);
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(3, 2)};
-        IntMatrixConstDIterator prePreDecrementIt{--(--it)};
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 2) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1),
+             "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-        QVERIFY2(it == matrix.getConstDIterator(2, 1) && prePreDecrementIt == matrix.getConstDIterator(1, 0),
-                 "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(3, 2);
+    m_SecondaryIntIterator = --(--m_PrimaryIntIterator);
+
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(1, 0),
+             "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(-1)};
-        IntMatrixConstDIterator postDecrementIt{it--};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDEnd(-1);
+    m_SecondaryIntIterator = m_PrimaryIntIterator--;
 
-        QVERIFY2(it == matrix.getConstDIterator(3, 2) && postDecrementIt == matrix.constDEnd(1, 0),
-                 "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 2) && m_SecondaryIntIterator == m_PrimaryIntMatrix.constDEnd(1, 0),
+             "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(3, 2)};
-        IntMatrixConstDIterator postDecrementIt{it--};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(3, 2);
+    m_SecondaryIntIterator = m_PrimaryIntIterator--;
 
-        QVERIFY2(it == matrix.getConstDIterator(2, 1) && postDecrementIt == matrix.getConstDIterator(3, 2),
-                 "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 2),
+             "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(-1)};
-        IntMatrixConstDIterator postPostDecrementIt{(it--)--};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDEnd(-1);
+    m_SecondaryIntIterator = (m_PrimaryIntIterator--)--;
 
-        QVERIFY2(it == matrix.getConstDIterator(3, 2) && postPostDecrementIt == matrix.constDEnd(1, 0),
-                 "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 2) && m_SecondaryIntIterator == m_PrimaryIntMatrix.constDEnd(1, 0),
+             "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(3, 2)};
-        IntMatrixConstDIterator postPostDecrementIt{(it--)--};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(3, 2);
+    m_SecondaryIntIterator = (m_PrimaryIntIterator--)--;
 
-        QVERIFY2(it == matrix.getConstDIterator(2, 1) && postPostDecrementIt == matrix.getConstDIterator(3, 2),
-                 "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 2),
+             "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(-1)};
-        IntMatrixConstDIterator prePostDecrementIt{(--it)--};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDEnd(-1);
+    m_SecondaryIntIterator = (--m_PrimaryIntIterator)--;
 
-        QVERIFY2(it == matrix.getConstDIterator(3, 2) && prePostDecrementIt == matrix.getConstDIterator(3, 2),
-                 "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 2) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 2),
+             "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(3, 2)};
-        IntMatrixConstDIterator prePostDecrementIt{(--it)--};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(3, 2);
+    m_SecondaryIntIterator = (--m_PrimaryIntIterator)--;
 
-        QVERIFY2(it == matrix.getConstDIterator(2, 1) && prePostDecrementIt == matrix.getConstDIterator(2, 1),
-                 "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1),
+             "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(-1)};
-        IntMatrixConstDIterator postPreDecrementIt{--(it--)};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDEnd(-1);
+    m_SecondaryIntIterator = --(m_PrimaryIntIterator--);
 
-        QVERIFY2(it == matrix.getConstDIterator(3, 2) && postPreDecrementIt == matrix.getConstDIterator(3, 2),
-                 "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 2) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 2),
+             "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(3, 2)};
-        IntMatrixConstDIterator postPreDecrementIt{--(it--)};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(3, 2);
+    m_SecondaryIntIterator = --(m_PrimaryIntIterator--);
 
-        QVERIFY2(it == matrix.getConstDIterator(2, 1) && postPreDecrementIt == matrix.getConstDIterator(2, 1),
-                 "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1),
+             "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator preDecrementIt{--it};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDBegin(-1);
+    m_SecondaryIntIterator = --m_PrimaryIntIterator;
 
-        QVERIFY2(it == matrix.getConstDIterator(1, 0) && preDecrementIt == matrix.getConstDIterator(1, 0),
-                 "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(1, 0) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(1, 0),
+             "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator postDecrementIt{it--};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDBegin(-1);
+    m_SecondaryIntIterator = m_PrimaryIntIterator--;
 
-        QVERIFY2(it == matrix.getConstDIterator(1, 0) && postDecrementIt == matrix.getConstDIterator(1, 0),
-                 "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element");
-    }
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(1, 0) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(1, 0),
+             "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 }
 
 void ConstDIteratorTests::testOperatorPlus()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    QFETCH(IntMatrixConstDIterator, iterator);
+    QFETCH(IntMatrixDiffType, scalarValue);
+    QFETCH(IntMatrixConstDIterator, expectedIterator);
 
-        IntMatrixConstDIterator it1{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator it2{it1 + (-1)};
-        IntMatrixConstDIterator it3{it1 + 2};
-        IntMatrixConstDIterator it4{it1 + 3};
-        IntMatrixConstDIterator it5{it1 + 4};
-
-        QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.getConstDIterator(3, 2) && it4 == matrix.constDEnd(1, 0) && it5 == matrix.constDEnd(1, 0),
-                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-
-        IntMatrixConstDIterator it1{matrix.getConstDIterator(-1, 1, true)};
-        IntMatrixConstDIterator it2{it1 + (-2)};
-        IntMatrixConstDIterator it3{it1 + (-1)};
-        IntMatrixConstDIterator it4{it1 + (0)};
-        IntMatrixConstDIterator it5{it1 + 1};
-        IntMatrixConstDIterator it6{it1 + 2};
-        IntMatrixConstDIterator it7{it1 + 3};
-
-        QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.constDBegin(1, 0) && it4 == matrix.getConstDIterator(2, 1) && it5 == matrix.getConstDIterator(3, 2) &&
-                 it6 == matrix.constDEnd(1, 0) && it7 == matrix.constDEnd(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-
-        IntMatrixConstDIterator it1{matrix.constDEnd(-1)};
-        IntMatrixConstDIterator it2{it1 + (-4)};
-        IntMatrixConstDIterator it3{it1 + (-3)};
-        IntMatrixConstDIterator it4{it1 + (-1)};
-        IntMatrixConstDIterator it5{it1 + 1};
-
-        QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.constDBegin(1, 0) && it4 == matrix.getConstDIterator(3, 2) && it5 == matrix.constDEnd(1, 0),
-                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    // additional test to quick check that on the positive diagonals everything is fine too
-    {
-        IntMatrix matrix{3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it1{matrix.constDBegin(0, 1)};
-        IntMatrixConstDIterator it2{it1 + (-2)};
-        IntMatrixConstDIterator it3{it1 + (-1)};
-        IntMatrixConstDIterator it4{it1 + 2};
-        IntMatrixConstDIterator it5{it1 + 3};
-        IntMatrixConstDIterator it6{it1 + 4};
-        QVERIFY2(it2 == matrix.constDBegin(0, 1) && it3 == matrix.constDBegin(0, 1) && it4 == matrix.getConstDIterator(2, 3) && it5 == matrix.constDEnd(0, 1) && it6 == matrix.constDEnd(0, 1),
-                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    }
+    QVERIFY2(iterator + scalarValue == expectedIterator, "Operator + does not work correctly, the resulting iterator does not point to the right element!");
 }
 
 void ConstDIteratorTests::testOperatorMinus()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    QFETCH(IntMatrixConstDIterator, iterator);
+    QFETCH(IntMatrixDiffType, scalarValue);
+    QFETCH(IntMatrixConstDIterator, expectedIterator);
 
-        IntMatrixConstDIterator it1{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator it2{it1 -1};
-        IntMatrixConstDIterator it3{it1 - (-2)};
-        IntMatrixConstDIterator it4{it1 - (-3)};
-        IntMatrixConstDIterator it5{it1 - (-4)};
+    scalarValue = -scalarValue;
 
-        QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.getConstDIterator(3, 2) && it4 == matrix.constDEnd(1, 0) && it5 == matrix.constDEnd(1, 0),
-                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-
-        IntMatrixConstDIterator it1{matrix.getConstDIterator(-1, 1, true)};
-        IntMatrixConstDIterator it2{it1 - 2};
-        IntMatrixConstDIterator it3{it1 - 1};
-        IntMatrixConstDIterator it4{it1 - 0};
-        IntMatrixConstDIterator it5{it1 - (-1)};
-        IntMatrixConstDIterator it6{it1 - (-2)};
-        IntMatrixConstDIterator it7{it1 - (-3)};
-
-        QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.constDBegin(1, 0) && it4 == matrix.getConstDIterator(2, 1) && it5 == matrix.getConstDIterator(3, 2) &&
-                 it6 == matrix.constDEnd(1, 0) && it7 == matrix.constDEnd(1, 0), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-
-        IntMatrixConstDIterator it1{matrix.constDEnd(-1)};
-        IntMatrixConstDIterator it2{it1 - 4};
-        IntMatrixConstDIterator it3{it1 - 3};
-        IntMatrixConstDIterator it4{it1 - 1};
-        IntMatrixConstDIterator it5{it1 - (-1)};
-
-        QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.constDBegin(1, 0) && it4 == matrix.getConstDIterator(3, 2) && it5 == matrix.constDEnd(1, 0),
-                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    // additional test to quick check that on the positive diagonals everything is fine too
-    {
-        IntMatrix matrix{3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it1{matrix.constDBegin(0, 1)};
-        IntMatrixConstDIterator it2{it1 -2};
-        IntMatrixConstDIterator it3{it1 -1};
-        IntMatrixConstDIterator it4{it1 - (-2)};
-        IntMatrixConstDIterator it5{it1 - (-3)};
-        IntMatrixConstDIterator it6{it1 - (-4)};
-        QVERIFY2(it2 == matrix.constDBegin(0, 1) && it3 == matrix.constDBegin(0, 1) && it4 == matrix.getConstDIterator(2, 3) && it5 == matrix.constDEnd(0, 1) && it6 == matrix.constDEnd(0, 1),
-                 "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    }
+    QVERIFY2(iterator - scalarValue == expectedIterator, "Operator - does not work correctly, the resulting iterator does not point to the right element!");
 }
 
 void ConstDIteratorTests::testOperatorPlusEqual()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    QFETCH(IntMatrixConstDIterator, iterator);
+    QFETCH(IntMatrixDiffType, scalarValue);
+    QFETCH(IntMatrixConstDIterator, expectedIterator);
 
-        IntMatrixConstDIterator it1{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator it2{it1};
-        IntMatrixConstDIterator it3{it1};
-        IntMatrixConstDIterator it4{it1};
-        IntMatrixConstDIterator it5{it1};
+    iterator += scalarValue;
 
-        it2 += -1;
-        it3 += 2;
-        it4 += 3;
-        it5 += 4;
-
-        QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.getConstDIterator(3, 2) && it4 == matrix.constDEnd(1, 0) && it5 == matrix.constDEnd(1, 0),
-                 "Operator += does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-
-        IntMatrixConstDIterator it1{matrix.getConstDIterator(-1, 1, true)};
-        IntMatrixConstDIterator it2{it1};
-        IntMatrixConstDIterator it3{it1};
-        IntMatrixConstDIterator it4{it1};
-        IntMatrixConstDIterator it5{it1};
-        IntMatrixConstDIterator it6{it1};
-        IntMatrixConstDIterator it7{it1};
-
-        it2 += -2;
-        it3 += -1;
-        it4 += 0;
-        it5 += 1;
-        it6 += 2;
-        it7 += 3;
-
-        QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.constDBegin(1, 0) && it4 == matrix.getConstDIterator(2, 1) && it5 == matrix.getConstDIterator(3, 2) &&
-                 it6 == matrix.constDEnd(1, 0) && it7 == matrix.constDEnd(1, 0), "Operator += does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-
-        IntMatrixConstDIterator it1{matrix.constDEnd(-1)};
-        IntMatrixConstDIterator it2{it1};
-        IntMatrixConstDIterator it3{it1};
-        IntMatrixConstDIterator it4{it1};
-        IntMatrixConstDIterator it5{it1};
-
-        it2 += -4;
-        it3 += -3;
-        it4 += -1;
-        it5 += 1;
-
-        QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.constDBegin(1, 0) && it4 == matrix.getConstDIterator(3, 2) && it5 == matrix.constDEnd(1, 0),
-                 "Operator += does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    // additional test to quick check that on the positive diagonals everything is fine too
-    {
-        IntMatrix matrix{3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it1{matrix.constDBegin(0, 1)};
-        IntMatrixConstDIterator it2{it1};
-        IntMatrixConstDIterator it3{it1};
-        IntMatrixConstDIterator it4{it1};
-        IntMatrixConstDIterator it5{it1};
-        IntMatrixConstDIterator it6{it1};
-
-        it2 += -2;
-        it3 += -1;
-        it4 += 2;
-        it5 += 3;
-        it6 += 4;
-
-        QVERIFY2(it2 == matrix.constDBegin(0, 1) && it3 == matrix.constDBegin(0, 1) && it4 == matrix.getConstDIterator(2, 3) && it5 == matrix.constDEnd(0, 1) && it6 == matrix.constDEnd(0, 1),
-                 "Operator += does not work correctly, the resulting iterator does not point to the right element");
-    }
+    QVERIFY2(iterator == expectedIterator, "Operator += does not work correctly, the resulting iterator does not point to the right element!");
 }
 
 void ConstDIteratorTests::testOperatorMinusEqual()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    QFETCH(IntMatrixConstDIterator, iterator);
+    QFETCH(IntMatrixDiffType, scalarValue);
+    QFETCH(IntMatrixConstDIterator, expectedIterator);
 
-        IntMatrixConstDIterator it1{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator it2{it1};
-        IntMatrixConstDIterator it3{it1};
-        IntMatrixConstDIterator it4{it1};
-        IntMatrixConstDIterator it5{it1};
+    scalarValue = -scalarValue;
+    iterator -= scalarValue;
 
-        it2 -= 1;
-        it3 -= -2;
-        it4 -= -3;
-        it5 -= -4;
-
-        QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.getConstDIterator(3, 2) && it4 == matrix.constDEnd(1, 0) && it5 == matrix.constDEnd(1, 0),
-                 "Operator += does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-
-        IntMatrixConstDIterator it1{matrix.getConstDIterator(-1, 1, true)};
-        IntMatrixConstDIterator it2{it1};
-        IntMatrixConstDIterator it3{it1};
-        IntMatrixConstDIterator it4{it1};
-        IntMatrixConstDIterator it5{it1};
-        IntMatrixConstDIterator it6{it1};
-        IntMatrixConstDIterator it7{it1};
-
-        it2 -= 2;
-        it3 -= 1;
-        it4 -= 0;
-        it5 -= -1;
-        it6 -= -2;
-        it7 -= -3;
-
-        QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.constDBegin(1, 0) && it4 == matrix.getConstDIterator(2, 1) && it5 == matrix.getConstDIterator(3, 2) &&
-                 it6 == matrix.constDEnd(1, 0) && it7 == matrix.constDEnd(1, 0), "Operator += does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-
-        IntMatrixConstDIterator it1{matrix.constDEnd(-1)};
-        IntMatrixConstDIterator it2{it1};
-        IntMatrixConstDIterator it3{it1};
-        IntMatrixConstDIterator it4{it1};
-        IntMatrixConstDIterator it5{it1};
-
-        it2 -= 4;
-        it3 -= 3;
-        it4 -= 1;
-        it5 -= -1;
-
-        QVERIFY2(it2 == matrix.constDBegin(1, 0) && it3 == matrix.constDBegin(1, 0) && it4 == matrix.getConstDIterator(3, 2) && it5 == matrix.constDEnd(1, 0),
-                 "Operator += does not work correctly, the resulting iterator does not point to the right element");
-    }
-
-    // additional test to quick check that on the positive diagonals everything is fine too
-    {
-        IntMatrix matrix{3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it1{matrix.constDBegin(0, 1)};
-        IntMatrixConstDIterator it2{it1};
-        IntMatrixConstDIterator it3{it1};
-        IntMatrixConstDIterator it4{it1};
-        IntMatrixConstDIterator it5{it1};
-        IntMatrixConstDIterator it6{it1};
-
-        it2 -= 2;
-        it3 -= 1;
-        it4 -= -2;
-        it5 -= -3;
-        it6 -= -4;
-
-        QVERIFY2(it2 == matrix.constDBegin(0, 1) && it3 == matrix.constDBegin(0, 1) && it4 == matrix.getConstDIterator(2, 3) && it5 == matrix.constDEnd(0, 1) && it6 == matrix.constDEnd(0, 1),
-                 "Operator += does not work correctly, the resulting iterator does not point to the right element");
-    }
+    QVERIFY2(iterator == expectedIterator, "Operator -= does not work correctly, the resulting iterator does not point to the right element!");
 }
 
 void ConstDIteratorTests::testDifferenceOperator()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator firstIt{matrix.constDBegin(-1)};
-        IntMatrixConstDIterator secondIt{matrix.constDBegin(1, 0)};
+    QFETCH(IntMatrixConstDIterator, firstIterator);
+    QFETCH(IntMatrixConstDIterator, secondIterator);
+    QFETCH(IntMatrix::size_type, expectedDifference);
 
-        QVERIFY2(firstIt - secondIt == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator firstIt{matrix.constDEnd(1)};
-        IntMatrixConstDIterator secondIt{matrix.constDEnd(0, 1)};
-
-        QVERIFY2(firstIt - secondIt == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator firstIt{matrix.getConstDIterator(2, 1)};
-        IntMatrixConstDIterator secondIt{matrix.getConstDIterator(-1, 2, true)};
-
-        QVERIFY2(secondIt - firstIt == 1, "The difference operator does not work correctly, difference between iterators is wrong");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator firstIt{matrix.getConstDIterator(1, 2)};
-        IntMatrixConstDIterator secondIt{matrix.getConstDIterator(1, 0, true)};
-
-        QVERIFY2(secondIt - firstIt == -1, "The difference operator does not work correctly, difference between iterators is wrong");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator firstIt{matrix.getConstDIterator(-1, 0, true)};
-        IntMatrixConstDIterator secondIt{matrix.constDEnd(-1)};
-
-        QVERIFY2(secondIt - firstIt == 3, "The difference operator does not work correctly, difference between iterators is wrong");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator firstIt{matrix.getConstDIterator(2, 2)};
-        IntMatrixConstDIterator secondIt{matrix.constDBegin(0, 0)};
-
-        QVERIFY2(secondIt - firstIt == -2, "The difference operator does not work correctly, difference between iterators is wrong");
-    }
+    QVERIFY2(secondIterator - firstIterator == expectedDifference, "The difference operator does not work correctly, difference between iterators is not the expected one!");
 }
 
-void ConstDIteratorTests::testDereferenceAsteriskOperator()
+void ConstDIteratorTests::testAsteriskOperator()
 {
-    IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-    IntMatrixConstDIterator it{matrix.getConstDIterator(2, 1)};
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(2, 1);
 
-    QVERIFY2(*it == -8, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
+    QVERIFY2(*m_PrimaryIntIterator == -8, "The asterisk operator does not work correctly when reading the value!");
 }
 
-void ConstDIteratorTests::testDereferenceArrowOperator()
+void ConstDIteratorTests::testArrowOperator()
 {
-    StringMatrix matrix{2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-    StringMatrixConstDIterator readIter{matrix.constDBegin(0, 1)};
+    m_StringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
 
-    QVERIFY2(readIter->size() == 5, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    m_StringIterator = m_StringMatrix.constDBegin(0, 1);
+
+    QVERIFY2(m_StringIterator->size() == 5, "The arrow operator does not work correctly when reading the value!");
 }
 
-void ConstDIteratorTests::testDereferenceSquareBracketsOperator()
+void ConstDIteratorTests::testSquareBracketsOperator()
 {
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.getConstDIterator(2, 1)};
+    QFETCH(IntMatrixConstDIterator, iterator);
+    QFETCH(IntMatrixDiffType, index);
+    QFETCH(int, expectedValue);
 
-        QVERIFY2(it[-1] == 4 && it[0] == -8 && it[1] == 12, "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDBegin(0, 1)};
-
-        QVERIFY2(it[0] == 2 && it[1] == 6, "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-        IntMatrixConstDIterator it{matrix.constDEnd(0)};
-
-        QVERIFY2( it[-3] == 1 && it[-2] == -5 && it[-1] == 9, "The dereference square brackets operator doesn't work correctly, returned value is incorrect for at least one element");
-    }
+    QVERIFY2(iterator[index] == expectedValue, "The dereference square brackets operator doesn't work correctly when reading the value from the given index!");
 }
 
 void ConstDIteratorTests::testChangeDiagonal()
 {
-    IntMatrix matrix(4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12});
-    IntMatrixConstDIterator it{matrix.constDBegin(1)};
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constDBegin(1);
 
-    QVERIFY2(*it == 2, "The iterator does not reference the right value");
+    QVERIFY(*m_PrimaryIntIterator == 2);
 
-    it = matrix.getConstDIterator(-2, 0, true);
-    QVERIFY2(it[1] == -11, "the iterator index does not reference the right value");
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(-2, 0, true);
+
+    QVERIFY(m_PrimaryIntIterator[1] == -11);
 }
 
 void ConstDIteratorTests::testStdCount()
 {
-    {
-        IntMatrix matrix(1, 2, {2, -3});
+    QFETCH(IntMatrixConstDIterator, leftIterator);
+    QFETCH(IntMatrixConstDIterator, rightIterator);
+    QFETCH(int, countedValue);
+    QFETCH(IntMatrixDiffType, expectedCount);
 
-        QVERIFY2(std::count(matrix.getConstDIterator(0, 1), matrix.getConstDIterator(1, 0, true), -3) == 0,
-                 "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-        QVERIFY2(std::count(matrix.constDBegin(1), matrix.constDEnd(1), -3) == 1,
-                 "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    }
-
-    {
-        IntMatrix matrix(6, 7, {
-                             1, -1, -3,  4, -5, 6,  7,
-                             1,  2,  4,  4, -5, 6,  7,
-                             1,  2, -3, -1, -5, 6,  7,
-                             1,  2, -3,  4,  5, 6,  7,
-                             1,  2, -3,  4, -5, 4,  7,
-                             1,  2, -3,  4, -5, 6, -1,
-                         });
-
-        QVERIFY2(std::count(matrix.constDBegin(1), matrix.constDEnd(1), -1) == 3,
-                 "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-        QVERIFY2(std::count(matrix.getConstDIterator(1, 1, true), matrix.getConstDIterator(4, 5), 4) == 1,
-                 "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-        QVERIFY2(std::count(matrix.getConstDIterator(2, 3), matrix.getConstDIterator(1, 4, true), 4) == 0,
-                 "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    }
+    QVERIFY2(std::count(leftIterator, rightIterator, countedValue) == expectedCount, "The std::count algorithm does not return the expected value!");
 }
 
 void ConstDIteratorTests::testStdFind()
 {
-    {
-        IntMatrix matrix(6, 7, {
-                             1, -1, -3,  4, -5, 6,  7,
-                             1,  2,  4,  4, -5, 6,  7,
-                             1,  2, -3, -1, -5, 6,  7,
-                             1,  2, -3,  4,  5, 6,  7,
-                             1,  2, -3,  4, -5, 4,  7,
-                             1,  2, -3,  4, -5, 6, -1,
-                         });
+    QFETCH(IntMatrixConstDIterator, leftIterator);
+    QFETCH(IntMatrixConstDIterator, rightIterator);
+    QFETCH(int, searchedValue);
+    QFETCH(IntMatrixConstDIterator, expectedIterator);
 
-        IntMatrixConstDIterator it{std::find(matrix.constDBegin(1), matrix.constDEnd(1), 5)};
-        QVERIFY2(it == matrix.getConstDIterator(3, 4), "The iterator doesn't work correctly with std::find, incorrect next element returned");
-    }
+    m_PrimaryIntIterator = std::find(leftIterator, rightIterator, searchedValue);
+    QVERIFY2(m_PrimaryIntIterator == expectedIterator, "The std::find algorithm does not return the expected iterator!");
+}
 
-    {
-        IntMatrix matrix(6, 7, {
-                             1, -1, -3,  4, -5, 6,  7,
-                             1,  2,  4,  4, -5, 6,  7,
-                             1,  2, -3, -1, -5, 6,  7,
-                             1,  2, -3,  4,  4, 6,  7,
-                             1,  2, -3,  4, -5, 5,  7,
-                             1,  2, -3,  4, -5, 6, -1,
-                         });
+void ConstDIteratorTests::testStdFindWithIncrement()
+{
+    m_PrimaryIntMatrix = {6, 7, {
+                              1, -1, -3,  4, -5, 6,  7,
+                              1,  2,  4,  4, -5, 6,  7,
+                              1,  2, -3, -1, -5, 6,  7,
+                              1,  2, -3,  4,  4, 6,  7,
+                              1,  2, -3,  4, -5, 5,  7,
+                              1,  2, -3,  4, -5, 6, -1,
+                          }};
 
-        IntMatrixConstDIterator it{std::find(matrix.constDBegin(1), matrix.constDEnd(1), 4)};
-        QVERIFY2(it == matrix.getConstDIterator(1, 2), "The iterator doesn't work correctly with std::find, incorrect next element returned");
+    m_PrimaryIntIterator = std::find(m_PrimaryIntMatrix.constDBegin(1), m_PrimaryIntMatrix.constDEnd(1), 4);
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(1, 2), "The std::find algorithm does not return the expected iterator!");
 
-        ++it;
-        it = std::find(it, matrix.constDEnd(1), 4);
-        QVERIFY2(it == matrix.getConstDIterator(3, 4), "The iterator doesn't work correctly with std::find, incorrect next element returned");
+    ++m_PrimaryIntIterator;
+    m_PrimaryIntIterator = std::find(m_PrimaryIntIterator, m_PrimaryIntMatrix.constDEnd(1), 4);
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(3, 4), "The std::find algorithm does not return the expected iterator!");
 
-        ++it;
-        it = std::find(it, matrix.constDEnd(1), 4);
-        QVERIFY2(it == matrix.constDEnd(1), "The iterator doesn't work correctly with std::find, incorrect next element returned");
-    }
+    ++m_PrimaryIntIterator;
+    m_PrimaryIntIterator = std::find(m_PrimaryIntIterator, m_PrimaryIntMatrix.constDEnd(1), 4);
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.constDEnd(1), "The std::find algorithm does not return the expected iterator!");
+}
 
-    {
-        IntMatrix matrix(6, 7, {
-                             1, -1, -3,  4, -5, 6,  7,
-                             1,  2,  4,  4, -5, 6,  7,
-                             1,  2, -3, -1, -5, 6,  7,
-                             1,  2, -3,  4,  5, 6,  7,
-                             1,  2, -3,  4, -5, 4,  7,
-                             1,  2, -3,  4, -5, 6, -1,
-                         });
+/* Note the data tag for each row is the order in which tagged elements are inserted within row not the order in which they are used
+   For example the testing methods for the < and > operators share the same table but their usage is in different order:
+    - for < the first iterator is on the left side while the second is on the right side
+    - for > the second iterator is placed on the left side while the first is on the right side (it1 < it2 <=> it2 > it1)
+*/
 
-        IntMatrixConstDIterator it{std::find(matrix.constDBegin(1), matrix.constDEnd(1), -9)};
-        QVERIFY2(it == matrix.constDEnd(1), "The iterator doesn't work correctly with std::find, incorrect next element returned");
-    }
+void ConstDIteratorTests::testIteratorCreation_data()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+    QTest::addColumn<IntMatrixConstDIterator>("iterator");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowNr");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnNr");
+    QTest::addColumn<IntMatrixSizeType>("expectedDiagonalNr");
+    QTest::addColumn<IntMatrixSizeType>("expectedDiagonalIndex");
+
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constDBegin(-2) << 2 << 0 << -2 << 0;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constDBegin(0) << 0 << 0 << 0 << 0;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constDBegin(1) << 0 << 1 << 1 << 0;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constDBegin(2, 1) << 1 << 0 << -1 << 0;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constDBegin(0, 0) << 0 << 0 << 0 << 0;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constDBegin(1, 2) << 0 << 1 << 1 << 0;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constDEnd(-2) << 4 << 2 << -2 << 2;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constDEnd(0) << 3 << 3 << 0 << 3;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constDEnd(1) << 2 << 3 << 1 << 2;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constDEnd(2, 1) << 4 << 3 << -1 << 3;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constDEnd(0, 0) << 3 << 3 << 0 << 3;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constDEnd(1, 2) << 2 << 3 << 1 << 2;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstDIterator(1, 0) << 1 << 0 << -1 << 0;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstDIterator(0, 2) << 0 << 2 << 2 << 0;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstDIterator(2, 1) << 2 << 1 << -1 << 1;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstDIterator(2, 2) << 2 << 2 << 0 << 2;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstDIterator(-1, 0, true) << 1 << 0 << -1 << 0;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstDIterator(2, 0, true) << 0 << 2 << 2 << 0;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstDIterator(-1, 1, true) << 2 << 1 << -1 << 1;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstDIterator(0, 2, true) << 2 << 2 << 0 << 2;
+}
+
+void ConstDIteratorTests::testIteratorsAreEqual_data()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+    QTest::addColumn<IntMatrixConstDIterator>("firstIterator");
+    QTest::addColumn<IntMatrixConstDIterator>("secondIterator");
+
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstDIterator(1, 2) << m_PrimaryIntMatrix.getConstDIterator(1, 1, true);
+    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constDBegin(-1) << m_PrimaryIntMatrix.constDBegin(2, 1);
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constDBegin(2, 1) << m_PrimaryIntMatrix.getConstDIterator(1, 0);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstDIterator(1, 0) << m_PrimaryIntMatrix.getConstDIterator(-1, 0, true);
+    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constDEnd(2) << m_PrimaryIntMatrix.constDEnd(0, 2);
+}
+
+void ConstDIteratorTests::testLessThanOperator_data()
+{
+    _buildLessThanOperatorTestingTable();
+}
+
+void ConstDIteratorTests::testLessThanOrEqualToOperator_data()
+{
+    _buildLessThanOrEqualOperatorTestingTable();
+}
+
+void ConstDIteratorTests::testGreaterThanOperator_data()
+{
+    _buildLessThanOperatorTestingTable();
+}
+
+void ConstDIteratorTests::testGreaterThanOrEqualToOperator_data()
+{
+    _buildLessThanOrEqualOperatorTestingTable();
+}
+
+void ConstDIteratorTests::testOperatorPlus_data()
+{
+    _buildOperatorPlusTestingTable();
+}
+
+void ConstDIteratorTests::testOperatorMinus_data()
+{
+    _buildOperatorPlusTestingTable();
+}
+
+void ConstDIteratorTests::testOperatorPlusEqual_data()
+{
+    _buildOperatorPlusTestingTable();
+}
+
+void ConstDIteratorTests::testOperatorMinusEqual_data()
+{
+    _buildOperatorPlusTestingTable();
+}
+
+void ConstDIteratorTests::testDifferenceOperator_data()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+    QTest::addColumn<IntMatrixConstDIterator>("firstIterator");
+    QTest::addColumn<IntMatrixConstDIterator>("secondIterator");
+    QTest::addColumn<IntMatrixDiffType>("expectedDifference");
+
+    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constDBegin(-1) << m_PrimaryIntMatrix.constDBegin(1, 0) << 0;
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstDIterator(2, 2) << m_PrimaryIntMatrix.constDBegin(0, 0) << -2;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstDIterator(2, 1) << m_PrimaryIntMatrix.getConstDIterator(-1, 2, true) << 1;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstDIterator(1, 2) << m_PrimaryIntMatrix.getConstDIterator(1, 0, true) << -1;
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstDIterator(-1, 0, true) << m_PrimaryIntMatrix.constDEnd(-1) << 3;
+    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constDEnd(1) << m_PrimaryIntMatrix.constDEnd(0, 1) << 0;
+}
+
+void ConstDIteratorTests::testSquareBracketsOperator_data()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+    QTest::addColumn<IntMatrixConstDIterator>("iterator");
+    QTest::addColumn<IntMatrixDiffType>("index");
+    QTest::addColumn<int>("expectedValue");
+
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constDBegin(0, 1) << 0 << 2;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constDBegin(0, 1) << 1 << 6;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstDIterator(2, 1) << -1 << 4;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstDIterator(2, 1) << 0 << -8;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstDIterator(2, 1) << 1 << 12;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constDEnd(0) << -3 << 1;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constDEnd(0) << -2 << -5;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constDEnd(0) << -1 << 9;
+}
+
+void ConstDIteratorTests::testStdCount_data()
+{
+    m_PrimaryIntMatrix = {1, 2, {2, -3}};
+
+    m_SecondaryIntMatrix = {6, 7, {
+                                1, -1, -3,  4, -5, 6,  7,
+                                1,  2,  4,  4, -5, 6,  7,
+                                1,  2, -3, -1, -5, 6,  7,
+                                1,  2, -3,  4,  5, 6,  7,
+                                1,  2, -3,  4, -5, 4,  7,
+                                1,  2, -3,  4, -5, 6, -1,
+                            }};
+
+    QTest::addColumn<IntMatrixConstDIterator>("leftIterator");
+    QTest::addColumn<IntMatrixConstDIterator>("rightIterator");
+    QTest::addColumn<int>("countedValue");
+    QTest::addColumn<IntMatrixDiffType>("expectedCount");
+
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constDBegin(1) << m_PrimaryIntMatrix.constDEnd(1) << -3 << 1;
+    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constDBegin(1) << m_SecondaryIntMatrix.constDEnd(1) << -1 << 3;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstDIterator(0, 1) << m_PrimaryIntMatrix.getConstDIterator(1, 0, true) << -3 << 0;
+    QTest::newRow("{random iterator, random iterator}") << m_SecondaryIntMatrix.getConstDIterator(1, 1, true) << m_SecondaryIntMatrix.getConstDIterator(4, 5) << 4 << 1;
+    QTest::newRow("{random iterator, random iterator}") << m_SecondaryIntMatrix.getConstDIterator(2, 3) << m_SecondaryIntMatrix.getConstDIterator(1, 4, true) << 4 << 0;
+}
+
+void ConstDIteratorTests::testStdFind_data()
+{
+    m_PrimaryIntMatrix = {6, 7, {
+                              1, -1, -3,  4, -5, 6,  7,
+                              1,  2,  4,  4, -5, 6,  7,
+                              1,  2, -3, -1, -5, 6,  7,
+                              1,  2, -3,  4,  5, 6,  7,
+                              1,  2, -3,  4, -5, 4,  7,
+                              1,  2, -3,  4, -5, 6, -1,
+                          }};
+
+    QTest::addColumn<IntMatrixConstDIterator>("leftIterator");
+    QTest::addColumn<IntMatrixConstDIterator>("rightIterator");
+    QTest::addColumn<int>("searchedValue");
+    QTest::addColumn<IntMatrixConstDIterator>("expectedIterator");
+
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constDBegin(1) << m_PrimaryIntMatrix.constDEnd(1) << 5 << m_PrimaryIntMatrix.getConstDIterator(3, 4);
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constDBegin(1) << m_PrimaryIntMatrix.constDEnd(1) << -9 << m_PrimaryIntMatrix.constDEnd(1);
+}
+
+void ConstDIteratorTests::_buildLessThanOperatorTestingTable()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+    QTest::addColumn<IntMatrixConstDIterator>("firstIterator");
+    QTest::addColumn<IntMatrixConstDIterator>("secondIterator");
+
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constDBegin(1) << m_PrimaryIntMatrix.getConstDIterator(1, 2);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstDIterator(1, 2) << m_PrimaryIntMatrix.constDEnd(1);
+}
+
+void ConstDIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+    QTest::addColumn<IntMatrixConstDIterator>("firstIterator");
+    QTest::addColumn<IntMatrixConstDIterator>("secondIterator");
+
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constDBegin(-1) << m_PrimaryIntMatrix.getConstDIterator(1, 0);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstDIterator(1, 0) << m_PrimaryIntMatrix.getConstDIterator(2, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstDIterator(2, 1) << m_PrimaryIntMatrix.getConstDIterator(-1, 1, true);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstDIterator(-1, 1, true) << m_PrimaryIntMatrix.constDEnd(-1);
+}
+
+void ConstDIteratorTests::_buildOperatorPlusTestingTable()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    m_SecondaryIntMatrix = {3, 4, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+    QTest::addColumn<IntMatrixConstDIterator>("iterator");
+    QTest::addColumn<IntMatrixDiffType>("scalarValue");
+    QTest::addColumn<IntMatrixConstDIterator>("expectedIterator");
+
+    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constDBegin(-1) << -1 << m_PrimaryIntMatrix.constDBegin(1, 0);
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constDBegin(-1) << 2 << m_PrimaryIntMatrix.getConstDIterator(3, 2);
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constDBegin(-1) << 3 << m_PrimaryIntMatrix.constDEnd(1, 0);
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constDBegin(-1) << 4 << m_PrimaryIntMatrix.constDEnd(1, 0);
+
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstDIterator(-1, 1, true) << -2 << m_PrimaryIntMatrix.constDBegin(1, 0);
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstDIterator(-1, 1, true) << -1 << m_PrimaryIntMatrix.constDBegin(1, 0);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstDIterator(-1, 1, true) << 0 << m_PrimaryIntMatrix.getConstDIterator(2, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstDIterator(-1, 1, true) << 1 << m_PrimaryIntMatrix.getConstDIterator(3, 2);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstDIterator(-1, 1, true) << 2 << m_PrimaryIntMatrix.constDEnd(1, 0);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstDIterator(-1, 1, true) << 3 << m_PrimaryIntMatrix.constDEnd(1, 0);
+
+    QTest::newRow("{end iterator, begin iterator}") << m_PrimaryIntMatrix.constDEnd(-1) << -4 << m_PrimaryIntMatrix.constDBegin(1, 0);
+    QTest::newRow("{end iterator, begin iterator}") << m_PrimaryIntMatrix.constDEnd(-1) << -3 << m_PrimaryIntMatrix.constDBegin(1, 0);
+    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constDEnd(-1) << -1 << m_PrimaryIntMatrix.getConstDIterator(3, 2);
+    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constDEnd(-1) << 1 << m_PrimaryIntMatrix.constDEnd(1, 0);
+
+    QTest::newRow("{begin iterator, begin iterator}") << m_SecondaryIntMatrix.constDBegin(0, 1) << -2 << m_SecondaryIntMatrix.constDBegin(0, 1);
+    QTest::newRow("{begin iterator, begin iterator}") << m_SecondaryIntMatrix.constDBegin(0, 1) << -1 << m_SecondaryIntMatrix.constDBegin(0, 1);
+    QTest::newRow("{begin iterator, random iterator}") << m_SecondaryIntMatrix.constDBegin(0, 1) << 2 << m_SecondaryIntMatrix.getConstDIterator(2, 3);
+    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constDBegin(0, 1) << 3 << m_SecondaryIntMatrix.constDEnd(0, 1);
+    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constDBegin(0, 1) << 4 << m_SecondaryIntMatrix.constDEnd(0, 1);
 }
 
 QTEST_APPLESS_MAIN(ConstDIteratorTests)
