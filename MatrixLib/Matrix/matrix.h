@@ -20,7 +20,6 @@ public:
     {
     public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ZIterator, DataType, diff_type, size_type)
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ZIterator)
         COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
@@ -32,7 +31,6 @@ public:
     {
     public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstZIterator, DataType, diff_type, size_type)
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstZIterator)
         COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
@@ -44,7 +42,6 @@ public:
     {
     public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseZIterator, DataType, diff_type, size_type)
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseZIterator)
         COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
@@ -56,7 +53,6 @@ public:
     {
     public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator, DataType, diff_type, size_type)
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator)
         COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
@@ -68,7 +64,6 @@ public:
     {
     public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(NIterator, DataType, diff_type, size_type)
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(NIterator)
         COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
@@ -80,7 +75,6 @@ public:
     {
     public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstNIterator, DataType, diff_type, size_type)
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstNIterator)
         COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
@@ -92,7 +86,6 @@ public:
     {
     public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ReverseNIterator, DataType, diff_type, size_type)
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseNIterator)
         COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
@@ -104,7 +97,6 @@ public:
     {
     public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator, DataType, diff_type, size_type)
-        COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator)
         COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
     private:
@@ -1831,6 +1823,15 @@ DataType& Matrix<DataType>::DIterator::operator[](Matrix<DataType>::DIterator::d
 }
 
 template<typename DataType>
+Matrix<DataType>::DIterator::DIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_DiagonalIndex{-1}
+    , m_DiagonalNr{0}
+    , m_DiagonalSize{0}
+{
+}
+
+template<typename DataType>
 Matrix<DataType>::DIterator::DIterator(const Matrix<DataType>& matrix,
                                        Matrix<DataType>::size_type first,
                                        Matrix<DataType>::size_type second, bool isRelative)
@@ -1992,6 +1993,15 @@ const DataType& Matrix<DataType>::ConstDIterator::operator[](Matrix<DataType>::C
 }
 
 template<typename DataType>
+Matrix<DataType>::ConstDIterator::ConstDIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_DiagonalIndex{-1}
+    , m_DiagonalNr{0}
+    , m_DiagonalSize{0}
+{
+}
+
+template<typename DataType>
 Matrix<DataType>::ConstDIterator::ConstDIterator(const Matrix<DataType>& matrix,
                                                  Matrix<DataType>::size_type first,
                                                  Matrix<DataType>::size_type second, bool isRelative)
@@ -2113,13 +2123,13 @@ bool Matrix<DataType>::ReverseDIterator::isValidWithMatrix(const Matrix<DataType
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ReverseDIterator::getRowNr() const
 {
-    return m_DiagonalNr < 0 ? m_DiagonalSize - 1 - m_DiagonalIndex - m_DiagonalNr : m_DiagonalSize - m_DiagonalIndex - 1;
+    return m_DiagonalNr < 0 ? m_DiagonalSize - 1 - m_DiagonalIndex - m_DiagonalNr : m_DiagonalIndex >= 0 ? m_DiagonalSize - m_DiagonalIndex - 1 : m_DiagonalIndex;
 }
 
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ReverseDIterator::getColumnNr() const
 {
-    return m_DiagonalNr < 0 ? m_DiagonalSize - m_DiagonalIndex - 1 : m_DiagonalSize - 1 - m_DiagonalIndex + m_DiagonalNr;
+    return m_DiagonalNr < 0 ? m_DiagonalSize - m_DiagonalIndex - 1 : m_DiagonalIndex >= 0 ? m_DiagonalSize - 1 - m_DiagonalIndex + m_DiagonalNr : m_DiagonalIndex;
 }
 
 template<typename DataType>
@@ -2150,6 +2160,15 @@ template<typename DataType>
 DataType& Matrix<DataType>::ReverseDIterator::operator[](Matrix<DataType>::ReverseDIterator::difference_type index)
 {
     REVERSE_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::ReverseDIterator::ReverseDIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_DiagonalIndex{-1}
+    , m_DiagonalNr{0}
+    , m_DiagonalSize{0}
+{
 }
 
 // first and second can be interpreted either as diagonal number and (relative) diagonal index (isRelative is true) or as row/column number ((x, y) coordinates)
@@ -2275,13 +2294,13 @@ bool Matrix<DataType>::ConstReverseDIterator::isValidWithMatrix(const Matrix<Dat
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseDIterator::getRowNr() const
 {
-    return m_DiagonalNr < 0 ? m_DiagonalSize - 1 - m_DiagonalIndex - m_DiagonalNr : m_DiagonalSize - m_DiagonalIndex - 1;
+    return m_DiagonalNr < 0 ? m_DiagonalSize - 1 - m_DiagonalIndex - m_DiagonalNr : m_DiagonalIndex >= 0 ? m_DiagonalSize - m_DiagonalIndex - 1 : m_DiagonalIndex;
 }
 
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseDIterator::getColumnNr() const
 {
-    return m_DiagonalNr < 0 ? m_DiagonalSize - m_DiagonalIndex - 1 : m_DiagonalSize - 1 - m_DiagonalIndex + m_DiagonalNr;
+    return m_DiagonalNr < 0 ? m_DiagonalSize - m_DiagonalIndex - 1 : m_DiagonalIndex >= 0 ? m_DiagonalSize - 1 - m_DiagonalIndex + m_DiagonalNr : m_DiagonalIndex;
 }
 
 template<typename DataType>
@@ -2312,6 +2331,15 @@ template<typename DataType>
 const DataType& Matrix<DataType>::ConstReverseDIterator::operator[](Matrix<DataType>::ConstReverseDIterator::difference_type index) const
 {
     REVERSE_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstReverseDIterator::ConstReverseDIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_DiagonalIndex{-1}
+    , m_DiagonalNr{0}
+    , m_DiagonalSize{0}
+{
 }
 
 // first and second can be interpreted either as diagonal number and (relative) diagonal index (isRelative is true) or as row/column number ((x, y) coordinates)
@@ -2443,7 +2471,7 @@ typename Matrix<DataType>::size_type Matrix<DataType>::MIterator::getRowNr() con
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::MIterator::getColumnNr() const
 {
-    return m_DiagonalNr < 0 ? m_NrOfMatrixColumns - m_DiagonalIndex - 1 : m_NrOfMatrixColumns - m_DiagonalNr - m_DiagonalIndex - 1;
+    return m_DiagonalNr < 0 ? m_NrOfMatrixColumns - m_DiagonalIndex - 1 : m_DiagonalIndex >= 0 ? m_NrOfMatrixColumns - m_DiagonalNr - m_DiagonalIndex - 1 : m_DiagonalIndex;
 }
 
 template<typename DataType>
@@ -2474,6 +2502,16 @@ template<typename DataType>
 DataType& Matrix<DataType>::MIterator::operator[](Matrix<DataType>::MIterator::difference_type index)
 {
     FORWARD_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::MIterator::MIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_DiagonalIndex{-1}
+    , m_DiagonalNr{0}
+    , m_DiagonalSize{0}
+    , m_NrOfMatrixColumns{0}
+{
 }
 
 template<typename DataType>
@@ -2605,7 +2643,7 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ConstMIterator::getRowNr(
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ConstMIterator::getColumnNr() const
 {
-    return m_DiagonalNr < 0 ? m_NrOfMatrixColumns - m_DiagonalIndex - 1 : m_NrOfMatrixColumns - m_DiagonalNr - m_DiagonalIndex - 1;
+    return m_DiagonalNr < 0 ? m_NrOfMatrixColumns - m_DiagonalIndex - 1 : m_DiagonalIndex >= 0 ? m_NrOfMatrixColumns - m_DiagonalNr - m_DiagonalIndex - 1 : m_DiagonalIndex;
 }
 
 template<typename DataType>
@@ -2636,6 +2674,16 @@ template<typename DataType>
 const DataType& Matrix<DataType>::ConstMIterator::operator[](Matrix<DataType>::ConstMIterator::difference_type index) const
 {
     FORWARD_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstMIterator::ConstMIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_DiagonalIndex{-1}
+    , m_DiagonalNr{0}
+    , m_DiagonalSize{0}
+    , m_NrOfMatrixColumns{0}
+{
 }
 
 template<typename DataType>
@@ -2761,7 +2809,7 @@ bool Matrix<DataType>::ReverseMIterator::isValidWithMatrix(const Matrix<DataType
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ReverseMIterator::getRowNr() const
 {
-    return m_DiagonalNr < 0 ? m_DiagonalSize - 1 - m_DiagonalIndex - m_DiagonalNr : m_DiagonalSize - m_DiagonalIndex - 1;
+    return m_DiagonalNr < 0 ? m_DiagonalSize - 1 - m_DiagonalIndex - m_DiagonalNr : m_DiagonalIndex >= 0 ? m_DiagonalSize - m_DiagonalIndex - 1 : m_DiagonalIndex;
 }
 
 template<typename DataType>
@@ -2798,6 +2846,16 @@ template<typename DataType>
 DataType& Matrix<DataType>::ReverseMIterator::operator[](Matrix<DataType>::ReverseMIterator::difference_type index)
 {
     REVERSE_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::ReverseMIterator::ReverseMIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_DiagonalIndex{-1}
+    , m_DiagonalNr{0}
+    , m_DiagonalSize{0}
+    , m_NrOfMatrixColumns{0}
+{
 }
 
 // first and second can be interpreted either as diagonal number and (relative) diagonal index (isRelative is true) or as row/column number ((x, y) coordinates)
@@ -2924,7 +2982,7 @@ bool Matrix<DataType>::ConstReverseMIterator::isValidWithMatrix(const Matrix<Dat
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::ConstReverseMIterator::getRowNr() const
 {
-    return m_DiagonalNr < 0 ? m_DiagonalSize - 1 - m_DiagonalIndex - m_DiagonalNr : m_DiagonalSize - m_DiagonalIndex - 1;
+    return m_DiagonalNr < 0 ? m_DiagonalSize - 1 - m_DiagonalIndex - m_DiagonalNr : m_DiagonalIndex >= 0 ? m_DiagonalSize - m_DiagonalIndex - 1 : m_DiagonalIndex;
 }
 
 template<typename DataType>
@@ -2961,6 +3019,16 @@ template<typename DataType>
 const DataType& Matrix<DataType>::ConstReverseMIterator::operator[](Matrix<DataType>::ConstReverseMIterator::difference_type index) const
 {
     REVERSE_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstReverseMIterator::ConstReverseMIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_DiagonalIndex{-1}
+    , m_DiagonalNr{0}
+    , m_DiagonalSize{0}
+    , m_NrOfMatrixColumns{0}
+{
 }
 
 // first and second can be interpreted either as diagonal number and (relative) diagonal index (isRelative is true) or as row/column number ((x, y) coordinates)

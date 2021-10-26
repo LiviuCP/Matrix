@@ -191,6 +191,18 @@ void ReverseMIteratorTests::testIteratorCreation()
         QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 2 && it.getDiagonalNr() == 0 && it.getDiagonalIndex() == 2 && it.isValidWithMatrix(matrix), "The iterator has not been correctly created");
     }
 
+    // test empty iterator creation (not bound to any matrix) - an empty diagonal iterator should be invalid for any matrix (empty or not)
+    {
+        IntMatrix matrix{4, 3, {-3, 2, 1, 6, -5, 4, 9, -8, 7, 12, -11, 10}};
+        IntMatrixReverseMIterator emptyIt;
+
+        QVERIFY2(emptyIt.getRowNr() == -1 && emptyIt.getColumnNr() == -1 && emptyIt.getDiagonalNr() == 0 && emptyIt.getDiagonalIndex() == -1 && !emptyIt.isValidWithMatrix(matrix),  "The iterator has not been correctly created");
+
+        matrix.clear();
+
+        QVERIFY(!emptyIt.isValidWithMatrix(matrix));
+    }
+
     // additional test for checking that an iterator is only valid with the matrix with which it is created
     {
         IntMatrix matrix{4, 3, {-3, 2, 1, 6, -5, 4, 9, -8, 7, 12, -11, 10}};

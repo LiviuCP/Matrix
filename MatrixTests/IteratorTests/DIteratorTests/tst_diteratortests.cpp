@@ -9,18 +9,18 @@ using IntMatrixDiffType = IntMatrix::diff_type;
 using StringMatrix = Matrix<std::string>;
 using StringMatrixDIterator = Matrix<std::string>::DIterator;
 
+Q_DECLARE_METATYPE(IntMatrixDIterator)
+Q_DECLARE_METATYPE(StringMatrixDIterator)
+
 class DIteratorTests : public QObject
 {
     Q_OBJECT
 
-public:
-    DIteratorTests();
-
 private slots:
     // test functions
-    void initTestCase();
     void testIteratorCreation();
-    void testIteratorIsValid();
+    void testIteratorIsValidWithOneMatrix();
+    void testEmptyIterator();
     void testIteratorsAreEqual();
     void testIteratorEqualToItself();
     void testIteratorsAreNotEqual();
@@ -76,31 +76,6 @@ private:
     StringMatrixDIterator m_StringIterator;
 };
 
-/* Initialization of the test should be made by constructor and not by initTestCase() function for following reasons:
-   - the diagonal iterator objects can only be initialized via Matrix functions (their constructors are private)
-   - non-empty matrixes are required for creating diagonal iterators
-   A minimal initialization is required to make iterators functional. These can then be modified by any of the type-compatible matrixes.
-*/
-DIteratorTests::DIteratorTests()
-    : m_PrimaryIntMatrix{1, 1, 0}
-    , m_SecondaryIntMatrix{1, 1, 0}
-    , m_StringMatrix{1, 1, ""}
-    , m_PrimaryIntIterator{m_PrimaryIntMatrix.dEnd(0)}
-    , m_SecondaryIntIterator{m_SecondaryIntMatrix.dEnd(0)}
-    , m_StringIterator{m_StringMatrix.dEnd(0)}
-{
-}
-
-/* Initialization has been made through constructor, this special method should only check that it has been done correctly */
-void DIteratorTests::initTestCase()
-{
-    QVERIFY(m_PrimaryIntIterator.isValidWithMatrix(m_PrimaryIntMatrix));
-    QVERIFY(m_SecondaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
-    QVERIFY(m_StringIterator.isValidWithMatrix(m_StringMatrix));
-
-    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
-}
-
 void DIteratorTests::testIteratorCreation()
 {
     QFETCH(IntMatrixDIterator, iterator);
@@ -118,13 +93,24 @@ void DIteratorTests::testIteratorCreation()
 }
 
 // additional test for checking that an iterator is only valid with the matrix with which it is created
-void DIteratorTests::testIteratorIsValid()
+void DIteratorTests::testIteratorIsValidWithOneMatrix()
 {
     m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
     m_SecondaryIntMatrix = m_PrimaryIntMatrix;
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getDIterator(2, 1);
 
     QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
+}
+
+void DIteratorTests::testEmptyIterator()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    m_SecondaryIntMatrix.clear();
+
+    IntMatrixDIterator emptyIterator;
+
+    QVERIFY2(emptyIterator.getRowNr() == -1 && emptyIterator.getColumnNr() == -1 && emptyIterator.getDiagonalNr() == 0 && emptyIterator.getDiagonalIndex() == -1, "The iterator has not been correctly created");
+    QVERIFY(!emptyIterator.isValidWithMatrix(m_PrimaryIntMatrix) && !emptyIterator.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
 void DIteratorTests::testIteratorsAreEqual()

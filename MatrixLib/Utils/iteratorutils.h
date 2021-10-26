@@ -41,6 +41,9 @@
 \
     SizeType getRowNr() const; \
     SizeType getColumnNr() const; \
+\
+    /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix */ \
+    IteratorType();
 
 #define COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(IterableType, DifferenceType) \
     using reference = IterableType&; \
@@ -55,10 +58,6 @@
     const IterableType& operator*() const; \
     const IterableType* operator->() const; \
     const IterableType& operator[](DifferenceType index) const;
-
-#define COMMON_PUBLIC_NON_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType) \
-    /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix */ \
-    IteratorType();
 
 #define COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(SizeType) \
     SizeType getDiagonalNr() const; \
