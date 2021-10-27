@@ -208,9 +208,9 @@ void ConstDIteratorTests::testIncrementOperators()
              "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.constDBegin(-1);
-    IntMatrixConstDIterator postPreIncrementIt{++(m_PrimaryIntIterator++)};
+    m_SecondaryIntIterator = ++(m_PrimaryIntIterator++);
 
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && postPreIncrementIt == m_PrimaryIntMatrix.getConstDIterator(2, 1),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstDIterator(2, 1),
              "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.constDEnd(-1);
@@ -379,7 +379,6 @@ void ConstDIteratorTests::testAsteriskOperator()
 void ConstDIteratorTests::testArrowOperator()
 {
     m_StringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-
     m_StringIterator = m_StringMatrix.constDBegin(0, 1);
 
     QVERIFY2(m_StringIterator->size() == 5, "The arrow operator does not work correctly when reading the value!");

@@ -210,9 +210,9 @@ void DIteratorTests::testIncrementOperators()
              "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.dBegin(-1);
-    IntMatrixDIterator postPreIncrementIt{++(m_PrimaryIntIterator++)};
+    m_SecondaryIntIterator = ++(m_PrimaryIntIterator++);
 
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getDIterator(2, 1) && postPreIncrementIt == m_PrimaryIntMatrix.getDIterator(2, 1),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getDIterator(2, 1),
              "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.dEnd(-1);
@@ -386,7 +386,6 @@ void DIteratorTests::testAsteriskOperator()
 void DIteratorTests::testArrowOperator()
 {
     m_StringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-
     m_StringIterator = m_StringMatrix.dBegin(0, 1);
 
     QVERIFY2(m_StringIterator->size() == 5, "The arrow operator does not work correctly when reading the value!");
@@ -409,6 +408,7 @@ void DIteratorTests::testSquareBracketsOperatorRead()
 
 void DIteratorTests::testSquareBracketsOperatorWrite()
 {
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getDIterator(0, 1);
     m_PrimaryIntIterator[1] = 14;
 
