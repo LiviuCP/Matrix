@@ -171,7 +171,7 @@ void ReverseMIteratorTests::testGreaterThanOrEqualToOperator()
     QFETCH(IntMatrixReverseMIterator, firstIterator);
     QFETCH(IntMatrixReverseMIterator, secondIterator);
 
-    QVERIFY2(secondIterator >= firstIterator, "The second iterator should be greater than or equal to the second one!");
+    QVERIFY2(secondIterator >= firstIterator, "The second iterator should be greater than or equal to the first one!");
 }
 
 void ReverseMIteratorTests::testIncrementOperators()
