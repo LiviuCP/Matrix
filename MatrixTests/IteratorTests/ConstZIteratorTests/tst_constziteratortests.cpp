@@ -4,1117 +4,958 @@
 
 using IntMatrix = Matrix<int>;
 using IntMatrixConstZIterator = Matrix<int>::ConstZIterator;
+using IntMatrixSizeType = IntMatrix::size_type;
+using IntMatrixDiffType = IntMatrix::diff_type;
 using StringMatrix = Matrix<std::string>;
 using StringMatrixConstZIterator = Matrix<std::string>::ConstZIterator;
+
+Q_DECLARE_METATYPE(IntMatrixConstZIterator)
+Q_DECLARE_METATYPE(StringMatrixConstZIterator)
 
 class ConstZIteratorTests : public QObject
 {
     Q_OBJECT
 
-public:
-    ConstZIteratorTests();
-    ~ConstZIteratorTests();
-
 private slots:
+    // test functions
     void testIteratorCreation();
+    void testIteratorIsValidWithOneMatrix();
+    void testEmptyIterator();
     void testIteratorsAreEqual();
+    void testIteratorEqualToItself();
     void testIteratorsAreNotEqual();
-    void testSmallerThanOperator();
-    void testSmallerThanOrEqualToOperator();
+    void testLessThanOperator();
+    void testLessThanOrEqualToOperator();
     void testGreaterThanOperator();
     void testGreaterThanOrEqualToOperator();
-    void testIncrementOperators();
-    void testDecrementOperators();
+    void testPreIncrementOperator();
+    void testPostIncrementOperator();
+    void testCombinedIncrementOperators();
+    void testPreDecrementOperator();
+    void testPostDecrementOperator();
+    void testCombinedDecrementOperators();
     void testOperatorPlus();
     void testOperatorMinus();
     void testOperatorPlusEqual();
     void testOperatorMinusEqual();
     void testDifferenceOperator();
-    void testDereferenceAsteriskOperator();
-    void testDereferenceArrowOperator();
-    void testDereferenceSquareBracketsOperator();
-
-    // "bonus" tests, demonstrate the integration of the Matrix iterators with algorithms of the standard library
+    void testAsteriskOperator();
+    void testAsteriskOperatorPlusEqual();
+    void testArrowOperator();
+    void testArrowOperatorPlusEqual();
+    void testSquareBracketsOperator();
     void testStdCount();
     void testStdFind();
+    void testStdFindWithIncrement();
+
+    // test data
+    void testIteratorCreation_data();
+    void testIteratorsAreEqual_data();
+    void testIteratorEqualToItself_data();
+    void testIteratorsAreNotEqual_data();
+    void testLessThanOperator_data();
+    void testLessThanOrEqualToOperator_data();
+    void testGreaterThanOperator_data();
+    void testGreaterThanOrEqualToOperator_data();
+    void testPreIncrementOperator_data();
+    void testPostIncrementOperator_data();
+    void testPreDecrementOperator_data();
+    void testPostDecrementOperator_data();
+    void testOperatorPlus_data();
+    void testOperatorMinus_data();
+    void testOperatorPlusEqual_data();
+    void testOperatorMinusEqual_data();
+    void testDifferenceOperator_data();
+    void testAsteriskOperator_data();
+    void testArrowOperator_data();
+    void testSquareBracketsOperator_data();
+    void testStdCount_data();
+    void testStdFind_data();
 
 private:
-    IntMatrix m_MainMatrix;
-    IntMatrix m_AuxIntMatrix;
-    StringMatrix m_AuxStringMatrix;
+    // test data helper methods
+    void _buildLessThanOperatorTestingTable();
+    void _buildLessThanOrEqualOperatorTestingTable();
+    void _buildIncrementOperatorTestingTable();
+    void _buildDecrementOperatorTestingTable();
+    void _buildOperatorPlusTestingTable();
+
+    IntMatrix m_PrimaryIntMatrix;
+    IntMatrix m_SecondaryIntMatrix;
+    StringMatrix m_PrimaryStringMatrix;
+    StringMatrix m_SecondaryStringMatrix;
+
+    IntMatrixConstZIterator m_PrimaryIntIterator;
+    IntMatrixConstZIterator m_SecondaryIntIterator;
+    StringMatrixConstZIterator m_StringIterator;
 };
-
-ConstZIteratorTests::ConstZIteratorTests()
-{
-}
-
-ConstZIteratorTests::~ConstZIteratorTests()
-{
-}
 
 void ConstZIteratorTests::testIteratorCreation()
 {
-    m_MainMatrix = {9, 8, -5};
+    QFETCH(IntMatrixConstZIterator, iterator);
+    QFETCH(IntMatrix::size_type, expectedRowNr);
+    QFETCH(IntMatrix::size_type, expectedColumnNr);
+    QFETCH(bool, isPrimaryMatrix);
+    QFETCH(bool, expectedValidity);
 
-    IntMatrixConstZIterator it{m_MainMatrix.constZBegin()};
-    QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.constZEnd();
-    QVERIFY2(it.getRowNr() == 8 && it.getColumnNr() == 8 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.constZRowBegin(0);
-    QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.constZRowBegin(1);
-    QVERIFY2(it.getRowNr() == 1 && it.getColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.constZRowBegin(4);
-    QVERIFY2(it.getRowNr() == 4 && it.getColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.constZRowBegin(7);
-    QVERIFY2(it.getRowNr() == 7 && it.getColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.constZRowBegin(8);
-    QVERIFY2(it.getRowNr() == 8 && it.getColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.constZRowEnd(0);
-    QVERIFY2(it.getRowNr() == 1 && it.getColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.constZRowEnd(1);
-    QVERIFY2(it.getRowNr() == 2 && it.getColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.constZRowEnd(4);
-    QVERIFY2(it.getRowNr() == 5 && it.getColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.constZRowEnd(7);
-    QVERIFY2(it.getRowNr() == 8 && it.getColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.constZRowEnd(8);
-    QVERIFY2(it.getRowNr() == 8 && it.getColumnNr() == 8 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.getConstZIterator(0, 0);
-    QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.getConstZIterator(0, 1);
-    QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 1 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.getConstZIterator(5, 4);
-    QVERIFY2(it.getRowNr() == 5 && it.getColumnNr() == 4 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.getConstZIterator(8, 6);
-    QVERIFY2(it.getRowNr() == 8 && it.getColumnNr() == 6 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.getConstZIterator(8, 7);
-    QVERIFY2(it.getRowNr() == 8 && it.getColumnNr() == 7 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.getConstZIterator(0);
-    QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 0 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.getConstZIterator(1);
-    QVERIFY2(it.getRowNr() == 0 && it.getColumnNr() == 1 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.getConstZIterator(44);
-    QVERIFY2(it.getRowNr() == 5 && it.getColumnNr() == 4 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.getConstZIterator(70);
-    QVERIFY2(it.getRowNr() == 8 && it.getColumnNr() == 6 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.getConstZIterator(71);
-    QVERIFY2(it.getRowNr() == 8 && it.getColumnNr() == 7 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
+    QVERIFY2(iterator.getRowNr() == expectedRowNr &&
+             iterator.getColumnNr() == expectedColumnNr &&
+             iterator.isValidWithMatrix(isPrimaryMatrix ? m_PrimaryIntMatrix : m_SecondaryIntMatrix) == expectedValidity,
+             "The iterator has not been correctly created!");
+}
 
-    // test iterator creation for empty matrix
-    m_MainMatrix.clear();
-    it = m_MainMatrix.constZBegin();
-    QVERIFY2(it.getRowNr() == -1 && it.getColumnNr() == -1 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
-    it = m_MainMatrix.constZEnd();
-    QVERIFY2(it.getRowNr() == -1 && it.getColumnNr() == -1 && it.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
+void ConstZIteratorTests::testIteratorIsValidWithOneMatrix()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
+    m_SecondaryIntMatrix = {9, 8, -5};
 
-    // test empty iterator creation (not bound to any matrix) - an empty iterator should be valid for any empty matrix
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
+
+    m_SecondaryIntMatrix.clear();
+    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
+
+    m_PrimaryIntIterator = m_SecondaryIntMatrix.constZBegin();
+    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_PrimaryIntMatrix));
+
+    m_PrimaryIntIterator = m_SecondaryIntMatrix.constZEnd();
+    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_PrimaryIntMatrix));
+
+    m_PrimaryIntMatrix.clear();
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constZBegin();
+    QVERIFY(m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constZEnd();
+    QVERIFY(m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
+}
+
+void ConstZIteratorTests::testEmptyIterator()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
+    m_SecondaryIntMatrix.clear();
     IntMatrixConstZIterator emptyIt;
-    QVERIFY2(emptyIt.getRowNr() == -1 && emptyIt.getColumnNr() == -1 && emptyIt.isValidWithMatrix(m_MainMatrix), "The iterator has not been correctly created");
 
-    // additional test
-    m_MainMatrix = {9, 8, -5};
-    m_AuxIntMatrix = {9, 8, -5};
-    it = m_MainMatrix.getConstZIterator(5, 4);
-    QVERIFY(!it.isValidWithMatrix(m_AuxIntMatrix));
-    m_AuxIntMatrix.clear();
-    QVERIFY(!it.isValidWithMatrix(m_AuxIntMatrix));
-    it = m_AuxIntMatrix.constZBegin();
-    QVERIFY(!it.isValidWithMatrix(m_MainMatrix));
-    it = m_AuxIntMatrix.constZEnd();
-    QVERIFY(!it.isValidWithMatrix(m_MainMatrix));
-    m_MainMatrix.clear();
-    it = m_MainMatrix.constZBegin();
-    QVERIFY(it.isValidWithMatrix(m_AuxIntMatrix)); // an iterator of an empty matrix is valid with any other empty matrix
-    it = m_MainMatrix.constZEnd();
-    QVERIFY(it.isValidWithMatrix(m_AuxIntMatrix));
+    QVERIFY2(emptyIt.getRowNr() == -1 && emptyIt.getColumnNr() == -1, "The iterator has not been correctly created");
+    QVERIFY(!emptyIt.isValidWithMatrix(m_PrimaryIntMatrix) && emptyIt.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
 void ConstZIteratorTests::testIteratorsAreEqual()
 {
+    QFETCH(IntMatrixConstZIterator, firstIterator);
+    QFETCH(IntMatrixConstZIterator, secondIterator);
 
-    m_MainMatrix = {9, 8, -5};
+    QVERIFY2(firstIterator == secondIterator && !(firstIterator != secondIterator), "The iterators should be equal!");
+}
 
-    // test different iterators for equality
-    QVERIFY2((m_MainMatrix.constZBegin() == m_MainMatrix.getConstZIterator(0, 0) && !(m_MainMatrix.constZBegin() != m_MainMatrix.getConstZIterator(0, 0))), "The two iterators are not equal");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0) == m_MainMatrix.getConstZIterator(0, 0)) && !(m_MainMatrix.getConstZIterator(0) != m_MainMatrix.getConstZIterator(0, 0)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.getConstZIterator(1) == m_MainMatrix.getConstZIterator(0, 1)) && !(m_MainMatrix.getConstZIterator(1) != m_MainMatrix.getConstZIterator(0, 1)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.getConstZIterator(44) == m_MainMatrix.getConstZIterator(5, 4)) && !(m_MainMatrix.getConstZIterator(44) != m_MainMatrix.getConstZIterator(5, 4)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.getConstZIterator(70) == m_MainMatrix.getConstZIterator(8, 6)) && !(m_MainMatrix.getConstZIterator(70) != m_MainMatrix.getConstZIterator(8, 6)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.getConstZIterator(71) == m_MainMatrix.getConstZIterator(8, 7)) && !(m_MainMatrix.getConstZIterator(71) != m_MainMatrix.getConstZIterator(8, 7)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.constZRowBegin(0) == m_MainMatrix.getConstZIterator(0, 0)) && !(m_MainMatrix.constZRowBegin(0) != m_MainMatrix.getConstZIterator(0, 0)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.constZRowBegin(1) == m_MainMatrix.getConstZIterator(1, 0)) && !(m_MainMatrix.constZRowBegin(1) != m_MainMatrix.getConstZIterator(1, 0)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.constZRowBegin(5) == m_MainMatrix.getConstZIterator(5, 0)) && !(m_MainMatrix.constZRowBegin(5) != m_MainMatrix.getConstZIterator(5, 0)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.constZRowBegin(7) == m_MainMatrix.getConstZIterator(7, 0)) && !(m_MainMatrix.constZRowBegin(7) != m_MainMatrix.getConstZIterator(7, 0)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.constZRowBegin(8) == m_MainMatrix.getConstZIterator(8, 0)) && !(m_MainMatrix.constZRowBegin(8) != m_MainMatrix.getConstZIterator(8, 0)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.constZRowEnd(0) == m_MainMatrix.getConstZIterator(1, 0)) && !(m_MainMatrix.constZRowEnd(0) != m_MainMatrix.getConstZIterator(1, 0)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.constZRowEnd(1) == m_MainMatrix.getConstZIterator(2, 0)) && !(m_MainMatrix.constZRowEnd(1) != m_MainMatrix.getConstZIterator(2, 0)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.constZRowEnd(5) == m_MainMatrix.getConstZIterator(6, 0)) && !(m_MainMatrix.constZRowEnd(5) != m_MainMatrix.getConstZIterator(6, 0)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.constZRowEnd(7) == m_MainMatrix.getConstZIterator(8, 0)) && !(m_MainMatrix.constZRowEnd(7) != m_MainMatrix.getConstZIterator(8, 0)), "The two iterators are NOT equal");
-    QVERIFY2((m_MainMatrix.constZRowEnd(8) == m_MainMatrix.constZEnd()) && !(m_MainMatrix.constZRowEnd(8) != m_MainMatrix.constZEnd()), "The two iterators are NOT equal");
+void ConstZIteratorTests::testIteratorEqualToItself()
+{
+    QFETCH(IntMatrixConstZIterator, iterator);
 
-    // test iterator equality to itself
-    IntMatrixConstZIterator it{m_MainMatrix.constZBegin()};
-    QVERIFY2((it == it) && (it == m_MainMatrix.constZBegin()) && !(it != it) && !(it != m_MainMatrix.constZBegin()), "The iterator is NOT equal to itself and/or to source iterator");
-    it = m_MainMatrix.getConstZIterator(0, 1);
-    QVERIFY2((it == it) && (it == m_MainMatrix.getConstZIterator(0, 1)) && !(it != it) && !(it != m_MainMatrix.getConstZIterator(0, 1)),  "The iterator is NOT equal to itself and/or to source iterator");
-    it = m_MainMatrix.getConstZIterator(5, 4);
-    QVERIFY2((it == it) && (it == m_MainMatrix.getConstZIterator(5, 4)) && !(it != it) && !(it != m_MainMatrix.getConstZIterator(5, 4)),  "The iterator is NOT equal to itself and/or to source iterator");
-    it = m_MainMatrix.getConstZIterator(8, 6);
-    QVERIFY2((it == it) && (it == m_MainMatrix.getConstZIterator(8, 6)) && !(it != it) && !(it != m_MainMatrix.getConstZIterator(8, 6)),  "The iterator is NOT equal to itself and/or to source iterator");
-    it = m_MainMatrix.getConstZIterator(8, 7);
-    QVERIFY2((it == it) && (it == m_MainMatrix.getConstZIterator(8, 7)) && !(it != it) && !(it != m_MainMatrix.getConstZIterator(8, 7)),  "The iterator is NOT equal to itself and/or to source iterator");
-    it = m_MainMatrix.constZEnd();
-    QVERIFY2((it == it) && (it == m_MainMatrix.constZEnd()) && !(it != it) && !(it != m_MainMatrix.constZEnd()),  "The iterator is NOT equal to itself and/or to source iterator");
+    m_PrimaryIntIterator = iterator;
 
-    // test empty matrix iterator equality
-    m_MainMatrix.clear();
-    QVERIFY2((m_MainMatrix.constZBegin() == m_MainMatrix.constZEnd()) && !(m_MainMatrix.constZBegin() != m_MainMatrix.constZEnd()), "The two iterators are NOT equal");
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntIterator &&
+             !(m_PrimaryIntIterator != m_PrimaryIntIterator) &&
+             m_PrimaryIntIterator <= m_PrimaryIntIterator &&
+             !(m_PrimaryIntIterator > m_PrimaryIntIterator) &&
+             m_PrimaryIntIterator >= m_PrimaryIntIterator &&
+             !(m_PrimaryIntIterator < m_PrimaryIntIterator),
+             "The iterator should be equal to itself!");
 }
 
 void ConstZIteratorTests::testIteratorsAreNotEqual()
 {
-    m_MainMatrix = {9, 8, -5};
+    QFETCH(IntMatrixConstZIterator, firstIterator);
+    QFETCH(IntMatrixConstZIterator, secondIterator);
 
-    QVERIFY2((m_MainMatrix.constZBegin() != m_MainMatrix.getConstZIterator(0, 1)) && !(m_MainMatrix.constZBegin() == m_MainMatrix.getConstZIterator(0, 1)), "The two iterators are NOT different");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 1) != m_MainMatrix.getConstZIterator(0, 2)) && !(m_MainMatrix.getConstZIterator(0, 1) == m_MainMatrix.getConstZIterator(0, 2)), "The two iterators are NOT different");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 2) != m_MainMatrix.getConstZIterator(5, 4)) && !(m_MainMatrix.getConstZIterator(0, 2) == m_MainMatrix.getConstZIterator(5, 4)), "The two iterators are NOT different");
-    QVERIFY2((m_MainMatrix.getConstZIterator(5, 4) != m_MainMatrix.getConstZIterator(8, 6)) && !(m_MainMatrix.getConstZIterator(5, 4) == m_MainMatrix.getConstZIterator(8, 6)), "The two iterators are NOT different");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 6) != m_MainMatrix.getConstZIterator(8, 7)) && !(m_MainMatrix.getConstZIterator(8, 6) == m_MainMatrix.getConstZIterator(8, 7)), "The two iterators are NOT different");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 7) != m_MainMatrix.constZEnd()) && !(m_MainMatrix.getConstZIterator(8, 7) == m_MainMatrix.constZEnd()), "The two iterators are NOT different");
+    QVERIFY2(firstIterator != secondIterator && !(firstIterator == secondIterator), "The iterators should not be equal!");
 }
 
-void ConstZIteratorTests::testSmallerThanOperator()
+void ConstZIteratorTests::testLessThanOperator()
 {
-    m_MainMatrix = {9, 8, -5};
+    QFETCH(IntMatrixConstZIterator, firstIterator);
+    QFETCH(IntMatrixConstZIterator, secondIterator);
 
-    QVERIFY2((m_MainMatrix.constZBegin() < m_MainMatrix.getConstZIterator(0, 1)) && !(m_MainMatrix.constZBegin() >= m_MainMatrix.getConstZIterator(0, 1)), "The first iterator is NOT smaller than the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 1) < m_MainMatrix.getConstZIterator(0, 2)) && !(m_MainMatrix.getConstZIterator(0, 1) >= m_MainMatrix.getConstZIterator(0, 2)), "The first iterator is NOT smaller than the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 2) < m_MainMatrix.getConstZIterator(5, 4)) && !(m_MainMatrix.getConstZIterator(0, 2) >= m_MainMatrix.getConstZIterator(5, 4)), "The first iterator is NOT smaller than the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(5, 4) < m_MainMatrix.getConstZIterator(8, 6)) && !(m_MainMatrix.getConstZIterator(5, 4) >= m_MainMatrix.getConstZIterator(8, 6)), "The first iterator is NOT smaller than the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 6) < m_MainMatrix.getConstZIterator(8, 7)) && !(m_MainMatrix.getConstZIterator(8, 6) >= m_MainMatrix.getConstZIterator(8, 7)), "The first iterator is NOT smaller than the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 7) < m_MainMatrix.constZEnd()) && !(m_MainMatrix.getConstZIterator(8, 7) >= m_MainMatrix.constZEnd()), "The first iterator is NOT smaller than the second iterator");
+    QVERIFY2(firstIterator < secondIterator && !(firstIterator >= secondIterator), "The first iterator should be less than the second one!");
 }
 
-void ConstZIteratorTests::testSmallerThanOrEqualToOperator()
+void ConstZIteratorTests::testLessThanOrEqualToOperator()
 {
-    m_MainMatrix = {9, 8, -5};
+    QFETCH(IntMatrixConstZIterator, firstIterator);
+    QFETCH(IntMatrixConstZIterator, secondIterator);
 
-    // test operator with different iterators
-    QVERIFY2((m_MainMatrix.constZBegin() <= m_MainMatrix.constZBegin()) && !(m_MainMatrix.constZBegin() > m_MainMatrix.constZEnd()), "The first iterator is NOT smaller than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.constZBegin() <= m_MainMatrix.getConstZIterator(0, 1)) && !(m_MainMatrix.getConstZIterator(8, 7) > m_MainMatrix.constZEnd()), "The first iterator is NOT smaller than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 1) <= m_MainMatrix.getConstZIterator(0, 1)) && !(m_MainMatrix.getConstZIterator(0, 1) > m_MainMatrix.getConstZIterator(0, 1)), "The first iterator is NOT smaller than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 1) <= m_MainMatrix.getConstZIterator(0, 2)) && !(m_MainMatrix.getConstZIterator(0, 1) > m_MainMatrix.getConstZIterator(0, 2)), "The first iterator is NOT smaller than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 2) <= m_MainMatrix.getConstZIterator(0, 2)) && !(m_MainMatrix.getConstZIterator(0, 2) > m_MainMatrix.getConstZIterator(0, 2)), "The first iterator is NOT smaller than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 2) <= m_MainMatrix.getConstZIterator(5, 4)) && !(m_MainMatrix.getConstZIterator(0, 2) > m_MainMatrix.getConstZIterator(5, 4)), "The first iterator is NOT smaller than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(5, 4) <= m_MainMatrix.getConstZIterator(5, 4)) && !(m_MainMatrix.getConstZIterator(5, 4) > m_MainMatrix.getConstZIterator(5, 4)), "The first iterator is NOT smaller than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(5, 4) <= m_MainMatrix.getConstZIterator(8, 6)) && !(m_MainMatrix.getConstZIterator(5, 4) > m_MainMatrix.getConstZIterator(8, 6)), "The first iterator is NOT smaller than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 6) <= m_MainMatrix.getConstZIterator(8, 6)) && !(m_MainMatrix.getConstZIterator(8, 6) > m_MainMatrix.getConstZIterator(8, 6)), "The first iterator is NOT smaller than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 6) <= m_MainMatrix.getConstZIterator(8, 7)) && !(m_MainMatrix.getConstZIterator(8, 6) > m_MainMatrix.getConstZIterator(8, 7)), "The first iterator is NOT smaller than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 7) <= m_MainMatrix.getConstZIterator(8, 7)) && !(m_MainMatrix.getConstZIterator(8, 7) > m_MainMatrix.getConstZIterator(8, 7)), "The first iterator is NOT smaller than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 7) <= m_MainMatrix.constZEnd()) && !(m_MainMatrix.getConstZIterator(8, 7) > m_MainMatrix.constZEnd()), "The first iterator is NOT smaller than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.constZEnd() <= m_MainMatrix.constZEnd()) && !(m_MainMatrix.constZEnd() > m_MainMatrix.constZEnd()), "The first iterator is NOT smaller than or equal to the second iterator");
-
-    // test if iterator is smaller than or equal to itself
-    IntMatrixConstZIterator it{m_MainMatrix.constZBegin()};
-    QVERIFY2((it <= it) && (it <= m_MainMatrix.constZBegin()) && !(it > it) && !(it > m_MainMatrix.constZBegin()),  "The iterator is NOT smaller than or equal to itself and/or the source iterator");
-    it = m_MainMatrix.getConstZIterator(0, 1);
-    QVERIFY2((it <= it) && (it <= m_MainMatrix.getConstZIterator(0, 1)) && !(it > it) && !(it > m_MainMatrix.getConstZIterator(0, 1)),  "The iterator is NOT smaller than or equal to itself and/or the source iterator");
-    it = m_MainMatrix.getConstZIterator(5, 4);
-    QVERIFY2((it <= it) && (it <= m_MainMatrix.getConstZIterator(5, 4)) && !(it > it) && !(it > m_MainMatrix.getConstZIterator(5, 4)),  "The iterator is NOT smaller than or equal to itself and/or the source iterator");
-    it = m_MainMatrix.getConstZIterator(8, 6);
-    QVERIFY2((it <= it) && (it <= m_MainMatrix.getConstZIterator(8, 6)) && !(it > it) && !(it > m_MainMatrix.getConstZIterator(8, 6)),  "The iterator is NOT smaller than or equal to itself and/or the source iterator");
-    it = m_MainMatrix.getConstZIterator(8, 7);
-    QVERIFY2((it <= it) && (it <= m_MainMatrix.getConstZIterator(8, 7) && !(it > it) && !(it > m_MainMatrix.getConstZIterator(8, 7))),  "The iterator is NOT smaller than or equal to itself and/or the source iterator");
-    it = m_MainMatrix.constZEnd();
-    QVERIFY2((it <= it) && (it <= m_MainMatrix.constZEnd()) && !(it > it) && !(it > m_MainMatrix.constZEnd()),  "The iterator is NOT smaller than or equal to itself and/or the source iterator");
-
-    // test with empty matrix
-    m_MainMatrix.clear();
-    QVERIFY2(m_MainMatrix.constZBegin() <= m_MainMatrix.constZEnd(), "The first iterator is NOT smaller than or equal to the second iterator");
+    QVERIFY2(firstIterator <= secondIterator && !(firstIterator > secondIterator), "The first iterator should be less than or equal to the second one!");
 }
 
 void ConstZIteratorTests::testGreaterThanOperator()
 {
-    m_MainMatrix = {9, 8, -5};
+    QFETCH(IntMatrixConstZIterator, firstIterator);
+    QFETCH(IntMatrixConstZIterator, secondIterator);
 
-    QVERIFY2((m_MainMatrix.constZEnd() > m_MainMatrix.getConstZIterator(8, 7)) && !(m_MainMatrix.constZEnd() <= m_MainMatrix.getConstZIterator(8, 7)), "TThe first iterator is NOT greater than the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 7) > m_MainMatrix.getConstZIterator(8, 6)) && !(m_MainMatrix.getConstZIterator(8, 7) <= m_MainMatrix.getConstZIterator(8, 6)), "The first iterator is NOT greater than the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 6) > m_MainMatrix.getConstZIterator(5, 4)) && !(m_MainMatrix.getConstZIterator(8, 6) <= m_MainMatrix.getConstZIterator(5, 4)), "The first iterator is NOT greater than the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(5, 4) > m_MainMatrix.getConstZIterator(0, 2)) && !(m_MainMatrix.getConstZIterator(5, 4) <= m_MainMatrix.getConstZIterator(0, 2)), "The first iterator is NOT greater than the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 2) > m_MainMatrix.getConstZIterator(0, 1)) && !(m_MainMatrix.getConstZIterator(0, 2) <= m_MainMatrix.getConstZIterator(0, 1)), "The first iterator is NOT greater than the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 1) > m_MainMatrix.constZBegin()) && !(m_MainMatrix.getConstZIterator(0, 1) <= m_MainMatrix.constZBegin()), "The first iterator is NOT greater than the second iterator");
+    QVERIFY2(secondIterator > firstIterator && !(secondIterator <= firstIterator), "The second iterator should be greater than the first one!");
 }
 
 void ConstZIteratorTests::testGreaterThanOrEqualToOperator()
 {
-    m_MainMatrix = {9, 8, -5};
+    QFETCH(IntMatrixConstZIterator, firstIterator);
+    QFETCH(IntMatrixConstZIterator, secondIterator);
 
-    // test operator with different iterators
-    QVERIFY2((m_MainMatrix.constZEnd() >= m_MainMatrix.constZEnd()) && !(m_MainMatrix.constZEnd() < m_MainMatrix.constZEnd()), "The first iterator is NOT greater than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.constZEnd() >= m_MainMatrix.getConstZIterator(8, 7)) && !(m_MainMatrix.constZEnd() < m_MainMatrix.getConstZIterator(8, 7)), "The first iterator is NOT greater than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 7) >= m_MainMatrix.getConstZIterator(8, 7)) && !(m_MainMatrix.getConstZIterator(8, 7) < m_MainMatrix.getConstZIterator(8, 7)), "The first iterator is NOT greater than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 7) >= m_MainMatrix.getConstZIterator(8, 6)) && !(m_MainMatrix.getConstZIterator(8, 7) < m_MainMatrix.getConstZIterator(8, 6)), "The first iterator is NOT greater than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 6) >= m_MainMatrix.getConstZIterator(8, 6)) && !(m_MainMatrix.getConstZIterator(8, 6) < m_MainMatrix.getConstZIterator(8, 6)), "The first iterator is NOT greater than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(8, 6) >= m_MainMatrix.getConstZIterator(5, 4)) && !(m_MainMatrix.getConstZIterator(8, 6) < m_MainMatrix.getConstZIterator(5, 4)), "The first iterator is NOT greater than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(5, 4) >= m_MainMatrix.getConstZIterator(5, 4)) && !(m_MainMatrix.getConstZIterator(5, 4) < m_MainMatrix.getConstZIterator(5, 4)), "The first iterator is NOT greater than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(5, 4) >= m_MainMatrix.getConstZIterator(0, 2)) && !(m_MainMatrix.getConstZIterator(5, 4) < m_MainMatrix.getConstZIterator(0, 2)), "The first iterator is NOT greater than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 2) >= m_MainMatrix.getConstZIterator(0, 2)) && !(m_MainMatrix.getConstZIterator(0, 2) < m_MainMatrix.getConstZIterator(0, 2)), "The first iterator is NOT greater than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 2) >= m_MainMatrix.getConstZIterator(0, 1)) && !(m_MainMatrix.getConstZIterator(0, 2) < m_MainMatrix.getConstZIterator(0, 1)), "The first iterator is NOT greater than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 1) >= m_MainMatrix.getConstZIterator(0, 1)) && !(m_MainMatrix.getConstZIterator(0, 1) < m_MainMatrix.getConstZIterator(0, 1)), "The first iterator is NOT greater than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.getConstZIterator(0, 1) >= m_MainMatrix.constZBegin()) && !(m_MainMatrix.getConstZIterator(0, 1) < m_MainMatrix.constZBegin()), "The first iterator is NOT greater than or equal to the second iterator");
-    QVERIFY2((m_MainMatrix.constZBegin() >= m_MainMatrix.constZBegin()) && !(m_MainMatrix.constZBegin() < m_MainMatrix.constZBegin()), "The first iterator is NOT greater than or equal to the second iterator");
-
-    // test if iterator is greater than or equal to itself
-    IntMatrixConstZIterator it{m_MainMatrix.constZEnd()};
-    QVERIFY2((it >= it) && (it >= m_MainMatrix.constZEnd()) && !(it < it) && !(it < m_MainMatrix.constZEnd()),  "The iterator is NOT greater than or equal to itself and/or the source iterator");
-    it = m_MainMatrix.getConstZIterator(8, 7);
-    QVERIFY2((it >= it) && (it >= m_MainMatrix.getConstZIterator(8, 7)) && !(it < it) && !(it < m_MainMatrix.getConstZIterator(8, 7)),  "The iterator is NOT greater than or equal to itself and/or the source iterator");
-    it = m_MainMatrix.getConstZIterator(8, 6);
-    QVERIFY2((it >= it) && (it >= m_MainMatrix.getConstZIterator(8, 6)) && !(it < it) && !(it < m_MainMatrix.getConstZIterator(8, 6)),  "The iterator is NOT greater than or equal to itself and/or the source iterator");
-    it = m_MainMatrix.getConstZIterator(5, 4);
-    QVERIFY2((it >= it) && (it >= m_MainMatrix.getConstZIterator(5, 4)) && !(it < it) && !(it < m_MainMatrix.getConstZIterator(5, 4)),  "The iterator is NOT greater than or equal to itself and/or the source iterator");
-    it = m_MainMatrix.getConstZIterator(0, 1);
-    QVERIFY2((it >= it) && (it >= m_MainMatrix.getConstZIterator(0, 1)) && !(it < it) && !(it < m_MainMatrix.getConstZIterator(0, 1)),  "The iterator is NOT greater than or equal to itself and/or the source iterator");
-    it = m_MainMatrix.constZBegin();
-    QVERIFY2((it >= it) && (it >= m_MainMatrix.constZBegin()) && !(it < it) && !(it < m_MainMatrix.constZBegin()),  "The iterator is NOT greater than or equal to itself and/or the source iterator");
-
-    // test with empty matrix
-    m_MainMatrix.clear();
-    QVERIFY2((m_MainMatrix.constZBegin() >= m_MainMatrix.constZEnd()) && !(m_MainMatrix.constZBegin() < m_MainMatrix.constZEnd()), "The first iterator is NOT greater than or equal to the second iterator");
+    QVERIFY2(secondIterator >= firstIterator && !(secondIterator < firstIterator), "The second iterator should be greater than or equal to the first one!");
 }
 
-void ConstZIteratorTests::testIncrementOperators()
+void ConstZIteratorTests::testPreIncrementOperator()
 {
-    m_MainMatrix = {9, 8, -5};
+    QFETCH(IntMatrixConstZIterator, inputIterator);
+    QFETCH(IntMatrixConstZIterator, expectedIterator);
 
-    // pre-increment
-    IntMatrixConstZIterator it{m_MainMatrix.constZBegin()};
-    ++it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Incorrect pre-incrementation");
-    ++it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 2), "Incorrect pre-incrementation");
-    it = m_MainMatrix.getConstZIterator(4, 6);
-    ++it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(4, 7), "Incorrect pre-incrementation");
-    ++it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 0), "Incorrect pre-incrementation");
-    ++it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 1), "Incorrect pre-incrementation");
-    ++it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 2), "Incorrect pre-incrementation");
-    it = m_MainMatrix.getConstZIterator(5, 4);
-    ++it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 5), "Incorrect pre-incrementation");
-    it = m_MainMatrix.getConstZIterator(8, 6);
-    ++it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Incorrect pre-incrementation");
-    ++it;
-    QVERIFY2(it == m_MainMatrix.constZEnd(), "Incorrect pre-incrementation");
-    ++it;
-    QVERIFY2(it == m_MainMatrix.constZEnd(), "Incorrect pre-incrementation");
+    m_PrimaryIntIterator = inputIterator;
+    ++m_PrimaryIntIterator;
 
-    // post-increment
-    it = m_MainMatrix.constZBegin();
-    it++;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Incorrect post-incrementation");
-    it++;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 2), "Incorrect post-incrementation");
-    it = m_MainMatrix.getConstZIterator(4, 6);
-    it++;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(4, 7), "Incorrect post-incrementation");
-    it++;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 0), "Incorrect post-incrementation");
-    it++;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 1), "Incorrect post-incrementation");
-    it++;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 2), "Incorrect post-incrementation");
-    it = m_MainMatrix.getConstZIterator(5, 4);
-    it++;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 5), "Incorrect post-incrementation");
-    it = m_MainMatrix.getConstZIterator(8, 6);
-    it++;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Incorrect post-incrementation");
-    it++;
-    QVERIFY2(it == m_MainMatrix.constZEnd(), "Incorrect post-incrementation");
-    it++;
-    QVERIFY2(it == m_MainMatrix.constZEnd(), "Incorrect post-incrementation");
-
-    // test a combination of "pre" and "post" behaviors
-    IntMatrixConstZIterator srcIt{m_MainMatrix.getConstZIterator(5, 4)};
-    IntMatrixConstZIterator destIt{++(++srcIt)};
-    QVERIFY2(srcIt == m_MainMatrix.getConstZIterator(5, 5) && destIt == m_MainMatrix.getConstZIterator(5, 6), "Incorrect pre-pre-incrementation");
-    srcIt = m_MainMatrix.getConstZIterator(5, 4);
-    destIt = (srcIt++)++;
-    QVERIFY2(srcIt == m_MainMatrix.getConstZIterator(5, 5) && destIt == m_MainMatrix.getConstZIterator(5, 4), "Incorrect post-post-incrementation");
-    srcIt = m_MainMatrix.getConstZIterator(5, 4);
-    destIt = (++srcIt)++;
-    QVERIFY2(srcIt == m_MainMatrix.getConstZIterator(5, 5) && destIt == m_MainMatrix.getConstZIterator(5, 5), "Incorrect post-pre-incrementation");
-    srcIt = m_MainMatrix.getConstZIterator(5, 4);
-    destIt = ++(srcIt++);
-    QVERIFY2(srcIt == m_MainMatrix.getConstZIterator(5, 5) && destIt == m_MainMatrix.getConstZIterator(5, 5), "Incorrect pre-post-incrementation");
+    QVERIFY2(m_PrimaryIntIterator == expectedIterator,
+             "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
 }
 
-void ConstZIteratorTests::testDecrementOperators()
+void ConstZIteratorTests::testPostIncrementOperator()
 {
-    m_MainMatrix = {9, 8, -5};
+    QFETCH(IntMatrixConstZIterator, inputIterator);
+    QFETCH(IntMatrixConstZIterator, expectedIterator);
 
-    // pre-decrement
-    IntMatrixConstZIterator it{m_MainMatrix.constZEnd()};
-    --it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Incorrect pre-decrementation");
-    --it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Incorrect pre-decrementation");
-    it = m_MainMatrix.getConstZIterator(5, 5);
-    --it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 4), "Incorrect pre-decrementation");
-    it = m_MainMatrix.getConstZIterator(5, 2);
-    --it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 1), "Incorrect pre-decrementation");
-    --it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 0), "Incorrect pre-decrementation");
-    --it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(4, 7), "Incorrect pre-decrementation");
-    --it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(4, 6), "Incorrect pre-decrementation");
-    it = m_MainMatrix.getConstZIterator(0, 2);
-    --it;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Incorrect pre-decrementation");
-    --it;
-    QVERIFY2(it == m_MainMatrix.constZBegin(), "Incorrect pre-decrementation");
-    --it;
-    QVERIFY2(it == m_MainMatrix.constZBegin(), "Incorrect pre-decrementation");
+    m_PrimaryIntIterator = inputIterator;
+    m_PrimaryIntIterator++;
 
+    QVERIFY2(m_PrimaryIntIterator == expectedIterator,
+             "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
+}
 
-    // post-decrement
-    it = m_MainMatrix.constZEnd();
-    it--;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Incorrect post-decrementation");
-    it--;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Incorrect post-decrementation");
-    it = m_MainMatrix.getConstZIterator(5, 5);
-    it--;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 4), "Incorrect post-decrementation");
-    it = m_MainMatrix.getConstZIterator(5, 2);
-    it--;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 1), "Incorrect post-decrementation");
-    it--;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 0), "Incorrect post-decrementation");
-    it--;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(4, 7), "Incorrect post-decrementation");
-    it--;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(4, 6), "Incorrect post-decrementation");
-    it = m_MainMatrix.getConstZIterator(0, 2);
-    it--;
-    QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Incorrect post-decrementation");
-    it--;
-    QVERIFY2(it == m_MainMatrix.constZBegin(), "Incorrect post-decrementation");
-    it--;
-    QVERIFY2(it == m_MainMatrix.constZBegin(), "Incorrect post-decrementation");
+void ConstZIteratorTests::testCombinedIncrementOperators()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
 
-    // test a combination of "pre" and "post" behaviors
-    IntMatrixConstZIterator srcIt{m_MainMatrix.getConstZIterator(5, 6)};
-    IntMatrixConstZIterator destIt{--(--srcIt)};
-    QVERIFY2(srcIt == m_MainMatrix.getConstZIterator(5, 5) && destIt == m_MainMatrix.getConstZIterator(5, 4), "Incorrect pre-pre-decrementation");
-    srcIt = m_MainMatrix.getConstZIterator(5, 6);
-    destIt = (srcIt--)--;
-    QVERIFY2(srcIt == m_MainMatrix.getConstZIterator(5, 5) && destIt == m_MainMatrix.getConstZIterator(5, 6), "Incorrect post-post-decrementation");
-    srcIt = m_MainMatrix.getConstZIterator(5, 6);
-    destIt = (--srcIt)--;
-    QVERIFY2(srcIt == m_MainMatrix.getConstZIterator(5, 5) && destIt == m_MainMatrix.getConstZIterator(5, 5), "Incorrect post-pre-decrementation");
-    srcIt = m_MainMatrix.getConstZIterator(5, 6);
-    destIt = --(srcIt--);
-    QVERIFY2(srcIt == m_MainMatrix.getConstZIterator(5, 5) && destIt == m_MainMatrix.getConstZIterator(5, 5), "Incorrect pre-post-decrementation");
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    m_SecondaryIntIterator = ++(++m_PrimaryIntIterator);
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 6),
+             "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    m_SecondaryIntIterator = (m_PrimaryIntIterator++)++;
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 4),
+             "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    m_SecondaryIntIterator = (++m_PrimaryIntIterator)++;
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 5),
+             "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    m_SecondaryIntIterator = ++(m_PrimaryIntIterator++);
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 5),
+             "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
+}
+
+void ConstZIteratorTests::testPreDecrementOperator()
+{
+    QFETCH(IntMatrixConstZIterator, inputIterator);
+    QFETCH(IntMatrixConstZIterator, expectedIterator);
+
+    m_PrimaryIntIterator = inputIterator;
+    --m_PrimaryIntIterator;
+
+    QVERIFY2(m_PrimaryIntIterator == expectedIterator,
+             "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
+}
+
+void ConstZIteratorTests::testPostDecrementOperator()
+{
+    QFETCH(IntMatrixConstZIterator, inputIterator);
+    QFETCH(IntMatrixConstZIterator, expectedIterator);
+
+    m_PrimaryIntIterator = inputIterator;
+    m_PrimaryIntIterator--;
+
+    QVERIFY2(m_PrimaryIntIterator == expectedIterator,
+             "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
+}
+
+void ConstZIteratorTests::testCombinedDecrementOperators()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstZIterator(5, 6);
+    m_SecondaryIntIterator = --(--m_PrimaryIntIterator);
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 4),
+             "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstZIterator(5, 6);
+    m_SecondaryIntIterator = (m_PrimaryIntIterator--)--;
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 6),
+             "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstZIterator(5, 6);
+    m_SecondaryIntIterator = (--m_PrimaryIntIterator)--;
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 5),
+             "The pre- and post-decrement operators do not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstZIterator(5, 6);
+    m_SecondaryIntIterator = --(m_PrimaryIntIterator--);
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstZIterator(5, 5),
+             "The pre- and post-decrement operators do not work correctly, the resulting iterator doesn't point to the right element!");
 }
 
 void ConstZIteratorTests::testOperatorPlus()
 {
-    m_MainMatrix = {9, 8, -5};
+    QFETCH(IntMatrixConstZIterator, iterator);
+    QFETCH(IntMatrixDiffType, scalarValue);
+    QFETCH(IntMatrixConstZIterator, expectedIterator);
 
-    // test for non-empty matrix
-    IntMatrixConstZIterator it{m_MainMatrix.constZBegin()};
-    QVERIFY2(it + (-3) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-1) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 0 == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 1 == m_MainMatrix.getConstZIterator(0, 1), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 4 == m_MainMatrix.getConstZIterator(0, 4), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 10 == m_MainMatrix.getConstZIterator(1, 2), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 70 == m_MainMatrix.getConstZIterator(8, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 71 == m_MainMatrix.getConstZIterator(8, 7), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 72 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 73 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 75 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-
-    it = m_MainMatrix.getConstZIterator(0, 1);
-    QVERIFY2(it + (-4) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-2) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-1) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 0 == m_MainMatrix.getConstZIterator(0, 1), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 3 == m_MainMatrix.getConstZIterator(0, 4), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 9 == m_MainMatrix.getConstZIterator(1, 2), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 69 == m_MainMatrix.getConstZIterator(8, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 70 == m_MainMatrix.getConstZIterator(8, 7), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 71 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 72 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 74 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-
-    it = m_MainMatrix.getConstZIterator(5, 4);
-    QVERIFY2(it + (-47) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-45) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-44) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-43) == m_MainMatrix.getConstZIterator(0, 1), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-6) == m_MainMatrix.getConstZIterator(4, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-2) == m_MainMatrix.getConstZIterator(5, 2), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 0 == m_MainMatrix.getConstZIterator(5, 4), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 2 == m_MainMatrix.getConstZIterator(5, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 6 == m_MainMatrix.getConstZIterator(6, 2), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 26 == m_MainMatrix.getConstZIterator(8, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 27 == m_MainMatrix.getConstZIterator(8, 7), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 28 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 29 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 31 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-
-    it = m_MainMatrix.getConstZIterator(8, 6);
-    QVERIFY2(it + (-73) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-71) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-70) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-69) == m_MainMatrix.getConstZIterator(0, 1), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-24) == m_MainMatrix.getConstZIterator(5, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-3) == m_MainMatrix.getConstZIterator(8, 3), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 0 == m_MainMatrix.getConstZIterator(8, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 1 == m_MainMatrix.getConstZIterator(8, 7), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 2 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 3 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 5 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-
-    it = m_MainMatrix.getConstZIterator(8, 7);
-    QVERIFY2(it + (-74) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-72) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-71) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-70) == m_MainMatrix.getConstZIterator(0, 1), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-25) == m_MainMatrix.getConstZIterator(5, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-4) == m_MainMatrix.getConstZIterator(8, 3), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-1) == m_MainMatrix.getConstZIterator(8, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 0 == m_MainMatrix.getConstZIterator(8, 7), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 1 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 2 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 4 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-
-    it = m_MainMatrix.constZEnd();
-    QVERIFY2(it + (-75) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-73) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-72) == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-71) == m_MainMatrix.getConstZIterator(0, 1), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-26) == m_MainMatrix.getConstZIterator(5, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-5) == m_MainMatrix.getConstZIterator(8, 3), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-2) == m_MainMatrix.getConstZIterator(8, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + (-1) == m_MainMatrix.getConstZIterator(8, 7), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 0 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 1 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it + 3 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-
-    // test for empty matrix
-    m_MainMatrix.clear();
-    QVERIFY2(m_MainMatrix.constZBegin() + (-1) == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(m_MainMatrix.constZBegin() + 1 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(m_MainMatrix.constZEnd() + 0 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(m_MainMatrix.constZEnd() + 1 == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(m_MainMatrix.constZEnd() + (-1) == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator is not the right one");
-
-    // test for empty iterators
-    IntMatrixConstZIterator emptyIt1{};
-    IntMatrixConstZIterator emptyIt2{};
-    IntMatrixConstZIterator emptyIt3{};
-    emptyIt1 = emptyIt3 + (-1);
-    emptyIt2 = emptyIt3 + 1;
-    QVERIFY2(emptyIt1 == emptyIt3, "Operator + does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(emptyIt2 == emptyIt3, "Operator + does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(iterator + scalarValue == expectedIterator, "Operator + does not work correctly, the resulting iterator does not point to the right element!");
 }
 
 void ConstZIteratorTests::testOperatorMinus()
 {
-    m_MainMatrix = {9, 8, -5};
+    QFETCH(IntMatrixConstZIterator, iterator);
+    QFETCH(IntMatrixDiffType, scalarValue);
+    QFETCH(IntMatrixConstZIterator, expectedIterator);
 
-    // test for non-empty matrix
-    IntMatrixConstZIterator it{m_MainMatrix.constZBegin()};
-    QVERIFY2(it - 3 == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 1 == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 0 == m_MainMatrix.constZBegin(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-1) == m_MainMatrix.getConstZIterator(0, 1), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-4) == m_MainMatrix.getConstZIterator(0, 4), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-10) == m_MainMatrix.getConstZIterator(1, 2), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-70) == m_MainMatrix.getConstZIterator(8, 6), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-71) == m_MainMatrix.getConstZIterator(8, 7), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-72) == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-73) == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-75) == m_MainMatrix.constZEnd(), "Operator + does not work correctly, the resulting iterator does not point to the right element");
+    scalarValue = -scalarValue;
 
-    it = m_MainMatrix.getConstZIterator(0, 1);
-    QVERIFY2(it - 4 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 2 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 1 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 0 == m_MainMatrix.getConstZIterator(0, 1), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-3) == m_MainMatrix.getConstZIterator(0, 4), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-9) == m_MainMatrix.getConstZIterator(1, 2), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-69) == m_MainMatrix.getConstZIterator(8, 6), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-70) == m_MainMatrix.getConstZIterator(8, 7), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-71) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-72) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-74) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-
-    it = m_MainMatrix.getConstZIterator(5, 4);
-    QVERIFY2(it - 47 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 45 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 44 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 43 == m_MainMatrix.getConstZIterator(0, 1), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 6 == m_MainMatrix.getConstZIterator(4, 6), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 2 == m_MainMatrix.getConstZIterator(5, 2), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 0 == m_MainMatrix.getConstZIterator(5, 4), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-2) == m_MainMatrix.getConstZIterator(5, 6), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-6) == m_MainMatrix.getConstZIterator(6, 2), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-26) == m_MainMatrix.getConstZIterator(8, 6), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-27) == m_MainMatrix.getConstZIterator(8, 7), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-28) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-29) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-31) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-
-    it = m_MainMatrix.getConstZIterator(8, 6);
-    QVERIFY2(it - 73 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 71 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 70 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 69 == m_MainMatrix.getConstZIterator(0, 1), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 24 == m_MainMatrix.getConstZIterator(5, 6), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 3 == m_MainMatrix.getConstZIterator(8, 3), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 0 == m_MainMatrix.getConstZIterator(8, 6), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-1) == m_MainMatrix.getConstZIterator(8, 7), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-2) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-3) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-5) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-
-    it = m_MainMatrix.getConstZIterator(8, 7);
-    QVERIFY2(it - 74 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 72 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 71 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 70 == m_MainMatrix.getConstZIterator(0, 1), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 25 == m_MainMatrix.getConstZIterator(5, 6), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 4 == m_MainMatrix.getConstZIterator(8, 3), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 1 == m_MainMatrix.getConstZIterator(8, 6), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 0 == m_MainMatrix.getConstZIterator(8, 7), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-1) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-2) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-4) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-
-    it = m_MainMatrix.constZEnd();
-    QVERIFY2(it - 75 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 73 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 72 == m_MainMatrix.constZBegin(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 71 == m_MainMatrix.getConstZIterator(0, 1), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 26 == m_MainMatrix.getConstZIterator(5, 6), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 5 == m_MainMatrix.getConstZIterator(8, 3), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 2 == m_MainMatrix.getConstZIterator(8, 6), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 1 == m_MainMatrix.getConstZIterator(8, 7), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - 0 == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-1) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-    QVERIFY2(it - (-3) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator does not point to the right element");
-
-    // test for empty matrix
-    m_MainMatrix.clear();
-    QVERIFY2(m_MainMatrix.constZBegin() - 1 == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(m_MainMatrix.constZBegin() - (-1) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(m_MainMatrix.constZEnd() - 0 == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(m_MainMatrix.constZEnd() - (-1) == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(m_MainMatrix.constZEnd() - 1 == m_MainMatrix.constZEnd(), "Operator - does not work correctly, the resulting iterator is not the right one");
-
-    // test for empty iterator
-    IntMatrixConstZIterator emptyIt1{};
-    IntMatrixConstZIterator emptyIt2{};
-    IntMatrixConstZIterator emptyIt3{};
-    emptyIt1 = emptyIt3 - 1;
-    emptyIt2 = emptyIt3 - (-1);
-    QVERIFY2(emptyIt1 == emptyIt3, "Operator - does not work correctly, the resulting iterator is not the right one");
-    QVERIFY2(emptyIt2 == emptyIt3, "Operator - does not work correctly, the resulting iterator is not the right one");
+    QVERIFY2(iterator - scalarValue == expectedIterator, "Operator - does not work correctly, the resulting iterator does not point to the right element!");
 }
 
 void ConstZIteratorTests::testOperatorPlusEqual()
 {
-    IntMatrixConstZIterator it;
+    QFETCH(IntMatrixConstZIterator, iterator);
+    QFETCH(IntMatrixDiffType, scalarValue);
+    QFETCH(IntMatrixConstZIterator, expectedIterator);
 
-    // test for non-empty matrix
-    m_MainMatrix = {9, 8, -5};
+    iterator += scalarValue;
 
-    IntMatrixConstZIterator referenceIt{m_MainMatrix.constZBegin()};
-    it = referenceIt; it += (-3); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-1); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 0; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 1; QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 4; QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 4), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 10; QVERIFY2(it == m_MainMatrix.getConstZIterator(1, 2), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 70; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 71; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 72; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 73; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 75; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-
-    referenceIt = m_MainMatrix.getConstZIterator(0, 1);
-    it = referenceIt; it += (-4); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-2); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-1); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 0; QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 3; QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 4), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 9; QVERIFY2(it == m_MainMatrix.getConstZIterator(1, 2), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 69; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 70; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 71; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 72; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 74; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-
-    referenceIt = m_MainMatrix.getConstZIterator(5, 4);
-    it = referenceIt; it += (-47); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-45); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-44); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-43); QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-6); QVERIFY2(it == m_MainMatrix.getConstZIterator(4, 6), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-2); QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 2), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 0; QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 4), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 2; QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 6), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 6; QVERIFY2(it == m_MainMatrix.getConstZIterator(6, 2), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 26; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 27; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 28; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 29; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 31; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-
-    referenceIt = m_MainMatrix.getConstZIterator(8, 6);
-    it = referenceIt; it += (-73); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-71); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-70); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-69); QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-24); QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 6), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-3); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 3), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 0; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 1; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 2; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 3; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 5; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-
-    referenceIt = m_MainMatrix.getConstZIterator(8, 7);
-    it = referenceIt; it += (-74); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-72); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-71); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-70); QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-25); QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 6), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-4); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 3), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-1); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 0; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 1; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 2; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 4; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-
-    referenceIt = m_MainMatrix.constZEnd();
-    it = referenceIt; it += (-75); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-73); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-72); QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-71); QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-26); QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 6), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-5); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 3), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-2); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += (-1); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 0; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 1; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it += 3; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator does not point to the right element");
-
-    // test for empty matrix
-    m_MainMatrix.clear();
-    referenceIt = m_MainMatrix.constZBegin();
-    referenceIt = m_MainMatrix.constZEnd();
-    it = referenceIt; it += (-1); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator is not the right one");
-    it = referenceIt; it += 1; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator is not the right one");
-    it = referenceIt; it += 0; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator is not the right one");
-    it = referenceIt; it += 1; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator is not the right one");
-    it = referenceIt; it += (-1); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator += does not work correctly, the updated iterator is not the right one");
-
-    // test for empty iterator
-    IntMatrixConstZIterator emptyIt1{};
-    IntMatrixConstZIterator emptyIt2{};
-    IntMatrixConstZIterator emptyIt3{};
-    emptyIt2 += (-1); QVERIFY2(emptyIt2 == emptyIt1, "Operator += does not work correctly, the resulting updated is not the right one");
-    emptyIt3 += 1; QVERIFY2(emptyIt3 == emptyIt1, "Operator += does not work correctly, the resulting updated is not the right one");
+    QVERIFY2(iterator == expectedIterator, "Operator += does not work correctly, the resulting iterator does not point to the right element!");
 }
 
 void ConstZIteratorTests::testOperatorMinusEqual()
 {
-    IntMatrixConstZIterator it;
+    QFETCH(IntMatrixConstZIterator, iterator);
+    QFETCH(IntMatrixDiffType, scalarValue);
+    QFETCH(IntMatrixConstZIterator, expectedIterator);
 
-    // test for non-empty matrix
-    m_MainMatrix = {9, 8, -5};
+    scalarValue = -scalarValue;
+    iterator -= scalarValue;
 
-    IntMatrixConstZIterator referenceIt{m_MainMatrix.constZBegin()};
-    it = referenceIt; it -= 3; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 1; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 0; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-1); QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-4); QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 4), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-10); QVERIFY2(it == m_MainMatrix.getConstZIterator(1, 2), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-70); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-71); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-72); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-73); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-75); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-
-    referenceIt = m_MainMatrix.getConstZIterator(0, 1);
-    it = referenceIt; it -= 4; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 2; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 1; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 0; QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-3); QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 4), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-9); QVERIFY2(it == m_MainMatrix.getConstZIterator(1, 2), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-69); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-70); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-71); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-72); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-74); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-
-    referenceIt = m_MainMatrix.getConstZIterator(5, 4);
-    it = referenceIt; it -= 47; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 45; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 44; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 43; QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 6; QVERIFY2(it == m_MainMatrix.getConstZIterator(4, 6), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 2; QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 2), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 0; QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 4), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-2); QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 6), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-6); QVERIFY2(it == m_MainMatrix.getConstZIterator(6, 2), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-26); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-27); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-28); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-29); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-31); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-
-    referenceIt = m_MainMatrix.getConstZIterator(8, 6);
-    it = referenceIt; it -= 73; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 71; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 70; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 69; QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 24; QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 6), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 3; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 3), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 0; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-1); QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-2); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-3); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-5); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-
-    referenceIt = m_MainMatrix.getConstZIterator(8, 7);
-    it = referenceIt; it -= 74; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 72; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 71; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 70; QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 25; QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 6), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 4; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 3), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 1; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 0; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-1); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-2); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-4); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-
-    referenceIt = m_MainMatrix.constZEnd();
-    it = referenceIt; it -= 75; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 73; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 72; QVERIFY2(it == m_MainMatrix.constZBegin(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 71; QVERIFY2(it == m_MainMatrix.getConstZIterator(0, 1), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 26; QVERIFY2(it == m_MainMatrix.getConstZIterator(5, 6), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 5; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 3), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 2; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 6), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 1; QVERIFY2(it == m_MainMatrix.getConstZIterator(8, 7), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= 0; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-1); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-    it = referenceIt; it -= (-3); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator does not point to the right element");
-
-    // test for empty matrix
-    m_MainMatrix.clear();
-    referenceIt = m_MainMatrix.constZBegin();
-    referenceIt = m_MainMatrix.constZEnd();
-    it = referenceIt; it -= 1; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator is not the right one");
-    it = referenceIt; it -= (-1); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator is not the right one");
-    it = referenceIt; it -= 0; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator is not the right one");
-    it = referenceIt; it -= (-1); QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator is not the right one");
-    it = referenceIt; it -= 1; QVERIFY2(it == m_MainMatrix.constZEnd(), "Operator -= does not work correctly, the updated iterator is not the right one");
-
-    // test for empty iterator
-    IntMatrixConstZIterator emptyIt1{};
-    IntMatrixConstZIterator emptyIt2{};
-    IntMatrixConstZIterator emptyIt3{};
-    emptyIt2 -= 1; QVERIFY2(emptyIt2 == emptyIt1, "Operator -= does not work correctly, the updated iterator is not the right one");
-    emptyIt3 -= (-1); QVERIFY2(emptyIt3 == emptyIt1, "Operator -= does not work correctly, the updated iterator is not the right one");
+    QVERIFY2(iterator == expectedIterator, "Operator -= does not work correctly, the resulting iterator does not point to the right element!");
 }
 
 void ConstZIteratorTests::testDifferenceOperator()
 {
-    // test for non-empty matrix
-    m_MainMatrix = {9, 8, -5};
+    QFETCH(IntMatrixConstZIterator, firstIterator);
+    QFETCH(IntMatrixConstZIterator, secondIterator);
+    QFETCH(IntMatrix::size_type, expectedDifference);
 
-    QVERIFY2(m_MainMatrix.constZEnd() - m_MainMatrix.constZEnd() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZEnd() - m_MainMatrix.getConstZIterator(8, 7) == 1, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZEnd() - m_MainMatrix.getConstZIterator(8, 6) == 2, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZEnd() - m_MainMatrix.getConstZIterator(5, 4) == 28, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZEnd() - m_MainMatrix.getConstZIterator(0, 1) == 71, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZEnd() - m_MainMatrix.constZBegin() == 72, "The difference operator does not work correctly, difference between iterators is wrong");
-
-    QVERIFY2(m_MainMatrix.getConstZIterator(8, 7) - m_MainMatrix.constZEnd() == -1, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(8, 7) - m_MainMatrix.getConstZIterator(8, 7) == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(8, 7) - m_MainMatrix.getConstZIterator(8, 6) == 1, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(8, 7) - m_MainMatrix.getConstZIterator(5, 4) == 27, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(8, 7) - m_MainMatrix.getConstZIterator(0, 1) == 70, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(8, 7) - m_MainMatrix.constZBegin() == 71, "The difference operator does not work correctly, difference between iterators is wrong");
-
-    QVERIFY2(m_MainMatrix.getConstZIterator(8, 6) - m_MainMatrix.constZEnd() == -2, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(8, 6) - m_MainMatrix.getConstZIterator(8, 7) == -1, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(8, 6) - m_MainMatrix.getConstZIterator(8, 6) == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(8, 6) - m_MainMatrix.getConstZIterator(5, 4) == 26, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(8, 6) - m_MainMatrix.getConstZIterator(0, 1) == 69, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(8, 6) - m_MainMatrix.constZBegin() == 70, "The difference operator does not work correctly, difference between iterators is wrong");
-
-    QVERIFY2(m_MainMatrix.getConstZIterator(5, 4) - m_MainMatrix.constZEnd() == -28, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(5, 4) - m_MainMatrix.getConstZIterator(8, 7) == -27, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(5, 4) - m_MainMatrix.getConstZIterator(8, 6) == -26, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(5, 4) - m_MainMatrix.getConstZIterator(5, 4) == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(5, 4) - m_MainMatrix.getConstZIterator(0, 1) == 43, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(5, 4) - m_MainMatrix.constZBegin() == 44, "The difference operator does not work correctly, difference between iterators is wrong");
-
-    QVERIFY2(m_MainMatrix.getConstZIterator(0, 1) - m_MainMatrix.constZEnd() == -71, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(0, 1) - m_MainMatrix.getConstZIterator(8, 7) == -70, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(0, 1) - m_MainMatrix.getConstZIterator(8, 6) == -69, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(0, 1) - m_MainMatrix.getConstZIterator(5, 4) == -43, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(0, 1) - m_MainMatrix.getConstZIterator(0, 1) == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(0, 1) - m_MainMatrix.constZBegin() == 1, "The difference operator does not work correctly, difference between iterators is wrong");
-
-    QVERIFY2(m_MainMatrix.constZBegin() - m_MainMatrix.constZEnd() == -72, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZBegin() - m_MainMatrix.getConstZIterator(8, 7) == -71, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZBegin() - m_MainMatrix.getConstZIterator(8, 6) == -70, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZBegin() - m_MainMatrix.getConstZIterator(5, 4) == -44, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZBegin() - m_MainMatrix.getConstZIterator(0, 1) == -1, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZBegin() - m_MainMatrix.constZBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-
-    // additional tests with "random" elements from same row/different rows
-    QVERIFY2(m_MainMatrix.getConstZIterator(5, 4) - m_MainMatrix.getConstZIterator(7, 2) == -14, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(7, 2) - m_MainMatrix.getConstZIterator(5, 4) == 14, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(5, 4) - m_MainMatrix.getConstZIterator(5, 2) == 2, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.getConstZIterator(5, 2) - m_MainMatrix.getConstZIterator(5, 4) == -2, "The difference operator does not work correctly, difference between iterators is wrong");
-
-    // test for empty matrix
-    m_MainMatrix.clear();
-    QVERIFY2(m_MainMatrix.constZEnd() - m_MainMatrix.constZBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZBegin() - m_MainMatrix.constZEnd() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZBegin() - m_MainMatrix.constZBegin() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(m_MainMatrix.constZEnd() - m_MainMatrix.constZEnd() == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-
-    // test for empty iterator
-    IntMatrixConstZIterator emptyIt1{};
-    IntMatrixConstZIterator emptyIt2{};
-    QVERIFY2(emptyIt1 - emptyIt2 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(emptyIt2 - emptyIt1 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
-    QVERIFY2(emptyIt1 - emptyIt1 == 0, "The difference operator does not work correctly, difference between iterators is wrong");
+    QVERIFY2(secondIterator - firstIterator == expectedDifference,
+             "The difference operator does not work correctly, difference between iterators is not the expected one!");
 }
 
-void ConstZIteratorTests::testDereferenceAsteriskOperator()
+void ConstZIteratorTests::testAsteriskOperator()
 {
-    // test reading element
-    m_MainMatrix = {4, 3, {1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12}};
-    QVERIFY2(*m_MainMatrix.constZBegin() == 1, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
-    QVERIFY2(*m_MainMatrix.getConstZIterator(0, 1) == -2, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
-    QVERIFY2(*m_MainMatrix.getConstZIterator(1, 2) == -6, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
-    QVERIFY2(*m_MainMatrix.getConstZIterator(3, 1) == 11, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
-    QVERIFY2(*m_MainMatrix.getConstZIterator(3, 2) == -12, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
+    QFETCH(IntMatrixConstZIterator, iterator);
+    QFETCH(int, expectedValue);
 
-    // additional test
-    m_MainMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    IntMatrixConstZIterator readIter{m_MainMatrix.constZBegin()};
-    m_MainMatrix.at(0, 2) = 10;
-    readIter += 2;
-    QVERIFY2(*readIter == 10, "The dereference (*) operator does not work correctly, the pointed value is not correctly read");
+    QVERIFY2(*iterator == expectedValue, "The asterisk operator does not work correctly when reading the value!");
 }
 
-void ConstZIteratorTests::testDereferenceArrowOperator()
+void ConstZIteratorTests::testAsteriskOperatorPlusEqual()
 {
-    // test reading element
-    m_AuxStringMatrix = {4, 3, {"abc", "ba", "abcd", "jihgfedcba", "a", "gfedcba", "abcde", "ihgfedcba", "abcdefgh", "", "abcdefghijk", "fedcba"}};
-    QVERIFY2(m_AuxStringMatrix.constZBegin()->size() == 3, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
-    QVERIFY2(m_AuxStringMatrix.getConstZIterator(0, 1)->size() == 2, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
-    QVERIFY2(m_AuxStringMatrix.getConstZIterator(1, 2)->size() == 7, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
-    QVERIFY2(m_AuxStringMatrix.getConstZIterator(3, 1)->size() == 11, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
-    QVERIFY2(m_AuxStringMatrix.getConstZIterator(3, 2)->size() == 6, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    m_PrimaryIntMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.constZBegin();
+    m_PrimaryIntMatrix.at(0, 2) = 10;
+    m_PrimaryIntIterator += 2;
 
-    // additional test
-    m_AuxStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-    StringMatrixConstZIterator it{m_AuxStringMatrix.constZBegin()};
-    m_AuxStringMatrix.at(0, 2) = "abcdefghi";
-    it += 2;;
-    QVERIFY2(it->size() == 9, "The dereference (->) operator does not work correctly, the method of the item class does not return the right string size");
+    QVERIFY(*m_PrimaryIntIterator == 10);
 }
 
-void ConstZIteratorTests::testDereferenceSquareBracketsOperator()
+void ConstZIteratorTests::testArrowOperator()
 {
-    // test reading element
-    m_MainMatrix = {4, 3, {1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12}};
+    QFETCH(StringMatrixConstZIterator, iterator);
+    QFETCH(int, expectedValue);
 
-    IntMatrixConstZIterator it{m_MainMatrix.constZBegin()};
-    QVERIFY2(it[0] == 1, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[1] == -2, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[5] == -6, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[10] == 11, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[11] == -12, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(iterator->size() == static_cast<size_t>(expectedValue), "The arrow operator does not work correctly when reading the value!");
+}
 
-    it = m_MainMatrix.getConstZIterator(0, 1);
-    QVERIFY2(it[-1] == 1, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[0] == -2, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[4] == -6, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[9] == 11, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[10] == -12, "The dereference square brackets operator doesn't work correctly when reading the element");
+void ConstZIteratorTests::testArrowOperatorPlusEqual()
+{
+    m_PrimaryStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+    m_StringIterator = m_PrimaryStringMatrix.constZBegin();
+    m_PrimaryStringMatrix.at(0, 2) = "abcdefghi";
+    m_StringIterator += 2;
 
-    it = m_MainMatrix.getConstZIterator(1, 2);
-    QVERIFY2(it[-5] == 1, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[-4] == -2, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[0] == -6, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[5] == 11, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[6] == -12, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY(m_StringIterator->size() == 9);
+}
 
-    it = m_MainMatrix.getConstZIterator(3, 1);
-    QVERIFY2(it[-10] == 1, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[-9] == -2, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[-5] == -6, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[0] == 11, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[1] == -12, "The dereference square brackets operator doesn't work correctly when reading the element");
+void ConstZIteratorTests::testSquareBracketsOperator()
+{
+    QFETCH(IntMatrixConstZIterator, iterator);
+    QFETCH(IntMatrixDiffType, index);
+    QFETCH(int, expectedValue);
 
-    it = m_MainMatrix.getConstZIterator(3, 2);
-    QVERIFY2(it[-11] == 1, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[-10] == -2, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[-6] == -6, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[-1] == 11, "The dereference square brackets operator doesn't work correctly when reading the element");
-    QVERIFY2(it[0] == -12, "The dereference square brackets operator doesn't work correctly when reading the element");
+    QVERIFY2(iterator[index] == expectedValue,
+             "The dereference square brackets operator doesn't work correctly when reading the value from the given index!");
 }
 
 void ConstZIteratorTests::testStdCount()
 {
-    using namespace std;
+    QFETCH(IntMatrixConstZIterator, leftIterator);
+    QFETCH(IntMatrixConstZIterator, rightIterator);
+    QFETCH(int, countedValue);
+    QFETCH(IntMatrixDiffType, expectedCount);
 
-    m_MainMatrix = {4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 1, 2, -2, 2, 8, 9, -7, 7, 2, 9, 8}};
-
-    int matchCount{count(m_MainMatrix.constZBegin(), m_MainMatrix.constZEnd(), 2)};
-    QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZBegin(), m_MainMatrix.constZEnd(), -5);
-    QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.getConstZIterator(0, 2), m_MainMatrix.getConstZIterator(1, 4), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.getConstZIterator(0, 2), m_MainMatrix.getConstZIterator(2, 0), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.getConstZIterator(0, 3), m_MainMatrix.getConstZIterator(1, 4), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.getConstZIterator(0, 3), m_MainMatrix.getConstZIterator(2, 0), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZBegin(), m_MainMatrix.getConstZIterator(2, 3), 2);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.getConstZIterator(2, 3), m_MainMatrix.constZEnd(), 2);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZBegin(), m_MainMatrix.getConstZIterator(2, 2), 2);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.getConstZIterator(2, 2), m_MainMatrix.constZEnd(), 2);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.getConstZIterator(2), m_MainMatrix.getConstZIterator(9), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.getConstZIterator(2), m_MainMatrix.getConstZIterator(10), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.getConstZIterator(3), m_MainMatrix.getConstZIterator(9), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.getConstZIterator(3), m_MainMatrix.getConstZIterator(10), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZBegin(), m_MainMatrix.getConstZIterator(13), 2);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.getConstZIterator(13), m_MainMatrix.constZEnd(), 2);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZBegin(), m_MainMatrix.getConstZIterator(12), 2);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.getConstZIterator(12), m_MainMatrix.constZEnd(), 2);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZRowEnd(1), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZRowEnd(2), 8);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZRowBegin(2), m_MainMatrix.constZRowEnd(2), 9);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZRowBegin(2), m_MainMatrix.constZRowEnd(3), 9);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZBegin(), m_MainMatrix.constZRowBegin(1), 1);
-    QVERIFY2(matchCount == 2, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZEnd(), 1);
-    QVERIFY2(matchCount == 1, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZBegin(), m_MainMatrix.constZRowEnd(1), 1);
-    QVERIFY2(matchCount == 3, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
-    matchCount = count(m_MainMatrix.constZRowEnd(1), m_MainMatrix.constZEnd(), 1);
-    QVERIFY2(matchCount == 0, "The std::count doesn't work correctly with the iterator, incorrect number of matches returned");
+    QVERIFY2(std::count(leftIterator, rightIterator, countedValue) == expectedCount, "The std::count algorithm does not return the expected value!");
 }
 
 void ConstZIteratorTests::testStdFind()
 {
-    using namespace std;
+    QFETCH(IntMatrixConstZIterator, leftIterator);
+    QFETCH(IntMatrixConstZIterator, rightIterator);
+    QFETCH(int, searchedValue);
+    QFETCH(IntMatrixConstZIterator, expectedIterator);
 
-    // test finding elements in specific ranges within unempty matrix
-    m_MainMatrix = {4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 6, 2, -2, 2, 8, 9, -7, 7, 2, 9, 11}};
+    m_PrimaryIntIterator = std::find(leftIterator, rightIterator, searchedValue);
+    QVERIFY2(m_PrimaryIntIterator == expectedIterator, "The std::find algorithm does not return the expected iterator!");
+}
 
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.constZEnd(), 5) != m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.constZEnd(), 10) == m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZRowEnd(1), 5) != m_MainMatrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZRowEnd(1), 6) != m_MainMatrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZRowEnd(1), 8) != m_MainMatrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZRowEnd(1), -1) == m_MainMatrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZRowEnd(1), -2) == m_MainMatrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZRowEnd(1), 10) == m_MainMatrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZEnd(), 5) != m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZEnd(), 11) != m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZEnd(), -2) != m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZEnd(), -1) == m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZRowBegin(1), m_MainMatrix.constZEnd(), 10) == m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.constZRowEnd(1), -1) != m_MainMatrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.constZRowEnd(1), 6) != m_MainMatrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.constZRowEnd(1), 8) != m_MainMatrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.constZRowEnd(1), -2) == m_MainMatrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.constZRowEnd(1), 10) == m_MainMatrix.constZRowEnd(1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.getConstZIterator(1, 3), m_MainMatrix.getConstZIterator(3, 1), 0) != m_MainMatrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.getConstZIterator(1, 3), m_MainMatrix.getConstZIterator(3, 1), -7) != m_MainMatrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.getConstZIterator(1, 3), m_MainMatrix.getConstZIterator(3, 1), -2) != m_MainMatrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.getConstZIterator(1, 3), m_MainMatrix.getConstZIterator(3, 1), -1) == m_MainMatrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.getConstZIterator(1, 3), m_MainMatrix.getConstZIterator(3, 1), 11) == m_MainMatrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.getConstZIterator(1, 3), m_MainMatrix.getConstZIterator(3, 1), 10) == m_MainMatrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.getConstZIterator(1, 3), m_MainMatrix.constZEnd(), 0) != m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.getConstZIterator(1, 3), m_MainMatrix.constZEnd(), 11) != m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.getConstZIterator(1, 3), m_MainMatrix.constZEnd(), -2) != m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.getConstZIterator(1, 3), m_MainMatrix.constZEnd(), -1) == m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.getConstZIterator(1, 3), m_MainMatrix.constZEnd(), 10) == m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.getConstZIterator(3, 1), -1) != m_MainMatrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.getConstZIterator(3, 1), -7) != m_MainMatrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.getConstZIterator(3, 1), -2) != m_MainMatrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, an existing value hasn't been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.getConstZIterator(3, 1), 11) == m_MainMatrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.getConstZIterator(3, 1), 10) == m_MainMatrix.getConstZIterator(3, 1), "The iterator doesn't work correctly with std::find, a non-existing value has been found in the given range");
+void ConstZIteratorTests::testStdFindWithIncrement()
+{
+    m_PrimaryIntMatrix = {4, 5, {
+                              -1, 1, 3, 1, 4,
+                              5, 9, 8, 0, 1,
+                              2, -2, 2, 8, 9,
+                              -7, 7, 2, 9, 8
+                          }};
 
-    // other tests
-    m_MainMatrix = {4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 1, 2, -2, 2, 8, 9, -7, 7, 2, 9, 8}};
-    IntMatrixConstZIterator it{find(m_MainMatrix.constZBegin(), m_MainMatrix.constZEnd(), 4)};
-    ++it;
-    QVERIFY2(*it == 5, "The iterator doesn't work correctly with std::find, incorrect next element returned");
+    m_PrimaryIntIterator = std::find(m_PrimaryIntMatrix.constZBegin(), m_PrimaryIntMatrix.constZEnd(), 4);
 
-    m_MainMatrix = {4, 5, {-1, 1, 3, 1, 4, 5, 9, 8, 0, 1, 2, -2, 2, 8, 9, -7, 7, 2, 9, 8}};
-    QVERIFY2(find(m_MainMatrix.constZBegin(), m_MainMatrix.constZEnd(), 10) == m_MainMatrix.constZEnd(), "The iterator doesn't work correctly with std::find, a non existing value has been found in the matrix");
+    ++m_PrimaryIntIterator;
 
-    it = m_MainMatrix.constZBegin();
-    while(it != m_MainMatrix.constZEnd())
-    {
-        it = find(it, m_MainMatrix.constZEnd(), 9);
+    QVERIFY2(*m_PrimaryIntIterator == 5, "The iterator doesn't work correctly with std::find, incorrect next element returned!");
+    QVERIFY2(std::find(m_PrimaryIntMatrix.constZBegin(), m_PrimaryIntMatrix.constZEnd(), 10) == m_PrimaryIntMatrix.constZEnd(),
+             "The iterator doesn't work correctly with std::find, a non existing value has been found in the matrix!");
+}
 
-        if (it != m_MainMatrix.constZEnd())
-        {
-            m_MainMatrix.at(it.getRowNr(), it.getColumnNr()) = 10;
-        }
-    }
-    int expectedNumber{std::count(m_MainMatrix.constZBegin(), m_MainMatrix.constZEnd(), 10)};
-    QVERIFY2(expectedNumber == 3, "The iterator doesn't work properly with std::find, element values haven't been correctly replaced");
+void ConstZIteratorTests::testIteratorCreation_data()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
+    m_SecondaryIntMatrix.clear();
+
+    QTest::addColumn<IntMatrixConstZIterator>("iterator");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowNr");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnNr");
+    QTest::addColumn<bool>("isPrimaryMatrix");
+    QTest::addColumn<bool>("expectedValidity");
+
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 0 << 0 << true << true;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constZEnd() << 8 << 8 << true << true;
+    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.constZRowBegin(0) << 0 << 0 << true << true;
+    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << 1 << 0 << true << true;
+    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.constZRowBegin(4) << 4 << 0 << true << true;
+    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.constZRowBegin(7) << 7 << 0 << true << true;
+    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.constZRowBegin(8) << 8 << 0 << true << true;
+    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.constZRowEnd(0) << 1 << 0 << true << true;
+    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.constZRowEnd(1) << 2 << 0 << true << true;
+    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.constZRowEnd(4) << 5 << 0 << true << true;
+    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.constZRowEnd(7) << 8 << 0 << true << true;
+    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.constZRowEnd(8) << 8 << 8 << true << true;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 0) << 0 << 0 << true << true;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 0 << 1 << true << true;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 5 << 4 << true << true;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 8 << 6 << true << true;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 8 << 7 << true << true;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0) << 0 << 0 << true << true;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1) << 0 << 1 << true << true;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(44) << 5 << 4 << true << true;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(70) << 8 << 6 << true << true;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(71) << 8 << 7 << true << true;
+    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.constZBegin() << -1 << -1 << false << true;
+    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.constZEnd() << -1 << -1 << false << true;
+}
+
+void ConstZIteratorTests::testIteratorsAreEqual_data()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
+    m_SecondaryIntMatrix.clear();
+
+    QTest::addColumn<IntMatrixConstZIterator>("firstIterator");
+    QTest::addColumn<IntMatrixConstZIterator>("secondIterator");
+
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 0);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0) << m_PrimaryIntMatrix.getConstZIterator(0, 0);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1) << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(44) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(70) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(71) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{row begin iterator, random iterator}") << m_PrimaryIntMatrix.constZRowBegin(0) << m_PrimaryIntMatrix.getConstZIterator(0, 0);
+    QTest::newRow("{row begin iterator, random iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.getConstZIterator(1, 0);
+    QTest::newRow("{row begin iterator, random iterator}") << m_PrimaryIntMatrix.constZRowBegin(5) << m_PrimaryIntMatrix.getConstZIterator(5, 0);
+    QTest::newRow("{row begin iterator, random iterator}") << m_PrimaryIntMatrix.constZRowBegin(7) << m_PrimaryIntMatrix.getConstZIterator(7, 0);
+    QTest::newRow("{row begin iterator, random iterator}") << m_PrimaryIntMatrix.constZRowBegin(8) << m_PrimaryIntMatrix.getConstZIterator(8, 0);
+    QTest::newRow("{row end iterator, random iterator}") << m_PrimaryIntMatrix.constZRowEnd(0) << m_PrimaryIntMatrix.getConstZIterator(1, 0);
+    QTest::newRow("{row end iterator, random iterator}") << m_PrimaryIntMatrix.constZRowEnd(1) << m_PrimaryIntMatrix.getConstZIterator(2, 0);
+    QTest::newRow("{row end iterator, random iterator}") << m_PrimaryIntMatrix.constZRowEnd(5) << m_PrimaryIntMatrix.getConstZIterator(6, 0);
+    QTest::newRow("{row end iterator, random iterator}") << m_PrimaryIntMatrix.constZRowEnd(7) << m_PrimaryIntMatrix.getConstZIterator(8, 0);
+    QTest::newRow("{row end iterator, end iterator}") << m_PrimaryIntMatrix.constZRowEnd(8) << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.constZEnd();
+}
+
+void ConstZIteratorTests::testIteratorEqualToItself_data()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
+
+    QTest::addColumn<IntMatrixConstZIterator>("iterator");
+
+    QTest::newRow("{begin iterator}")  << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("{random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{end iterator}")  << m_PrimaryIntMatrix.constZEnd();
+}
+
+void ConstZIteratorTests::testIteratorsAreNotEqual_data()
+{
+    _buildLessThanOperatorTestingTable();
+}
+
+void ConstZIteratorTests::testLessThanOperator_data()
+{
+    _buildLessThanOperatorTestingTable();
+}
+
+void ConstZIteratorTests::testLessThanOrEqualToOperator_data()
+{
+    _buildLessThanOrEqualOperatorTestingTable();
+}
+
+void ConstZIteratorTests::testGreaterThanOperator_data()
+{
+    _buildLessThanOperatorTestingTable();
+}
+
+void ConstZIteratorTests::testGreaterThanOrEqualToOperator_data()
+{
+    _buildLessThanOrEqualOperatorTestingTable();
+}
+
+void ConstZIteratorTests::testPreIncrementOperator_data()
+{
+    _buildIncrementOperatorTestingTable();
+}
+
+void ConstZIteratorTests::testPostIncrementOperator_data()
+{
+    _buildIncrementOperatorTestingTable();
+}
+
+void ConstZIteratorTests::testPreDecrementOperator_data()
+{
+    _buildDecrementOperatorTestingTable();
+}
+
+void ConstZIteratorTests::testPostDecrementOperator_data()
+{
+    _buildDecrementOperatorTestingTable();
+}
+
+void ConstZIteratorTests::testOperatorPlus_data()
+{
+    _buildOperatorPlusTestingTable();
+}
+
+void ConstZIteratorTests::testOperatorMinus_data()
+{
+    _buildOperatorPlusTestingTable();
+}
+
+void ConstZIteratorTests::testOperatorPlusEqual_data()
+{
+    _buildOperatorPlusTestingTable();
+}
+
+void ConstZIteratorTests::testOperatorMinusEqual_data()
+{
+    _buildOperatorPlusTestingTable();
+}
+
+void ConstZIteratorTests::testDifferenceOperator_data()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
+    m_SecondaryIntMatrix.clear();
+
+    QTest::addColumn<IntMatrixConstZIterator>("firstIterator");
+    QTest::addColumn<IntMatrixConstZIterator>("secondIterator");
+    QTest::addColumn<IntMatrixDiffType>("expectedDifference");
+
+    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.constZEnd() << 0;
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZEnd() << 1;
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.constZEnd() << 2;
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.constZEnd() << 28;
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.constZEnd() << 71;
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << 72;
+    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -1;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 0;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 1;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 27;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 70;
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 71;
+    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -2;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -1;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 0;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 26;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 69;
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 70;
+    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -28;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -27;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -26;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 0;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 43;
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 44;
+    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -71;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -70;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -69;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -43;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 0;
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 1;
+    QTest::newRow("{end iterator, begin iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.constZBegin() << -72;
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZBegin() << -71;
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.constZBegin() << -70;
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.constZBegin() << -44;
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.constZBegin() << -1;
+    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZBegin() << 0;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(7, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -14;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(7, 2) << 14;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 2;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(5, 2) << -2;
+    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.constZEnd() << 0;
+    QTest::newRow("{end iterator, begin iterator}") << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.constZBegin() << 0;
+    QTest::newRow("{begin iterator, begin iterator}") << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.constZBegin() << 0;
+    QTest::newRow("{end iterator, end iterator}") << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.constZEnd() << 0;
+    QTest::newRow("{empty iterator, empty iterator}") << IntMatrixConstZIterator{} << IntMatrixConstZIterator{} << 0;
+}
+
+void ConstZIteratorTests::testAsteriskOperator_data()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12}};
+
+    QTest::addColumn<IntMatrixConstZIterator>("iterator");
+    QTest::addColumn<int>("expectedValue");
+
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 1;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -2;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << -6;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 11;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -12;
+}
+
+void ConstZIteratorTests::testArrowOperator_data()
+{
+    m_PrimaryStringMatrix = {4, 3, {"abc", "ba", "abcd", "jihgfedcba", "a", "gfedcba", "abcde", "ihgfedcba", "abcdefgh", "", "abcdefghijk", "fedcba"}};
+
+    QTest::addColumn<StringMatrixConstZIterator>("iterator");
+    QTest::addColumn<int>("expectedValue");
+
+    QTest::newRow("{begin iterator}") << m_PrimaryStringMatrix.constZBegin() << 3;
+    QTest::newRow("{random iterator}") << m_PrimaryStringMatrix.getConstZIterator(0, 1) << 2;
+    QTest::newRow("{random iterator}") << m_PrimaryStringMatrix.getConstZIterator(1, 2) << 7;
+    QTest::newRow("{random iterator}") << m_PrimaryStringMatrix.getConstZIterator(3, 1) << 11;
+    QTest::newRow("{random iterator}") << m_PrimaryStringMatrix.getConstZIterator(3, 2) << 6;
+}
+
+void ConstZIteratorTests::testSquareBracketsOperator_data()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12}};
+
+    QTest::addColumn<IntMatrixConstZIterator>("iterator");
+    QTest::addColumn<IntMatrixDiffType>("index");
+    QTest::addColumn<int>("expectedValue");
+
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 0 << 1;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 1 << -2;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 5 << -6;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 10 << 11;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 11 << -12;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -1 << 1;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 0 << -2;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 4 << -6;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 9 << 11;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 10 << -12;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << -5 << 1;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << -4 << -2;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << 0 << -6;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << 5 << 11;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << 6 << -12;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -10 << 1;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -9 << -2;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -5 << -6;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 0 << 11;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 1 << -12;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -11 << 1;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -10 << -2;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -6 << -6;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -1 << 11;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << 0 << -12;
+}
+
+void ConstZIteratorTests::testStdCount_data()
+{
+    m_PrimaryIntMatrix = {4, 5, {
+                              -1, 1, 3, 1, 4,
+                               5, 9, 8, 0, 1,
+                               2, -2, 2, 8, 9,
+                              -7, 7, 2, 9, 8
+                          }};
+
+    QTest::addColumn<IntMatrixConstZIterator>("leftIterator");
+    QTest::addColumn<IntMatrixConstZIterator>("rightIterator");
+    QTest::addColumn<int>("countedValue");
+    QTest::addColumn<IntMatrixDiffType>("expectedCount");
+
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << 2 << 3;
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << -5 << 0;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(1, 4) << 1 << 1;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(2, 0) << 1 << 2;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 3) << m_PrimaryIntMatrix.getConstZIterator(1, 4) << 1 << 1;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 3) << m_PrimaryIntMatrix.getConstZIterator(2, 0) << 1 << 2;
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(2, 3) << 2 << 2;
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(2, 3) << m_PrimaryIntMatrix.constZEnd() << 2 << 1;
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(2, 2) << 2 << 1;
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(2, 2) << m_PrimaryIntMatrix.constZEnd() << 2 << 2;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(2) << m_PrimaryIntMatrix.getConstZIterator(9) << 1 << 1;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(2) << m_PrimaryIntMatrix.getConstZIterator(10) << 1 << 2;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3) << m_PrimaryIntMatrix.getConstZIterator(9) << 1 << 1;
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3) << m_PrimaryIntMatrix.getConstZIterator(10) << 1 << 2;
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(13) << 2 << 2;
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(13) << m_PrimaryIntMatrix.constZEnd() << 2 << 1;
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(12) << 2 << 1;
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(12) << m_PrimaryIntMatrix.constZEnd() << 2 << 2;
+    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 1 << 1;
+    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(2) << 8 << 2;
+    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(2) << m_PrimaryIntMatrix.constZRowEnd(2) << 9 << 1;
+    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(2) << m_PrimaryIntMatrix.constZRowEnd(3) << 9 << 2;
+    QTest::newRow("{begin iterator, row begin iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowBegin(1) << 1 << 2;
+    QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 1 << 1;
+    QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 1 << 3;
+    QTest::newRow("{row end iterator, end iterator}") << m_PrimaryIntMatrix.constZRowEnd(1) << m_PrimaryIntMatrix.constZEnd() << 1 << 0;
+
+}
+
+void ConstZIteratorTests::testStdFind_data()
+{
+    m_PrimaryIntMatrix = {4, 5, {
+                              -1, 1, 3, 1, 4,
+                               5, 9, 8, 0, 6,
+                               2, -2, 2, 8, 9,
+                              -7, 7, 2, 9, 11
+                          }};
+
+    QTest::addColumn<IntMatrixConstZIterator>("leftIterator");
+    QTest::addColumn<IntMatrixConstZIterator>("rightIterator");
+    QTest::addColumn<int>("searchedValue");
+    QTest::addColumn<IntMatrixConstZIterator>("expectedIterator");
+
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << 5 << m_PrimaryIntMatrix.constZRowBegin(1);
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << 10 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 5 << m_PrimaryIntMatrix.constZRowBegin(1);
+    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 6 << m_PrimaryIntMatrix.getConstZIterator(1, 4);
+    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 8 << m_PrimaryIntMatrix.getConstZIterator(1, 2);
+    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << -1 << m_PrimaryIntMatrix.constZRowEnd(1);
+    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << -2 << m_PrimaryIntMatrix.constZRowEnd(1);
+    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 10 << m_PrimaryIntMatrix.constZRowEnd(1);
+    QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 5 << m_PrimaryIntMatrix.constZRowBegin(1);
+    QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 11 << m_PrimaryIntMatrix.getConstZIterator(19);
+    QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << -2 << m_PrimaryIntMatrix.getConstZIterator(2, 1);
+    QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << -1 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 10 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << -1 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 6 << m_PrimaryIntMatrix.getConstZIterator(9);
+    QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 8 << m_PrimaryIntMatrix.getConstZIterator(1, 2);
+    QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << -2 << m_PrimaryIntMatrix.constZRowEnd(1);
+    QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 10 << m_PrimaryIntMatrix.constZRowEnd(1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 0 << m_PrimaryIntMatrix.getConstZIterator(1, 3);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -7 << m_PrimaryIntMatrix.getConstZIterator(3, 0);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -2 << m_PrimaryIntMatrix.getConstZIterator(2, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -1 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 11 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 10 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << 0 << m_PrimaryIntMatrix.getConstZIterator(1, 3);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << 11 << m_PrimaryIntMatrix.getConstZIterator(19);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << -2 << m_PrimaryIntMatrix.getConstZIterator(2, 1);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << -1 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << 10 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -1 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -7 << m_PrimaryIntMatrix.getConstZIterator(3, 0);
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -2 << m_PrimaryIntMatrix.getConstZIterator(2, 1);
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 11 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 10 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
+}
+
+void ConstZIteratorTests::_buildLessThanOperatorTestingTable()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
+
+    QTest::addColumn<IntMatrixConstZIterator>("firstIterator");
+    QTest::addColumn<IntMatrixConstZIterator>("secondIterator");
+
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 2);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZEnd();
+}
+
+void ConstZIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
+    m_SecondaryIntMatrix.clear();
+
+    QTest::addColumn<IntMatrixConstZIterator>("firstIterator");
+    QTest::addColumn<IntMatrixConstZIterator>("secondIterator");
+
+    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 2);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(0, 2);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("{end iterator, begin iterator}") << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.constZBegin();
+}
+
+void ConstZIteratorTests::_buildIncrementOperatorTestingTable()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
+
+    QTest::addColumn<IntMatrixConstZIterator>("inputIterator");
+    QTest::addColumn<IntMatrixConstZIterator>("expectedIterator");
+
+    QTest::newRow("{begin iterator, random iterator}")  << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 2);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(4, 6) << m_PrimaryIntMatrix.getConstZIterator(4, 7);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(4, 7) << m_PrimaryIntMatrix.getConstZIterator(5, 0);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 0) << m_PrimaryIntMatrix.getConstZIterator(5, 1);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 1) << m_PrimaryIntMatrix.getConstZIterator(5, 2);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(5, 5);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{random iterator, end iterator}")  << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{end iterator, end iterator}")  << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.constZEnd();
+}
+
+void ConstZIteratorTests::_buildDecrementOperatorTestingTable()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
+
+    QTest::addColumn<IntMatrixConstZIterator>("inputIterator");
+    QTest::addColumn<IntMatrixConstZIterator>("expectedIterator");
+
+    QTest::newRow("{end iterator, random iterator}")  << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 5) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 1);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 1) << m_PrimaryIntMatrix.getConstZIterator(5, 0);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 0) << m_PrimaryIntMatrix.getConstZIterator(4, 7);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(4, 7) << m_PrimaryIntMatrix.getConstZIterator(4, 6);
+    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{random iterator, begin iterator}")  << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{begin iterator, begin iterator}")  << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZBegin();
+}
+
+void ConstZIteratorTests::_buildOperatorPlusTestingTable()
+{
+    m_PrimaryIntMatrix = {9, 8, -5};
+    m_SecondaryIntMatrix.clear();
+
+    QTest::addColumn<IntMatrixConstZIterator>("iterator");
+    QTest::addColumn<IntMatrixDiffType>("scalarValue");
+    QTest::addColumn<IntMatrixConstZIterator>("expectedIterator");
+
+    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constZBegin() << -3 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constZBegin() << -1 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 0 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << 1 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << 4 << m_PrimaryIntMatrix.getConstZIterator(0, 4);
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << 10 << m_PrimaryIntMatrix.getConstZIterator(1, 2);
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << 70 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << 71 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << 72 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << 73 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << 75 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -4 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -2 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -1 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 0 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 3 << m_PrimaryIntMatrix.getConstZIterator(0, 4);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 9 << m_PrimaryIntMatrix.getConstZIterator(1, 2);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 69 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 70 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 71 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 72 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 74 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -47 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -45 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -44 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -43 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -6 << m_PrimaryIntMatrix.getConstZIterator(4, 6);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -2 << m_PrimaryIntMatrix.getConstZIterator(5, 2);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) <<  0 << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) <<  2 << m_PrimaryIntMatrix.getConstZIterator(5, 6);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 6 << m_PrimaryIntMatrix.getConstZIterator(6, 2);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 26 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 27 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 28 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 29 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 31 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -73 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -71 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -70 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -69 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -24 << m_PrimaryIntMatrix.getConstZIterator(5, 6);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -3 << m_PrimaryIntMatrix.getConstZIterator(8, 3);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 0 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 1 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 2 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 3 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 5 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -74 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -72 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -71 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -70 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -25 << m_PrimaryIntMatrix.getConstZIterator(5, 6);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -4 << m_PrimaryIntMatrix.getConstZIterator(8, 3);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -1 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 0 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 1 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 2 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 4 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{end iterator, begin iterator}") << m_PrimaryIntMatrix.constZEnd() << -75 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{end iterator, begin iterator}") << m_PrimaryIntMatrix.constZEnd() << -73 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{end iterator, begin iterator}") << m_PrimaryIntMatrix.constZEnd() << -72 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << -71 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << -26 << m_PrimaryIntMatrix.getConstZIterator(5, 6);
+    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << -5 << m_PrimaryIntMatrix.getConstZIterator(8, 3);
+    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << -2 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << -1 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constZEnd() << 0 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constZEnd() << 1 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constZEnd() << 3 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZBegin() << -1 << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZBegin() << 1 << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZEnd() << 0 << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZEnd() << 1 << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZEnd() << -1 << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("{empty iterator, empty iterator}") << IntMatrixConstZIterator{} << -1 << IntMatrixConstZIterator{};
+    QTest::newRow("{empty iterator, empty iterator}") << IntMatrixConstZIterator{} << 1 << IntMatrixConstZIterator{};
 }
 
 QTEST_APPLESS_MAIN(ConstZIteratorTests)
