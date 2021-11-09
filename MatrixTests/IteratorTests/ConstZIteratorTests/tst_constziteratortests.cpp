@@ -135,7 +135,7 @@ void ConstZIteratorTests::testEmptyIterator()
     m_SecondaryIntMatrix.clear();
     IntMatrixConstZIterator emptyIt;
 
-    QVERIFY2(emptyIt.getRowNr() == -1 && emptyIt.getColumnNr() == -1, "The iterator has not been correctly created");
+    QVERIFY2(emptyIt.getRowNr() == -1 && emptyIt.getColumnNr() == -1, "The iterator has not been correctly created!");
     QVERIFY(!emptyIt.isValidWithMatrix(m_PrimaryIntMatrix) && emptyIt.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
@@ -424,8 +424,8 @@ void ConstZIteratorTests::testStdFindWithIncrement()
 {
     m_PrimaryIntMatrix = {4, 5, {
                               -1, 1, 3, 1, 4,
-                              5, 9, 8, 0, 1,
-                              2, -2, 2, 8, 9,
+                               5, 9, 8, 0, 1,
+                               2, -2, 2, 8, 9,
                               -7, 7, 2, 9, 8
                           }};
 
@@ -509,10 +509,11 @@ void ConstZIteratorTests::testIteratorEqualToItself_data()
     QTest::addColumn<IntMatrixConstZIterator>("iterator");
 
     QTest::newRow("{begin iterator}")  << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 4);
-    QTest::newRow("{random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 0);
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7);
     QTest::newRow("{end iterator}")  << m_PrimaryIntMatrix.constZEnd();
 }
 
@@ -740,7 +741,6 @@ void ConstZIteratorTests::testStdCount_data()
     QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 1 << 1;
     QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 1 << 3;
     QTest::newRow("{row end iterator, end iterator}") << m_PrimaryIntMatrix.constZRowEnd(1) << m_PrimaryIntMatrix.constZEnd() << 1 << 0;
-
 }
 
 void ConstZIteratorTests::testStdFind_data()

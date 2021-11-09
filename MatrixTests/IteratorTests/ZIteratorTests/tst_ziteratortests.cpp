@@ -144,7 +144,7 @@ void ZIteratorTests::testEmptyIterator()
     m_SecondaryIntMatrix.clear();
     IntMatrixZIterator emptyIt;
 
-    QVERIFY2(emptyIt.getRowNr() == -1 && emptyIt.getColumnNr() == -1, "The iterator has not been correctly created");
+    QVERIFY2(emptyIt.getRowNr() == -1 && emptyIt.getColumnNr() == -1, "The iterator has not been correctly created!");
     QVERIFY(!emptyIt.isValidWithMatrix(m_PrimaryIntMatrix) && emptyIt.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
@@ -374,7 +374,6 @@ void ZIteratorTests::testAsteriskOperatorWrite()
 {
     m_PrimaryIntMatrix = {4, 3, -20};
     m_SecondaryIntMatrix = {4, 3, {1, -2, -20, -20, -20, -6, -20, -20, -20, -20, 11, -12}};
-
     *m_PrimaryIntMatrix.zBegin() = 1;
     *m_PrimaryIntMatrix.getZIterator(0, 1) = -2;
     *m_PrimaryIntMatrix.getZIterator(1, 2) = -6;
@@ -665,8 +664,8 @@ void ZIteratorTests::testStdFindWithIncrementAndCount()
 {
     m_PrimaryIntMatrix = {4, 5, {
                               -1, 1, 3, 1, 4,
-                              5, 9, 8, 0, 1,
-                              2, -2, 2, 8, 9,
+                               5, 9, 8, 0, 1,
+                               2, -2, 2, 8, 9,
                               -7, 7, 2, 9, 8
                           }};
 
@@ -737,8 +736,8 @@ void ZIteratorTests::testStdSort()
 
     m_PrimaryIntMatrix = {4, 5, {
                               -1, 1, 3, 1, 4,
-                              5, 9, 8, 0, 6,
-                              2, -2, 2, 8, 9,
+                               5, 9, 8, 0, 6,
+                               2, -2, 2, 8, 9,
                               -7, 7, 2, 9, 11
                           }};
 
@@ -861,10 +860,11 @@ void ZIteratorTests::testIteratorEqualToItself_data()
     QTest::addColumn<IntMatrixZIterator>("iterator");
 
     QTest::newRow("{begin iterator}")  << m_PrimaryIntMatrix.zBegin();
-    QTest::newRow("{random iterator}")  << m_PrimaryIntMatrix.getZIterator(0, 1);
-    QTest::newRow("{random iterator}")  << m_PrimaryIntMatrix.getZIterator(5, 4);
-    QTest::newRow("{random iterator}")  << m_PrimaryIntMatrix.getZIterator(8, 6);
-    QTest::newRow("{random iterator}")  << m_PrimaryIntMatrix.getZIterator(8, 7);
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(0, 0);
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(0, 1);
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(5, 4);
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(8, 6);
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(8, 7);
     QTest::newRow("{end iterator}")  << m_PrimaryIntMatrix.zEnd();
 }
 
@@ -1092,7 +1092,6 @@ void ZIteratorTests::testStdCount_data()
     QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.zRowBegin(1) << m_PrimaryIntMatrix.zEnd() << 1 << 1;
     QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.zRowEnd(1) << 1 << 3;
     QTest::newRow("{row end iterator, end iterator}") << m_PrimaryIntMatrix.zRowEnd(1) << m_PrimaryIntMatrix.zEnd() << 1 << 0;
-
 }
 
 void ZIteratorTests::testStdFind_data()
