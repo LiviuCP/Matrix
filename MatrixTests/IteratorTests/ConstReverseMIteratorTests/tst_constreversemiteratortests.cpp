@@ -46,6 +46,7 @@ private slots:
     // test data
     void testIteratorCreation_data();
     void testIteratorsAreEqual_data();
+    void testIteratorsAreNotEqual_data();
     void testLessThanOperator_data();
     void testLessThanOrEqualToOperator_data();
     void testGreaterThanOperator_data();
@@ -116,7 +117,7 @@ void ConstReverseMIteratorTests::testIteratorsAreEqual()
     QFETCH(IntMatrixConstReverseMIterator, firstIterator);
     QFETCH(IntMatrixConstReverseMIterator, secondIterator);
 
-    QVERIFY2(firstIterator == secondIterator, "The iterators should be equal!");
+    QVERIFY2(firstIterator == secondIterator && !(firstIterator != secondIterator), "The iterators should be equal!");
 }
 
 void ConstReverseMIteratorTests::testIteratorEqualToItself()
@@ -125,19 +126,20 @@ void ConstReverseMIteratorTests::testIteratorEqualToItself()
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstReverseMIterator(1, 0);
 
     QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntIterator &&
+             !(m_PrimaryIntIterator != m_PrimaryIntIterator) &&
              m_PrimaryIntIterator <= m_PrimaryIntIterator &&
+             !(m_PrimaryIntIterator > m_PrimaryIntIterator) &&
              m_PrimaryIntIterator >= m_PrimaryIntIterator &&
-             !(m_PrimaryIntIterator != m_PrimaryIntIterator),
+             !(m_PrimaryIntIterator < m_PrimaryIntIterator),
              "The iterator should be equal to itself!");
 }
 
 void ConstReverseMIteratorTests::testIteratorsAreNotEqual()
 {
-    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstReverseMIterator(1, 0);
-    m_SecondaryIntIterator = m_PrimaryIntMatrix.getConstReverseMIterator(1, 1, true);
+    QFETCH(IntMatrixConstReverseMIterator, firstIterator);
+    QFETCH(IntMatrixConstReverseMIterator, secondIterator);
 
-    QVERIFY2(m_PrimaryIntIterator != m_SecondaryIntIterator, "The iterators should not be equal!");
+    QVERIFY2(firstIterator != secondIterator && !(firstIterator == secondIterator), "The iterators should not be equal!");
 }
 
 void ConstReverseMIteratorTests::testLessThanOperator()
@@ -145,7 +147,7 @@ void ConstReverseMIteratorTests::testLessThanOperator()
     QFETCH(IntMatrixConstReverseMIterator, firstIterator);
     QFETCH(IntMatrixConstReverseMIterator, secondIterator);
 
-    QVERIFY2(firstIterator < secondIterator, "The first iterator should be less than the second one!");
+    QVERIFY2(firstIterator < secondIterator && !(firstIterator >= secondIterator), "The first iterator should be less than the second one!");
 }
 
 void ConstReverseMIteratorTests::testLessThanOrEqualToOperator()
@@ -153,7 +155,7 @@ void ConstReverseMIteratorTests::testLessThanOrEqualToOperator()
     QFETCH(IntMatrixConstReverseMIterator, firstIterator);
     QFETCH(IntMatrixConstReverseMIterator, secondIterator);
 
-    QVERIFY2(firstIterator <= secondIterator, "The first iterator should be less than or equal to the second one!");
+    QVERIFY2(firstIterator <= secondIterator && !(firstIterator > secondIterator), "The first iterator should be less than or equal to the second one!");
 }
 
 void ConstReverseMIteratorTests::testGreaterThanOperator()
@@ -161,7 +163,7 @@ void ConstReverseMIteratorTests::testGreaterThanOperator()
     QFETCH(IntMatrixConstReverseMIterator, firstIterator);
     QFETCH(IntMatrixConstReverseMIterator, secondIterator);
 
-    QVERIFY2(secondIterator > firstIterator, "The second iterator should be greater than the first one!");
+    QVERIFY2(secondIterator > firstIterator && !(secondIterator <= firstIterator), "The second iterator should be greater than the first one!");
 }
 
 void ConstReverseMIteratorTests::testGreaterThanOrEqualToOperator()
@@ -169,7 +171,7 @@ void ConstReverseMIteratorTests::testGreaterThanOrEqualToOperator()
     QFETCH(IntMatrixConstReverseMIterator, firstIterator);
     QFETCH(IntMatrixConstReverseMIterator, secondIterator);
 
-    QVERIFY2(secondIterator >= firstIterator, "The second iterator should be greater than or equal to the first one!");
+    QVERIFY2(secondIterator >= firstIterator && !(secondIterator < firstIterator), "The second iterator should be greater than or equal to the first one!");
 }
 
 void ConstReverseMIteratorTests::testIncrementOperators()
@@ -499,6 +501,11 @@ void ConstReverseMIteratorTests::testIteratorsAreEqual_data()
     QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constReverseMBegin(2, 1) << m_PrimaryIntMatrix.getConstReverseMIterator(3, 0);
     QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstReverseMIterator(3, 0) << m_PrimaryIntMatrix.getConstReverseMIterator(-1, 0, true);
     QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constReverseMEnd(2) << m_PrimaryIntMatrix.constReverseMEnd(0, 0);
+}
+
+void ConstReverseMIteratorTests::testIteratorsAreNotEqual_data()
+{
+    _buildLessThanOperatorTestingTable();
 }
 
 void ConstReverseMIteratorTests::testLessThanOperator_data()

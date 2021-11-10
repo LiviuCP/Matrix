@@ -48,6 +48,7 @@ private slots:
     // test data
     void testIteratorCreation_data();
     void testIteratorsAreEqual_data();
+    void testIteratorsAreNotEqual_data();
     void testLessThanOperator_data();
     void testLessThanOrEqualToOperator_data();
     void testGreaterThanOperator_data();
@@ -118,7 +119,7 @@ void MIteratorTests::testIteratorsAreEqual()
     QFETCH(IntMatrixMIterator, firstIterator);
     QFETCH(IntMatrixMIterator, secondIterator);
 
-    QVERIFY2(firstIterator == secondIterator, "The iterators should be equal!");
+    QVERIFY2(firstIterator == secondIterator && !(firstIterator != secondIterator), "The iterators should be equal!");
 }
 
 void MIteratorTests::testIteratorEqualToItself()
@@ -127,19 +128,20 @@ void MIteratorTests::testIteratorEqualToItself()
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getMIterator(1, 0);
 
     QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntIterator &&
+             !(m_PrimaryIntIterator != m_PrimaryIntIterator) &&
              m_PrimaryIntIterator <= m_PrimaryIntIterator &&
+             !(m_PrimaryIntIterator > m_PrimaryIntIterator) &&
              m_PrimaryIntIterator >= m_PrimaryIntIterator &&
-             !(m_PrimaryIntIterator != m_PrimaryIntIterator),
+             !(m_PrimaryIntIterator < m_PrimaryIntIterator),
              "The iterator should be equal to itself!");
 }
 
 void MIteratorTests::testIteratorsAreNotEqual()
 {
-    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getMIterator(1, 0);
-    m_SecondaryIntIterator = m_PrimaryIntMatrix.getMIterator(1, 0, true);
+    QFETCH(IntMatrixMIterator, firstIterator);
+    QFETCH(IntMatrixMIterator, secondIterator);
 
-    QVERIFY2(m_PrimaryIntIterator != m_SecondaryIntIterator, "The iterators should not be equal!");
+    QVERIFY2(firstIterator != secondIterator && !(firstIterator == secondIterator), "The iterators should not be equal!");
 }
 
 void MIteratorTests::testLessThanOperator()
@@ -147,7 +149,7 @@ void MIteratorTests::testLessThanOperator()
     QFETCH(IntMatrixMIterator, firstIterator);
     QFETCH(IntMatrixMIterator, secondIterator);
 
-    QVERIFY2(firstIterator < secondIterator, "The first iterator should be less than the second one!");
+    QVERIFY2(firstIterator < secondIterator && !(firstIterator >= secondIterator), "The first iterator should be less than the second one!");
 }
 
 void MIteratorTests::testLessThanOrEqualToOperator()
@@ -155,7 +157,7 @@ void MIteratorTests::testLessThanOrEqualToOperator()
     QFETCH(IntMatrixMIterator, firstIterator);
     QFETCH(IntMatrixMIterator, secondIterator);
 
-    QVERIFY2(firstIterator <= secondIterator, "The first iterator should be less than or equal to the second one!");
+    QVERIFY2(firstIterator <= secondIterator && !(firstIterator > secondIterator), "The first iterator should be less than or equal to the second one!");
 }
 
 void MIteratorTests::testGreaterThanOperator()
@@ -163,7 +165,7 @@ void MIteratorTests::testGreaterThanOperator()
     QFETCH(IntMatrixMIterator, firstIterator);
     QFETCH(IntMatrixMIterator, secondIterator);
 
-    QVERIFY2(secondIterator > firstIterator, "The second iterator should be greater than the first one!");
+    QVERIFY2(secondIterator > firstIterator && !(secondIterator <= firstIterator), "The second iterator should be greater than the first one!");
 }
 
 void MIteratorTests::testGreaterThanOrEqualToOperator()
@@ -171,7 +173,7 @@ void MIteratorTests::testGreaterThanOrEqualToOperator()
     QFETCH(IntMatrixMIterator, firstIterator);
     QFETCH(IntMatrixMIterator, secondIterator);
 
-    QVERIFY2(secondIterator >= firstIterator, "The second iterator should be greater than or equal to the first one!");
+    QVERIFY2(secondIterator >= firstIterator && !(secondIterator < firstIterator), "The second iterator should be greater than or equal to the first one!");
 }
 
 void MIteratorTests::testIncrementOperators()
@@ -612,6 +614,11 @@ void MIteratorTests::testIteratorsAreEqual_data()
     QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.mBegin(2, 1) << m_PrimaryIntMatrix.getMIterator(1, 2); //
     QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getMIterator(1, 2) << m_PrimaryIntMatrix.getMIterator(-1, 0, true); //
     QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.mEnd(2) << m_PrimaryIntMatrix.mEnd(0, 0);
+}
+
+void MIteratorTests::testIteratorsAreNotEqual_data()
+{
+    _buildLessThanOperatorTestingTable();
 }
 
 void MIteratorTests::testLessThanOperator_data()
