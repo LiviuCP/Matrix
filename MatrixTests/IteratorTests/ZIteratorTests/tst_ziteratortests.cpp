@@ -1302,9 +1302,9 @@ void ZIteratorTests::_buildOperatorPlusTestingTable()
     QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.zEnd() << 3 << m_PrimaryIntMatrix.zEnd();
     QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.zBegin() << -1 << m_SecondaryIntMatrix.zEnd();
     QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.zBegin() << 1 << m_SecondaryIntMatrix.zEnd();
-    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.zEnd() << 0 << m_SecondaryIntMatrix.zEnd();
-    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.zEnd() << 1 << m_SecondaryIntMatrix.zEnd();
-    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.zEnd() << -1 << m_SecondaryIntMatrix.zEnd();
+    QTest::newRow("{end iterator, end iterator}") << m_SecondaryIntMatrix.zEnd() << 0 << m_SecondaryIntMatrix.zEnd();
+    QTest::newRow("{end iterator, end iterator}") << m_SecondaryIntMatrix.zEnd() << 1 << m_SecondaryIntMatrix.zEnd();
+    QTest::newRow("{end iterator, end iterator}") << m_SecondaryIntMatrix.zEnd() << -1 << m_SecondaryIntMatrix.zEnd();
     QTest::newRow("{empty iterator, empty iterator}") << IntMatrixZIterator{} << -1 << IntMatrixZIterator{};
     QTest::newRow("{empty iterator, empty iterator}") << IntMatrixZIterator{} << 1 << IntMatrixZIterator{};
 }
