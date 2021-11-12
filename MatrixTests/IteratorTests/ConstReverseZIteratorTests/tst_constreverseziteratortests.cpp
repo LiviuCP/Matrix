@@ -82,8 +82,7 @@ private:
 
     IntMatrix m_PrimaryIntMatrix;
     IntMatrix m_SecondaryIntMatrix;
-    StringMatrix m_PrimaryStringMatrix;
-    StringMatrix m_SecondaryStringMatrix;
+    StringMatrix m_StringMatrix;
 
     IntMatrixConstReverseZIterator m_PrimaryIntIterator;
     IntMatrixConstReverseZIterator m_SecondaryIntIterator;
@@ -381,9 +380,9 @@ void ConstReverseZIteratorTests::testArrowOperator()
 
 void ConstReverseZIteratorTests::testArrowOperatorPlusEqual()
 {
-    m_PrimaryStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mnop", "qr"}};
-    m_StringIterator = m_PrimaryStringMatrix.constReverseZBegin();
-    m_PrimaryStringMatrix.at(1, 0) = "abcdefghi";
+    m_StringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mnop", "qr"}};
+    m_StringIterator = m_StringMatrix.constReverseZBegin();
+    m_StringMatrix.at(1, 0) = "abcdefghi";
     m_StringIterator += 2;
 
     QVERIFY(m_StringIterator->size() == 9);
@@ -654,16 +653,16 @@ void ConstReverseZIteratorTests::testAsteriskOperator_data()
 
 void ConstReverseZIteratorTests::testArrowOperator_data()
 {
-    m_PrimaryStringMatrix = {4, 3, {"abc", "ba", "abcd", "jihgfedcba", "a", "gfedcba", "abcde", "ihgfedcba", "abcdefgh", "", "abcdefghijk", "fedcba"}};
+    m_StringMatrix = {4, 3, {"abc", "ba", "abcd", "jihgfedcba", "a", "gfedcba", "abcde", "ihgfedcba", "abcdefgh", "", "abcdefghijk", "fedcba"}};
 
     QTest::addColumn<StringMatrixConstReverseZIterator>("iterator");
     QTest::addColumn<int>("expectedValue");
 
-    QTest::newRow("{random iterator}") << m_PrimaryStringMatrix.getConstReverseZIterator(0, 0) << 3;
-    QTest::newRow("{random iterator}") << m_PrimaryStringMatrix.getConstReverseZIterator(0, 1) << 2;
-    QTest::newRow("{random iterator}") << m_PrimaryStringMatrix.getConstReverseZIterator(1, 2) << 7;
-    QTest::newRow("{random iterator}") << m_PrimaryStringMatrix.getConstReverseZIterator(3, 1) << 11;
-    QTest::newRow("{begin iterator}") << m_PrimaryStringMatrix.constReverseZBegin() << 6;
+    QTest::newRow("{random iterator}") << m_StringMatrix.getConstReverseZIterator(0, 0) << 3;
+    QTest::newRow("{random iterator}") << m_StringMatrix.getConstReverseZIterator(0, 1) << 2;
+    QTest::newRow("{random iterator}") << m_StringMatrix.getConstReverseZIterator(1, 2) << 7;
+    QTest::newRow("{random iterator}") << m_StringMatrix.getConstReverseZIterator(3, 1) << 11;
+    QTest::newRow("{begin iterator}") << m_StringMatrix.constReverseZBegin() << 6;
 }
 
 void ConstReverseZIteratorTests::testSquareBracketsOperator_data()
