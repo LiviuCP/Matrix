@@ -111,7 +111,7 @@ void ReverseMIteratorTests::testEmptyIterator()
     IntMatrixReverseMIterator emptyIterator;
 
     QVERIFY2(emptyIterator.getRowNr() == -1 && emptyIterator.getColumnNr() == -1 && emptyIterator.getDiagonalNr() == 0 && emptyIterator.getDiagonalIndex() == -1, "The iterator has not been correctly created");
-    QVERIFY(!emptyIterator.isValidWithMatrix(m_PrimaryIntMatrix) && !emptyIterator.isValidWithMatrix(m_SecondaryIntMatrix));
+    QVERIFY(!emptyIterator.isValidWithMatrix(m_PrimaryIntMatrix) && emptyIterator.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
 void ReverseMIteratorTests::testIteratorsAreEqual()

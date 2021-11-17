@@ -512,7 +512,7 @@
     { \
         isValid = false; \
     } \
-    else if ((mIteratorDiagonalNr < 0 && -mIteratorDiagonalNr >= matrixRowsCount) || (mIteratorDiagonalNr >= 0 && mIteratorDiagonalNr >= matrixColumnsCount)) \
+    else if ((mIteratorDiagonalNr < 0 && -mIteratorDiagonalNr >= matrixRowsCount) || (mIteratorDiagonalNr > 0 && mIteratorDiagonalNr >= matrixColumnsCount)) \
     { \
         isValid = false; \
     } \
@@ -667,7 +667,7 @@
     { \
         isValid = false; \
     } \
-    else if ((mIteratorDiagonalNr < 0 && -mIteratorDiagonalNr >= matrixRowsCount) || (mIteratorDiagonalNr >= 0 && mIteratorDiagonalNr >= matrixColumnsCount)) \
+    else if ((mIteratorDiagonalNr < 0 && -mIteratorDiagonalNr >= matrixRowsCount) || (mIteratorDiagonalNr > 0 && mIteratorDiagonalNr >= matrixColumnsCount)) \
     { \
         isValid = false; \
     } \
