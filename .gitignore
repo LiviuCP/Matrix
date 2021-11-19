@@ -1,3 +1,11 @@
-Matrix.pro.user*
+*.user
 *~
+*autogen*
+*.cmake
+*.a
+*CMakeCache.txt
+*install.cmake
+*CMakeFiles
+*build.ninja
 ThirdParty
+.DS_Store
