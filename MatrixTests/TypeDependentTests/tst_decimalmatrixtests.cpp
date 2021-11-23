@@ -8,118 +8,75 @@ class DecimalMatrixTests : public QObject
 {
     Q_OBJECT
 
-public:
-    DecimalMatrixTests();
-    ~DecimalMatrixTests();
-
 private slots:
     void testBooleanOperator();
     void testMatrixesAreEqual();
     void testMatrixesAreNotEqual();
+
+private:
+    DecMatrix mPrimaryDecMatrix;
+    DecMatrix mSecondaryDecMatrix;
 };
-
-DecimalMatrixTests::DecimalMatrixTests()
-{
-
-}
-
-DecimalMatrixTests::~DecimalMatrixTests()
-{
-
-}
 
 void DecimalMatrixTests::testBooleanOperator()
 {
-    {
-        DecMatrix matrix{};
+    mPrimaryDecMatrix.clear();
+    QVERIFY2(!mPrimaryDecMatrix, "The boolean operator does not return the expected value!");
 
-        QVERIFY2(!matrix, "The boolean operator does not return the correct value");
-    }
+    mPrimaryDecMatrix = {2, 3, {0.0, 0.00, 0.000, 0.0000, 0.00000, 0.000000}};
+    QVERIFY2(!mPrimaryDecMatrix, "The boolean operator does not return the expected value!");
 
-    {
-        DecMatrix matrix{2, 3, {0.0, 0.00, 0.000, 0.0000, 0.00000, 0.000000}};
+    mPrimaryDecMatrix = {2, 3, {0.33333333, -0.25, 2.6, -3.8, 0.00, -0.1}};
+    QVERIFY2(mPrimaryDecMatrix, "The boolean operator does not return the expected value!");
 
-        QVERIFY2(!matrix, "The boolean operator does not return the correct value");
-    }
-
-    {
-        DecMatrix matrix{2, 3, {0.33333333, -0.25, 2.6, -3.8, 0.00, -0.1}};
-
-        QVERIFY2(matrix, "The boolean operator does not return the correct value");
-    }
-
-    {
-        DecMatrix matrix{2, 3, {0.0, 0.00, 0.000, 0.0000, -0.25, 0.000000}};
-
-        QVERIFY2(matrix, "The boolean operator does not return the correct value");
-    }
+    mPrimaryDecMatrix = {2, 3, {0.0, 0.00, 0.000, 0.0000, -0.25, 0.000000}};
+    QVERIFY2(mPrimaryDecMatrix, "The boolean operator does not return the expected value!");
 }
 
 void DecimalMatrixTests::testMatrixesAreEqual()
 {
-    {
-        DecMatrix firstMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
-        DecMatrix secondMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
+    mPrimaryDecMatrix = {2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
+    mSecondaryDecMatrix = {2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
 
-        QVERIFY2(firstMatrix == secondMatrix && secondMatrix == firstMatrix, "Matrixes are not equal");
-    }
+    QVERIFY2(mPrimaryDecMatrix == mSecondaryDecMatrix && !(mPrimaryDecMatrix != mSecondaryDecMatrix), "The matrixes should be equal!");
 
-    {
-        DecMatrix matrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
+    mPrimaryDecMatrix = {2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
 
-        QVERIFY2(matrix == matrix, "The matrix is not equal to itself");
-    }
+    QVERIFY2(mPrimaryDecMatrix == mPrimaryDecMatrix && !(mPrimaryDecMatrix != mPrimaryDecMatrix), "The matrix should be equal to itself");
 
-    {
-        DecMatrix firstMatrix{};
-        DecMatrix secondMatrix{};
+    mPrimaryDecMatrix.clear();
+    mSecondaryDecMatrix.clear();
 
-        QVERIFY2(firstMatrix == secondMatrix && secondMatrix == firstMatrix, "Matrixes are not equal");
-    }
-
-    {
-        DecMatrix matrix{};
-
-        QVERIFY2(matrix == matrix, "The matrix is not equal to itself");
-    }
+    QVERIFY2(mPrimaryDecMatrix == mSecondaryDecMatrix && !(mPrimaryDecMatrix != mSecondaryDecMatrix), "The matrixes should be equal!");
+    QVERIFY2(mPrimaryDecMatrix == mPrimaryDecMatrix && !(mPrimaryDecMatrix != mPrimaryDecMatrix), "The matrix should be equal to itself");
 }
 
 void DecimalMatrixTests::testMatrixesAreNotEqual()
 {
-    {
-        DecMatrix firstMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
-        DecMatrix secondMatrix{2, 3, {0.5, 1.25, -0.5, 1.5, 0.8333333333, -0.8333}};
+    mPrimaryDecMatrix = {2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
+    mSecondaryDecMatrix = {2, 3, {0.5, 1.25, -0.5, 1.5, 0.8333333333, -0.8333}};
 
-        QVERIFY2(firstMatrix != secondMatrix && secondMatrix != firstMatrix, "Matrixes are equal");
-    }
+    QVERIFY2(mPrimaryDecMatrix != mSecondaryDecMatrix && !(mPrimaryDecMatrix == mSecondaryDecMatrix), "The matrixes should not be equal!");
 
-    {
-        DecMatrix firstMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
-        DecMatrix secondMatrix{2, 2, {0.5, 0.75, 1.5, 0.8333333333}};
+    mPrimaryDecMatrix = {2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
+    mSecondaryDecMatrix = {2, 2, {0.5, 0.75, 1.5, 0.8333333333}};
 
-        QVERIFY2(firstMatrix != secondMatrix && secondMatrix != firstMatrix, "Matrixes are equal");
-    }
+    QVERIFY2(mPrimaryDecMatrix != mSecondaryDecMatrix && !(mPrimaryDecMatrix == mSecondaryDecMatrix), "The matrixes should not be equal!");
 
-    {
-        DecMatrix firstMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
-        DecMatrix secondMatrix{3, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333, 0.5, 0.5, -1.25}};
+    mPrimaryDecMatrix = {2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
+    mSecondaryDecMatrix = {3, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333, 0.5, 0.5, -1.25}};
 
-        QVERIFY2(firstMatrix != secondMatrix && secondMatrix != firstMatrix, "Matrixes are equal");
-    }
+    QVERIFY2(mPrimaryDecMatrix != mSecondaryDecMatrix && !(mPrimaryDecMatrix == mSecondaryDecMatrix), "The matrixes should not be equal!");
 
-    {
-        DecMatrix firstMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
-        DecMatrix secondMatrix{3, 2, {0.5, 0.75, 1.5, 0.8333333333, -0.5, -0.8333}};
+    mPrimaryDecMatrix = {2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
+    mSecondaryDecMatrix = {3, 2, {0.5, 0.75, 1.5, 0.8333333333, -0.5, -0.8333}};
 
-        QVERIFY2(firstMatrix != secondMatrix && secondMatrix != firstMatrix, "Matrixes are equal");
-    }
+    QVERIFY2(mPrimaryDecMatrix != mSecondaryDecMatrix && !(mPrimaryDecMatrix == mSecondaryDecMatrix), "The matrixes should not be equal!");
 
-    {
-        DecMatrix firstMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
-        DecMatrix secondMatrix{};
+    mPrimaryDecMatrix = {2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}};
+    mSecondaryDecMatrix.clear();
 
-        QVERIFY2(firstMatrix != secondMatrix && secondMatrix != firstMatrix, "Matrixes are equal");
-    }
+    QVERIFY2(mPrimaryDecMatrix != mSecondaryDecMatrix && !(mPrimaryDecMatrix == mSecondaryDecMatrix), "The matrixes should not be equal!");
 }
 
 QTEST_APPLESS_MAIN(DecimalMatrixTests)
