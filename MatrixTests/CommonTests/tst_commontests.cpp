@@ -1,33 +1,63 @@
 #include <QtTest>
 
+#include <vector>
+#include <tuple>
+
 #include "matrix.h"
 
 using IntMatrix = Matrix<int>;
+using IntMatrixSizeType = IntMatrix::size_type;
+using TripleSizeTypeTuple = std::tuple<IntMatrixSizeType, IntMatrixSizeType, IntMatrixSizeType>;
+using TripleSizeTypeTupleArray = std::vector<TripleSizeTypeTuple>;
+
+enum class ConcatMode : unsigned short
+{
+    ALL_DIFFERENT,
+    DESTINATION_FIRST,
+    DESTINATION_SECOND,
+    SOURCE_BOTH,
+    DESTINATION_ALL
+};
+
+enum class SplitMode : unsigned short
+{
+    ALL_DIFFERENT,
+    SOURCE_FIRST,
+    SOURCE_SECOND
+};
+
+Q_DECLARE_METATYPE(IntMatrix)
+Q_DECLARE_METATYPE(TripleSizeTypeTuple)
+Q_DECLARE_METATYPE(TripleSizeTypeTupleArray)
+Q_DECLARE_METATYPE(ConcatMode)
+Q_DECLARE_METATYPE(SplitMode)
 
 class CommonTests : public QObject
 {
     Q_OBJECT
 
-public:
-    CommonTests();
-    ~CommonTests();
-
 private slots:
+    // test functions
     void testDefaultConstructor();
     void testInitListConstructor();
+    void testCapacityWithInitListConstructor();
     void testIdenticalMatrixConstructor();
-    void testDiagMatrixConstructor();
-    void testCapacityWithConstructors();
+    void testCapacityWithIdenticalMatrixConstructor();
+    void testDiagonalMatrixConstructor();
+    void testCapacityWithDiagonalMatrixConstructor();
     void testCopyConstructor();
     void testCapacityWithCopyConstructor();
     void testMoveConstructor();
     void testCapacityWithMoveConstructor();
-    void testFunctionAt();
-    void testSquareBracketsOperator();
     void testCopyAssignmentOperator();
     void testCapacityWithCopyAssignmentOperator();
     void testMoveAssignmentOperator();
     void testCapacityWithMoveAssignmentOperator();
+    void testBooleanOperator();
+    void testMatrixesAreEqual();
+    void testMatrixesAreNotEqual();
+    void testFunctionAt();
+    void testSquareBracketsOperator();
     void testGetBaseArray();
     void testTranspose();
     void testCapacityWithTranspose();
@@ -62,30 +92,76 @@ private slots:
     void testSwapRowColumn();
     void testSetAllItemsToValue();
     void testCopy();
+
+    // test data
+    void testCapacityWithIdenticalMatrixConstructor_data();
+    void testCapacityWithDiagonalMatrixConstructor_data();
+    void testCapacityWithCopyConstructor_data();
+    void testCapacityWithMoveConstructor_data();
+    void testCapacityWithCopyAssignmentOperator_data();
+    void testCapacityWithMoveAssignmentOperator_data();
+    void testBooleanOperator_data();
+    void testMatrixesAreEqual_data();
+    void testMatrixesAreNotEqual_data();
+    void testTranspose_data();
+    void testCapacityWithTranspose_data();
+    void testClear_data();
+    void testResizeWithoutFillingInNewValues_data();
+    void testCapacityWithResizeWithoutFillingInNewValues_data();
+    void testResizeAndFillInNewValues_data();
+    void testCapacityWithResizeAndFillInNewValues_data();
+    void testShrinkToFit_data();
+    void testInsertRowNoSetValue_data();
+    void testInsertRowSetValue_data();
+    void testCapacityWithInsertRow_data();
+    void testInsertColumnNoSetValue_data();
+    void testInsertColumnSetValue_data();
+    void testCapacityWithInsertColumn_data();
+    void testEraseRow_data();
+    void testCapacityWithEraseRow_data();
+    void testEraseColumn_data();
+    void testCapacityWithEraseColumn_data();
+    void testCatByRow_data();
+    void testCapacityWithCatByRow_data();
+    void testCatByColumn_data();
+    void testCapacityWithCatByColumn_data();
+    void testSplitByRow_data();
+    void testCapacityWithSplitByRow_data();
+    void testSplitByColumn_data();
+    void testCapacityWithSplitByColumn_data();
+    void testSwapMatrixes_data();
+    void testSwapItems_data();
+    void testSwapRows_data();
+    void testSwapColumns_data();
+    void testSetAllItemsToValue_data();
+    void testCopy_data();
+
+private:
+    // test data helper methods
+    void _buildCapacityWithMoveCopyConstructorsTestingTable();
+    void _buildCapacityWithAssignmentOperatorsTestingTable();
+    void _buildCapacityWithResizeTestingTable();
+    void _buildInsertRowTestingTable();
+    void _buildInsertColumnTestingTable();
+
+    IntMatrix mPrimaryIntMatrix;
+    IntMatrix mSecondaryIntMatrix;
 };
-
-CommonTests::CommonTests()
-{
-
-}
-
-CommonTests::~CommonTests()
-{
-
-}
 
 void CommonTests::testDefaultConstructor()
 {
     IntMatrix matrix{};
 
-    QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Default constructor initialized matrix with wrong number of rows and columns");
+    QVERIFY2(matrix.getNrOfRows() == 0 &&
+             matrix.getNrOfColumns() == 0, "Default constructor initialized matrix with wrong number of rows and columns");
 
-    QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Default constructor initialized matrix with wrong capacity");
+    QVERIFY2(matrix.getRowCapacity() == 0 &&
+             matrix.getColumnCapacity() == 0, "Default constructor initialized matrix with wrong capacity");
 }
 
 void CommonTests::testInitListConstructor()
 {
-    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6} };
+    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
 
     if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
     {
@@ -102,9 +178,62 @@ void CommonTests::testInitListConstructor()
                  matrix.at(0, 2) == 3 &&
                  matrix.at(1, 0) == 4 &&
                  matrix.at(1, 1) == 5 &&
-                 matrix.at(1, 2) == 6,
+                 matrix.at(1, 2) == 6, "Matrix elements have not been correctly initialized by the init list constructor");
+    }
+}
 
-                 "Matrix elements have not been correctly initialized by the init list constructor");
+void CommonTests::testCapacityWithInitListConstructor()
+{
+    {
+        IntMatrix matrix{3, 4, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+
+        QVERIFY2(matrix.getRowCapacity() == 3 &&
+                 matrix.getColumnCapacity() == 5, "Init list constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{4, 3, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+
+        QVERIFY2(matrix.getRowCapacity() == 5 &&
+                 matrix.getColumnCapacity() == 3, "Init list constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{
+                            8, 10, {
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                                  }
+                        };
+
+        QVERIFY2(matrix.getRowCapacity() == 10 &&
+                 matrix.getColumnCapacity() == 12, "Init list constructor initialized matrix with wrong capacity");
+    }
+
+    {
+        IntMatrix matrix{
+                            10, 8, {
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0, 0, 0, 0, 0, 0
+                                    }
+                        };
+
+        QVERIFY2(matrix.getRowCapacity() == 12 &&
+                 matrix.getColumnCapacity() == 10, "Init list constructor initialized matrix with wrong capacity");
     }
 }
 
@@ -127,15 +256,27 @@ void CommonTests::testIdenticalMatrixConstructor()
                  matrix.at(1, 0) == 4 &&
                  matrix.at(1, 1) == 4 &&
                  matrix.at(2, 0) == 4 &&
-                 matrix.at(2, 1) == 4,
-
-                 "Matrix elements have not been correctly initialized by the identical matrix constructor");
+                 matrix.at(2, 1) == 4, "Matrix elements have not been correctly initialized by the identical matrix constructor");
     }
 }
 
-void CommonTests::testDiagMatrixConstructor()
+void CommonTests::testCapacityWithIdenticalMatrixConstructor()
 {
-    IntMatrix matrix{3, std::pair<int, int>{2,1}};
+    QFETCH(IntMatrixSizeType, rowsCount);
+    QFETCH(IntMatrixSizeType, columnsCount);
+    QFETCH(int, elementValue);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+
+    IntMatrix matrix{rowsCount, columnsCount, elementValue};
+
+    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity &&
+             matrix.getColumnCapacity() == expectedColumnCapacity, "Identical matrix constructor initialized matrix with wrong capacity");
+}
+
+void CommonTests::testDiagonalMatrixConstructor()
+{
+    IntMatrix matrix{3, std::pair<int, int>{2, 1}};
 
     if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 3)
     {
@@ -155,109 +296,21 @@ void CommonTests::testDiagMatrixConstructor()
                  matrix.at(1, 2) == 2 &&
                  matrix.at(2, 0) == 2 &&
                  matrix.at(2, 1) == 2 &&
-                 matrix.at(2, 2) == 1,
-
-                 "Matrix elements have not been correctly initialized by the diagonal matrix constructor");
+                 matrix.at(2, 2) == 1, "Matrix elements have not been correctly initialized by the diagonal matrix constructor");
     }
 }
 
-void CommonTests::testCapacityWithConstructors()
+void CommonTests::testCapacityWithDiagonalMatrixConstructor()
 {
-    {
-        IntMatrix matrix{3, 4, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+    QFETCH(IntMatrixSizeType, rowsColumnsCount);
+    QFETCH(int, nonDiagonalValue);
+    QFETCH(int, diagonalValue);
+    QFETCH(IntMatrixSizeType, expectedRowColumnCapacity);
 
-        QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 5, "Init list constructor initialized matrix with wrong capacity");
-    }
+    IntMatrix matrix{rowsColumnsCount, std::pair<int, int>{nonDiagonalValue, diagonalValue}};
 
-    {
-        IntMatrix matrix{4, 3, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 3, "Init list constructor initialized matrix with wrong capacity");
-    }
-
-    {
-        IntMatrix matrix{
-                            8, 10, {
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-                                  }
-                        };
-
-        QVERIFY2(matrix.getRowCapacity() == 10 && matrix.getColumnCapacity() == 12, "Init list constructor initialized matrix with wrong capacity");
-    }
-
-    {
-        IntMatrix matrix{
-                            10, 8, {
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0
-                                    }
-                        };
-
-        QVERIFY2(matrix.getRowCapacity() == 12 && matrix.getColumnCapacity() == 10, "Init list constructor initialized matrix with wrong capacity");
-    }
-
-    {
-        IntMatrix matrix{3, 4, -5};
-
-        QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 5, "Identical matrix constructor initialized matrix with wrong capacity");
-    }
-
-    {
-        IntMatrix matrix{4, 3, -5};
-
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 3, "Identical matrix constructor initialized matrix with wrong capacity");
-    }
-
-    {
-        IntMatrix matrix{25, 20, -2};
-
-        QVERIFY2(matrix.getRowCapacity() == 31 && matrix.getColumnCapacity() == 25, "Identical matrix constructor initialized matrix with wrong capacity");
-    }
-
-    {
-        IntMatrix matrix{20, 25, -2};
-
-        QVERIFY2(matrix.getRowCapacity() == 25 && matrix.getColumnCapacity() == 31, "Identical matrix constructor initialized matrix with wrong capacity");
-    }
-
-    {
-        IntMatrix matrix{3, std::pair<int, int>{-2,-3}};
-
-        QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 3, "Diag matrix constructor initialized matrix with wrong capacity");
-    }
-
-    {
-        IntMatrix matrix{4, std::pair<int, int>{-2,-3}};
-
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5, "Diag matrix constructor initialized matrix with wrong capacity");
-    }
-
-    {
-        IntMatrix matrix{8, std::pair<int, int>{-2,-3}};
-
-        QVERIFY2(matrix.getRowCapacity() == 10 && matrix.getColumnCapacity() == 10, "Diag matrix constructor initialized matrix with wrong capacity");
-    }
-
-    {
-        IntMatrix matrix{10, std::pair<int, int>{-2,-3}};
-
-        QVERIFY2(matrix.getRowCapacity() == 12 && matrix.getColumnCapacity() == 12, "Diag matrix constructor initialized matrix with wrong capacity");
-    }
+    QVERIFY2(matrix.getRowCapacity() == expectedRowColumnCapacity &&
+             matrix.getColumnCapacity() == expectedRowColumnCapacity, "Diag matrix constructor initialized matrix with wrong capacity");
 }
 
 void CommonTests::testCopyConstructor()
@@ -281,9 +334,7 @@ void CommonTests::testCopyConstructor()
                      destMatrix.at(0, 2) == 3 &&
                      destMatrix.at(1, 0) == 4 &&
                      destMatrix.at(1, 1) == 5 &&
-                     destMatrix.at(1, 2) == 6,
-
-                     "Matrix elements have not been correctly initialized by the copy constructor");
+                     destMatrix.at(1, 2) == 6, "Matrix elements have not been correctly initialized by the copy constructor");
         }
     }
 
@@ -291,40 +342,27 @@ void CommonTests::testCopyConstructor()
         IntMatrix srcMatrix{};
         IntMatrix destMatrix{srcMatrix};
 
-        QVERIFY2(destMatrix.getRowCapacity() == 0 && destMatrix.getColumnCapacity() == 0, "Copy constructor initialized matrix with wrong capacity");
-        QVERIFY2(destMatrix.getNrOfRows() == 0 && destMatrix.getNrOfColumns() == 0, "Copy constructor initialized matrix with wrong number of rows and columns");
+        QVERIFY2(destMatrix.getRowCapacity() == 0 &&
+                 destMatrix.getColumnCapacity() == 0, "Copy constructor initialized matrix with wrong capacity");
+
+        QVERIFY2(destMatrix.getNrOfRows() == 0 &&
+                 destMatrix.getNrOfColumns() == 0, "Copy constructor initialized matrix with wrong number of rows and columns");
     }
 }
 
 void CommonTests::testCapacityWithCopyConstructor()
 {
-    {
-        IntMatrix srcMatrix{3, 4, -1};
-        IntMatrix destMatrix{srcMatrix};
+    QFETCH(IntMatrixSizeType, rowsCount);
+    QFETCH(IntMatrixSizeType, columnsCount);
+    QFETCH(int, elementValue);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
 
-        QVERIFY2(destMatrix.getRowCapacity() == 3 && destMatrix.getColumnCapacity() == 5, "Copy constructor failed, capacity of the destination matrix is not correct!");
-    }
+    IntMatrix srcMatrix{rowsCount, columnsCount, elementValue};
+    IntMatrix destMatrix{srcMatrix};
 
-    {
-        IntMatrix srcMatrix{4, 3, -1};
-        IntMatrix destMatrix{srcMatrix};
-
-        QVERIFY2(destMatrix.getRowCapacity() == 5 && destMatrix.getColumnCapacity() == 3, "Copy constructor failed, capacity of the destination matrix is not correct!");
-    }
-
-    {
-        IntMatrix srcMatrix{7, 8, -1};
-        IntMatrix destMatrix{srcMatrix};
-
-        QVERIFY2(destMatrix.getRowCapacity() == 8 && destMatrix.getColumnCapacity() == 10, "Copy constructor failed, capacity of the destination matrix is not correct!");
-    }
-
-    {
-        IntMatrix srcMatrix{8, 7, -1};
-        IntMatrix destMatrix{srcMatrix};
-
-        QVERIFY2(destMatrix.getRowCapacity() == 10 && destMatrix.getColumnCapacity() == 8, "Copy constructor failed, capacity of the destination matrix is not correct!");
-    }
+    QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
+             destMatrix.getColumnCapacity() == expectedColumnCapacity, "Copy constructor failed, capacity of the destination matrix is not correct!");
 }
 
 void CommonTests::testMoveConstructor()
@@ -347,181 +385,29 @@ void CommonTests::testMoveConstructor()
                  destMatrix.at(0, 2) == 3 &&
                  destMatrix.at(1, 0) == 4 &&
                  destMatrix.at(1, 1) == 5 &&
-                 destMatrix.at(1, 2) == 6,
+                 destMatrix.at(1, 2) == 6, "Matrix elements have not been correctly initialized by the move constructor");
 
-                 "Matrix elements have not been correctly initialized by the move constructor");
+        QVERIFY2(srcMatrix.getRowCapacity() == 0 &&
+                 srcMatrix.getColumnCapacity() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
 
-        QVERIFY2(srcMatrix.getRowCapacity() == 0 && srcMatrix.getColumnCapacity() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
-        QVERIFY2(srcMatrix.getNrOfRows() == 0 && srcMatrix.getNrOfColumns() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
+        QVERIFY2(srcMatrix.getNrOfRows() == 0 &&
+                 srcMatrix.getNrOfColumns() == 0, "Move constructor set the wrong number of rows and columns to the source matrix");
     }
 }
 
 void CommonTests::testCapacityWithMoveConstructor()
 {
-    {
-        IntMatrix srcMatrix{3, 4, -1};
-        IntMatrix destMatrix{std::move(srcMatrix)};
+    QFETCH(IntMatrixSizeType, rowsCount);
+    QFETCH(IntMatrixSizeType, columnsCount);
+    QFETCH(int, elementValue);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
 
-        QVERIFY2(destMatrix.getRowCapacity() == 3 && destMatrix.getColumnCapacity() == 5, "Move constructor failed, capacity of the destination matrix is not correct!");
-    }
+    IntMatrix srcMatrix{rowsCount, columnsCount, elementValue};
+    IntMatrix destMatrix{std::move(srcMatrix)};
 
-    {
-        IntMatrix srcMatrix{4, 3, -1};
-        IntMatrix destMatrix{std::move(srcMatrix)};
-
-        QVERIFY2(destMatrix.getRowCapacity() == 5 && destMatrix.getColumnCapacity() == 3, "Move constructor failed, capacity of the destination matrix is not correct!");
-    }
-
-    {
-        IntMatrix srcMatrix{7, 8, -1};
-        IntMatrix destMatrix{std::move(srcMatrix)};
-
-        QVERIFY2(destMatrix.getRowCapacity() == 8 && destMatrix.getColumnCapacity() == 10, "Move constructor failed, capacity of the destination matrix is not correct!");
-    }
-
-    {
-        IntMatrix srcMatrix{8, 7, -1};
-        IntMatrix destMatrix{std::move(srcMatrix)};
-
-        QVERIFY2(destMatrix.getRowCapacity() == 10 && destMatrix.getColumnCapacity() == 8, "Move constructor failed, capacity of the destination matrix is not correct!");
-    }
-}
-
-void CommonTests::testFunctionAt()
-{
-    {
-        IntMatrix matrix{2, 3, 5};
-
-        matrix.at(0, 0) = 10;
-        matrix.at(0, 1) = 20;
-        matrix.at(0, 2) = 30;
-        matrix.at(1, 0) = 40;
-        matrix.at(1, 1) = 50;
-        matrix.at(1, 2) = 60;
-
-        QVERIFY2(matrix[0] == 10 &&
-                 matrix[1] == 20 &&
-                 matrix[2] == 30 &&
-                 matrix[3] == 40 &&
-                 matrix[4] == 50 &&
-                 matrix[5] == 60,
-
-                 "The at() method does not work correctly, setup values are wrong!");
-    }
-
-    {
-        IntMatrix matrix{2, 3, 5};
-
-        matrix[0] = 70;
-        matrix[1] = 80;
-        matrix[2] = 90;
-        matrix[3] = 100;
-        matrix[4] = 110;
-        matrix[5] = 120;
-
-        QVERIFY2(matrix.at(0, 0) == 70 &&
-                 matrix.at(0, 1) == 80 &&
-                 matrix.at(0, 2) == 90 &&
-                 matrix.at(1, 0) == 100 &&
-                 matrix.at(1, 1) == 110 &&
-                 matrix.at(1, 2) == 120,
-
-                 "The at() method does not work correctly, read values are wrong!");
-    }
-
-    // test the "const" at() method too
-    {
-        const IntMatrix matrix{2, 3, {70, 80, 90, 100, 110, 120}};
-
-        QVERIFY2(matrix.at(0, 0) == 70 &&
-                 matrix.at(0, 1) == 80 &&
-                 matrix.at(0, 2) == 90 &&
-                 matrix.at(1, 0) == 100 &&
-                 matrix.at(1, 1) == 110 &&
-                 matrix.at(1, 2) == 120,
-
-                 "The const at() method does not work correctly, read values are wrong!");
-    }
-}
-
-void CommonTests::testSquareBracketsOperator()
-{
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        QVERIFY2(matrix[0] == 1 &&
-                 matrix[1] == 2 &&
-                 matrix[2] == 3 &&
-                 matrix[3] == 4 &&
-                 matrix[4] == 5 &&
-                 matrix[5] == 6 &&
-                 matrix[6] == 7 &&
-                 matrix[7] == 8 &&
-                 matrix[8] == 9 &&
-                 matrix[9] == 10 &&
-                 matrix[10] == 11 &&
-                 matrix[11] == 12,
-
-                "The square brackets operator did not return the correct values!");
-    }
-
-    {
-        IntMatrix matrix{4, 3, 2};
-
-        matrix[0] = 10;
-        matrix[1] = 20;
-        matrix[2] = 30;
-        matrix[3] = 40;
-        matrix[4] = 50;
-        matrix[5] = 60;
-        matrix[6] = 70;
-        matrix[7] = 80;
-        matrix[8] = 90;
-        matrix[9] = 100;
-        matrix[10] = 110;
-        matrix[11] = 120;
-
-        int nrOfElements;
-        int* baseArrayPtr{matrix.getBaseArray(nrOfElements)};
-
-        QVERIFY2(baseArrayPtr[0] == 10 &&
-                 baseArrayPtr[1] == 20 &&
-                 baseArrayPtr[2] == 30 &&
-                 baseArrayPtr[3] == 40 &&
-                 baseArrayPtr[4] == 50 &&
-                 baseArrayPtr[5] == 60 &&
-                 baseArrayPtr[6] == 70 &&
-                 baseArrayPtr[7] == 80 &&
-                 baseArrayPtr[8] == 90 &&
-                 baseArrayPtr[9] == 100 &&
-                 baseArrayPtr[10] == 110 &&
-                 baseArrayPtr[11] == 120,
-
-                "The square brackets operator did not write the correct values!");
-
-        delete []baseArrayPtr;
-        baseArrayPtr = nullptr;
-    }
-
-    // test the "const" square brackets operator too
-    {
-        const IntMatrix matrix{4, 3, {10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120}};
-
-        QVERIFY2(matrix[0] == 10 &&
-                 matrix[1] == 20 &&
-                 matrix[2] == 30 &&
-                 matrix[3] == 40 &&
-                 matrix[4] == 50 &&
-                 matrix[5] == 60 &&
-                 matrix[6] == 70 &&
-                 matrix[7] == 80 &&
-                 matrix[8] == 90 &&
-                 matrix[9] == 100 &&
-                 matrix[10] == 110 &&
-                 matrix[11] == 120,
-
-                "The const square brackets operator does not work correctly, read values are wrong!");
-    }
+    QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
+             destMatrix.getColumnCapacity() == expectedColumnCapacity, "Move constructor failed, capacity of the destination matrix is not correct!");
 }
 
 void CommonTests::testCopyAssignmentOperator()
@@ -547,9 +433,7 @@ void CommonTests::testCopyAssignmentOperator()
                      destMatrix.at(0, 2) == 3 &&
                      destMatrix.at(1, 0) == 4 &&
                      destMatrix.at(1, 1) == 5 &&
-                     destMatrix.at(1, 2) == 6,
-
-                     "Copy assignment failed, the destination matrix doesn't have the right values!");
+                     destMatrix.at(1, 2) == 6, "Copy assignment failed, the destination matrix doesn't have the right values!");
         }
     }
 
@@ -574,9 +458,7 @@ void CommonTests::testCopyAssignmentOperator()
                      destMatrix.at(0, 2) == 3 &&
                      destMatrix.at(1, 0) == 4 &&
                      destMatrix.at(1, 1) == 5 &&
-                     destMatrix.at(1, 2) == 6,
-
-                     "Copy assignment failed, the destination matrix doesn't have the right values!");
+                     destMatrix.at(1, 2) == 6, "Copy assignment failed, the destination matrix doesn't have the right values!");
         }
     }
 
@@ -586,8 +468,11 @@ void CommonTests::testCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        QVERIFY2(destMatrix.getRowCapacity() == 0 && destMatrix.getColumnCapacity() == 0, "Copy assignment failed, capacity of the destination matrix is not correct!");
-        QVERIFY2(destMatrix.getNrOfRows() == 0 && destMatrix.getNrOfColumns() == 0, "Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getRowCapacity() == 0 &&
+                 destMatrix.getColumnCapacity() == 0, "Copy assignment failed, capacity of the destination matrix is not correct!");
+
+        QVERIFY2(destMatrix.getNrOfRows() == 0 &&
+                 destMatrix.getNrOfColumns() == 0, "Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
     }
 
     {
@@ -596,8 +481,11 @@ void CommonTests::testCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        QVERIFY2(destMatrix.getRowCapacity() == 0 && destMatrix.getColumnCapacity() == 0, "Copy assignment failed, capacity of the destination matrix is not correct!");
-        QVERIFY2(destMatrix.getNrOfRows() == 0 && destMatrix.getNrOfColumns() == 0, "Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getRowCapacity() == 0 &&
+                 destMatrix.getColumnCapacity() == 0, "Copy assignment failed, capacity of the destination matrix is not correct!");
+
+        QVERIFY2(destMatrix.getNrOfRows() == 0 &&
+                 destMatrix.getNrOfColumns() == 0, "Copy assignment failed, number of rows or columns of the destination matrix is not correct!");
     }
 
     {
@@ -740,9 +628,7 @@ void CommonTests::testCopyAssignmentOperator()
                      matrix.at(0, 2) == 3 &&
                      matrix.at(1, 0) == 4 &&
                      matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6,
-
-                     "Same matrix copy assignment failed, the matrix doesn't have the right values!");
+                     matrix.at(1, 2) == 6, "Same matrix copy assignment failed, the matrix doesn't have the right values!");
         }
     }
 
@@ -751,8 +637,11 @@ void CommonTests::testCopyAssignmentOperator()
 
         matrix = matrix;
 
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Same matrix copy assignment failed, capacity is not correct!");
-        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Same matrix copy assignment failed, number of rows or columns is not correct!");
+        QVERIFY2(matrix.getRowCapacity() == 0 &&
+                 matrix.getColumnCapacity() == 0, "Same matrix copy assignment failed, capacity is not correct!");
+
+        QVERIFY2(matrix.getNrOfRows() == 0 &&
+                 matrix.getNrOfColumns() == 0, "Same matrix copy assignment failed, number of rows or columns is not correct!");
     }
 
     {
@@ -775,64 +664,39 @@ void CommonTests::testCopyAssignmentOperator()
             QVERIFY2(firstMatrix.at(0, 0) == 13 &&
                      firstMatrix.at(0, 1) == 14 &&
                      firstMatrix.at(1, 0) == 15 &&
-                     firstMatrix.at(1, 1) == 16,
-
-                     "Copy assignment failed, the first matrix doesn't have the right values!");
+                     firstMatrix.at(1, 1) == 16, "Copy assignment failed, the first matrix doesn't have the right values!");
         }
     }
 }
 
 void CommonTests::testCapacityWithCopyAssignmentOperator()
 {
-    using namespace std;
-    auto copyAndTestCapacity = [](string testNumber, const IntMatrix& srcMatrix, IntMatrix& destMatrix, int desiredRowCapacity, int desiredColumnCapacity)
+    QFETCH(IntMatrixSizeType, srcMatrixRowsCount);
+    QFETCH(IntMatrixSizeType, srcMatrixColumnsCount);
+    QFETCH(int, srcMatrixElementValue);
+    QFETCH(IntMatrixSizeType, destMatrixRowsCount);
+    QFETCH(IntMatrixSizeType, destMatrixColumnsCount);
+    QFETCH(int, destMatrixElementValue);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+
+    IntMatrix srcMatrix{srcMatrixRowsCount, srcMatrixColumnsCount, srcMatrixElementValue};
+
+    if (destMatrixRowsCount != 0 && destMatrixColumnsCount != 0)
     {
+        IntMatrix destMatrix{destMatrixRowsCount, destMatrixColumnsCount, destMatrixElementValue};
         destMatrix = srcMatrix;
 
-        QVERIFY2(destMatrix.getRowCapacity() == desiredRowCapacity && destMatrix.getColumnCapacity() == desiredColumnCapacity,
-                 string{"Copy assignment failed, capacity of the destination matrix is not correct! Test number: " + testNumber}.c_str());
-    };
-
-    int testNumber{1};
-
-    {
-        IntMatrix destMatrix{};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{3, 4, -1}, destMatrix, 3, 5);
+        QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
+                 destMatrix.getColumnCapacity() == expectedColumnCapacity, "Copy assignment failed, capacity of the destination matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix destMatrix{};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{4, 3, -1}, destMatrix, 5, 3);
-    }
+        IntMatrix destMatrix;
+        destMatrix = srcMatrix;
 
-    {
-        IntMatrix destMatrix{};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{7, 8, -1}, destMatrix, 8, 10);
-    }
-
-    {
-        IntMatrix destMatrix{};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{8, 7, -1}, destMatrix, 10, 8);
-    }
-
-    {
-        IntMatrix destMatrix{2, 3, -5};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{3, 4, -1}, destMatrix, 3, 5);
-    }
-
-    {
-        IntMatrix destMatrix{2, 3, -5};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{4, 3, -1}, destMatrix, 5, 3);
-    }
-
-    {
-        IntMatrix destMatrix{3, 4, -5};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{7, 8, -1}, destMatrix, 8, 10);
-    }
-
-    {
-        IntMatrix destMatrix{3, 4, -5};
-        copyAndTestCapacity(QString::number(testNumber++).toStdString(), IntMatrix{8, 7, -1}, destMatrix, 10, 8);
+        QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
+                 destMatrix.getColumnCapacity() == expectedColumnCapacity, "Copy assignment failed, capacity of the destination matrix is not correct!");
     }
 }
 
@@ -859,15 +723,13 @@ void CommonTests::testMoveAssignmentOperator()
                      destMatrix.at(0, 2) == 3 &&
                      destMatrix.at(1, 0) == 4 &&
                      destMatrix.at(1, 1) == 5 &&
-                     destMatrix.at(1, 2) == 6,
+                     destMatrix.at(1, 2) == 6, "Move assignment failed, the destination matrix doesn't have the right values!");
 
-                     "Move assignment failed, the destination matrix doesn't have the right values!");
+            QVERIFY2(srcMatrix.getRowCapacity() == 0 &&
+                     srcMatrix.getColumnCapacity() == 0, "Move assignment failed, capacity of the source matrix is not correct!");
 
-            QVERIFY2(srcMatrix.getRowCapacity() == 0 && srcMatrix.getColumnCapacity() == 0,
-                     "Move assignment failed, capacity of the source matrix is not correct!");
-
-            QVERIFY2(srcMatrix.getNrOfRows() == 0 && srcMatrix.getNrOfColumns() == 0,
-                     "Move assignment failed, number of rows or columns of the source matrix is not correct!");
+            QVERIFY2(srcMatrix.getNrOfRows() == 0 &&
+                     srcMatrix.getNrOfColumns() == 0, "Move assignment failed, number of rows or columns of the source matrix is not correct!");
         }
     }
 
@@ -892,14 +754,13 @@ void CommonTests::testMoveAssignmentOperator()
                      destMatrix.at(0, 2) == 3 &&
                      destMatrix.at(1, 0) == 4 &&
                      destMatrix.at(1, 1) == 5 &&
-                     destMatrix.at(1, 2) == 6,
+                     destMatrix.at(1, 2) == 6, "Move assignment failed, the destination matrix doesn't have the right values!");
 
-                     "Move assignment failed, the destination matrix doesn't have the right values!");
+            QVERIFY2(srcMatrix.getRowCapacity() == 0 &&
+                     srcMatrix.getColumnCapacity() == 0, "Move assignment failed, capacity of the source matrix is not correct!");
 
-            QVERIFY2(srcMatrix.getRowCapacity() == 0 && srcMatrix.getColumnCapacity() == 0,
-                     "Move assignment failed, capacity of the source matrix is not correct!");
-            QVERIFY2(srcMatrix.getNrOfRows() == 0 && srcMatrix.getNrOfColumns() == 0,
-                     "Move assignment failed, number of rows or columns of the source matrix is not correct!");
+            QVERIFY2(srcMatrix.getNrOfRows() == 0 &&
+                     srcMatrix.getNrOfColumns() == 0, "Move assignment failed, number of rows or columns of the source matrix is not correct!");
         }
     }
 
@@ -909,15 +770,17 @@ void CommonTests::testMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        QVERIFY2(destMatrix.getRowCapacity() == 0 && destMatrix.getColumnCapacity() == 0,
-                 "Move assignment failed, capacity of the destination matrix is not correct!");
-        QVERIFY2(destMatrix.getNrOfRows() == 0 && destMatrix.getNrOfColumns() == 0,
-                 "Move assignment failed, number of rows or columns of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getRowCapacity() == 0 &&
+                 destMatrix.getColumnCapacity() == 0, "Move assignment failed, capacity of the destination matrix is not correct!");
 
-        QVERIFY2(srcMatrix.getRowCapacity() == 0 && srcMatrix.getColumnCapacity() == 0,
-                 "Move assignment failed, capacity of the source matrix is not correct!");
-        QVERIFY2(srcMatrix.getNrOfRows() == 0 && srcMatrix.getNrOfColumns() == 0,
-                 "Move assignment failed, number of rows or columns of the source matrix is not correct!");
+        QVERIFY2(destMatrix.getNrOfRows() == 0 &&
+                 destMatrix.getNrOfColumns() == 0, "Move assignment failed, number of rows or columns of the destination matrix is not correct!");
+
+        QVERIFY2(srcMatrix.getRowCapacity() == 0 &&
+                 srcMatrix.getColumnCapacity() == 0, "Move assignment failed, capacity of the source matrix is not correct!");
+
+        QVERIFY2(srcMatrix.getNrOfRows() == 0 &&
+                 srcMatrix.getNrOfColumns() == 0, "Move assignment failed, number of rows or columns of the source matrix is not correct!");
     }
 
     {
@@ -926,15 +789,17 @@ void CommonTests::testMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        QVERIFY2(destMatrix.getRowCapacity() == 0 && destMatrix.getColumnCapacity() == 0,
-                 "Move assignment failed, capacity of the destination matrix is not correct!");
-        QVERIFY2(destMatrix.getNrOfRows() == 0 && destMatrix.getNrOfColumns() == 0,
-                 "Move assignment failed, number of rows or columns of the destination matrix is not correct!");
+        QVERIFY2(destMatrix.getRowCapacity() == 0 &&
+                 destMatrix.getColumnCapacity() == 0, "Move assignment failed, capacity of the destination matrix is not correct!");
 
-        QVERIFY2(srcMatrix.getRowCapacity() == 0 && srcMatrix.getColumnCapacity() == 0,
-                 "Move assignment failed, capacity of the source matrix is not correct!");
-        QVERIFY2(srcMatrix.getNrOfRows() == 0 && srcMatrix.getNrOfColumns() == 0,
-                 "Move assignment failed, number of rows or columns of the source matrix is not correct!");
+        QVERIFY2(destMatrix.getNrOfRows() == 0 &&
+                 destMatrix.getNrOfColumns() == 0, "Move assignment failed, number of rows or columns of the destination matrix is not correct!");
+
+        QVERIFY2(srcMatrix.getRowCapacity() == 0 &&
+                 srcMatrix.getColumnCapacity() == 0, "Move assignment failed, capacity of the source matrix is not correct!");
+
+        QVERIFY2(srcMatrix.getNrOfRows() == 0 &&
+                 srcMatrix.getNrOfColumns() == 0, "Move assignment failed, number of rows or columns of the source matrix is not correct!");
     }
 
     {
@@ -957,9 +822,7 @@ void CommonTests::testMoveAssignmentOperator()
             QVERIFY2(firstMatrix.at(0, 0) == 13 &&
                      firstMatrix.at(0, 1) == 14 &&
                      firstMatrix.at(1, 0) == 15 &&
-                     firstMatrix.at(1, 1) == 16,
-
-                     "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
+                     firstMatrix.at(1, 1) == 16, "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
         }
     }
 
@@ -983,5469 +846,2661 @@ void CommonTests::testMoveAssignmentOperator()
             QVERIFY2(firstMatrix.at(0, 0) == 13 &&
                      firstMatrix.at(0, 1) == 14 &&
                      firstMatrix.at(1, 0) == 15 &&
-                     firstMatrix.at(1, 1) == 16,
-
-                     "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
+                     firstMatrix.at(1, 1) == 16, "Copy and/or move assignment failed, the first matrix doesn't have the right values!");
         }
     }
 }
 
 void CommonTests::testCapacityWithMoveAssignmentOperator()
 {
-    using namespace std;
-    auto moveAndTestCapacity = [](string testNumber, IntMatrix& srcMatrix, IntMatrix& destMatrix, int desiredRowCapacity, int desiredColumnCapacity)
+    QFETCH(IntMatrixSizeType, srcMatrixRowsCount);
+    QFETCH(IntMatrixSizeType, srcMatrixColumnsCount);
+    QFETCH(int, srcMatrixElementValue);
+    QFETCH(IntMatrixSizeType, destMatrixRowsCount);
+    QFETCH(IntMatrixSizeType, destMatrixColumnsCount);
+    QFETCH(int, destMatrixElementValue);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+
+    IntMatrix srcMatrix{srcMatrixRowsCount, srcMatrixColumnsCount, srcMatrixElementValue};
+
+    if (destMatrixRowsCount != 0 && destMatrixColumnsCount != 0)
     {
-        destMatrix = move(srcMatrix);
+        IntMatrix destMatrix{destMatrixRowsCount, destMatrixColumnsCount, destMatrixElementValue};
+        destMatrix = std::move(srcMatrix);
 
-        QVERIFY2(destMatrix.getRowCapacity() == desiredRowCapacity && destMatrix.getColumnCapacity() == desiredColumnCapacity,
-                 string{"Move assignment failed, capacity of the destination matrix is not correct! Test number: " + testNumber}.c_str());
-    };
-
-    int testNumber{1};
-
-    {
-        IntMatrix srcMatrix{3, 4, -1};
-        IntMatrix destMatrix{};
-
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 3, 5);
+        QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
+                 destMatrix.getColumnCapacity() == expectedColumnCapacity, "Copy assignment failed, capacity of the destination matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix srcMatrix{4, 3, -1};
-        IntMatrix destMatrix{};
+        IntMatrix destMatrix;
+        destMatrix = std::move(srcMatrix);
 
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 5, 3);
+        QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
+                 destMatrix.getColumnCapacity() == expectedColumnCapacity, "Copy assignment failed, capacity of the destination matrix is not correct!");
     }
+}
 
+void CommonTests::testBooleanOperator()
+{
+    QFETCH(IntMatrix, matrix);
+    QFETCH(bool, checkTrue);
+
+    if (checkTrue)
     {
-        IntMatrix srcMatrix{7, 8, -1};
-        IntMatrix destMatrix{};
-
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 8, 10);
+        QVERIFY2(matrix, "The boolean operator does not return the expected value (true)!");
     }
-
+    else
     {
-        IntMatrix srcMatrix{8, 7, -1};
-        IntMatrix destMatrix{};
-
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 10, 8);
+        QVERIFY2(!matrix, "The boolean operator does not return the expected value (false)!");
     }
+}
 
+void CommonTests::testMatrixesAreEqual()
+{
+    QFETCH(IntMatrix, firstMatrix);
+    QFETCH(IntMatrix, secondMatrix);
+    QFETCH(bool, checkEqualityToItself);
+
+    if (checkEqualityToItself)
     {
-        IntMatrix srcMatrix{3, 4, -1};
-        IntMatrix destMatrix{2, 3, -5};
-
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 3, 5);
+        QVERIFY2(firstMatrix == firstMatrix &&
+                 !(firstMatrix != firstMatrix), "The matrix should be equal to itself!");
     }
-
+    else
     {
-        IntMatrix srcMatrix{4, 3, -1};
-        IntMatrix destMatrix{2, 3, -5};
-
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 5, 3);
+        QVERIFY2(firstMatrix == secondMatrix &&
+                 !(firstMatrix != secondMatrix), "The matrixes should be equal!");
     }
+}
 
-    {
-        IntMatrix srcMatrix{7, 8, -1};
-        IntMatrix destMatrix{3, 4, -5};
+void CommonTests::testMatrixesAreNotEqual()
+{
+    QFETCH(IntMatrix, firstMatrix);
+    QFETCH(IntMatrix, secondMatrix);
 
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 8, 10);
-    }
+    QVERIFY2(firstMatrix != secondMatrix &&
+            !(firstMatrix == secondMatrix), "The matrixes should not be equal!");
+}
 
-    {
-        IntMatrix srcMatrix{8, 7, -1};
-        IntMatrix destMatrix{3, 4, -5};
+/* This test exercises the write-only and the "const" at() method
+   For read-only at() operations of writable matrixes it is considered trivial (getter-like method)
+   and is used in many tests for checking that other methods work correctly (see above and below)
+*/
+void CommonTests::testFunctionAt()
+{
+    mPrimaryIntMatrix = {2, 3, 5};
 
-        moveAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, destMatrix, 10, 8);
-    }
+    mPrimaryIntMatrix.at(0, 0) = 10;
+    mPrimaryIntMatrix.at(0, 1) = 20;
+    mPrimaryIntMatrix.at(0, 2) = 30;
+    mPrimaryIntMatrix.at(1, 0) = 40;
+    mPrimaryIntMatrix.at(1, 1) = 50;
+    mPrimaryIntMatrix.at(1, 2) = 60;
+
+    QVERIFY2(mPrimaryIntMatrix == IntMatrix(2, 3, {10, 20, 30, 40, 50, 60}), "The write at() method does not work properly, values are not correctly written!");
+
+    // "const" at() - trivial too but tested here just to ensure it exists (it is required for reading values from const matrixes)
+    const IntMatrix matrix{2, 3, {70, 80, 90, 100, 110, 120}};
+
+    QVERIFY2(matrix.at(0, 0) == 70 &&
+             matrix.at(0, 1) == 80 &&
+             matrix.at(0, 2) == 90 &&
+             matrix.at(1, 0) == 100 &&
+             matrix.at(1, 1) == 110 &&
+             matrix.at(1, 2) == 120, "The const at() method does not work correctly, read values are wrong!");
+}
+
+void CommonTests::testSquareBracketsOperator()
+{
+    mPrimaryIntMatrix = {4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+    QVERIFY2(mPrimaryIntMatrix[0] == 1 &&
+             mPrimaryIntMatrix[1] == 2 &&
+             mPrimaryIntMatrix[2] == 3 &&
+             mPrimaryIntMatrix[3] == 4 &&
+             mPrimaryIntMatrix[4] == 5 &&
+             mPrimaryIntMatrix[5] == 6 &&
+             mPrimaryIntMatrix[6] == 7 &&
+             mPrimaryIntMatrix[7] == 8 &&
+             mPrimaryIntMatrix[8] == 9 &&
+             mPrimaryIntMatrix[9] == 10 &&
+             mPrimaryIntMatrix[10] == 11 &&
+             mPrimaryIntMatrix[11] == 12, "The square brackets operator did not return the right values!");
+
+
+    mPrimaryIntMatrix = {2, 3, 5};
+
+    mPrimaryIntMatrix[0] = 70;
+    mPrimaryIntMatrix[1] = 80;
+    mPrimaryIntMatrix[2] = 90;
+    mPrimaryIntMatrix[3] = 100;
+    mPrimaryIntMatrix[4] = 110;
+    mPrimaryIntMatrix[5] = 120;
+
+    QVERIFY2(mPrimaryIntMatrix == IntMatrix(2, 3, {70, 80, 90, 100, 110, 120}), "The square brackets operator did not write the right values!");
+
+    // test the "const" square brackets operator too (similar to "const" at() - just to ensure it has been created)
+    const IntMatrix matrix{4, 3, {10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120}};
+
+    QVERIFY2(matrix[0] == 10 &&
+             matrix[1] == 20 &&
+             matrix[2] == 30 &&
+             matrix[3] == 40 &&
+             matrix[4] == 50 &&
+             matrix[5] == 60 &&
+             matrix[6] == 70 &&
+             matrix[7] == 80 &&
+             matrix[8] == 90 &&
+             matrix[9] == 100 &&
+             matrix[10] == 110 &&
+             matrix[11] == 120, "The const square brackets operator does not work correctly, read values are wrong!");
 }
 
 void CommonTests::testGetBaseArray()
 {
+    mPrimaryIntMatrix = {};
+
+    int nrOfElements;
+    int* baseArrayPtr{mPrimaryIntMatrix.getBaseArray(nrOfElements)};
+
+    if (baseArrayPtr || nrOfElements != 0)
     {
-        IntMatrix matrix{};
-
-        int nrOfElements;
-        int* baseArrayPtr{matrix.getBaseArray(nrOfElements)};
-
-        if (baseArrayPtr || nrOfElements != 0)
-        {
-            QFAIL("Passing resources outside the matrix failed, either the pointer is not null or the number of elements is different from 0!");
-        }
+        QFAIL("Passing resources outside the matrix failed, either the pointer is not null or the number of elements is different from 0!");
     }
 
+    mPrimaryIntMatrix = {2, 3, {1, 2, 3, 4, 5, 6}};
+
+    baseArrayPtr = mPrimaryIntMatrix.getBaseArray(nrOfElements);
+
+    if (!baseArrayPtr || nrOfElements != 6)
     {
-        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-
-        int nrOfElements;
-        int* baseArrayPtr{matrix.getBaseArray(nrOfElements)};
-
-        if (!baseArrayPtr || nrOfElements != 6)
-        {
-            QFAIL("Passing resources outside the matrix failed, either the pointer is null or the number of elements is not correct!");
-        }
-
-        QVERIFY2(baseArrayPtr[0] == 1 &&
-                 baseArrayPtr[1] == 2 &&
-                 baseArrayPtr[2] == 3 &&
-                 baseArrayPtr[3] == 4 &&
-                 baseArrayPtr[4] == 5 &&
-                 baseArrayPtr[5] == 6,
-
-                "Passing resources outside the matrix failed, the element values are not correct!");
-
-        delete []baseArrayPtr;
-        baseArrayPtr = nullptr;
+        QFAIL("Passing resources outside the matrix failed, either the pointer is null or the number of elements is not correct!");
     }
+
+    QVERIFY2(baseArrayPtr[0] == 1 &&
+             baseArrayPtr[1] == 2 &&
+             baseArrayPtr[2] == 3 &&
+             baseArrayPtr[3] == 4 &&
+             baseArrayPtr[4] == 5 &&
+             baseArrayPtr[5] == 6, "Passing resources outside the matrix failed, the element values are not correct!");
+
+    QVERIFY(mPrimaryIntMatrix == IntMatrix{});
+
+    delete []baseArrayPtr;
+    baseArrayPtr = nullptr;
 }
 
 void CommonTests::testTranspose()
 {
+    QFETCH(IntMatrix, initialSrcMatrix);
+    QFETCH(IntMatrix, initialDestMatrix);
+    QFETCH(IntMatrix, expectedDestMatrix);
+    QFETCH(IntMatrixSizeType, expectedSrcRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedSrcColumnCapacity);
+    QFETCH(IntMatrixSizeType, expectedDestRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedDestColumnCapacity);
+    QFETCH(bool, isTransposedToItself);
+
+    mPrimaryIntMatrix = initialSrcMatrix;
+
+    if (isTransposedToItself)
     {
-        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
+        mPrimaryIntMatrix.transpose(mPrimaryIntMatrix);
 
-        matrix.transpose(matrix);
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Calculating transposed matrix failed, capacity is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Calculating transposed matrix failed, number of rows or columns is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 4 &&
-                     matrix.at(1, 0) == 2 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(2, 0) == 3 &&
-                     matrix.at(2, 1) == 6,
-
-                     "Calculating transponsed matrix failed, the resulting values are incorrect!");
-        }
+        QVERIFY2(mPrimaryIntMatrix == expectedDestMatrix &&
+                 mPrimaryIntMatrix.getRowCapacity() == expectedDestRowCapacity &&
+                 mPrimaryIntMatrix.getColumnCapacity() == expectedDestColumnCapacity, "Transposing failed, the resulting capacity, dimensions and/or values are incorrect!");
     }
-
+    else
     {
-        IntMatrix matrix{};
+        mSecondaryIntMatrix = initialDestMatrix;
 
-        matrix.transpose(matrix);
+        mPrimaryIntMatrix.transpose(mSecondaryIntMatrix);
 
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0,
-                 "Calculating transposed matrix failed, capacity is not correct!");
-        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0,
-                 "Calculating transposed matrix failed, number of rows or columns is not correct!");
-    }
+        QVERIFY2(mPrimaryIntMatrix == initialSrcMatrix &&
+                 mPrimaryIntMatrix.getRowCapacity() == expectedSrcRowCapacity &&
+                 mPrimaryIntMatrix.getColumnCapacity() == expectedSrcColumnCapacity, "Transposing failed, the source matrix shouldn't change!");
 
-    {
-        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix transposedMatrix{2, 2, {7, 8, 9, 10}};
-
-        matrix.transpose(transposedMatrix);
-
-        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Calculating transposed matrix failed, capacity of the source matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Calculating transposed matrix failed, number of rows or columns of the source matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6,
-
-                     "Calculating transponsed matrix failed, the values of the source matrix are not correct!");
-        }
-
-        if (transposedMatrix.getRowCapacity() != 3 || transposedMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
-        }
-        else if (transposedMatrix.getNrOfRows() != 3 || transposedMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Calculating transposed matrix failed, number of rows or columns of the destination (transposed) matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(transposedMatrix.at(0, 0) == 1 &&
-                     transposedMatrix.at(0, 1) == 4 &&
-                     transposedMatrix.at(1, 0) == 2 &&
-                     transposedMatrix.at(1, 1) == 5 &&
-                     transposedMatrix.at(2, 0) == 3 &&
-                     transposedMatrix.at(2, 1) == 6,
-
-                     "Calculating transponsed matrix failed, the values of the destination (transposed) matrix are not correct!");
-        }
-    }
-
-    {
-        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix transposedMatrix{};
-
-        matrix.transpose(transposedMatrix);
-
-        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Calculating transposed matrix failed, capacity of the source matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Calculating transposed matrix failed, number of rows or columns of the source matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6,
-
-                     "Calculating transponsed matrix failed, the values of the source matrix are not correct!");
-        }
-
-        if (transposedMatrix.getRowCapacity() != 3 || transposedMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
-        }
-        else if (transposedMatrix.getNrOfRows() != 3 || transposedMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Calculating transposed matrix failed, number of rows or columns of the destination (transposed) matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(transposedMatrix.at(0, 0) == 1 &&
-                     transposedMatrix.at(0, 1) == 4 &&
-                     transposedMatrix.at(1, 0) == 2 &&
-                     transposedMatrix.at(1, 1) == 5 &&
-                     transposedMatrix.at(2, 0) == 3 &&
-                     transposedMatrix.at(2, 1) == 6,
-
-                     "Calculating transponsed matrix failed, the values of the destination (transposed) matrix are not correct!");
-        }
-    }
-
-    {
-        IntMatrix matrix{};
-        IntMatrix transposedMatrix{2, 2, {1, 2, 3, 4}};
-
-        matrix.transpose(transposedMatrix);
-
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0,
-                 "Calculating transposed matrix failed, capacity of the source matrix is not correct!");
-        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0,
-                 "Calculating transposed matrix failed, number of rows or columns of the source matrix is not correct!");
-
-        QVERIFY2(transposedMatrix.getRowCapacity() == 0 && transposedMatrix.getColumnCapacity() == 0,
-                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
-        QVERIFY2(transposedMatrix.getNrOfRows() == 0 && transposedMatrix.getNrOfColumns() == 0,
-                 "Calculating transposed matrix failed, number of rows or columns of the destination (transposed) matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{};
-        IntMatrix transposedMatrix{};
-
-        matrix.transpose(transposedMatrix);
-
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0,
-                 "Calculating transposed matrix failed, capacity of the source matrix is not correct!");
-        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0,
-                 "Calculating transposed matrix failed, number of rows or columns of the source matrix is not correct!");
-
-        QVERIFY2(transposedMatrix.getRowCapacity() == 0 && transposedMatrix.getColumnCapacity() == 0,
-                 "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
-        QVERIFY2(transposedMatrix.getNrOfRows() == 0 && transposedMatrix.getNrOfColumns() == 0,
-                 "Calculating transposed matrix failed, number of rows or columns of the destination (transposed) matrix is not correct!");
+        QVERIFY2(mSecondaryIntMatrix == expectedDestMatrix &&
+                 mSecondaryIntMatrix.getRowCapacity() == expectedDestRowCapacity &&
+                 mSecondaryIntMatrix.getColumnCapacity() == expectedDestColumnCapacity, "Transposing failed, the resulting capacity, dimensions and/or values of the transposed matrix are incorrect!");
     }
 }
 
 void CommonTests::testCapacityWithTranspose()
 {
-    using namespace std;
-    auto transposeAndTestCapacity = [](string testNumber, IntMatrix& matrix, IntMatrix& transposedMatrix, int desiredRowCapacity, int desiredColumnCapacity)
+    QFETCH(IntMatrixSizeType, srcMatrixRowsCount);
+    QFETCH(IntMatrixSizeType, srcMatrixColumnsCount);
+    QFETCH(int, srcMatrixElementValue);
+    QFETCH(IntMatrixSizeType, destMatrixRowsCount);
+    QFETCH(IntMatrixSizeType, destMatrixColumnsCount);
+    QFETCH(int, destMatrixElementValue);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(bool, isTransposedToItself);
+
+    mPrimaryIntMatrix = {srcMatrixRowsCount, srcMatrixColumnsCount, srcMatrixElementValue};
+
+    if (isTransposedToItself)
     {
-        matrix.transpose(transposedMatrix);
+        mPrimaryIntMatrix.transpose(mPrimaryIntMatrix);
 
-        QVERIFY2(transposedMatrix.getRowCapacity() == desiredRowCapacity && transposedMatrix.getColumnCapacity() == desiredColumnCapacity,
-                 string{"Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct! Test number: " + testNumber}.c_str());
-    };
-
-    int testNumber{1};
-
-    {
-        IntMatrix matrix{3, 4, 2};
-        IntMatrix transposedMatrix{};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 5, 3);
+        QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == expectedRowCapacity &&
+                 mPrimaryIntMatrix.getColumnCapacity() == expectedColumnCapacity, "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
     }
-
+    else if (destMatrixRowsCount != 0 && destMatrixColumnsCount != 0)
     {
-        IntMatrix matrix{4, 3, 2};
-        IntMatrix transposedMatrix{};
+        mSecondaryIntMatrix = {destMatrixRowsCount, destMatrixColumnsCount, destMatrixElementValue};
+        mPrimaryIntMatrix.transpose(mSecondaryIntMatrix);
 
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 3, 5);
+        QVERIFY2(mSecondaryIntMatrix.getRowCapacity() == expectedRowCapacity &&
+                 mSecondaryIntMatrix.getColumnCapacity() == expectedColumnCapacity, "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix matrix{7, 8, 2};
-        IntMatrix transposedMatrix{};
+        mSecondaryIntMatrix = {};
+        mPrimaryIntMatrix.transpose(mSecondaryIntMatrix);
 
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 10, 8);
-    }
-
-    {
-        IntMatrix matrix{8, 7, 2};
-        IntMatrix transposedMatrix{};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 8, 10);
-    }
-
-    {
-        IntMatrix matrix{8, 7, 2};
-        IntMatrix transposedMatrix{5, 6, 2};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 8, 10);
-    }
-
-    {
-        IntMatrix matrix{8, 7, 2};
-        IntMatrix transposedMatrix{6, 6, 2};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 7, 10);
-    }
-
-    {
-        IntMatrix matrix{8, 7, 2};
-        IntMatrix transposedMatrix{5, 7, 2};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 8, 8);
-    }
-
-    {
-        IntMatrix matrix{8, 7, 2};
-        IntMatrix transposedMatrix{6, 7, 2};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 7, 8);
-    }
-
-    {
-        IntMatrix matrix{8, 7, 2};
-        IntMatrix transposedMatrix{7, 8, 2};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, transposedMatrix, 8, 10);
-    }
-
-    {
-        IntMatrix matrix{3, 3, 2};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrix, 3, 3);
-    }
-
-    {
-        IntMatrix matrix{3, 4, 2};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrix, 5, 5);
-    }
-
-    {
-        IntMatrix matrix{4, 3, 2};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrix, 5, 5);
-    }
-
-    {
-        IntMatrix matrix{4, 4, 2};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrix, 5, 5);
-    }
-
-    {
-        IntMatrix matrix{7, 8, 2};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrix, 8, 10);
-    }
-
-    {
-        IntMatrix matrix{8, 7, 2};
-
-        transposeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrix, 10, 8);
+        QVERIFY2(mSecondaryIntMatrix.getRowCapacity() == expectedRowCapacity &&
+                 mSecondaryIntMatrix.getColumnCapacity() == expectedColumnCapacity, "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
     }
 }
 
 void CommonTests::testClear()
 {
-    {
-        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        matrix.clear();
+    QFETCH(IntMatrix, matrix);
 
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Clear failed, capacity is not correct!");
-        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Clear failed, number of rows and columns is not correct!");
-    }
+    mPrimaryIntMatrix = matrix;
+    mPrimaryIntMatrix.clear();
 
-    {
-        IntMatrix matrix{};
-        matrix.clear();
+    QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == 0 &&
+             mPrimaryIntMatrix.getColumnCapacity() == 0, "Clear failed, capacity is not correct!");
 
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Clear failed, capacity is not correct!");
-        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Clear failed, number of rows and columns is not correct!");
-    }
+    QVERIFY2(mPrimaryIntMatrix.getNrOfRows() == 0 &&
+             mPrimaryIntMatrix.getNrOfColumns() == 0, "Clear failed, number of rows and columns is not correct!");
 }
 
 void CommonTests::testResizeWithoutFillingInNewValues()
 {
+    QFETCH(IntMatrix, matrix);
+    QFETCH(IntMatrixSizeType, resizeRowsCount);
+    QFETCH(IntMatrixSizeType, resizeColumnsCount);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(IntMatrix, expectedRetainedElementsMatrix);
+
+    matrix.resize(resizeRowsCount, resizeColumnsCount);
+
+    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resize(4, 2);
-
-        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11,
-
-                     "Resizing failed, the matrix does not have the correct values!");
-        }
+        QFAIL("Resizing failed, capacity of the matrix is not correct!");
     }
-
+    else if (matrix.getNrOfRows() != resizeRowsCount || matrix.getNrOfColumns() != resizeColumnsCount)
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resize(2, 3);
-
-        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6,
-
-                     "Resizing failed, the matrix does not have the correct values!");
-        }
+        QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+        bool areRetainedValuesCorrect{true};
 
-        matrix.resize(3, 2);
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 2)
+        for(IntMatrixSizeType rowNr{0}; rowNr < expectedRetainedElementsMatrix.getNrOfRows(); ++rowNr)
         {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
+            for(IntMatrixSizeType columnNr{0}; columnNr < expectedRetainedElementsMatrix.getNrOfColumns(); ++columnNr)
+            {
+                areRetainedValuesCorrect = areRetainedValuesCorrect && (matrix.at(rowNr, columnNr) == expectedRetainedElementsMatrix.at(rowNr, columnNr));
+            }
         }
-        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8,
 
-                     "Resizing failed, the matrix does not have the correct values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resize(4, 5);
-
-        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 5)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(2, 2) == 9 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11 &&
-                     matrix.at(3, 2) == 12,
-
-                     "Resizing failed, the matrix does not have the correct values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resize(5, 3);
-
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(2, 2) == 9 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11 &&
-                     matrix.at(3, 2) == 12,
-
-                     "Resizing failed, the matrix does not have the correct values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resize(5, 4);
-
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 4)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 4)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(2, 2) == 9 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11 &&
-                     matrix.at(3, 2) == 12,
-
-                     "Resizing failed, the matrix does not have the correct values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resize(4, 3);
-
-        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(2, 2) == 9 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11 &&
-                     matrix.at(3, 2) == 12,
-
-                     "Resizing failed, the matrix does not retain its values if dimensions are unchanged!");
-        }
+        QVERIFY2(areRetainedValuesCorrect, "Resizing failed, the retained element values are not correct!");
     }
 }
 
 void CommonTests::testCapacityWithResizeWithoutFillingInNewValues()
 {
-    using namespace std;
+    QFETCH(IntMatrixSizeType, initialRowsCount);
+    QFETCH(IntMatrixSizeType, initialColumnsCount);
+    QFETCH(int, initialElementValue);
+    QFETCH(IntMatrixSizeType, resizeRowsCount);
+    QFETCH(IntMatrixSizeType, resizeColumnsCount);
+    QFETCH(IntMatrixSizeType, requestedRowCapacity);
+    QFETCH(IntMatrixSizeType, requestedColumnCapacity);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
 
-    auto resizeAndTestCapacity = [](string testNumber,
-                           IntMatrix& matrix,
-                           const IntMatrix& matrixCopy,
-                           int desiredRowCapacity,
-                           int desiredColumnCapacity,
-                           int nrOfRows,
-                           int nrOfColumns,
-                           int inputRowCapacity=0,
-                           int inputColumnCapacity=0
-                          )
+    mPrimaryIntMatrix = {initialRowsCount, initialColumnsCount, initialElementValue};
+    mSecondaryIntMatrix = mPrimaryIntMatrix;
+
+    mPrimaryIntMatrix.resize(resizeRowsCount, resizeColumnsCount);
+
+    int retainedNrOfRows{std::min(resizeRowsCount, mSecondaryIntMatrix.getNrOfRows())};
+    int retainedNrOfColumns{std::min(resizeColumnsCount, mSecondaryIntMatrix.getNrOfColumns())};
+
+    mSecondaryIntMatrix.resize(resizeRowsCount, resizeColumnsCount, requestedRowCapacity, requestedColumnCapacity);
+
+    if (mSecondaryIntMatrix.getRowCapacity() != expectedRowCapacity || mSecondaryIntMatrix.getColumnCapacity() != expectedColumnCapacity)
     {
-        IntMatrix secondMatrixCopy{matrixCopy};
-
-        int retainedNrOfRows{min(nrOfRows, secondMatrixCopy.getNrOfRows())};
-        int retainedNrOfColumns{min(nrOfColumns, secondMatrixCopy.getNrOfColumns())};
-
-        secondMatrixCopy.resize(nrOfRows, nrOfColumns, inputRowCapacity, inputColumnCapacity);
-
-        if (secondMatrixCopy.getRowCapacity() != desiredRowCapacity || secondMatrixCopy.getColumnCapacity() != desiredColumnCapacity)
+        QFAIL("Resizing failed, capacity of the matrix is not correct!");
+    }
+    else if (mSecondaryIntMatrix.getNrOfRows() != resizeRowsCount || mSecondaryIntMatrix.getNrOfColumns() != resizeColumnsCount)
+    {
+        QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
+    }
+    else
+    {
+        bool retainedValuesAreCorrect{true};
+        for (int row{0}; row < retainedNrOfRows; ++row)
         {
-            QFAIL(string{"Resizing failed, capacity of the matrix is not correct! Test number: " + testNumber}.c_str());
-        }
-        else if (secondMatrixCopy.getNrOfRows() != nrOfRows || secondMatrixCopy.getNrOfColumns() != nrOfColumns)
-        {
-            QFAIL(string{"Resizing failed, number of rows or columns of the matrix is not correct! Test number: " + testNumber}.c_str());
-        }
-        else
-        {
-            bool retainedValuesAreCorrect{true};
-            for (int row{0}; row < retainedNrOfRows; ++row)
+            for (int col{0}; col < retainedNrOfColumns; ++col)
             {
-                for (int col{0}; col < retainedNrOfColumns; ++col)
+                if (mSecondaryIntMatrix.at(row, col) != mPrimaryIntMatrix.at(row, col))
                 {
-                    if (secondMatrixCopy.at(row, col) != matrix.at(row, col))
-                    {
-                        retainedValuesAreCorrect = false;
-                        break;
-                    }
+                    retainedValuesAreCorrect = false;
+                    break;
                 }
             }
-
-            QVERIFY2(retainedValuesAreCorrect, string{"Resizing failed, the matrix does not have the correct values for the retained items! Test number: " + testNumber}.c_str());
         }
-    };
 
-    int testNumber{1};
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resize(10, 7);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 9, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 7, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 7, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 7, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 7, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 10, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 7, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 7, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 7, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 7, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 10, 7, 11, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 10, 7, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 10, 7, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 7, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 10, 7, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 10, 7, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 10, 7, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 10, 7, 12, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 10, 7, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 10, 7, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 7, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 10, 7, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 10, 7, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 10, 7, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 10, 7, 13, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 10, 7, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 10, 7, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 7, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 10, 7, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 10, 7, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 10, 7, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 10, 7);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resize(9, 8);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 8, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 8, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 8, 8, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 8, 8, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 8, 8, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 8);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 8, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 8, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 8, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 9, 8, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 9, 8, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 8, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 9, 8, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 9, 8, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 9, 8, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 9, 8, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 9, 8, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 8, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 9, 8, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 9, 8, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 9, 8, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 9, 8, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 9, 8, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 8, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 9, 8, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 9, 8, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 9, 8, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 9, 8, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 9, 8, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 8, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 9, 8, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 9, 8, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 9, 8, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 8);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resize(9, 7);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 8, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 8, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 7, 8, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 7, 8, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 7, 8, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 7, 8, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 8);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 9, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, 9, 7, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 7, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 7, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 7, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 9, 7, 10, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 9, 7, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 9, 7, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 7, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 9, 7, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 9, 7, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, 9, 7, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 9, 7, 11, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 9, 7, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 9, 7, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 7, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 9, 7, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 9, 7, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 9, 7, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 9, 7, 12, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 9, 7, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 9, 7, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 7, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 9, 7, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 9, 7, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 9, 7, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 9, 7, 13, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 9, 7, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 9, 7, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 7, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 9, 7, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 9, 7, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 9, 7, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, 9, 7);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resize(10, 8);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 8, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 8, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 8, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 8, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 8, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 8, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 10, 8, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 10, 8, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 8, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 10, 8, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 10, 8, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 10, 8, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 10, 8, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 10, 8, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 8, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 10, 8, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 10, 8, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 10, 8, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 10, 8, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 10, 8, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 8, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 10, 8, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 10, 8, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 10, 8, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, 10, 8);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resize(11, 8);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 8, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 8, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 8, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 8, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 8, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 8, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 8, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 8, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 8, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 11, 8, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 11, 8, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 8, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 11, 8, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 11, 8, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 11, 8, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 11, 8, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 11, 8, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 8, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 11, 8, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 11, 8, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 11, 8, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 8);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resize(10, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 9, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 9, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 10, 9, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 10, 9, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 9, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 9, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 9, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 10, 9, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 10, 9, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 10, 9, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 9, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 9, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 9, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 10, 9, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 10, 9, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 10, 9, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 9, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 9, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 9, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 10, 9, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 10, 9, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 10, 9, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 10, 9);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resize(11, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 9, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 9, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 9, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 9, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 9, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 9, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 9, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 9, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 9, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 11, 9, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 11, 9, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 9, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 9, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 9, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 9, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 11, 9, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 11, 9, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 9, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 9);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resize(11, 7);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 9, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 7, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 7, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 7, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 7, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 10, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 7, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 7, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 7, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 7, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 11, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, 11, 7, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 11, 7, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 11, 7, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 11, 7, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 11, 7, 12, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 11, 7, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, 11, 7, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 11, 7, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 11, 7, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 11, 7, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, 11, 7, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 11, 7, 13, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 11, 7, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, 11, 7, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 11, 7, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 11, 7, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 11, 7, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, 11, 7, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, 11, 7);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resize(9, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 8, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 8, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 8, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 9, 8, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 9, 8, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 8);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, 9, 9, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, 9, 9, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 9, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 9, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 9, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, 9, 9, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, 9, 9, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, 9, 9, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 9, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 9, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 9, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, 9, 9, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, 9, 9, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, 9, 9, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 9, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 9, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 9, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, 9, 9, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, 9, 9, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, 9, 9, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 9, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 9, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 9, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, 9, 9, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, 9, 9, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, 9, 9, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, 9, 9);
+        QVERIFY2(retainedValuesAreCorrect, "Resizing failed, the matrix does not have the correct values for the retained items!");
     }
 }
 
 void CommonTests::testResizeAndFillInNewValues()
 {
+    QFETCH(IntMatrix, matrix);
+    QFETCH(IntMatrixSizeType, resizeRowsCount);
+    QFETCH(IntMatrixSizeType, resizeColumnsCount);
+    QFETCH(int, fillValue);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(IntMatrix, expectedMatrix);
+
+    matrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, fillValue);
+
+    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resizeWithValue(4, 2, -1);
-
-        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11,
-
-                     "Resizing failed, the matrix does not have the correct values!");
-        }
+        QFAIL("Resizing failed, capacity of the matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resizeWithValue(2, 3, -1);
-
-        if (matrix.getRowCapacity() != 2 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6,
-
-                     "Resizing failed, the matrix does not have the correct values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resizeWithValue(3, 2, -1);
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8,
-
-                     "Resizing failed, the matrix does not have the correct values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resizeWithValue(4, 5, -1);
-
-        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 5)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(0, 3) == -1 &&
-                     matrix.at(0, 4) == -1 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(1, 3) == -1 &&
-                     matrix.at(1, 4) == -1 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(2, 2) == 9 &&
-                     matrix.at(2, 3) == -1 &&
-                     matrix.at(2, 4) == -1 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11 &&
-                     matrix.at(3, 2) == 12 &&
-                     matrix.at(3, 3) == -1 &&
-                     matrix.at(3, 4) == -1,
-
-                     "Resizing failed, the matrix does not have the correct values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resizeWithValue(5, 3, -1);
-
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(2, 2) == 9 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11 &&
-                     matrix.at(3, 2) == 12 &&
-                     matrix.at(4, 0) == -1 &&
-                     matrix.at(4, 1) == -1 &&
-                     matrix.at(4, 2) == -1,
-
-                     "Resizing failed, the matrix does not have the correct values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resizeWithValue(5, 4, -1);
-
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 4)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 4)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(0, 3) == -1 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(1, 3) == -1 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(2, 2) == 9 &&
-                     matrix.at(2, 3) == -1 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11 &&
-                     matrix.at(3, 2) == 12 &&
-                     matrix.at(3, 3) == -1 &&
-                     matrix.at(4, 0) == -1 &&
-                     matrix.at(4, 1) == -1 &&
-                     matrix.at(4, 2) == -1 &&
-                     matrix.at(4, 3) == -1,
-
-                     "Resizing failed, the matrix does not have the correct values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.resizeWithValue(4, 3, -1);
-
-        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Resizing failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(2, 2) == 9 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11 &&
-                     matrix.at(3, 2) == 12,
-
-                     "Resizing failed, the matrix does not retain its values if dimensions are unchanged!");
-        }
+        QVERIFY2(matrix == expectedMatrix, "Resizing failed, the matrix does not have the correct values!");
     }
 }
 
 void CommonTests::testCapacityWithResizeAndFillInNewValues()
 {
-    using namespace std;
+    QFETCH(IntMatrixSizeType, initialRowsCount);
+    QFETCH(IntMatrixSizeType, initialColumnsCount);
+    QFETCH(IntMatrixSizeType, initialElementValue);
+    QFETCH(IntMatrixSizeType, resizeRowsCount);
+    QFETCH(IntMatrixSizeType, resizeColumnsCount);
+    QFETCH(int, resizeElementValue);
+    QFETCH(IntMatrixSizeType, requestedRowCapacity);
+    QFETCH(IntMatrixSizeType, requestedColumnCapacity);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
 
-    auto resizeAndTestCapacity = [](string testNumber,
-                           IntMatrix& matrix,
-                           const IntMatrix& matrixCopy,
-                           int desiredRowCapacity,
-                           int desiredColumnCapacity,
-                           int fillValue,
-                           int nrOfRows,
-                           int nrOfColumns,
-                           int inputRowCapacity=0,
-                           int inputColumnCapacity=0
-                          )
+    mPrimaryIntMatrix = {initialRowsCount, initialColumnsCount, initialElementValue};
+    mSecondaryIntMatrix = mPrimaryIntMatrix;
+
+    mPrimaryIntMatrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue);
+    mSecondaryIntMatrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue, requestedRowCapacity, requestedColumnCapacity);
+
+    if (mSecondaryIntMatrix.getRowCapacity() != expectedRowCapacity || mSecondaryIntMatrix.getColumnCapacity() != expectedColumnCapacity)
     {
-        IntMatrix secondMatrixCopy{matrixCopy};
-
-        secondMatrixCopy.resizeWithValue(nrOfRows, nrOfColumns, fillValue, inputRowCapacity, inputColumnCapacity);
-
-        if (secondMatrixCopy.getRowCapacity() != desiredRowCapacity || secondMatrixCopy.getColumnCapacity() != desiredColumnCapacity)
-        {
-            QFAIL(string{"Resizing failed, capacity of the matrix is not correct! Test number: " + testNumber}.c_str());
-        }
-        else if (secondMatrixCopy.getNrOfRows() != nrOfRows || secondMatrixCopy.getNrOfColumns() != nrOfColumns)
-        {
-            QFAIL(string{"Resizing failed, number of rows or columns of the matrix is not correct! Test number: " + testNumber}.c_str());
-        }
-        else
-        {
-            QVERIFY2(secondMatrixCopy == matrix, string{"Resizing failed, the matrix does not have the correct values! Test number: " + testNumber}.c_str());
-        }
-    };
-
-    int testNumber{1};
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resizeWithValue(10, 7, -5);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 9, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 7, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 7, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 7, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 7, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 10, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 7, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 7, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 7, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 7, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 10, 7, 11, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 10, 7, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 10, 7, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 7, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 10, 7, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 10, 7, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 10, 7, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 10, 7, 12, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 10, 7, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 10, 7, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 7, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 10, 7, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 10, 7, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 10, 7, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 10, 7, 13, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 10, 7, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 10, 7, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 7, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 10, 7, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 10, 7, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 10, 7, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 10, 7);
+        QFAIL("Resizing failed, capacity of the matrix is not correct!");
     }
-
+    else if (mSecondaryIntMatrix.getNrOfRows() != resizeRowsCount || mSecondaryIntMatrix.getNrOfColumns() != resizeColumnsCount)
     {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resizeWithValue(9, 8, -5);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 8, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 8, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 8, 8, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 8, 8, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 8, 8, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 8);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 8, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 8, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 8, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 9, 8, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 9, 8, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 8, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 9, 8, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 9, 8, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 9, 8, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 9, 8, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 9, 8, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 8, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 9, 8, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 9, 8, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 9, 8, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 9, 8, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 9, 8, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 8, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 9, 8, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 9, 8, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 9, 8, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 9, 8, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 9, 8, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 8, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 9, 8, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 9, 8, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 9, 8, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 8);
+        QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resizeWithValue(9, 7, -5);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 8, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 8, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 7, 8, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 7, 8, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 7, 8, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 7, 8, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 8);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 9, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 8, -5, 9, 7, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 7, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 7, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 7, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 9, 7, 10, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 9, 7, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 9, 7, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 7, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 9, 7, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 9, 7, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 7, -5, 9, 7, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 9, 7, 11, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 9, 7, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 9, 7, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 7, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 9, 7, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 9, 7, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 9, 7, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 9, 7, 12, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 9, 7, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 9, 7, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 7, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 9, 7, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 9, 7, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 9, 7, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 9, 7, 13, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 9, 7, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 9, 7, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 7, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 9, 7, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 9, 7, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 9, 7, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 7, -5, 9, 7);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resizeWithValue(10, 8, -5);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 8, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 8, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 8, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 8, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 8, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 8, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 10, 8, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 10, 8, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 8, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 10, 8, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 10, 8, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 10, 8, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 10, 8, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 10, 8, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 8, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 10, 8, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 10, 8, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 10, 8, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 10, 8, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 10, 8, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 8, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 10, 8, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 10, 8, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 10, 8, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 8, -5, 10, 8);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resizeWithValue(11, 8, -5);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 8, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 8, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 8, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 8, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 8, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 8, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 8, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 8, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 8, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 11, 8, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 11, 8, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 8, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 11, 8, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 11, 8, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 11, 8, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 11, 8, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 11, 8, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 8, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 11, 8, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 11, 8, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 11, 8, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 8);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resizeWithValue(10, 9, -5);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 9, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 9, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 10, 9, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 10, 9, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 9, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 9, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 9, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 10, 9, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 10, 9, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 10, 9, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 9, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 9, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 9, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 10, 9, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 10, 9, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 10, 9, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 9, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 9, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 9, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 10, 9, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 10, 9, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 10, 9, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 10, 9);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resizeWithValue(11, 9, -5);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 9, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 9, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 9, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 9, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 9, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 9, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 9, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 9, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 9, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 11, 9, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 11, 9, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 9, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 9, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 9, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 9, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 11, 9, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 11, 9, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 9, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 9);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resizeWithValue(11, 7, -5);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 9, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 7, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 7, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 7, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 7, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 10, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 7, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 7, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 7, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 7, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 11, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 8, -5, 11, 7, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 11, 7, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 11, 7, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 11, 7, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 11, 7, 12, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 11, 7, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 8, -5, 11, 7, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 11, 7, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 11, 7, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 11, 7, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 7, -5, 11, 7, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 11, 7, 13, 6);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 11, 7, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 8, -5, 11, 7, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 11, 7, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 11, 7, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 11, 7, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 7, -5, 11, 7, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 7, -5, 11, 7);
-    }
-
-    {
-        IntMatrix matrix{10, 8, -2};
-        IntMatrix matrixCopy{matrix};
-
-        matrix.resizeWithValue(9, 9, -5);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 8, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 8, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 8, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 9, 8, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 9, 8, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 8);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 9, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 9, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 9, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 10, -5, 9, 9, 9, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 11, -5, 9, 9, 9, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9, 9);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 9, 10, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 9, 10, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 9, 10, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 10, -5, 9, 9, 10, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 11, -5, 9, 9, 10, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 10, 9, -5, 9, 9, 10);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 9, 11, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 9, 11, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 9, 11, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 10, -5, 9, 9, 11, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 11, -5, 9, 9, 11, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 11, 9, -5, 9, 9, 11);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 9, 12, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 9, 12, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 9, 12, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 10, -5, 9, 9, 12, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 11, -5, 9, 9, 12, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 12, 9, -5, 9, 9, 12);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 9, 13, 7);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 9, 13, 8);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 9, 13, 9);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 10, -5, 9, 9, 13, 10);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 11, -5, 9, 9, 13, 11);
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 13, 9, -5, 9, 9, 13);
-
-        resizeAndTestCapacity(QString::number(testNumber++).toStdString(), matrix, matrixCopy, 9, 9, -5, 9, 9);
+        QVERIFY2(mSecondaryIntMatrix == mPrimaryIntMatrix, "Resizing failed, the matrix does not have the correct values!");
     }
 }
 
 void CommonTests::testShrinkToFit()
 {
+    QFETCH(IntMatrix, matrix);
+
+    mPrimaryIntMatrix = matrix;
+    mPrimaryIntMatrix.shrinkToFit();
+
+    if (mPrimaryIntMatrix.getRowCapacity() != matrix.getNrOfRows() || mPrimaryIntMatrix.getColumnCapacity() != matrix.getNrOfColumns())
     {
-        IntMatrix matrix{};
-
-        matrix.shrinkToFit();
-
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Shrinking to fit failed, capacity of the empty matrix is not correct!");
-        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Shrinking to fit failed, number of rows or columns of the empty matrix is not correct!");
+        QFAIL("Shrinking to fit failed, capacity of the matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix matrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
-
-        matrix.shrinkToFit();
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Shrinking to fit failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Shrinking to fit failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(2, 2) == 9,
-
-                     "Shrinking to fit failed, the matrix does not retain its values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.shrinkToFit();
-
-        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Shrinking to fit failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Shrinking to fit failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(2, 2) == 9 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11 &&
-                     matrix.at(3, 2) == 12,
-
-                     "Shrinking to fit failed, the matrix does not retain its values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.shrinkToFit();
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 4)
-        {
-            QFAIL("Shrinking to fit failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 4)
-        {
-            QFAIL("Shrinking to fit failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(0, 3) == 4 &&
-                     matrix.at(1, 0) == 5 &&
-                     matrix.at(1, 1) == 6 &&
-                     matrix.at(1, 2) == 7 &&
-                     matrix.at(1, 3) == 8 &&
-                     matrix.at(2, 0) == 9 &&
-                     matrix.at(2, 1) == 10 &&
-                     matrix.at(2, 2) == 11 &&
-                     matrix.at(2, 3) == 12,
-
-                     "Shrinking to fit failed, the matrix does not retain its values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
-
-        matrix.shrinkToFit();
-
-        if (matrix.getRowCapacity() != 4 || matrix.getColumnCapacity() != 4)
-        {
-            QFAIL("Shrinking to fit failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 4)
-        {
-            QFAIL("Shrinking to fit failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(0, 3) == 4 &&
-                     matrix.at(1, 0) == 5 &&
-                     matrix.at(1, 1) == 6 &&
-                     matrix.at(1, 2) == 7 &&
-                     matrix.at(1, 3) == 8 &&
-                     matrix.at(2, 0) == 9 &&
-                     matrix.at(2, 1) == 10 &&
-                     matrix.at(2, 2) == 11 &&
-                     matrix.at(2, 3) == 12 &&
-                     matrix.at(3, 0) == 13 &&
-                     matrix.at(3, 1) == 14 &&
-                     matrix.at(3, 2) == 15 &&
-                     matrix.at(3, 3) == 16,
-
-                     "Shrinking to fit failed, the matrix does not retain its values!");
-        }
+        QVERIFY2(mPrimaryIntMatrix == matrix, "Shrinking to fit failed, the matrix does not retain its values!");
     }
 }
 
 void CommonTests::testInsertRowNoSetValue()
 {
+    QFETCH(IntMatrix, matrix);
+    QFETCH(IntMatrixSizeType, insertPosition);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(IntMatrix, referenceMatrix);
+
+    matrix.insertRow(insertPosition);
+
+    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.insertRow(2);
-
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Insert row failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(3, 0) == 7 &&
-                     matrix.at(3, 1) == 8 &&
-                     matrix.at(3, 2) == 9 &&
-                     matrix.at(4, 0) == 10 &&
-                     matrix.at(4, 1) == 11 &&
-                     matrix.at(4, 2) == 12,
-
-                     "Insert row failed, the matrix doesn't have the right values on the existing rows!");
-        }
+        QFAIL("Insert row failed, capacity of the matrix is not correct!");
     }
-
+    else if (matrix.getNrOfRows() != referenceMatrix.getNrOfRows() || matrix.getNrOfColumns() != referenceMatrix.getNrOfColumns())
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.insertRow(0);
-
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Insert row failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(1, 0) == 1 &&
-                     matrix.at(1, 1) == 2 &&
-                     matrix.at(1, 2) == 3 &&
-                     matrix.at(2, 0) == 4 &&
-                     matrix.at(2, 1) == 5 &&
-                     matrix.at(2, 2) == 6 &&
-                     matrix.at(3, 0) == 7 &&
-                     matrix.at(3, 1) == 8 &&
-                     matrix.at(3, 2) == 9 &&
-                     matrix.at(4, 0) == 10 &&
-                     matrix.at(4, 1) == 11 &&
-                     matrix.at(4, 2) == 12,
-
-                     "Insert row failed, the matrix doesn't have the right values on the existing rows!");
-        }
+        QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.insertRow(4);
+        bool areRetainedValuesCorrect{true};
 
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
+        for (IntMatrixSizeType rowNr{0}; rowNr < matrix.getNrOfRows(); ++rowNr)
         {
-            QFAIL("Insert row failed, capacity of the matrix is not correct!");
+            if (rowNr != insertPosition)
+            {
+                for (IntMatrixSizeType columnNr{0}; columnNr < matrix.getNrOfColumns(); ++columnNr)
+                {
+                    if (matrix.at(rowNr, columnNr) != referenceMatrix.at(rowNr, columnNr))
+                    {
+                        areRetainedValuesCorrect = false;
+                        break;
+                    }
+                }
+            }
         }
-        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(2, 2) == 9 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11 &&
-                     matrix.at(3, 2) == 12,
 
-                     "Insert row failed, the matrix doesn't have the right values on the existing rows!");
-        }
+        QVERIFY2(areRetainedValuesCorrect, "Insert row failed, the matrix doesn't have the right values on the existing rows!");
     }
 }
 
 void CommonTests::testInsertRowSetValue()
 {
+    QFETCH(IntMatrix, matrix);
+    QFETCH(IntMatrixSizeType, insertPosition);
+    QFETCH(int, insertedRowValue);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(IntMatrix, referenceMatrix);
+
+    matrix.insertRow(insertPosition, insertedRowValue);
+
+    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.insertRow(2, -1);
-
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Insert row failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(2, 0) == -1 &&
-                     matrix.at(2, 1) == -1 &&
-                     matrix.at(2, 2) == -1 &&
-                     matrix.at(3, 0) == 7 &&
-                     matrix.at(3, 1) == 8 &&
-                     matrix.at(3, 2) == 9 &&
-                     matrix.at(4, 0) == 10 &&
-                     matrix.at(4, 1) == 11 &&
-                     matrix.at(4, 2) == 12,
-
-                     "Insert row failed, the matrix doesn't have the right values!");
-        }
+        QFAIL("Insert row failed, capacity of the matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.insertRow(0, -1);
-
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Insert row failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == -1 &&
-                     matrix.at(0, 1) == -1 &&
-                     matrix.at(0, 2) == -1 &&
-                     matrix.at(1, 0) == 1 &&
-                     matrix.at(1, 1) == 2 &&
-                     matrix.at(1, 2) == 3 &&
-                     matrix.at(2, 0) == 4 &&
-                     matrix.at(2, 1) == 5 &&
-                     matrix.at(2, 2) == 6 &&
-                     matrix.at(3, 0) == 7 &&
-                     matrix.at(3, 1) == 8 &&
-                     matrix.at(3, 2) == 9 &&
-                     matrix.at(4, 0) == 10 &&
-                     matrix.at(4, 1) == 11 &&
-                     matrix.at(4, 2) == 12,
-
-                     "Insert row failed, the matrix doesn't have the right values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.insertRow(4, -1);
-
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Insert row failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 5 || matrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(2, 2) == 9 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11 &&
-                     matrix.at(3, 2) == 12 &&
-                     matrix.at(4, 0) == -1 &&
-                     matrix.at(4, 1) == -1 &&
-                     matrix.at(4, 2) == -1,
-
-                     "Insert row failed, the matrix doesn't have the right values!");
-        }
+        QVERIFY2(matrix == referenceMatrix, "Insert row failed, the matrix doesn't have the right values!");
     }
 }
 
 void CommonTests::testCapacityWithInsertRow()
 {
-    {
-        IntMatrix matrix{3, 4, -2};
-        matrix.insertRow(1);
+    QFETCH(IntMatrixSizeType, rowsCount);
+    QFETCH(IntMatrixSizeType, columnsCount);
+    QFETCH(int, elementValue);
+    QFETCH(IntMatrixSizeType, insertPosition);
+    QFETCH(int, insertedRowValue);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(bool, isInsertedRowValueSet);
 
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 5, "Insert row failed, capacity of the matrix is not correct!");
+    mPrimaryIntMatrix = {rowsCount, columnsCount, elementValue};
+
+    if (isInsertedRowValueSet)
+    {
+        mPrimaryIntMatrix.insertRow(insertPosition, insertedRowValue);
+    }
+    else
+    {
+        mPrimaryIntMatrix.insertRow(insertPosition);
     }
 
-    {
-        IntMatrix matrix{3, 4, -2};
-        matrix.insertRow(1, 5);
-
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 5, "Insert row failed, capacity of the matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{6, 5, -2};
-        matrix.insertRow(3);
-
-        QVERIFY2(matrix.getRowCapacity() == 7 && matrix.getColumnCapacity() == 6, "Insert row failed, capacity of the matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{6, 5, -2};
-        matrix.insertRow(3, 5);
-
-        QVERIFY2(matrix.getRowCapacity() == 7 && matrix.getColumnCapacity() == 6, "Insert row failed, capacity of the matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{8, 2, -2};
-        matrix.insertRow(5);
-
-        QVERIFY2(matrix.getRowCapacity() == 10 && matrix.getColumnCapacity() == 2, "Insert row failed, capacity of the matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{8, 2, -2};
-        matrix.insertRow(5, 5);
-
-        QVERIFY2(matrix.getRowCapacity() == 10 && matrix.getColumnCapacity() == 2, "Insert row failed, capacity of the matrix is not correct!");
-    }
+    QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == expectedRowCapacity &&
+             mPrimaryIntMatrix.getColumnCapacity() == expectedColumnCapacity, "Insert row failed, capacity of the matrix is not correct!");
 }
 
 void CommonTests::testInsertColumnNoSetValue()
 {
+    QFETCH(IntMatrix, matrix);
+    QFETCH(IntMatrixSizeType, insertPosition);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(IntMatrix, referenceMatrix);
+
+    matrix.insertColumn(insertPosition);
+
+    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
     {
-        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.insertColumn(2);
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Insert column failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
-        {
-            QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 3) == 3 &&
-                     matrix.at(0, 4) == 4 &&
-                     matrix.at(1, 0) == 5 &&
-                     matrix.at(1, 1) == 6 &&
-                     matrix.at(1, 3) == 7 &&
-                     matrix.at(1, 4) == 8 &&
-                     matrix.at(2, 0) == 9 &&
-                     matrix.at(2, 1) == 10 &&
-                     matrix.at(2, 3) == 11 &&
-                     matrix.at(2, 4) == 12,
-
-                     "Insert column failed, the matrix doesn't have the right values on the existing columns!");
-        }
+        QFAIL("Insert column failed, capacity of the matrix is not correct!");
     }
-
+    else if (matrix.getNrOfRows() != referenceMatrix.getNrOfRows() || matrix.getNrOfColumns() != referenceMatrix.getNrOfColumns())
     {
-        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.insertColumn(0);
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Insert column failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
-        {
-            QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 1) == 1 &&
-                     matrix.at(0, 2) == 2 &&
-                     matrix.at(0, 3) == 3 &&
-                     matrix.at(0, 4) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(1, 3) == 7 &&
-                     matrix.at(1, 4) == 8 &&
-                     matrix.at(2, 1) == 9 &&
-                     matrix.at(2, 2) == 10 &&
-                     matrix.at(2, 3) == 11 &&
-                     matrix.at(2, 4) == 12,
-
-                     "Insert column failed, the matrix doesn't have the right values on the existing columns!");
-        }
+        QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.insertColumn(4);
+        bool areRetainedValuesCorrect{true};
 
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
+        for (IntMatrixSizeType columnNr{0}; columnNr < matrix.getNrOfColumns(); ++columnNr)
         {
-            QFAIL("Insert column failed, capacity of the matrix is not correct!");
+            if (columnNr != insertPosition)
+            {
+                for (IntMatrixSizeType rowNr{0}; rowNr < matrix.getNrOfRows(); ++rowNr)
+                {
+                    if (matrix.at(rowNr, columnNr) != referenceMatrix.at(rowNr, columnNr))
+                    {
+                        areRetainedValuesCorrect = false;
+                        break;
+                    }
+                }
+            }
         }
-        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
-        {
-            QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(0, 3) == 4 &&
-                     matrix.at(1, 0) == 5 &&
-                     matrix.at(1, 1) == 6 &&
-                     matrix.at(1, 2) == 7 &&
-                     matrix.at(1, 3) == 8 &&
-                     matrix.at(2, 0) == 9 &&
-                     matrix.at(2, 1) == 10 &&
-                     matrix.at(2, 2) == 11 &&
-                     matrix.at(2, 3) == 12,
 
-                     "Insert column failed, the matrix doesn't have the right values on the existing columns!");
-        }
+        QVERIFY2(areRetainedValuesCorrect, "Insert column failed, the matrix doesn't have the right values on the existing columns!");
     }
 }
 
 void CommonTests::testInsertColumnSetValue()
 {
+    QFETCH(IntMatrix, matrix);
+    QFETCH(IntMatrixSizeType, insertPosition);
+    QFETCH(int, insertedColumnValue);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(IntMatrix, referenceMatrix);
+
+    matrix.insertColumn(insertPosition, insertedColumnValue);
+
+    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
     {
-        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.insertColumn(2, -1);
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Insert column failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
-        {
-            QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == -1 &&
-                     matrix.at(0, 3) == 3 &&
-                     matrix.at(0, 4) == 4 &&
-                     matrix.at(1, 0) == 5 &&
-                     matrix.at(1, 2) == -1 &&
-                     matrix.at(1, 1) == 6 &&
-                     matrix.at(1, 3) == 7 &&
-                     matrix.at(1, 4) == 8 &&
-                     matrix.at(2, 0) == 9 &&
-                     matrix.at(2, 1) == 10 &&
-                     matrix.at(2, 2) == -1 &&
-                     matrix.at(2, 3) == 11 &&
-                     matrix.at(2, 4) == 12,
-
-                     "Insert column failed, the matrix doesn't have the right values!");
-        }
+        QFAIL("Insert column failed, capacity of the matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.insertColumn(0, -1);
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Insert column failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
-        {
-            QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == -1 &&
-                     matrix.at(0, 1) == 1 &&
-                     matrix.at(0, 2) == 2 &&
-                     matrix.at(0, 3) == 3 &&
-                     matrix.at(0, 4) == 4 &&
-                     matrix.at(1, 0) == -1 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(1, 2) == 6 &&
-                     matrix.at(1, 3) == 7 &&
-                     matrix.at(1, 4) == 8 &&
-                     matrix.at(2, 0) == -1 &&
-                     matrix.at(2, 1) == 9 &&
-                     matrix.at(2, 2) == 10 &&
-                     matrix.at(2, 3) == 11 &&
-                     matrix.at(2, 4) == 12,
-
-                     "Insert column failed, the matrix doesn't have the right values!");
-        }
-    }
-
-    {
-        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.insertColumn(4, -1);
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Insert column failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 3 || matrix.getNrOfColumns() != 5)
-        {
-            QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(0, 3) == 4 &&
-                     matrix.at(0, 4) == -1 &&
-                     matrix.at(1, 0) == 5 &&
-                     matrix.at(1, 1) == 6 &&
-                     matrix.at(1, 2) == 7 &&
-                     matrix.at(1, 3) == 8 &&
-                     matrix.at(1, 4) == -1 &&
-                     matrix.at(2, 0) == 9 &&
-                     matrix.at(2, 1) == 10 &&
-                     matrix.at(2, 2) == 11 &&
-                     matrix.at(2, 3) == 12 &&
-                     matrix.at(2, 4) == -1,
-
-                     "Insert column failed, the matrix doesn't have the right values!");
-        }
+        QVERIFY2(matrix == referenceMatrix, "Insert column failed, the matrix doesn't have the right values!");
     }
 }
 
 void CommonTests::testCapacityWithInsertColumn()
 {
-    {
-        IntMatrix matrix{5, 3, 4};
-        matrix.insertColumn(1);
+    QFETCH(IntMatrixSizeType, rowsCount);
+    QFETCH(IntMatrixSizeType, columnsCount);
+    QFETCH(int, elementValue);
+    QFETCH(IntMatrixSizeType, insertPosition);
+    QFETCH(int, insertedColumnValue);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(bool, isInsertedColumnValueSet);
 
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 6, "Insert column failed, capacity of the matrix is not correct!");
+    mPrimaryIntMatrix = {rowsCount, columnsCount, elementValue};
+
+    if (isInsertedColumnValueSet)
+    {
+        mPrimaryIntMatrix.insertColumn(insertPosition, insertedColumnValue);
+    }
+    else
+    {
+        mPrimaryIntMatrix.insertColumn(insertPosition);
     }
 
-    {
-        IntMatrix matrix{5, 3, 4};
-        matrix.insertColumn(1, 1);
-
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 6, "Insert column failed, capacity of the matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{5, 7, 4};
-        matrix.insertColumn(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 8, "Insert column failed, capacity of the matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{5, 7, 4};
-        matrix.insertColumn(1, 1);
-
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 8, "Insert column failed, capacity of the matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{5, 14, 4};
-        matrix.insertColumn(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 17, "Insert column failed, capacity of the matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{5, 14, 4};
-        matrix.insertColumn(1, 1);
-
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 17, "Insert column failed, capacity of the matrix is not correct!");
-    }
+    QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == expectedRowCapacity &&
+             mPrimaryIntMatrix.getColumnCapacity() == expectedColumnCapacity, "Insert column failed, capacity of the matrix is not correct!");
 }
 
 void CommonTests::testEraseRow()
 {
+    QFETCH(IntMatrix, matrix);
+    QFETCH(IntMatrixSizeType, erasePosition);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(IntMatrix, expectedMatrix);
+
+    matrix.eraseRow(erasePosition);
+
+    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
     {
-        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.eraseRow(0);
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 4)
-        {
-            QFAIL("Erase row failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 5 &&
-                     matrix.at(0, 1) == 6 &&
-                     matrix.at(0, 2) == 7 &&
-                     matrix.at(0, 3) == 8 &&
-                     matrix.at(1, 0) == 9 &&
-                     matrix.at(1, 1) == 10 &&
-                     matrix.at(1, 2) == 11 &&
-                     matrix.at(1, 3) == 12,
-
-                     "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
-        }
+        QFAIL("Erase row failed, capacity of the matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.eraseRow(1);
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 4)
-        {
-            QFAIL("Erase row failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(0, 3) == 4 &&
-                     matrix.at(1, 0) == 9 &&
-                     matrix.at(1, 1) == 10 &&
-                     matrix.at(1, 2) == 11 &&
-                     matrix.at(1, 3) == 12,
-
-                     "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
-        }
-    }
-
-    {
-        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.eraseRow(2);
-
-        if (matrix.getRowCapacity() != 3 || matrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Erase row failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 2 || matrix.getNrOfColumns() != 4)
-        {
-            QFAIL("Erase row failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(0, 2) == 3 &&
-                     matrix.at(0, 3) == 4 &&
-                     matrix.at(1, 0) == 5 &&
-                     matrix.at(1, 1) == 6 &&
-                     matrix.at(1, 2) == 7 &&
-                     matrix.at(1, 3) == 8,
-
-                     "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
-        }
-    }
-
-    {
-        IntMatrix matrix{1, 4, {1, 2, 3, 4}};
-        matrix.eraseRow(0);
-
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase row failed, capacity of the matrix is not correct!");
-        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Erase row failed, number of rows or columns of the matrix is not correct!");
+        QVERIFY2(matrix == expectedMatrix, "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
     }
 }
 
 void CommonTests::testCapacityWithEraseRow()
 {
+    QFETCH(IntMatrixSizeType, rowsCount);
+    QFETCH(IntMatrixSizeType, columnsCount);
+    QFETCH(int, elementValue);
+    QFETCH(TripleSizeTypeTupleArray, erasedRowAndExpectedCapacity);
+
+    mPrimaryIntMatrix = {rowsCount, columnsCount, elementValue};
+
+    for (const auto& data : erasedRowAndExpectedCapacity)
     {
-        IntMatrix matrix{3, 4, -2};
-        matrix.eraseRow(1);
+        mPrimaryIntMatrix.eraseRow(std::get<0>(data));
 
-        QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 5, "Erase row failed, capacity of the matrix is not correct!");
-
-        matrix.eraseRow(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 3 && matrix.getColumnCapacity() == 5, "Erase row failed, capacity of the matrix is not correct!");
-
-        matrix.eraseRow(0);
-
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase row failed, capacity of the matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{4, 4, -2};
-        matrix.eraseRow(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5, "Erase row failed, capacity of the matrix is not correct!");
-
-        matrix.eraseRow(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5, "Erase row failed, capacity of the matrix is not correct!");
-
-        matrix.eraseRow(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 2 && matrix.getColumnCapacity() == 5, "Erase row failed, capacity of the matrix is not correct!");
-
-        matrix.eraseRow(0);
-
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase row failed, capacity of the matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{7, 5, -2};
-        matrix.eraseRow(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 8 && matrix.getColumnCapacity() == 6, "Erase row failed, capacity of the matrix is not correct!");
-
-        matrix.eraseRow(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 8 && matrix.getColumnCapacity() == 6, "Erase row failed, capacity of the matrix is not correct!");
-
-        matrix.eraseRow(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 8 && matrix.getColumnCapacity() == 6, "Erase row failed, capacity of the matrix is not correct!");
-
-        matrix.eraseRow(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 8 && matrix.getColumnCapacity() == 6, "Erase row failed, capacity of the matrix is not correct!");
-
-        matrix.eraseRow(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 4 && matrix.getColumnCapacity() == 6, "Erase row failed, capacity of the matrix is not correct!");
-
-        matrix.eraseRow(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 2 && matrix.getColumnCapacity() == 6, "Erase row failed, capacity of the matrix is not correct!");
-
-        matrix.eraseRow(0);
-
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase row failed, capacity of the matrix is not correct!");
+        QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == std::get<1>(data) &&
+                 mPrimaryIntMatrix.getColumnCapacity() == std::get<2>(data), "Erase row failed, capacity of the matrix is not correct!");
     }
 }
 
 void CommonTests::testEraseColumn()
 {
+    QFETCH(IntMatrix, matrix);
+    QFETCH(IntMatrixSizeType, erasePosition);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(IntMatrix, expectedMatrix);
+
+    matrix.eraseColumn(erasePosition);
+
+    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.eraseColumn(0);
-
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Erase column failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 2 &&
-                     matrix.at(0, 1) == 3 &&
-                     matrix.at(1, 0) == 5 &&
-                     matrix.at(1, 1) == 6 &&
-                     matrix.at(2, 0) == 8 &&
-                     matrix.at(2, 1) == 9 &&
-                     matrix.at(3, 0) == 11 &&
-                     matrix.at(3, 1) == 12,
-
-                     "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
-        }
+        QFAIL("Erase column failed, capacity of the matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.eraseColumn(1);
-
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Erase column failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 3 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 6 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 9 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 12,
-
-                     "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        matrix.eraseColumn(2);
-
-        if (matrix.getRowCapacity() != 5 || matrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Erase column failed, capacity of the matrix is not correct!");
-        }
-        else if (matrix.getNrOfRows() != 4 || matrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Erase column failed, number of rows or columns of the matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(matrix.at(0, 0) == 1 &&
-                     matrix.at(0, 1) == 2 &&
-                     matrix.at(1, 0) == 4 &&
-                     matrix.at(1, 1) == 5 &&
-                     matrix.at(2, 0) == 7 &&
-                     matrix.at(2, 1) == 8 &&
-                     matrix.at(3, 0) == 10 &&
-                     matrix.at(3, 1) == 11,
-
-                     "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
-        }
-    }
-
-    {
-        IntMatrix matrix{4, 1, {1, 2, 3, 4}};
-        matrix.eraseColumn(0);
-
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase row failed, capacity of the matrix is not correct!");
-        QVERIFY2(matrix.getNrOfRows() == 0 && matrix.getNrOfColumns() == 0, "Erase row failed, number of rows or columns of the matrix is not correct!");
+        QVERIFY2(matrix == expectedMatrix, "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
     }
 }
 
 void CommonTests::testCapacityWithEraseColumn()
 {
+    QFETCH(IntMatrixSizeType, rowsCount);
+    QFETCH(IntMatrixSizeType, columnsCount);
+    QFETCH(int, elementValue);
+    QFETCH(TripleSizeTypeTupleArray, erasedColumnAndExpectedCapacity);
+
+    mPrimaryIntMatrix = {rowsCount, columnsCount, elementValue};
+
+    for (const auto& data : erasedColumnAndExpectedCapacity)
     {
-        IntMatrix matrix{4, 3, 4};
-        matrix.eraseColumn(1);
+        mPrimaryIntMatrix.eraseColumn(std::get<0>(data));
 
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 3, "Erase column failed, capacity of the matrix is not correct!");
-
-        matrix.eraseColumn(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 3, "Erase column failed, capacity of the matrix is not correct!");
-
-        matrix.eraseColumn(0);
-
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase column failed, capacity of the matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{4, 4, 4};
-        matrix.eraseColumn(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5, "Erase column failed, capacity of the matrix is not correct!");
-
-        matrix.eraseColumn(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 5, "Erase column failed, capacity of the matrix is not correct!");
-
-        matrix.eraseColumn(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 5 && matrix.getColumnCapacity() == 2, "Erase column failed, capacity of the matrix is not correct!");
-
-        matrix.eraseColumn(0);
-
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase column failed, capacity of the matrix is not correct!");
-    }
-
-    {
-        IntMatrix matrix{5, 7, -2};
-        matrix.eraseColumn(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 8, "Erase column failed, capacity of the matrix is not correct!");
-
-        matrix.eraseColumn(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 8, "Erase column failed, capacity of the matrix is not correct!");
-
-        matrix.eraseColumn(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 8, "Erase column failed, capacity of the matrix is not correct!");
-
-        matrix.eraseColumn(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 8, "Erase column failed, capacity of the matrix is not correct!");
-
-        matrix.eraseColumn(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 4, "Erase column failed, capacity of the matrix is not correct!");
-
-        matrix.eraseColumn(1);
-
-        QVERIFY2(matrix.getRowCapacity() == 6 && matrix.getColumnCapacity() == 2, "Erase column failed, capacity of the matrix is not correct!");
-
-        matrix.eraseColumn(0);
-
-        QVERIFY2(matrix.getRowCapacity() == 0 && matrix.getColumnCapacity() == 0, "Erase column failed, capacity of the matrix is not correct!");
+        QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == std::get<1>(data) &&
+                 mPrimaryIntMatrix.getColumnCapacity() == std::get<2>(data), "Erase row failed, capacity of the matrix is not correct!");
     }
 }
 
 void CommonTests::testCatByRow()
 {
-    {
-        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondSrcMatrix{1, 2, {5, 6}};
-        IntMatrix destMatrix{};
+    QFETCH(IntMatrix, destMatrix);
+    QFETCH(IntMatrix, firstSrcMatrix);
+    QFETCH(IntMatrix, secondSrcMatrix);
+    QFETCH(ConcatMode, mode);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(IntMatrix, expectedDestMatrix);
 
+    switch(mode)
+    {
+    case ConcatMode::ALL_DIFFERENT:
         destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix);
-
-        if (destMatrix.getRowCapacity() != 3 || destMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destMatrix.getNrOfRows() != 3 || destMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                     destMatrix.at(0, 1) == 2 &&
-                     destMatrix.at(1, 0) == 3 &&
-                     destMatrix.at(1, 1) == 4 &&
-                     destMatrix.at(2, 0) == 5 &&
-                     destMatrix.at(2, 1) == 6,
-
-                     "Vertical concatenation failed, destination matrix has incorrect values!");
-        }
+        break;
+    case ConcatMode::DESTINATION_FIRST:
+        destMatrix.catByRow(destMatrix, secondSrcMatrix);
+        break;
+    case ConcatMode::DESTINATION_SECOND:
+        destMatrix.catByRow(firstSrcMatrix, destMatrix);
+        break;
+    case ConcatMode::DESTINATION_ALL:
+        destMatrix.catByRow(destMatrix, destMatrix);
+        break;
+    case ConcatMode::SOURCE_BOTH:
+        destMatrix.catByRow(firstSrcMatrix, firstSrcMatrix);
+        break;
+    default:
+        break;
     }
 
+    if (destMatrix.getRowCapacity() != expectedRowCapacity || destMatrix.getColumnCapacity() != expectedColumnCapacity)
     {
-        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondSrcMatrix{1, 2, {5, 6}};
-        IntMatrix destMatrix{2, 3, {7, 8, 9, 10, 11, 12}};
-
-        destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix);
-
-        if (destMatrix.getRowCapacity() != 3 || destMatrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destMatrix.getNrOfRows() != 3 || destMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                     destMatrix.at(0, 1) == 2 &&
-                     destMatrix.at(1, 0) == 3 &&
-                     destMatrix.at(1, 1) == 4 &&
-                     destMatrix.at(2, 0) == 5 &&
-                     destMatrix.at(2, 1) == 6,
-
-                     "Vertical concatenation failed, destination matrix has incorrect values!");
-        }
+        QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondSrcMatrix{1, 2, {5, 6}};
-        IntMatrix destMatrix{4, 1, {7, 8, 9, 10}};
-
-        destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix);
-
-        if (destMatrix.getRowCapacity() != 5 || destMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destMatrix.getNrOfRows() != 3 || destMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                     destMatrix.at(0, 1) == 2 &&
-                     destMatrix.at(1, 0) == 3 &&
-                     destMatrix.at(1, 1) == 4 &&
-                     destMatrix.at(2, 0) == 5 &&
-                     destMatrix.at(2, 1) == 6,
-
-                     "Vertical concatenation failed, destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondSrcMatrix{1, 2, {5, 6}};
-        IntMatrix destMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
-
-        destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix);
-
-        if (destMatrix.getRowCapacity() != 3 || destMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destMatrix.getNrOfRows() != 3 || destMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                     destMatrix.at(0, 1) == 2 &&
-                     destMatrix.at(1, 0) == 3 &&
-                     destMatrix.at(1, 1) == 4 &&
-                     destMatrix.at(2, 0) == 5 &&
-                     destMatrix.at(2, 1) == 6,
-
-                     "Vertical concatenation failed, destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix destFirstSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondSrcatrix{1, 2, {5, 6}};
-
-        destFirstSrcMatrix.catByRow(destFirstSrcMatrix, secondSrcatrix);
-
-        if (destFirstSrcMatrix.getRowCapacity() != 3 || destFirstSrcMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destFirstSrcMatrix.getNrOfRows() != 3 || destFirstSrcMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destFirstSrcMatrix.at(0, 0) == 1 &&
-                     destFirstSrcMatrix.at(0, 1) == 2 &&
-                     destFirstSrcMatrix.at(1, 0) == 3 &&
-                     destFirstSrcMatrix.at(1, 1) == 4 &&
-                     destFirstSrcMatrix.at(2, 0) == 5 &&
-                     destFirstSrcMatrix.at(2, 1) == 6,
-
-                     "Vertical concatenation failed, destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix destSecondSrcMatrix{1, 2, {5, 6}};
-
-        destSecondSrcMatrix.catByRow(firstSrcMatrix, destSecondSrcMatrix);
-
-        if (destSecondSrcMatrix.getRowCapacity() != 3 || destSecondSrcMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destSecondSrcMatrix.getNrOfRows() != 3 || destSecondSrcMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destSecondSrcMatrix.at(0, 0) == 1 &&
-                     destSecondSrcMatrix.at(0, 1) == 2 &&
-                     destSecondSrcMatrix.at(1, 0) == 3 &&
-                     destSecondSrcMatrix.at(1, 1) == 4 &&
-                     destSecondSrcMatrix.at(2, 0) == 5 &&
-                     destSecondSrcMatrix.at(2, 1) == 6,
-
-                     "Vertical concatenation failed, destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix destFirstSecondSrcMatrix{2, 2, {1, 2, 3, 4}};
-
-        destFirstSecondSrcMatrix.catByRow(destFirstSecondSrcMatrix, destFirstSecondSrcMatrix);
-
-        if (destFirstSecondSrcMatrix.getRowCapacity() != 5 || destFirstSecondSrcMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destFirstSecondSrcMatrix.getNrOfRows() != 4 || destFirstSecondSrcMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destFirstSecondSrcMatrix.at(0, 0) == 1 &&
-                     destFirstSecondSrcMatrix.at(0, 1) == 2 &&
-                     destFirstSecondSrcMatrix.at(1, 0) == 3 &&
-                     destFirstSecondSrcMatrix.at(1, 1) == 4 &&
-                     destFirstSecondSrcMatrix.at(2, 0) == 1 &&
-                     destFirstSecondSrcMatrix.at(2, 1) == 2 &&
-                     destFirstSecondSrcMatrix.at(3, 0) == 3 &&
-                     destFirstSecondSrcMatrix.at(3, 1) == 4,
-
-                     "Vertical concatenation failed, destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix firstSecondSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix destMatrix{};
-
-        destMatrix.catByRow(firstSecondSrcMatrix, firstSecondSrcMatrix);
-
-        if (destMatrix.getRowCapacity() != 5 || destMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destMatrix.getNrOfRows() != 4 || destMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                     destMatrix.at(0, 1) == 2 &&
-                     destMatrix.at(1, 0) == 3 &&
-                     destMatrix.at(1, 1) == 4 &&
-                     destMatrix.at(2, 0) == 1 &&
-                     destMatrix.at(2, 1) == 2 &&
-                     destMatrix.at(3, 0) == 3 &&
-                     destMatrix.at(3, 1) == 4,
-
-                     "Vertical concatenation failed, destination matrix has incorrect values!");
-        }
+        QVERIFY2(destMatrix == expectedDestMatrix, "Vertical concatenation failed, destination matrix has incorrect values!");
     }
 }
 
 void CommonTests::testCapacityWithCatByRow()
 {
-    using namespace std;
-    auto catByRowAndTestCapacity = [](string testNumber, IntMatrix& firstSrcMatrix, IntMatrix& secondSrcMatrix, IntMatrix& destMatrix, int desiredRowCapacity, int desiredColumnCapacity)
+    QFETCH(IntMatrix, destMatrix);
+    QFETCH(IntMatrix, firstSrcMatrix);
+    QFETCH(IntMatrix, secondSrcMatrix);
+    QFETCH(ConcatMode, mode);
+    QFETCH(IntMatrixSizeType, resizeRowsCount);
+    QFETCH(IntMatrixSizeType, resizeColumnsCount);
+    QFETCH(IntMatrixSizeType, resizeRowCapacity);
+    QFETCH(IntMatrixSizeType, resizeColumnCapacity);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+
+    if (resizeRowsCount > 0 && resizeColumnsCount > 0)
     {
+        destMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
+    }
+
+    switch(mode)
+    {
+    case ConcatMode::ALL_DIFFERENT:
         destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix);
-
-        QVERIFY2(destMatrix.getRowCapacity() == desiredRowCapacity && destMatrix.getColumnCapacity() == desiredColumnCapacity,
-                 string{"Vertical concatenation failed, capacity of the destination matrix is not correct! Test number: " + testNumber}.c_str());
-    };
-
-    int testNumber{1};
-
-    {
-        IntMatrix destFirstSrcMatrix{4, 7, 5};
-        IntMatrix secondSrcMatrix{5, 7, -2};
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSrcMatrix, secondSrcMatrix, destFirstSrcMatrix, 11, 8);
+        break;
+    case ConcatMode::DESTINATION_FIRST:
+        destMatrix.catByRow(destMatrix, secondSrcMatrix);
+        break;
+    case ConcatMode::DESTINATION_SECOND:
+        destMatrix.catByRow(firstSrcMatrix, destMatrix);
+        break;
+    case ConcatMode::DESTINATION_ALL:
+        destMatrix.catByRow(destMatrix, destMatrix);
+        break;
+    case ConcatMode::SOURCE_BOTH:
+        destMatrix.catByRow(firstSrcMatrix, firstSrcMatrix);
+        break;
+    default:
+        break;
     }
 
-    {
-        IntMatrix destFirstSrcMatrix{4, 7, 5};
-        IntMatrix secondSrcMatrix{5, 7, -2};
-
-        destFirstSrcMatrix.resize(4, 7, 8, 8);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSrcMatrix, secondSrcMatrix, destFirstSrcMatrix, 11, 8);
-    }
-
-    {
-        IntMatrix destFirstSrcMatrix{4, 7, 5};
-        IntMatrix secondSrcMatrix{5, 7, -2};
-
-        destFirstSrcMatrix.resize(4, 7, 9, 8);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSrcMatrix, secondSrcMatrix, destFirstSrcMatrix, 9, 8);
-    }
-
-    {
-        IntMatrix destFirstSrcMatrix{4, 7, 5};
-        IntMatrix secondSrcMatrix{5, 7, -2};
-
-        destFirstSrcMatrix.resize(4, 7, 10, 8);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSrcMatrix, secondSrcMatrix, destFirstSrcMatrix, 10, 8);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{4, 7, 5};
-        IntMatrix destSecondSrcMatrix{5, 7, -2};
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, destSecondSrcMatrix, destSecondSrcMatrix, 11, 8);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{4, 7, 5};
-        IntMatrix destSecondSrcMatrix{5, 7, -2};
-
-        destSecondSrcMatrix.resize(5, 7, 8, 8);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, destSecondSrcMatrix, destSecondSrcMatrix, 11, 8);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{4, 7, 5};
-        IntMatrix destSecondSrcMatrix{5, 7, -2};
-
-        destSecondSrcMatrix.resize(5, 7, 9, 8);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, destSecondSrcMatrix, destSecondSrcMatrix, 9, 8);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{4, 7, 5};
-        IntMatrix destSecondSrcMatrix{5, 7, -2};
-
-        destSecondSrcMatrix.resize(5, 7, 10, 8);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, destSecondSrcMatrix, destSecondSrcMatrix, 10, 8);
-    }
-
-    {
-        IntMatrix destFirstSecondSrcMatrix{4, 7, 5};
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 10, 8);
-    }
-
-    {
-        IntMatrix destFirstSecondSrcMatrix{4, 7, 5};
-
-        destFirstSecondSrcMatrix.resize(4, 7, 7, 8);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 10, 8);
-    }
-
-    {
-        IntMatrix destFirstSecondSrcMatrix{4, 7, 5};
-
-        destFirstSecondSrcMatrix.resize(4, 7, 8, 8);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 8, 8);
-    }
-
-    {
-        IntMatrix destFirstSecondSrcMatrix{4, 7, 5};
-
-        destFirstSecondSrcMatrix.resize(4, 7, 9, 8);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 9, 8);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{4, 7, 5};
-        IntMatrix secondSrcMatrix{5, 7, -2};
-        IntMatrix destMatrix{};
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 11, 8);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{4, 7, 5};
-        IntMatrix secondSrcMatrix{5, 7, -2};
-        IntMatrix destMatrix{7, 5, -1};
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 11, 8);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{4, 7, 5};
-        IntMatrix secondSrcMatrix{5, 7, -2};
-        IntMatrix destMatrix{10, 5, -1};
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 12, 8);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{4, 7, 5};
-        IntMatrix secondSrcMatrix{5, 7, -2};
-        IntMatrix destMatrix{6, 6, -1};
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 11, 7);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{4, 7, 5};
-        IntMatrix secondSrcMatrix{5, 7, -2};
-        IntMatrix destMatrix{7, 6, -1};
-
-        destMatrix.resize(7, 6, 9, 7);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 9, 7);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{4, 7, 5};
-        IntMatrix secondSrcMatrix{5, 7, -2};
-        IntMatrix destMatrix{7, 6, -1};
-
-        destMatrix.resize(7, 6, 9, 8);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 9, 8);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{4, 7, 5};
-        IntMatrix secondSrcMatrix{5, 7, -2};
-        IntMatrix destMatrix{7, 6, -1};
-
-        destMatrix.resize(7, 6, 10, 7);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 10, 7);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{4, 7, 5};
-        IntMatrix secondSrcMatrix{5, 7, -2};
-        IntMatrix destMatrix{7, 6, -1};
-
-        destMatrix.resize(7, 6, 10, 8);
-
-        catByRowAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 10, 8);
-    }
+    QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
+             destMatrix.getColumnCapacity() == expectedColumnCapacity, "Vertical concatenation failed, capacity of the destination matrix is not correct!");
 }
 
 void CommonTests::testCatByColumn()
 {
-    {
-        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondSrcMatrix{2, 1, {5, 6}};
-        IntMatrix destMatrix{};
+    QFETCH(IntMatrix, destMatrix);
+    QFETCH(IntMatrix, firstSrcMatrix);
+    QFETCH(IntMatrix, secondSrcMatrix);
+    QFETCH(ConcatMode, mode);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    QFETCH(IntMatrix, expectedDestMatrix);
 
+    switch(mode)
+    {
+    case ConcatMode::ALL_DIFFERENT:
         destMatrix.catByColumn(firstSrcMatrix, secondSrcMatrix);
-
-        if (destMatrix.getRowCapacity() != 2 || destMatrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destMatrix.getNrOfRows() != 2 || destMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                     destMatrix.at(0, 1) == 2 &&
-                     destMatrix.at(0, 2) == 5 &&
-                     destMatrix.at(1, 0) == 3 &&
-                     destMatrix.at(1, 1) == 4 &&
-                     destMatrix.at(1, 2) == 6,
-
-                     "Horizontal concatenation failed, destination matrix has incorrect values!");
-        }
+        break;
+    case ConcatMode::DESTINATION_FIRST:
+        destMatrix.catByColumn(destMatrix, secondSrcMatrix);
+        break;
+    case ConcatMode::DESTINATION_SECOND:
+        destMatrix.catByColumn(firstSrcMatrix, destMatrix);
+        break;
+    case ConcatMode::DESTINATION_ALL:
+        destMatrix.catByColumn(destMatrix, destMatrix);
+        break;
+    case ConcatMode::SOURCE_BOTH:
+        destMatrix.catByColumn(firstSrcMatrix, firstSrcMatrix);
+        break;
+    default:
+        break;
     }
 
+    if (destMatrix.getRowCapacity() != expectedRowCapacity || destMatrix.getColumnCapacity() != expectedColumnCapacity)
     {
-        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondSrcMatrix{2, 1, {5, 6}};
-        IntMatrix destMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
-
-        destMatrix.catByColumn(firstSrcMatrix, secondSrcMatrix);
-
-        if (destMatrix.getRowCapacity() != 3 || destMatrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destMatrix.getNrOfRows() != 2 || destMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                     destMatrix.at(0, 1) == 2 &&
-                     destMatrix.at(0, 2) == 5 &&
-                     destMatrix.at(1, 0) == 3 &&
-                     destMatrix.at(1, 1) == 4 &&
-                     destMatrix.at(1, 2) == 6,
-
-                     "Horizontal concatenation failed, destination matrix has incorrect values!");
-        }
+        QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondSrcMatrix{2, 1, {5, 6}};
-        IntMatrix destMatrix{1, 4, {7, 8, 9, 10}};
-
-        destMatrix.catByColumn(firstSrcMatrix, secondSrcMatrix);
-
-        if (destMatrix.getRowCapacity() != 2 || destMatrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destMatrix.getNrOfRows() != 2 || destMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                     destMatrix.at(0, 1) == 2 &&
-                     destMatrix.at(0, 2) == 5 &&
-                     destMatrix.at(1, 0) == 3 &&
-                     destMatrix.at(1, 1) == 4 &&
-                     destMatrix.at(1, 2) == 6,
-
-                     "Horizontal concatenation failed, destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondSrcMatrix{2, 1, {5, 6}};
-        IntMatrix destMatrix{2, 3, {7, 8, 9, 10, 11, 12}};
-
-        destMatrix.catByColumn(firstSrcMatrix, secondSrcMatrix);
-
-        if (destMatrix.getRowCapacity() != 2 || destMatrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destMatrix.getNrOfRows() != 2 || destMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                     destMatrix.at(0, 1) == 2 &&
-                     destMatrix.at(0, 2) == 5 &&
-                     destMatrix.at(1, 0) == 3 &&
-                     destMatrix.at(1, 1) == 4 &&
-                     destMatrix.at(1, 2) == 6,
-
-                     "Horizontal concatenation failed, destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix destFirstSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix secondSrcMatrix{2, 1, {5, 6}};
-
-        destFirstSrcMatrix.catByColumn(destFirstSrcMatrix, secondSrcMatrix);
-
-        if (destFirstSrcMatrix.getRowCapacity() != 2 || destFirstSrcMatrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destFirstSrcMatrix.getNrOfRows() != 2 || destFirstSrcMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destFirstSrcMatrix.at(0, 0) == 1 &&
-                     destFirstSrcMatrix.at(0, 1) == 2 &&
-                     destFirstSrcMatrix.at(0, 2) == 5 &&
-                     destFirstSrcMatrix.at(1, 0) == 3 &&
-                     destFirstSrcMatrix.at(1, 1) == 4 &&
-                     destFirstSrcMatrix.at(1, 2) == 6,
-
-                     "Horizontal concatenation failed, destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix firstSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix destSecondSrcMatrix{2, 1, {5, 6}};
-
-        destSecondSrcMatrix.catByColumn(firstSrcMatrix, destSecondSrcMatrix);
-
-        if (destSecondSrcMatrix.getRowCapacity() != 2 || destSecondSrcMatrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destSecondSrcMatrix.getNrOfRows() != 2 || destSecondSrcMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destSecondSrcMatrix.at(0, 0) == 1 &&
-                     destSecondSrcMatrix.at(0, 1) == 2 &&
-                     destSecondSrcMatrix.at(0, 2) == 5 &&
-                     destSecondSrcMatrix.at(1, 0) == 3 &&
-                     destSecondSrcMatrix.at(1, 1) == 4 &&
-                     destSecondSrcMatrix.at(1, 2) == 6,
-
-                     "Horizontal concatenation failed, destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix destFirstSecondSrcMatrix{2, 2, {1, 2, 3, 4}};
-
-        destFirstSecondSrcMatrix.catByColumn(destFirstSecondSrcMatrix, destFirstSecondSrcMatrix);
-
-        if (destFirstSecondSrcMatrix.getRowCapacity() != 2 || destFirstSecondSrcMatrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destFirstSecondSrcMatrix.getNrOfRows() != 2 || destFirstSecondSrcMatrix.getNrOfColumns() != 4)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destFirstSecondSrcMatrix.at(0, 0) == 1 &&
-                     destFirstSecondSrcMatrix.at(0, 1) == 2 &&
-                     destFirstSecondSrcMatrix.at(0, 2) == 1 &&
-                     destFirstSecondSrcMatrix.at(0, 3) == 2 &&
-                     destFirstSecondSrcMatrix.at(1, 0) == 3 &&
-                     destFirstSecondSrcMatrix.at(1, 1) == 4 &&
-                     destFirstSecondSrcMatrix.at(1, 2) == 3 &&
-                     destFirstSecondSrcMatrix.at(1, 3) == 4,
-
-                     "Horizontal concatenation failed, destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix firstSecondSrcMatrix{2, 2, {1, 2, 3, 4}};
-        IntMatrix destMatrix{};
-
-        destMatrix.catByColumn(firstSecondSrcMatrix, firstSecondSrcMatrix);
-
-        if (destMatrix.getRowCapacity() != 2 || destMatrix.getColumnCapacity() != 5)
-        {
-            QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!");
-        }
-        else if (destMatrix.getNrOfRows() != 2 || destMatrix.getNrOfColumns() != 4)
-        {
-            QFAIL("Horizontal concatenation failed, number of rows or columns of the destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                     destMatrix.at(0, 1) == 2 &&
-                     destMatrix.at(0, 2) == 1 &&
-                     destMatrix.at(0, 3) == 2 &&
-                     destMatrix.at(1, 0) == 3 &&
-                     destMatrix.at(1, 1) == 4 &&
-                     destMatrix.at(1, 2) == 3 &&
-                     destMatrix.at(1, 3) == 4,
-
-                     "Horizontal concatenation failed, destination matrix has incorrect values!");
-        }
+        QVERIFY2(destMatrix == expectedDestMatrix, "Horizontal concatenation failed, destination matrix has incorrect values!");
     }
 }
 
 void CommonTests::testCapacityWithCatByColumn()
 {
-    using namespace std;
-    auto catByColumnAndTestCapacity = [](string testNumber, IntMatrix& firstSrcMatrix, IntMatrix& secondSrcMatrix, IntMatrix& destMatrix, int desiredRowCapacity, int desiredColumnCapacity)
+    QFETCH(IntMatrix, destMatrix);
+    QFETCH(IntMatrix, firstSrcMatrix);
+    QFETCH(IntMatrix, secondSrcMatrix);
+    QFETCH(ConcatMode, mode);
+    QFETCH(IntMatrixSizeType, resizeRowsCount);
+    QFETCH(IntMatrixSizeType, resizeColumnsCount);
+    QFETCH(IntMatrixSizeType, resizeRowCapacity);
+    QFETCH(IntMatrixSizeType, resizeColumnCapacity);
+    QFETCH(IntMatrixSizeType, expectedRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+
+    if (resizeRowsCount > 0 && resizeColumnsCount > 0)
     {
+        destMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
+    }
+
+    switch(mode)
+    {
+    case ConcatMode::ALL_DIFFERENT:
         destMatrix.catByColumn(firstSrcMatrix, secondSrcMatrix);
-
-        QVERIFY2(destMatrix.getRowCapacity() == desiredRowCapacity && destMatrix.getColumnCapacity() == desiredColumnCapacity,
-                 string{"Horizontal concatenation failed, capacity of the destination matrix is not correct! Test number: " + testNumber}.c_str());
-    };
-
-    int testNumber{1};
-
-    {
-        IntMatrix destFirstSrcMatrix{7, 4, 5};
-        IntMatrix secondSrcMatrix{7, 5, -2};
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSrcMatrix, secondSrcMatrix, destFirstSrcMatrix, 8, 11);
+        break;
+    case ConcatMode::DESTINATION_FIRST:
+        destMatrix.catByColumn(destMatrix, secondSrcMatrix);
+        break;
+    case ConcatMode::DESTINATION_SECOND:
+        destMatrix.catByColumn(firstSrcMatrix, destMatrix);
+        break;
+    case ConcatMode::DESTINATION_ALL:
+        destMatrix.catByColumn(destMatrix, destMatrix);
+        break;
+    case ConcatMode::SOURCE_BOTH:
+        destMatrix.catByColumn(firstSrcMatrix, firstSrcMatrix);
+        break;
+    default:
+        break;
     }
 
-    {
-        IntMatrix destFirstSrcMatrix{7, 4, 5};
-        IntMatrix secondSrcMatrix{7, 5, -2};
-
-        destFirstSrcMatrix.resize(7, 4, 8, 8);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSrcMatrix, secondSrcMatrix, destFirstSrcMatrix, 8, 11);
-    }
-
-    {
-        IntMatrix destFirstSrcMatrix{7, 4, 5};
-        IntMatrix secondSrcMatrix{7, 5, -2};
-
-        destFirstSrcMatrix.resize(7, 4, 8, 9);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSrcMatrix, secondSrcMatrix, destFirstSrcMatrix, 8, 9);
-    }
-
-    {
-        IntMatrix destFirstSrcMatrix{7, 4, 5};
-        IntMatrix secondSrcMatrix{7, 5, -2};
-
-        destFirstSrcMatrix.resize(7, 4, 8, 10);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSrcMatrix, secondSrcMatrix, destFirstSrcMatrix, 8, 10);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{7, 4, 5};
-        IntMatrix destSecondSrcMatrix{7, 5, -2};
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, destSecondSrcMatrix, destSecondSrcMatrix, 8, 11);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{7, 4, 5};
-        IntMatrix destSecondSrcMatrix{7, 5, -2};
-
-        destSecondSrcMatrix.resize(7, 5, 8, 8);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, destSecondSrcMatrix, destSecondSrcMatrix, 8, 11);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{7, 4, 5};
-        IntMatrix destSecondSrcMatrix{7, 5, -2};
-
-        destSecondSrcMatrix.resize(7, 5, 8, 9);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, destSecondSrcMatrix, destSecondSrcMatrix, 8, 9);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{7, 4, 5};
-        IntMatrix destSecondSrcMatrix{7, 5, -2};
-
-        destSecondSrcMatrix.resize(7, 5, 8, 10);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, destSecondSrcMatrix, destSecondSrcMatrix, 8, 10);
-    }
-
-    {
-        IntMatrix destFirstSecondSrcMatrix{7, 4, 5};
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 8, 10);
-    }
-
-    {
-        IntMatrix destFirstSecondSrcMatrix{7, 4, 5};
-
-        destFirstSecondSrcMatrix.resize(7, 4, 8, 7);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 8, 10);
-    }
-
-    {
-        IntMatrix destFirstSecondSrcMatrix{7, 4, 5};
-
-        destFirstSecondSrcMatrix.resize(7, 4, 8, 8);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 8, 8);
-    }
-
-    {
-        IntMatrix destFirstSecondSrcMatrix{7, 4, 5};
-
-        destFirstSecondSrcMatrix.resize(7, 4, 8, 9);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 8, 9);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{7, 4, 5};
-        IntMatrix secondSrcMatrix{7, 5, -2};
-        IntMatrix destMatrix{};
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 8, 11);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{7, 4, 5};
-        IntMatrix secondSrcMatrix{7, 5, -2};
-        IntMatrix destMatrix{5, 7, -1};
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 8, 11);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{7, 4, 5};
-        IntMatrix secondSrcMatrix{7, 5, -2};
-        IntMatrix destMatrix{5, 10, -1};
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 8, 12);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{7, 4, 5};
-        IntMatrix secondSrcMatrix{7, 5, -2};
-        IntMatrix destMatrix{6, 6, -1};
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 7, 11);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{7, 4, 5};
-        IntMatrix secondSrcMatrix{7, 5, -2};
-        IntMatrix destMatrix{6, 7, -1};
-        destMatrix.resize(6, 7, 7, 9);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 7, 9);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{7, 4, 5};
-        IntMatrix secondSrcMatrix{7, 5, -2};
-        IntMatrix destMatrix{6, 7, -1};
-        destMatrix.resize(6, 7, 8, 9);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 8, 9);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{7, 4, 5};
-        IntMatrix secondSrcMatrix{7, 5, -2};
-        IntMatrix destMatrix{6, 7, -1};
-        destMatrix.resize(6, 7, 7, 10);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 7, 10);
-    }
-
-    {
-        IntMatrix firstSrcMatrix{7, 4, 5};
-        IntMatrix secondSrcMatrix{7, 5, -2};
-        IntMatrix destMatrix{6, 7, -1};
-        destMatrix.resize(6, 7, 8, 10);
-
-        catByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), firstSrcMatrix, secondSrcMatrix, destMatrix, 8, 10);
-    }
+    QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
+             destMatrix.getColumnCapacity() == expectedColumnCapacity, "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
 }
 
 void CommonTests::testSplitByRow()
 {
+    QFETCH(IntMatrix, srcMatrix);
+    QFETCH(IntMatrix, firstDestMatrix);
+    QFETCH(IntMatrix, secondDestMatrix);
+    QFETCH(IntMatrixSizeType, splitPosition);
+    QFETCH(SplitMode, mode);
+    QFETCH(IntMatrixSizeType, expectedFirstDestRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedFirstDestColumnCapacity);
+    QFETCH(IntMatrixSizeType, expectedSecondDestRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedSecondDestColumnCapacity);
+    QFETCH(IntMatrix, expectedFirstDestMatrix);
+    QFETCH(IntMatrix, expectedSecondDestMatrix);
+
+    switch(mode)
     {
-        IntMatrix srcMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{};
-
-        srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, 2);
-
-        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
-                     firstDestMatrix.at(0, 1) == 2 &&
-                     firstDestMatrix.at(1, 0) == 3 &&
-                     firstDestMatrix.at(1, 1) == 4,
-
-                     "Vertical split failed, first destination matrix has incorrect values!");
-        }
-
-        if (secondDestMatrix.getRowCapacity() != 1 || secondDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (secondDestMatrix.getNrOfRows() != 1 || secondDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(secondDestMatrix.at(0, 0) == 5 &&
-                     secondDestMatrix.at(0, 1) == 6,
-
-                     "Vertical split failed, second destination matrix has incorrect values!");
-        }
+    case SplitMode::ALL_DIFFERENT:
+        srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
+        break;
+    case SplitMode::SOURCE_FIRST:
+        firstDestMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
+        break;
+    case SplitMode::SOURCE_SECOND:
+        secondDestMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
+        break;
+    default:
+        break;
     }
 
+    if (firstDestMatrix.getRowCapacity() != expectedFirstDestRowCapacity || firstDestMatrix.getColumnCapacity() != expectedFirstDestColumnCapacity)
     {
-        IntMatrix srcMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix firstDestMatrix{1, 2, {7, 8}};
-        IntMatrix secondDestMatrix{};
-
-        srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, 2);
-
-        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
-                     firstDestMatrix.at(0, 1) == 2 &&
-                     firstDestMatrix.at(1, 0) == 3 &&
-                     firstDestMatrix.at(1, 1) == 4,
-
-                     "Vertical split failed, first destination matrix has incorrect values!");
-        }
-
-        if (secondDestMatrix.getRowCapacity() != 1 || secondDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (secondDestMatrix.getNrOfRows() != 1 || secondDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(secondDestMatrix.at(0, 0) == 5 &&
-                     secondDestMatrix.at(0, 1) == 6,
-
-                     "Vertical split failed, second destination matrix has incorrect values!");
-        }
+        QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
+    }
+    else
+    {
+        QVERIFY2(firstDestMatrix == expectedFirstDestMatrix, "Vertical split failed, first destination matrix has incorrect values!");
     }
 
+    if (secondDestMatrix.getRowCapacity() != expectedSecondDestRowCapacity || secondDestMatrix.getColumnCapacity() != expectedSecondDestColumnCapacity)
     {
-        IntMatrix srcMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{2, 2, {9, 10, 11, 12}};
-
-        srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, 2);
-
-        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
-                     firstDestMatrix.at(0, 1) == 2 &&
-                     firstDestMatrix.at(1, 0) == 3 &&
-                     firstDestMatrix.at(1, 1) == 4,
-
-                     "Vertical split failed, first destination matrix has incorrect values!");
-        }
-
-        if (secondDestMatrix.getRowCapacity() != 2 || secondDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (secondDestMatrix.getNrOfRows() != 1 || secondDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(secondDestMatrix.at(0, 0) == 5 &&
-                     secondDestMatrix.at(0, 1) == 6,
-
-                     "Vertical split failed, second destination matrix has incorrect values!");
-        }
+        QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix srcMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix firstDestMatrix{1, 2, {7, 8}};
-        IntMatrix secondDestMatrix{2, 2, {9, 10, 11, 12}};
-
-        srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, 2);
-
-        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
-                     firstDestMatrix.at(0, 1) == 2 &&
-                     firstDestMatrix.at(1, 0) == 3 &&
-                     firstDestMatrix.at(1, 1) == 4,
-
-                     "Vertical split failed, first destination matrix has incorrect values!");
-        }
-
-        if (secondDestMatrix.getRowCapacity() != 2 || secondDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (secondDestMatrix.getNrOfRows() != 1 || secondDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(secondDestMatrix.at(0, 0) == 5 &&
-                     secondDestMatrix.at(0, 1) == 6,
-
-                     "Vertical split failed, second destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondDestMatrix{};
-
-        srcFirstDestMatrix.splitByRow(srcFirstDestMatrix, secondDestMatrix, 2);
-
-        if (srcFirstDestMatrix.getRowCapacity() != 3 || srcFirstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (srcFirstDestMatrix.getNrOfRows() != 2 || srcFirstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(srcFirstDestMatrix.at(0, 0) == 1 &&
-                     srcFirstDestMatrix.at(0, 1) == 2 &&
-                     srcFirstDestMatrix.at(1, 0) == 3 &&
-                     srcFirstDestMatrix.at(1, 1) == 4,
-
-                     "Vertical split failed, first destination matrix has incorrect values!");
-        }
-
-        if (secondDestMatrix.getRowCapacity() != 1 || secondDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (secondDestMatrix.getNrOfRows() != 1 || secondDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(secondDestMatrix.at(0, 0) == 5 &&
-                     secondDestMatrix.at(0, 1) == 6,
-
-                     "Vertical split failed, second destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondDestMatrix{2, 2, {9, 10, 11, 12}};
-
-        srcFirstDestMatrix.splitByRow(srcFirstDestMatrix, secondDestMatrix, 2);
-
-        if (srcFirstDestMatrix.getRowCapacity() != 3 || srcFirstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (srcFirstDestMatrix.getNrOfRows() != 2 || srcFirstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(srcFirstDestMatrix.at(0, 0) == 1 &&
-                     srcFirstDestMatrix.at(0, 1) == 2 &&
-                     srcFirstDestMatrix.at(1, 0) == 3 &&
-                     srcFirstDestMatrix.at(1, 1) == 4,
-
-                     "Vertical split failed, first destination matrix has incorrect values!");
-        }
-
-        if (secondDestMatrix.getRowCapacity() != 2 || secondDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (secondDestMatrix.getNrOfRows() != 1 || secondDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(secondDestMatrix.at(0, 0) == 5 &&
-                     secondDestMatrix.at(0, 1) == 6,
-
-                     "Vertical split failed, second destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix srcSecondDestMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix firstDestMatrix{};
-
-        srcSecondDestMatrix.splitByRow(firstDestMatrix, srcSecondDestMatrix, 2);
-
-        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
-                     firstDestMatrix.at(0, 1) == 2 &&
-                     firstDestMatrix.at(1, 0) == 3 &&
-                     firstDestMatrix.at(1, 1) == 4,
-
-                     "Vertical split failed, first destination matrix has incorrect values!");
-        }
-
-        if (srcSecondDestMatrix.getRowCapacity() != 3 || srcSecondDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (srcSecondDestMatrix.getNrOfRows() != 1 || srcSecondDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(srcSecondDestMatrix.at(0, 0) == 5 &&
-                     srcSecondDestMatrix.at(0, 1) == 6,
-
-                     "Vertical split failed, second destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix srcSecondDestMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix firstDestMatrix{1, 2, {7, 8}};
-
-        srcSecondDestMatrix.splitByRow(firstDestMatrix, srcSecondDestMatrix, 2);
-
-        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
-                     firstDestMatrix.at(0, 1) == 2 &&
-                     firstDestMatrix.at(1, 0) == 3 &&
-                     firstDestMatrix.at(1, 1) == 4,
-
-                     "Vertical split failed, first destination matrix has incorrect values!");
-        }
-
-        if (srcSecondDestMatrix.getRowCapacity() != 3 || srcSecondDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (srcSecondDestMatrix.getNrOfRows() != 1 || srcSecondDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Vertical split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(srcSecondDestMatrix.at(0, 0) == 5 &&
-                     srcSecondDestMatrix.at(0, 1) == 6,
-
-                     "Vertical split failed, second destination matrix has incorrect values!");
-        }
+        QVERIFY2(secondDestMatrix == expectedSecondDestMatrix, "Vertical split failed, second destination matrix has incorrect values!");
     }
 }
 
 void CommonTests::testCapacityWithSplitByRow()
 {
-    using namespace std;
-    auto splitByRowAndTestCapacity = [](string testNumber,
-                                        IntMatrix& srcMatrix,
-                                        IntMatrix& firstDestMatrix,
-                                        IntMatrix& secondDestMatrix,
-                                        int splitRowNr,
-                                        int desiredFirstDestMatrixRowCapacity,
-                                        int desiredFirstDestMatrixColumnCapacity,
-                                        int desiredSecondDestMatrixRowCapacity,
-                                        int desiredSecondDestMatrixColumnCapacity)
+    QFETCH(IntMatrix, srcMatrix);
+    QFETCH(IntMatrix, firstDestMatrix);
+    QFETCH(IntMatrix, secondDestMatrix);
+    QFETCH(IntMatrixSizeType, splitPosition);
+    QFETCH(SplitMode, mode);
+    QFETCH(IntMatrixSizeType, resizeRowsCount);
+    QFETCH(IntMatrixSizeType, resizeColumnsCount);
+    QFETCH(IntMatrixSizeType, resizeRowCapacity);
+    QFETCH(IntMatrixSizeType, resizeColumnCapacity);
+    QFETCH(bool, isFirstDestResized);
+    QFETCH(IntMatrixSizeType, expectedFirstDestRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedFirstDestColumnCapacity);
+    QFETCH(IntMatrixSizeType, expectedSecondDestRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedSecondDestColumnCapacity);
+
+    if (resizeRowsCount > 0 && resizeColumnsCount > 0)
     {
-        srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitRowNr);
-
-        QVERIFY2(firstDestMatrix.getRowCapacity() == desiredFirstDestMatrixRowCapacity && firstDestMatrix.getColumnCapacity() == desiredFirstDestMatrixColumnCapacity,
-                 string{"Vertical split failed, capacity of the first destination matrix is not correct! Test number: " + testNumber}.c_str());
-        QVERIFY2(secondDestMatrix.getRowCapacity() == desiredSecondDestMatrixRowCapacity && secondDestMatrix.getColumnCapacity() == desiredSecondDestMatrixColumnCapacity,
-                 string{"Vertical split failed, capacity of the second destination matrix is not correct! Test number: " + testNumber}.c_str());
-    };
-
-    int testNumber{1};
-
-    {
-        IntMatrix srcFirstDestMatrix{15, 17, -3};
-        IntMatrix secondDestMatrix{};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 18, 21, 8, 21);
+        if (isFirstDestResized)
+        {
+            firstDestMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
+        }
+        else
+        {
+            secondDestMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
+        }
     }
 
+    switch(mode)
     {
-        IntMatrix srcFirstDestMatrix{15, 17, -3};
-        IntMatrix secondDestMatrix{5, 8, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 18, 21, 8, 21);
+    case SplitMode::ALL_DIFFERENT:
+        srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
+        break;
+    case SplitMode::SOURCE_FIRST:
+        firstDestMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
+        break;
+    case SplitMode::SOURCE_SECOND:
+        secondDestMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
+        break;
+    default:
+        break;
     }
 
-    {
-        IntMatrix srcFirstDestMatrix{15, 17, -3};
-        IntMatrix secondDestMatrix{5, 8, 2};
-
-        secondDestMatrix.resize(5, 8, 6, 17);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 18, 21, 8, 17);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{15, 17, -3};
-        IntMatrix secondDestMatrix{5, 8, 2};
-
-        secondDestMatrix.resize(5, 8, 6, 18);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 18, 21, 8, 18);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{15, 17, -3};
-        IntMatrix secondDestMatrix{6, 15, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 18, 21, 7, 18);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{15, 17, -3};
-        IntMatrix secondDestMatrix{7, 17, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 18, 21, 8, 21);
-    }
-
-    {
-        IntMatrix firstDestMatrix{};
-        IntMatrix srcSecondDestMatrix{15, 17, -3};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 10, 21, 18, 21);
-    }
-
-    {
-        IntMatrix firstDestMatrix{5, 8, 2};
-        IntMatrix srcSecondDestMatrix{15, 17, -3};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 10, 21, 18, 21);
-    }
-
-    {
-        IntMatrix firstDestMatrix{6, 8, 2};
-        IntMatrix srcSecondDestMatrix{15, 17, -3};
-
-        firstDestMatrix.resize(6, 8, 7, 17);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 10, 17, 18, 21);
-    }
-
-    {
-        IntMatrix firstDestMatrix{6, 8, 2};
-        IntMatrix srcSecondDestMatrix{15, 17, -3};
-
-        firstDestMatrix.resize(6, 8, 7, 18);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 10, 18, 18, 21);
-    }
-
-    {
-        IntMatrix firstDestMatrix{7, 15, 2};
-        IntMatrix srcSecondDestMatrix{15, 17, -3};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 8, 18, 18, 21);
-    }
-
-    {
-        IntMatrix firstDestMatrix{8, 17, 2};
-        IntMatrix srcSecondDestMatrix{15, 17, -3};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 10, 21, 18, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{5, 8, 2};
-        IntMatrix secondDestMatrix{};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{6, 8, 2};
-        IntMatrix secondDestMatrix{};
-
-        firstDestMatrix.resize(6, 8, 7, 17);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 17, 8, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{6, 8, 2};
-        IntMatrix secondDestMatrix{};
-
-        firstDestMatrix.resize(6, 8, 7, 18);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 18, 8, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{7, 15, 2};
-        IntMatrix secondDestMatrix{};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 8, 18, 8, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{8, 17, 2};
-        IntMatrix secondDestMatrix{};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{5, 8, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{5, 8, 2};
-
-        secondDestMatrix.resize(5, 8, 6, 17);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 17);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{5, 8, 2};
-
-        secondDestMatrix.resize(5, 8, 6, 18);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 18);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{6, 15, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 7, 18);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{7, 17, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{8, 17, 2};
-        IntMatrix secondDestMatrix{7, 17, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 10, 21, 8, 21);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{15, 17, -3};
-        IntMatrix secondDestMatrix{};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 18, 21, 10, 21);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{15, 17, -3};
-        IntMatrix secondDestMatrix{6, 8, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 18, 21, 10, 21);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{15, 17, -3};
-        IntMatrix secondDestMatrix{6, 8, 2};
-
-        secondDestMatrix.resize(6, 8, 7, 17);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 18, 21, 10, 17);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{15, 17, -3};
-        IntMatrix secondDestMatrix{6, 8, 2};
-
-        secondDestMatrix.resize(6, 8, 7, 18);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 18, 21, 10, 18);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{15, 17, -3};
-        IntMatrix secondDestMatrix{7, 15, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 18, 21, 8, 18);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{15, 17, -3};
-        IntMatrix secondDestMatrix{8, 17, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 18, 21, 10, 21);
-    }
-
-    {
-        IntMatrix firstDestMatrix{};
-        IntMatrix srcSecondDestMatrix{15, 17, -3};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 8, 21, 18, 21);
-    }
-
-    {
-        IntMatrix firstDestMatrix{5, 8, 2};
-        IntMatrix srcSecondDestMatrix{15, 17, -3};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 8, 21, 18, 21);
-    }
-
-    {
-        IntMatrix firstDestMatrix{5, 8, 2};
-        IntMatrix srcSecondDestMatrix{15, 17, -3};
-
-        firstDestMatrix.resize(5, 8, 6, 17);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 8, 17, 18, 21);
-    }
-
-    {
-        IntMatrix firstDestMatrix{5, 8, 2};
-        IntMatrix srcSecondDestMatrix{15, 17, -3};
-
-        firstDestMatrix.resize(5, 8, 6, 18);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 8, 18, 18, 21);
-    }
-
-    {
-        IntMatrix firstDestMatrix{6, 15, 2};
-        IntMatrix srcSecondDestMatrix{15, 17, -3};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 7, 18, 18, 21);
-    }
-
-    {
-        IntMatrix firstDestMatrix{7, 17, 2};
-        IntMatrix srcSecondDestMatrix{15, 17, -3};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 8, 21, 18, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{5, 8, 2};
-        IntMatrix secondDestMatrix{};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{5, 8, 2};
-        IntMatrix secondDestMatrix{};
-
-        firstDestMatrix.resize(5, 8, 6, 17);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 17, 10, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{5, 8, 2};
-        IntMatrix secondDestMatrix{};
-
-        firstDestMatrix.resize(5, 8, 6, 18);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 18, 10, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{6, 15, 2};
-        IntMatrix secondDestMatrix{};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 7, 18, 10, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{7, 17, 2};
-        IntMatrix secondDestMatrix{};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{6, 8, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{6, 8, 2};
-
-        secondDestMatrix.resize(6, 8, 7, 17);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 17);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{6, 8, 2};
-
-        secondDestMatrix.resize(6, 8, 7, 18);
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 18);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{7, 15, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 8, 18);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{8, 17, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 21);
-    }
-
-    {
-        IntMatrix srcMatrix{15, 17, -3};
-        IntMatrix firstDestMatrix{7, 17, 2};
-        IntMatrix secondDestMatrix{8, 17, 2};
-
-        splitByRowAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 8, 21, 10, 21);
-    }
+    QVERIFY2(firstDestMatrix.getRowCapacity() == expectedFirstDestRowCapacity &&
+             firstDestMatrix.getColumnCapacity() == expectedFirstDestColumnCapacity, "Vertical split failed, capacity of the first destination matrix is not correct!");
+
+    QVERIFY2(secondDestMatrix.getRowCapacity() == expectedSecondDestRowCapacity &&
+             secondDestMatrix.getColumnCapacity() == expectedSecondDestColumnCapacity, "Vertical split failed, capacity of the second destination matrix is not correct!");
 }
 
 void CommonTests::testSplitByColumn()
 {
+    QFETCH(IntMatrix, srcMatrix);
+    QFETCH(IntMatrix, firstDestMatrix);
+    QFETCH(IntMatrix, secondDestMatrix);
+    QFETCH(IntMatrixSizeType, splitPosition);
+    QFETCH(SplitMode, mode);
+    QFETCH(IntMatrixSizeType, expectedFirstDestRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedFirstDestColumnCapacity);
+    QFETCH(IntMatrixSizeType, expectedSecondDestRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedSecondDestColumnCapacity);
+    QFETCH(IntMatrix, expectedFirstDestMatrix);
+    QFETCH(IntMatrix, expectedSecondDestMatrix);
+
+    switch(mode)
     {
-        IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{};
-
-        srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, 2);
-
-        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
-                     firstDestMatrix.at(0, 1) == 2 &&
-                     firstDestMatrix.at(1, 0) == 4 &&
-                     firstDestMatrix.at(1, 1) == 5,
-
-                     "Horizontal split failed, first destination matrix has incorrect values!");
-        }
-
-        if (secondDestMatrix.getRowCapacity() != 2 || secondDestMatrix.getColumnCapacity() != 1)
-        {
-            QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (secondDestMatrix.getNrOfRows() != 2 || secondDestMatrix.getNrOfColumns() != 1)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(secondDestMatrix.at(0, 0) == 3 &&
-                     secondDestMatrix.at(1, 0) == 6,
-
-                     "Horizontal split failed, second destination matrix has incorrect values!");
-        }
+    case SplitMode::ALL_DIFFERENT:
+        srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
+        break;
+    case SplitMode::SOURCE_FIRST:
+        firstDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
+        break;
+    case SplitMode::SOURCE_SECOND:
+        secondDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
+        break;
+    default:
+        break;
     }
 
+    if (firstDestMatrix.getRowCapacity() != expectedFirstDestRowCapacity || firstDestMatrix.getColumnCapacity() != expectedFirstDestColumnCapacity)
     {
-        IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix firstDestMatrix{2, 1, {7, 8}};
-        IntMatrix secondDestMatrix{};
-
-        srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, 2);
-
-        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
-                     firstDestMatrix.at(0, 1) == 2 &&
-                     firstDestMatrix.at(1, 0) == 4 &&
-                     firstDestMatrix.at(1, 1) == 5,
-
-                     "Horizontal split failed, first destination matrix has incorrect values!");
-        }
-
-        if (secondDestMatrix.getRowCapacity() != 2 || secondDestMatrix.getColumnCapacity() != 1)
-        {
-            QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (secondDestMatrix.getNrOfRows() != 2 || secondDestMatrix.getNrOfColumns() != 1)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(secondDestMatrix.at(0, 0) == 3 &&
-                     secondDestMatrix.at(1, 0) == 6,
-
-                     "Horizontal split failed, second destination matrix has incorrect values!");
-        }
+        QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
+    }
+    else
+    {
+        QVERIFY2(firstDestMatrix == expectedFirstDestMatrix, "Horizontal split failed, first destination matrix has incorrect values!");
     }
 
+    if (secondDestMatrix.getRowCapacity() != expectedSecondDestRowCapacity || secondDestMatrix.getColumnCapacity() != expectedSecondDestColumnCapacity)
     {
-        IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{2, 2, {9, 10, 11, 12}};
-
-        srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, 2);
-
-        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
-                     firstDestMatrix.at(0, 1) == 2 &&
-                     firstDestMatrix.at(1, 0) == 4 &&
-                     firstDestMatrix.at(1, 1) == 5,
-
-                     "Horizontal split failed, first destination matrix has incorrect values!");
-        }
-
-        if (secondDestMatrix.getRowCapacity() != 2 || secondDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (secondDestMatrix.getNrOfRows() != 2 || secondDestMatrix.getNrOfColumns() != 1)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(secondDestMatrix.at(0, 0) == 3 &&
-                     secondDestMatrix.at(1, 0) == 6,
-
-                     "Horizontal split failed, second destination matrix has incorrect values!");
-        }
+        QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
     }
-
+    else
     {
-        IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix firstDestMatrix{2, 1, {7, 8}};
-        IntMatrix secondDestMatrix{2, 2, {9, 10, 11, 12}};
-
-        srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, 2);
-
-        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
-                     firstDestMatrix.at(0, 1) == 2 &&
-                     firstDestMatrix.at(1, 0) == 4 &&
-                     firstDestMatrix.at(1, 1) == 5,
-
-                     "Horizontal split failed, first destination matrix has incorrect values!");
-        }
-
-        if (secondDestMatrix.getRowCapacity() != 2 || secondDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (secondDestMatrix.getNrOfRows() != 2 || secondDestMatrix.getNrOfColumns() != 1)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(secondDestMatrix.at(0, 0) == 3 &&
-                     secondDestMatrix.at(1, 0) == 6,
-
-                     "Horizontal split failed, second destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondDestMatrix{};
-
-        srcFirstDestMatrix.splitByColumn(srcFirstDestMatrix, secondDestMatrix, 2);
-
-        if (srcFirstDestMatrix.getRowCapacity() != 2 || srcFirstDestMatrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (srcFirstDestMatrix.getNrOfRows() != 2 || srcFirstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(srcFirstDestMatrix.at(0, 0) == 1 &&
-                     srcFirstDestMatrix.at(0, 1) == 2 &&
-                     srcFirstDestMatrix.at(1, 0) == 4 &&
-                     srcFirstDestMatrix.at(1, 1) == 5,
-
-                     "Horizontal split failed, first destination matrix has incorrect values!");
-        }
-
-        if (secondDestMatrix.getRowCapacity() != 2 || secondDestMatrix.getColumnCapacity() != 1)
-        {
-            QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (secondDestMatrix.getNrOfRows() != 2 || secondDestMatrix.getNrOfColumns() != 1)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(secondDestMatrix.at(0, 0) == 3 &&
-                     secondDestMatrix.at(1, 0) == 6,
-
-                     "Horizontal split failed, second destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondDestMatrix{2, 2, {9, 10, 11, 12}};
-
-        srcFirstDestMatrix.splitByColumn(srcFirstDestMatrix, secondDestMatrix, 2);
-
-        if (srcFirstDestMatrix.getRowCapacity() != 2 || srcFirstDestMatrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (srcFirstDestMatrix.getNrOfRows() != 2 || srcFirstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(srcFirstDestMatrix.at(0, 0) == 1 &&
-                     srcFirstDestMatrix.at(0, 1) == 2 &&
-                     srcFirstDestMatrix.at(1, 0) == 4 &&
-                     srcFirstDestMatrix.at(1, 1) == 5,
-
-                     "Horizontal split failed, first destination matrix has incorrect values!");
-        }
-
-        if (secondDestMatrix.getRowCapacity() != 2 || secondDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (secondDestMatrix.getNrOfRows() != 2 || secondDestMatrix.getNrOfColumns() != 1)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(secondDestMatrix.at(0, 0) == 3 &&
-                     secondDestMatrix.at(1, 0) == 6,
-
-                     "Horizontal split failed, second destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix srcSecondDestMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix firstDestMatrix{};
-
-        srcSecondDestMatrix.splitByColumn(firstDestMatrix, srcSecondDestMatrix, 2);
-
-        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
-                     firstDestMatrix.at(0, 1) == 2 &&
-                     firstDestMatrix.at(1, 0) == 4 &&
-                     firstDestMatrix.at(1, 1) == 5,
-
-                     "Horizontal split failed, first destination matrix has incorrect values!");
-        }
-
-        if (srcSecondDestMatrix.getRowCapacity() != 2 || srcSecondDestMatrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (srcSecondDestMatrix.getNrOfRows() != 2 || srcSecondDestMatrix.getNrOfColumns() != 1)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(srcSecondDestMatrix.at(0, 0) == 3 &&
-                     srcSecondDestMatrix.at(1, 0) == 6,
-
-                     "Horizontal split failed, second destination matrix has incorrect values!");
-        }
-    }
-
-    {
-        IntMatrix srcSecondDestMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix firstDestMatrix{2, 1, {7, 8}};
-
-        srcSecondDestMatrix.splitByColumn(firstDestMatrix, srcSecondDestMatrix, 2);
-
-        if (firstDestMatrix.getRowCapacity() != 2 || firstDestMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!");
-        }
-        else if (firstDestMatrix.getNrOfRows() != 2 || firstDestMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the first destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(firstDestMatrix.at(0, 0) == 1 &&
-                     firstDestMatrix.at(0, 1) == 2 &&
-                     firstDestMatrix.at(1, 0) == 4 &&
-                     firstDestMatrix.at(1, 1) == 5,
-
-                     "Horizontal split failed, first destination matrix has incorrect values!");
-        }
-
-        if (srcSecondDestMatrix.getRowCapacity() != 2 || srcSecondDestMatrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!");
-        }
-        else if (srcSecondDestMatrix.getNrOfRows() != 2 || srcSecondDestMatrix.getNrOfColumns() != 1)
-        {
-            QFAIL("Horizontal split failed, number of rows or columns of the second destination matrix is not correct!");
-        }
-        else
-        {
-            QVERIFY2(srcSecondDestMatrix.at(0, 0) == 3 &&
-                     srcSecondDestMatrix.at(1, 0) == 6,
-
-                     "Horizontal split failed, second destination matrix has incorrect values!");
-        }
+        QVERIFY2(secondDestMatrix == expectedSecondDestMatrix, "Horizontal split failed, second destination matrix has incorrect values!");
     }
 }
 
 void CommonTests::testCapacityWithSplitByColumn()
 {
-    using namespace std;
-    auto splitByColumnAndTestCapacity = [](string testNumber,
-                                        IntMatrix& srcMatrix,
-                                        IntMatrix& firstDestMatrix,
-                                        IntMatrix& secondDestMatrix,
-                                        int splitColumnNr,
-                                        int desiredFirstDestMatrixRowCapacity,
-                                        int desiredFirstDestMatrixColumnCapacity,
-                                        int desiredSecondDestMatrixRowCapacity,
-                                        int desiredSecondDestMatrixColumnCapacity)
+    QFETCH(IntMatrix, srcMatrix);
+    QFETCH(IntMatrix, firstDestMatrix);
+    QFETCH(IntMatrix, secondDestMatrix);
+    QFETCH(IntMatrixSizeType, splitPosition);
+    QFETCH(SplitMode, mode);
+    QFETCH(IntMatrixSizeType, resizeRowsCount);
+    QFETCH(IntMatrixSizeType, resizeColumnsCount);
+    QFETCH(IntMatrixSizeType, resizeRowCapacity);
+    QFETCH(IntMatrixSizeType, resizeColumnCapacity);
+    QFETCH(bool, isFirstDestResized);
+    QFETCH(IntMatrixSizeType, expectedFirstDestRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedFirstDestColumnCapacity);
+    QFETCH(IntMatrixSizeType, expectedSecondDestRowCapacity);
+    QFETCH(IntMatrixSizeType, expectedSecondDestColumnCapacity);
+
+    if (resizeRowsCount > 0 && resizeColumnsCount > 0)
     {
-        srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitColumnNr);
-
-        QVERIFY2(firstDestMatrix.getRowCapacity() == desiredFirstDestMatrixRowCapacity && firstDestMatrix.getColumnCapacity() == desiredFirstDestMatrixColumnCapacity,
-                 string{"Horizontal split failed, capacity of the first destination matrix is not correct! Test number: " + testNumber}.c_str());
-        QVERIFY2(secondDestMatrix.getRowCapacity() == desiredSecondDestMatrixRowCapacity && secondDestMatrix.getColumnCapacity() == desiredSecondDestMatrixColumnCapacity,
-                 string{"Horizontal split failed, capacity of the second destination matrix is not correct! Test number: " + testNumber}.c_str());
-    };
-
-    int testNumber{1};
-
-    {
-        IntMatrix srcFirstDestMatrix{17, 15, -3};
-        IntMatrix secondDestMatrix{};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 21, 18, 21, 8);
+        if (isFirstDestResized)
+        {
+            firstDestMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
+        }
+        else
+        {
+            secondDestMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
+        }
     }
 
+    switch(mode)
     {
-        IntMatrix srcFirstDestMatrix{17, 15, -3};
-        IntMatrix secondDestMatrix{8, 5, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 21, 18, 21, 8);
+    case SplitMode::ALL_DIFFERENT:
+        srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
+        break;
+    case SplitMode::SOURCE_FIRST:
+        firstDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
+        break;
+    case SplitMode::SOURCE_SECOND:
+        secondDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
+        break;
+    default:
+        break;
     }
 
-    {
-        IntMatrix srcFirstDestMatrix{17, 15, -3};
-        IntMatrix secondDestMatrix{8, 5, 2};
-
-        secondDestMatrix.resize(8, 5, 17, 6);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 21, 18, 17, 8);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{17, 15, -3};
-        IntMatrix secondDestMatrix{8, 5, 2};
-
-        secondDestMatrix.resize(8, 5, 18, 6);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 21, 18, 18, 8);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{17, 15, -3};
-        IntMatrix secondDestMatrix{15, 6, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 21, 18, 18, 7);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{17, 15, -3};
-        IntMatrix secondDestMatrix{17, 7, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 8, 21, 18, 21, 8);
-    }
-
-    {
-        IntMatrix firstDestMatrix{};
-        IntMatrix srcSecondDestMatrix{17, 15, -3};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 21, 10, 21, 18);
-    }
-
-    {
-        IntMatrix firstDestMatrix{8, 5, 2};
-        IntMatrix srcSecondDestMatrix{17, 15, -3};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 21, 10, 21, 18);
-    }
-
-    {
-        IntMatrix firstDestMatrix{8, 6, 2};
-        IntMatrix srcSecondDestMatrix{17, 15, -3};
-
-        firstDestMatrix.resize(8, 6, 17, 7);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 17, 10, 21, 18);
-    }
-
-    {
-        IntMatrix firstDestMatrix{8, 6, 2};
-        IntMatrix srcSecondDestMatrix{17, 15, -3};
-
-        firstDestMatrix.resize(8, 6, 18, 7);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 18, 10, 21, 18);
-    }
-
-    {
-        IntMatrix firstDestMatrix{15, 7, 2};
-        IntMatrix srcSecondDestMatrix{17, 15, -3};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 18, 8, 21, 18);
-    }
-
-    {
-        IntMatrix firstDestMatrix{17, 8, 2};
-        IntMatrix srcSecondDestMatrix{17, 15, -3};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 8, 21, 10, 21, 18);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 21, 10, 21, 8);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{8, 5, 2};
-        IntMatrix secondDestMatrix{};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 21, 10, 21, 8);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{8, 6, 2};
-        IntMatrix secondDestMatrix{};
-
-        firstDestMatrix.resize(8, 6, 17, 7);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 17, 10, 21, 8);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{8, 6, 2};
-        IntMatrix secondDestMatrix{};
-
-        firstDestMatrix.resize(8, 6, 18, 7);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 18, 10, 21, 8);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{15, 7, 2};
-        IntMatrix secondDestMatrix{};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 18, 8, 21, 8);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{17, 8, 2};
-        IntMatrix secondDestMatrix{};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 21, 10, 21, 8);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{8, 5, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 21, 10, 21, 8);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{8, 5, 2};
-
-        secondDestMatrix.resize(8, 5, 17, 6);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 21, 10, 17, 8);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{8, 5, 2};
-
-        secondDestMatrix.resize(8, 5, 18, 6);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 21, 10, 18, 8);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{15, 6, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 21, 10, 18, 7);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{17, 7, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 21, 10, 21, 8);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{17, 8, 2};
-        IntMatrix secondDestMatrix{17, 7, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 8, 21, 10, 21, 8);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{17, 15, -3};
-        IntMatrix secondDestMatrix{};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 21, 18, 21, 10);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{17, 15, -3};
-        IntMatrix secondDestMatrix{8, 6, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 21, 18, 21, 10);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{17, 15, -3};
-        IntMatrix secondDestMatrix{8, 6, 2};
-
-        secondDestMatrix.resize(8, 6, 17, 7);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 21, 18, 17, 10);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{17, 15, -3};
-        IntMatrix secondDestMatrix{8, 6, 2};
-
-        secondDestMatrix.resize(8, 6, 18, 7);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 21, 18, 18, 10);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{17, 15, -3};
-        IntMatrix secondDestMatrix{15, 7, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 21, 18, 18, 8);
-    }
-
-    {
-        IntMatrix srcFirstDestMatrix{17, 15, -3};
-        IntMatrix secondDestMatrix{17, 8, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcFirstDestMatrix, srcFirstDestMatrix, secondDestMatrix, 7, 21, 18, 21, 10);
-    }
-
-    {
-        IntMatrix firstDestMatrix{};
-        IntMatrix srcSecondDestMatrix{17, 15, -3};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 21, 8, 21, 18);
-    }
-
-    {
-        IntMatrix firstDestMatrix{8, 5, 2};
-        IntMatrix srcSecondDestMatrix{17, 15, -3};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 21, 8, 21, 18);
-    }
-
-    {
-        IntMatrix firstDestMatrix{8, 5, 2};
-        IntMatrix srcSecondDestMatrix{17, 15, -3};
-
-        firstDestMatrix.resize(8, 5, 17, 6);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 17, 8, 21, 18);
-    }
-
-    {
-        IntMatrix firstDestMatrix{8, 5, 2};
-        IntMatrix srcSecondDestMatrix{17, 15, -3};
-
-        firstDestMatrix.resize(8, 5, 18, 6);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 18, 8, 21, 18);
-    }
-
-    {
-        IntMatrix firstDestMatrix{15, 6, 2};
-        IntMatrix srcSecondDestMatrix{17, 15, -3};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 18, 7, 21, 18);
-    }
-
-    {
-        IntMatrix firstDestMatrix{17, 7, 2};
-        IntMatrix srcSecondDestMatrix{17, 15, -3};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcSecondDestMatrix, firstDestMatrix, srcSecondDestMatrix, 7, 21, 8, 21, 18);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 21, 8, 21, 10);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{8, 5, 2};
-        IntMatrix secondDestMatrix{};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 21, 8, 21, 10);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{8, 5, 2};
-        IntMatrix secondDestMatrix{};
-
-        firstDestMatrix.resize(8, 5, 17, 6);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 17, 8, 21, 10);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{8, 5, 2};
-        IntMatrix secondDestMatrix{};
-
-        firstDestMatrix.resize(8, 5, 18, 6);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 18, 8, 21, 10);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{15, 6, 2};
-        IntMatrix secondDestMatrix{};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 18, 7, 21, 10);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{17, 7, 2};
-        IntMatrix secondDestMatrix{};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 21, 8, 21, 10);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{8, 6, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 21, 8, 21, 10);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{8, 6, 2};
-
-        secondDestMatrix.resize(8, 6, 17, 7);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 21, 8, 17, 10);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{8, 6, 2};
-
-        secondDestMatrix.resize(8, 6, 18, 7);
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 21, 8, 18, 10);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{15, 7, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 21, 8, 18, 8);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{};
-        IntMatrix secondDestMatrix{17, 8, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 21, 8, 21, 10);
-    }
-
-    {
-        IntMatrix srcMatrix{17, 15, -3};
-        IntMatrix firstDestMatrix{17, 7, 2};
-        IntMatrix secondDestMatrix{17, 8, 2};
-
-        splitByColumnAndTestCapacity(QString::number(testNumber++).toStdString(), srcMatrix, firstDestMatrix, secondDestMatrix, 7, 21, 8, 21, 10);
-    }
+    QVERIFY2(firstDestMatrix.getRowCapacity() == expectedFirstDestRowCapacity &&
+             firstDestMatrix.getColumnCapacity() == expectedFirstDestColumnCapacity, "Horizontal split failed, capacity of the first destination matrix is not correct!");
+
+    QVERIFY2(secondDestMatrix.getRowCapacity() == expectedSecondDestRowCapacity &&
+             secondDestMatrix.getColumnCapacity() == expectedSecondDestColumnCapacity, "Horizontal split failed, capacity of the second destination matrix is not correct!");
 }
 
 void CommonTests::testSwapMatrixes()
 {
+    QFETCH(IntMatrix, firstMatrix);
+    QFETCH(IntMatrix, secondMatrix);
+
+    mPrimaryIntMatrix = firstMatrix;
+    mSecondaryIntMatrix = secondMatrix;
+
+    std::swap(mPrimaryIntMatrix, mSecondaryIntMatrix);
+
+    if (mPrimaryIntMatrix.getRowCapacity() != secondMatrix.getRowCapacity() || mPrimaryIntMatrix.getColumnCapacity() != secondMatrix.getColumnCapacity())
     {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
-
-        std::swap(firstMatrix, secondMatrix);
-
-        if (firstMatrix.getNrOfRows() != 3 || firstMatrix.getNrOfColumns() != 2)
-        {
-            QFAIL("Incorrect number of rows and/or columns in the first matrix after swap");
-        }
-
-        if (firstMatrix.getRowCapacity() != 3 || firstMatrix.getColumnCapacity() != 2)
-        {
-            QFAIL("Incorrect capacity of the first matrix after swap");
-        }
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
-        }
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Incorrect capacity of the second matrix after swap");
-        }
-
-        QVERIFY2(firstMatrix.at(0, 0) == 7 &&
-                 firstMatrix.at(0, 1) == 8 &&
-                 firstMatrix.at(1, 0) == 9 &&
-                 firstMatrix.at(1, 1) == 10 &&
-                 firstMatrix.at(2, 0) == 11 &&
-                 firstMatrix.at(2, 1) == 12,
-
-                 "First matrix has incorrect element values after swap");
-
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(0, 2) == 3 &&
-                 secondMatrix.at(1, 0) == 4 &&
-                 secondMatrix.at(1, 1) == 5 &&
-                 secondMatrix.at(1, 2) == 6,
-
-                 "Second matrix has incorrect element values after swap");
+        QFAIL("Incorrect capacity of the first matrix after swap!");
     }
 
+    if (mSecondaryIntMatrix.getRowCapacity() != firstMatrix.getRowCapacity() || mSecondaryIntMatrix.getColumnCapacity() != firstMatrix.getColumnCapacity())
     {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{};
-
-        std::swap(firstMatrix, secondMatrix);
-
-        QVERIFY2(firstMatrix.getRowCapacity() == 0 && firstMatrix.getColumnCapacity() == 0, "Incorrect capacity of the first matrix after swap");
-        QVERIFY2(firstMatrix.getNrOfRows() == 0 && firstMatrix.getNrOfColumns() == 0, "Incorrect number of rows and/or columns in the first matrix after swap");
-
-        if (secondMatrix.getRowCapacity() != 2 || secondMatrix.getColumnCapacity() != 3)
-        {
-            QFAIL("Incorrect capacity of the second matrix after swap");
-        }
-
-        if (secondMatrix.getNrOfRows() != 2 || secondMatrix.getNrOfColumns() != 3)
-        {
-            QFAIL("Incorrect number of rows and/or columns in the second matrix after swap");
-        }
-
-        QVERIFY2(secondMatrix.at(0, 0) == 1 &&
-                 secondMatrix.at(0, 1) == 2 &&
-                 secondMatrix.at(0, 2) == 3 &&
-                 secondMatrix.at(1, 0) == 4 &&
-                 secondMatrix.at(1, 1) == 5 &&
-                 secondMatrix.at(1, 2) == 6,
-
-                 "Second matrix has incorrect element values after swap");
+        QFAIL("Incorrect capacity of the second matrix after swap!");
     }
 
-    {
-        IntMatrix firstMatrix{};
-        IntMatrix secondMatrix{};
-
-        std::swap(firstMatrix, secondMatrix);
-
-        QVERIFY2(firstMatrix.getRowCapacity() == 0 && firstMatrix.getColumnCapacity() == 0, "Incorrect capacity of the first matrix after swap");
-        QVERIFY2(firstMatrix.getNrOfRows() == 0 && firstMatrix.getNrOfColumns() == 0, "Incorrect number of rows and/or columns in the first matrix after swap");
-        QVERIFY2(secondMatrix.getRowCapacity() == 0 && secondMatrix.getColumnCapacity() == 0, "Incorrect capacity of the second matrix after swap");
-        QVERIFY2(secondMatrix.getNrOfRows() == 0 && secondMatrix.getNrOfColumns() == 0, "Incorrect number of rows and/or columns in the second matrix after swap");
-    }
+    QVERIFY2(mPrimaryIntMatrix == secondMatrix, "First matrix has incorrect element values after swap!");
+    QVERIFY2(mSecondaryIntMatrix == firstMatrix, "Second matrix has incorrect element values after swap!");
 }
 
 void CommonTests::testSwapItems()
 {
+    QFETCH(IntMatrix, firstMatrix);
+    QFETCH(IntMatrix, secondMatrix);
+    QFETCH(IntMatrixSizeType, firstItemRowNr);
+    QFETCH(IntMatrixSizeType, firstItemColumnNr);
+    QFETCH(IntMatrixSizeType, secondItemRowNr);
+    QFETCH(IntMatrixSizeType, secondItemColumnNr);
+    QFETCH(bool, isSwapWithinMatrix);
+    QFETCH(IntMatrix, expectedFirstMatrix);
+    QFETCH(IntMatrix, expectedSecondMatrix);
+
+    if (isSwapWithinMatrix)
     {
-        IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-
-        matrix.swapItems(1, 2, matrix, 0, 1);
-
-        QVERIFY2(matrix.at(0, 0) == 1 &&
-                 matrix.at(0, 1) == 6 &&
-                 matrix.at(0, 2) == 3 &&
-                 matrix.at(1, 0) == 4 &&
-                 matrix.at(1, 1) == 5 &&
-                 matrix.at(1, 2) == 2,
-
-                 "Items are incorrectly swapped within same matrix");
+        firstMatrix.swapItems(firstItemRowNr, firstItemColumnNr, firstMatrix, secondItemRowNr, secondItemColumnNr);
+        QVERIFY2(firstMatrix == expectedFirstMatrix, "Items are incorrectly swapped within same matrix!");
     }
-
+    else
     {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+        firstMatrix.swapItems(firstItemRowNr, firstItemColumnNr, secondMatrix, secondItemRowNr, secondItemColumnNr);
 
-        firstMatrix.swapItems(1, 2, secondMatrix, 2, 0);
-
-        QVERIFY2(firstMatrix.at(0, 0) == 1 &&
-                 firstMatrix.at(0, 1) == 2 &&
-                 firstMatrix.at(0, 2) == 3 &&
-                 firstMatrix.at(1, 0) == 4 &&
-                 firstMatrix.at(1, 1) == 5 &&
-                 firstMatrix.at(1, 2) == 11,
-
-                 "Items are incorrectly swapped between matrixes, first matrix does not have the desired value after swap");
-
-        QVERIFY2(secondMatrix.at(0, 0) == 7 &&
-                 secondMatrix.at(0, 1) == 8 &&
-                 secondMatrix.at(1, 0) == 9 &&
-                 secondMatrix.at(1, 1) == 10 &&
-                 secondMatrix.at(2, 0) == 6 &&
-                 secondMatrix.at(2, 1) == 12,
-
-                 "Items are incorrectly swapped between matrixes, second matrix does not have the desired value after swap");
+        QVERIFY2(firstMatrix == expectedFirstMatrix, "Items are incorrectly swapped between matrixes, first matrix does not have the desired value after swap!");
+        QVERIFY2(secondMatrix == expectedSecondMatrix, "Items are incorrectly swapped between matrixes, second matrix does not have the desired value after swap!");
     }
 }
 
 void CommonTests::testSwapRows()
 {
+    QFETCH(IntMatrix, firstMatrix);
+    QFETCH(IntMatrix, secondMatrix);
+    QFETCH(IntMatrixSizeType, firstRowNr);
+    QFETCH(IntMatrixSizeType, secondRowNr);
+    QFETCH(bool, isSwapWithinMatrix);
+    QFETCH(IntMatrix, expectedFirstMatrix);
+    QFETCH(IntMatrix, expectedSecondMatrix);
+
+    if (isSwapWithinMatrix)
     {
-        IntMatrix matrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.swapRows(0, matrix, 2);
-
-        QVERIFY2(matrix.at(0, 0) == 7 &&
-                 matrix.at(0, 1) == 8 &&
-                 matrix.at(0, 2) == 9 &&
-                 matrix.at(1, 0) == 4 &&
-                 matrix.at(1, 1) == 5 &&
-                 matrix.at(1, 2) == 6 &&
-                 matrix.at(2, 0) == 1 &&
-                 matrix.at(2, 1) == 2 &&
-                 matrix.at(2, 2) == 3 &&
-                 matrix.at(3, 0) == 10 &&
-                 matrix.at(3, 1) == 11 &&
-                 matrix.at(3, 2) == 12,
-
-                 "Rows are incorrectly swapped within same matrix");
+        firstMatrix.swapRows(firstRowNr, firstMatrix, secondRowNr);
+        QVERIFY2(firstMatrix == expectedFirstMatrix, "Rows are incorrectly swapped within same matrix!");
     }
-
+    else
     {
-        IntMatrix firstMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{4, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
+        firstMatrix.swapRows(firstRowNr, secondMatrix, secondRowNr);
 
-        firstMatrix.swapRows(0, secondMatrix, 3);
-
-        QVERIFY2(firstMatrix.at(0, 0) == 16 &&
-                 firstMatrix.at(0, 1) == 17 &&
-                 firstMatrix.at(0, 2) == 18 &&
-                 firstMatrix.at(1, 0) == 4 &&
-                 firstMatrix.at(1, 1) == 5 &&
-                 firstMatrix.at(1, 2) == 6,
-
-                 "Rows are incorrectly swapped between matrixes, first matrix does not have the desired value after swap");
-
-        QVERIFY2(secondMatrix.at(0, 0) == 7 &&
-                 secondMatrix.at(0, 1) == 8 &&
-                 secondMatrix.at(0, 2) == 9 &&
-                 secondMatrix.at(1, 0) == 10 &&
-                 secondMatrix.at(1, 1) == 11 &&
-                 secondMatrix.at(1, 2) == 12 &&
-                 secondMatrix.at(2, 0) == 13 &&
-                 secondMatrix.at(2, 1) == 14 &&
-                 secondMatrix.at(2, 2) == 15 &&
-                 secondMatrix.at(3, 0) == 1 &&
-                 secondMatrix.at(3, 1) == 2 &&
-                 secondMatrix.at(3, 2) == 3,
-
-                 "Rows are incorrectly swapped between matrixes, second matrix does not have the desired value after swap");
+        QVERIFY2(firstMatrix == expectedFirstMatrix, "Rows are incorrectly swapped between matrixes, first matrix does not have the desired value after swap!");
+        QVERIFY2(secondMatrix == expectedSecondMatrix, "Rows are incorrectly swapped between matrixes, second matrix does not have the desired value after swap!");
     }
 }
 
 void CommonTests::testSwapColumns()
 {
+    QFETCH(IntMatrix, firstMatrix);
+    QFETCH(IntMatrix, secondMatrix);
+    QFETCH(IntMatrixSizeType, firstColumnNr);
+    QFETCH(IntMatrixSizeType, secondColumnNr);
+    QFETCH(bool, isSwapWithinMatrix);
+    QFETCH(IntMatrix, expectedFirstMatrix);
+    QFETCH(IntMatrix, expectedSecondMatrix);
+
+    if (isSwapWithinMatrix)
     {
-        IntMatrix matrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-        matrix.swapColumns(0, matrix, 2);
-
-        QVERIFY2(matrix.at(0, 0) == 3 &&
-                 matrix.at(0, 1) == 2 &&
-                 matrix.at(0, 2) == 1 &&
-                 matrix.at(0, 3) == 4 &&
-                 matrix.at(1, 0) == 7 &&
-                 matrix.at(1, 1) == 6 &&
-                 matrix.at(1, 2) == 5 &&
-                 matrix.at(1, 3) == 8 &&
-                 matrix.at(2, 0) == 11 &&
-                 matrix.at(2, 1) == 10 &&
-                 matrix.at(2, 2) == 9 &&
-                 matrix.at(2, 3) == 12,
-
-                 "Columns are incorrectly swapped within same matrix");
+        firstMatrix.swapColumns(firstColumnNr, firstMatrix, secondColumnNr);
+        QVERIFY2(firstMatrix == expectedFirstMatrix, "Columns are incorrectly swapped within same matrix!");
     }
-
+    else
     {
-        IntMatrix firstMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-        IntMatrix secondMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
+        firstMatrix.swapColumns(firstColumnNr, secondMatrix, secondColumnNr);
 
-        firstMatrix.swapColumns(0, secondMatrix, 3);
-
-        QVERIFY2(firstMatrix.at(0, 0) == 10 &&
-                 firstMatrix.at(0, 1) == 2 &&
-                 firstMatrix.at(1, 0) == 14 &&
-                 firstMatrix.at(1, 1) == 4 &&
-                 firstMatrix.at(2, 0) == 18 &&
-                 firstMatrix.at(2, 1) == 6,
-
-                 "Columns are incorrectly swapped between matrixes, first matrix does not have the desired value after swap");
-
-        QVERIFY2(secondMatrix.at(0, 0) == 7 &&
-                 secondMatrix.at(0, 1) == 8 &&
-                 secondMatrix.at(0, 2) == 9 &&
-                 secondMatrix.at(0, 3) == 1 &&
-                 secondMatrix.at(1, 0) == 11 &&
-                 secondMatrix.at(1, 1) == 12 &&
-                 secondMatrix.at(1, 2) == 13 &&
-                 secondMatrix.at(1, 3) == 3 &&
-                 secondMatrix.at(2, 0) == 15 &&
-                 secondMatrix.at(2, 1) == 16 &&
-                 secondMatrix.at(2, 2) == 17 &&
-                 secondMatrix.at(2, 3) == 5,
-
-                 "Columns are incorrectly swapped between matrixes, second matrix does not have the desired value after swap");
+        QVERIFY2(firstMatrix == expectedFirstMatrix, "Columns are incorrectly swapped between matrixes, first matrix does not have the desired value after swap!");
+        QVERIFY2(secondMatrix == expectedSecondMatrix, "Columns are incorrectly swapped between matrixes, second matrix does not have the desired value after swap!");
     }
 }
 
 void CommonTests::testSwapRowColumn()
 {
-    IntMatrix firstMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-    IntMatrix secondMatrix{3, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24}};
+    mPrimaryIntMatrix = {4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    mSecondaryIntMatrix = {3, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24}};
 
-    firstMatrix.swapRowColumn(0, secondMatrix, 3);
+    mPrimaryIntMatrix.swapRowColumn(0, mSecondaryIntMatrix, 3);
 
-    QVERIFY2(firstMatrix.at(0, 0) == 16 &&
-             firstMatrix.at(0, 1) == 20 &&
-             firstMatrix.at(0, 2) == 24 &&
-             firstMatrix.at(1, 0) == 4 &&
-             firstMatrix.at(1, 1) == 5 &&
-             firstMatrix.at(1, 2) == 6 &&
-             firstMatrix.at(2, 0) == 7 &&
-             firstMatrix.at(2, 1) == 8 &&
-             firstMatrix.at(2, 2) == 9 &&
-             firstMatrix.at(3, 0) == 10 &&
-             firstMatrix.at(3, 1) == 11 &&
-             firstMatrix.at(3, 2) == 12,
+    QVERIFY2(mPrimaryIntMatrix == IntMatrix(4, 3, {16, 20, 24, 4, 5, 6, 7, 8, 9, 10, 11, 12}),
+             "Row from first matrix is incorrectly swapped with column from the second, first matrix does not have the desired value after swap!");
 
-             "Row from first matrix is incorrectly swapped with column from the second, first matrix does not have the desired value after swap");
-
-    QVERIFY2(secondMatrix.at(0, 0) == 13 &&
-             secondMatrix.at(0, 1) == 14 &&
-             secondMatrix.at(0, 2) == 15 &&
-             secondMatrix.at(0, 3) == 1 &&
-             secondMatrix.at(1, 0) == 17 &&
-             secondMatrix.at(1, 1) == 18 &&
-             secondMatrix.at(1, 2) == 19 &&
-             secondMatrix.at(1, 3) == 2 &&
-             secondMatrix.at(2, 0) == 21 &&
-             secondMatrix.at(2, 1) == 22 &&
-             secondMatrix.at(2, 2) == 23 &&
-             secondMatrix.at(2, 3) == 3,
-
-             "Row from first matrix is incorrectly swapped with column from the second, second matrix does not have the desired value after swap");
+    QVERIFY2(mSecondaryIntMatrix == IntMatrix(3, 4, {13, 14, 15, 1, 17, 18, 19, 2, 21, 22, 23, 3}),
+             "Row from first matrix is incorrectly swapped with column from the second, second matrix does not have the desired value after swap!");
 }
 
 void CommonTests::testSetAllItemsToValue()
 {
-    IntMatrix matrix{2, 3, {1, 2, 3, 4, 5, 6}};
-    matrix.setAllItemsToValue(7);
+    QFETCH(IntMatrix, matrix);
+    QFETCH(int, value);
+    QFETCH(IntMatrix, expectedMatrix);
 
-    QVERIFY2(matrix.at(0, 0) == 7 &&
-             matrix.at(0, 1) == 7 &&
-             matrix.at(0, 2) == 7 &&
-             matrix.at(1, 0) == 7 &&
-             matrix.at(1, 1) == 7 &&
-             matrix.at(1, 2) == 7,
+    matrix.setAllItemsToValue(value);
 
-             "Setting all matrix items to same value failed, matrix has incorrect values!");
+    QVERIFY2(matrix == expectedMatrix, "Setting all matrix items to same value failed, matrix has incorrect values!");
 }
 
 void CommonTests::testCopy()
 {
-    {
-        IntMatrix destMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        IntMatrix srcMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}};
-        destMatrix.copy(srcMatrix, 3, 2, 2, 1, 1, 0);
+    QFETCH(IntMatrix, srcMatrix);
+    QFETCH(IntMatrix, destMatrix);
+    QFETCH(IntMatrixSizeType, copiedRowsCount);
+    QFETCH(IntMatrixSizeType, copiedColumnsCount);
+    QFETCH(IntMatrixSizeType, srcCopyRowNr);
+    QFETCH(IntMatrixSizeType, srcCopyColumnNr);
+    QFETCH(IntMatrixSizeType, destCopyRowNr);
+    QFETCH(IntMatrixSizeType, destCopyColumnNr);
+    QFETCH(IntMatrix, expectedDestMatrix);
 
-        QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                 destMatrix.at(0, 1) == 2 &&
-                 destMatrix.at(0, 2) == 3 &&
-                 destMatrix.at(1, 0) == 22 &&
-                 destMatrix.at(1, 1) == 23 &&
-                 destMatrix.at(1, 2) == 6 &&
-                 destMatrix.at(2, 0) == 26 &&
-                 destMatrix.at(2, 1) == 27 &&
-                 destMatrix.at(2, 2) == 9 &&
-                 destMatrix.at(3, 0) == 30 &&
-                 destMatrix.at(3, 1) == 31 &&
-                 destMatrix.at(3, 2) == 12,
+    destMatrix.copy(srcMatrix, copiedRowsCount, copiedColumnsCount, srcCopyRowNr, srcCopyColumnNr, destCopyRowNr, destCopyColumnNr);
 
-                 "Copying items failed, destination matrix has incorrect values!");
-    }
+    QVERIFY2(destMatrix == expectedDestMatrix, "Copying items failed, destination matrix has incorrect values!");
+}
 
-    {
-        IntMatrix destMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        IntMatrix srcMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}};
-        destMatrix.copy(srcMatrix, 0, 2, 2, 1, 1, 0);
+void CommonTests::testCapacityWithIdenticalMatrixConstructor_data()
+{
+    QTest::addColumn<IntMatrixSizeType>("rowsCount");
+    QTest::addColumn<IntMatrixSizeType>("columnsCount");
+    QTest::addColumn<int>("elementValue");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
 
-        QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                 destMatrix.at(0, 1) == 2 &&
-                 destMatrix.at(0, 2) == 3 &&
-                 destMatrix.at(1, 0) == 4 &&
-                 destMatrix.at(1, 1) == 5 &&
-                 destMatrix.at(1, 2) == 6 &&
-                 destMatrix.at(2, 0) == 7 &&
-                 destMatrix.at(2, 1) == 8 &&
-                 destMatrix.at(2, 2) == 9 &&
-                 destMatrix.at(3, 0) == 10 &&
-                 destMatrix.at(3, 1) == 11 &&
-                 destMatrix.at(3, 2) == 12,
+    QTest::newRow("small size matrix") << 3 << 4 << -5 << 3 << 5;
+    QTest::newRow("small size matrix") << 4 << 3 << -5 << 5 << 3;
+    QTest::newRow("large size matrix") << 25 << 20 << -2 << 31 << 25;
+    QTest::newRow("large size matrix") << 20 << 25 << -2 << 25 << 31;
+}
 
-                 "Copying items failed, destination matrix has incorrect values!");
-    }
+void CommonTests::testCapacityWithDiagonalMatrixConstructor_data()
+{
+    QTest::addColumn<IntMatrixSizeType>("rowsColumnsCount");
+    QTest::addColumn<int>("nonDiagonalValue");
+    QTest::addColumn<int>("diagonalValue");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowColumnCapacity");
 
-    {
-        IntMatrix destMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        IntMatrix srcMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}};
-        destMatrix.copy(srcMatrix, 3, 0, 2, 1, 1, 0);
+    QTest::newRow("small size matrix") << 3 << -2 << -3 << 3;
+    QTest::newRow("small size matrix") << 4 << -2 << -3 << 5;
+    QTest::newRow("medium size matrix") << 8 << -2 << -3 << 10;
+    QTest::newRow("medium size matrix") << 10 << -2 << -3 << 12;
+}
 
-        QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                 destMatrix.at(0, 1) == 2 &&
-                 destMatrix.at(0, 2) == 3 &&
-                 destMatrix.at(1, 0) == 4 &&
-                 destMatrix.at(1, 1) == 5 &&
-                 destMatrix.at(1, 2) == 6 &&
-                 destMatrix.at(2, 0) == 7 &&
-                 destMatrix.at(2, 1) == 8 &&
-                 destMatrix.at(2, 2) == 9 &&
-                 destMatrix.at(3, 0) == 10 &&
-                 destMatrix.at(3, 1) == 11 &&
-                 destMatrix.at(3, 2) == 12,
+void CommonTests::testCapacityWithCopyConstructor_data()
+{
+    _buildCapacityWithMoveCopyConstructorsTestingTable();
+}
 
-                 "Copying items failed, destination matrix has incorrect values!");
-    }
+void CommonTests::testCapacityWithMoveConstructor_data()
+{
+    _buildCapacityWithMoveCopyConstructorsTestingTable();
+}
 
-    {
-        IntMatrix destMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-        IntMatrix srcMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}};
-        destMatrix.copy(srcMatrix, 0, 0, 2, 1, 1, 0);
+void CommonTests::testCapacityWithCopyAssignmentOperator_data()
+{
+    _buildCapacityWithAssignmentOperatorsTestingTable();
+}
 
-        QVERIFY2(destMatrix.at(0, 0) == 1 &&
-                 destMatrix.at(0, 1) == 2 &&
-                 destMatrix.at(0, 2) == 3 &&
-                 destMatrix.at(1, 0) == 4 &&
-                 destMatrix.at(1, 1) == 5 &&
-                 destMatrix.at(1, 2) == 6 &&
-                 destMatrix.at(2, 0) == 7 &&
-                 destMatrix.at(2, 1) == 8 &&
-                 destMatrix.at(2, 2) == 9 &&
-                 destMatrix.at(3, 0) == 10 &&
-                 destMatrix.at(3, 1) == 11 &&
-                 destMatrix.at(3, 2) == 12,
+void CommonTests::testCapacityWithMoveAssignmentOperator_data()
+{
+    _buildCapacityWithAssignmentOperatorsTestingTable();
+}
 
-                 "Copying items failed, destination matrix has incorrect values!");
-    }
+void CommonTests::testBooleanOperator_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<bool>("checkTrue");
+
+    QTest::newRow("check false") << IntMatrix{} << false;
+    QTest::newRow("check false") << IntMatrix{2, 3, {0, 0, 0, 0, 0, 0}} << false;
+    QTest::newRow("check true") << IntMatrix{2, 3, {3, -25, 26, -38, 0, -1}} << true;
+    QTest::newRow("check true") << IntMatrix{2, 3, {0, 0, 0, 0, -25, 0}} << true;
+}
+
+void CommonTests::testMatrixesAreEqual_data()
+{
+    QTest::addColumn<IntMatrix>("firstMatrix");
+    QTest::addColumn<IntMatrix>("secondMatrix");
+    QTest::addColumn<bool>("checkEqualityToItself");
+
+    QTest::newRow("distinct matrixes equality") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << false;
+    QTest::newRow("equality to itself") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << true;
+    QTest::newRow("distinct matrixes equality") << IntMatrix{} << IntMatrix{} << false;
+    QTest::newRow("equality to itself") << IntMatrix{} << IntMatrix{} << true;
+}
+
+void CommonTests::testMatrixesAreNotEqual_data()
+{
+    QTest::addColumn<IntMatrix>("firstMatrix");
+    QTest::addColumn<IntMatrix>("secondMatrix");
+
+    QTest::newRow("same size matrixes") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 3, {5, 125, -5, 15, 833, -8333}};
+    QTest::newRow("different columns count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 2, {5, 75, 15, 833}};
+    QTest::newRow("different rows count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{3, 3, {5, 75, -5, 15, 833, -8333, 5, 5, -125}};
+    QTest::newRow("different rows/columns count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{3, 2, {5, 75, 15, 833, -5, -8333}};
+    QTest::newRow("different rows/columns count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{};
+}
+
+void CommonTests::testTranspose_data()
+{
+    QTest::addColumn<IntMatrix>("initialSrcMatrix");
+    QTest::addColumn<IntMatrix>("initialDestMatrix");
+    QTest::addColumn<IntMatrix>("expectedDestMatrix");
+    QTest::addColumn<IntMatrixSizeType>("expectedSrcRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedSrcColumnCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedDestRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedDestColumnCapacity");
+    QTest::addColumn<bool>("isTransposedToItself");
+
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}}
+                                 << IntMatrix{3, 2, {1, 4, 2, 5, 3, 6}} << 3 << 3 << 3 << 3 << true;
+
+    QTest::newRow("same matrix") << IntMatrix{} << IntMatrix{}
+                                 << IntMatrix{} << 0 << 0 << 0 << 0 << true;
+
+    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {7, 8, 9, 10}}
+                                        << IntMatrix{3, 2, {1, 4, 2, 5, 3, 6}} << 2 << 3 << 3 << 2 << false;
+
+    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{}
+                                        << IntMatrix{3, 2, {1, 4, 2, 5, 3, 6}} << 2 << 3 << 3 << 2 << false;
+
+    QTest::newRow("different matrixes") << IntMatrix{} << IntMatrix{2, 2, {1, 2, 3, 4}}
+                                        << IntMatrix{} << 0 << 0 << 0 << 0 << false;
+
+    QTest::newRow("different matrixes") << IntMatrix{} << IntMatrix{}
+                                        << IntMatrix{} << 0 << 0 << 0 << 0 << false;
+}
+
+void CommonTests::testCapacityWithTranspose_data()
+{
+    QTest::addColumn<IntMatrixSizeType>("srcMatrixRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("srcMatrixColumnsCount");
+    QTest::addColumn<int>("srcMatrixElementValue");
+    QTest::addColumn<IntMatrixSizeType>("destMatrixRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("destMatrixColumnsCount");
+    QTest::addColumn<int>("destMatrixElementValue");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<bool>("isTransposedToItself");
+
+    QTest::newRow("transposed matrix initially empty") << 3 << 4 << 2 << 0 << 0 << 0 << 5 << 3 << false;
+    QTest::newRow("transposed matrix initially empty") << 4 << 3 << 2 << 0 << 0 << 0 << 3 << 5 << false;
+    QTest::newRow("transposed matrix initially empty") << 7 << 8 << 2 << 0 << 0 << 0 << 10 << 8 << false;
+    QTest::newRow("transposed matrix initially empty") << 8 << 7 << 2 << 0 << 0 << 0 << 8 << 10 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << 8 << 7 << 2 << 5 << 6 << 2 << 8 << 10 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << 8 << 7 << 2 << 6 << 6 << 2 << 7 << 10 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << 8 << 7 << 2 << 5 << 7 << 2 << 8 << 8 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << 8 << 7 << 2 << 6 << 7 << 2 << 7 << 8 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << 8 << 7 << 2 << 7 << 8 << 2 << 8 << 10 << false;
+    QTest::newRow("matrix transposed to itself") << 3 << 3 << 2 << 3 << 3 << 2 << 3 << 3 << true;
+    QTest::newRow("matrix transposed to itself") << 3 << 4 << 2 << 3 << 4 << 2 << 5 << 5 << true;
+    QTest::newRow("matrix transposed to itself") << 4 << 3 << 2 << 4 << 3 << 2 << 5 << 5 << true;
+    QTest::newRow("matrix transposed to itself") << 4 << 4 << 2 << 4 << 4 << 2 << 5 << 5 << true;
+    QTest::newRow("matrix transposed to itself") << 7 << 8 << 2 << 7 << 8 << 2 << 8 << 10 << true;
+    QTest::newRow("matrix transposed to itself") << 8 << 7 << 2 << 8 << 7 << 2 << 10 << 8 << true;
+}
+
+void CommonTests::testClear_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+
+    QTest::newRow("non-empty matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("empty matrix") << IntMatrix{};
+}
+
+void CommonTests::testResizeWithoutFillingInNewValues_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<IntMatrix>("expectedRetainedElementsMatrix");
+
+    QTest::newRow("equal rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 2
+                                              << 4 << 2 << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+
+    QTest::newRow("less rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 3
+                                              << 2 << 3 << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+    QTest::newRow("less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 2
+                                             << 3 << 2 << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
+
+    QTest::newRow("equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 5
+                                              << 4 << 5 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+    QTest::newRow("more rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 3
+                                              << 5 << 3 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+    QTest::newRow("more rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 4
+                                             << 5 << 4 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+    QTest::newRow("equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 3
+                                               << 4 << 3 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+}
+
+void CommonTests::testCapacityWithResizeWithoutFillingInNewValues_data()
+{
+    _buildCapacityWithResizeTestingTable();
+}
+
+void CommonTests::testResizeAndFillInNewValues_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<int>("fillValue");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<IntMatrix>("expectedMatrix");
+
+    QTest::newRow("equal rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 2 << -1
+                                              << 4 << 2 << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+
+    QTest::newRow("less rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 3 << -1
+                                              << 2 << 3 << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+
+    QTest::newRow("less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 2 << -1
+                                             << 3 << 2 << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
+
+    QTest::newRow("equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 5 << -1
+                                              << 4 << 5 << IntMatrix{4, 5, {1, 2, 3, -1, -1, 4, 5, 6, -1, -1, 7, 8, 9, -1, -1, 10, 11, 12, -1, -1}};
+
+    QTest::newRow("more rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 3 << -1
+                                              << 5 << 3 << IntMatrix{5, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, -1, -1}};
+
+    QTest::newRow("more rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 4 << -1
+                                             << 5 << 4 << IntMatrix{5, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1, 10, 11, 12, -1, -1, -1, -1, -1}};
+
+    QTest::newRow("equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 3 << -1
+                                               << 4 << 3 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+}
+
+void CommonTests::testCapacityWithResizeAndFillInNewValues_data()
+{
+    _buildCapacityWithResizeTestingTable();
+}
+
+void CommonTests::testShrinkToFit_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+
+    QTest::newRow("empty matrix") << IntMatrix{};
+    QTest::newRow("square matrix") << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    QTest::newRow("more rows than columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("less rows than columns") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("square matrix") << IntMatrix{4, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
+}
+
+void CommonTests::testInsertRowNoSetValue_data()
+{
+    _buildInsertRowTestingTable();
+}
+
+void CommonTests::testInsertRowSetValue_data()
+{
+    _buildInsertRowTestingTable();
+}
+
+void CommonTests::testCapacityWithInsertRow_data()
+{
+    QTest::addColumn<IntMatrixSizeType>("rowsCount");
+    QTest::addColumn<IntMatrixSizeType>("columnsCount");
+    QTest::addColumn<int>("elementValue");
+    QTest::addColumn<IntMatrixSizeType>("insertPosition");
+    QTest::addColumn<int>("insertedRowValue");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<bool>("isInsertedRowValueSet");
+
+    QTest::newRow("inserted row value NOT set") << 3 << 4 << -2 << 1 << 5 << 6 << 5 << false;
+    QTest::newRow("inserted row value set") << 3 << 4 << -2 << 1 << 5 << 6 << 5 << true;
+    QTest::newRow("inserted row value NOT set") << 6 << 5 << -2 << 3 << 5 << 7 << 6 << false;
+    QTest::newRow("inserted row value set") << 6 << 5 << -2 << 3 << 5 << 7 << 6 << true;
+    QTest::newRow("inserted row value NOT set") << 8 << 2 << -2 << 5 << 5 << 10 << 2 << false;
+    QTest::newRow("inserted row value set") << 8 << 2 << -2 << 5 << 5 << 10 << 2 << true;
+}
+
+void CommonTests::testInsertColumnNoSetValue_data()
+{
+    _buildInsertColumnTestingTable();
+}
+
+void CommonTests::testInsertColumnSetValue_data()
+{
+    _buildInsertColumnTestingTable();
+}
+
+void CommonTests::testCapacityWithInsertColumn_data()
+{
+    QTest::addColumn<IntMatrixSizeType>("rowsCount");
+    QTest::addColumn<IntMatrixSizeType>("columnsCount");
+    QTest::addColumn<int>("elementValue");
+    QTest::addColumn<IntMatrixSizeType>("insertPosition");
+    QTest::addColumn<int>("insertedColumnValue");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<bool>("isInsertedColumnValueSet");
+
+    QTest::newRow("inserted column value NOT set") << 5 << 3 << 4 << 1 << 1 << 6 << 6 << false;
+    QTest::newRow("inserted column value set") << 5 << 3 << 4 << 1 << 1 << 6 << 6 << true;
+    QTest::newRow("inserted column value NOT set") << 5 << 7 << 4 << 1 << 1 << 6 << 8 << false;
+    QTest::newRow("inserted column value set") << 5 << 7 << 4 << 1 << 1 << 6 << 8 << true;
+    QTest::newRow("inserted column value NOT set") << 5 << 14 << 4 << 1 << 1 << 6 << 17 << false;
+    QTest::newRow("inserted column value set") << 5 << 14 << 4 << 1 << 1 << 6 << 17 << true;
+}
+
+void CommonTests::testEraseRow_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<IntMatrixSizeType>("erasePosition");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<IntMatrix>("expectedMatrix");
+
+    QTest::newRow("erase at beginning position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 3 << 5 << IntMatrix{2, 4, {5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("erase at random position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << 3 << 5 << IntMatrix{2, 4, {1, 2, 3, 4, 9, 10, 11, 12}};
+    QTest::newRow("erase at end position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 3 << 5 << IntMatrix{2, 4, {1, 2, 3, 4, 5, 6, 7, 8}};
+    QTest::newRow("erase the only row") << IntMatrix{1, 4, {1, 2, 3, 4}} << 0 << 0 << 0 << IntMatrix{};
+}
+
+void CommonTests::testCapacityWithEraseRow_data()
+{
+    QTest::addColumn<IntMatrixSizeType>("rowsCount");
+    QTest::addColumn<IntMatrixSizeType>("columnsCount");
+    QTest::addColumn<int>("elementValue");
+    QTest::addColumn<TripleSizeTypeTupleArray>("erasedRowAndExpectedCapacity");
+
+    QTest::newRow("less rows than columns") << 3 << 4 << -2 << TripleSizeTypeTupleArray{{1, 3, 5}, {1, 3, 5}, {0, 0, 0}};
+    QTest::newRow("square matrix") << 4 << 4 << -2 << TripleSizeTypeTupleArray{{1, 5, 5}, {1, 5, 5}, {1, 2, 5}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << 7 << 5 << -2 << TripleSizeTypeTupleArray{{1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 4, 6}, {1, 2, 6}, {0, 0, 0}};
+}
+
+void CommonTests::testEraseColumn_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<IntMatrixSizeType>("erasePosition");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<IntMatrix>("expectedMatrix");
+
+    QTest::newRow("erase at beginning position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 5 << 3 << IntMatrix{4, 2, {2, 3, 5, 6, 8, 9, 11, 12}};
+    QTest::newRow("erase at random position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << 5 << 3 << IntMatrix{4, 2, {1, 3, 4, 6, 7, 9, 10, 12}};
+    QTest::newRow("erase at end position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 5 << 3 << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+    QTest::newRow("erase the only column") << IntMatrix{4, 1, {1, 2, 3, 4}} << 0 << 0 << 0 << IntMatrix{};
+}
+
+void CommonTests::testCapacityWithEraseColumn_data()
+{
+    QTest::addColumn<IntMatrixSizeType>("rowsCount");
+    QTest::addColumn<IntMatrixSizeType>("columnsCount");
+    QTest::addColumn<int>("elementValue");
+    QTest::addColumn<TripleSizeTypeTupleArray>("erasedColumnAndExpectedCapacity");
+
+    QTest::newRow("less columns than rows") << 4 << 3 << 4 << TripleSizeTypeTupleArray{{1, 5, 3}, {1, 5, 3}, {0, 0, 0}};
+    QTest::newRow("square matrix") << 4 << 4 << 4 << TripleSizeTypeTupleArray{{1, 5, 5}, {1, 5, 5}, {1, 5, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << 5 << 7 << 4 << TripleSizeTypeTupleArray{{1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 4}, {1, 6, 2}, {0, 0, 0}};
+}
+
+void CommonTests::testCatByRow_data()
+{
+    QTest::addColumn<IntMatrix>("destMatrix");
+    QTest::addColumn<IntMatrix>("firstSrcMatrix");
+    QTest::addColumn<IntMatrix>("secondSrcMatrix");
+    QTest::addColumn<ConcatMode>("mode");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<IntMatrix>("expectedDestMatrix");
+
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT
+                                             << 3 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+
+    QTest::newRow("scenario: all different") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT
+                                             << 3 << 3 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+
+    QTest::newRow("scenario: all different") << IntMatrix{4, 1, {7, 8, 9, 10}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT
+                                             << 5 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+
+    QTest::newRow("scenario: all different") << IntMatrix{3, 2, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT
+                                             << 3 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+
+    QTest::newRow("scenario: destination first") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::DESTINATION_FIRST
+                                                 << 3 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+
+    QTest::newRow("scenario: destination second") << IntMatrix{1, 2, {5, 6}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::DESTINATION_SECOND
+                                                  << 3 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+
+    QTest::newRow("scenario: destination all") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << ConcatMode::DESTINATION_ALL
+                                               << 5 << 2 << IntMatrix{4, 2, {1, 2, 3, 4, 1, 2, 3, 4}};
+
+    QTest::newRow("scenario: source both") << IntMatrix{} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << ConcatMode::SOURCE_BOTH
+                                           << 5 << 2 << IntMatrix{4, 2, {1, 2, 3, 4, 1, 2, 3, 4}};
+}
+
+void CommonTests::testCapacityWithCatByRow_data()
+{
+    QTest::addColumn<IntMatrix>("destMatrix");
+    QTest::addColumn<IntMatrix>("firstSrcMatrix");
+    QTest::addColumn<IntMatrix>("secondSrcMatrix");
+    QTest::addColumn<ConcatMode>("mode");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("scenario: destination first") << IntMatrix{4, 7, 5} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::DESTINATION_FIRST << 0 << 0 << 0 << 0
+                                                 << 11 << 8;
+
+    QTest::newRow("scenario: destination first") << IntMatrix{4, 7, 5} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::DESTINATION_FIRST << 4 << 7 << 8 << 8
+                                                 << 11 << 8;
+
+    QTest::newRow("scenario: destination first") << IntMatrix{4, 7, 5} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::DESTINATION_FIRST << 4 << 7 << 9 << 8
+                                                 << 9 << 8;
+
+    QTest::newRow("scenario: destination first") << IntMatrix{4, 7, 5} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::DESTINATION_FIRST << 4 << 7 << 10 << 8
+                                                 << 10 << 8;
+
+    QTest::newRow("scenario: destination second") << IntMatrix{5, 7, -2} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::DESTINATION_SECOND << 0 << 0 << 0 << 0
+                                                 << 11 << 8;
+
+    QTest::newRow("scenario: destination second") << IntMatrix{5, 7, -2} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::DESTINATION_SECOND << 5 << 7 << 8 << 8
+                                                 << 11 << 8;
+
+    QTest::newRow("scenario: destination second") << IntMatrix{5, 7, -2} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::DESTINATION_SECOND << 5 << 7 << 9 << 8
+                                                 << 9 << 8;
+
+    QTest::newRow("scenario: destination second") << IntMatrix{5, 7, -2} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::DESTINATION_SECOND << 5 << 7 << 10 << 8
+                                                 << 10 << 8;
+
+    QTest::newRow("scenario: destination all") << IntMatrix{4, 7, 5} << IntMatrix{4, 7, 5} << IntMatrix{4, 7, 5} << ConcatMode::DESTINATION_ALL << 0 << 0 << 0 << 0
+                                                 << 10 << 8;
+
+    QTest::newRow("scenario: destination all") << IntMatrix{4, 7, 5} << IntMatrix{4, 7, 5} << IntMatrix{4, 7, 5} << ConcatMode::DESTINATION_ALL << 4 << 7 << 7 << 8
+                                                 << 10 << 8;
+
+    QTest::newRow("scenario: destination all") << IntMatrix{4, 7, 5} << IntMatrix{4, 7, 5} << IntMatrix{4, 7, 5} << ConcatMode::DESTINATION_ALL << 4 << 7 << 8 << 8
+                                                 << 8 << 8;
+
+    QTest::newRow("scenario: destination all") << IntMatrix{4, 7, 5} << IntMatrix{4, 7, 5} << IntMatrix{4, 7, 5} << ConcatMode::DESTINATION_ALL << 4 << 7 << 9 << 8
+                                                 << 9 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0
+                                                 << 11 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{7, 5, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0
+                                                 << 11 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{10, 5, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0
+                                                 << 12 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{6, 6, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0
+                                                 << 11 << 7;
+
+    QTest::newRow("scenario: all different") << IntMatrix{7, 6, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 9 << 7
+                                                 << 9 << 7;
+
+    QTest::newRow("scenario: all different") << IntMatrix{7, 6, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 9 << 8
+                                                 << 9 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{7, 6, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 10 << 7
+                                                 << 10 << 7;
+
+    QTest::newRow("scenario: all different") << IntMatrix{7, 6, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 10 << 8
+                                                 << 10 << 8;
+}
+
+void CommonTests::testCatByColumn_data()
+{
+    QTest::addColumn<IntMatrix>("destMatrix");
+    QTest::addColumn<IntMatrix>("firstSrcMatrix");
+    QTest::addColumn<IntMatrix>("secondSrcMatrix");
+    QTest::addColumn<ConcatMode>("mode");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<IntMatrix>("expectedDestMatrix");
+
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT
+                                             << 2 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
+
+    QTest::newRow("scenario: all different") << IntMatrix{3, 2, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT
+                                             << 3 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
+
+    QTest::newRow("scenario: all different") << IntMatrix{1, 4, {7, 8, 9, 10}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT
+                                             << 2 << 5 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
+
+    QTest::newRow("scenario: all different") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT
+                                             << 2 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
+
+    QTest::newRow("scenario: destination first") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::DESTINATION_FIRST
+                                                 << 2 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
+
+    QTest::newRow("scenario: destination second") << IntMatrix{2, 1, {5, 6}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::DESTINATION_SECOND
+                                                  << 2 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
+
+    QTest::newRow("scenario: destination all") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << ConcatMode::DESTINATION_ALL
+                                               << 2 << 5 << IntMatrix{2, 4, {1, 2, 1, 2, 3, 4, 3, 4}};
+
+    QTest::newRow("scenario: source both") << IntMatrix{} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << ConcatMode::SOURCE_BOTH
+                                           << 2 << 5 << IntMatrix{2, 4, {1, 2, 1, 2, 3, 4, 3, 4}};
+}
+
+void CommonTests::testCapacityWithCatByColumn_data()
+{
+    QTest::addColumn<IntMatrix>("destMatrix");
+    QTest::addColumn<IntMatrix>("firstSrcMatrix");
+    QTest::addColumn<IntMatrix>("secondSrcMatrix");
+    QTest::addColumn<ConcatMode>("mode");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("scenario: destination first") << IntMatrix{7, 4, 5} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::DESTINATION_FIRST << 0 << 0 << 0 << 0
+                                                 << 8 << 11;
+
+    QTest::newRow("scenario: destination first") << IntMatrix{7, 4, 5} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::DESTINATION_FIRST << 7 << 4 << 8 << 8
+                                                 << 8 << 11;
+
+    QTest::newRow("scenario: destination first") << IntMatrix{7, 4, 5} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::DESTINATION_FIRST << 7 << 4 << 8 << 9
+                                                 << 8 << 9;
+
+    QTest::newRow("scenario: destination first") << IntMatrix{7, 4, 5} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::DESTINATION_FIRST << 7 << 4 << 8 << 10
+                                                 << 8 << 10;
+
+    QTest::newRow("scenario: destination second") << IntMatrix{7, 5, -2} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::DESTINATION_SECOND << 0 << 0 << 0 << 0
+                                                 << 8 << 11;
+
+    QTest::newRow("scenario: destination second") << IntMatrix{7, 5, -2} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::DESTINATION_SECOND << 7 << 5 << 8 << 8
+                                                 << 8 << 11;
+
+    QTest::newRow("scenario: destination second") << IntMatrix{7, 5, -2} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::DESTINATION_SECOND << 7 << 5 << 8 << 9
+                                                 << 8 << 9;
+
+    QTest::newRow("scenario: destination second") << IntMatrix{7, 5, -2} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::DESTINATION_SECOND << 7 << 5 << 8 << 10
+                                                 << 8 << 10;
+
+    QTest::newRow("scenario: destination all") << IntMatrix{7, 4, 5} << IntMatrix{7, 4, 5} << IntMatrix{7, 4, 5} << ConcatMode::DESTINATION_ALL << 0 << 0 << 0 << 0
+                                                 << 8 << 10;
+
+    QTest::newRow("scenario: destination all") << IntMatrix{7, 4, 5} << IntMatrix{7, 4, 5} << IntMatrix{7, 4, 5} << ConcatMode::DESTINATION_ALL << 7 << 4 << 8 << 7
+                                                 << 8 << 10;
+
+    QTest::newRow("scenario: destination all") << IntMatrix{7, 4, 5} << IntMatrix{7, 4, 5} << IntMatrix{7, 4, 5} << ConcatMode::DESTINATION_ALL << 7 << 4 << 8 << 8
+                                                 << 8 << 8;
+
+    QTest::newRow("scenario: destination all") << IntMatrix{7, 4, 5} << IntMatrix{7, 4, 5} << IntMatrix{7, 4, 5} << ConcatMode::DESTINATION_ALL << 7 << 4 << 8 << 9
+                                                 << 8 << 9;
+
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0
+                                                 << 8 << 11;
+
+    QTest::newRow("scenario: all different") << IntMatrix{5, 7, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0
+                                                 << 8 << 11;
+
+    QTest::newRow("scenario: all different") << IntMatrix{5, 10, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0
+                                                 << 8 << 12;
+
+    QTest::newRow("scenario: all different") << IntMatrix{6, 6, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0
+                                                 << 7 << 11;
+
+    QTest::newRow("scenario: all different") << IntMatrix{6, 7, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 7 << 9
+                                                 << 7 << 9;
+
+    QTest::newRow("scenario: all different") << IntMatrix{6, 7, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 8 << 9
+                                                 << 8 << 9;
+
+    QTest::newRow("scenario: all different") << IntMatrix{6, 7, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 7 << 10
+                                                 << 7 << 10;
+
+    QTest::newRow("scenario: all different") << IntMatrix{6, 7, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 8 << 10
+                                                 << 8 << 10;
+}
+
+void CommonTests::testSplitByRow_data()
+{
+    QTest::addColumn<IntMatrix>("srcMatrix");
+    QTest::addColumn<IntMatrix>("firstDestMatrix");
+    QTest::addColumn<IntMatrix>("secondDestMatrix");
+    QTest::addColumn<IntMatrixSizeType>("splitPosition");
+    QTest::addColumn<SplitMode>("mode");
+    QTest::addColumn<IntMatrixSizeType>("expectedFirstDestRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedFirstDestColumnCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedSecondDestRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedSecondDestColumnCapacity");
+    QTest::addColumn<IntMatrix>("expectedFirstDestMatrix");
+    QTest::addColumn<IntMatrix>("expectedSecondDestMatrix");
+
+    QTest::newRow("scenario: all different") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 2 << SplitMode::ALL_DIFFERENT
+                                             << 2 << 2 << 1 << 2 << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}};
+
+    QTest::newRow("scenario: all different") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{1, 2, {7, 8}} << IntMatrix{} << 2 << SplitMode::ALL_DIFFERENT
+                                             << 2 << 2 << 1 << 2 << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}};
+
+    QTest::newRow("scenario: all different") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{2, 2, {9, 10, 11, 12}} << 2 << SplitMode::ALL_DIFFERENT
+                                             << 2 << 2 << 2 << 2 << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}};
+
+    QTest::newRow("scenario: all different") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{1, 2, {7, 8}} << IntMatrix{2, 2, {9, 10, 11, 12}} << 2 << SplitMode::ALL_DIFFERENT
+                                             << 2 << 2 << 2 << 2 << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}};
+
+    QTest::newRow("scenario: source first") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << 2 << SplitMode::SOURCE_FIRST
+                                            << 3 << 2 << 1 << 2 << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}};
+
+    QTest::newRow("scenario: source first") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {9, 10, 11, 12}} << 2 << SplitMode::SOURCE_FIRST
+                                            << 3 << 2 << 2 << 2 << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}};
+
+    QTest::newRow("scenario: source second") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 2 << SplitMode::SOURCE_SECOND
+                                             << 2 << 2 << 3 << 2 << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}};
+
+    QTest::newRow("scenario: source second") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{1, 2, {7, 8}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 2 << SplitMode::SOURCE_SECOND
+                                             << 2 << 2 << 3 << 2 << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}};
+}
+
+void CommonTests::testCapacityWithSplitByRow_data()
+{
+    QTest::addColumn<IntMatrix>("srcMatrix");
+    QTest::addColumn<IntMatrix>("firstDestMatrix");
+    QTest::addColumn<IntMatrix>("secondDestMatrix");
+    QTest::addColumn<IntMatrixSizeType>("splitPosition");
+    QTest::addColumn<SplitMode>("mode");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnCapacity");
+    QTest::addColumn<bool>("isFirstDestResized");
+    QTest::addColumn<IntMatrixSizeType>("expectedFirstDestRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedFirstDestColumnCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedSecondDestRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedSecondDestColumnCapacity");
+
+    QTest::newRow("scenario: source first") << IntMatrix{15, 17, -3} << IntMatrix{15, 17, -3} << IntMatrix{} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                            << 18 << 21 << 8 << 21;
+
+    QTest::newRow("scenario: source first") << IntMatrix{15, 17, -3} << IntMatrix{15, 17, -3} << IntMatrix{5, 8, 2} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                            << 18 << 21 << 8 << 21;
+
+    QTest::newRow("scenario: source first") << IntMatrix{15, 17, -3} << IntMatrix{15, 17, -3} << IntMatrix{5, 8, 2} << 8 << SplitMode::SOURCE_FIRST << 5 << 8 << 6 << 17 << false
+                                            << 18 << 21 << 8 << 17;
+
+    QTest::newRow("scenario: source first") << IntMatrix{15, 17, -3} << IntMatrix{15, 17, -3} << IntMatrix{5, 8, 2} << 8 << SplitMode::SOURCE_FIRST << 5 << 8 << 6 << 18 << false
+                                            << 18 << 21 << 8 << 18;
+
+    QTest::newRow("scenario: source first") << IntMatrix{15, 17, -3} << IntMatrix{15, 17, -3} << IntMatrix{6, 15, 2} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                            << 18 << 21 << 7 << 18;
+
+    QTest::newRow("scenario: source first") << IntMatrix{15, 17, -3} << IntMatrix{15, 17, -3} << IntMatrix{7, 17, 2} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                            << 18 << 21 << 8 << 21;
+
+    QTest::newRow("scenario: source second") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{15, 17, -3} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 10 << 21 << 18 << 21;
+
+    QTest::newRow("scenario: source second") << IntMatrix{15, 17, -3} << IntMatrix{5, 8, 2} << IntMatrix{15, 17, -3} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 10 << 21 << 18 << 21;
+
+    QTest::newRow("scenario: source second") << IntMatrix{15, 17, -3} << IntMatrix{6, 8, 2} << IntMatrix{15, 17, -3} << 8 << SplitMode::SOURCE_SECOND << 6 << 8 << 7 << 17 << true
+                                             << 10 << 17 << 18 << 21;
+
+    QTest::newRow("scenario: source second") << IntMatrix{15, 17, -3} << IntMatrix{6, 8, 2} << IntMatrix{15, 17, -3} << 8 << SplitMode::SOURCE_SECOND << 6 << 8 << 7 << 18 << true
+                                             << 10 << 18 << 18 << 21;
+
+    QTest::newRow("scenario: source second") << IntMatrix{15, 17, -3} << IntMatrix{7, 15, 2} << IntMatrix{15, 17, -3} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 8 << 18 << 18 << 21;
+
+    QTest::newRow("scenario: source second") << IntMatrix{15, 17, -3} << IntMatrix{8, 17, 2} << IntMatrix{15, 17, -3} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 10 << 21 << 18 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 10 << 21 << 8 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{5, 8, 2} << IntMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 10 << 21 << 8 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{6, 8, 2} << IntMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 6 << 8 << 7 << 17 << true
+                                             << 10 << 17 << 8 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{6, 8, 2} << IntMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 6 << 8 << 7 << 18 << true
+                                             << 10 << 18 << 8 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{7, 15, 2} << IntMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 8 << 18 << 8 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{8, 17, 2} << IntMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 10 << 21 << 8 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{5, 8, 2} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 10 << 21 << 8 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{5, 8, 2} << 8 << SplitMode::ALL_DIFFERENT << 5 << 8 << 6 << 17 << false
+                                             << 10 << 21 << 8 << 17;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{5, 8, 2} << 8 << SplitMode::ALL_DIFFERENT << 5 << 8 << 6 << 18 << false
+                                             << 10 << 21 << 8 << 18;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{6, 15, 2} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 10 << 21 << 7 << 18;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{7, 17, 2} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 10 << 21 << 8 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{8, 17, 2} << IntMatrix{7, 17, 2} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 10 << 21 << 8 << 21;
+
+    QTest::newRow("scenario: source first") << IntMatrix{15, 17, -3} << IntMatrix{15, 17, -3} << IntMatrix{} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                             << 18 << 21 << 10 << 21;
+
+    QTest::newRow("scenario: source first") << IntMatrix{15, 17, -3} << IntMatrix{15, 17, -3} << IntMatrix{6, 8, 2} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                             << 18 << 21 << 10 << 21;
+
+    QTest::newRow("scenario: source first") << IntMatrix{15, 17, -3} << IntMatrix{15, 17, -3} << IntMatrix{6, 8, 2} << 7 << SplitMode::SOURCE_FIRST << 6 << 8 << 7 << 17 << false
+                                             << 18 << 21 << 10 << 17;
+
+    QTest::newRow("scenario: source first") << IntMatrix{15, 17, -3} << IntMatrix{15, 17, -3} << IntMatrix{6, 8, 2} << 7 << SplitMode::SOURCE_FIRST << 6 << 8 << 7 << 18 << false
+                                             << 18 << 21 << 10 << 18;
+
+    QTest::newRow("scenario: source first") << IntMatrix{15, 17, -3} << IntMatrix{15, 17, -3} << IntMatrix{7, 15, 2} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                             << 18 << 21 << 8 << 18;
+
+    QTest::newRow("scenario: source first") << IntMatrix{15, 17, -3} << IntMatrix{15, 17, -3} << IntMatrix{8, 17, 2} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                             << 18 << 21 << 10 << 21;
+
+    QTest::newRow("scenario: source second") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{15, 17, -3} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 8 << 21 << 18 << 21;
+
+    QTest::newRow("scenario: source second") << IntMatrix{15, 17, -3} << IntMatrix{5, 8, 2} << IntMatrix{15, 17, -3} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 8 << 21 << 18 << 21;
+
+    QTest::newRow("scenario: source second") << IntMatrix{15, 17, -3} << IntMatrix{5, 8, 2} << IntMatrix{15, 17, -3} << 7 << SplitMode::SOURCE_SECOND << 5 << 8 << 6 << 17 << true
+                                             << 8 << 17 << 18 << 21;
+
+    QTest::newRow("scenario: source second") << IntMatrix{15, 17, -3} << IntMatrix{5, 8, 2} << IntMatrix{15, 17, -3} << 7 << SplitMode::SOURCE_SECOND << 5 << 8 << 6 << 18 << true
+                                             << 8 << 18 << 18 << 21;
+
+    QTest::newRow("scenario: source second") << IntMatrix{15, 17, -3} << IntMatrix{6, 15, 2} << IntMatrix{15, 17, -3} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 7 << 18 << 18 << 21;
+
+    QTest::newRow("scenario: source second") << IntMatrix{15, 17, -3} << IntMatrix{7, 17, 2} << IntMatrix{15, 17, -3} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 8 << 21 << 18 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 8 << 21 << 10 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{5, 8, 2} << IntMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 8 << 21 << 10 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{5, 8, 2} << IntMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 5 << 8 << 6 << 17 << true
+                                             << 8 << 17 << 10 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{5, 8, 2} << IntMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 5 << 8 << 6 << 18 << true
+                                             << 8 << 18 << 10 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{6, 15, 2} << IntMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 7 << 18 << 10 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{7, 17, 2} << IntMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 8 << 21 << 10 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{6, 8, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 8 << 21 << 10 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{6, 8, 2} << 7 << SplitMode::ALL_DIFFERENT << 6 << 8 << 7 << 17 << false
+                                             << 8 << 21 << 10 << 17;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{6, 8, 2} << 7 << SplitMode::ALL_DIFFERENT << 6 << 8 << 7 << 18 << false
+                                             << 8 << 21 << 10 << 18;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{7, 15, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 8 << 21 << 8 << 18;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{8, 17, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 8 << 21 << 10 << 21;
+
+    QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{7, 17, 2} << IntMatrix{8, 17, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 8 << 21 << 10 << 21;
+}
+
+void CommonTests::testSplitByColumn_data()
+{
+    QTest::addColumn<IntMatrix>("srcMatrix");
+    QTest::addColumn<IntMatrix>("firstDestMatrix");
+    QTest::addColumn<IntMatrix>("secondDestMatrix");
+    QTest::addColumn<IntMatrixSizeType>("splitPosition");
+    QTest::addColumn<SplitMode>("mode");
+    QTest::addColumn<IntMatrixSizeType>("expectedFirstDestRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedFirstDestColumnCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedSecondDestRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedSecondDestColumnCapacity");
+    QTest::addColumn<IntMatrix>("expectedFirstDestMatrix");
+    QTest::addColumn<IntMatrix>("expectedSecondDestMatrix");
+
+    QTest::newRow("scenario: all different") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 2 << SplitMode::ALL_DIFFERENT
+                                             << 2 << 2 << 2 << 1 << IntMatrix{2, 2, {1, 2, 4, 5}} << IntMatrix{2, 1, {3, 6}};
+
+    QTest::newRow("scenario: all different") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 1, {7, 8}} << IntMatrix{} << 2 << SplitMode::ALL_DIFFERENT
+                                             << 2 << 2 << 2 << 1 << IntMatrix{2, 2, {1, 2, 4, 5}} << IntMatrix{2, 1, {3, 6}};
+
+    QTest::newRow("scenario: all different") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{2, 2, {9, 10, 11, 12}} << 2 << SplitMode::ALL_DIFFERENT
+                                             << 2 << 2 << 2 << 2 << IntMatrix{2, 2, {1, 2, 4, 5}} << IntMatrix{2, 1, {3, 6}};
+
+    QTest::newRow("scenario: all different") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 1, {7, 8}} << IntMatrix{2, 2, {9, 10, 11, 12}} << 2 << SplitMode::ALL_DIFFERENT
+                                             << 2 << 2 << 2 << 2 << IntMatrix{2, 2, {1, 2, 4, 5}} << IntMatrix{2, 1, {3, 6}};
+
+    QTest::newRow("scenario: source first") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << 2 << SplitMode::SOURCE_FIRST
+                                            << 2 << 3 << 2 << 1 << IntMatrix{2, 2, {1, 2, 4, 5}} << IntMatrix{2, 1, {3, 6}};
+
+    QTest::newRow("scenario: source first") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {9, 10, 11, 12}} << 2 << SplitMode::SOURCE_FIRST
+                                            << 2 << 3 << 2 << 2 << IntMatrix{2, 2, {1, 2, 4, 5}} << IntMatrix{2, 1, {3, 6}};
+
+    QTest::newRow("scenario: source second") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2 << SplitMode::SOURCE_SECOND
+                                             << 2 << 2 << 2 << 3 << IntMatrix{2, 2, {1, 2, 4, 5}} << IntMatrix{2, 1, {3, 6}};
+
+    QTest::newRow("scenario: source second") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{1, 2, {7, 8}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2 << SplitMode::SOURCE_SECOND
+                                             << 2 << 2 << 2 << 3 << IntMatrix{2, 2, {1, 2, 4, 5}} << IntMatrix{2, 1, {3, 6}};
+}
+
+void CommonTests::testCapacityWithSplitByColumn_data()
+{
+    QTest::addColumn<IntMatrix>("srcMatrix");
+    QTest::addColumn<IntMatrix>("firstDestMatrix");
+    QTest::addColumn<IntMatrix>("secondDestMatrix");
+    QTest::addColumn<IntMatrixSizeType>("splitPosition");
+    QTest::addColumn<SplitMode>("mode");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnCapacity");
+    QTest::addColumn<bool>("isFirstDestResized");
+    QTest::addColumn<IntMatrixSizeType>("expectedFirstDestRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedFirstDestColumnCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedSecondDestRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedSecondDestColumnCapacity");
+
+    QTest::newRow("scenario: source first") << IntMatrix{17, 15, -3} << IntMatrix{17, 15, -3} << IntMatrix{} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                            << 21 << 18 << 21 << 8;
+
+    QTest::newRow("scenario: source first") << IntMatrix{17, 15, -3} << IntMatrix{17, 15, -3} << IntMatrix{8, 5, 2} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                            << 21 << 18 << 21 << 8;
+
+    QTest::newRow("scenario: source first") << IntMatrix{17, 15, -3} << IntMatrix{17, 15, -3} << IntMatrix{8, 5, 2} << 8 << SplitMode::SOURCE_FIRST << 8 << 5 << 17 << 6 << false
+                                            << 21 << 18 << 17 << 8;
+
+    QTest::newRow("scenario: source first") << IntMatrix{17, 15, -3} << IntMatrix{17, 15, -3} << IntMatrix{8, 5, 2} << 8 << SplitMode::SOURCE_FIRST << 8 << 5 << 18 << 6 << false
+                                            << 21 << 18 << 18 << 8;
+
+    QTest::newRow("scenario: source first") << IntMatrix{17, 15, -3} << IntMatrix{17, 15, -3} << IntMatrix{15, 6, 2} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                            << 21 << 18 << 18 << 7;
+
+    QTest::newRow("scenario: source first") << IntMatrix{17, 15, -3} << IntMatrix{17, 15, -3} << IntMatrix{17, 7, 2} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                            << 21 << 18 << 21 << 8;
+
+    QTest::newRow("scenario: source second") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{17, 15, -3} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 21 << 10 << 21 << 18;
+
+    QTest::newRow("scenario: source second") << IntMatrix{17, 15, -3} << IntMatrix{8, 5, 2} << IntMatrix{17, 15, -3} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 21 << 10 << 21 << 18;
+
+    QTest::newRow("scenario: source second") << IntMatrix{17, 15, -3} << IntMatrix{8, 6, 2} << IntMatrix{17, 15, -3} << 8 << SplitMode::SOURCE_SECOND << 8 << 6 << 17 << 7 << true
+                                             << 17 << 10 << 21 << 18;
+
+    QTest::newRow("scenario: source second") << IntMatrix{17, 15, -3} << IntMatrix{8, 6, 2} << IntMatrix{17, 15, -3} << 8 << SplitMode::SOURCE_SECOND << 8 << 6 << 18 << 7 << true
+                                             << 18 << 10 << 21 << 18;
+
+    QTest::newRow("scenario: source second") << IntMatrix{17, 15, -3} << IntMatrix{15, 7, 2} << IntMatrix{17, 15, -3} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 18 << 8 << 21 << 18;
+
+    QTest::newRow("scenario: source second") << IntMatrix{17, 15, -3} << IntMatrix{17, 8, 2} << IntMatrix{17, 15, -3} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 21 << 10 << 21 << 18;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 10 << 21 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{8, 5, 2} << IntMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 10 << 21 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{8, 6, 2} << IntMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 8 << 6 << 17 << 7 << true
+                                             << 17 << 10 << 21 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{8, 6, 2} << IntMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 8 << 6 << 18 << 7 << true
+                                             << 18 << 10 << 21 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{15, 7, 2} << IntMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 18 << 8 << 21 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{17, 8, 2} << IntMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 10 << 21 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{8, 5, 2} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 10 << 21 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{8, 5, 2} << 8 << SplitMode::ALL_DIFFERENT << 8 << 5 << 17 << 6 << false
+                                             << 21 << 10 << 17 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{8, 5, 2} << 8 << SplitMode::ALL_DIFFERENT << 8 << 5 << 18 << 6 << false
+                                             << 21 << 10 << 18 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{15, 6, 2} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 10 << 18 << 7;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{17, 7, 2} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 10 << 21 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{17, 8, 2} << IntMatrix{17, 7, 2} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 10 << 21 << 8;
+
+    QTest::newRow("scenario: source first") << IntMatrix{17, 15, -3} << IntMatrix{17, 15, -3} << IntMatrix{} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                             << 21 << 18 << 21 << 10;
+
+    QTest::newRow("scenario: source first") << IntMatrix{17, 15, -3} << IntMatrix{17, 15, -3} << IntMatrix{8, 6, 2} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                             << 21 << 18 << 21 << 10;
+
+    QTest::newRow("scenario: source first") << IntMatrix{17, 15, -3} << IntMatrix{17, 15, -3} << IntMatrix{8, 6, 2} << 7 << SplitMode::SOURCE_FIRST << 8 << 6 << 17 << 7 << false
+                                             << 21 << 18 << 17 << 10;
+
+    QTest::newRow("scenario: source first") << IntMatrix{17, 15, -3} << IntMatrix{17, 15, -3} << IntMatrix{8, 6, 2} << 7 << SplitMode::SOURCE_FIRST << 8 << 6 << 18 << 7 << false
+                                             << 21 << 18 << 18 << 10;
+
+    QTest::newRow("scenario: source first") << IntMatrix{17, 15, -3} << IntMatrix{17, 15, -3} << IntMatrix{15, 7, 2} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                             << 21 << 18 << 18 << 8;
+
+    QTest::newRow("scenario: source first") << IntMatrix{17, 15, -3} << IntMatrix{17, 15, -3} << IntMatrix{17, 8, 2} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false
+                                             << 21 << 18 << 21 << 10;
+
+    QTest::newRow("scenario: source second") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{17, 15, -3} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 21 << 8 << 21 << 18;
+
+    QTest::newRow("scenario: source second") << IntMatrix{17, 15, -3} << IntMatrix{8, 5, 2} << IntMatrix{17, 15, -3} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 21 << 8 << 21 << 18;
+
+    QTest::newRow("scenario: source second") << IntMatrix{17, 15, -3} << IntMatrix{8, 5, 2} << IntMatrix{17, 15, -3} << 7 << SplitMode::SOURCE_SECOND << 8 << 5 << 17 << 6 << true
+                                             << 17 << 8 << 21 << 18;
+
+    QTest::newRow("scenario: source second") << IntMatrix{17, 15, -3} << IntMatrix{8, 5, 2} << IntMatrix{17, 15, -3} << 7 << SplitMode::SOURCE_SECOND << 8 << 5 << 18 << 6 << true
+                                             << 18 << 8 << 21 << 18;
+
+    QTest::newRow("scenario: source second") << IntMatrix{17, 15, -3} << IntMatrix{15, 6, 2} << IntMatrix{17, 15, -3} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 18 << 7 << 21 << 18;
+
+    QTest::newRow("scenario: source second") << IntMatrix{17, 15, -3} << IntMatrix{17, 7, 2} << IntMatrix{17, 15, -3} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false
+                                             << 21 << 8 << 21 << 18;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 8 << 21 << 10;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{8, 5, 2} << IntMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 8 << 21 << 10;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{8, 5, 2} << IntMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 8 << 5 << 17 << 6 << true
+                                             << 17 << 8 << 21 << 10;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{8, 5, 2} << IntMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 8 << 5 << 18 << 6 << true
+                                             << 18 << 8 << 21 << 10;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{15, 6, 2} << IntMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 18 << 7 << 21 << 10;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{17, 7, 2} << IntMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 8 << 21 << 10;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{8, 6, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 8 << 21 << 10;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{8, 6, 2} << 7 << SplitMode::ALL_DIFFERENT << 8 << 6 << 17 << 7 << false
+                                             << 21 << 8 << 17 << 10;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{8, 6, 2} << 7 << SplitMode::ALL_DIFFERENT << 8 << 6 << 18 << 7 << false
+                                             << 21 << 8 << 18 << 10;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{15, 7, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 8 << 18 << 8;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{17, 8, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 8 << 21 << 10;
+
+    QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{17, 7, 2} << IntMatrix{17, 8, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false
+                                             << 21 << 8 << 21 << 10;
+}
+
+void CommonTests::testSwapMatrixes_data()
+{
+    QTest::addColumn<IntMatrix>("firstMatrix");
+    QTest::addColumn<IntMatrix>("secondMatrix");
+
+    QTest::newRow("non-empty matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+    QTest::newRow("one empty matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{};
+    QTest::newRow("one empty matrix") << IntMatrix{} << IntMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+    QTest::newRow("both matrixes empty") << IntMatrix{} << IntMatrix{};
+}
+
+void CommonTests::testSwapItems_data()
+{
+    QTest::addColumn<IntMatrix>("firstMatrix");
+    QTest::addColumn<IntMatrix>("secondMatrix");
+    QTest::addColumn<IntMatrixSizeType>("firstItemRowNr");
+    QTest::addColumn<IntMatrixSizeType>("firstItemColumnNr");
+    QTest::addColumn<IntMatrixSizeType>("secondItemRowNr");
+    QTest::addColumn<IntMatrixSizeType>("secondItemColumnNr");
+    QTest::addColumn<bool>("isSwapWithinMatrix");
+    QTest::addColumn<IntMatrix>("expectedFirstMatrix");
+    QTest::addColumn<IntMatrix>("expectedSecondMatrix");
+
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 1 << 2 << 0 << 1 << true
+                                 << IntMatrix{2, 3, {1, 6, 3, 4, 5, 2}} << IntMatrix{2, 3, {1, 6, 3, 4, 5, 2}};
+
+    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {7, 8, 9, 10, 11, 12}} << 1 << 2 << 2 << 0 << false
+                                        << IntMatrix{2, 3, {1, 2, 3, 4, 5, 11}} << IntMatrix{3, 2, {7, 8, 9, 10, 6, 12}};
+}
+
+void CommonTests::testSwapRows_data()
+{
+    QTest::addColumn<IntMatrix>("firstMatrix");
+    QTest::addColumn<IntMatrix>("secondMatrix");
+    QTest::addColumn<IntMatrixSizeType>("firstRowNr");
+    QTest::addColumn<IntMatrixSizeType>("secondRowNr");
+    QTest::addColumn<bool>("isSwapWithinMatrix");
+    QTest::addColumn<IntMatrix>("expectedFirstMatrix");
+    QTest::addColumn<IntMatrix>("expectedSecondMatrix");
+
+    QTest::newRow("same matrix") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 2 << true
+                                 << IntMatrix{4, 3, {7, 8, 9, 4, 5, 6, 1, 2, 3, 10, 11, 12}} << IntMatrix{4, 3, {7, 8, 9, 4, 5, 6, 1, 2, 3, 10, 11, 12}};
+
+    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{4, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 0 << 3 << false
+                                        << IntMatrix{2, 3, {16, 17, 18, 4, 5, 6}} << IntMatrix{4, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15, 1, 2, 3}};
+}
+
+void CommonTests::testSwapColumns_data()
+{
+    QTest::addColumn<IntMatrix>("firstMatrix");
+    QTest::addColumn<IntMatrix>("secondMatrix");
+    QTest::addColumn<IntMatrixSizeType>("firstColumnNr");
+    QTest::addColumn<IntMatrixSizeType>("secondColumnNr");
+    QTest::addColumn<bool>("isSwapWithinMatrix");
+    QTest::addColumn<IntMatrix>("expectedFirstMatrix");
+    QTest::addColumn<IntMatrix>("expectedSecondMatrix");
+
+    QTest::newRow("same matrix") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 2 << true
+                                 << IntMatrix{3, 4, {3, 2, 1, 4, 7, 6, 5, 8, 11, 10, 9, 12}} << IntMatrix{3, 4, {3, 2, 1, 4, 7, 6, 5, 8, 11, 10, 9, 12}};
+
+    QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 0 << 3 << false
+                                        << IntMatrix{3, 2, {10, 2, 14, 4, 18, 6}} << IntMatrix{3, 4, {7, 8, 9, 1, 11, 12, 13, 3, 15, 16, 17, 5}};
+}
+
+void CommonTests::testSetAllItemsToValue_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<int>("value");
+    QTest::addColumn<IntMatrix>("expectedMatrix");
+
+    QTest::newRow("non-empty matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 7 << IntMatrix{2, 3, 7};
+    QTest::newRow("empty matrix") << IntMatrix{} << 7 << IntMatrix{};
+}
+
+void CommonTests::testCopy_data()
+{
+    QTest::addColumn<IntMatrix>("srcMatrix");
+    QTest::addColumn<IntMatrix>("destMatrix");
+    QTest::addColumn<IntMatrixSizeType>("copiedRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("copiedColumnsCount");
+    QTest::addColumn<IntMatrixSizeType>("srcCopyRowNr");
+    QTest::addColumn<IntMatrixSizeType>("srcCopyColumnNr");
+    QTest::addColumn<IntMatrixSizeType>("destCopyRowNr");
+    QTest::addColumn<IntMatrixSizeType>("destCopyColumnNr");
+    QTest::addColumn<IntMatrix>("expectedDestMatrix");
+
+    QTest::newRow("elements copied") << IntMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}}
+                                     << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 2 << 2 << 1 << 1 << 0
+                                     << IntMatrix{4, 3, {1, 2, 3, 22, 23, 6, 26, 27, 9, 30, 31, 12}};
+
+    QTest::newRow("no rows to be copied") << IntMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}}
+                                          << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 2 << 2 << 1 << 1 << 0
+                                          << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+    QTest::newRow("no columns to be copied") << IntMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}}
+                                             << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 0 << 2 << 1 << 1 << 0
+                                             << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+    QTest::newRow("no elements to be copied") << IntMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}}
+                                              << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 0 << 2 << 1 << 1 << 0
+                                              << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+}
+
+void CommonTests::_buildCapacityWithMoveCopyConstructorsTestingTable()
+{
+    QTest::addColumn<IntMatrixSizeType>("rowsCount");
+    QTest::addColumn<IntMatrixSizeType>("columnsCount");
+    QTest::addColumn<int>("elementValue");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("") << 3 << 4 << -1 << 3 << 5;
+    QTest::newRow("") << 4 << 3 << -1 << 5 << 3;
+    QTest::newRow("") << 7 << 8 << -1 << 8 << 10;
+    QTest::newRow("") << 8 << 7 << -1 << 10 << 8;
+}
+
+void CommonTests::_buildCapacityWithAssignmentOperatorsTestingTable()
+{
+    QTest::addColumn<IntMatrixSizeType>("srcMatrixRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("srcMatrixColumnsCount");
+    QTest::addColumn<int>("srcMatrixElementValue");
+    QTest::addColumn<IntMatrixSizeType>("destMatrixRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("destMatrixColumnsCount");
+    QTest::addColumn<int>("destMatrixElementValue");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("destination matrix initially empty") << 3 << 4 << -1 << 0 << 0 << 0 << 3 << 5;
+    QTest::newRow("destination matrix initially empty") << 4 << 3 << -1 << 0 << 0 << 0 << 5 << 3;
+    QTest::newRow("destination matrix initially empty") << 7 << 8 << -1 << 0 << 0 << 0 << 8 << 10;
+    QTest::newRow("destination matrix initially empty") << 8 << 7 << -1 << 0 << 0 << 0 << 10 << 8;
+    QTest::newRow("destination matrix initially NOT empty") << 3 << 4 << -1 << 2 << 3 << -5 << 3 << 5;
+    QTest::newRow("destination matrix initially NOT empty") << 4 << 3 << -1 << 2 << 3 << -5 << 5 << 3;
+    QTest::newRow("destination matrix initially NOT empty") << 7 << 8 << -1 << 3 << 4 << -5 << 8 << 10;
+    QTest::newRow("destination matrix initially NOT empty") << 8 << 7 << -1 << 3 << 4 << -5 << 10 << 8;
+}
+
+void CommonTests::_buildCapacityWithResizeTestingTable()
+{
+    QTest::addColumn<IntMatrixSizeType>("initialRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("initialColumnsCount");
+    QTest::addColumn<int>("initialElementValue");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<int>("resizeElementValue");
+    QTest::addColumn<IntMatrixSizeType>("requestedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("requestedColumnCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 9 << 6 << 10 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 9 << 7 << 10 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 9 << 8 << 10 << 8;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 9 << 9 << 10 << 9;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 9 << 10 << 10 << 10;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 9 << 11 << 10 << 11;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 9 << 0 << 10 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 10 << 6 << 10 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 10 << 7 << 10 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 10 << 8 << 10 << 8;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 10 << 9 << 10 << 9;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 10 << 10 << 10 << 10;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 10 << 11 << 10 << 11;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 10 << 0 << 10 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 11 << 6 << 11 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 11 << 7 << 11 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 11 << 8 << 11 << 8;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 11 << 9 << 11 << 9;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 11 << 10 << 11 << 10;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 11 << 11 << 11 << 11;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 11 << 0 << 11 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 12 << 6 << 12 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 12 << 7 << 12 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 12 << 8 << 12 << 8;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 12 << 9 << 12 << 9;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 12 << 10 << 12 << 10;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 12 << 11 << 12 << 11;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 12 << 0 << 12 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 13 << 6 << 13 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 13 << 7 << 13 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 13 << 8 << 13 << 8;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 13 << 9 << 13 << 9;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 13 << 10 << 13 << 10;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 13 << 11 << 13 << 11;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 13 << 0 << 13 << 7;
+    QTest::newRow("equal rows, less columns") << 10 << 8 << -2 << 10 << 7 << -5 << 0 << 0 << 10 << 7;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 8 << 7 << 9 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 8 << 8 << 9 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 8 << 9 << 9 << 9;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 8 << 10 << 9 << 10;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 8 << 11 << 9 << 11;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 8 << 0 << 9 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 9 << 7 << 9 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 9 << 8 << 9 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 9 << 9 << 9 << 9;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 9 << 10 << 9 << 10;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 9 << 11 << 9 << 11;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 9 << 0 << 9 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 10 << 7 << 10 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 10 << 8 << 10 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 10 << 9 << 10 << 9;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 10 << 10 << 10 << 10;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 10 << 11 << 10 << 11;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 10 << 0 << 10 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 11 << 7 << 11 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 11 << 8 << 11 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 11 << 9 << 11 << 9;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 11 << 10 << 11 << 10;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 11 << 11 << 11 << 11;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 11 << 0 << 11 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 12 << 7 << 12 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 12 << 8 << 12 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 12 << 9 << 12 << 9;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 12 << 10 << 12 << 10;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 12 << 11 << 12 << 11;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 12 << 0 << 12 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 13 << 7 << 13 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 13 << 8 << 13 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 13 << 9 << 13 << 9;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 13 << 10 << 13 << 10;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 13 << 11 << 13 << 11;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 13 << 0 << 13 << 8;
+    QTest::newRow("less rows, equal columns") << 10 << 8 << -2 << 9 << 8 << -5 << 0 << 0 << 9 << 8;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 8 << 6 << 9 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 8 << 7 << 9 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 8 << 8 << 9 << 8;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 8 << 9 << 9 << 9;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 8 << 10 << 9 << 10;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 8 << 11 << 9 << 11;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 8 << 0 << 9 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 9 << 6 << 9 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 9 << 7 << 9 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 9 << 8 << 9 << 8;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 9 << 9 << 9 << 9;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 9 << 10 << 9 << 10;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 9 << 11 << 9 << 11;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 9 << 0 << 9 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 10 << 6 << 10 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 10 << 7 << 10 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 10 << 8 << 10 << 8;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 10 << 9 << 10 << 9;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 10 << 10 << 10 << 10;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 10 << 11 << 10 << 11;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 10 << 0 << 10 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 11 << 6 << 11 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 11 << 7 << 11 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 11 << 8 << 11 << 8;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 11 << 9 << 11 << 9;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 11 << 10 << 11 << 10;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 11 << 11 << 11 << 11;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 11 << 0 << 11 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 12 << 6 << 12 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 12 << 7 << 12 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 12 << 8 << 12 << 8;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 12 << 9 << 12 << 9;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 12 << 10 << 12 << 10;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 12 << 11 << 12 << 11;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 12 << 0 << 12 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 13 << 6 << 13 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 13 << 7 << 13 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 13 << 8 << 13 << 8;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 13 << 9 << 13 << 9;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 13 << 10 << 13 << 10;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 13 << 11 << 13 << 11;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 13 << 0 << 13 << 7;
+    QTest::newRow("less rows, less columns") << 10 << 8 << -2 << 9 << 7 << -5 << 0 << 0 << 9 << 7;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 9 << 7 << 10 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 9 << 8 << 10 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 9 << 9 << 10 << 9;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 9 << 10 << 10 << 10;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 9 << 11 << 10 << 11;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 9 << 0 << 10 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 10 << 7 << 10 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 10 << 8 << 10 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 10 << 9 << 10 << 9;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 10 << 10 << 10 << 10;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 10 << 11 << 10 << 11;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 10 << 0 << 10 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 11 << 7 << 11 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 11 << 8 << 11 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 11 << 9 << 11 << 9;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 11 << 10 << 11 << 10;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 11 << 11 << 11 << 11;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 11 << 0 << 11 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 12 << 7 << 12 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 12 << 8 << 12 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 12 << 9 << 12 << 9;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 12 << 10 << 12 << 10;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 12 << 11 << 12 << 11;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 12 << 0 << 12 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 13 << 7 << 13 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 13 << 8 << 13 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 13 << 9 << 13 << 9;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 13 << 10 << 13 << 10;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 13 << 11 << 13 << 11;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 13 << 0 << 13 << 8;
+    QTest::newRow("same rows, same columns") << 10 << 8 << -2 << 10 << 8 << -5 << 0 << 0 << 10 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 9 << 7 << 11 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 9 << 8 << 11 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 9 << 9 << 11 << 9;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 9 << 10 << 11 << 10;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 9 << 11 << 11 << 11;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 9 << 0 << 11 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 10 << 7 << 11 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 10 << 8 << 11 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 10 << 9 << 11 << 9;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 10 << 10 << 11 << 10;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 10 << 11 << 11 << 11;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 10 << 0 << 11 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 11 << 7 << 11 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 11 << 8 << 11 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 11 << 9 << 11 << 9;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 11 << 10 << 11 << 10;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 11 << 11 << 11 << 11;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 11 << 0 << 11 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 12 << 7 << 12 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 12 << 8 << 12 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 12 << 9 << 12 << 9;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 12 << 10 << 12 << 10;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 12 << 11 << 12 << 11;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 12 << 0 << 12 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 13 << 7 << 13 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 13 << 8 << 13 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 13 << 9 << 13 << 9;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 13 << 10 << 13 << 10;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 13 << 11 << 13 << 11;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 13 << 0 << 13 << 8;
+    QTest::newRow("more rows, same columns") << 10 << 8 << -2 << 11 << 8 << -5 << 0 << 0 << 11 << 8;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 9 << 7 << 10 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 9 << 8 << 10 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 9 << 9 << 10 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 9 << 10 << 10 << 10;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 9 << 11 << 10 << 11;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 9 << 0 << 10 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 10 << 7 << 10 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 10 << 8 << 10 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 10 << 9 << 10 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 10 << 10 << 10 << 10;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 10 << 11 << 10 << 11;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 10 << 0 << 10 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 11 << 7 << 11 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 11 << 8 << 11 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 11 << 9 << 11 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 11 << 10 << 11 << 10;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 11 << 11 << 11 << 11;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 11 << 0 << 11 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 12 << 7 << 12 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 12 << 8 << 12 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 12 << 9 << 12 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 12 << 10 << 12 << 10;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 12 << 11 << 12 << 11;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 12 << 0 << 12 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 13 << 7 << 13 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 13 << 8 << 13 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 13 << 9 << 13 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 13 << 10 << 13 << 10;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 13 << 11 << 13 << 11;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 13 << 0 << 13 << 9;
+    QTest::newRow("same rows, more columns") << 10 << 8 << -2 << 10 << 9 << -5 << 0 << 0 << 10 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 9 << 7 << 11 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 9 << 8 << 11 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 9 << 9 << 11 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 9 << 10 << 11 << 10;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 9 << 11 << 11 << 11;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 9 << 0 << 11 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 10 << 7 << 11 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 10 << 8 << 11 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 10 << 9 << 11 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 10 << 10 << 11 << 10;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 10 << 11 << 11 << 11;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 10 << 0 << 11 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 11 << 7 << 11 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 11 << 8 << 11 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 11 << 9 << 11 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 11 << 10 << 11 << 10;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 11 << 11 << 11 << 11;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 11 << 0 << 11 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 12 << 7 << 12 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 12 << 8 << 12 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 12 << 9 << 12 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 12 << 10 << 12 << 10;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 12 << 11 << 12 << 11;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 12 << 0 << 12 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 13 << 7 << 13 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 13 << 8 << 13 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 13 << 9 << 13 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 13 << 10 << 13 << 10;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 13 << 11 << 13 << 11;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 13 << 0 << 13 << 9;
+    QTest::newRow("more rows, more columns") << 10 << 8 << -2 << 11 << 9 << -5 << 0 << 0 << 11 << 9;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 9 << 6 << 11 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 9 << 7 << 11 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 9 << 8 << 11 << 8;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 9 << 9 << 11 << 9;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 9 << 10 << 11 << 10;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 9 << 11 << 11 << 11;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 9 << 0 << 11 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 10 << 6 << 11 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 10 << 7 << 11 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 10 << 8 << 11 << 8;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 10 << 9 << 11 << 9;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 10 << 10 << 11 << 10;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 10 << 11 << 11 << 11;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 10 << 0 << 11 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 11 << 6 << 11 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 11 << 7 << 11 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 11 << 8 << 11 << 8;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 11 << 9 << 11 << 9;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 11 << 10 << 11 << 10;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 11 << 11 << 11 << 11;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 11 << 0 << 11 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 12 << 6 << 12 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 12 << 7 << 12 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 12 << 8 << 12 << 8;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 12 << 9 << 12 << 9;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 12 << 10 << 12 << 10;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 12 << 11 << 12 << 11;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 12 << 0 << 12 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 13 << 6 << 13 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 13 << 7 << 13 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 13 << 8 << 13 << 8;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 13 << 9 << 13 << 9;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 13 << 10 << 13 << 10;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 13 << 11 << 13 << 11;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 13 << 0 << 13 << 7;
+    QTest::newRow("more rows, less columns") << 10 << 8 << -2 << 11 << 7 << -5 << 0 << 0 << 11 << 7;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 8 << 7 << 9 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 8 << 8 << 9 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 8 << 9 << 9 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 8 << 10 << 9 << 10;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 8 << 11 << 9 << 11;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 8 << 0 << 9 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 9 << 7 << 9 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 9 << 8 << 9 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 9 << 9 << 9 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 9 << 10 << 9 << 10;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 9 << 11 << 9 << 11;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 9 << 0 << 9 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 10 << 7 << 10 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 10 << 8 << 10 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 10 << 9 << 10 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 10 << 10 << 10 << 10;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 10 << 11 << 10 << 11;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 10 << 0 << 10 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 11 << 7 << 11 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 11 << 8 << 11 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 11 << 9 << 11 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 11 << 10 << 11 << 10;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 11 << 11 << 11 << 11;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 11 << 0 << 11 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 12 << 7 << 12 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 12 << 8 << 12 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 12 << 9 << 12 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 12 << 10 << 12 << 10;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 12 << 11 << 12 << 11;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 12 << 0 << 12 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 13 << 7 << 13 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 13 << 8 << 13 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 13 << 9 << 13 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 13 << 10 << 13 << 10;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 13 << 11 << 13 << 11;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 13 << 0 << 13 << 9;
+    QTest::newRow("less rows, more columns") << 10 << 8 << -2 << 9 << 9 << -5 << 0 << 0 << 9 << 9;
+}
+
+void CommonTests::_buildInsertRowTestingTable()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<IntMatrixSizeType>("insertPosition");
+    QTest::addColumn<int>("insertedRowValue");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<IntMatrix>("referenceMatrix");
+
+    QTest::newRow("insert at random position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << -1
+                                                         << 5 << 3 << IntMatrix{5, 3, {1, 2, 3, 4, 5, 6, -1, -1, -1, 7, 8, 9, 10, 11, 12}};
+
+    QTest::newRow("insert at beginning position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << -1
+                                                            << 5 << 3 << IntMatrix{5, 3, {-1, -1, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+
+    QTest::newRow("insert at end position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << -1
+                                                      << 5 << 3 << IntMatrix{5, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, -1, -1}};
+}
+
+void CommonTests::_buildInsertColumnTestingTable()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<IntMatrixSizeType>("insertPosition");
+    QTest::addColumn<int>("insertedColumnValue");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<IntMatrix>("referenceMatrix");
+
+    QTest::newRow("insert at random position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << -1
+                                                         << 3 << 5 << IntMatrix{3, 5, {1, 2, -1, 3, 4, 5, 6, -1, 7, 8, 9, 10, -1, 11, 12}};
+
+    QTest::newRow("insert at beginning position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << -1
+                                                            << 3 << 5 << IntMatrix{3, 5, {-1, 1, 2, 3, 4, -1, 5, 6, 7, 8, -1, 9, 10, 11, 12}};
+
+    QTest::newRow("insert at end position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << -1
+                                                      << 3 << 5 << IntMatrix{3, 5, {1, 2, 3, 4, -1, 5, 6, 7, 8, -1, 9, 10, 11, 12, -1}};
 }
 
 QTEST_APPLESS_MAIN(CommonTests)
