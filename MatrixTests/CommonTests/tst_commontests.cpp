@@ -1157,6 +1157,9 @@ void CommonTests::testResizeWithoutFillingInNewValues()
     }
 }
 
+/* In addition to testing resulting capacity a consistency check (size and retained element values comparison) is required in order to ensure
+   the resizing with explicitly given capacity is consistent with the one where the capacity is not explicitly provided as argument
+*/
 void CommonTests::testCapacityWithResizeWithoutFillingInNewValues()
 {
     QFETCH(IntMatrixSizeType, initialRowsCount);
@@ -1172,37 +1175,33 @@ void CommonTests::testCapacityWithResizeWithoutFillingInNewValues()
     mPrimaryIntMatrix = {initialRowsCount, initialColumnsCount, initialElementValue};
     mSecondaryIntMatrix = mPrimaryIntMatrix;
 
+    const IntMatrixSizeType c_RetainedNrOfRows{std::min(resizeRowsCount, mSecondaryIntMatrix.getNrOfRows())};
+    const IntMatrixSizeType c_RetainedNrOfColumns{std::min(resizeColumnsCount, mSecondaryIntMatrix.getNrOfColumns())};
+
     mPrimaryIntMatrix.resize(resizeRowsCount, resizeColumnsCount);
-
-    int retainedNrOfRows{std::min(resizeRowsCount, mSecondaryIntMatrix.getNrOfRows())};
-    int retainedNrOfColumns{std::min(resizeColumnsCount, mSecondaryIntMatrix.getNrOfColumns())};
-
     mSecondaryIntMatrix.resize(resizeRowsCount, resizeColumnsCount, requestedRowCapacity, requestedColumnCapacity);
 
     if (mSecondaryIntMatrix.getRowCapacity() != expectedRowCapacity || mSecondaryIntMatrix.getColumnCapacity() != expectedColumnCapacity)
     {
         QFAIL("Resizing failed, capacity of the matrix is not correct!");
     }
-    else if (mSecondaryIntMatrix.getNrOfRows() != resizeRowsCount || mSecondaryIntMatrix.getNrOfColumns() != resizeColumnsCount)
+    else if (mSecondaryIntMatrix.getNrOfRows() != mPrimaryIntMatrix.getNrOfRows() || mSecondaryIntMatrix.getNrOfColumns() != mPrimaryIntMatrix.getNrOfColumns())
     {
         QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
     }
     else
     {
-        bool retainedValuesAreCorrect{true};
-        for (int row{0}; row < retainedNrOfRows; ++row)
+        bool areRetainedValuesCorrect{true};
+
+        for (IntMatrixSizeType rowNr{0}; rowNr < c_RetainedNrOfRows; ++rowNr)
         {
-            for (int col{0}; col < retainedNrOfColumns; ++col)
+            for (IntMatrixSizeType columnNr{0}; columnNr < c_RetainedNrOfColumns; ++columnNr)
             {
-                if (mSecondaryIntMatrix.at(row, col) != mPrimaryIntMatrix.at(row, col))
-                {
-                    retainedValuesAreCorrect = false;
-                    break;
-                }
+                areRetainedValuesCorrect = areRetainedValuesCorrect && (mSecondaryIntMatrix.at(rowNr, columnNr) == mPrimaryIntMatrix.at(rowNr, columnNr));
             }
         }
 
-        QVERIFY2(retainedValuesAreCorrect, "Resizing failed, the matrix does not have the correct values for the retained items!");
+        QVERIFY2(areRetainedValuesCorrect, "Resizing failed, the matrix does not have the correct values for the retained items!");
     }
 }
 
@@ -1228,6 +1227,9 @@ void CommonTests::testResizeAndFillInNewValues()
     }
 }
 
+/* In addition to testing resulting capacity a consistency check (size and element values comparison) is required in order to ensure
+   the resizing with explicitly given capacity is consistent with the one where the capacity is not explicitly provided as argument
+*/
 void CommonTests::testCapacityWithResizeAndFillInNewValues()
 {
     QFETCH(IntMatrixSizeType, initialRowsCount);
@@ -1251,13 +1253,9 @@ void CommonTests::testCapacityWithResizeAndFillInNewValues()
     {
         QFAIL("Resizing failed, capacity of the matrix is not correct!");
     }
-    else if (mSecondaryIntMatrix.getNrOfRows() != resizeRowsCount || mSecondaryIntMatrix.getNrOfColumns() != resizeColumnsCount)
-    {
-        QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-    }
     else
     {
-        QVERIFY2(mSecondaryIntMatrix == mPrimaryIntMatrix, "Resizing failed, the matrix does not have the correct values!");
+        QVERIFY2(mSecondaryIntMatrix == mPrimaryIntMatrix, "Resizing failed, the matrix does not have the correct size and/or values!");
     }
 }
 
