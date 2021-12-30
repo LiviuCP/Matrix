@@ -18,8 +18,12 @@ enable_testing()
 
 include_directories(../../MatrixLib/Matrix)
 
-add_executable(CommonTests tst_commontests.cpp)
-add_test(NAME CommonTests COMMAND CommonTests)
+add_executable(FunctionalityTests tst_functionalitytests.cpp)
+add_test(NAME FunctionalityTests COMMAND FunctionalityTests)
 
-target_link_libraries(CommonTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+add_executable(CapacityTests tst_capacitytests.cpp)
+add_test(NAME CapacityTests COMMAND CapacityTests)
+
+target_link_libraries(FunctionalityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(CapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 
