@@ -18,6 +18,7 @@ add_definitions(-DQT)
 
 enable_testing()
 
+include_directories(../Shared)
 include_directories(../../MatrixLib/Matrix)
 
 # uncomment Fraction tests configuration as soon as the Fractions library is setup

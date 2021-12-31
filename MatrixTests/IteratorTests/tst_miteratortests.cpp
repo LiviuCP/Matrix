@@ -1,13 +1,6 @@
 #include <QtTest>
 
-#include "matrix.h"
-
-using IntMatrix = Matrix<int>;
-using IntMatrixMIterator = Matrix<int>::MIterator;
-using IntMatrixSizeType = IntMatrix::size_type;
-using IntMatrixDiffType = IntMatrix::diff_type;
-using StringMatrix = Matrix<std::string>;
-using StringMatrixMIterator = Matrix<std::string>::MIterator;
+#include "testutils.h"
 
 Q_DECLARE_METATYPE(IntMatrixMIterator)
 Q_DECLARE_METATYPE(StringMatrixMIterator)

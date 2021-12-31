@@ -1,13 +1,6 @@
 #include <QtTest>
 
-#include "matrix.h"
-
-using IntMatrix = Matrix<int>;
-using IntMatrixConstReverseDIterator = Matrix<int>::ConstReverseDIterator;
-using IntMatrixSizeType = IntMatrix::size_type;
-using IntMatrixDiffType = IntMatrix::diff_type;
-using StringMatrix = Matrix<std::string>;
-using StringMatrixConstReverseDIterator = Matrix<std::string>::ConstReverseDIterator;
+#include "testutils.h"
 
 Q_DECLARE_METATYPE(IntMatrixConstReverseDIterator)
 Q_DECLARE_METATYPE(StringMatrixConstReverseDIterator)

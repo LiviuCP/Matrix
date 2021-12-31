@@ -16,6 +16,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 enable_testing()
 
+include_directories(../Shared)
 include_directories(../../MatrixLib/Matrix)
 
 add_executable(FunctionalityTests tst_functionalitytests.cpp)

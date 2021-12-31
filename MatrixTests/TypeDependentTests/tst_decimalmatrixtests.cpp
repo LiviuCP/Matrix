@@ -1,8 +1,6 @@
 #include <QtTest>
 
-#include "matrix.h"
-
-using DecMatrix = Matrix<double>;
+#include "testutils.h"
 
 class DecimalMatrixTests : public QObject
 {

@@ -1,25 +1,6 @@
 #include <QtTest>
 
-#include "matrix.h"
-
-using IntMatrix = Matrix<int>;
-using IntMatrixSizeType = IntMatrix::size_type;
-
-enum class ConcatMode : unsigned short
-{
-    ALL_DIFFERENT,
-    DESTINATION_FIRST,
-    DESTINATION_SECOND,
-    SOURCE_BOTH,
-    DESTINATION_ALL
-};
-
-enum class SplitMode : unsigned short
-{
-    ALL_DIFFERENT,
-    SOURCE_FIRST,
-    SOURCE_SECOND
-};
+#include "testutils.h"
 
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(ConcatMode)
