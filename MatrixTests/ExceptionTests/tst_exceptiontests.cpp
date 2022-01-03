@@ -8,10 +8,6 @@ class ExceptionTests : public QObject
 {
     Q_OBJECT
 
-public:
-    ExceptionTests();
-    ~ExceptionTests();
-
 private slots:
     void testInitListConstructorExceptions();
     void testIdenticalMatrixConstructorExceptions();
@@ -52,16 +48,6 @@ private slots:
     void testReverseMIteratorExceptions();
     void testConstReverseMIteratorExceptions();
 };
-
-ExceptionTests::ExceptionTests()
-{
-
-}
-
-ExceptionTests::~ExceptionTests()
-{
-
-}
 
 void ExceptionTests::testInitListConstructorExceptions()
 {
