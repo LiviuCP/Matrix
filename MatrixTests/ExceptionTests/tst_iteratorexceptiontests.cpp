@@ -4,33 +4,11 @@
 
 #include "testutils.h"
 
-class ExceptionTests : public QObject
+class IteratorExceptionTests : public QObject
 {
     Q_OBJECT
 
 private slots:
-    void testInitListConstructorExceptions();
-    void testIdenticalMatrixConstructorExceptions();
-    void testDiagMatrixConstructorExceptions();
-    void testFunctionAtExceptions();
-    void testSquareBracketsOperatorExceptions();
-    void testResizeAndRemoveOldValuesExceptions();
-    void testResizeAndKeepOldValuesExceptions();
-    void testInsertRowNoSetValueExceptions();
-    void testInsertRowSetValueExceptions();
-    void testInsertColumnNoSetValueExceptions();
-    void testInsertColumnSetValueExceptions();
-    void testEraseRowExceptions();
-    void testEraseColumnExceptions();
-    void testCatByRowExceptions();
-    void testCatByColumnExceptions();
-    void testSplitByRowExceptions();
-    void testSplitByColumnExceptions();
-    void testSwapItemsExceptions();
-    void testSwapRowsExceptions();
-    void testSwapColumnsExceptions();
-    void testSwapRowColumnExceptions();
-    void testCopyExceptions();
     void testZIteratorExceptions();
     void testConstZIteratorExceptions();
     void testReverseZIteratorExceptions();
@@ -49,1110 +27,7 @@ private slots:
     void testConstReverseMIteratorExceptions();
 };
 
-void ExceptionTests::testInitListConstructorExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, -2, {1, 2, 3, 4});}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, 0, {1, 2, 3, 4});}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, 2, {1, 2, 3, 4});}, std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, -2, {1, 2, 3, 4});}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, 0, {1, 2, 3, 4});}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, 2, {1, 2, 3, 4});}, std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 0, {1, 2, 3, 4});}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, -2, {1, 2, 3, 4});}, std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4});}, std::runtime_error);
-}
-
-void ExceptionTests::testIdenticalMatrixConstructorExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, -2, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, 0, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, 2, 5);}, std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, -2, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, 0, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, 2, 5);}, std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 0, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, -2, 5);}, std::runtime_error);
-}
-
-void ExceptionTests::testDiagMatrixConstructorExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, std::pair<int, int>{2, 5});}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, std::pair<int, int>{2, 5});}, std::runtime_error);
-}
-
-void ExceptionTests::testFunctionAtExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; matrix.at(0, 0) = 0;}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.at(-1, -1) = 0;}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.at(-1, 1) = 0;}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.at(-1, 3) = 0;}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.at(1, -1) = 0;}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.at(1, 3) = 0;}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.at(2, -1) = 0;}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.at(2, 1) = 0;}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.at(2, 3) = 0;}, std::runtime_error);
-
-    // test for the "const" at() too
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix; (void)matrix.at(0, 0);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); (void)matrix.at(-1, -1);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); (void)matrix.at(-1, 1);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); (void)matrix.at(-1, 3);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); (void)matrix.at(1, -1);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); (void)matrix.at(1, 3);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); (void)matrix.at(2, -1);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); (void)matrix.at(2, 1);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); (void)matrix.at(2, 3);}, std::runtime_error);
-}
-
-void ExceptionTests::testSquareBracketsOperatorExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix[-1] = 0;}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix[6] = 0;}, std::runtime_error);
-
-    // test for the "const" square brackets operator too
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); (void)matrix[-1];}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); (void)matrix[6];}, std::runtime_error);
-}
-
-void ExceptionTests::testResizeAndRemoveOldValuesExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resize(-3, -4);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resize(-3, 0);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resize(-3, 4);}, std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resize(0, -4);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resize(0, 0);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resize(0, 4);}, std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resize(3, -4);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resize(3, 0);}, std::runtime_error);
-}
-
-void ExceptionTests::testResizeAndKeepOldValuesExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resizeWithValue(-3, -4, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resizeWithValue(-3, 0, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resizeWithValue(-3, 4, 5);}, std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resizeWithValue(0, -4, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resizeWithValue(0, 0, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resizeWithValue(0, 4, 5);}, std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resizeWithValue(3, -4, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.resizeWithValue(3, 0, 5);}, std::runtime_error);
-}
-
-void ExceptionTests::testInsertRowNoSetValueExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; matrix.insertRow(0);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertRow(-1);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertRow(3);}, std::runtime_error);
-}
-
-void ExceptionTests::testInsertRowSetValueExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; matrix.insertRow(0, 1);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertRow(-1, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertRow(3, 5);}, std::runtime_error);
-}
-
-void ExceptionTests::testInsertColumnNoSetValueExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; matrix.insertColumn(0);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertColumn(-1);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertColumn(4);}, std::runtime_error);
-}
-
-void ExceptionTests::testInsertColumnSetValueExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; matrix.insertColumn(0, 2);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertColumn(-1, 5);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.insertColumn(4, 5);}, std::runtime_error);
-}
-
-void ExceptionTests::testEraseRowExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseRow(-1);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseRow(2);}, std::runtime_error);
-}
-
-void ExceptionTests::testEraseColumnExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseColumn(-1);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4, 5, 6}); matrix.eraseColumn(3);}, std::runtime_error);
-}
-
-void ExceptionTests::testCatByRowExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstSrcMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondSrcMatrix(2, 2, {7, 8, 9, 10});
-                                  IntMatrix destMatrix;
-
-                                  destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix);
-                             },
-
-                             std::runtime_error);
-}
-
-void ExceptionTests::testCatByColumnExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstSrcMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondSrcMatrix(2, 2, {7, 8, 9, 10});
-                                  IntMatrix destMatrix;
-
-                                  destMatrix.catByColumn(firstSrcMatrix, secondSrcMatrix);
-                             },
-
-                             std::runtime_error);
-}
-
-void ExceptionTests::testSplitByRowExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix srcMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix firstSecondDestMatrix;
-
-                                  srcMatrix.splitByRow(firstSecondDestMatrix, firstSecondDestMatrix, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix srcFirstSecondDestMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-
-                                  srcFirstSecondDestMatrix.splitByRow(srcFirstSecondDestMatrix, srcFirstSecondDestMatrix, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix srcMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix firstDestMatrix;
-                                  IntMatrix secondDestMatrix;
-
-                                  srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix srcMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix firstDestMatrix;
-                                  IntMatrix secondDestMatrix;
-
-                                  srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, 0);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix srcMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix firstDestMatrix;
-                                  IntMatrix secondDestMatrix;
-
-                                  srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, 2);
-                             },
-
-                             std::runtime_error);
-}
-
-void ExceptionTests::testSplitByColumnExceptions()
-{
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix srcMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix firstSecondDestMatrix;
-
-                                  srcMatrix.splitByColumn(firstSecondDestMatrix, firstSecondDestMatrix, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destFirstSecondSrcMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-
-                                  destFirstSecondSrcMatrix.splitByColumn(destFirstSecondSrcMatrix, destFirstSecondSrcMatrix, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix srcMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix firstDestMatrix;
-                                  IntMatrix secondDestMatrix;
-
-                                  srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix srcMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix firstDestMatrix;
-                                  IntMatrix secondDestMatrix;
-
-                                  srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, 0);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix srcMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix firstDestMatrix;
-                                  IntMatrix secondDestMatrix;
-
-                                  srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, 2);
-                             },
-
-                             std::runtime_error);
-}
-
-void ExceptionTests::testSwapItemsExceptions()
-{
-    // test invalid negative indexes
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(-1, 1, secondMatrix, 1, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(-1, 1, secondMatrix, -1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(-1, 1, secondMatrix, 1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(-1, 1, secondMatrix, -1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(1, -1, secondMatrix, 1, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(1, -1, secondMatrix, -1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(1, -1, secondMatrix, 1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(1, -1, secondMatrix, -1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(-1, -1, secondMatrix, 1, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(-1, -1, secondMatrix, -1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(-1, -1, secondMatrix, 1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(-1, -1, secondMatrix, -1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(0, 1, secondMatrix, -1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(0, 1, secondMatrix, 1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(0, 1, secondMatrix, -1, -1);
-                             },
-
-                             std::runtime_error);
-
-    // test invalid positive indexes (out of range)
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(3, 1, secondMatrix, 1, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(3, 1, secondMatrix, 2, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(3, 1, secondMatrix, 1, 3);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(3, 1, secondMatrix, 2, 3);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(1, 2, secondMatrix, 1, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(1, 2, secondMatrix, 2, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(1, 2, secondMatrix, 1, 3);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(1, 2, secondMatrix, 2, 3);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(3, 2, secondMatrix, 1, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(3, 2, secondMatrix, 2, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(3, 2, secondMatrix, 1, 3);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(3, 2, secondMatrix, 2, 3);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(0, 1, secondMatrix, 2, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(0, 1, secondMatrix, 1, 3);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapItems(0, 1, secondMatrix, 2, 3);
-                             },
-
-                             std::runtime_error);
-}
-
-void ExceptionTests::testSwapRowsExceptions()
-{
-    // test negative column index
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(4, 2, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapRows(-1, secondMatrix, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(4, 2, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapRows(1, secondMatrix, -2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(4, 2, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapRows(-1, secondMatrix, -2);
-                             },
-
-                             std::runtime_error);
-
-    // test row index out of range
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(4, 2, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapRows(1, secondMatrix, 4);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(4, 2, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapRows(3, secondMatrix, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(4, 2, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapRows(3, secondMatrix, 4);
-                             },
-
-                             std::runtime_error);
-
-    // test unequal length rows
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(3, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapRows(1, secondMatrix, 0);
-                             },
-
-                             std::runtime_error);
-}
-
-void ExceptionTests::testSwapColumnsExceptions()
-{
-    // test negative column index
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 4, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapColumns(-1, secondMatrix, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 4, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapColumns(1, secondMatrix, -2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 4, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapColumns(-1, secondMatrix, -2);
-                             },
-
-                             std::runtime_error);
-
-    // test column index out of range
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 4, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapColumns(1, secondMatrix, 4);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 4, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapColumns(3, secondMatrix, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 4, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapColumns(3, secondMatrix, 4);
-                             },
-
-                             std::runtime_error);
-
-    // test unequal length columns
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(3, 3, {7, 8, 9, 10, 11, 12});
-
-                                  firstMatrix.swapColumns(1, secondMatrix, 0);
-                             },
-
-                             std::runtime_error);
-}
-
-void ExceptionTests::testSwapRowColumnExceptions()
-{
-    // test negative row/column index
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18});
-
-                                  firstMatrix.swapRowColumn(-1, secondMatrix, 3);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18});
-
-                                  firstMatrix.swapRowColumn(0, secondMatrix, -3);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18});
-
-                                  firstMatrix.swapRowColumn(-1, secondMatrix, -3);
-                             },
-
-                             std::runtime_error);
-
-    // test row/column index out of range
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18});
-
-                                  firstMatrix.swapRowColumn(2, secondMatrix, 3);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18});
-
-                                  firstMatrix.swapRowColumn(0, secondMatrix, 4);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18});
-
-                                  firstMatrix.swapRowColumn(2, secondMatrix, 4);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondMatrix(2, 4, {7, 8, 9, 10, 11, 12, 13, 14});
-
-                                  firstMatrix.swapRowColumn(1, firstMatrix, 3);
-                             },
-
-                             std::runtime_error);
-
-    //test same matrix exception
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstMatrix(3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9});
-
-                                  firstMatrix.swapRowColumn(1, firstMatrix, 2);
-                             },
-
-                             std::runtime_error);
-}
-
-void ExceptionTests::testCopyExceptions()
-{
-    // test negative argument exceptions
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, -3, 2, 2, 1, 1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, -2, 2, 1, 1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, -3, -2, 2, 1, 1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, 1, 1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, 1, -1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, 1, -1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, -1, 1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, -1, 1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, -1, -1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, -1,- 1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, -2, 1, 1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, -2, 1, 1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, -2, 1, -1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, -2, 1, -1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, -2, -1, 1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, -2, -1, 1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, -2, -1, -1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, -2, -1, -1, -1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, -3, 2, -2, 1, 1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, -3, -2, -2, -1, 1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, -3, -2, -2, -1, -1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, -3, -2, -2, -1, -1, -1);
-                             },
-
-                             std::runtime_error);
-
-    //test same matrix exception
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-
-                                  matrix.copy(matrix, 2, 2, 0, 0, 0, 1);
-                             },
-
-                             std::runtime_error);
-
-    // test out of range element copying
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 3, 1, 1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 3, 1, 2, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 3, 1, 1, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 3, 1, 2, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, 3, 1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, 3, 2, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, 3, 1, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, 3, 2, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 3, 3, 1, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 3, 3, 2, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 3, 3, 1, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 3, 3, 2, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, 1, 2, 1);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, 1, 1, 2);
-                             },
-
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix destMatrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-                                  IntMatrix srcMatrix(5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32});
-
-                                  destMatrix.copy(srcMatrix, 3, 2, 2, 1, 2, 2);
-                             },
-
-                             std::runtime_error);
-}
-
-void ExceptionTests::testZIteratorExceptions()
+void IteratorExceptionTests::testZIteratorExceptions()
 {
     // test zBegin() and zEnd() dereference errors
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                                                IntMatrixZIterator it{matrix.zBegin()}; *it = -9;  }, std::runtime_error);
@@ -1266,7 +141,7 @@ void ExceptionTests::testZIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixZIterator it{matrix.zEnd()}; it[1] = 7; }, std::runtime_error);
 }
 
-void ExceptionTests::testConstZIteratorExceptions()
+void IteratorExceptionTests::testConstZIteratorExceptions()
 {
     // test zBegin() and zEnd() dereference errors
     QVERIFY_EXCEPTION_THROWN({StringMatrix matrix; StringMatrixConstZIterator it{matrix.constZBegin()}; Q_UNUSED((*it).size());}, std::runtime_error);
@@ -1380,7 +255,7 @@ void ExceptionTests::testConstZIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixConstZIterator it{matrix.constZEnd()}; Q_UNUSED(it[1]); }, std::runtime_error);
 }
 
-void ExceptionTests::testReverseZIteratorExceptions()
+void IteratorExceptionTests::testReverseZIteratorExceptions()
 {
     // test zBegin() and zEnd() dereference errors
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                                                IntMatrixReverseZIterator it{matrix.reverseZBegin()}; *it = -9;  }, std::runtime_error);
@@ -1494,7 +369,7 @@ void ExceptionTests::testReverseZIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixReverseZIterator it{matrix.reverseZEnd()}; it[1] = 7; }, std::runtime_error);
 }
 
-void ExceptionTests::testConstReverseZIteratorExceptions()
+void IteratorExceptionTests::testConstReverseZIteratorExceptions()
 {
     // test zBegin() and zEnd() dereference errors
     QVERIFY_EXCEPTION_THROWN({StringMatrix matrix; StringMatrixConstReverseZIterator it{matrix.constReverseZBegin()}; Q_UNUSED((*it).size()); }, std::runtime_error);
@@ -1608,7 +483,7 @@ void ExceptionTests::testConstReverseZIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixConstReverseZIterator it{matrix.constReverseZEnd()}; Q_UNUSED(it[1]); }, std::runtime_error);
 }
 
-void ExceptionTests::testNIteratorExceptions()
+void IteratorExceptionTests::testNIteratorExceptions()
 {
     // test nBegin() and nEnd() dereference errors
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                                                IntMatrixNIterator it{matrix.nBegin()}; *it = -9;  }, std::runtime_error);
@@ -1722,7 +597,7 @@ void ExceptionTests::testNIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixNIterator it{matrix.nEnd()}; it[1] = 7; }, std::runtime_error);
 }
 
-void ExceptionTests::testConstNIteratorExceptions()
+void IteratorExceptionTests::testConstNIteratorExceptions()
 {
     // test constNBegin() and constNEnd() dereference errors
     QVERIFY_EXCEPTION_THROWN({StringMatrix matrix; StringMatrixConstNIterator it{matrix.constNBegin()}; Q_UNUSED((*it).size()); }, std::runtime_error);
@@ -1836,7 +711,7 @@ void ExceptionTests::testConstNIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixConstNIterator it{matrix.constNEnd()}; Q_UNUSED(it[1])}, std::runtime_error);
 }
 
-void ExceptionTests::testReverseNIteratorExceptions()
+void IteratorExceptionTests::testReverseNIteratorExceptions()
 {
     // test reverseNBegin() and reverseNEnd() dereference errors
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix;                                                IntMatrixReverseNIterator it{matrix.reverseNBegin()}; *it = -9;  }, std::runtime_error);
@@ -1950,7 +825,7 @@ void ExceptionTests::testReverseNIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixReverseNIterator it{matrix.reverseNEnd()}; it[1] = 7; }, std::runtime_error);
 }
 
-void ExceptionTests::testConstReverseNIteratorExceptions()
+void IteratorExceptionTests::testConstReverseNIteratorExceptions()
 {
     // test constReverseNBegin() and constReverseNEnd() dereference errors
     QVERIFY_EXCEPTION_THROWN({StringMatrix matrix;                                                   StringMatrixConstReverseNIterator it{matrix.constReverseNBegin()}; Q_UNUSED((*it).size()); }, std::runtime_error);
@@ -2064,7 +939,7 @@ void ExceptionTests::testConstReverseNIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixConstReverseNIterator it{matrix.constReverseNEnd()}; Q_UNUSED(it[1]); }, std::runtime_error);
 }
 
-void ExceptionTests::testDIteratorExceptions()
+void IteratorExceptionTests::testDIteratorExceptions()
 {
     // iterator creation
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixDIterator it{matrix.dBegin(0)}; Q_UNUSED(it);}, std::runtime_error);
@@ -2441,7 +1316,7 @@ void ExceptionTests::testDIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixDIterator it{matrix.dBegin(-1)};   it[-2] = 14; }, std::runtime_error);
 }
 
-void ExceptionTests::testConstDIteratorExceptions()
+void IteratorExceptionTests::testConstDIteratorExceptions()
 {
     // iterator creation
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixConstDIterator it{matrix.constDBegin(0)}; Q_UNUSED(it);}, std::runtime_error);
@@ -2818,7 +1693,7 @@ void ExceptionTests::testConstDIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixConstDIterator it{matrix.constDBegin(-1)};   Q_UNUSED(it[-2]); }, std::runtime_error);
 }
 
-void ExceptionTests::testReverseDIteratorExceptions()
+void IteratorExceptionTests::testReverseDIteratorExceptions()
 {
     // iterator creation
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixReverseDIterator it{matrix.reverseDBegin(0)}; Q_UNUSED(it);}, std::runtime_error);
@@ -3195,7 +2070,7 @@ void ExceptionTests::testReverseDIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixReverseDIterator it{matrix.reverseDBegin(-1)};   it[-2] = 14; }, std::runtime_error);
 }
 
-void ExceptionTests::testConstReverseDIteratorExceptions()
+void IteratorExceptionTests::testConstReverseDIteratorExceptions()
 {
     // iterator creation
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixConstReverseDIterator it{matrix.constReverseDBegin(0)}; Q_UNUSED(it);}, std::runtime_error);
@@ -3572,7 +2447,7 @@ void ExceptionTests::testConstReverseDIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixConstReverseDIterator it{matrix.constReverseDBegin(-1)};   Q_UNUSED(it[-2]); }, std::runtime_error);
 }
 
-void ExceptionTests::testMIteratorExceptions()
+void IteratorExceptionTests::testMIteratorExceptions()
 {
     // iterator creation
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixMIterator it{matrix.mBegin(0)}; Q_UNUSED(it);}, std::runtime_error);
@@ -3949,7 +2824,7 @@ void ExceptionTests::testMIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixMIterator it{matrix.mBegin(-1)};   it[-2] = 14; }, std::runtime_error);
 }
 
-void ExceptionTests::testConstMIteratorExceptions()
+void IteratorExceptionTests::testConstMIteratorExceptions()
 {
     // iterator creation
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixConstMIterator it{matrix.constMBegin(0)}; Q_UNUSED(it);}, std::runtime_error);
@@ -4326,7 +3201,7 @@ void ExceptionTests::testConstMIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixConstMIterator it{matrix.constMBegin(-1)};   Q_UNUSED(it[-2]); }, std::runtime_error);
 }
 
-void ExceptionTests::testReverseMIteratorExceptions()
+void IteratorExceptionTests::testReverseMIteratorExceptions()
 {
     // iterator creation
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixReverseMIterator it{matrix.reverseMBegin(0)}; Q_UNUSED(it);}, std::runtime_error);
@@ -4703,7 +3578,7 @@ void ExceptionTests::testReverseMIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixReverseMIterator it{matrix.reverseMBegin(-1)};   it[-2] = 14; }, std::runtime_error);
 }
 
-void ExceptionTests::testConstReverseMIteratorExceptions()
+void IteratorExceptionTests::testConstReverseMIteratorExceptions()
 {
     // iterator creation
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix; IntMatrixConstReverseMIterator it{matrix.constReverseMBegin(0)}; Q_UNUSED(it);}, std::runtime_error);
@@ -5080,6 +3955,6 @@ void ExceptionTests::testConstReverseMIteratorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}); IntMatrixConstReverseMIterator it{matrix.constReverseMBegin(-1)};   Q_UNUSED(it[-2]); }, std::runtime_error);
 }
 
-QTEST_APPLESS_MAIN(ExceptionTests)
+QTEST_APPLESS_MAIN(IteratorExceptionTests)
 
-#include "tst_exceptiontests.moc"
+#include "tst_iteratorexceptiontests.moc"

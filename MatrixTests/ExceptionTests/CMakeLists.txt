@@ -19,8 +19,12 @@ enable_testing()
 include_directories(../Shared)
 include_directories(../../MatrixLib/Matrix)
 
-add_executable(ExceptionTests tst_exceptiontests.cpp)
-add_test(NAME ExceptionTests COMMAND ExceptionTests)
+add_executable(CommonExceptionTests tst_commonexceptiontests.cpp)
+add_test(NAME CommonExceptionTests COMMAND CommonExceptionTests)
 
-target_link_libraries(ExceptionTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+add_executable(IteratorExceptionTests tst_iteratorexceptiontests.cpp)
+add_test(NAME IteratorExceptionTests COMMAND IteratorExceptionTests)
+
+target_link_libraries(CommonExceptionTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(IteratorExceptionTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 
