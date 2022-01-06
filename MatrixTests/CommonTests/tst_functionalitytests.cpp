@@ -1191,6 +1191,7 @@ void FunctionalityTests::testSplitByRow()
         secondDestMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
         break;
     default:
+        QFAIL("exception scenario");
         break;
     }
 
@@ -1239,6 +1240,7 @@ void FunctionalityTests::testSplitByColumn()
         secondDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
         break;
     default:
+        QFAIL("exception scenario");
         break;
     }
 

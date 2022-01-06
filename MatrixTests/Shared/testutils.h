@@ -66,7 +66,11 @@ enum class SplitMode : unsigned short
 {
     ALL_DIFFERENT,
     SOURCE_FIRST,
-    SOURCE_SECOND
+    SOURCE_SECOND,
+
+    // for exceptions testing only
+    DESTINATION_BOTH,
+    DESTINATION_ALL
 };
 
 #endif // TESTUTILS_H

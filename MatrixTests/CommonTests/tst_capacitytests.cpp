@@ -573,6 +573,7 @@ void CapacityTests::testCapacityWithSplitByRow()
         secondDestMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
         break;
     default:
+        QFAIL("exception scenario");
         break;
     }
 
@@ -624,6 +625,7 @@ void CapacityTests::testCapacityWithSplitByColumn()
         secondDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
         break;
     default:
+        QFAIL("exception scenario");
         break;
     }
 
