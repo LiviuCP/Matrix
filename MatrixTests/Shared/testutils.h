@@ -2,6 +2,7 @@
 #define TESTUTILS_H
 
 #include <QPointF>
+#include <string>
 
 #include "matrix.h"
 
