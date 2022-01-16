@@ -31,8 +31,7 @@ private slots:
     void testSplitByRowExceptions();
     void testSplitByColumnExceptions();
     void testSwapItemsExceptions();
-    void testSwapRowsExceptions();
-    void testSwapColumnsExceptions();
+    void testSwapRowsOrColumnsExceptions();
     void testSwapRowColumnExceptions();
     void testCopyExceptions();
 
@@ -52,8 +51,7 @@ private slots:
     void testSplitByRowExceptions_data();
     void testSplitByColumnExceptions_data();
     void testSwapItemsExceptions_data();
-    void testSwapRowsExceptions_data();
-    void testSwapColumnsExceptions_data();
+    void testSwapRowsOrColumnsExceptions_data();
     void testSwapRowColumnExceptions_data();
     void testCopyExceptions_data();
 
@@ -311,44 +309,41 @@ void CommonExceptionTests::testSwapItemsExceptions()
                              std::runtime_error);
 }
 
-void CommonExceptionTests::testSwapRowsExceptions()
+void CommonExceptionTests::testSwapRowsOrColumnsExceptions()
 {
     QFETCH(IntMatrix, firstMatrix);
     QFETCH(IntMatrix, secondMatrix);
-    QFETCH(IntMatrixSizeType, firstRowNr);
-    QFETCH(IntMatrixSizeType, secondRowNr);
+    QFETCH(IntMatrixSizeType, firstRowColumnNr);
+    QFETCH(IntMatrixSizeType, secondRowColumnNr);
     QFETCH(bool, isSwapWithinMatrix);
+
+    IntMatrix firstMatrixTransposed;
+    IntMatrix secondMatrixTransposed;
+
+    firstMatrix.transpose(firstMatrixTransposed);
+    secondMatrix.transpose(secondMatrixTransposed);
 
     QVERIFY_EXCEPTION_THROWN({
                                  if (isSwapWithinMatrix)
                                  {
-                                     firstMatrix.swapRows(firstRowNr, firstMatrix, secondRowNr);
+                                     firstMatrix.swapRows(firstRowColumnNr, firstMatrix, secondRowColumnNr);
                                  }
                                  else
                                  {
-                                     firstMatrix.swapRows(firstRowNr, secondMatrix, secondRowNr);
+                                     firstMatrix.swapRows(firstRowColumnNr, secondMatrix, secondRowColumnNr);
                                  }
                              },
 
                              std::runtime_error);
-}
-
-void CommonExceptionTests::testSwapColumnsExceptions()
-{
-    QFETCH(IntMatrix, firstMatrix);
-    QFETCH(IntMatrix, secondMatrix);
-    QFETCH(IntMatrixSizeType, firstColumnNr);
-    QFETCH(IntMatrixSizeType, secondColumnNr);
-    QFETCH(bool, isSwapWithinMatrix);
 
     QVERIFY_EXCEPTION_THROWN({
                                  if (isSwapWithinMatrix)
                                  {
-                                     firstMatrix.swapColumns(firstColumnNr, firstMatrix, secondColumnNr);
+                                     firstMatrixTransposed.swapColumns(firstRowColumnNr, firstMatrixTransposed, secondRowColumnNr);
                                  }
                                  else
                                  {
-                                     firstMatrix.swapColumns(firstColumnNr, secondMatrix, secondColumnNr);
+                                     firstMatrixTransposed.swapColumns(firstRowColumnNr, secondMatrixTransposed, secondRowColumnNr);
                                  }
                              },
 
@@ -619,12 +614,12 @@ void CommonExceptionTests::testSwapItemsExceptions_data()
     QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << -1 << 2 << 3 << -1 << true;
 }
 
-void CommonExceptionTests::testSwapRowsExceptions_data()
+void CommonExceptionTests::testSwapRowsOrColumnsExceptions_data()
 {
     QTest::addColumn<IntMatrix>("firstMatrix");
     QTest::addColumn<IntMatrix>("secondMatrix");
-    QTest::addColumn<IntMatrixSizeType>("firstRowNr");
-    QTest::addColumn<IntMatrixSizeType>("secondRowNr");
+    QTest::addColumn<IntMatrixSizeType>("firstRowColumnNr");
+    QTest::addColumn<IntMatrixSizeType>("secondRowColumnNr");
     QTest::addColumn<bool>("isSwapWithinMatrix");
 
     QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << 2 << false;
@@ -649,38 +644,6 @@ void CommonExceptionTests::testSwapRowsExceptions_data()
     QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << 3 << 1 << false;
     QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << -1 << true;
     QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << -1 << 3 << true;
-}
-
-void CommonExceptionTests::testSwapColumnsExceptions_data()
-{
-    QTest::addColumn<IntMatrix>("firstMatrix");
-    QTest::addColumn<IntMatrix>("secondMatrix");
-    QTest::addColumn<IntMatrixSizeType>("firstColumnNr");
-    QTest::addColumn<IntMatrixSizeType>("secondColumnNr");
-    QTest::addColumn<bool>("isSwapWithinMatrix");
-
-    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << 2 << false;
-    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << -2 << false;
-    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << -2 << false;
-    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << 4 << false;
-    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 3 << 2 << false;
-    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 3 << 4 << false;
-    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << 1 << 0 << false;
-    QTest::newRow("same matrix") << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << 2 << true;
-    QTest::newRow("same matrix") << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << -2 << true;
-    QTest::newRow("same matrix") << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << -2 << true;
-    QTest::newRow("same matrix") << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << 4 << true;
-    QTest::newRow("same matrix") << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 4 << 1 << true;
-    QTest::newRow("same matrix") << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 4 << 4 << true;
-
-    // a combination of exceptions
-    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << 4 << false;
-    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 3 << -1 << false;
-    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << 1 << -1 << false;
-    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << -1 << 3 << false;
-    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << 3 << 1 << false;
-    QTest::newRow("same matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3 << -1 << true;
-    QTest::newRow("same matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << 3 << true;
 }
 
 void CommonExceptionTests::testSwapRowColumnExceptions_data()
