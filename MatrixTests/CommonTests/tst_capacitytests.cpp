@@ -996,10 +996,10 @@ void CapacityTests::_buildCapacityWithMoveCopyConstructorsTestingTable()
     QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
     QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
 
-    QTest::newRow("") << 3 << 4 << -1 << 3 << 5;
-    QTest::newRow("") << 4 << 3 << -1 << 5 << 3;
-    QTest::newRow("") << 7 << 8 << -1 << 8 << 10;
-    QTest::newRow("") << 8 << 7 << -1 << 10 << 8;
+    QTest::newRow("small size matrix") << 3 << 4 << -1 << 3 << 5;
+    QTest::newRow("small size matrix") << 4 << 3 << -1 << 5 << 3;
+    QTest::newRow("medium size matrix") << 7 << 8 << -1 << 8 << 10;
+    QTest::newRow("medium size matrix") << 8 << 7 << -1 << 10 << 8;
 }
 
 void CapacityTests::_buildCapacityWithAssignmentOperatorsTestingTable()
