@@ -3876,11 +3876,11 @@ void Matrix<DataType>::swapItems(Matrix<DataType>::size_type rowNr,
                                  Matrix<DataType>::size_type matrixRowNr,
                                  Matrix<DataType>::size_type matrixColumnNr)
 {
-    CHECK_ERROR_CONDITION(rowNr<0 || columnNr<0 || matrixRowNr<0 || matrixColumnNr<0,  Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
-    CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || columnNr>=m_NrOfColumns || matrixRowNr>=matrix.m_NrOfRows || matrixColumnNr>=matrix.m_NrOfColumns,
+    CHECK_ERROR_CONDITION(rowNr < 0 || columnNr < 0 || matrixRowNr < 0 || matrixColumnNr < 0,  Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows || columnNr >= m_NrOfColumns || matrixRowNr >= matrix.m_NrOfRows || matrixColumnNr >= matrix.m_NrOfColumns,
                           Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
 
-    if (rowNr!=matrixRowNr || columnNr!=matrixColumnNr || &matrix != this)
+    if (rowNr != matrixRowNr || columnNr != matrixColumnNr || &matrix != this)
     {
         std::swap(m_pBaseArrayPtr[rowNr][columnNr], matrix.m_pBaseArrayPtr[matrixRowNr][matrixColumnNr]);
     }
@@ -3891,11 +3891,11 @@ void Matrix<DataType>::swapRows(Matrix<DataType>::size_type rowNr,
                                 Matrix<DataType>& matrix,
                                 Matrix<DataType>::size_type matrixRowNr)
 {
-    CHECK_ERROR_CONDITION(rowNr<0 || matrixRowNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
-    CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows || matrixRowNr>=matrix.m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
-    CHECK_ERROR_CONDITION(m_NrOfColumns!=matrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_ROW_LENGTH]);
+    CHECK_ERROR_CONDITION(rowNr < 0 || matrixRowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows || matrixRowNr >= matrix.m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+    CHECK_ERROR_CONDITION(m_NrOfColumns != matrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_ROW_LENGTH]);
 
-    if (rowNr!=matrixRowNr || &matrix!=this)
+    if (rowNr != matrixRowNr || &matrix != this)
     {
         std::swap(m_pBaseArrayPtr[rowNr], matrix.m_pBaseArrayPtr[matrixRowNr]);
     }
@@ -3906,13 +3906,13 @@ void Matrix<DataType>::swapColumns(Matrix<DataType>::size_type columnNr,
                                    Matrix<DataType>& matrix,
                                    Matrix<DataType>::size_type matrixColumnNr)
 {
-    CHECK_ERROR_CONDITION(columnNr<0 || matrixColumnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
-    CHECK_ERROR_CONDITION(columnNr>=m_NrOfColumns || matrixColumnNr>=matrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
-    CHECK_ERROR_CONDITION(m_NrOfRows!=matrix.m_NrOfRows, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_COLUMN_LENGTH]);
+    CHECK_ERROR_CONDITION(columnNr < 0 || matrixColumnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
+    CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns || matrixColumnNr >= matrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+    CHECK_ERROR_CONDITION(m_NrOfRows != matrix.m_NrOfRows, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_COLUMN_LENGTH]);
 
-    if (columnNr!=matrixColumnNr || &matrix!=this)
+    if (columnNr != matrixColumnNr || &matrix != this)
     {
-        for(size_type row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row < m_NrOfRows; ++row)
         {
             // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
             DataType swap{m_pBaseArrayPtr[row][columnNr]};
@@ -3928,12 +3928,12 @@ void Matrix<DataType>::swapRowColumn(Matrix<DataType>::size_type rowNr,
                                      Matrix<DataType>::size_type matrixColumnNr)
 {
     CHECK_ERROR_CONDITION(&matrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARG]);
-    CHECK_ERROR_CONDITION(rowNr<0 || matrixColumnNr<0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
-    CHECK_ERROR_CONDITION(m_NrOfColumns!=matrix.m_NrOfRows, Matr::errorMessages[Matr::Errors::MATRIXES_ROWS_UNEQUAL_COLUMNS]);
-    CHECK_ERROR_CONDITION(rowNr>=m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
-    CHECK_ERROR_CONDITION(matrixColumnNr>=matrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+    CHECK_ERROR_CONDITION(rowNr < 0 || matrixColumnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
+    CHECK_ERROR_CONDITION(m_NrOfColumns != matrix.m_NrOfRows, Matr::errorMessages[Matr::Errors::MATRIXES_ROWS_UNEQUAL_COLUMNS]);
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+    CHECK_ERROR_CONDITION(matrixColumnNr >= matrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
 
-    for (size_type col{0}; col<m_NrOfColumns; ++col)
+    for (size_type col{0}; col < m_NrOfColumns; ++col)
     {
         // for the moment we don't use the std::swap (might be too many function calls if it doesn't get inlined)
         DataType swap{m_pBaseArrayPtr[rowNr][col]};
@@ -3945,9 +3945,9 @@ void Matrix<DataType>::swapRowColumn(Matrix<DataType>::size_type rowNr,
 template <typename DataType>
 void Matrix<DataType>::setAllItemsToValue(const DataType& value)
 {
-    for (size_type row{0}; row<m_NrOfRows; ++row)
+    for (size_type row{0}; row < m_NrOfRows; ++row)
     {
-        for (size_type col{0}; col<m_NrOfColumns; ++col)
+        for (size_type col{0}; col < m_NrOfColumns; ++col)
         {
             m_pBaseArrayPtr[row][col] = value;
         }
@@ -3964,18 +3964,18 @@ void Matrix<DataType>::copy(const Matrix<DataType>& srcMatrix,
                             Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(&srcMatrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARG]);
-    CHECK_ERROR_CONDITION(nrOfRows<0 || nrOfColumns<0 || srcMatrixRowNr<0 || srcMatrixColumnNr<0 || rowNr<0 || columnNr<0,
+    CHECK_ERROR_CONDITION(nrOfRows < 0 || nrOfColumns < 0 || srcMatrixRowNr < 0 || srcMatrixColumnNr < 0 || rowNr < 0 || columnNr < 0,
                           Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(srcMatrixRowNr + nrOfRows > srcMatrix.m_NrOfRows || srcMatrixColumnNr + nrOfColumns > srcMatrix.m_NrOfColumns || rowNr+nrOfRows > m_NrOfRows || columnNr+nrOfColumns > m_NrOfColumns,
                           Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
 
     if (nrOfRows && nrOfColumns)
     {
-        for (size_type row{0}; row<nrOfRows; ++row)
+        for (size_type row{0}; row < nrOfRows; ++row)
         {
-            for (size_type col{0}; col<nrOfColumns; ++col)
+            for (size_type col{0}; col < nrOfColumns; ++col)
             {
-                m_pBaseArrayPtr[rowNr+row][columnNr+col] = srcMatrix.m_pBaseArrayPtr[srcMatrixRowNr+row][srcMatrixColumnNr+col];
+                m_pBaseArrayPtr[rowNr + row][columnNr + col] = srcMatrix.m_pBaseArrayPtr[srcMatrixRowNr + row][srcMatrixColumnNr + col];
             }
         }
     }
@@ -3988,9 +3988,9 @@ Matrix<DataType>::operator bool() const
 
     if (m_pBaseArrayPtr)
     {
-        for (size_type row{0}; row<m_NrOfRows; ++row)
+        for (size_type row{0}; row < m_NrOfRows; ++row)
         {
-            for (size_type col{0}; col<m_NrOfColumns; ++col)
+            for (size_type col{0}; col < m_NrOfColumns; ++col)
             {
                 if (m_pBaseArrayPtr[row][col])
                 {
