@@ -575,6 +575,48 @@ void CommonExceptionTests::testSwapItemsExceptions_data()
     QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << 0 << 1 << 2 << 1 << false;
     QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << 0 << 1 << 1 << 3 << false;
     QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << 0 << 1 << 2 << 3 << false;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << -1 << 1 << 1 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << -1 << 1 << -1 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << -1 << 1 << 1 << -1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << -1 << 1 << -1 << -1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << 1 << -1 << 1 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << 1 << -1 << -1 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << 1 << -1 << 1 << -1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << 1 << -1 << -1 << -1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << -1 << -1 << 1 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << -1 << -1 << -1 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << -1 << -1 << 1 << -1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << -1 << -1 << -1 << -1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << 1 << 2 << -1 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << 1 << 2 << 1 << -1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << 1 << 2 << -1 << -1 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << 1 << 1 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << 1 << 2 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << 1 << 3 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << 1 << 3 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 1 << 2 << 1 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 1 << 2 << 2 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 1 << 2 << 3 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 1 << 2 << 3 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << 2 << 1 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << 2 << 2 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << 2 << 3 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << 2 << 3 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 2 << 1 << 1 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 2 << 1 << 3 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 2 << 1 << 3 << 2 << true;
+
+    // a combination of exceptions
+    QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << -1 << 1 << 1 << 3 << false;
+    QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << 3 << 1 << 1 << -1 << false;
+    QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << 1 << 1 << 2 << -1 << false;
+    QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << -1 << 2 << 1 << 1 << false;
+    QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << -1 << 2 << 2 << -1 << false;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << 1 << -1 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 1 << -1 << 1 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 2 << 1 << 3 << -1 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << -1 << 2 << 2 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << -1 << 2 << 3 << -1 << true;
 }
 
 void CommonExceptionTests::testSwapRowsExceptions_data()
@@ -592,6 +634,21 @@ void CommonExceptionTests::testSwapRowsExceptions_data()
     QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 3 << 2 << false;
     QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 3 << 4 << false;
     QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << 1 << 0 << false;
+    QTest::newRow("same matrix") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << -2 << true;
+    QTest::newRow("same matrix") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << -2 << true;
+    QTest::newRow("same matrix") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << 4 << true;
+    QTest::newRow("same matrix") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 4 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 4 << 4 << true;
+
+    // a combination of exceptions
+    QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << 4 << false;
+    QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 3 << -1 << false;
+    QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << 1 << -1 << false;
+    QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << -1 << 3 << false;
+    QTest::newRow("different matrixes") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << 3 << 1 << false;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << -1 << true;
+    QTest::newRow("same matrix") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << -1 << 3 << true;
 }
 
 void CommonExceptionTests::testSwapColumnsExceptions_data()
@@ -609,6 +666,21 @@ void CommonExceptionTests::testSwapColumnsExceptions_data()
     QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 3 << 2 << false;
     QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 3 << 4 << false;
     QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << 1 << 0 << false;
+    QTest::newRow("same matrix") << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << -2 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << -2 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << 4 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 4 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 4 << 4 << true;
+
+    // a combination of exceptions
+    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << 4 << false;
+    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 3 << -1 << false;
+    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << 1 << -1 << false;
+    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << -1 << 3 << false;
+    QTest::newRow("different matrixes") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 3, {7, 8, 9, 10, 11, 12, 13, 14, 15}} << 3 << 1 << false;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3 << -1 << true;
+    QTest::newRow("same matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << 3 << true;
 }
 
 void CommonExceptionTests::testSwapRowColumnExceptions_data()
@@ -622,11 +694,18 @@ void CommonExceptionTests::testSwapRowColumnExceptions_data()
     QTest::newRow("different matrixes") << IntMatrix(2, 3, {1, 2, 3, 4, 5, 6}) << IntMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << -1 << 3 << false;
     QTest::newRow("different matrixes") << IntMatrix(2, 3, {1, 2, 3, 4, 5, 6}) << IntMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 0 << -3 << false;
     QTest::newRow("different matrixes") << IntMatrix(2, 3, {1, 2, 3, 4, 5, 6}) << IntMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << -1 << -3 << false;
+    QTest::newRow("different matrixes") << IntMatrix(2, 3, {1, 2, 3, 4, 5, 6}) << IntMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << -1 << 0 << false;
     QTest::newRow("different matrixes") << IntMatrix(2, 3, {1, 2, 3, 4, 5, 6}) << IntMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 2 << 3 << false;
     QTest::newRow("different matrixes") << IntMatrix(2, 3, {1, 2, 3, 4, 5, 6}) << IntMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 0 << 4 << false;
     QTest::newRow("different matrixes") << IntMatrix(2, 3, {1, 2, 3, 4, 5, 6}) << IntMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 2 << 4 << false;
     QTest::newRow("different matrixes") << IntMatrix(2, 3, {1, 2, 3, 4, 5, 6}) << IntMatrix{2, 4, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << 3 << false;
     QTest::newRow("same matrix") << IntMatrix(3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}) << IntMatrix(3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}) << 1 << 2 << true;
+
+    // combination of exceptions
+    QTest::newRow("different matrixes") << IntMatrix(2, 3, {1, 2, 3, 4, 5, 6}) << IntMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 2 << -1 << false;
+    QTest::newRow("different matrixes") << IntMatrix(2, 3, {1, 2, 3, 4, 5, 6}) << IntMatrix{3, 4, {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << -1 << 4 << false;
+    QTest::newRow("same matrix") << IntMatrix(3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}) << IntMatrix(3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}) << -1 << 2 << true;
+    QTest::newRow("same matrix") << IntMatrix(3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}) << IntMatrix(3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}) << 3 << -1 << true;
 }
 
 void CommonExceptionTests::testCopyExceptions_data()
@@ -678,7 +757,7 @@ void CommonExceptionTests::testCopyExceptions_data()
     QTest::newRow("different matrixes") << IntMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 2 << 2 << 1 << 2 << 1 << false;
     QTest::newRow("different matrixes") << IntMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 2 << 2 << 1 << 1 << 2 << false;
     QTest::newRow("different matrixes") << IntMatrix{5, 4, {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 2 << 2 << 1 << 2 << 2 << false;
-    QTest::newRow("different matrixes") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 2 << 0 << 0 << 0 << 1 << true;
+    QTest::newRow("same matrix") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 2 << 0 << 0 << 0 << 1 << true;
 }
 
 void CommonExceptionTests::_buildResizeExceptionsTestingTable()
