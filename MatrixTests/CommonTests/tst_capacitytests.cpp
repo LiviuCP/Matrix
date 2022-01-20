@@ -344,54 +344,46 @@ void CapacityTests::testCapacityWithResizeAndFillInNewValues()
 
 void CapacityTests::testCapacityWithInsertRow()
 {
-    QFETCH(IntMatrixSizeType, rowsCount);
-    QFETCH(IntMatrixSizeType, columnsCount);
-    QFETCH(int, elementValue);
+    QFETCH(IntMatrix, matrix);
     QFETCH(IntMatrixSizeType, insertPosition);
     QFETCH(int, insertedRowValue);
     QFETCH(IntMatrixSizeType, expectedRowCapacity);
     QFETCH(IntMatrixSizeType, expectedColumnCapacity);
     QFETCH(bool, isInsertedRowValueSet);
 
-    mPrimaryIntMatrix = {rowsCount, columnsCount, elementValue};
-
     if (isInsertedRowValueSet)
     {
-        mPrimaryIntMatrix.insertRow(insertPosition, insertedRowValue);
+        matrix.insertRow(insertPosition, insertedRowValue);
     }
     else
     {
-        mPrimaryIntMatrix.insertRow(insertPosition);
+        matrix.insertRow(insertPosition);
     }
 
-    QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == expectedRowCapacity &&
-             mPrimaryIntMatrix.getColumnCapacity() == expectedColumnCapacity, "Insert row failed, capacity of the matrix is not correct!");
+    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity &&
+             matrix.getColumnCapacity() == expectedColumnCapacity, "Insert row failed, capacity of the matrix is not correct!");
 }
 
 void CapacityTests::testCapacityWithInsertColumn()
 {
-    QFETCH(IntMatrixSizeType, rowsCount);
-    QFETCH(IntMatrixSizeType, columnsCount);
-    QFETCH(int, elementValue);
+    QFETCH(IntMatrix, matrix);
     QFETCH(IntMatrixSizeType, insertPosition);
     QFETCH(int, insertedColumnValue);
     QFETCH(IntMatrixSizeType, expectedRowCapacity);
     QFETCH(IntMatrixSizeType, expectedColumnCapacity);
     QFETCH(bool, isInsertedColumnValueSet);
 
-    mPrimaryIntMatrix = {rowsCount, columnsCount, elementValue};
-
     if (isInsertedColumnValueSet)
     {
-        mPrimaryIntMatrix.insertColumn(insertPosition, insertedColumnValue);
+        matrix.insertColumn(insertPosition, insertedColumnValue);
     }
     else
     {
-        mPrimaryIntMatrix.insertColumn(insertPosition);
+        matrix.insertColumn(insertPosition);
     }
 
-    QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == expectedRowCapacity &&
-             mPrimaryIntMatrix.getColumnCapacity() == expectedColumnCapacity, "Insert column failed, capacity of the matrix is not correct!");
+    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity &&
+             matrix.getColumnCapacity() == expectedColumnCapacity, "Insert column failed, capacity of the matrix is not correct!");
 }
 
 void CapacityTests::testCapacityWithEraseRow()
@@ -704,40 +696,36 @@ void CapacityTests::testCapacityWithResizeAndFillInNewValues_data()
 
 void CapacityTests::testCapacityWithInsertRow_data()
 {
-    QTest::addColumn<IntMatrixSizeType>("rowsCount");
-    QTest::addColumn<IntMatrixSizeType>("columnsCount");
-    QTest::addColumn<int>("elementValue");
+    QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("insertPosition");
     QTest::addColumn<int>("insertedRowValue");
     QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
     QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
     QTest::addColumn<bool>("isInsertedRowValueSet");
 
-    QTest::newRow("inserted row value NOT set") << 3 << 4 << -2 << 1 << 5 << 6 << 5 << false;
-    QTest::newRow("inserted row value set") << 3 << 4 << -2 << 1 << 5 << 6 << 5 << true;
-    QTest::newRow("inserted row value NOT set") << 6 << 5 << -2 << 3 << 5 << 7 << 6 << false;
-    QTest::newRow("inserted row value set") << 6 << 5 << -2 << 3 << 5 << 7 << 6 << true;
-    QTest::newRow("inserted row value NOT set") << 8 << 2 << -2 << 5 << 5 << 10 << 2 << false;
-    QTest::newRow("inserted row value set") << 8 << 2 << -2 << 5 << 5 << 10 << 2 << true;
+    QTest::newRow("inserted row value NOT set") << IntMatrix{3, 4, -2} << 1 << 5 << 6 << 5 << false;
+    QTest::newRow("inserted row value set") << IntMatrix{3, 4, -2} << 1 << 5 << 6 << 5 << true;
+    QTest::newRow("inserted row value NOT set") << IntMatrix{6, 5, -2} << 3 << 5 << 7 << 6 << false;
+    QTest::newRow("inserted row value set") << IntMatrix{6, 5, -2} << 3 << 5 << 7 << 6 << true;
+    QTest::newRow("inserted row value NOT set") << IntMatrix{8, 2, -2} << 5 << 5 << 10 << 2 << false;
+    QTest::newRow("inserted row value set") << IntMatrix{8, 2, -2} << 5 << 5 << 10 << 2 << true;
 }
 
 void CapacityTests::testCapacityWithInsertColumn_data()
 {
-    QTest::addColumn<IntMatrixSizeType>("rowsCount");
-    QTest::addColumn<IntMatrixSizeType>("columnsCount");
-    QTest::addColumn<int>("elementValue");
+    QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("insertPosition");
     QTest::addColumn<int>("insertedColumnValue");
     QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
     QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
     QTest::addColumn<bool>("isInsertedColumnValueSet");
 
-    QTest::newRow("inserted column value NOT set") << 5 << 3 << 4 << 1 << 1 << 6 << 6 << false;
-    QTest::newRow("inserted column value set") << 5 << 3 << 4 << 1 << 1 << 6 << 6 << true;
-    QTest::newRow("inserted column value NOT set") << 5 << 7 << 4 << 1 << 1 << 6 << 8 << false;
-    QTest::newRow("inserted column value set") << 5 << 7 << 4 << 1 << 1 << 6 << 8 << true;
-    QTest::newRow("inserted column value NOT set") << 5 << 14 << 4 << 1 << 1 << 6 << 17 << false;
-    QTest::newRow("inserted column value set") << 5 << 14 << 4 << 1 << 1 << 6 << 17 << true;
+    QTest::newRow("inserted column value NOT set") << IntMatrix{5, 3, 4} << 1 << 1 << 6 << 6 << false;
+    QTest::newRow("inserted column value set") << IntMatrix{5, 3, 4} << 1 << 1 << 6 << 6 << true;
+    QTest::newRow("inserted column value NOT set") << IntMatrix{5, 7, 4} << 1 << 1 << 6 << 8 << false;
+    QTest::newRow("inserted column value set") << IntMatrix{5, 7, 4} << 1 << 1 << 6 << 8 << true;
+    QTest::newRow("inserted column value NOT set") << IntMatrix{5, 14, 4} << 1 << 1 << 6 << 17 << false;
+    QTest::newRow("inserted column value set") << IntMatrix{5, 14, 4} << 1 << 1 << 6 << 17 << true;
 }
 
 void CapacityTests::testCapacityWithEraseRow_data()
