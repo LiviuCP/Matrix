@@ -241,17 +241,13 @@ void CapacityTests::testCapacityWithMoveAssignmentOperator()
 
 void CapacityTests::testCapacityWithTranspose()
 {
-    QFETCH(IntMatrixSizeType, srcMatrixRowsCount);
-    QFETCH(IntMatrixSizeType, srcMatrixColumnsCount);
-    QFETCH(int, srcMatrixElementValue);
-    QFETCH(IntMatrixSizeType, destMatrixRowsCount);
-    QFETCH(IntMatrixSizeType, destMatrixColumnsCount);
-    QFETCH(int, destMatrixElementValue);
+    QFETCH(IntMatrix, srcMatrix);
+    QFETCH(IntMatrix, destMatrix);
     QFETCH(IntMatrixSizeType, expectedRowCapacity);
     QFETCH(IntMatrixSizeType, expectedColumnCapacity);
     QFETCH(bool, isTransposedToItself);
 
-    mPrimaryIntMatrix = {srcMatrixRowsCount, srcMatrixColumnsCount, srcMatrixElementValue};
+    mPrimaryIntMatrix = srcMatrix;
 
     if (isTransposedToItself)
     {
@@ -260,17 +256,9 @@ void CapacityTests::testCapacityWithTranspose()
         QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == expectedRowCapacity &&
                  mPrimaryIntMatrix.getColumnCapacity() == expectedColumnCapacity, "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
     }
-    else if (destMatrixRowsCount != 0 && destMatrixColumnsCount != 0)
-    {
-        mSecondaryIntMatrix = {destMatrixRowsCount, destMatrixColumnsCount, destMatrixElementValue};
-        mPrimaryIntMatrix.transpose(mSecondaryIntMatrix);
-
-        QVERIFY2(mSecondaryIntMatrix.getRowCapacity() == expectedRowCapacity &&
-                 mSecondaryIntMatrix.getColumnCapacity() == expectedColumnCapacity, "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
-    }
     else
     {
-        mSecondaryIntMatrix = {};
+        mSecondaryIntMatrix = destMatrix;
         mPrimaryIntMatrix.transpose(mSecondaryIntMatrix);
 
         QVERIFY2(mSecondaryIntMatrix.getRowCapacity() == expectedRowCapacity &&
@@ -681,31 +669,27 @@ void CapacityTests::testCapacityWithMoveAssignmentOperator_data()
 
 void CapacityTests::testCapacityWithTranspose_data()
 {
-    QTest::addColumn<IntMatrixSizeType>("srcMatrixRowsCount");
-    QTest::addColumn<IntMatrixSizeType>("srcMatrixColumnsCount");
-    QTest::addColumn<int>("srcMatrixElementValue");
-    QTest::addColumn<IntMatrixSizeType>("destMatrixRowsCount");
-    QTest::addColumn<IntMatrixSizeType>("destMatrixColumnsCount");
-    QTest::addColumn<int>("destMatrixElementValue");
+    QTest::addColumn<IntMatrix>("srcMatrix");
+    QTest::addColumn<IntMatrix>("destMatrix");
     QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
     QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
     QTest::addColumn<bool>("isTransposedToItself");
 
-    QTest::newRow("transposed matrix initially empty") << 3 << 4 << 2 << 0 << 0 << 0 << 5 << 3 << false;
-    QTest::newRow("transposed matrix initially empty") << 4 << 3 << 2 << 0 << 0 << 0 << 3 << 5 << false;
-    QTest::newRow("transposed matrix initially empty") << 7 << 8 << 2 << 0 << 0 << 0 << 10 << 8 << false;
-    QTest::newRow("transposed matrix initially empty") << 8 << 7 << 2 << 0 << 0 << 0 << 8 << 10 << false;
-    QTest::newRow("transposed matrix initially NOT empty") << 8 << 7 << 2 << 5 << 6 << 2 << 8 << 10 << false;
-    QTest::newRow("transposed matrix initially NOT empty") << 8 << 7 << 2 << 6 << 6 << 2 << 7 << 10 << false;
-    QTest::newRow("transposed matrix initially NOT empty") << 8 << 7 << 2 << 5 << 7 << 2 << 8 << 8 << false;
-    QTest::newRow("transposed matrix initially NOT empty") << 8 << 7 << 2 << 6 << 7 << 2 << 7 << 8 << false;
-    QTest::newRow("transposed matrix initially NOT empty") << 8 << 7 << 2 << 7 << 8 << 2 << 8 << 10 << false;
-    QTest::newRow("matrix transposed to itself") << 3 << 3 << 2 << 3 << 3 << 2 << 3 << 3 << true;
-    QTest::newRow("matrix transposed to itself") << 3 << 4 << 2 << 3 << 4 << 2 << 5 << 5 << true;
-    QTest::newRow("matrix transposed to itself") << 4 << 3 << 2 << 4 << 3 << 2 << 5 << 5 << true;
-    QTest::newRow("matrix transposed to itself") << 4 << 4 << 2 << 4 << 4 << 2 << 5 << 5 << true;
-    QTest::newRow("matrix transposed to itself") << 7 << 8 << 2 << 7 << 8 << 2 << 8 << 10 << true;
-    QTest::newRow("matrix transposed to itself") << 8 << 7 << 2 << 8 << 7 << 2 << 10 << 8 << true;
+    QTest::newRow("transposed matrix initially empty") << IntMatrix{3, 4, 2} << IntMatrix{} << 5 << 3 << false;
+    QTest::newRow("transposed matrix initially empty") << IntMatrix{4, 3, 2} << IntMatrix{} << 3 << 5 << false;
+    QTest::newRow("transposed matrix initially empty") << IntMatrix{7, 8, 2} << IntMatrix{} << 10 << 8 << false;
+    QTest::newRow("transposed matrix initially empty") << IntMatrix{8, 7, 2} << IntMatrix{} << 8 << 10 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{8, 7, 2} << IntMatrix{5, 6, 2} << 8 << 10 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{8, 7, 2} << IntMatrix{6, 6, 2} << 7 << 10 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{8, 7, 2} << IntMatrix{5, 7, 2} << 8 << 8 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{8, 7, 2} << IntMatrix{6, 7, 2} << 7 << 8 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{8, 7, 2} << IntMatrix{7, 8, 2} << 8 << 10 << false;
+    QTest::newRow("matrix transposed to itself") << IntMatrix{3, 3, 2} << IntMatrix{3, 3, 2} << 3 << 3 << true;
+    QTest::newRow("matrix transposed to itself") << IntMatrix{3, 4, 2} << IntMatrix{3, 4, 2} << 5 << 5 << true;
+    QTest::newRow("matrix transposed to itself") << IntMatrix{4, 3, 2} << IntMatrix{4, 3, 2} << 5 << 5 << true;
+    QTest::newRow("matrix transposed to itself") << IntMatrix{4, 4, 2} << IntMatrix{4, 4, 2} << 5 << 5 << true;
+    QTest::newRow("matrix transposed to itself") << IntMatrix{7, 8, 2} << IntMatrix{7, 8, 2} << 8 << 10 << true;
+    QTest::newRow("matrix transposed to itself") << IntMatrix{8, 7, 2} << IntMatrix{8, 7, 2} << 10 << 8 << true;
 }
 
 void CapacityTests::testCapacityWithResizeWithoutFillingInNewValues_data()
