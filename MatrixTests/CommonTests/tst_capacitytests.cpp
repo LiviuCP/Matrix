@@ -388,37 +388,29 @@ void CapacityTests::testCapacityWithInsertColumn()
 
 void CapacityTests::testCapacityWithEraseRow()
 {
-    QFETCH(IntMatrixSizeType, rowsCount);
-    QFETCH(IntMatrixSizeType, columnsCount);
-    QFETCH(int, elementValue);
+    QFETCH(IntMatrix, matrix);
     QFETCH(TripleSizeTypeTupleArray, erasedRowAndExpectedCapacity);
-
-    mPrimaryIntMatrix = {rowsCount, columnsCount, elementValue};
 
     for (const auto& data : erasedRowAndExpectedCapacity)
     {
-        mPrimaryIntMatrix.eraseRow(std::get<0>(data));
+        matrix.eraseRow(std::get<0>(data));
 
-        QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == std::get<1>(data) &&
-                 mPrimaryIntMatrix.getColumnCapacity() == std::get<2>(data), "Erase row failed, capacity of the matrix is not correct!");
+        QVERIFY2(matrix.getRowCapacity() == std::get<1>(data) &&
+                 matrix.getColumnCapacity() == std::get<2>(data), "Erase row failed, capacity of the matrix is not correct!");
     }
 }
 
 void CapacityTests::testCapacityWithEraseColumn()
 {
-    QFETCH(IntMatrixSizeType, rowsCount);
-    QFETCH(IntMatrixSizeType, columnsCount);
-    QFETCH(int, elementValue);
+    QFETCH(IntMatrix, matrix);
     QFETCH(TripleSizeTypeTupleArray, erasedColumnAndExpectedCapacity);
-
-    mPrimaryIntMatrix = {rowsCount, columnsCount, elementValue};
 
     for (const auto& data : erasedColumnAndExpectedCapacity)
     {
-        mPrimaryIntMatrix.eraseColumn(std::get<0>(data));
+        matrix.eraseColumn(std::get<0>(data));
 
-        QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == std::get<1>(data) &&
-                 mPrimaryIntMatrix.getColumnCapacity() == std::get<2>(data), "Erase row failed, capacity of the matrix is not correct!");
+        QVERIFY2(matrix.getRowCapacity() == std::get<1>(data) &&
+                 matrix.getColumnCapacity() == std::get<2>(data), "Erase row failed, capacity of the matrix is not correct!");
     }
 }
 
@@ -730,26 +722,22 @@ void CapacityTests::testCapacityWithInsertColumn_data()
 
 void CapacityTests::testCapacityWithEraseRow_data()
 {
-    QTest::addColumn<IntMatrixSizeType>("rowsCount");
-    QTest::addColumn<IntMatrixSizeType>("columnsCount");
-    QTest::addColumn<int>("elementValue");
+    QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<TripleSizeTypeTupleArray>("erasedRowAndExpectedCapacity");
 
-    QTest::newRow("less rows than columns") << 3 << 4 << -2 << TripleSizeTypeTupleArray{{1, 3, 5}, {1, 3, 5}, {0, 0, 0}};
-    QTest::newRow("square matrix") << 4 << 4 << -2 << TripleSizeTypeTupleArray{{1, 5, 5}, {1, 5, 5}, {1, 2, 5}, {0, 0, 0}};
-    QTest::newRow("more rows than columns") << 7 << 5 << -2 << TripleSizeTypeTupleArray{{1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 4, 6}, {1, 2, 6}, {0, 0, 0}};
+    QTest::newRow("less rows than columns") << IntMatrix{3, 4, -2} << TripleSizeTypeTupleArray{{1, 3, 5}, {1, 3, 5}, {0, 0, 0}};
+    QTest::newRow("square matrix") << IntMatrix{4, 4, -2} << TripleSizeTypeTupleArray{{1, 5, 5}, {1, 5, 5}, {1, 2, 5}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << IntMatrix{7, 5, -2} << TripleSizeTypeTupleArray{{1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 4, 6}, {1, 2, 6}, {0, 0, 0}};
 }
 
 void CapacityTests::testCapacityWithEraseColumn_data()
 {
-    QTest::addColumn<IntMatrixSizeType>("rowsCount");
-    QTest::addColumn<IntMatrixSizeType>("columnsCount");
-    QTest::addColumn<int>("elementValue");
+    QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<TripleSizeTypeTupleArray>("erasedColumnAndExpectedCapacity");
 
-    QTest::newRow("less columns than rows") << 4 << 3 << 4 << TripleSizeTypeTupleArray{{1, 5, 3}, {1, 5, 3}, {0, 0, 0}};
-    QTest::newRow("square matrix") << 4 << 4 << 4 << TripleSizeTypeTupleArray{{1, 5, 5}, {1, 5, 5}, {1, 5, 2}, {0, 0, 0}};
-    QTest::newRow("more columns than rows") << 5 << 7 << 4 << TripleSizeTypeTupleArray{{1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 4}, {1, 6, 2}, {0, 0, 0}};
+    QTest::newRow("less columns than rows") << IntMatrix{4, 3, 4} << TripleSizeTypeTupleArray{{1, 5, 3}, {1, 5, 3}, {0, 0, 0}};
+    QTest::newRow("square matrix") << IntMatrix{4, 4, 4} << TripleSizeTypeTupleArray{{1, 5, 5}, {1, 5, 5}, {1, 5, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << IntMatrix{5, 7, 4} << TripleSizeTypeTupleArray{{1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 4}, {1, 6, 2}, {0, 0, 0}};
 }
 
 void CapacityTests::testCapacityWithCatByRow_data()
