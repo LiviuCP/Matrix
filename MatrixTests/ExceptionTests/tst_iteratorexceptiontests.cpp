@@ -102,40 +102,37 @@ void IteratorExceptionTests::testZIteratorTwoOperandsExceptions()
     QFETCH(IntMatrixConstReverseZIterator, firstConstReverseZIterator);
     QFETCH(IntMatrixConstReverseZIterator, secondConstReverseZIterator);
 
-    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstZIterator - secondZIterator}; Q_UNUSED(diff);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstConstZIterator - secondConstZIterator}; Q_UNUSED(diff);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstReverseZIterator - secondReverseZIterator}; Q_UNUSED(diff);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstConstReverseZIterator - secondConstReverseZIterator}; Q_UNUSED(diff);}, std::runtime_error);
-
     QVERIFY_EXCEPTION_THROWN({bool areEqual{firstZIterator == secondZIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool areEqual{firstConstZIterator == secondConstZIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool areEqual{firstReverseZIterator == secondReverseZIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool areEqual{firstConstReverseZIterator == secondConstReverseZIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
-
     QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstZIterator != secondZIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstConstZIterator != secondConstZIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstReverseZIterator != secondReverseZIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstConstReverseZIterator != secondConstReverseZIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
-
     QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstZIterator < secondZIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstConstZIterator < secondConstZIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstReverseZIterator < secondReverseZIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstConstReverseZIterator < secondConstReverseZIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
-
     QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstZIterator <= secondZIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstConstZIterator <= secondConstZIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstReverseZIterator <= secondReverseZIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstConstReverseZIterator <= secondConstReverseZIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
-
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstZIterator > secondZIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstConstZIterator > secondConstZIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstReverseZIterator > secondReverseZIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstConstReverseZIterator > secondConstReverseZIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
-
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstZIterator >= secondZIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstZIterator - secondZIterator}; Q_UNUSED(diff);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({bool areEqual{firstConstZIterator == secondConstZIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstConstZIterator != secondConstZIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstConstZIterator < secondConstZIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstConstZIterator <= secondConstZIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstConstZIterator > secondConstZIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstConstZIterator >= secondConstZIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstConstZIterator - secondConstZIterator}; Q_UNUSED(diff);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({bool areEqual{firstReverseZIterator == secondReverseZIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstReverseZIterator != secondReverseZIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstReverseZIterator < secondReverseZIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstReverseZIterator <= secondReverseZIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstReverseZIterator > secondReverseZIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstReverseZIterator >= secondReverseZIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstReverseZIterator - secondReverseZIterator}; Q_UNUSED(diff);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({bool areEqual{firstConstReverseZIterator == secondConstReverseZIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstConstReverseZIterator != secondConstReverseZIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstConstReverseZIterator < secondConstReverseZIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstConstReverseZIterator <= secondConstReverseZIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstConstReverseZIterator > secondConstReverseZIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstConstReverseZIterator >= secondConstReverseZIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstConstReverseZIterator - secondConstReverseZIterator}; Q_UNUSED(diff);}, std::runtime_error);
 }
 
 void IteratorExceptionTests::testNIteratorTwoOperandsExceptions()
@@ -149,40 +146,37 @@ void IteratorExceptionTests::testNIteratorTwoOperandsExceptions()
     QFETCH(IntMatrixConstReverseNIterator, firstConstReverseNIterator);
     QFETCH(IntMatrixConstReverseNIterator, secondConstReverseNIterator);
 
-    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstNIterator - secondNIterator}; Q_UNUSED(diff);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstConstNIterator - secondConstNIterator}; Q_UNUSED(diff);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstReverseNIterator - secondReverseNIterator}; Q_UNUSED(diff);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstConstReverseNIterator - secondConstReverseNIterator}; Q_UNUSED(diff);}, std::runtime_error);
-
     QVERIFY_EXCEPTION_THROWN({bool areEqual{firstNIterator == secondNIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool areEqual{firstConstNIterator == secondConstNIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool areEqual{firstReverseNIterator == secondReverseNIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool areEqual{firstConstReverseNIterator == secondConstReverseNIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
-
     QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstNIterator != secondNIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstConstNIterator != secondConstNIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstReverseNIterator != secondReverseNIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstConstReverseNIterator != secondConstReverseNIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
-
     QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstNIterator < secondNIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstConstNIterator < secondConstNIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstReverseNIterator < secondReverseNIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstConstReverseNIterator < secondConstReverseNIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
-
     QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstNIterator <= secondNIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstConstNIterator <= secondConstNIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstReverseNIterator <= secondReverseNIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstConstReverseNIterator <= secondConstReverseNIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
-
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstNIterator > secondNIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstConstNIterator > secondConstNIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstReverseNIterator > secondReverseNIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstConstReverseNIterator > secondConstReverseNIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
-
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstNIterator >= secondNIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstNIterator - secondNIterator}; Q_UNUSED(diff);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({bool areEqual{firstConstNIterator == secondConstNIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstConstNIterator != secondConstNIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstConstNIterator < secondConstNIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstConstNIterator <= secondConstNIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstConstNIterator > secondConstNIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstConstNIterator >= secondConstNIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstConstNIterator - secondConstNIterator}; Q_UNUSED(diff);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({bool areEqual{firstReverseNIterator == secondReverseNIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstReverseNIterator != secondReverseNIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstReverseNIterator < secondReverseNIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstReverseNIterator <= secondReverseNIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstReverseNIterator > secondReverseNIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstReverseNIterator >= secondReverseNIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstReverseNIterator - secondReverseNIterator}; Q_UNUSED(diff);}, std::runtime_error);
+
+    QVERIFY_EXCEPTION_THROWN({bool areEqual{firstConstReverseNIterator == secondConstReverseNIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstConstReverseNIterator != secondConstReverseNIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isSmallerThan{firstConstReverseNIterator < secondConstReverseNIterator}; Q_UNUSED(isSmallerThan);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstConstReverseNIterator <= secondConstReverseNIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstConstReverseNIterator > secondConstReverseNIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstConstReverseNIterator >= secondConstReverseNIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstConstReverseNIterator - secondConstReverseNIterator}; Q_UNUSED(diff);}, std::runtime_error);
 }
 
 void IteratorExceptionTests::testDiagIteratorTwoOperandsExceptions()
@@ -210,7 +204,7 @@ void IteratorExceptionTests::testDiagIteratorTwoOperandsExceptions()
     QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstDIterator <= secondDIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstDIterator > secondDIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstDIterator >= secondDIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({int difference{firstDIterator - secondDIterator}; Q_UNUSED(difference);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstDIterator - secondDIterator}; Q_UNUSED(diff);}, std::runtime_error);
 
     QVERIFY_EXCEPTION_THROWN({bool areEqual{firstConstDIterator == secondConstDIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstConstDIterator != secondConstDIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
@@ -218,7 +212,7 @@ void IteratorExceptionTests::testDiagIteratorTwoOperandsExceptions()
     QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstConstDIterator <= secondConstDIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstConstDIterator > secondConstDIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstConstDIterator >= secondConstDIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({int difference{firstConstDIterator - secondConstDIterator}; Q_UNUSED(difference);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstConstDIterator - secondConstDIterator}; Q_UNUSED(diff);}, std::runtime_error);
 
     QVERIFY_EXCEPTION_THROWN({bool areEqual{firstReverseDIterator == secondReverseDIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstReverseDIterator != secondReverseDIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
@@ -226,7 +220,7 @@ void IteratorExceptionTests::testDiagIteratorTwoOperandsExceptions()
     QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstReverseDIterator <= secondReverseDIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstReverseDIterator > secondReverseDIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstReverseDIterator >= secondReverseDIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({int difference{firstReverseDIterator - secondReverseDIterator}; Q_UNUSED(difference);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstReverseDIterator - secondReverseDIterator}; Q_UNUSED(diff);}, std::runtime_error);
 
     QVERIFY_EXCEPTION_THROWN({bool areEqual{firstConstReverseDIterator == secondConstReverseDIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstConstReverseDIterator != secondConstReverseDIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
@@ -234,7 +228,7 @@ void IteratorExceptionTests::testDiagIteratorTwoOperandsExceptions()
     QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstConstReverseDIterator <= secondConstReverseDIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstConstReverseDIterator > secondConstReverseDIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstConstReverseDIterator >= secondConstReverseDIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({int difference{firstConstReverseDIterator - secondConstReverseDIterator}; Q_UNUSED(difference);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstConstReverseDIterator - secondConstReverseDIterator}; Q_UNUSED(diff);}, std::runtime_error);
 
     QVERIFY_EXCEPTION_THROWN({bool areEqual{firstMIterator == secondMIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstMIterator != secondMIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
@@ -242,7 +236,7 @@ void IteratorExceptionTests::testDiagIteratorTwoOperandsExceptions()
     QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstMIterator <= secondMIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstMIterator > secondMIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstMIterator >= secondMIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({int difference{firstMIterator - secondMIterator}; Q_UNUSED(difference);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstMIterator - secondMIterator}; Q_UNUSED(diff);}, std::runtime_error);
 
     QVERIFY_EXCEPTION_THROWN({bool areEqual{firstConstMIterator == secondConstMIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstConstMIterator != secondConstMIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
@@ -250,7 +244,7 @@ void IteratorExceptionTests::testDiagIteratorTwoOperandsExceptions()
     QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstConstMIterator <= secondConstMIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstConstMIterator > secondConstMIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstConstMIterator >= secondConstMIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({int difference{firstConstMIterator - secondConstMIterator}; Q_UNUSED(difference);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstConstMIterator - secondConstMIterator}; Q_UNUSED(diff);}, std::runtime_error);
 
     QVERIFY_EXCEPTION_THROWN({bool areEqual{firstReverseMIterator == secondReverseMIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstReverseMIterator != secondReverseMIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
@@ -258,7 +252,7 @@ void IteratorExceptionTests::testDiagIteratorTwoOperandsExceptions()
     QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstReverseMIterator <= secondReverseMIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstReverseMIterator > secondReverseMIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstReverseMIterator >= secondReverseMIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({int difference{firstReverseMIterator - secondReverseMIterator}; Q_UNUSED(difference);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstReverseMIterator - secondReverseMIterator}; Q_UNUSED(diff);}, std::runtime_error);
 
     QVERIFY_EXCEPTION_THROWN({bool areEqual{firstConstReverseMIterator == secondConstReverseMIterator}; Q_UNUSED(areEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool areNotEqual{firstConstReverseMIterator != secondConstReverseMIterator}; Q_UNUSED(areNotEqual);}, std::runtime_error);
@@ -266,7 +260,7 @@ void IteratorExceptionTests::testDiagIteratorTwoOperandsExceptions()
     QVERIFY_EXCEPTION_THROWN({bool isSmallerThanOrEqual{firstConstReverseMIterator <= secondConstReverseMIterator}; Q_UNUSED(isSmallerThanOrEqual);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThan{firstConstReverseMIterator > secondConstReverseMIterator}; Q_UNUSED(isGreaterThan);}, std::runtime_error);
     QVERIFY_EXCEPTION_THROWN({bool isGreaterThanOrEqual{firstConstReverseMIterator >= secondConstReverseMIterator}; Q_UNUSED(isGreaterThanOrEqual);}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({int difference{firstConstReverseMIterator - secondConstReverseMIterator}; Q_UNUSED(difference);}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({IntMatrixDiffType diff{firstConstReverseMIterator - secondConstReverseMIterator}; Q_UNUSED(diff);}, std::runtime_error);
 }
 
 void IteratorExceptionTests::testNonDiagBeginEndIteratorExceptions()
