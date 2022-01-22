@@ -21,13 +21,12 @@ enable_testing()
 include_directories(../Shared)
 include_directories(../../MatrixLib/Matrix)
 
-# uncomment Fraction tests configuration as soon as the Fractions library is setup
+# uncomment Fraction tests configuration as soon as the Fractions include and library dir are setup
 
 add_executable(DecimalMatrixTests tst_decimalmatrixtests.cpp)
 add_executable(StringMatrixTests tst_stringmatrixtests.cpp)
 add_executable(QPointFMatrixTests tst_qpointfmatrixtests.cpp)
 #add_executable(FractionMatrixTests tst_fractionmatrixtests.cpp)
-
 
 add_test(NAME DecimalMatrixTests COMMAND DecimalMatrixTests)
 add_test(NAME StringMatrixTests COMMAND StringMatrixTests)
@@ -38,4 +37,10 @@ target_link_libraries(DecimalMatrixTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(StringMatrixTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(QPointFMatrixTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 #target_link_libraries(FractionMatrixTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+
+#include_directories(../../../Fractions/FractionLib)
+
+#add_library(fractionlib SHARED IMPORTED)
+#set_target_properties(fractionlib PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/../../../Fractions/FractionLib/libFractionLib.so)
+#target_link_libraries(FractionMatrixTests PRIVATE fractionlib)
 
