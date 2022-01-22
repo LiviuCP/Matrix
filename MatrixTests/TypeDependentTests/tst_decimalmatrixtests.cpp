@@ -95,7 +95,6 @@ void DecimalMatrixTests::testMatrixesAreNotEqual_data()
     QTest::newRow("different rows count") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{3, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333, 0.5, 0.5, -1.25}};
     QTest::newRow("different rows/columns count") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{3, 2, {0.5, 0.75, 1.5, 0.8333333333, -0.5, -0.8333}};
     QTest::newRow("different rows/columns count") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{};
-
 }
 
 QTEST_APPLESS_MAIN(DecimalMatrixTests)
