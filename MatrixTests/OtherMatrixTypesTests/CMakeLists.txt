@@ -40,7 +40,14 @@ target_link_libraries(QPointFMatrixTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 
 #include_directories(../../../Fractions/FractionLib)
 
-#add_library(fractionlib SHARED IMPORTED)
-#set_target_properties(fractionlib PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/../../../Fractions/FractionLib/libFractionLib.so)
+#set(FRACTION_LIB_TYPE SHARED)
+
+# errors were encountered when building some libraries as shared on Windows so it has been decided to keep it static on this OS for the moment
+#if(WIN32)
+#    set(FRACTION_LIB_TYPE STATIC)
+#endif()
+
+#add_library(fractionlib ${FRACTION_LIB_TYPE} IMPORTED)
+#set_target_properties(fractionlib PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/../../../Fractions/FractionLib/libFractionLib.dylib) #use the right lib extension (.so for Linux, .dylib for MAC, etc)
 #target_link_libraries(FractionMatrixTests PRIVATE fractionlib)
 
