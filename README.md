@@ -11,35 +11,41 @@ To conclude: use it at your own risk, I will not be held accountable for any dam
 
 1. INSTALLATION SCENARIOS
 
+Please note that for scenarios 1.1 and 1.2 you need to have the Qt framework installed. This is because the unit tests have been written using Qt tests. I recommend using Qt creator for performing the build although this is not mandatory (I recently migrated the whole project to CMake so it should be possible to use other IDEs too). For using other IDEs additional setup would be required so CMake properly detects the Qt environment (otherwise CMake excludes all tests from build). So far I have only run the tests after building from Qt Creator.
+
 1.1. Running the Tests (excluding FractionMatrixTests)
 
-1) Git clone the Matrix repo: https://github.com/LiviuCP/Matrix.git
-2) Build it with Qt Creator
-3) Run the tests
+1) Download the Matrix repo (e.g. by using git clone): https://github.com/LiviuCP/Matrix.git
+2) Build it
+3) Run the tests either from IDE or from command line (CLI)
 
 1.2. Running the FractionMatrixTests
 
-For running the tests for fraction matrixes (FractionMatrixTests) first a ThirdParty library should be set.
+This is an extension of the previous scenario. For running the tests for fraction matrixes (a.k.a. FractionMatrixTests) first a "third-party" library should be setup.
 
 After building and running the tests for the Matrix library (see section 1.1) the required steps for successfully testing fraction matrixes are:
 
-1) Clone and build the Fractions repo: https://github.com/LiviuCP/Fractions.git
-2) Inside the Matrix source directory create a ThirdParty directory with subdirectories Fractions/lib and Fractions/include
-3) From the build directory of the Fractions repo, subdirectory FractionLib copy the whole content to Fractions/lib
-4) From the cloned Fractions repo, subdirectory FractionLib copy the .h files to Fractions/include
-5) In the .pro file of TypeDependentTests uncomment the FractionMatrixTests subproject
-6) Build and run FractionMatrixTests
+1) Download (e.g. by using git clone) and build the Fractions repo: https://github.com/LiviuCP/Fractions.git
+2) Go to subdir Matrix/MatrixTests/OtherMatrixTypesTests and open CMakeLists.txt
+3) Do the following changes:
+- adjust the path of the Fractions include directory (FractionLib) by modifying: include_directories(../../../Fractions/FractionLib)
+- adjust the path of the Fractions library (built in step 1) by modifying: set_target_properties(fractionlib PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/../../../Fractions/FractionLib/libFractionLib.so)
+- modify the extension of the Fractions library file accordingly (check the Fractions build directory, subdir FractionLib): .so for Linux, .dylib for MacOS, etc. Please note the for Windows this library is built statically
+- set the CMake variable FRACTION_LIB_ENABLED to ON
+4) Build and run FractionMatrixTests
 
-1.3. Using the Matrix library within an application
+1.3. Running the Example application
 
-The below instructions are not necessarily the only solution but the one I've been using/testing so far. It assumes you are using Qt Creator as IDE and Git as VCS. For other setups different workarounds would be required.
+After building the Matrix project (see section 1.1) just run the application from IDE or CLI. Its purpose is to provide a quick overview of the Matrix library functionality.
+Please note that it is not required to have Qt installed for having the example application run.
+
+1.4. Using the Matrix library in your own application
 
 Please follow these steps:
 
-1) Download the Matrix repository as submodule in a "third-party" directory belonging to your application. For more details regarding submodules please check: https://git-scm.com/book/en/v2/Git-Tools-Submodules
-2) Add following path to the INCLUDEPATH variable of any project where the Matrix code should be used: [PATH TO THIRD-PARTY DIR]/Matrix/MatrixLib/Matrix
-3) #include "matrix.h" (and/or any other file contained in MatrixLib/Matrix) into the code files where it is required.
-4) Update your code as per requirements and build the project
+1) Download the Matrix repository into a "third-party" directory belonging to your application
+2) Add following path to the include paths of your project: [PATH TO THIRD-PARTY DIR]/Matrix/MatrixLib/Matrix
+3) #include "matrix.h" (and/or any other file contained within MatrixLib/Matrix) wherever required
 
 Note: please do NOT directly #include any of the files belonging to MatrixLib/Utils into your code files! These are only meant for internal use by the Matrix library.
 
