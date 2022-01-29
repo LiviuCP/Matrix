@@ -119,7 +119,7 @@ void CommonExceptionTests::testSquareBracketsOperatorExceptions()
     QVERIFY_EXCEPTION_THROWN({IntMatrix matrix{srcMatrix}; matrix[index] = value;}, std::runtime_error);
 
     // test for the "const" square brackets operator too
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix c_Matrix(2, 3, {1, 2, 3, 4, 5, 6}); value = c_Matrix[index];}, std::runtime_error);
+    QVERIFY_EXCEPTION_THROWN({const IntMatrix c_Matrix{srcMatrix}; value = c_Matrix[index];}, std::runtime_error);
 }
 
 void CommonExceptionTests::testResizeWithoutFillingInNewValuesExceptions()
