@@ -3966,10 +3966,10 @@ void Matrix<DataType>::copy(const Matrix<DataType>& srcMatrix,
     CHECK_ERROR_CONDITION(&srcMatrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARG]);
     CHECK_ERROR_CONDITION(nrOfRows < 0 || nrOfColumns < 0 || srcMatrixRowNr < 0 || srcMatrixColumnNr < 0 || rowNr < 0 || columnNr < 0,
                           Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
-    CHECK_ERROR_CONDITION(srcMatrixRowNr + nrOfRows > srcMatrix.m_NrOfRows || srcMatrixColumnNr + nrOfColumns > srcMatrix.m_NrOfColumns || rowNr+nrOfRows > m_NrOfRows || columnNr+nrOfColumns > m_NrOfColumns,
+    CHECK_ERROR_CONDITION(srcMatrixRowNr + nrOfRows > srcMatrix.m_NrOfRows || srcMatrixColumnNr + nrOfColumns > srcMatrix.m_NrOfColumns || rowNr + nrOfRows > m_NrOfRows || columnNr + nrOfColumns > m_NrOfColumns,
                           Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
 
-    if (nrOfRows && nrOfColumns)
+    if (nrOfRows != 0 && nrOfColumns != 0)
     {
         for (size_type row{0}; row < nrOfRows; ++row)
         {
