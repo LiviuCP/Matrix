@@ -775,8 +775,8 @@ void CapacityTests::testCapacityWithCatByRow_data()
     QTest::newRow("scenario: all different") << IntMatrix{7, 6, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 10 << 8 << 10 << 8;
 
     // empty matrix concatenation
-    QTest::newRow("scenario: source both") << IntMatrix{7, 6, -1} << IntMatrix{} << IntMatrix{} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 8 << 7;       // TBD: consistency with catByColumn()
-    QTest::newRow("scenario: all different") << IntMatrix{7, 6, -1} << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 7;   // same here
+    QTest::newRow("scenario: source both") << IntMatrix{7, 6, -1} << IntMatrix{} << IntMatrix{} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 0 << 0;
+    QTest::newRow("scenario: all different") << IntMatrix{7, 6, -1} << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 0 << 0;
 }
 
 void CapacityTests::testCapacityWithCatByColumn_data()

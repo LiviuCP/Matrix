@@ -3638,76 +3638,46 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix,
 {
     CHECK_ERROR_CONDITION(firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
 
-    const size_type c_OldNrOfRows{m_NrOfRows};
-    const size_type c_NewNrOfRows{firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows};
-    const size_type c_OldRowCapacity{m_RowCapacity};
-    const size_type c_OldColumnCapacity{m_ColumnCapacity};
-    const size_type c_NewRowCapacity{c_OldRowCapacity < c_NewNrOfRows ? c_NewNrOfRows + c_NewNrOfRows / 4 : c_OldRowCapacity};
-    const size_type c_NewColumnCapacity{firstSrcMatrix.m_NrOfColumns + firstSrcMatrix.m_NrOfColumns / 4};
-
-    auto copyElements = [this](const Matrix& srcMatrix, size_type rangeStart, size_type rangeEnd)
+    auto concatenate = [this](Matrix& firstSrcMatrix, Matrix& secondSrcMatrix)
     {
-        for (size_type row{rangeStart}; row<rangeEnd; ++row)
+        for (size_type row{0}; row < firstSrcMatrix.m_NrOfRows; ++row)
         {
-            for (size_type col{0}; col<m_NrOfColumns; ++col)
+            for(size_type col{0}; col < m_NrOfColumns; ++col)
             {
-                m_pBaseArrayPtr[row][col] = srcMatrix.m_pBaseArrayPtr[row-rangeStart][col];
+                m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
+            }
+        }
+
+        for (size_type row{firstSrcMatrix.m_NrOfRows}; row < m_NrOfRows; ++row)
+        {
+            for(size_type col{0}; col < m_NrOfColumns; ++col)
+            {
+                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row - firstSrcMatrix.m_NrOfRows][col];
             }
         }
     };
 
-    if (&firstSrcMatrix == this && (&secondSrcMatrix != this))
-    {
-        if (c_OldRowCapacity < c_NewNrOfRows)
-        {
-            resize(c_NewNrOfRows, m_NrOfColumns, c_NewRowCapacity, m_ColumnCapacity);
-        }
-        else
-        {
-            m_NrOfRows = c_NewNrOfRows;
-        }
+    const size_type c_NewNrOfRows{firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows};
+    const size_type c_NewNrOfColumns{firstSrcMatrix.m_NrOfColumns};
+    const size_type c_NewRowCapacity{c_NewNrOfRows + c_NewNrOfRows / 4};
+    const size_type c_NewColumnCapacity{c_NewNrOfColumns + c_NewNrOfColumns / 4};
+    const size_type c_OldRowCapacity{m_RowCapacity};
+    const size_type c_OldColumnCapacity{m_ColumnCapacity};
 
-        copyElements(secondSrcMatrix, c_OldNrOfRows, c_NewNrOfRows);
-    }
-    else if (&firstSrcMatrix != this && (&secondSrcMatrix == this))
-    {
-        Matrix<DataType> matrix{std::move(*this)};
-        _deallocMemory(); // actually not required, just for the good practice's sake!
-        _allocMemory(c_NewNrOfRows, matrix.m_NrOfColumns, c_NewRowCapacity, matrix.m_ColumnCapacity);
+    Matrix<DataType> matrix{};
 
-        copyElements(firstSrcMatrix, 0, firstSrcMatrix.m_NrOfRows);
-        copyElements(matrix, firstSrcMatrix.m_NrOfRows, m_NrOfRows);
-    }
-    else if (&firstSrcMatrix == this && (&secondSrcMatrix == this))
+    if (&firstSrcMatrix == this || &secondSrcMatrix == this)
     {
-        if (c_OldRowCapacity < c_NewNrOfRows)
-        {
-            resize(c_NewNrOfRows, m_NrOfColumns, c_NewRowCapacity, m_ColumnCapacity);
-        }
-        else
-        {
-            m_NrOfRows = c_NewNrOfRows;
-        }
-
-        copyElements(*this, c_OldNrOfRows, c_NewNrOfRows);
+        matrix = std::move(*this);
     }
-    else
-    {
-        if (c_OldRowCapacity < c_NewNrOfRows || c_OldColumnCapacity < firstSrcMatrix.m_NrOfColumns)
-        {
-            _deallocMemory();
-            _allocMemory(c_NewNrOfRows, firstSrcMatrix.m_NrOfColumns, c_OldRowCapacity < c_NewNrOfRows ? c_NewRowCapacity : c_OldRowCapacity,
-                         c_OldColumnCapacity < firstSrcMatrix.m_NrOfColumns ? c_NewColumnCapacity : c_OldColumnCapacity);
-        }
-        else
-        {
-            m_NrOfRows = c_NewNrOfRows;
-            m_NrOfColumns = firstSrcMatrix.m_NrOfColumns;
-        }
 
-        copyElements(firstSrcMatrix, 0, firstSrcMatrix.m_NrOfRows);
-        copyElements(secondSrcMatrix, firstSrcMatrix.m_NrOfRows, c_NewNrOfRows);
-    }
+    _deallocMemory();
+    _allocMemory(c_NewNrOfRows,
+                 c_NewNrOfColumns,
+                 c_OldRowCapacity < c_NewNrOfRows ? c_NewRowCapacity : c_OldRowCapacity,
+                 c_OldColumnCapacity < c_NewNrOfColumns ? c_NewColumnCapacity : c_OldColumnCapacity);
+
+    concatenate(&firstSrcMatrix == this ? matrix : firstSrcMatrix, &secondSrcMatrix == this ? matrix : secondSrcMatrix);
 }
 
 template<typename DataType>
@@ -3718,19 +3688,19 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix,
 
     auto concatenate = [this](Matrix& firstSrcMatrix, Matrix& secondSrcMatrix)
     {
-        for(size_type row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row < m_NrOfRows; ++row)
         {
-            for (size_type col{0}; col<firstSrcMatrix.m_NrOfColumns; ++col)
+            for (size_type col{0}; col < firstSrcMatrix.m_NrOfColumns; ++col)
             {
                 m_pBaseArrayPtr[row][col] = firstSrcMatrix.m_pBaseArrayPtr[row][col];
             }
         }
 
-        for(size_type row{0}; row<m_NrOfRows; ++row)
+        for(size_type row{0}; row < m_NrOfRows; ++row)
         {
-            for (size_type col{firstSrcMatrix.m_NrOfColumns}; col<m_NrOfColumns; ++col)
+            for (size_type col{firstSrcMatrix.m_NrOfColumns}; col < m_NrOfColumns; ++col)
             {
-                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col-firstSrcMatrix.m_NrOfColumns];
+                m_pBaseArrayPtr[row][col] = secondSrcMatrix.m_pBaseArrayPtr[row][col - firstSrcMatrix.m_NrOfColumns];
             }
         }
     };
@@ -3744,12 +3714,12 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix,
 
     Matrix<DataType> matrix{};
 
-    if (&firstSrcMatrix == this || (&secondSrcMatrix == this))
+    if (&firstSrcMatrix == this || &secondSrcMatrix == this)
     {
         matrix = std::move(*this);
     }
 
-    _deallocMemory(); // actually not required, just for the good practice's sake!
+    _deallocMemory();
     _allocMemory(c_NewNrOfRows,
                  c_NewNrOfColumns,
                  c_OldRowCapacity < c_NewNrOfRows ? c_NewRowCapacity : c_OldRowCapacity,
