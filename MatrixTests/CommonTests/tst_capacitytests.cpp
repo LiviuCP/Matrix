@@ -1303,6 +1303,24 @@ void CapacityTests::_buildCapacityWithResizeTestingTable()
     QTest::newRow("less rows, more columns") << IntMatrix{10, 8, -2} << 9 << 9 << -5 << 13 << 11 << 13 << 11;
     QTest::newRow("less rows, more columns") << IntMatrix{10, 8, -2} << 9 << 9 << -5 << 13 << 0 << 13 << 9;
     QTest::newRow("less rows, more columns") << IntMatrix{10, 8, -2} << 9 << 9 << -5 << 0 << 0 << 9 << 9;
+
+    // empty matrix
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 0 << 0 << 1 << 1;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 0 << 1 << 1 << 1;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 0 << 2 << 1 << 2;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 0 << 3 << 1 << 3;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 1 << 0 << 1 << 1;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 1 << 1 << 1 << 1;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 1 << 2 << 1 << 2;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 1 << 3 << 1 << 3;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 2 << 0 << 2 << 1;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 2 << 1 << 2 << 1;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 2 << 2 << 2 << 2;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 2 << 3 << 2 << 3;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 3 << 0 << 3 << 1;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 3 << 1 << 3 << 1;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 3 << 2 << 3 << 2;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 3 << 3 << 3 << 3;
 }
 
 QTEST_APPLESS_MAIN(CapacityTests)
