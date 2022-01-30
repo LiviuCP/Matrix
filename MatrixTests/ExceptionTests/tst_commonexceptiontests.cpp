@@ -5,6 +5,7 @@
 #include "testutils.h"
 
 Q_DECLARE_METATYPE(IntMatrix)
+Q_DECLARE_METATYPE(ConcatMode)
 Q_DECLARE_METATYPE(SplitMode)
 
 class CommonExceptionTests : public QObject
@@ -48,6 +49,8 @@ private slots:
     void testInsertColumnSetValueExceptions_data();
     void testEraseRowExceptions_data();
     void testEraseColumnExceptions_data();
+    void testCatByRowExceptions_data();
+    void testCatByColumnExceptions_data();
     void testSplitByRowExceptions_data();
     void testSplitByColumnExceptions_data();
     void testSwapItemsExceptions_data();
@@ -193,12 +196,32 @@ void CommonExceptionTests::testEraseColumnExceptions()
 
 void CommonExceptionTests::testCatByRowExceptions()
 {
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstSrcMatrix(2, 3, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondSrcMatrix(2, 2, {7, 8, 9, 10});
-                                  IntMatrix destMatrix;
+    QFETCH(IntMatrix, destMatrix);
+    QFETCH(IntMatrix, firstSrcMatrix);
+    QFETCH(IntMatrix, secondSrcMatrix);
+    QFETCH(ConcatMode, mode);
 
-                                  destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix);
+    QVERIFY_EXCEPTION_THROWN({
+                                 switch(mode)
+                                 {
+                                 case ConcatMode::ALL_DIFFERENT:
+                                     destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix);
+                                     break;
+                                 case ConcatMode::DESTINATION_FIRST:
+                                     destMatrix.catByRow(destMatrix, secondSrcMatrix);
+                                     break;
+                                 case ConcatMode::DESTINATION_SECOND:
+                                     destMatrix.catByRow(firstSrcMatrix, destMatrix);
+                                     break;
+                                 case ConcatMode::DESTINATION_ALL:
+                                     destMatrix.catByRow(destMatrix, destMatrix);
+                                     break;
+                                 case ConcatMode::SOURCE_BOTH:
+                                     destMatrix.catByRow(firstSrcMatrix, firstSrcMatrix);
+                                     break;
+                                 default:
+                                     break;
+                                 }
                              },
 
                              std::runtime_error);
@@ -206,12 +229,32 @@ void CommonExceptionTests::testCatByRowExceptions()
 
 void CommonExceptionTests::testCatByColumnExceptions()
 {
-    QVERIFY_EXCEPTION_THROWN({
-                                  IntMatrix firstSrcMatrix(3, 2, {1, 2, 3, 4, 5, 6});
-                                  IntMatrix secondSrcMatrix(2, 2, {7, 8, 9, 10});
-                                  IntMatrix destMatrix;
+    QFETCH(IntMatrix, destMatrix);
+    QFETCH(IntMatrix, firstSrcMatrix);
+    QFETCH(IntMatrix, secondSrcMatrix);
+    QFETCH(ConcatMode, mode);
 
-                                  destMatrix.catByColumn(firstSrcMatrix, secondSrcMatrix);
+    QVERIFY_EXCEPTION_THROWN({
+                                 switch(mode)
+                                 {
+                                 case ConcatMode::ALL_DIFFERENT:
+                                     destMatrix.catByColumn(firstSrcMatrix, secondSrcMatrix);
+                                     break;
+                                 case ConcatMode::DESTINATION_FIRST:
+                                     destMatrix.catByColumn(destMatrix, secondSrcMatrix);
+                                     break;
+                                 case ConcatMode::DESTINATION_SECOND:
+                                     destMatrix.catByColumn(firstSrcMatrix, destMatrix);
+                                     break;
+                                 case ConcatMode::DESTINATION_ALL:
+                                     destMatrix.catByColumn(destMatrix, destMatrix);
+                                     break;
+                                 case ConcatMode::SOURCE_BOTH:
+                                     destMatrix.catByColumn(firstSrcMatrix, firstSrcMatrix);
+                                     break;
+                                 default:
+                                     break;
+                                 }
                              },
 
                              std::runtime_error);
@@ -501,6 +544,44 @@ void CommonExceptionTests::testEraseColumnExceptions_data()
     QTest::newRow("negative erase position") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1;
     QTest::newRow("erase position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3;
     QTest::newRow("empty matrix") << IntMatrix{} << 0;
+}
+
+void CommonExceptionTests::testCatByRowExceptions_data()
+{
+    QTest::addColumn<IntMatrix>("destMatrix");
+    QTest::addColumn<IntMatrix>("firstSrcMatrix");
+    QTest::addColumn<IntMatrix>("secondSrcMatrix");
+    QTest::addColumn<ConcatMode>("mode");
+
+    QTest::addColumn<IntMatrix>("destMatrix");
+    QTest::addColumn<IntMatrix>("firstSrcMatrix");
+    QTest::addColumn<IntMatrix>("secondSrcMatrix");
+    QTest::addColumn<ConcatMode>("mode");
+
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("scenario: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::DESTINATION_FIRST;
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("scenario: destination second") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
+}
+
+void CommonExceptionTests::testCatByColumnExceptions_data()
+{
+    QTest::addColumn<IntMatrix>("destMatrix");
+    QTest::addColumn<IntMatrix>("firstSrcMatrix");
+    QTest::addColumn<IntMatrix>("secondSrcMatrix");
+    QTest::addColumn<ConcatMode>("mode");
+
+    QTest::addColumn<IntMatrix>("destMatrix");
+    QTest::addColumn<IntMatrix>("firstSrcMatrix");
+    QTest::addColumn<IntMatrix>("secondSrcMatrix");
+    QTest::addColumn<ConcatMode>("mode");
+
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("scenario: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::DESTINATION_FIRST;
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("scenario: destination second") << IntMatrix{} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
 }
 
 void CommonExceptionTests::testSplitByRowExceptions_data()

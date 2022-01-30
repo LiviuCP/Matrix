@@ -773,6 +773,10 @@ void CapacityTests::testCapacityWithCatByRow_data()
     QTest::newRow("scenario: all different") << IntMatrix{7, 6, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 9 << 8 << 9 << 8;
     QTest::newRow("scenario: all different") << IntMatrix{7, 6, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 10 << 7 << 10 << 7;
     QTest::newRow("scenario: all different") << IntMatrix{7, 6, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 10 << 8 << 10 << 8;
+
+    // empty matrix concatenation
+    QTest::newRow("scenario: source both") << IntMatrix{7, 6, -1} << IntMatrix{} << IntMatrix{} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 8 << 7;       // TBD: consistency with catByColumn()
+    QTest::newRow("scenario: all different") << IntMatrix{7, 6, -1} << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 7;   // same here
 }
 
 void CapacityTests::testCapacityWithCatByColumn_data()
@@ -808,6 +812,10 @@ void CapacityTests::testCapacityWithCatByColumn_data()
     QTest::newRow("scenario: all different") << IntMatrix{6, 7, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 8 << 9 << 8 << 9;
     QTest::newRow("scenario: all different") << IntMatrix{6, 7, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 7 << 10 << 7 << 10;
     QTest::newRow("scenario: all different") << IntMatrix{6, 7, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 8 << 10 << 8 << 10;
+
+    // empty matrix concatenation
+    QTest::newRow("scenario: source both") << IntMatrix{6, 7, -1} << IntMatrix{} << IntMatrix{} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 0 << 0;
+    QTest::newRow("scenario: all different") << IntMatrix{6, 7, -1} << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 0 << 0;
 }
 
 void CapacityTests::testCapacityWithSplitByRow_data()

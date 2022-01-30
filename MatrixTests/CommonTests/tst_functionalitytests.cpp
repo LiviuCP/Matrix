@@ -1577,10 +1577,15 @@ void FunctionalityTests::testCatByRow_data()
     QTest::newRow("scenario: all different") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << 3 << 3 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
     QTest::newRow("scenario: all different") << IntMatrix{4, 1, {7, 8, 9, 10}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << 5 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
     QTest::newRow("scenario: all different") << IntMatrix{3, 2, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << 3 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << 0 << 0 << IntMatrix{};
     QTest::newRow("scenario: destination first") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::DESTINATION_FIRST << 3 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("scenario: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::DESTINATION_FIRST << 0 << 0 << IntMatrix{};
     QTest::newRow("scenario: destination second") << IntMatrix{1, 2, {5, 6}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::DESTINATION_SECOND << 3 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("scenario: destination second") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::DESTINATION_SECOND << 0 << 0 << IntMatrix{};
     QTest::newRow("scenario: destination all") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << ConcatMode::DESTINATION_ALL << 5 << 2 << IntMatrix{4, 2, {1, 2, 3, 4, 1, 2, 3, 4}};
+    QTest::newRow("scenario: destination all") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::DESTINATION_ALL << 0 << 0 << IntMatrix{};
     QTest::newRow("scenario: source both") << IntMatrix{} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << ConcatMode::SOURCE_BOTH << 5 << 2 << IntMatrix{4, 2, {1, 2, 3, 4, 1, 2, 3, 4}};
+    QTest::newRow("scenario: source both") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::SOURCE_BOTH << 0 << 0 << IntMatrix{};
 }
 
 void FunctionalityTests::testCatByColumn_data()
@@ -1597,10 +1602,15 @@ void FunctionalityTests::testCatByColumn_data()
     QTest::newRow("scenario: all different") << IntMatrix{3, 2, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT << 3 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
     QTest::newRow("scenario: all different") << IntMatrix{1, 4, {7, 8, 9, 10}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT << 2 << 5 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
     QTest::newRow("scenario: all different") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT << 2 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << 0 << 0 << IntMatrix{};
     QTest::newRow("scenario: destination first") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::DESTINATION_FIRST << 2 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
+    QTest::newRow("scenario: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::DESTINATION_FIRST << 0 << 0 << IntMatrix{};
     QTest::newRow("scenario: destination second") << IntMatrix{2, 1, {5, 6}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::DESTINATION_SECOND << 2 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
+    QTest::newRow("scenario: destination second") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::DESTINATION_SECOND << 0 << 0 << IntMatrix{};
     QTest::newRow("scenario: destination all") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << ConcatMode::DESTINATION_ALL << 2 << 5 << IntMatrix{2, 4, {1, 2, 1, 2, 3, 4, 3, 4}};
+    QTest::newRow("scenario: destination all") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::DESTINATION_ALL << 0 << 0 << IntMatrix{};
     QTest::newRow("scenario: source both") << IntMatrix{} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << ConcatMode::SOURCE_BOTH << 2 << 5 << IntMatrix{2, 4, {1, 2, 1, 2, 3, 4, 3, 4}};
+    QTest::newRow("scenario: source both") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::SOURCE_BOTH << 0 << 0 << IntMatrix{};
 }
 
 void FunctionalityTests::testSplitByRow_data()
