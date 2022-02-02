@@ -1574,8 +1574,8 @@ void FunctionalityTests::testCatByRow_data()
     QTest::addColumn<IntMatrix>("expectedDestMatrix");
 
     QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << 3 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-    QTest::newRow("scenario: all different") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << 3 << 3 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-    QTest::newRow("scenario: all different") << IntMatrix{4, 1, {7, 8, 9, 10}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << 5 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("scenario: all different") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << 3 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("scenario: all different") << IntMatrix{4, 1, {7, 8, 9, 10}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << 3 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
     QTest::newRow("scenario: all different") << IntMatrix{3, 2, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << 3 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
     QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << 0 << 0 << IntMatrix{};
     QTest::newRow("scenario: destination first") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::DESTINATION_FIRST << 3 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
@@ -1599,8 +1599,8 @@ void FunctionalityTests::testCatByColumn_data()
     QTest::addColumn<IntMatrix>("expectedDestMatrix");
 
     QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT << 2 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
-    QTest::newRow("scenario: all different") << IntMatrix{3, 2, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT << 3 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
-    QTest::newRow("scenario: all different") << IntMatrix{1, 4, {7, 8, 9, 10}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT << 2 << 5 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
+    QTest::newRow("scenario: all different") << IntMatrix{3, 2, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT << 2 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
+    QTest::newRow("scenario: all different") << IntMatrix{1, 4, {7, 8, 9, 10}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT << 2 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
     QTest::newRow("scenario: all different") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::ALL_DIFFERENT << 2 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};
     QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << 0 << 0 << IntMatrix{};
     QTest::newRow("scenario: destination first") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 1, {5, 6}} << ConcatMode::DESTINATION_FIRST << 2 << 3 << IntMatrix{2, 3, {1, 2, 5, 3, 4, 6}};

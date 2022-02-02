@@ -3661,8 +3661,6 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix,
     const size_type c_NewNrOfColumns{firstSrcMatrix.m_NrOfColumns};
     const size_type c_NewRowCapacity{c_NewNrOfRows + c_NewNrOfRows / 4};
     const size_type c_NewColumnCapacity{c_NewNrOfColumns + c_NewNrOfColumns / 4};
-    const size_type c_OldRowCapacity{m_RowCapacity};
-    const size_type c_OldColumnCapacity{m_ColumnCapacity};
 
     Matrix<DataType> matrix{};
 
@@ -3672,10 +3670,7 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix,
     }
 
     _deallocMemory();
-    _allocMemory(c_NewNrOfRows,
-                 c_NewNrOfColumns,
-                 c_OldRowCapacity < c_NewNrOfRows ? c_NewRowCapacity : c_OldRowCapacity,
-                 c_OldColumnCapacity < c_NewNrOfColumns ? c_NewColumnCapacity : c_OldColumnCapacity);
+    _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
 
     concatenate(&firstSrcMatrix == this ? matrix : firstSrcMatrix, &secondSrcMatrix == this ? matrix : secondSrcMatrix);
 }
@@ -3709,8 +3704,6 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix,
     const size_type c_NewNrOfColumns{firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns};
     const size_type c_NewRowCapacity{c_NewNrOfRows + c_NewNrOfRows / 4};
     const size_type c_NewColumnCapacity{c_NewNrOfColumns + c_NewNrOfColumns / 4};
-    const size_type c_OldRowCapacity{m_RowCapacity};
-    const size_type c_OldColumnCapacity{m_ColumnCapacity};
 
     Matrix<DataType> matrix{};
 
@@ -3720,10 +3713,7 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix,
     }
 
     _deallocMemory();
-    _allocMemory(c_NewNrOfRows,
-                 c_NewNrOfColumns,
-                 c_OldRowCapacity < c_NewNrOfRows ? c_NewRowCapacity : c_OldRowCapacity,
-                 c_OldColumnCapacity < c_NewNrOfColumns ? c_NewColumnCapacity : c_OldColumnCapacity);
+    _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
 
     concatenate(&firstSrcMatrix == this ? matrix : firstSrcMatrix, &secondSrcMatrix == this ? matrix : secondSrcMatrix);
 }
