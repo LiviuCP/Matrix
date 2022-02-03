@@ -559,10 +559,10 @@ void CommonExceptionTests::testCatByRowExceptions_data()
     QTest::addColumn<ConcatMode>("mode");
 
     QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::DESTINATION_FIRST;
-    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: destination second") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 1, 9} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("scenario: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 2, {7, 8}} << ConcatMode::DESTINATION_FIRST;
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{2, 1, {1, 2}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("scenario: destination second") << IntMatrix{} << IntMatrix{2, 2, {3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
 }
 
 void CommonExceptionTests::testCatByColumnExceptions_data()
@@ -578,10 +578,10 @@ void CommonExceptionTests::testCatByColumnExceptions_data()
     QTest::addColumn<ConcatMode>("mode");
 
     QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::DESTINATION_FIRST;
-    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: destination second") << IntMatrix{} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 1, 9} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("scenario: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{2, 1, {7, 8}} << ConcatMode::DESTINATION_FIRST;
+    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{1, 2, {1, 2}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("scenario: destination second") << IntMatrix{} << IntMatrix{2, 2, {3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
 }
 
 void CommonExceptionTests::testSplitByRowExceptions_data()
