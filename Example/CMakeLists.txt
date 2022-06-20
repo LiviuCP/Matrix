@@ -6,5 +6,6 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(../MatrixLib/Matrix)
+include_directories(../MatrixLib/Utils)
 
 add_executable(Example examplemain.cpp utilites.cpp)

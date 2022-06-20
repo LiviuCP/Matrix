@@ -22,6 +22,7 @@ enable_testing()
 
 include_directories(../Shared)
 include_directories(../../MatrixLib/Matrix)
+include_directories(../../MatrixLib/Utils)
 
 add_executable(DecimalMatrixTests tst_decimalmatrixtests.cpp)
 add_executable(StringMatrixTests tst_stringmatrixtests.cpp)

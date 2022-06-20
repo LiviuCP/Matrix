@@ -2,7 +2,7 @@
 #define ERROR_HANDLING_H
 
 #include <map>
-#include <assert.h>
+#include <cassert>
 #include <string>
 
 #ifndef ERROR_CHECKING_DISABLED

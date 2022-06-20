@@ -2,6 +2,7 @@
 #define MATRIX_TEMPLATE_SPECIALIZATIONS_H
 
 #include <string>
+
 #include "matrix.h"
 
 template<>
