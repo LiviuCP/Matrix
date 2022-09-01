@@ -18,7 +18,6 @@ enable_testing()
 
 include_directories(../Shared)
 include_directories(../../MatrixLib/Matrix)
-include_directories(../../MatrixLib/Utils)
 
 add_executable(FunctionalityTests tst_functionalitytests.cpp)
 add_test(NAME FunctionalityTests COMMAND FunctionalityTests)

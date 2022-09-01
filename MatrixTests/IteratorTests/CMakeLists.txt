@@ -18,7 +18,6 @@ enable_testing()
 
 include_directories(../Shared)
 include_directories(../../MatrixLib/Matrix)
-include_directories(../../MatrixLib/Utils)
 
 add_executable(ZIteratorTests tst_ziteratortests.cpp)
 add_executable(ConstZIteratorTests tst_constziteratortests.cpp)
