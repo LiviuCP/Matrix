@@ -33,6 +33,8 @@ public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstZIterator, DataType, diff_type, size_type)
         COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
+        ConstZIterator(const ZIterator& zIterator);
+
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
         COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstZIterator, DataType, size_type)
@@ -54,6 +56,8 @@ public:
     public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator, DataType, diff_type, size_type)
         COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
+
+        ConstReverseZIterator(const ReverseZIterator& reverseZIterator);
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
@@ -77,6 +81,8 @@ public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstNIterator, DataType, diff_type, size_type)
         COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
+        ConstNIterator(const NIterator& nIterator);
+
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
         COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstNIterator, DataType, size_type)
@@ -98,6 +104,8 @@ public:
     public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator, DataType, diff_type, size_type)
         COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
+
+        ConstReverseNIterator(const ReverseNIterator& reverseNIterator);
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
@@ -124,6 +132,8 @@ public:
         COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type)
         COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
 
+        ConstDIterator(const DIterator& dIterator);
+
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
         COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstDIterator, DataType, size_type)
@@ -147,6 +157,8 @@ public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseDIterator, DataType, diff_type, size_type)
         COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type)
         COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
+
+        ConstReverseDIterator(const ReverseDIterator& reverseDIterator);
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
@@ -173,6 +185,8 @@ public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstMIterator, DataType, diff_type, size_type)
         COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type)
         COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
+
+        ConstMIterator(const MIterator& mIterator);
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
@@ -201,6 +215,8 @@ public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ConstReverseMIterator, DataType, diff_type, size_type)
         COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(size_type)
         COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(DataType, diff_type)
+
+        ConstReverseMIterator(const ReverseMIterator& reverseMIterator);
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(DataType)
@@ -696,6 +712,16 @@ Matrix<DataType>::ConstZIterator::ConstZIterator()
 }
 
 template<typename DataType>
+Matrix<DataType>::ConstZIterator::ConstZIterator(const ZIterator& zIterator)
+    : m_pMatrixPtr{zIterator.m_pMatrixPtr}
+    , m_RowNr{zIterator.m_RowNr}
+    , m_ColumnNr{zIterator.m_ColumnNr}
+    , m_NrOfMatrixRows{zIterator.m_NrOfMatrixRows}
+    , m_NrOfMatrixColumns{zIterator.m_NrOfMatrixColumns}
+{
+}
+
+template<typename DataType>
 Matrix<DataType>::ConstZIterator::ConstZIterator(const Matrix<DataType>& matrix,
                                                  Matrix<DataType>::size_type rowNr,
                                                  Matrix<DataType>::size_type columnNr)
@@ -1014,6 +1040,16 @@ Matrix<DataType>::ConstReverseZIterator::ConstReverseZIterator()
     , m_ColumnNr{-1}
     , m_NrOfMatrixRows{0}
     , m_NrOfMatrixColumns{0}
+{
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstReverseZIterator::ConstReverseZIterator(const ReverseZIterator& reverseZIterator)
+    : m_pMatrixPtr{reverseZIterator.m_pMatrixPtr}
+    , m_RowNr{reverseZIterator.m_RowNr}
+    , m_ColumnNr{reverseZIterator.m_ColumnNr}
+    , m_NrOfMatrixRows{reverseZIterator.m_NrOfMatrixRows}
+    , m_NrOfMatrixColumns{reverseZIterator.m_NrOfMatrixColumns}
 {
 }
 
@@ -1338,6 +1374,16 @@ Matrix<DataType>::ConstNIterator::ConstNIterator()
 }
 
 template<typename DataType>
+Matrix<DataType>::ConstNIterator::ConstNIterator(const NIterator& nIterator)
+    : m_pMatrixPtr{nIterator.m_pMatrixPtr}
+    , m_RowNr{nIterator.m_RowNr}
+    , m_ColumnNr{nIterator.m_ColumnNr}
+    , m_NrOfMatrixRows{nIterator.m_NrOfMatrixRows}
+    , m_NrOfMatrixColumns{nIterator.m_NrOfMatrixColumns}
+{
+}
+
+template<typename DataType>
 Matrix<DataType>::ConstNIterator::ConstNIterator(const Matrix<DataType>& matrix,
                                                  Matrix<DataType>::size_type rowNr,
                                                  Matrix<DataType>::size_type columnNr)
@@ -1656,6 +1702,16 @@ Matrix<DataType>::ConstReverseNIterator::ConstReverseNIterator()
     , m_ColumnNr{-1}
     , m_NrOfMatrixRows{0}
     , m_NrOfMatrixColumns{0}
+{
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstReverseNIterator::ConstReverseNIterator(const ReverseNIterator& reverseNIterator)
+    : m_pMatrixPtr{reverseNIterator.m_pMatrixPtr}
+    , m_RowNr{reverseNIterator.m_RowNr}
+    , m_ColumnNr{reverseNIterator.m_ColumnNr}
+    , m_NrOfMatrixRows{reverseNIterator.m_NrOfMatrixRows}
+    , m_NrOfMatrixColumns{reverseNIterator.m_NrOfMatrixColumns}
 {
 }
 
@@ -2002,6 +2058,15 @@ Matrix<DataType>::ConstDIterator::ConstDIterator()
 }
 
 template<typename DataType>
+Matrix<DataType>::ConstDIterator::ConstDIterator(const DIterator& dIterator)
+    : m_pMatrixPtr{dIterator.m_pMatrixPtr}
+    , m_DiagonalIndex{dIterator.m_DiagonalIndex}
+    , m_DiagonalNr{dIterator.m_DiagonalNr}
+    , m_DiagonalSize{dIterator.m_DiagonalSize}
+{
+}
+
+template<typename DataType>
 Matrix<DataType>::ConstDIterator::ConstDIterator(const Matrix<DataType>& matrix,
                                                  Matrix<DataType>::size_type first,
                                                  Matrix<DataType>::size_type second, bool isRelative)
@@ -2339,6 +2404,15 @@ Matrix<DataType>::ConstReverseDIterator::ConstReverseDIterator()
     , m_DiagonalIndex{-1}
     , m_DiagonalNr{0}
     , m_DiagonalSize{0}
+{
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstReverseDIterator::ConstReverseDIterator(const ReverseDIterator& reverseDIterator)
+    : m_pMatrixPtr{reverseDIterator.m_pMatrixPtr}
+    , m_DiagonalIndex{reverseDIterator.m_DiagonalIndex}
+    , m_DiagonalNr{reverseDIterator.m_DiagonalNr}
+    , m_DiagonalSize{reverseDIterator.m_DiagonalSize}
 {
 }
 
@@ -2687,6 +2761,16 @@ Matrix<DataType>::ConstMIterator::ConstMIterator()
 }
 
 template<typename DataType>
+Matrix<DataType>::ConstMIterator::ConstMIterator(const MIterator& mIterator)
+    : m_pMatrixPtr{mIterator.m_pMatrixPtr}
+    , m_DiagonalIndex{mIterator.m_DiagonalIndex}
+    , m_DiagonalNr{mIterator.m_DiagonalNr}
+    , m_DiagonalSize{mIterator.m_DiagonalSize}
+    , m_NrOfMatrixColumns{mIterator.m_NrOfMatrixColumns}
+{
+}
+
+template<typename DataType>
 Matrix<DataType>::ConstMIterator::ConstMIterator(const Matrix<DataType>& matrix,
                                        Matrix<DataType>::size_type first,
                                        Matrix<DataType>::size_type second, bool isRelative)
@@ -3028,6 +3112,16 @@ Matrix<DataType>::ConstReverseMIterator::ConstReverseMIterator()
     , m_DiagonalNr{0}
     , m_DiagonalSize{0}
     , m_NrOfMatrixColumns{0}
+{
+}
+
+template<typename DataType>
+Matrix<DataType>::ConstReverseMIterator::ConstReverseMIterator(const ReverseMIterator& reverseMIterator)
+    : m_pMatrixPtr{reverseMIterator.m_pMatrixPtr}
+    , m_DiagonalIndex{reverseMIterator.m_DiagonalIndex}
+    , m_DiagonalNr{reverseMIterator.m_DiagonalNr}
+    , m_DiagonalSize{reverseMIterator.m_DiagonalSize}
+    , m_NrOfMatrixColumns{reverseMIterator.m_NrOfMatrixColumns}
 {
 }
 

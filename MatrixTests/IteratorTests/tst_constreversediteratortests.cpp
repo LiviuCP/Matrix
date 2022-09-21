@@ -4,6 +4,7 @@
 
 Q_DECLARE_METATYPE(IntMatrixConstReverseDIterator)
 Q_DECLARE_METATYPE(StringMatrixConstReverseDIterator)
+Q_DECLARE_METATYPE(IntMatrixReverseDIterator)
 
 class ConstReverseDIteratorTests : public QObject
 {
@@ -12,6 +13,7 @@ class ConstReverseDIteratorTests : public QObject
 private slots:
     // test functions
     void testIteratorCreation();
+    void testIteratorCreationFromNonConstIterator();
     void testIteratorIsValidWithOneMatrix();
     void testEmptyIterator();
     void testIteratorsAreEqual();
@@ -38,6 +40,7 @@ private slots:
 
     // test data
     void testIteratorCreation_data();
+    void testIteratorCreationFromNonConstIterator_data();
     void testIteratorsAreEqual_data();
     void testIteratorsAreNotEqual_data();
     void testLessThanOperator_data();
@@ -81,6 +84,24 @@ void ConstReverseDIteratorTests::testIteratorCreation()
              iterator.getDiagonalNr() == expectedDiagonalNr &&
              iterator.getDiagonalIndex() == expectedDiagonalIndex &&
              iterator.isValidWithMatrix(m_PrimaryIntMatrix),
+             "The iterator has not been correctly created!");
+}
+
+void ConstReverseDIteratorTests::testIteratorCreationFromNonConstIterator()
+{
+    QFETCH(IntMatrixReverseDIterator, iterator);
+    QFETCH(IntMatrix::size_type, expectedRowNr);
+    QFETCH(IntMatrix::size_type, expectedColumnNr);
+    QFETCH(IntMatrix::size_type, expectedDiagonalNr);
+    QFETCH(IntMatrix::size_type, expectedDiagonalIndex);
+
+    IntMatrixConstReverseDIterator constIterator{iterator};
+
+    QVERIFY2(constIterator.getRowNr() == expectedRowNr &&
+             constIterator.getColumnNr() == expectedColumnNr &&
+             constIterator.getDiagonalNr() == expectedDiagonalNr &&
+             constIterator.getDiagonalIndex() == expectedDiagonalIndex &&
+             constIterator.isValidWithMatrix(m_PrimaryIntMatrix),
              "The iterator has not been correctly created!");
 }
 
@@ -480,6 +501,38 @@ void ConstReverseDIteratorTests::testIteratorCreation_data()
     QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstReverseDIterator(2, 0, true) << 0 << 2 << 2 << 0;
     QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstReverseDIterator(-1, 1, true) << 2 << 1 << -1 << 1;
     QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstReverseDIterator(0, 2, true) << 0 << 0 << 0 << 2;
+}
+
+void ConstReverseDIteratorTests::testIteratorCreationFromNonConstIterator_data()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+
+    QTest::addColumn<IntMatrixReverseDIterator>("iterator");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowNr");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnNr");
+    QTest::addColumn<IntMatrixSizeType>("expectedDiagonalNr");
+    QTest::addColumn<IntMatrixSizeType>("expectedDiagonalIndex");
+
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.reverseDBegin(-2) << 3 << 1 << -2 << 0;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.reverseDBegin(0) << 2 << 2 << 0 << 0;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.reverseDBegin(1) << 1 << 2 << 1 << 0;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.reverseDBegin(2, 1) << 3 << 2 << -1 << 0;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.reverseDBegin(0, 0) << 2 << 2 << 0 << 0;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.reverseDBegin(1, 2) << 1 << 2 << 1 << 0;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.reverseDEnd(-2) << 1 << -1 << -2 << 2;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.reverseDEnd(0) << -1 << -1 << 0 << 3;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.reverseDEnd(1) << -1 << 0 << 1 << 2;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.reverseDEnd(2, 1) << 0 << -1 << -1 << 3;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.reverseDEnd(0, 0) << -1 << -1 << 0 << 3;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.reverseDEnd(1, 2) << -1 << 0 << 1 << 2;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getReverseDIterator(1, 0) << 1 << 0 << -1 << 2;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getReverseDIterator(0, 2) << 0 << 2 << 2 << 0;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getReverseDIterator(2, 1) << 2 << 1 << -1 << 1;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getReverseDIterator(2, 2) << 2 << 2 << 0 << 0;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getReverseDIterator(-1, 0, true) << 3 << 2 << -1 << 0;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getReverseDIterator(2, 0, true) << 0 << 2 << 2 << 0;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getReverseDIterator(-1, 1, true) << 2 << 1 << -1 << 1;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getReverseDIterator(0, 2, true) << 0 << 0 << 0 << 2;
 }
 
 void ConstReverseDIteratorTests::testIteratorsAreEqual_data()
