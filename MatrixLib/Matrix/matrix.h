@@ -373,11 +373,11 @@ public:
     MIterator mEnd(size_type rowNr, int columnNr);
     MIterator getMIterator(size_type first, size_type second, bool isRelative = false);
 
-    ConstMIterator constMBegin(size_type diagNr);
-    ConstMIterator constMBegin(size_type rowNr, int columnNr);
-    ConstMIterator constMEnd(size_type diagNr);
-    ConstMIterator constMEnd(size_type rowNr, int columnNr);
-    ConstMIterator getConstMIterator(size_type first, size_type second, bool isRelative = false);
+    ConstMIterator constMBegin(size_type diagNr) const;
+    ConstMIterator constMBegin(size_type rowNr, int columnNr) const;
+    ConstMIterator constMEnd(size_type diagNr) const;
+    ConstMIterator constMEnd(size_type rowNr, int columnNr) const;
+    ConstMIterator getConstMIterator(size_type first, size_type second, bool isRelative = false) const;
 
     ReverseMIterator reverseMBegin(size_type diagNr);
     ReverseMIterator reverseMBegin(size_type rowNr, size_type columnNr);
@@ -385,11 +385,11 @@ public:
     ReverseMIterator reverseMEnd(size_type rowNr, size_type columnNr);
     ReverseMIterator getReverseMIterator(size_type first, size_type second, bool isRelative = false);
 
-    ConstReverseMIterator constReverseMBegin(size_type diagNr);
-    ConstReverseMIterator constReverseMBegin(size_type rowNr, size_type columnNr);
-    ConstReverseMIterator constReverseMEnd(size_type diagNr);
-    ConstReverseMIterator constReverseMEnd(size_type rowNr, size_type columnNr);
-    ConstReverseMIterator getConstReverseMIterator(size_type first, size_type second, bool isRelative = false);
+    ConstReverseMIterator constReverseMBegin(size_type diagNr) const;
+    ConstReverseMIterator constReverseMBegin(size_type rowNr, size_type columnNr) const;
+    ConstReverseMIterator constReverseMEnd(size_type diagNr) const;
+    ConstReverseMIterator constReverseMEnd(size_type rowNr, size_type columnNr) const;
+    ConstReverseMIterator getConstReverseMIterator(size_type first, size_type second, bool isRelative = false) const;
 
     // required for being able to use the "auto" keyword for iterating through the matrix elements
     ZIterator begin();
@@ -4538,27 +4538,27 @@ typename Matrix<DataType>::MIterator Matrix<DataType>::getMIterator(Matrix<DataT
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstMIterator Matrix<DataType>::constMBegin(Matrix<DataType>::size_type diagNr)
+typename Matrix<DataType>::ConstMIterator Matrix<DataType>::constMBegin(Matrix<DataType>::size_type diagNr) const
 {
     GET_DIAG_BEGIN_ITERATOR(ConstMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstMIterator Matrix<DataType>::constMBegin(Matrix<DataType>::size_type rowNr,
-                                                              Matrix<DataType>::size_type columnNr)
+                                                              Matrix<DataType>::size_type columnNr) const
 {
     GET_BEGIN_MITERATOR_BY_ROW_COLUMN_NUMBER(ConstMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstMIterator Matrix<DataType>::constMEnd(Matrix<DataType>::size_type diagNr)
+typename Matrix<DataType>::ConstMIterator Matrix<DataType>::constMEnd(Matrix<DataType>::size_type diagNr) const
 {
     GET_END_MITERATOR_BY_DIAG_NUMBER(ConstMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstMIterator Matrix<DataType>::constMEnd(Matrix<DataType>::size_type rowNr,
-                                                            Matrix<DataType>::size_type columnNr)
+                                                            Matrix<DataType>::size_type columnNr) const
 {
     GET_END_MITERATOR_BY_ROW_COLUMN_NUMBER(ConstMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
@@ -4566,7 +4566,7 @@ typename Matrix<DataType>::ConstMIterator Matrix<DataType>::constMEnd(Matrix<Dat
 template<typename DataType>
 typename Matrix<DataType>::ConstMIterator Matrix<DataType>::getConstMIterator(Matrix<DataType>::size_type first,
                                                                     Matrix<DataType>::size_type second,
-                                                                    bool isRelative)
+                                                                    bool isRelative) const
 {
     GET_RANDOM_MITERATOR(ConstMIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
 }
@@ -4606,27 +4606,27 @@ typename Matrix<DataType>::ReverseMIterator Matrix<DataType>::getReverseMIterato
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::constReverseMBegin(Matrix<DataType>::size_type diagNr)
+typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::constReverseMBegin(Matrix<DataType>::size_type diagNr) const
 {
     GET_DIAG_BEGIN_ITERATOR(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::constReverseMBegin(Matrix<DataType>::size_type rowNr,
-                                                                            Matrix<DataType>::size_type columnNr)
+                                                                            Matrix<DataType>::size_type columnNr) const
 {
     GET_BEGIN_MITERATOR_BY_ROW_COLUMN_NUMBER(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::constReverseMEnd(Matrix<DataType>::size_type diagNr)
+typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::constReverseMEnd(Matrix<DataType>::size_type diagNr) const
 {
     GET_END_MITERATOR_BY_DIAG_NUMBER(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, diagNr);
 }
 
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::constReverseMEnd(Matrix<DataType>::size_type rowNr,
-                                                                          Matrix<DataType>::size_type columnNr)
+                                                                          Matrix<DataType>::size_type columnNr) const
 {
     GET_END_MITERATOR_BY_ROW_COLUMN_NUMBER(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
 }
@@ -4634,7 +4634,7 @@ typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::constReverseM
 template<typename DataType>
 typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::getConstReverseMIterator(Matrix<DataType>::size_type first,
                                                                                   Matrix<DataType>::size_type second,
-                                                                                  bool isRelative)
+                                                                                  bool isRelative) const
 {
     GET_RANDOM_MITERATOR(ConstReverseMIterator, m_NrOfRows, m_NrOfColumns, first, second, isRelative);
 }
