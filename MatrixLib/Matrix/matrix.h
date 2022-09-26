@@ -391,9 +391,11 @@ public:
     ConstReverseMIterator constReverseMEnd(size_type rowNr, size_type columnNr) const;
     ConstReverseMIterator getConstReverseMIterator(size_type first, size_type second, bool isRelative = false) const;
 
-    // required for being able to use the "auto" keyword for iterating through the matrix elements
+    // required for being able to use the (const) auto (&) syntax for iterating through the matrix elements
     ZIterator begin();
     ZIterator end();
+    ConstZIterator begin() const;
+    ConstZIterator end() const;
 
 private:
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
@@ -4649,6 +4651,18 @@ template<typename DataType>
 typename Matrix<DataType>::ZIterator Matrix<DataType>::end()
 {
     return zEnd();
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::begin() const
+{
+   return constZBegin();
+}
+
+template<typename DataType>
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::end() const
+{
+   return constZEnd();
 }
 
 template<typename DataType>

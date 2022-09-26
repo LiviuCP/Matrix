@@ -40,7 +40,7 @@ private slots:
     void testArrowOperatorReadWrite();
     void testSquareBracketsOperatorRead();
     void testSquareBracketsOperatorWrite();
-    void testAutoWithLocalCopyRead();
+    void testAutoWithLocalCopyRead(); // "auto" syntax tested for non-const matrixes (this is where ZIterators apply)
     void testAutoWithLocalCopyWrite();
     void testAutoWithReference();
     void testConstAutoWithLocalCopy();
@@ -541,7 +541,7 @@ void ZIteratorTests::testAutoWithLocalCopyWrite()
         ++count;
     }
 
-    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix, "Iterating through the matrix elements by using auto (write) does not work correctly!");
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix && sum == 21 && count == 6, "Iterating through the matrix elements by using auto (write) does not work correctly!");
 
     m_PrimaryIntMatrix.clear();
 
@@ -567,7 +567,7 @@ void ZIteratorTests::testAutoWithReference()
         ++count;
     }
 
-    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix, "Iterating through the matrix elements by using auto& does not work correctly!");
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix && count == 6, "Iterating through the matrix elements by using auto& does not work correctly!");
 
     m_PrimaryIntMatrix.clear();
 

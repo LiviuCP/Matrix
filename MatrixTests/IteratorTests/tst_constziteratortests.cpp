@@ -10,6 +10,9 @@ class ConstZIteratorTests : public QObject
 {
     Q_OBJECT
 
+public:
+    ConstZIteratorTests();
+
 private slots:
     // test functions
     void testIteratorCreation();
@@ -39,6 +42,10 @@ private slots:
     void testArrowOperator();
     void testArrowOperatorPlusEqual();
     void testSquareBracketsOperator();
+    void testAutoWithLocalCopyRead();   // "auto" syntax tested for const matrixes (this is where ConstZIterators apply)
+    void testAutoWithLocalCopyWrite();
+    void testConstAutoWithLocalCopy();
+    void testConstAutoWithReference();
     void testStdCount();
     void testStdFind();
     void testStdFindWithIncrement();
@@ -78,12 +85,18 @@ private:
 
     IntMatrix m_PrimaryIntMatrix;
     IntMatrix m_SecondaryIntMatrix;
+    const IntMatrix m_ThirdIntMatrix; // used for testing "auto" syntax
     StringMatrix m_StringMatrix;
 
     IntMatrixConstZIterator m_PrimaryIntIterator;
     IntMatrixConstZIterator m_SecondaryIntIterator;
     StringMatrixConstZIterator m_StringIterator;
 };
+
+ConstZIteratorTests::ConstZIteratorTests()
+    : m_ThirdIntMatrix{2, 3, {-1, 2, -3, 4, -5, 6}}
+{
+}
 
 void ConstZIteratorTests::testIteratorCreation()
 {
@@ -408,6 +421,62 @@ void ConstZIteratorTests::testSquareBracketsOperator()
 
     QVERIFY2(iterator[index] == expectedValue,
              "The dereference square brackets operator doesn't work correctly when reading the value from the given index!");
+}
+
+void ConstZIteratorTests::testAutoWithLocalCopyRead()
+{
+    int sum{0}, product{1}, count{0};
+
+    for (auto element : m_ThirdIntMatrix)
+    {
+        sum += element;
+        product *= element;
+        ++count;
+    }
+
+    QVERIFY2(sum == 3 && product == -720 && count == 6, "Iterating through the matrix elements by using auto (read) does not work correctly!");
+}
+
+void ConstZIteratorTests::testAutoWithLocalCopyWrite()
+{
+    int sum{0}, count{0};
+
+    for (auto element : m_ThirdIntMatrix)
+    {
+        element = std::abs(element);
+        sum += element;
+        ++count;
+    }
+
+    QVERIFY2(sum == 21 && count == 6, "Iterating through the matrix elements by using auto (write) does not work correctly!");
+}
+
+void ConstZIteratorTests::testConstAutoWithLocalCopy()
+{
+    int sum{0}, product{1}, count{0};
+
+    for (const auto element : m_ThirdIntMatrix)
+    {
+        sum += element;
+        product *= element;
+        ++count;
+    }
+
+    QVERIFY2(sum == 3 && product == -720 && count == 6, "Iterating through the matrix elements by using const auto does not work correctly!");
+}
+
+void ConstZIteratorTests::testConstAutoWithReference()
+{
+    int sum{0}, product{1}, count{0};
+
+    for (const auto& element : m_ThirdIntMatrix)
+    {
+        sum += element;
+        product *= element;
+        ++count;
+    }
+
+    QVERIFY2(sum == 3 && product == -720 && count == 6, "Iterating through the matrix elements by using const auto& does not work correctly!");
 }
 
 void ConstZIteratorTests::testStdCount()
