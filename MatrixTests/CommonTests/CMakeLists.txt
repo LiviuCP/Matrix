@@ -19,12 +19,28 @@ enable_testing()
 include_directories(../Shared)
 include_directories(../../MatrixLib/Matrix)
 
-add_executable(FunctionalityTests tst_functionalitytests.cpp)
-add_test(NAME FunctionalityTests COMMAND FunctionalityTests)
+add_executable(ConstructionAndAssignmentTests tst_constructionandassignmenttests.cpp)
+add_test(NAME ConstructionAndAssignmentTests COMMAND ConstructionAndAssignmentTests)
+
+add_executable(ResizingTests tst_resizingtests.cpp)
+add_test(NAME ResizingTests COMMAND ResizingTests)
+
+add_executable(TransformationTests tst_transformationtests.cpp)
+add_test(NAME TransformationTests COMMAND TransformationTests)
+
+add_executable(SwappingTests tst_swappingtests.cpp)
+add_test(NAME SwappingTests COMMAND SwappingTests)
+
+add_executable(OtherFunctionalityTests tst_otherfunctionalitytests.cpp)
+add_test(NAME OtherFunctionalityTests COMMAND OtherFunctionalityTests)
 
 add_executable(CapacityTests tst_capacitytests.cpp)
 add_test(NAME CapacityTests COMMAND CapacityTests)
 
-target_link_libraries(FunctionalityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(ConstructionAndAssignmentTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(ResizingTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(TransformationTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(SwappingTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(OtherFunctionalityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(CapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 
