@@ -1,8 +1,10 @@
 #include <QtTest>
 
-#include "testutils.h"
+#include "matrix_template_specializations.h"
+#include "tst_resizingtests.h"
 
 Q_DECLARE_METATYPE(IntMatrix)
+Q_DECLARE_METATYPE(StringMatrix)
 
 class ResizingTests : public QObject
 {
@@ -10,38 +12,69 @@ class ResizingTests : public QObject
 
 private slots:
     // test functions
-    void testResizeWithoutFillingInNewValues();
-    void testResizeAndFillInNewValues();
-    void testShrinkToFit();
-    void testInsertRowNoSetValue();
-    void testInsertRowSetValue();
-    void testInsertColumnNoSetValue();
-    void testInsertColumnSetValue();
-    void testEraseRow();
-    void testEraseColumn();
-    void testClear();
+    void testIntMatrixResizeWithoutFillingInNewValues();
+    void testIntMatrixResizeAndFillInNewValues();
+    void testIntMatrixShrinkToFit();
+    void testIntMatrixInsertRowNoSetValue();
+    void testIntMatrixInsertRowSetValue();
+    void testIntMatrixInsertColumnNoSetValue();
+    void testIntMatrixInsertColumnSetValue();
+    void testIntMatrixEraseRow();
+    void testIntMatrixEraseMultipleRows();
+    void testIntMatrixEraseColumn();
+    void testIntMatrixEraseMultipleColumns();
+    void testIntMatrixClear();
+
+    void testStringMatrixResizeWithoutFillingInNewValues();
+    void testStringMatrixResizeAndFillInNewValues();
+    void testStringMatrixShrinkToFit();
+    void testStringMatrixInsertRowNoSetValue();
+    void testStringMatrixInsertRowSetValue();
+    void testStringMatrixInsertColumnNoSetValue();
+    void testStringMatrixInsertColumnSetValue();
+    void testStringMatrixEraseRow();
+    void testStringMatrixEraseMultipleRows();
+    void testStringMatrixEraseColumn();
+    void testStringMatrixEraseMultipleColumns();
+    void testStringMatrixClear();
 
     // test data
-    void testResizeWithoutFillingInNewValues_data();
-    void testResizeAndFillInNewValues_data();
-    void testShrinkToFit_data();
-    void testInsertRowNoSetValue_data();
-    void testInsertRowSetValue_data();
-    void testInsertColumnNoSetValue_data();
-    void testInsertColumnSetValue_data();
-    void testEraseRow_data();
-    void testEraseColumn_data();
-    void testClear_data();
+    void testIntMatrixResizeWithoutFillingInNewValues_data();
+    void testIntMatrixResizeAndFillInNewValues_data();
+    void testIntMatrixShrinkToFit_data();
+    void testIntMatrixInsertRowNoSetValue_data();
+    void testIntMatrixInsertRowSetValue_data();
+    void testIntMatrixInsertColumnNoSetValue_data();
+    void testIntMatrixInsertColumnSetValue_data();
+    void testIntMatrixEraseRow_data();
+    void testIntMatrixEraseMultipleRows_data();
+    void testIntMatrixEraseColumn_data();
+    void testIntMatrixEraseMultipleColumns_data();
+    void testIntMatrixClear_data();
+
+    void testStringMatrixResizeWithoutFillingInNewValues_data();
+    void testStringMatrixResizeAndFillInNewValues_data();
+    void testStringMatrixShrinkToFit_data();
+    void testStringMatrixInsertRowNoSetValue_data();
+    void testStringMatrixInsertRowSetValue_data();
+    void testStringMatrixInsertColumnNoSetValue_data();
+    void testStringMatrixInsertColumnSetValue_data();
+    void testStringMatrixEraseRow_data();
+    void testStringMatrixEraseMultipleRows_data();
+    void testStringMatrixEraseColumn_data();
+    void testStringMatrixEraseMultipleColumns_data();
+    void testStringMatrixClear_data();
 
 private:
     // test data helper methods
-    void _buildInsertRowTestingTable();
-    void _buildInsertColumnTestingTable();
+    void _buildIntMatrixInsertRowTestingTable();
+    void _buildIntMatrixInsertColumnTestingTable();
 
     IntMatrix mPrimaryIntMatrix;
+    StringMatrix mPrimaryStringMatrix;
 };
 
-void ResizingTests::testResizeWithoutFillingInNewValues()
+void ResizingTests::testIntMatrixResizeWithoutFillingInNewValues()
 {
     QFETCH(IntMatrix, matrix);
     QFETCH(IntMatrixSizeType, resizeRowsCount);
@@ -52,70 +85,32 @@ void ResizingTests::testResizeWithoutFillingInNewValues()
 
     matrix.resize(resizeRowsCount, resizeColumnsCount);
 
-    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
-    {
-        QFAIL("Resizing failed, capacity of the matrix is not correct!");
-    }
-    else if (matrix.getNrOfRows() != resizeRowsCount || matrix.getNrOfColumns() != resizeColumnsCount)
-    {
-        QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-    }
-    else
-    {
-        bool areRetainedValuesCorrect{true};
+    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity);
 
-        for(IntMatrixSizeType rowNr{0}; rowNr < expectedRetainedElementsMatrix.getNrOfRows(); ++rowNr)
+    bool areRetainedValuesCorrect{true};
+
+    for(IntMatrixSizeType rowNr{0}; rowNr < expectedRetainedElementsMatrix.getNrOfRows(); ++rowNr)
+    {
+        for(IntMatrixSizeType columnNr{0}; columnNr < expectedRetainedElementsMatrix.getNrOfColumns(); ++columnNr)
         {
-            for(IntMatrixSizeType columnNr{0}; columnNr < expectedRetainedElementsMatrix.getNrOfColumns(); ++columnNr)
-            {
-                areRetainedValuesCorrect = areRetainedValuesCorrect && (matrix.at(rowNr, columnNr) == expectedRetainedElementsMatrix.at(rowNr, columnNr));
-            }
+            areRetainedValuesCorrect = areRetainedValuesCorrect && (matrix.at(rowNr, columnNr) == expectedRetainedElementsMatrix.at(rowNr, columnNr));
         }
-
-        QVERIFY2(areRetainedValuesCorrect, "Resizing failed, the retained element values are not correct!");
     }
+
+    QVERIFY2(areRetainedValuesCorrect, "Resizing failed, the retained element values are not correct!");
 }
 
-void ResizingTests::testResizeAndFillInNewValues()
+void ResizingTests::testIntMatrixResizeAndFillInNewValues()
 {
-    QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, resizeRowsCount);
-    QFETCH(IntMatrixSizeType, resizeColumnsCount);
-    QFETCH(int, fillValue);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-    QFETCH(IntMatrix, expectedMatrix);
-
-    matrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, fillValue);
-
-    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
-    {
-        QFAIL("Resizing failed, capacity of the matrix is not correct!");
-    }
-    else
-    {
-        QVERIFY2(matrix == expectedMatrix, "Resizing failed, the matrix does not have the correct values!");
-    }
+    TEST_MATRIX_RESIZE_AND_FILL_IN_NEW_VALUES(int);
 }
 
-void ResizingTests::testShrinkToFit()
+void ResizingTests::testIntMatrixShrinkToFit()
 {
-    QFETCH(IntMatrix, matrix);
-
-    mPrimaryIntMatrix = matrix;
-    mPrimaryIntMatrix.shrinkToFit();
-
-    if (mPrimaryIntMatrix.getRowCapacity() != matrix.getNrOfRows() || mPrimaryIntMatrix.getColumnCapacity() != matrix.getNrOfColumns())
-    {
-        QFAIL("Shrinking to fit failed, capacity of the matrix is not correct!");
-    }
-    else
-    {
-        QVERIFY2(mPrimaryIntMatrix == matrix, "Shrinking to fit failed, the matrix does not retain its values!");
-    }
+    TEST_MATRIX_SHRINK_TO_FIT(int, mPrimaryIntMatrix);
 }
 
-void ResizingTests::testInsertRowNoSetValue()
+void ResizingTests::testIntMatrixInsertRowNoSetValue()
 {
     QFETCH(IntMatrix, matrix);
     QFETCH(IntMatrixSizeType, insertPosition);
@@ -125,59 +120,34 @@ void ResizingTests::testInsertRowNoSetValue()
 
     matrix.insertRow(insertPosition);
 
-    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
-    {
-        QFAIL("Insert row failed, capacity of the matrix is not correct!");
-    }
-    else if (matrix.getNrOfRows() != referenceMatrix.getNrOfRows() || matrix.getNrOfColumns() != referenceMatrix.getNrOfColumns())
-    {
-        QFAIL("Insert row failed, number of rows or columns of the matrix is not correct!");
-    }
-    else
-    {
-        bool areRetainedValuesCorrect{true};
+    TEST_INSERT_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity);
 
-        for (IntMatrixSizeType rowNr{0}; rowNr < matrix.getNrOfRows(); ++rowNr)
+    bool areRetainedValuesCorrect{true};
+
+    for (IntMatrixSizeType rowNr{0}; rowNr < matrix.getNrOfRows(); ++rowNr)
+    {
+        if (rowNr != insertPosition)
         {
-            if (rowNr != insertPosition)
+            for (IntMatrixSizeType columnNr{0}; columnNr < matrix.getNrOfColumns(); ++columnNr)
             {
-                for (IntMatrixSizeType columnNr{0}; columnNr < matrix.getNrOfColumns(); ++columnNr)
+                if (matrix.at(rowNr, columnNr) != referenceMatrix.at(rowNr, columnNr))
                 {
-                    if (matrix.at(rowNr, columnNr) != referenceMatrix.at(rowNr, columnNr))
-                    {
-                        areRetainedValuesCorrect = false;
-                        break;
-                    }
+                    areRetainedValuesCorrect = false;
+                    break;
                 }
             }
         }
-
-        QVERIFY2(areRetainedValuesCorrect, "Insert row failed, the matrix doesn't have the right values on the existing rows!");
     }
+
+    QVERIFY2(areRetainedValuesCorrect, "Insert row failed, the matrix doesn't have the right values on the existing rows!");
 }
 
-void ResizingTests::testInsertRowSetValue()
+void ResizingTests::testIntMatrixInsertRowSetValue()
 {
-    QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, insertPosition);
-    QFETCH(int, insertedRowValue);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-    QFETCH(IntMatrix, referenceMatrix);
-
-    matrix.insertRow(insertPosition, insertedRowValue);
-
-    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
-    {
-        QFAIL("Insert row failed, capacity of the matrix is not correct!");
-    }
-    else
-    {
-        QVERIFY2(matrix == referenceMatrix, "Insert row failed, the matrix doesn't have the right values!");
-    }
+    TEST_MATRIX_INSERT_ROW_SET_VALUE(int);
 }
 
-void ResizingTests::testInsertColumnNoSetValue()
+void ResizingTests::testIntMatrixInsertColumnNoSetValue()
 {
     QFETCH(IntMatrix, matrix);
     QFETCH(IntMatrixSizeType, insertPosition);
@@ -187,113 +157,150 @@ void ResizingTests::testInsertColumnNoSetValue()
 
     matrix.insertColumn(insertPosition);
 
-    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
-    {
-        QFAIL("Insert column failed, capacity of the matrix is not correct!");
-    }
-    else if (matrix.getNrOfRows() != referenceMatrix.getNrOfRows() || matrix.getNrOfColumns() != referenceMatrix.getNrOfColumns())
-    {
-        QFAIL("Insert column failed, number of rows or columns of the matrix is not correct!");
-    }
-    else
-    {
-        bool areRetainedValuesCorrect{true};
+    TEST_INSERT_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity);
 
-        for (IntMatrixSizeType columnNr{0}; columnNr < matrix.getNrOfColumns(); ++columnNr)
+    bool areRetainedValuesCorrect{true};
+
+    for (IntMatrixSizeType columnNr{0}; columnNr < matrix.getNrOfColumns(); ++columnNr)
+    {
+        if (columnNr != insertPosition)
         {
-            if (columnNr != insertPosition)
+            for (IntMatrixSizeType rowNr{0}; rowNr < matrix.getNrOfRows(); ++rowNr)
             {
-                for (IntMatrixSizeType rowNr{0}; rowNr < matrix.getNrOfRows(); ++rowNr)
+                if (matrix.at(rowNr, columnNr) != referenceMatrix.at(rowNr, columnNr))
                 {
-                    if (matrix.at(rowNr, columnNr) != referenceMatrix.at(rowNr, columnNr))
-                    {
-                        areRetainedValuesCorrect = false;
-                        break;
-                    }
+                    areRetainedValuesCorrect = false;
+                    break;
                 }
             }
         }
-
-        QVERIFY2(areRetainedValuesCorrect, "Insert column failed, the matrix doesn't have the right values on the existing columns!");
     }
+
+    QVERIFY2(areRetainedValuesCorrect, "Insert column failed, the matrix doesn't have the right values on the existing columns!");
 }
 
-void ResizingTests::testInsertColumnSetValue()
+void ResizingTests::testIntMatrixInsertColumnSetValue()
 {
-    QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, insertPosition);
-    QFETCH(int, insertedColumnValue);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-    QFETCH(IntMatrix, referenceMatrix);
-
-    matrix.insertColumn(insertPosition, insertedColumnValue);
-
-    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
-    {
-        QFAIL("Insert column failed, capacity of the matrix is not correct!");
-    }
-    else
-    {
-        QVERIFY2(matrix == referenceMatrix, "Insert column failed, the matrix doesn't have the right values!");
-    }
+    TEST_MATRIX_INSERT_COLUMN_SET_VALUE(int);
 }
 
-void ResizingTests::testEraseRow()
+void ResizingTests::testIntMatrixEraseRow()
 {
-    QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, erasePosition);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-    QFETCH(IntMatrix, expectedMatrix);
-
-    matrix.eraseRow(erasePosition);
-
-    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
-    {
-        QFAIL("Erase row failed, capacity of the matrix is not correct!");
-    }
-    else
-    {
-        QVERIFY2(matrix == expectedMatrix, "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
-    }
+    TEST_MATRIX_ERASE_ROW(int);
 }
 
-void ResizingTests::testEraseColumn()
+void ResizingTests::testIntMatrixEraseMultipleRows()
 {
-    QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, erasePosition);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-    QFETCH(IntMatrix, expectedMatrix);
-
-    matrix.eraseColumn(erasePosition);
-
-    if (matrix.getRowCapacity() != expectedRowCapacity || matrix.getColumnCapacity() != expectedColumnCapacity)
-    {
-        QFAIL("Erase column failed, capacity of the matrix is not correct!");
-    }
-    else
-    {
-        QVERIFY2(matrix == expectedMatrix, "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
-    }
+    TEST_MATRIX_ERASE_MULTIPLE_ROWS(int);
 }
 
-void ResizingTests::testClear()
+void ResizingTests::testIntMatrixEraseColumn()
 {
-    QFETCH(IntMatrix, matrix);
-
-    mPrimaryIntMatrix = matrix;
-    mPrimaryIntMatrix.clear();
-
-    QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == 0 &&
-             mPrimaryIntMatrix.getColumnCapacity() == 0, "Clear failed, capacity is not correct!");
-
-    QVERIFY2(mPrimaryIntMatrix.getNrOfRows() == 0 &&
-             mPrimaryIntMatrix.getNrOfColumns() == 0, "Clear failed, number of rows and columns is not correct!");
+    TEST_MATRIX_ERASE_COLUMN(int);
 }
 
-void ResizingTests::testResizeWithoutFillingInNewValues_data()
+void ResizingTests::testIntMatrixEraseMultipleColumns()
+{
+    TEST_MATRIX_ERASE_MULTIPLE_COLUMNS(int);
+}
+
+void ResizingTests::testIntMatrixClear()
+{
+    TEST_MATRIX_CLEAR(int, mPrimaryIntMatrix);
+}
+
+void ResizingTests::testStringMatrixResizeWithoutFillingInNewValues()
+{
+    QFETCH(StringMatrix, matrix);
+    QFETCH(StringMatrixSizeType, resizeRowsCount);
+    QFETCH(StringMatrixSizeType, resizeColumnsCount);
+    QFETCH(StringMatrixSizeType, expectedRowCapacity);
+    QFETCH(StringMatrixSizeType, expectedColumnCapacity);
+    QFETCH(StringMatrix, expectedMatrix);
+
+    matrix.resize(resizeRowsCount, resizeColumnsCount);
+
+    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity);
+
+    QVERIFY2(matrix == expectedMatrix, "Resizing failed, the matrix does not have the correct values!");
+}
+
+void ResizingTests::testStringMatrixResizeAndFillInNewValues()
+{
+    TEST_MATRIX_RESIZE_AND_FILL_IN_NEW_VALUES(std::string);
+}
+
+void ResizingTests::testStringMatrixShrinkToFit()
+{
+    TEST_MATRIX_SHRINK_TO_FIT(std::string, mPrimaryStringMatrix);
+}
+
+void ResizingTests::testStringMatrixInsertRowNoSetValue()
+{
+    QFETCH(StringMatrix, matrix);
+    QFETCH(StringMatrixSizeType, insertPosition);
+    QFETCH(StringMatrixSizeType, expectedRowCapacity);
+    QFETCH(StringMatrixSizeType, expectedColumnCapacity);
+    QFETCH(StringMatrix, referenceMatrix);
+
+    matrix.insertRow(insertPosition);
+
+    TEST_INSERT_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity);
+
+    QVERIFY2(matrix == referenceMatrix, "Insert row failed, the matrix does not have the right values!");
+}
+
+void ResizingTests::testStringMatrixInsertRowSetValue()
+{
+    TEST_MATRIX_INSERT_ROW_SET_VALUE(std::string);
+}
+
+void ResizingTests::testStringMatrixInsertColumnNoSetValue()
+{
+    QFETCH(StringMatrix, matrix);
+    QFETCH(StringMatrixSizeType, insertPosition);
+    QFETCH(StringMatrixSizeType, expectedRowCapacity);
+    QFETCH(StringMatrixSizeType, expectedColumnCapacity);
+    QFETCH(StringMatrix, referenceMatrix);
+
+    matrix.insertColumn(insertPosition);
+
+    TEST_INSERT_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity);
+
+    QVERIFY2(matrix == referenceMatrix, "Insert column failed, the matrix doesn't have the right values!");
+}
+
+void ResizingTests::testStringMatrixInsertColumnSetValue()
+{
+    TEST_MATRIX_INSERT_COLUMN_SET_VALUE(std::string);
+}
+
+void ResizingTests::testStringMatrixEraseRow()
+{
+    TEST_MATRIX_ERASE_ROW(std::string);
+}
+
+void ResizingTests::testStringMatrixEraseMultipleRows()
+{
+    TEST_MATRIX_ERASE_MULTIPLE_ROWS(std::string);
+}
+
+void ResizingTests::testStringMatrixEraseColumn()
+{
+    TEST_MATRIX_ERASE_COLUMN(std::string);
+}
+
+void ResizingTests::testStringMatrixEraseMultipleColumns()
+{
+    TEST_MATRIX_ERASE_MULTIPLE_COLUMNS(std::string);
+}
+
+void ResizingTests::testStringMatrixClear()
+{
+    TEST_MATRIX_CLEAR(std::string, mPrimaryStringMatrix);
+}
+
+void ResizingTests::testIntMatrixResizeWithoutFillingInNewValues_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
@@ -306,13 +313,20 @@ void ResizingTests::testResizeWithoutFillingInNewValues_data()
     QTest::newRow("less rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 3 << 2 << 3 << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
     QTest::newRow("less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 2 << 3 << 2 << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
     QTest::newRow("equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 5 << 4 << 5 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-    QTest::newRow("more rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 3 << 5 << 3 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("more rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 3 << 5 << 3 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}}; // capacity stays unchanged
     QTest::newRow("more rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 4 << 5 << 4 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << 1 << 1 << IntMatrix{};
     QTest::newRow("equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 3 << 4 << 3 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 4 << 3 << 4 << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    QTest::newRow("more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 2 << 5 << 2 << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+
+    // additional tests for unchanged capacity
+    QTest::newRow("equal rows, more columns") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 5 << 3 << 5 << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("more rows, more columns") << IntMatrix{4, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 5 << 5 << 5 << 5 << IntMatrix{4, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("equal rows, equal columns") << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}} << 3 << 3 << 3 << 3 << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
 }
 
-void ResizingTests::testResizeAndFillInNewValues_data()
+void ResizingTests::testIntMatrixResizeAndFillInNewValues_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
@@ -326,13 +340,20 @@ void ResizingTests::testResizeAndFillInNewValues_data()
     QTest::newRow("less rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 3 << -1 << 2 << 3 << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
     QTest::newRow("less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 2 << -1 << 3 << 2 << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
     QTest::newRow("equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 5 << -1 << 4 << 5 << IntMatrix{4, 5, {1, 2, 3, -1, -1, 4, 5, 6, -1, -1, 7, 8, 9, -1, -1, 10, 11, 12, -1, -1}};
-    QTest::newRow("more rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 3 << -1 << 5 << 3 << IntMatrix{5, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, -1, -1}};
+    QTest::newRow("more rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 3 << -1 << 5 << 3 << IntMatrix{5, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, -1, -1}};  // capacity stays unchanged
     QTest::newRow("more rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 4 << -1 << 5 << 4 << IntMatrix{5, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1, 10, 11, 12, -1, -1, -1, -1, -1}};
     QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -1 << 1 << 1 << IntMatrix{1, 1, -1};
     QTest::newRow("equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 3 << -1 << 4 << 3 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 4 << -1 << 3 << 4 << IntMatrix{3, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1}};
+    QTest::newRow("more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 2 << -1 << 5 << 2 << IntMatrix{5, 2, {1, 2, 4, 5, 7, 8, 10, 11, -1, -1}};
+
+    // additional tests for unchanged capacity
+    QTest::newRow("equal rows, more columns") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 5 << -1 << 3 << 5 << IntMatrix{3, 5, {1, 2, 3, 4, -1, 5, 6, 7, 8, -1, 9, 10, 11, 12, -1}};
+    QTest::newRow("more rows, more columns") << IntMatrix{4, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 5 << 5 << -1 << 5 << 5 << IntMatrix{5, 5, {1, 2, 3, 4, -1, 5, 6, 7, 8, -1, 9, 10, 11, 12, -1, 13, 14, 15, 16, -1, -1, -1, -1, -1, -1}};
+    QTest::newRow("equal rows, equal columns") << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}} << 3 << 3 << -1 << 3 << 3 << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
 }
 
-void ResizingTests::testShrinkToFit_data()
+void ResizingTests::testIntMatrixShrinkToFit_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
 
@@ -343,27 +364,27 @@ void ResizingTests::testShrinkToFit_data()
     QTest::newRow("square matrix") << IntMatrix{4, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
 }
 
-void ResizingTests::testInsertRowNoSetValue_data()
+void ResizingTests::testIntMatrixInsertRowNoSetValue_data()
 {
-    _buildInsertRowTestingTable();
+    _buildIntMatrixInsertRowTestingTable();
 }
 
-void ResizingTests::testInsertRowSetValue_data()
+void ResizingTests::testIntMatrixInsertRowSetValue_data()
 {
-    _buildInsertRowTestingTable();
+    _buildIntMatrixInsertRowTestingTable();
 }
 
-void ResizingTests::testInsertColumnNoSetValue_data()
+void ResizingTests::testIntMatrixInsertColumnNoSetValue_data()
 {
-    _buildInsertColumnTestingTable();
+    _buildIntMatrixInsertColumnTestingTable();
 }
 
-void ResizingTests::testInsertColumnSetValue_data()
+void ResizingTests::testIntMatrixInsertColumnSetValue_data()
 {
-    _buildInsertColumnTestingTable();
+    _buildIntMatrixInsertColumnTestingTable();
 }
 
-void ResizingTests::testEraseRow_data()
+void ResizingTests::testIntMatrixEraseRow_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("erasePosition");
@@ -377,7 +398,21 @@ void ResizingTests::testEraseRow_data()
     QTest::newRow("erase the only row") << IntMatrix{1, 4, {1, 2, 3, 4}} << 0 << 0 << 0 << IntMatrix{};
 }
 
-void ResizingTests::testEraseColumn_data()
+void ResizingTests::testIntMatrixEraseMultipleRows_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<IntMatrixSizeType>("erasePosition");
+    QTest::addColumn<IntMatrixSizeType>("erasedRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<IntMatrix>("expectedMatrix");
+
+    QTest::newRow("erase at beginning position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 4 << 0 << 0 << IntMatrix{};
+    QTest::newRow("erase at random position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << 3 << 2 << 3 << IntMatrix{1, 3, {1, 2, 3}};
+    QTest::newRow("erase at random position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 2 << 5 << 3 << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+}
+
+void ResizingTests::testIntMatrixEraseColumn_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("erasePosition");
@@ -391,7 +426,21 @@ void ResizingTests::testEraseColumn_data()
     QTest::newRow("erase the only column") << IntMatrix{4, 1, {1, 2, 3, 4}} << 0 << 0 << 0 << IntMatrix{};
 }
 
-void ResizingTests::testClear_data()
+void ResizingTests::testIntMatrixEraseMultipleColumns_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<IntMatrixSizeType>("erasePosition");
+    QTest::addColumn<IntMatrixSizeType>("erasedColumnsCount");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<IntMatrix>("expectedMatrix");
+
+    QTest::newRow("erase at beginning position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 4 << 0 << 0 << IntMatrix{};
+    QTest::newRow("erase at random position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << 3 << 3 << 2 << IntMatrix{3, 1, {1, 5, 9}};
+    QTest::newRow("erase at random position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 2 << 3 << 5 << IntMatrix{3, 2, {1, 2, 5, 6, 9, 10}};
+}
+
+void ResizingTests::testIntMatrixClear_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
 
@@ -399,7 +448,210 @@ void ResizingTests::testClear_data()
     QTest::newRow("empty matrix") << IntMatrix{};
 }
 
-void ResizingTests::_buildInsertRowTestingTable()
+void ResizingTests::testStringMatrixResizeWithoutFillingInNewValues_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<StringMatrix>("expectedMatrix");
+
+    QTest::newRow("equal rows, less columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 4 << 2 << 4 << 2 << StringMatrix{4, 2, {"1", "2", "4", "5", "7", "8", "10", "11"}};
+    QTest::newRow("less rows, equal columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 2 << 3 << 2 << 3 << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}};
+    QTest::newRow("less rows, less columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 3 << 2  << 3 << 2 << StringMatrix{3, 2, {"1", "2", "4", "5", "7", "8"}};
+    QTest::newRow("equal rows, more columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 4 << 5 << 4 << 5 << StringMatrix{4, 5, {"1", "2", "3", "", "", "4", "5", "6", "", "", "7", "8", "9", "", "", "10", "11", "12", "", ""}};
+    QTest::newRow("more rows, equal columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 5 << 3 << 5 << 3 << StringMatrix{5, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "", "", ""}}; // capacity stays unchanged
+    QTest::newRow("more rows, more columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 5 << 4 << 5 << 4 << StringMatrix{5, 4, {"1", "2", "3", "", "4", "5", "6", "", "7", "8", "9", "", "10", "11", "12", "", "", "", "", ""}};
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << 1 << 1 << StringMatrix{1, 1, ""};
+    QTest::newRow("equal rows, equal columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 4 << 3 << 4 << 3 << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("less rows, more columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 3 << 4 << 3 << 4 << StringMatrix{3, 4, {"1", "2", "3", "", "4", "5", "6", "", "7", "8", "9", ""}};
+    QTest::newRow("more rows, less columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 5 << 2 << 5 << 2 << StringMatrix{5, 2, {"1", "2", "4", "5", "7", "8", "10", "11", "", ""}};
+
+    // additional tests for unchanged capacity
+    QTest::newRow("equal rows, more columns") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 3 << 5 << 3 << 5 << StringMatrix{3, 5, {"1", "2", "3", "4", "", "5", "6", "7", "8", "", "9", "10", "11", "12", ""}};
+    QTest::newRow("more rows, more columns") << StringMatrix{4, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"}} << 5 << 5 << 5 << 5 << StringMatrix{5, 5, {"1", "2", "3", "4", "", "5", "6", "7", "8", "", "9", "10", "11", "12", "", "13", "14", "15", "16", "", "", "", "", "", ""}};
+    QTest::newRow("equal rows, equal columns") << StringMatrix{3, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9"}} << 3 << 3 << 3 << 3 << StringMatrix{3, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9"}};
+}
+
+void ResizingTests::testStringMatrixResizeAndFillInNewValues_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<std::string>("fillValue");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<StringMatrix>("expectedMatrix");
+
+    QTest::newRow("equal rows, less columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 4 << 2 << std::string{"-1"} << 4 << 2 << StringMatrix{4, 2, {"1", "2", "4", "5", "7", "8", "10", "11"}};
+    QTest::newRow("less rows, equal columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 2 << 3 << std::string{"-1"} << 2 << 3 << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}};
+    QTest::newRow("less rows, less columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 3 << 2 << std::string{"-1"} << 3 << 2 << StringMatrix{3, 2, {"1", "2", "4", "5", "7", "8"}};
+    QTest::newRow("equal rows, more columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 4 << 5 << std::string{"-1"} << 4 << 5 << StringMatrix{4, 5, {"1", "2", "3", "-1", "-1", "4", "5", "6", "-1", "-1", "7", "8", "9", "-1", "-1", "10", "11", "12", "-1", "-1"}};
+    QTest::newRow("more rows, equal columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 5 << 3 << std::string{"-1"} << 5 << 3 << StringMatrix{5, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "-1", "-1", "-1"}}; // capacity stays unchanged
+    QTest::newRow("more rows, more columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 5 << 4 << std::string{"-1"} << 5 << 4 << StringMatrix{5, 4, {"1", "2", "3", "-1", "4", "5", "6", "-1", "7", "8", "9", "-1", "10", "11", "12", "-1", "-1", "-1", "-1", "-1"}};
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"-1"} << 1 << 1 << StringMatrix{1, 1, "-1"};
+    QTest::newRow("equal rows, equal columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 4 << 3 << std::string{"-1"} << 4 << 3 << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("less rows, more columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 3 << 4 << std::string{"-1"} << 3 << 4 << StringMatrix{3, 4, {"1", "2", "3", "-1", "4", "5", "6", "-1", "7", "8", "9", "-1"}};
+    QTest::newRow("more rows, less columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 5 << 2 << std::string{"-1"} << 5 << 2 << StringMatrix{5, 2, {"1", "2", "4", "5", "7", "8", "10", "11", "-1", "-1"}};
+
+    // additional tests for unchanged capacity
+    QTest::newRow("equal rows, more columns") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 3 << 5 << std::string{"-1"} << 3 << 5 << StringMatrix{3, 5, {"1", "2", "3", "4", "-1", "5", "6", "7", "8", "-1", "9", "10", "11", "12", "-1"}};
+    QTest::newRow("more rows, more columns") << StringMatrix{4, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"}} << 5 << 5 << std::string{"-1"} << 5 << 5 << StringMatrix{5, 5, {"1", "2", "3", "4", "-1", "5", "6", "7", "8", "-1", "9", "10", "11", "12", "-1", "13", "14", "15", "16", "-1", "-1", "-1", "-1", "-1", "-1"}};
+    QTest::newRow("equal rows, equal columns") << StringMatrix{3, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9"}} << 3 << 3 << std::string{"-1"} << 3 << 3 << StringMatrix{3, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9"}};
+}
+
+void ResizingTests::testStringMatrixShrinkToFit_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+
+    QTest::newRow("empty matrix") << StringMatrix{};
+    QTest::newRow("square matrix") << StringMatrix{3, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9"}};
+    QTest::newRow("more rows than columns") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("less rows than columns") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("square matrix") << StringMatrix{4, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"}};
+}
+
+void ResizingTests::testStringMatrixInsertRowNoSetValue_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("insertPosition");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<StringMatrix>("referenceMatrix");
+
+    QTest::newRow("insert at random position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 2 << 5 << 3 << StringMatrix{5, 3, {"1", "2", "3", "4", "5", "6", "", "", "", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("insert at beginning position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << 5 << 3 << StringMatrix{5, 3, {"", "", "", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("insert at end position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 4 << 5 << 3 << StringMatrix{5, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "", "", ""}};
+
+    // test maximum capacity reached scenarios
+    QTest::newRow("insert at random position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 1 << 6 << 5 << StringMatrix{4, 4, {"1", "2", "3", "4", "", "", "", "", "5", "6", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("insert at beginning position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << 6 << 5 << StringMatrix{4, 4, {"", "", "", "", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("insert at end position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 3 << 6 << 5 << StringMatrix{4, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "", "", "", ""}};
+}
+
+void ResizingTests::testStringMatrixInsertRowSetValue_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("insertPosition");
+    QTest::addColumn<std::string>("insertedRowValue");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<StringMatrix>("referenceMatrix");
+
+    QTest::newRow("insert at random position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 2 << std::string{"-1"} << 5 << 3 << StringMatrix{5, 3, {"1", "2", "3", "4", "5", "6", "-1", "-1", "-1", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("insert at beginning position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << std::string{"-1"} << 5 << 3 << StringMatrix{5, 3, {"-1", "-1", "-1", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("insert at end position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 4 << std::string{"-1"} << 5 << 3 << StringMatrix{5, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "-1", "-1", "-1"}};
+
+    // test maximum capacity reached scenarios
+    QTest::newRow("insert at random position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 1 << std::string{"-1"} << 6 << 5 << StringMatrix{4, 4, {"1", "2", "3", "4", "-1", "-1", "-1", "-1", "5", "6", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("insert at beginning position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << std::string{"-1"} << 6 << 5 << StringMatrix{4, 4, {"-1", "-1", "-1", "-1", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("insert at end position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 3 << std::string{"-1"} << 6 << 5 << StringMatrix{4, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "-1", "-1", "-1", "-1"}};
+}
+
+void ResizingTests::testStringMatrixInsertColumnNoSetValue_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("insertPosition");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<StringMatrix>("referenceMatrix");
+
+    QTest::newRow("insert at random position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 2 << 3 << 5 << StringMatrix{3, 5, {"1", "2", "", "3", "4", "5", "6", "", "7", "8", "9", "10", "", "11", "12"}};
+    QTest::newRow("insert at beginning position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << 3 << 5 << StringMatrix{3, 5, {"", "1", "2", "3", "4", "", "5", "6", "7", "8", "", "9", "10", "11", "12"}};
+    QTest::newRow("insert at end position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 4 << 3 << 5 << StringMatrix{3, 5, {"1", "2", "3", "4", "", "5", "6", "7", "8", "", "9", "10", "11", "12", ""}};
+
+    // test maximum capacity reached scenarios
+    QTest::newRow("insert at random position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 1 << 5 << 6 << StringMatrix{4, 4, {"1", "", "2", "3", "4", "", "5", "6", "7", "", "8", "9", "10", "", "11", "12"}};
+    QTest::newRow("insert at beginning position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << 5 << 6 << StringMatrix{4, 4, {"", "1", "2", "3", "", "4", "5", "6", "", "7", "8", "9", "", "10", "11", "12"}};
+    QTest::newRow("insert at end position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 3 << 5 << 6 << StringMatrix{4, 4, {"1", "2", "3", "", "4", "5", "6", "", "7", "8", "9", "", "10", "11", "12", ""}};
+}
+
+void ResizingTests::testStringMatrixInsertColumnSetValue_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("insertPosition");
+    QTest::addColumn<std::string>("insertedColumnValue");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<StringMatrix>("referenceMatrix");
+
+    QTest::newRow("insert at random position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 2 << std::string{"-1"} << 3 << 5 << StringMatrix{3, 5, {"1", "2", "-1", "3", "4", "5", "6", "-1", "7", "8", "9", "10", "-1", "11", "12"}};
+    QTest::newRow("insert at beginning position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << std::string{"-1"} << 3 << 5 << StringMatrix{3, 5, {"-1", "1", "2", "3", "4", "-1", "5", "6", "7", "8", "-1", "9", "10", "11", "12"}};
+    QTest::newRow("insert at end position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 4 << std::string{"-1"} << 3 << 5 << StringMatrix{3, 5, {"1", "2", "3", "4", "-1", "5", "6", "7", "8", "-1", "9", "10", "11", "12", "-1"}};
+
+    // test maximum capacity reached scenarios
+    QTest::newRow("insert at random position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 1 << std::string{"-1"} << 5 << 6 << StringMatrix{4, 4, {"1", "-1", "2", "3", "4", "-1", "5", "6", "7", "-1", "8", "9", "10", "-1", "11", "12"}};
+    QTest::newRow("insert at beginning position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << std::string{"-1"} << 5 << 6 << StringMatrix{4, 4, {"-1", "1", "2", "3", "-1", "4", "5", "6", "-1", "7", "8", "9", "-1", "10", "11", "12"}};
+    QTest::newRow("insert at end position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 3 << std::string{"-1"} << 5 << 6 << StringMatrix{4, 4, {"1", "2", "3", "-1", "4", "5", "6", "-1", "7", "8", "9", "-1", "10", "11", "12", "-1"}};
+
+}
+
+void ResizingTests::testStringMatrixEraseRow_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("erasePosition");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<StringMatrix>("expectedMatrix");
+
+    QTest::newRow("erase at beginning position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << 3 << 5 << StringMatrix{2, 4, {"5", "6", "7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("erase at random position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 1 << 3 << 5 << StringMatrix{2, 4, {"1", "2", "3", "4", "9", "10", "11", "12"}};
+    QTest::newRow("erase at end position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 2 << 3 << 5 << StringMatrix{2, 4, {"1", "2", "3", "4", "5", "6", "7", "8"}};
+    QTest::newRow("erase the only row") << StringMatrix{1, 4, {"1", "2", "3", "4"}} << 0 << 0 << 0 << StringMatrix{};
+}
+
+void ResizingTests::testStringMatrixEraseMultipleRows_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("erasePosition");
+    QTest::addColumn<StringMatrixSizeType>("erasedRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<StringMatrix>("expectedMatrix");
+
+    QTest::newRow("erase at beginning position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << 4 << 0 << 0 << StringMatrix{};
+    QTest::newRow("erase at random position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 1 << 3 << 2 << 3 << StringMatrix{1, 3, {"1", "2", "3"}};
+    QTest::newRow("erase at random position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 2 << 2 << 5 << 3 << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}};
+}
+
+void ResizingTests::testStringMatrixEraseColumn_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("erasePosition");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<StringMatrix>("expectedMatrix");
+
+    QTest::newRow("erase at beginning position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << 5 << 3 << StringMatrix{4, 2, {"2", "3", "5", "6", "8", "9", "11", "12"}};
+    QTest::newRow("erase at random position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 1 << 5 << 3 << StringMatrix{4, 2, {"1", "3", "4", "6", "7", "9", "10", "12"}};
+    QTest::newRow("erase at end position") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 2 << 5 << 3 << StringMatrix{4, 2, {"1", "2", "4", "5", "7", "8", "10", "11"}};
+    QTest::newRow("erase the only column") << StringMatrix{4, 1, {"1", "2", "3", "4"}} << 0 << 0 << 0 << StringMatrix{};
+}
+
+void ResizingTests::testStringMatrixEraseMultipleColumns_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("erasePosition");
+    QTest::addColumn<StringMatrixSizeType>("erasedColumnsCount");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<StringMatrix>("expectedMatrix");
+
+    QTest::newRow("erase at beginning position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << 4 << 0 << 0 << StringMatrix{};
+    QTest::newRow("erase at random position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 1 << 3 << 3 << 2 << StringMatrix{3, 1, {"1", "5", "9"}};
+    QTest::newRow("erase at random position") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 2 << 2 << 3 << 5 << StringMatrix{3, 2, {"1", "2", "5", "6", "9", "10"}};
+}
+
+void ResizingTests::testStringMatrixClear_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+
+    QTest::newRow("non-empty matrix") << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}};
+    QTest::newRow("empty matrix") << StringMatrix{};
+}
+
+void ResizingTests::_buildIntMatrixInsertRowTestingTable()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("insertPosition");
@@ -411,9 +663,14 @@ void ResizingTests::_buildInsertRowTestingTable()
     QTest::newRow("insert at random position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << -1 << 5 << 3 << IntMatrix{5, 3, {1, 2, 3, 4, 5, 6, -1, -1, -1, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("insert at beginning position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << -1 << 5 << 3 << IntMatrix{5, 3, {-1, -1, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("insert at end position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << -1 << 5 << 3 << IntMatrix{5, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, -1, -1}};
+
+    // test maximum capacity reached scenarios
+    QTest::newRow("insert at random position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << -1 << 6 << 5 << IntMatrix{4, 4, {1, 2, 3, 4, -1, -1, -1, -1, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("insert at beginning position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << -1 << 6 << 5 << IntMatrix{4, 4, {-1, -1, -1, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("insert at end position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << -1 << 6 << 5 << IntMatrix{4, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, -1, -1, -1}};
 }
 
-void ResizingTests::_buildInsertColumnTestingTable()
+void ResizingTests::_buildIntMatrixInsertColumnTestingTable()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("insertPosition");
@@ -425,6 +682,11 @@ void ResizingTests::_buildInsertColumnTestingTable()
     QTest::newRow("insert at random position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << -1 << 3 << 5 << IntMatrix{3, 5, {1, 2, -1, 3, 4, 5, 6, -1, 7, 8, 9, 10, -1, 11, 12}};
     QTest::newRow("insert at beginning position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << -1 << 3 << 5 << IntMatrix{3, 5, {-1, 1, 2, 3, 4, -1, 5, 6, 7, 8, -1, 9, 10, 11, 12}};
     QTest::newRow("insert at end position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << -1 << 3 << 5 << IntMatrix{3, 5, {1, 2, 3, 4, -1, 5, 6, 7, 8, -1, 9, 10, 11, 12, -1}};
+
+    // test maximum capacity reached scenarios
+    QTest::newRow("insert at random position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << -1 << 5 << 6 << IntMatrix{4, 4, {1, -1, 2, 3, 4, -1, 5, 6, 7, -1, 8, 9, 10, -1, 11, 12}};
+    QTest::newRow("insert at beginning position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << -1 << 5 << 6 << IntMatrix{4, 4, {-1, 1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1, 10, 11, 12}};
+    QTest::newRow("insert at end position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << -1 << 5 << 6 << IntMatrix{4, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1, 10, 11, 12, -1}};
 }
 
 QTEST_APPLESS_MAIN(ResizingTests)

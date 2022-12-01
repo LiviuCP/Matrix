@@ -49,6 +49,9 @@ using StringMatrixConstMIterator = Matrix<std::string>::ConstMIterator;
 using StringMatrixReverseMIterator = Matrix<std::string>::ReverseMIterator;
 using StringMatrixConstReverseMIterator = Matrix<std::string>::ConstReverseMIterator;
 
+using StringMatrixSizeType = StringMatrix::size_type;
+using StringMatrixDiffType = StringMatrix::diff_type;
+
 using DecMatrix = Matrix<double>;
 using QPointFMatrix = Matrix<QPointF>;
 
@@ -73,5 +76,31 @@ enum class SplitMode : unsigned short
     DESTINATION_BOTH,
     DESTINATION_ALL
 };
+
+// useful macros shared between various test cases
+#define CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, dimensionsFailMessage, capacityFailMessage) \
+    if (matrix.getNrOfRows() != requiredNrOfRows || matrix.getNrOfColumns() != requiredNrOfColumns) \
+    { \
+        QFAIL(dimensionsFailMessage); \
+    } \
+\
+    if (matrix.getRowCapacity() != requiredRowCapacity || matrix.getColumnCapacity() != requiredColumnCapacity) \
+    { \
+        QFAIL(capacityFailMessage); \
+    }
+
+
+#define CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(matrix, elementValue, errorMessage) \
+    for (int rowNr{0}; rowNr < matrix.getNrOfRows(); ++rowNr) \
+    { \
+        for (int columnNr{0}; columnNr < matrix.getNrOfColumns(); ++columnNr) \
+        { \
+            if (matrix.at(rowNr, columnNr) != elementValue) \
+            { \
+                QFAIL(errorMessage); \
+                break; \
+            } \
+        } \
+    }
 
 #endif // TESTUTILS_H

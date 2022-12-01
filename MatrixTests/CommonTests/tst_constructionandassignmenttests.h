@@ -1,0 +1,55 @@
+#ifndef TST_CONSTRUCTIONANDASSIGNMENTTESTS_H
+#define TST_CONSTRUCTIONANDASSIGNMENTTESTS_H
+
+#include "testutils.h"
+
+#define TEST_DEFAULT_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, \
+                                   "Default constructor initialized matrix with wrong number of rows and columns!", \
+                                   "Default constructor initialized matrix with wrong capacity!")
+
+#define TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, \
+                                   "Init list constructor initialized matrix with wrong number of rows and columns!", \
+                                   "Init list constructor initialized matrix with wrong capacity!")
+
+#define TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, \
+                                   "Identical matrix constructor initialized matrix with wrong number of rows and columns!", \
+                                   "Identical matrix constructor initialized matrix with wrong capacity!")
+
+#define TEST_DIAGONAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, \
+                                   "Diagonal matrix constructor initialized matrix with wrong number of rows and columns!", \
+                                   "Diagonal matrix constructor initialized matrix with wrong capacity!")
+#define TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, \
+                                   "Copy constructor initialized matrix with wrong number of rows and columns!", \
+                                   "Copy constructor initialized matrix with wrong capacity!")
+
+#define TEST_MOVE_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, \
+                                   "Move constructor initialized matrix with wrong number of rows and columns!", \
+                                   "Move constructor initialized matrix with wrong capacity!")
+
+#define TEST_MOVE_CONSTRUCTOR_CHECK_SRC_MATRIX_SIZE_AND_CAPACITY(matrix) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, \
+                                   "Move constructor set the wrong number of rows and columns to the source matrix!", \
+                                   "Move constructor set the wrong capacity to the source matrix!")
+
+#define TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, \
+                                   "Copy assignment failed, number of rows or columns of the destination matrix is not correct!", \
+                                   "Copy assignment failed, capacity of the destination matrix is not correct!")
+
+#define TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, \
+                                   "Move assignment failed, number of rows or columns of the destination matrix is not correct!", \
+                                   "Move assignment failed, capacity of the destination matrix is not correct!")
+
+#define TEST_MOVE_ASSIGNMENT_CHECK_SRC_MATRIX_SIZE_AND_CAPACITY(matrix) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, \
+                                   "Move assignment failed, number of rows or columns of the source matrix is not correct!", \
+                                   "Move assignment failed, capacity of the source matrix is not correct!")
+
+#endif // TST_CONSTRUCTIONANDASSIGNMENTTESTS_H

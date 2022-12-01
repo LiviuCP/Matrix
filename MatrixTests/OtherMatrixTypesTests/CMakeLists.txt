@@ -24,15 +24,12 @@ include_directories(../Shared)
 include_directories(../../MatrixLib/Matrix)
 
 add_executable(DecimalMatrixTests tst_decimalmatrixtests.cpp)
-add_executable(StringMatrixTests tst_stringmatrixtests.cpp)
 add_executable(QPointFMatrixTests tst_qpointfmatrixtests.cpp)
 
 add_test(NAME DecimalMatrixTests COMMAND DecimalMatrixTests)
-add_test(NAME StringMatrixTests COMMAND StringMatrixTests)
 add_test(NAME QPointFMatrixTests COMMAND QPointFMatrixTests)
 
 target_link_libraries(DecimalMatrixTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
-target_link_libraries(StringMatrixTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(QPointFMatrixTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 
 if (${FRACTION_LIB_ENABLED})
