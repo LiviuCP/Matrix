@@ -412,7 +412,7 @@ private:
     void _adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns);
 
     // destroy the elements contained within interval
-    void _destroyElements(size_type startingRowNr, size_type endingRowNr, size_type nrOfColumns, size_type columnOffset = 0);
+    void _destroyItems(size_type startingRowNr, size_type endingRowNr, size_type nrOfItemsToDestroyPerRow, size_type columnOffset = 0);
 
     bool _isEqualTo(const Matrix<DataType>& matrix) const;
 
@@ -3332,7 +3332,7 @@ Matrix<DataType>& Matrix<DataType>::operator=(const Matrix<DataType>& matrix)
             /* ensure existing elements are destroyed correctly
                (the number of rows/columns between the two matrixes might not coincide meaning some elements might be left "hanging" - outside bounds elements should be uninitialized)
             */
-            _destroyElements(0, m_NrOfRows, m_NrOfColumns);
+            _destroyItems(0, m_NrOfRows, m_NrOfColumns);
 
             m_NrOfRows = matrix.m_NrOfRows;
             m_NrOfColumns = matrix.m_NrOfColumns;
@@ -3526,7 +3526,7 @@ void Matrix<DataType>::resize(Matrix<DataType>::size_type nrOfRows,
         }
         else
         {
-            _destroyElements(0, c_NrOfRowsToKeep, m_NrOfColumns - nrOfColumns, c_NrOfColumnsToKeep);
+            _destroyItems(0, c_NrOfRowsToKeep, m_NrOfColumns - nrOfColumns, c_NrOfColumnsToKeep);
         }
 
         if (nrOfRows > m_NrOfRows)
@@ -3538,7 +3538,7 @@ void Matrix<DataType>::resize(Matrix<DataType>::size_type nrOfRows,
         }
         else
         {
-            _destroyElements(c_NrOfRowsToKeep, m_NrOfRows, m_NrOfColumns);
+            _destroyItems(c_NrOfRowsToKeep, m_NrOfRows, m_NrOfColumns);
         }
 
         m_NrOfRows = nrOfRows;
@@ -3589,7 +3589,7 @@ void Matrix<DataType>::resizeWithValue(Matrix<DataType>::size_type nrOfRows,
         }
         else
         {
-            _destroyElements(0, c_NrOfRowsToKeep, m_NrOfColumns - nrOfColumns, c_NrOfColumnsToKeep);
+            _destroyItems(0, c_NrOfRowsToKeep, m_NrOfColumns - nrOfColumns, c_NrOfColumnsToKeep);
         }
 
         if (nrOfRows > m_NrOfRows)
@@ -3601,7 +3601,7 @@ void Matrix<DataType>::resizeWithValue(Matrix<DataType>::size_type nrOfRows,
         }
         else
         {
-            _destroyElements(c_NrOfRowsToKeep, m_NrOfRows, m_NrOfColumns);
+            _destroyItems(c_NrOfRowsToKeep, m_NrOfRows, m_NrOfColumns);
         }
 
         m_NrOfRows = nrOfRows;
@@ -4738,7 +4738,7 @@ void Matrix<DataType>::_deallocMemory()
     if (m_pBaseArrayPtr)
     {
         // ensure the objects contained within matrix are properly disposed
-        _destroyElements(0, m_NrOfRows, m_NrOfColumns);
+        _destroyItems(0, m_NrOfRows, m_NrOfColumns);
 
         // cut access of row pointers to allocated memory
         for (size_type rowNr{0}; rowNr < m_RowCapacity; ++rowNr)
@@ -4773,11 +4773,16 @@ void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRo
 }
 
 template<typename DataType>
-void Matrix<DataType>::_destroyElements(size_type startingRowNr, size_type endingRowNr, size_type nrOfColumns, size_type columnOffset)
+void Matrix<DataType>::_destroyItems(size_type startingRowNr, size_type endingRowNr, size_type nrOfItemsToDestroyPerRow, size_type columnOffset)
 {
-    for (size_type rowNr{startingRowNr}; rowNr < endingRowNr; ++rowNr)
+    const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
+    const size_type c_EndingRowNr{std::clamp(endingRowNr, c_StartingRowNr, m_NrOfRows)};
+    const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
+    const size_type c_NrOfItemsToDestroyPerRow{std::clamp(nrOfItemsToDestroyPerRow, 0, m_NrOfColumns - c_ColumnOffset)};
+
+    for (size_type rowNr{c_StartingRowNr}; rowNr < c_EndingRowNr; ++rowNr)
     {
-        std::destroy_n(m_pBaseArrayPtr[rowNr] + columnOffset, nrOfColumns);
+        std::destroy_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfItemsToDestroyPerRow);
     }
 }
 
