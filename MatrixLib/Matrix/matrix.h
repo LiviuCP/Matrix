@@ -400,6 +400,7 @@ public:
     ConstZIterator end() const;
 
 private:
+    std::pair<size_type, size_type> _resizeWithUninitializedNewElements(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity, size_type columnCapacity);
     void _insertUninitializedRow(size_type rowNr);
 
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
@@ -3482,7 +3483,6 @@ void Matrix<DataType>::clear()
     _deallocMemory();
 }
 
-// TODO: refactor together with the other resize() method
 template<typename DataType>
 void Matrix<DataType>::resize(Matrix<DataType>::size_type nrOfRows,
                               Matrix<DataType>::size_type nrOfColumns,
@@ -3491,58 +3491,24 @@ void Matrix<DataType>::resize(Matrix<DataType>::size_type nrOfRows,
 {
     CHECK_ERROR_CONDITION(nrOfRows <= 0 || nrOfColumns <= 0, Matr::errorMessages[Matr::Errors::NULL_OR_NEG_DIMENSION]);
 
-    const size_type c_NewRowCapacity{rowCapacity > nrOfRows ? rowCapacity : nrOfRows};
-    const size_type c_NewColumnCapacity{columnCapacity > nrOfColumns ? columnCapacity : nrOfColumns};
-    size_type c_NrOfRowsToKeep{nrOfRows > m_NrOfRows ? m_NrOfRows : nrOfRows};
-    size_type c_NrOfColumnsToKeep{nrOfColumns > m_NrOfColumns ? m_NrOfColumns : nrOfColumns};
+    const std::pair<size_type, size_type> c_RemainingElements{_resizeWithUninitializedNewElements(nrOfRows, nrOfColumns, rowCapacity, columnCapacity)};
 
-    if (c_NewRowCapacity != m_RowCapacity || c_NewColumnCapacity != m_ColumnCapacity)
+    // initialize new elements to the right side of the retained ones
+    if (m_NrOfColumns > c_RemainingElements.second)
     {
-
-        Matrix<DataType> matrix{std::move(*this)};
-        _deallocMemory(); // actually not required, just for safety purposes
-        _allocMemory(nrOfRows, nrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
-
-        for(size_type rowNr{0}; rowNr < c_NrOfRowsToKeep; ++rowNr)
+        for(size_type rowNr{0}; rowNr < c_RemainingElements.first; ++rowNr)
         {
-            DataType* const pFirstNewElement{std::uninitialized_copy_n(matrix.m_pBaseArrayPtr[rowNr], c_NrOfColumnsToKeep, m_pBaseArrayPtr[rowNr])};
-            std::uninitialized_default_construct_n(pFirstNewElement, m_NrOfColumns - c_NrOfColumnsToKeep);
+            std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + c_RemainingElements.second, m_NrOfColumns - c_RemainingElements.second);
         }
+    }
 
-        for(size_type rowNr{c_NrOfRowsToKeep}; rowNr < m_NrOfRows; ++rowNr)
+    // same for the ones below
+    if (m_NrOfRows > c_RemainingElements.first)
+    {
+        for(size_type rowNr{c_RemainingElements.first}; rowNr < nrOfRows; ++rowNr)
         {
             std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr], m_NrOfColumns);
         }
-    }
-    else
-    {
-        if (nrOfColumns > m_NrOfColumns)
-        {
-            for(size_type rowNr{0}; rowNr < c_NrOfRowsToKeep; ++rowNr)
-            {
-
-                std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + c_NrOfColumnsToKeep, nrOfColumns - c_NrOfColumnsToKeep);
-            }
-        }
-        else
-        {
-            _destroyItems(0, c_NrOfRowsToKeep, m_NrOfColumns - nrOfColumns, c_NrOfColumnsToKeep);
-        }
-
-        if (nrOfRows > m_NrOfRows)
-        {
-            for(size_type rowNr{c_NrOfRowsToKeep}; rowNr < nrOfRows; ++rowNr)
-            {
-                std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr], nrOfColumns);
-            }
-        }
-        else
-        {
-            _destroyItems(c_NrOfRowsToKeep, m_NrOfRows, m_NrOfColumns);
-        }
-
-        m_NrOfRows = nrOfRows;
-        m_NrOfColumns = nrOfColumns;
     }
 }
 
@@ -3555,57 +3521,24 @@ void Matrix<DataType>::resizeWithValue(Matrix<DataType>::size_type nrOfRows,
 {
     CHECK_ERROR_CONDITION(nrOfRows <= 0 || nrOfColumns <= 0, Matr::errorMessages[Matr::Errors::NULL_OR_NEG_DIMENSION]);
 
-    const size_type c_NewRowCapacity{rowCapacity > nrOfRows ? rowCapacity : nrOfRows};
-    const size_type c_NewColumnCapacity{columnCapacity > nrOfColumns ? columnCapacity : nrOfColumns};
-    const size_type c_NrOfRowsToKeep{nrOfRows > m_NrOfRows ? m_NrOfRows : nrOfRows};
-    const size_type c_NrOfColumnsToKeep{nrOfColumns > m_NrOfColumns ? m_NrOfColumns : nrOfColumns};
+    const std::pair<size_type, size_type> c_RemainingElementsData{_resizeWithUninitializedNewElements(nrOfRows, nrOfColumns, rowCapacity, columnCapacity)};
 
-    if (c_NewRowCapacity != m_RowCapacity || c_NewColumnCapacity != m_ColumnCapacity)
+    // initialize new elements to the right side of the retained ones
+    if (m_NrOfColumns > c_RemainingElementsData.second)
     {
-        Matrix<DataType> matrix{std::move(*this)};
-        _deallocMemory(); // actually not required, just for safety purposes
-        _allocMemory(nrOfRows, nrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
-
-        for(size_type rowNr{0}; rowNr<c_NrOfRowsToKeep; ++rowNr)
+        for(size_type rowNr{0}; rowNr < c_RemainingElementsData.first; ++rowNr)
         {
-            DataType* const pFirstNewElement{std::uninitialized_copy_n(matrix.m_pBaseArrayPtr[rowNr], c_NrOfColumnsToKeep, m_pBaseArrayPtr[rowNr])};
-            std::uninitialized_fill_n(pFirstNewElement, m_NrOfColumns - c_NrOfColumnsToKeep, value);
-        }
-
-        for(size_type row{c_NrOfRowsToKeep}; row < m_NrOfRows; ++row)
-        {
-            std::uninitialized_fill_n(m_pBaseArrayPtr[row], m_NrOfColumns, value);
+            std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + c_RemainingElementsData.second, m_NrOfColumns - c_RemainingElementsData.second, value);
         }
     }
-    else
+
+    // same for the ones below
+    if (m_NrOfRows > c_RemainingElementsData.first)
     {
-        if (nrOfColumns > m_NrOfColumns)
+        for(size_type rowNr{c_RemainingElementsData.first}; rowNr < nrOfRows; ++rowNr)
         {
-            for(size_type rowNr{0}; rowNr < c_NrOfRowsToKeep; ++rowNr)
-            {
-
-                std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + c_NrOfColumnsToKeep, nrOfColumns - c_NrOfColumnsToKeep, value);
-            }
+            std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr], m_NrOfColumns, value);
         }
-        else
-        {
-            _destroyItems(0, c_NrOfRowsToKeep, m_NrOfColumns - nrOfColumns, c_NrOfColumnsToKeep);
-        }
-
-        if (nrOfRows > m_NrOfRows)
-        {
-            for(size_type rowNr{c_NrOfRowsToKeep}; rowNr < nrOfRows; ++rowNr)
-            {
-                std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr], nrOfColumns, value);
-            }
-        }
-        else
-        {
-            _destroyItems(c_NrOfRowsToKeep, m_NrOfRows, m_NrOfColumns);
-        }
-
-        m_NrOfRows = nrOfRows;
-        m_NrOfColumns = nrOfColumns;
     }
 }
 
@@ -4669,6 +4602,52 @@ template<typename DataType>
 typename Matrix<DataType>::ConstZIterator Matrix<DataType>::end() const
 {
     return constZEnd();
+}
+
+template <typename DataType>
+std::pair<typename Matrix<DataType>::size_type,
+          typename Matrix<DataType>::size_type> Matrix<DataType>::_resizeWithUninitializedNewElements(Matrix<DataType>::size_type nrOfRows,
+                                                                                                      Matrix<DataType>::size_type nrOfColumns,
+                                                                                                      Matrix<DataType>::size_type rowCapacity,
+                                                                                                      Matrix<DataType>::size_type columnCapacity)
+{
+    const size_type c_NewRowCapacity{rowCapacity > nrOfRows ? rowCapacity : nrOfRows};
+    const size_type c_NewColumnCapacity{columnCapacity > nrOfColumns ? columnCapacity : nrOfColumns};
+    const size_type c_NrOfRowsToKeep{nrOfRows > m_NrOfRows ? m_NrOfRows : nrOfRows};
+    const size_type c_NrOfColumnsToKeep{nrOfColumns > m_NrOfColumns ? m_NrOfColumns : nrOfColumns};
+
+    if (c_NewRowCapacity != m_RowCapacity || c_NewColumnCapacity != m_ColumnCapacity)
+    {
+
+        Matrix<DataType> matrix{std::move(*this)};
+        _deallocMemory(); // actually not required, just for safety purposes
+        _allocMemory(nrOfRows, nrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
+
+        // copy the retained items back
+        for(size_type rowNr{0}; rowNr < c_NrOfRowsToKeep; ++rowNr)
+        {
+            std::uninitialized_copy_n(matrix.m_pBaseArrayPtr[rowNr], c_NrOfColumnsToKeep, m_pBaseArrayPtr[rowNr]);
+        }
+    }
+    else
+    {
+        // ensure the items from the right side of the retained items get properly destroyed
+        if (nrOfColumns < m_NrOfColumns)
+        {
+            _destroyItems(0, c_NrOfRowsToKeep, m_NrOfColumns - nrOfColumns, c_NrOfColumnsToKeep);
+        }
+
+        // same for the items below
+        if (nrOfRows < m_NrOfRows)
+        {
+            _destroyItems(c_NrOfRowsToKeep, m_NrOfRows, m_NrOfColumns);
+        }
+
+        m_NrOfRows = nrOfRows;
+        m_NrOfColumns = nrOfColumns;
+    }
+
+    return {c_NrOfRowsToKeep, c_NrOfColumnsToKeep};
 }
 
 template<typename DataType>
