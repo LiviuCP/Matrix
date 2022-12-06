@@ -4784,14 +4784,17 @@ void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRo
 template<typename DataType>
 void Matrix<DataType>::_destroyItems(size_type startingRowNr, size_type endingRowNr, size_type nrOfItemsToDestroyPerRow, size_type columnOffset)
 {
-    const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
-    const size_type c_EndingRowNr{std::clamp(endingRowNr, c_StartingRowNr, m_NrOfRows)};
-    const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
-    const size_type c_NrOfItemsToDestroyPerRow{std::clamp(nrOfItemsToDestroyPerRow, 0, m_NrOfColumns - c_ColumnOffset)};
-
-    for (size_type rowNr{c_StartingRowNr}; rowNr < c_EndingRowNr; ++rowNr)
+    if (m_NrOfRows > 0 && m_NrOfColumns > 0)
     {
-        std::destroy_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfItemsToDestroyPerRow);
+        const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
+        const size_type c_EndingRowNr{std::clamp(endingRowNr, c_StartingRowNr, m_NrOfRows)};
+        const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
+        const size_type c_NrOfItemsToDestroyPerRow{std::clamp(nrOfItemsToDestroyPerRow, 0, m_NrOfColumns - c_ColumnOffset)};
+
+        for (size_type rowNr{c_StartingRowNr}; rowNr < c_EndingRowNr; ++rowNr)
+        {
+            std::destroy_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfItemsToDestroyPerRow);
+        }
     }
 }
 
