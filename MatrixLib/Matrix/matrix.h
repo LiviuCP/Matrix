@@ -403,6 +403,12 @@ private:
     std::pair<size_type, size_type> _resizeWithUninitializedNewElements(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity, size_type columnCapacity);
     void _insertUninitializedRow(size_type rowNr);
 
+    // inserts the uninitialized column either in the required position or in the last position (depending on available column capacity)
+    size_type _insertUninitializedColumn(size_type columnNr);
+
+    // places the last column into the new position by performing a left rotation
+    void _rotateLastColumn(size_type newColumnNr);
+
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
     void _allocMemory(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity = 0, size_type columnCapacity = 0);
 
@@ -3572,7 +3578,6 @@ void Matrix<DataType>::insertRow(Matrix<DataType>::size_type rowNr, const DataTy
     std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr], m_NrOfColumns, value);
 }
 
-// TODO: refactor together with the other insertColumn() method
 template <typename DataType>
 void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr)
 {
@@ -3580,29 +3585,17 @@ void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr)
     CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr > m_NrOfColumns, Matr::errorMessages[Matr::Errors::INSERT_COLUMN_NONCONTIGUOUS]);
 
-    if (m_NrOfColumns == m_ColumnCapacity)
-    {
-        Matrix<DataType> matrix{};
-        std::swap(*this, matrix);
-        _deallocMemory(); // not quite necessary, just for safety/consistency purposes
-        _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns + 1, matrix.m_RowCapacity, 2 * matrix.m_NrOfColumns);
+    const size_type c_UninitializedColumnNr{_insertUninitializedColumn(columnNr)};
 
-        for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-        {
-            std::uninitialized_copy(matrix.m_pBaseArrayPtr[rowNr], matrix.m_pBaseArrayPtr[rowNr] + columnNr, m_pBaseArrayPtr[rowNr]);
-            std::uninitialized_default_construct(m_pBaseArrayPtr[rowNr] + columnNr, m_pBaseArrayPtr[rowNr] + columnNr + 1);
-            std::uninitialized_copy(matrix.m_pBaseArrayPtr[rowNr] + columnNr, matrix.m_pBaseArrayPtr[rowNr] + matrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr] + columnNr + 1);
-        }
+    for(size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
+    {
+        std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + c_UninitializedColumnNr, 1);
     }
-    else
-    {
-        ++m_NrOfColumns;
 
-        for(size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-        {
-            std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + m_NrOfColumns - 1, 1);
-            std::rotate(m_pBaseArrayPtr[rowNr] + columnNr, m_pBaseArrayPtr[rowNr] + m_NrOfColumns - 1, m_pBaseArrayPtr[rowNr] + m_NrOfColumns);
-        }
+    if (c_UninitializedColumnNr != columnNr)
+    {
+        assert(c_UninitializedColumnNr == m_NrOfColumns - 1);
+        _rotateLastColumn(columnNr);
     }
 }
 
@@ -3613,29 +3606,17 @@ void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr, const 
     CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr > m_NrOfColumns, Matr::errorMessages[Matr::Errors::INSERT_COLUMN_NONCONTIGUOUS]);
 
-    if (m_NrOfColumns == m_ColumnCapacity)
-    {
-        Matrix<DataType> matrix{};
-        std::swap(*this, matrix);
-        _deallocMemory(); // not quite necessary, just for safety/consistency purposes
-        _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns + 1, matrix.m_RowCapacity, 2 * matrix.m_NrOfColumns);
+    const size_type c_UninitializedColumnNr{_insertUninitializedColumn(columnNr)};
 
-        for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-        {
-            std::uninitialized_copy(matrix.m_pBaseArrayPtr[rowNr], matrix.m_pBaseArrayPtr[rowNr] + columnNr, m_pBaseArrayPtr[rowNr]);
-            std::uninitialized_fill(m_pBaseArrayPtr[rowNr] + columnNr, m_pBaseArrayPtr[rowNr] + columnNr + 1, value);
-            std::uninitialized_copy(matrix.m_pBaseArrayPtr[rowNr] + columnNr, matrix.m_pBaseArrayPtr[rowNr] + matrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr] + columnNr + 1);
-        }
+    for(size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
+    {
+        std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + c_UninitializedColumnNr, 1, value);
     }
-    else
-    {
-        ++m_NrOfColumns;
 
-        for(size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-        {
-            std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + m_NrOfColumns - 1, 1, value);
-            std::rotate(m_pBaseArrayPtr[rowNr] + columnNr, m_pBaseArrayPtr[rowNr] + m_NrOfColumns - 1, m_pBaseArrayPtr[rowNr] + m_NrOfColumns);
-        }
+    if (c_UninitializedColumnNr != columnNr)
+    {
+        assert(c_UninitializedColumnNr == m_NrOfColumns - 1);
+        _rotateLastColumn(columnNr);
     }
 }
 
@@ -4675,6 +4656,49 @@ void Matrix<DataType>::_insertUninitializedRow(size_type rowNr)
 
     m_pBaseArrayPtr[rowNr] = pInsertedRow;
     pInsertedRow = nullptr;
+}
+
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::_insertUninitializedColumn(size_type columnNr)
+{
+    size_type uninitializedColumnNr{columnNr};
+
+    if (m_NrOfColumns == m_ColumnCapacity)
+    {
+        Matrix<DataType> matrix{std::move(*this)};
+
+        _deallocMemory(); // not quite necessary, just for safety/consistency purposes
+        _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns + 1, matrix.m_RowCapacity, 2 * matrix.m_NrOfColumns);
+
+        // copy everything back to the left/right of the inserted column (this one stays uninitialized - will be initialized in a separate step)
+        for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
+        {
+            std::uninitialized_copy(matrix.m_pBaseArrayPtr[rowNr], matrix.m_pBaseArrayPtr[rowNr] + columnNr, m_pBaseArrayPtr[rowNr]);
+            std::uninitialized_copy(matrix.m_pBaseArrayPtr[rowNr] + columnNr, matrix.m_pBaseArrayPtr[rowNr] + matrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr] + columnNr + 1);
+        }
+    }
+    else
+    {
+        uninitializedColumnNr = m_NrOfColumns;
+        ++m_NrOfColumns;
+    }
+
+    return uninitializedColumnNr;
+}
+
+template<typename DataType>
+void Matrix<DataType>::_rotateLastColumn(Matrix<DataType>::size_type newColumnNr)
+{
+    if (m_NrOfColumns > 0)
+    {
+        const size_type c_LastColumnNr{m_NrOfColumns - 1};
+        const size_type c_NewColumnNr{std::clamp(newColumnNr, 0, c_LastColumnNr)};
+
+        for(size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
+        {
+            std::rotate(m_pBaseArrayPtr[rowNr] + c_NewColumnNr, m_pBaseArrayPtr[rowNr] + c_LastColumnNr, m_pBaseArrayPtr[rowNr] + m_NrOfColumns);
+        }
+    }
 }
 
 template<typename DataType>
