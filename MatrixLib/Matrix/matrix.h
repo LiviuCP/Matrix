@@ -3567,14 +3567,24 @@ void Matrix<DataType>::shrinkToFit()
 template <typename DataType>
 void Matrix<DataType>::insertRow(Matrix<DataType>::size_type rowNr)
 {
+    CHECK_ERROR_CONDITION(0 == m_NrOfRows, Matr::errorMessages[Matr::Errors::EMPTY_MATRIX]);
+    CHECK_ERROR_CONDITION(rowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
+    CHECK_ERROR_CONDITION(rowNr > m_NrOfRows, Matr::errorMessages[Matr::Errors::INSERT_ROW_NONCONTIGUOUS]);
+
     _insertUninitializedRow(rowNr);
+
     std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr], m_NrOfColumns);
 }
 
 template<typename DataType>
 void Matrix<DataType>::insertRow(Matrix<DataType>::size_type rowNr, const DataType& value)
 {
+    CHECK_ERROR_CONDITION(0 == m_NrOfRows, Matr::errorMessages[Matr::Errors::EMPTY_MATRIX]);
+    CHECK_ERROR_CONDITION(rowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
+    CHECK_ERROR_CONDITION(rowNr > m_NrOfRows, Matr::errorMessages[Matr::Errors::INSERT_ROW_NONCONTIGUOUS]);
+
     _insertUninitializedRow(rowNr);
+
     std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr], m_NrOfColumns, value);
 }
 
@@ -4634,10 +4644,6 @@ std::pair<typename Matrix<DataType>::size_type,
 template<typename DataType>
 void Matrix<DataType>::_insertUninitializedRow(size_type rowNr)
 {
-    CHECK_ERROR_CONDITION(0 == m_NrOfRows, Matr::errorMessages[Matr::Errors::EMPTY_MATRIX]);
-    CHECK_ERROR_CONDITION(rowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
-    CHECK_ERROR_CONDITION(rowNr > m_NrOfRows, Matr::errorMessages[Matr::Errors::INSERT_ROW_NONCONTIGUOUS]);
-
     // double row capacity if no spare capacity left (to defer any re-size when inserting further rows)
     if (m_NrOfRows == m_RowCapacity)
     {
