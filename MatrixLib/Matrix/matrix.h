@@ -271,9 +271,16 @@ public:
     void eraseRow(size_type rowNr);
     void eraseColumn(size_type columnNr);
 
+    // vertical concatenation (cumulated rows)
     void catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
+
+    // horizontal concatenation (cumulated columns)
     void catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
+
+    // vertical splitting
     void splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, size_type splitRowNr);
+
+    // horizontal splitting
     void splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, size_type splitColumnNr);
 
     void swapItems(size_type rowNr, size_type columnNr, Matrix<DataType>& matrix, size_type matrixRowNr, size_type matrixColumnNr);
@@ -3696,19 +3703,6 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix,
 {
     CHECK_ERROR_CONDITION(firstSrcMatrix.m_NrOfColumns != secondSrcMatrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
 
-    auto concatenate = [this](Matrix& firstSrcMatrix, Matrix& secondSrcMatrix)
-    {
-        for (size_type rowNr{0}; rowNr < firstSrcMatrix.m_NrOfRows; ++rowNr)
-        {
-            std::uninitialized_copy_n(firstSrcMatrix.m_pBaseArrayPtr[rowNr], m_NrOfColumns, m_pBaseArrayPtr[rowNr]);
-        }
-
-        for (size_type rowNr{firstSrcMatrix.m_NrOfRows}; rowNr < m_NrOfRows; ++rowNr)
-        {
-            std::uninitialized_copy_n(secondSrcMatrix.m_pBaseArrayPtr[rowNr - firstSrcMatrix.m_NrOfRows], m_NrOfColumns, m_pBaseArrayPtr[rowNr]);
-        }
-    };
-
     const size_type c_NewNrOfRows{firstSrcMatrix.m_NrOfRows + secondSrcMatrix.m_NrOfRows};
     const size_type c_NewNrOfColumns{firstSrcMatrix.m_NrOfColumns};
     const size_type c_NewRowCapacity{c_NewNrOfRows + c_NewNrOfRows / 4};
@@ -3724,7 +3718,18 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix,
     _deallocMemory();
     _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
 
-    concatenate(&firstSrcMatrix == this ? matrix : firstSrcMatrix, &secondSrcMatrix == this ? matrix : secondSrcMatrix);
+    const Matrix<DataType>& firstConcatenatedMatrix{&firstSrcMatrix == this ? matrix : firstSrcMatrix};
+    const Matrix<DataType>& secondConcatenatedMatrix{&secondSrcMatrix == this ? matrix : secondSrcMatrix};
+
+    for (size_type rowNr{0}; rowNr < firstConcatenatedMatrix.m_NrOfRows; ++rowNr)
+    {
+        std::uninitialized_copy_n(firstConcatenatedMatrix.m_pBaseArrayPtr[rowNr], m_NrOfColumns, m_pBaseArrayPtr[rowNr]);
+    }
+
+    for (size_type rowNr{firstConcatenatedMatrix.m_NrOfRows}; rowNr < m_NrOfRows; ++rowNr)
+    {
+        std::uninitialized_copy_n(secondConcatenatedMatrix.m_pBaseArrayPtr[rowNr - firstConcatenatedMatrix.m_NrOfRows], m_NrOfColumns, m_pBaseArrayPtr[rowNr]);
+    }
 }
 
 template<typename DataType>
@@ -3732,15 +3737,6 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix,
                                    Matrix<DataType>& secondSrcMatrix)
 {
     CHECK_ERROR_CONDITION(firstSrcMatrix.m_NrOfRows != secondSrcMatrix.m_NrOfRows, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_COLUMN_LENGTH]);
-
-    auto concatenate = [this](Matrix& firstSrcMatrix, Matrix& secondSrcMatrix)
-    {
-        for(size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-        {
-            std::uninitialized_copy_n(firstSrcMatrix.m_pBaseArrayPtr[rowNr], firstSrcMatrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr]);
-            std::uninitialized_copy_n(secondSrcMatrix.m_pBaseArrayPtr[rowNr], secondSrcMatrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr] + firstSrcMatrix.m_NrOfColumns);
-        }
-    };
 
     const size_type c_NewNrOfRows{firstSrcMatrix.m_NrOfRows};
     const size_type c_NewNrOfColumns{firstSrcMatrix.m_NrOfColumns + secondSrcMatrix.m_NrOfColumns};
@@ -3757,7 +3753,14 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix,
     _deallocMemory();
     _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
 
-    concatenate(&firstSrcMatrix == this ? matrix : firstSrcMatrix, &secondSrcMatrix == this ? matrix : secondSrcMatrix);
+    const Matrix<DataType>& firstConcatenatedMatrix{&firstSrcMatrix == this ? matrix : firstSrcMatrix};
+    const Matrix<DataType>& secondConcatenatedMatrix{&secondSrcMatrix == this ? matrix : secondSrcMatrix};
+
+    for(size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
+    {
+        std::uninitialized_copy_n(firstConcatenatedMatrix.m_pBaseArrayPtr[rowNr], firstConcatenatedMatrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr]);
+        std::uninitialized_copy_n(secondConcatenatedMatrix.m_pBaseArrayPtr[rowNr], secondConcatenatedMatrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr] + firstConcatenatedMatrix.m_NrOfColumns);
+    }
 }
 
 template<typename DataType>
