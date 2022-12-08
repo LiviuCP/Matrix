@@ -3664,12 +3664,8 @@ void Matrix<DataType>::eraseColumn(Matrix<DataType>::size_type columnNr)
         std::swap(*this, matrix);
         _deallocMemory();
         _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns - 1, matrix.m_RowCapacity, (matrix.m_NrOfColumns - 1) * 2);
-
-        for(size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-        {
-            std::uninitialized_copy(matrix.m_pBaseArrayPtr[rowNr], matrix.m_pBaseArrayPtr[rowNr] + columnNr, m_pBaseArrayPtr[rowNr]);
-            std::uninitialized_copy(matrix.m_pBaseArrayPtr[rowNr] + columnNr + 1, matrix.m_pBaseArrayPtr[rowNr] + matrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr] + columnNr);
-        }
+        _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, columnNr);
+        _copyInitItems(matrix, 0, columnNr + 1, 0, columnNr, m_NrOfRows, m_NrOfColumns - columnNr);
     }
     else
     {
