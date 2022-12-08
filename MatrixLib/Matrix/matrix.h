@@ -3258,11 +3258,7 @@ Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
     const size_type c_ColumnCapacityToAlloc{matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4};
 
     _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
-
-    for (size_type row{0}; row<m_NrOfRows; ++row)
-    {
-        std::uninitialized_copy_n(matrix.m_pBaseArrayPtr[row], m_NrOfColumns, m_pBaseArrayPtr[row]);
-    }
+    _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, m_NrOfColumns);
 }
 
 template<typename DataType>
@@ -3338,11 +3334,6 @@ Matrix<DataType>& Matrix<DataType>::operator=(const Matrix<DataType>& matrix)
         {
             _deallocMemory();
             _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
-
-            for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-            {
-                std::uninitialized_copy_n(matrix.m_pBaseArrayPtr[rowNr], matrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr]);
-            }
         }
         else
         {
@@ -3353,12 +3344,9 @@ Matrix<DataType>& Matrix<DataType>::operator=(const Matrix<DataType>& matrix)
 
             m_NrOfRows = matrix.m_NrOfRows;
             m_NrOfColumns = matrix.m_NrOfColumns;
-
-            for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-            {
-                std::uninitialized_copy_n(matrix.m_pBaseArrayPtr[rowNr], m_NrOfColumns, m_pBaseArrayPtr[rowNr]);
-            }
         }
+
+        _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, m_NrOfColumns);
     }
 
     return *this;
