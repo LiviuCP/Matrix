@@ -4703,10 +4703,7 @@ void Matrix<DataType>::_deallocMemory()
         _destroyItems(0, m_NrOfRows, m_NrOfColumns);
 
         // cut access of row pointers to allocated memory
-        for (size_type rowNr{0}; rowNr < m_RowCapacity; ++rowNr)
-        {
-            m_pBaseArrayPtr[rowNr] = nullptr;
-        }
+        std::fill_n(m_pBaseArrayPtr, m_RowCapacity, nullptr);
 
         std::free(m_pBaseArrayPtr);
         m_pBaseArrayPtr = nullptr;
