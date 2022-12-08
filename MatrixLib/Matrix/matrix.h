@@ -425,6 +425,9 @@ private:
     // resize the matrix (no elements initialization) by ensuring the new row/column capacity is not lower than the new number of rows/columns
     void _adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns);
 
+    // initialize all or part of the elements by copying from source matrix
+    void _copyInitItems(const Matrix<DataType>& srcMatrix, size_type srcStartingRowNumber, size_type srcColumnOffset, size_type startingRowNumber, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
+
     // destroy the elements contained within interval
     void _destroyItems(size_type startingRowNr, size_type endingRowNr, size_type nrOfItemsToDestroyPerRow, size_type columnOffset = 0);
 
@@ -3775,40 +3778,32 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix,
 
     const size_type c_FirstDestMatrixNrOfRows{splitRowNr};
     const size_type c_SecondDestMatrixNrOfRows{m_NrOfRows - splitRowNr};
-    const size_type c_EachDestMatrixNrOfColumns{m_NrOfColumns};
-
-    auto copyElements = [this](Matrix& destMatrix, size_type rangeStart, size_type rangeEnd)
-    {
-        for (size_type row{rangeStart}; row<rangeEnd; ++row)
-        {
-            std::uninitialized_copy_n(m_pBaseArrayPtr[row], m_NrOfColumns, destMatrix.m_pBaseArrayPtr[row - rangeStart]);
-        }
-    };
+    const size_type c_NrOfColumns{m_NrOfColumns};
 
     if (&firstDestMatrix == this && (&secondDestMatrix != this))
     {
-        secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_EachDestMatrixNrOfColumns);
-        copyElements(secondDestMatrix, splitRowNr, m_NrOfRows);
+        secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_NrOfColumns);
+        secondDestMatrix._copyInitItems(*this, splitRowNr, 0, 0, 0, m_NrOfRows - splitRowNr, m_NrOfColumns);
         firstDestMatrix.m_NrOfRows = c_FirstDestMatrixNrOfRows;
     }
     else if (&firstDestMatrix != this && (&secondDestMatrix == this))
     {
-        firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_EachDestMatrixNrOfColumns);
-        copyElements(firstDestMatrix, 0, splitRowNr);
+        firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_NrOfColumns);
+        firstDestMatrix._copyInitItems(*this, 0, 0, 0, 0, splitRowNr, m_NrOfColumns);
 
-        for (size_type row{0}; row < c_SecondDestMatrixNrOfRows; ++row)
+        for (size_type rowNr{0}; rowNr < c_SecondDestMatrixNrOfRows; ++rowNr)
         {
-            swapRows(row, *this, row + splitRowNr);
+            swapRows(rowNr, *this, rowNr + splitRowNr);
         }
 
         m_NrOfRows = c_SecondDestMatrixNrOfRows;
     }
     else
     {
-        firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_EachDestMatrixNrOfColumns);
-        secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_EachDestMatrixNrOfColumns);
-        copyElements(firstDestMatrix, 0, splitRowNr);
-        copyElements(secondDestMatrix, splitRowNr, m_NrOfRows);
+        firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_NrOfColumns);
+        firstDestMatrix._copyInitItems(*this, 0, 0, 0, 0, splitRowNr, m_NrOfColumns);
+        secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_NrOfColumns);
+        secondDestMatrix._copyInitItems(*this, splitRowNr, 0, 0, 0, m_NrOfRows - splitRowNr, m_NrOfColumns);
     }
 }
 
@@ -3822,46 +3817,38 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix,
     CHECK_ERROR_CONDITION(splitColumnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
     CHECK_ERROR_CONDITION(splitColumnNr == 0, Matr::errorMessages[Matr::Errors::RESULT_NO_COLUMNS]);
 
-    const size_type c_EachDestMatrixNrOfRows{m_NrOfRows};
+    const size_type c_NrOfRows{m_NrOfRows};
     const size_type c_FirstDestMatrixNrOfColumns{splitColumnNr};
     const size_type c_SecondDestMatrixNrOfColumns{m_NrOfColumns - splitColumnNr};
 
-    auto copyElements = [c_EachDestMatrixNrOfRows](const Matrix& srcMatrix, Matrix& destMatrix, size_type rangeStart, size_type rangeEnd, diff_type srcColumnIndexOffset, diff_type destColumnIndexOffset)
-    {
-        for (size_type rowNr{0}; rowNr<c_EachDestMatrixNrOfRows; ++rowNr)
-        {
-            std::uninitialized_copy_n(srcMatrix.m_pBaseArrayPtr[rowNr] + rangeStart + srcColumnIndexOffset, rangeEnd - rangeStart, destMatrix.m_pBaseArrayPtr[rowNr] + rangeStart - destColumnIndexOffset);
-        }
-    };
-
     if (&firstDestMatrix == this && (&secondDestMatrix != this))
     {
-        secondDestMatrix._adjustSizeAndCapacity(c_EachDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns);
-        copyElements(*this, secondDestMatrix, splitColumnNr, m_NrOfColumns, 0, splitColumnNr);
+        secondDestMatrix._adjustSizeAndCapacity(c_NrOfRows, c_SecondDestMatrixNrOfColumns);
+        secondDestMatrix._copyInitItems(*this, 0, splitColumnNr, 0, 0, c_NrOfRows, m_NrOfColumns - splitColumnNr);
 
         Matrix<DataType> matrix{std::move(*this)};
         _deallocMemory(); // actually not required, just for the good practice's sake!
-        _allocMemory(c_EachDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
+        _allocMemory(c_NrOfRows, c_FirstDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
 
-        copyElements(matrix, firstDestMatrix, 0, splitColumnNr, 0, 0);
+        firstDestMatrix._copyInitItems(matrix, 0, 0, 0, 0, c_NrOfRows, splitColumnNr);
     }
     else if (&firstDestMatrix != this && (&secondDestMatrix == this))
     {
-        firstDestMatrix._adjustSizeAndCapacity(c_EachDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns);
-        copyElements(*this, firstDestMatrix, 0, splitColumnNr, 0, 0);
+        firstDestMatrix._adjustSizeAndCapacity(c_NrOfRows, c_FirstDestMatrixNrOfColumns);
+        firstDestMatrix._copyInitItems(*this, 0, 0, 0, 0, c_NrOfRows, splitColumnNr);
 
         Matrix<DataType> matrix{std::move(*this)};
         _deallocMemory(); // actually not required, just for the good practice's sake!
-        _allocMemory(c_EachDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
+        _allocMemory(c_NrOfRows, c_SecondDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
 
-        copyElements(matrix, *this, 0, c_SecondDestMatrixNrOfColumns, splitColumnNr, 0);
+        _copyInitItems(matrix, 0, splitColumnNr, 0, 0, c_NrOfRows, c_SecondDestMatrixNrOfColumns);
     }
     else
     {
-        firstDestMatrix._adjustSizeAndCapacity(c_EachDestMatrixNrOfRows, c_FirstDestMatrixNrOfColumns);
-        secondDestMatrix._adjustSizeAndCapacity(c_EachDestMatrixNrOfRows, c_SecondDestMatrixNrOfColumns);
-        copyElements(*this, firstDestMatrix, 0, splitColumnNr, 0, 0);
-        copyElements(*this, secondDestMatrix, splitColumnNr, m_NrOfColumns, 0, splitColumnNr);
+        firstDestMatrix._adjustSizeAndCapacity(c_NrOfRows, c_FirstDestMatrixNrOfColumns);
+        firstDestMatrix._copyInitItems(*this, 0, 0, 0, 0, c_NrOfRows, splitColumnNr);
+        secondDestMatrix._adjustSizeAndCapacity(c_NrOfRows, c_SecondDestMatrixNrOfColumns);
+        secondDestMatrix._copyInitItems(*this, 0, splitColumnNr, 0, 0, c_NrOfRows, m_NrOfColumns - splitColumnNr);
     }
 }
 
@@ -4782,6 +4769,34 @@ void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRo
 
     _deallocMemory();
     _allocMemory(nrOfRows, nrOfColumns, c_OldRowCapacity < nrOfRows ? c_NewRowCapacity : c_OldRowCapacity, c_OldColumnCapacity < nrOfColumns ? c_NewColumnCapacity : c_OldColumnCapacity);
+}
+
+template<typename DataType>
+void Matrix<DataType>::_copyInitItems(const Matrix<DataType>& srcMatrix,
+                                      size_type srcStartingRowNumber,
+                                      size_type srcColumnOffset,
+                                      size_type startingRowNumber,
+                                      size_type columnOffset,
+                                      size_type nrOfRows,
+                                      size_type nrOfColumns)
+{
+    if (m_NrOfRows > 0 && m_NrOfColumns > 0 && srcMatrix.m_NrOfRows > 0 && srcMatrix.m_NrOfColumns > 0)
+    {
+        const size_type c_SrcStartingRowNumber{std::clamp(srcStartingRowNumber, 0, srcMatrix.m_NrOfRows)};
+        const size_type c_SrcColumnOffset{std::clamp(srcColumnOffset, 0, srcMatrix.m_NrOfColumns)};
+        const size_type c_StartingRowNumber{std::clamp(startingRowNumber, 0, m_NrOfRows)};
+        const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
+        const size_type c_NrOfRows{std::clamp(nrOfRows, 0, std::min(srcMatrix.m_NrOfRows - c_SrcStartingRowNumber, m_NrOfRows - c_StartingRowNumber))};
+        const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, std::min(srcMatrix.m_NrOfColumns - c_SrcColumnOffset, m_NrOfColumns - c_ColumnOffset))};
+
+        size_type currentRowNr{c_StartingRowNumber};
+
+        for (size_type rowNr{c_SrcStartingRowNumber}; rowNr != c_SrcStartingRowNumber + c_NrOfRows; ++rowNr)
+        {
+            std::uninitialized_copy_n(srcMatrix.m_pBaseArrayPtr[rowNr] + c_SrcColumnOffset, c_NrOfColumns, m_pBaseArrayPtr[currentRowNr] + c_ColumnOffset);
+            ++currentRowNr;
+        }
+    }
 }
 
 template<typename DataType>
