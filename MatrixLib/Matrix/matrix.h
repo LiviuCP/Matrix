@@ -4779,35 +4779,27 @@ void Matrix<DataType>::_destroyItems(size_type startingRowNr, size_type endingRo
 template<typename DataType>
 bool Matrix<DataType>::_isEqualTo(const Matrix<DataType>& matrix) const
 {
-    bool areEqual{false};
+    bool areEqual{true};
 
-    if (&matrix == this)
+    if (&matrix != this)
     {
-        areEqual = true;
-    }
-    else if (m_NrOfRows == matrix.m_NrOfRows && m_NrOfColumns == matrix.m_NrOfColumns)
-    {
-        //change assumption of equality to true until proving the opposite
-        areEqual = true;
-
-        bool continueChecking{true};
-
-        for (size_type row{0}; row<m_NrOfRows; ++row)
+        if (m_NrOfRows == matrix.m_NrOfRows && m_NrOfColumns == matrix.m_NrOfColumns)
         {
-            for (size_type col{0}; col<m_NrOfColumns; ++col)
+            areEqual = true;
+
+            for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
             {
-                if (m_pBaseArrayPtr[row][col] != matrix.m_pBaseArrayPtr[row][col])
+                areEqual = areEqual && std::equal(m_pBaseArrayPtr[rowNr], m_pBaseArrayPtr[rowNr] + m_NrOfColumns, matrix.m_pBaseArrayPtr[rowNr]);
+
+                if (!areEqual)
                 {
-                    continueChecking = false;
-                    areEqual = false;
                     break;
                 }
             }
-
-            if (!continueChecking)
-            {
-                break;
-            }
+        }
+        else
+        {
+            areEqual = false;
         }
     }
 
