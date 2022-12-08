@@ -4574,10 +4574,7 @@ std::pair<typename Matrix<DataType>::size_type,
         _allocMemory(nrOfRows, nrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
 
         // copy the retained items back
-        for(size_type rowNr{0}; rowNr < c_NrOfRowsToKeep; ++rowNr)
-        {
-            std::uninitialized_copy_n(matrix.m_pBaseArrayPtr[rowNr], c_NrOfColumnsToKeep, m_pBaseArrayPtr[rowNr]);
-        }
+        _copyInitItems(matrix, 0, 0, 0, 0, c_NrOfRowsToKeep, c_NrOfColumnsToKeep);
     }
     else
     {
@@ -4636,11 +4633,8 @@ typename Matrix<DataType>::size_type Matrix<DataType>::_insertUninitializedColum
         _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns + 1, matrix.m_RowCapacity, 2 * matrix.m_NrOfColumns);
 
         // copy everything back to the left/right of the inserted column (this one stays uninitialized - will be initialized in a separate step)
-        for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-        {
-            std::uninitialized_copy(matrix.m_pBaseArrayPtr[rowNr], matrix.m_pBaseArrayPtr[rowNr] + columnNr, m_pBaseArrayPtr[rowNr]);
-            std::uninitialized_copy(matrix.m_pBaseArrayPtr[rowNr] + columnNr, matrix.m_pBaseArrayPtr[rowNr] + matrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr] + columnNr + 1);
-        }
+        _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, columnNr);
+        _copyInitItems(matrix, 0, columnNr, 0, columnNr + 1, m_NrOfRows, m_NrOfColumns - columnNr);
     }
     else
     {
