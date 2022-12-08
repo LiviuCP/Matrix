@@ -252,7 +252,7 @@ public:
     size_type getRowCapacity() const;
     size_type getColumnCapacity() const;
 
-    void transpose(Matrix<DataType>& result);
+    void transpose(Matrix<DataType>& transposedMatrix);
 
     void clear();
 
@@ -3440,44 +3440,43 @@ typename Matrix<DataType>::size_type Matrix<DataType>::getColumnCapacity() const
 }
 
 template <typename DataType>
-void Matrix<DataType>::transpose(Matrix<DataType>& result)
+void Matrix<DataType>::transpose(Matrix<DataType>& transposedMatrix)
 {
-    if (0 == m_NrOfRows)
+    if (0 != m_NrOfRows)
     {
-        if (&result != this)
+        const size_type c_ResultingNrOfRows{m_NrOfColumns};
+        const size_type c_ResultingNrOfColumns{m_NrOfRows};
+
+        Matrix<DataType> helperMatrix;
+        const Matrix<DataType>& srcMatrix{&transposedMatrix != this ? *this : helperMatrix};
+
+        if (&transposedMatrix == this)
         {
-            result._deallocMemory();
+            const size_type c_NewRowCapacity{m_RowCapacity < m_NrOfColumns ?  m_NrOfColumns +  m_NrOfColumns / 4 : m_RowCapacity};
+            const size_type c_NewColumnCapacity{m_ColumnCapacity < m_NrOfRows ? m_NrOfRows + m_NrOfRows / 4 : m_ColumnCapacity};
+
+            helperMatrix = std::move(*this);
+
+            _deallocMemory(); // not actually required, just for "safety" and consistency purposes
+            _allocMemory(helperMatrix.m_NrOfColumns, helperMatrix.m_NrOfRows, c_NewRowCapacity, c_NewColumnCapacity);
         }
-    }
-    else if (&result == this)
-    {
-        const size_type c_NewRowCapacity{m_RowCapacity < m_NrOfColumns ?  m_NrOfColumns +  m_NrOfColumns / 4 : m_RowCapacity};
-        const size_type c_NewColumnCapacity{m_ColumnCapacity < m_NrOfRows ? m_NrOfRows + m_NrOfRows / 4 : m_ColumnCapacity};
-
-        Matrix<DataType> matrix{std::move(*this)};
-
-        _deallocMemory(); // not actually required, just for "safety" and consistency purposes
-        _allocMemory(matrix.m_NrOfColumns, matrix.m_NrOfRows, c_NewRowCapacity, c_NewColumnCapacity);
-
-        for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
+        else
         {
-            for (size_type columnNr{0}; columnNr < m_NrOfColumns; ++columnNr)
+            transposedMatrix._adjustSizeAndCapacity(m_NrOfColumns, m_NrOfRows);
+        }
+
+        // no use of _copyInitItems(), too much overhead
+        for (size_type rowNr{0}; rowNr < c_ResultingNrOfRows; ++rowNr)
+        {
+            for (size_type columnNr{0}; columnNr < c_ResultingNrOfColumns; ++columnNr)
             {
-                std::uninitialized_copy_n(matrix.m_pBaseArrayPtr[columnNr] + rowNr, 1, m_pBaseArrayPtr[rowNr] + columnNr);
+                std::uninitialized_copy_n(srcMatrix.m_pBaseArrayPtr[columnNr] + rowNr, 1, transposedMatrix.m_pBaseArrayPtr[rowNr] + columnNr);
             }
         }
     }
-    else
+    else if (&transposedMatrix != this)
     {
-        result._adjustSizeAndCapacity(m_NrOfColumns, m_NrOfRows);
-
-        for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-        {
-            for (size_type columnNr{0}; columnNr < m_NrOfColumns; ++columnNr)
-            {
-                std::uninitialized_copy_n(m_pBaseArrayPtr[rowNr] + columnNr, 1, result.m_pBaseArrayPtr[columnNr] + rowNr);
-            }
-        }
+        transposedMatrix._deallocMemory();
     }
 }
 
