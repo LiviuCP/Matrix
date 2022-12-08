@@ -3703,15 +3703,8 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix,
     const Matrix<DataType>& firstConcatenatedMatrix{&firstSrcMatrix == this ? matrix : firstSrcMatrix};
     const Matrix<DataType>& secondConcatenatedMatrix{&secondSrcMatrix == this ? matrix : secondSrcMatrix};
 
-    for (size_type rowNr{0}; rowNr < firstConcatenatedMatrix.m_NrOfRows; ++rowNr)
-    {
-        std::uninitialized_copy_n(firstConcatenatedMatrix.m_pBaseArrayPtr[rowNr], m_NrOfColumns, m_pBaseArrayPtr[rowNr]);
-    }
-
-    for (size_type rowNr{firstConcatenatedMatrix.m_NrOfRows}; rowNr < m_NrOfRows; ++rowNr)
-    {
-        std::uninitialized_copy_n(secondConcatenatedMatrix.m_pBaseArrayPtr[rowNr - firstConcatenatedMatrix.m_NrOfRows], m_NrOfColumns, m_pBaseArrayPtr[rowNr]);
-    }
+    _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
+    _copyInitItems(secondConcatenatedMatrix, 0, 0, firstConcatenatedMatrix.m_NrOfRows, 0, m_NrOfRows - firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
 }
 
 template<typename DataType>
@@ -3738,11 +3731,8 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix,
     const Matrix<DataType>& firstConcatenatedMatrix{&firstSrcMatrix == this ? matrix : firstSrcMatrix};
     const Matrix<DataType>& secondConcatenatedMatrix{&secondSrcMatrix == this ? matrix : secondSrcMatrix};
 
-    for(size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-    {
-        std::uninitialized_copy_n(firstConcatenatedMatrix.m_pBaseArrayPtr[rowNr], firstConcatenatedMatrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr]);
-        std::uninitialized_copy_n(secondConcatenatedMatrix.m_pBaseArrayPtr[rowNr], secondConcatenatedMatrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr] + firstConcatenatedMatrix.m_NrOfColumns);
-    }
+    _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, m_NrOfRows, firstConcatenatedMatrix.m_NrOfColumns);
+    _copyInitItems(secondConcatenatedMatrix, 0, 0, 0, firstConcatenatedMatrix.m_NrOfColumns, m_NrOfRows, secondConcatenatedMatrix.m_NrOfColumns);
 }
 
 template<typename DataType>
