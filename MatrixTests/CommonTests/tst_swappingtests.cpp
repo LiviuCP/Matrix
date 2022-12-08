@@ -1,6 +1,5 @@
 #include <QtTest>
 
-#include "matrix_template_specializations.h"
 #include "testutils.h"
 #include "tst_swappingtests.h"
 

@@ -1,6 +1,5 @@
 #include <QtTest>
 
-#include "matrix_template_specializations.h"
 #include "tst_constructionandassignmenttests.h"
 
 Q_DECLARE_METATYPE(IntMatrix)

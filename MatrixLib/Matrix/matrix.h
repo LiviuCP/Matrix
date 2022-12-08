@@ -3948,15 +3948,15 @@ Matrix<DataType>::operator bool() const
 
     if (m_pBaseArrayPtr)
     {
-        for (size_type row{0}; row < m_NrOfRows; ++row)
+        for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
         {
-            for (size_type col{0}; col < m_NrOfColumns; ++col)
+            const DataType* const pCurrentRowBegin{m_pBaseArrayPtr[rowNr]};
+            const DataType* const pCurrentRowEnd{pCurrentRowBegin + m_NrOfColumns};
+
+            if (pCurrentRowEnd != std::find_if(pCurrentRowBegin, pCurrentRowEnd, [](const DataType& value) {return DataType{} != value;}))
             {
-                if (m_pBaseArrayPtr[row][col])
-                {
-                    result = true;
-                    break;
-                }
+                result = true;
+                break;
             }
         }
     }

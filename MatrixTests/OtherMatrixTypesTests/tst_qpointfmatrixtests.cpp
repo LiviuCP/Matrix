@@ -1,7 +1,6 @@
 #include <QtTest>
 #include <QPointF>
 
-#include "matrix_template_specializations.h"
 #include "testutils.h"
 
 Q_DECLARE_METATYPE(QPointFMatrix)
