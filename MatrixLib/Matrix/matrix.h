@@ -3554,11 +3554,7 @@ void Matrix<DataType>::shrinkToFit()
         Matrix<DataType> matrix{std::move(*this)};
         _deallocMemory(); // just for safety purposes, not actually needed
         _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
-
-        for (size_type rowNr{0}; rowNr<m_NrOfRows; ++rowNr)
-        {
-            std::uninitialized_copy_n(matrix.m_pBaseArrayPtr[rowNr], matrix.m_NrOfColumns, m_pBaseArrayPtr[rowNr]);
-        }
+        _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, m_NrOfColumns);
     }
 }
 
