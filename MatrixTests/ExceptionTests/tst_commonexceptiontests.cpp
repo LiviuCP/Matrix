@@ -67,18 +67,18 @@ private:
 
 void CommonExceptionTests::testInitListConstructorExceptions()
 {
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, -2, {1, 2, 3, 4});}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, 0, {1, 2, 3, 4});}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(-2, 2, {1, 2, 3, 4});}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(-2, -2, {1, 2, 3, 4});});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(-2, 0, {1, 2, 3, 4});});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(-2, 2, {1, 2, 3, 4});});
 
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, -2, {1, 2, 3, 4});}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, 0, {1, 2, 3, 4});}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(0, 2, {1, 2, 3, 4});}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(0, -2, {1, 2, 3, 4});});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(0, 0, {1, 2, 3, 4});});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(0, 2, {1, 2, 3, 4});});
 
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 0, {1, 2, 3, 4});}, std::runtime_error);
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, -2, {1, 2, 3, 4});}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(2, 0, {1, 2, 3, 4});});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(2, -2, {1, 2, 3, 4});});
 
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(2, 3, {1, 2, 3, 4});}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(2, 3, {1, 2, 3, 4});});
 }
 
 void CommonExceptionTests::testIdenticalMatrixConstructorExceptions()
@@ -87,7 +87,7 @@ void CommonExceptionTests::testIdenticalMatrixConstructorExceptions()
     QFETCH(IntMatrixSizeType, columnsCount);
     QFETCH(int, elementValue);
 
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(rowsCount, columnsCount, elementValue);}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(rowsCount, columnsCount, elementValue);});
 }
 
 void CommonExceptionTests::testDiagMatrixConstructorExceptions()
@@ -96,7 +96,7 @@ void CommonExceptionTests::testDiagMatrixConstructorExceptions()
     QFETCH(int, nonDiagonalValue);
     QFETCH(int, diagonalValue);
 
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix(rowsColumnsCount, std::pair<int, int>{nonDiagonalValue, diagonalValue});}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(rowsColumnsCount, std::pair<int, int>{nonDiagonalValue, diagonalValue});});
 }
 
 void CommonExceptionTests::testFunctionAtExceptions()
@@ -106,10 +106,10 @@ void CommonExceptionTests::testFunctionAtExceptions()
     QFETCH(IntMatrixSizeType, columnNr);
     QFETCH(int, value);
 
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix{srcMatrix}; matrix.at(rowNr, columnNr) = value;}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix{srcMatrix}; matrix.at(rowNr, columnNr) = value;});
 
     // test for the "const" at() too
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix c_Matrix{srcMatrix}; value = c_Matrix.at(rowNr, columnNr);}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {const IntMatrix c_Matrix{srcMatrix}; value = c_Matrix.at(rowNr, columnNr);});
 
 }
 
@@ -119,10 +119,10 @@ void CommonExceptionTests::testSquareBracketsOperatorExceptions()
     QFETCH(IntMatrixSizeType, index);
     QFETCH(int, value);
 
-    QVERIFY_EXCEPTION_THROWN({IntMatrix matrix{srcMatrix}; matrix[index] = value;}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix{srcMatrix}; matrix[index] = value;});
 
     // test for the "const" square brackets operator too
-    QVERIFY_EXCEPTION_THROWN({const IntMatrix c_Matrix{srcMatrix}; value = c_Matrix[index];}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {const IntMatrix c_Matrix{srcMatrix}; value = c_Matrix[index];});
 }
 
 void CommonExceptionTests::testResizeWithoutFillingInNewValuesExceptions()
@@ -131,7 +131,7 @@ void CommonExceptionTests::testResizeWithoutFillingInNewValuesExceptions()
     QFETCH(IntMatrixSizeType, resizeRowsCount);
     QFETCH(IntMatrixSizeType, resizeColumnsCount);
 
-    QVERIFY_EXCEPTION_THROWN({matrix.resize(resizeRowsCount, resizeColumnsCount);}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.resize(resizeRowsCount, resizeColumnsCount);});
 }
 
 void CommonExceptionTests::testResizeAndFillInNewValuesExceptions()
@@ -141,7 +141,7 @@ void CommonExceptionTests::testResizeAndFillInNewValuesExceptions()
     QFETCH(IntMatrixSizeType, resizeColumnsCount);
     QFETCH(int, resizeElementValue);
 
-    QVERIFY_EXCEPTION_THROWN({matrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue);}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue);});
 }
 
 void CommonExceptionTests::testInsertRowNoSetValueExceptions()
@@ -149,7 +149,7 @@ void CommonExceptionTests::testInsertRowNoSetValueExceptions()
     QFETCH(IntMatrix, matrix);
     QFETCH(IntMatrixSizeType, insertPosition);
 
-    QVERIFY_EXCEPTION_THROWN({matrix.insertRow(insertPosition);}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.insertRow(insertPosition);});
 }
 
 void CommonExceptionTests::testInsertRowSetValueExceptions()
@@ -158,7 +158,7 @@ void CommonExceptionTests::testInsertRowSetValueExceptions()
     QFETCH(IntMatrixSizeType, insertPosition);
     QFETCH(int, insertedRowValue);
 
-    QVERIFY_EXCEPTION_THROWN({matrix.insertRow(insertPosition, insertedRowValue);}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.insertRow(insertPosition, insertedRowValue);});
 }
 
 void CommonExceptionTests::testInsertColumnNoSetValueExceptions()
@@ -166,7 +166,7 @@ void CommonExceptionTests::testInsertColumnNoSetValueExceptions()
     QFETCH(IntMatrix, matrix);
     QFETCH(IntMatrixSizeType, insertPosition);
 
-    QVERIFY_EXCEPTION_THROWN({matrix.insertColumn(insertPosition);}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.insertColumn(insertPosition);});
 }
 
 void CommonExceptionTests::testInsertColumnSetValueExceptions()
@@ -175,7 +175,7 @@ void CommonExceptionTests::testInsertColumnSetValueExceptions()
     QFETCH(IntMatrixSizeType, insertPosition);
     QFETCH(int, insertedColumnValue);
 
-    QVERIFY_EXCEPTION_THROWN({matrix.insertColumn(insertPosition, insertedColumnValue);}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.insertColumn(insertPosition, insertedColumnValue);});
 }
 
 void CommonExceptionTests::testEraseRowExceptions()
@@ -183,7 +183,7 @@ void CommonExceptionTests::testEraseRowExceptions()
     QFETCH(IntMatrix, matrix);
     QFETCH(IntMatrixSizeType, erasePosition);
 
-    QVERIFY_EXCEPTION_THROWN({matrix.eraseRow(erasePosition);}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.eraseRow(erasePosition);});
 }
 
 void CommonExceptionTests::testEraseColumnExceptions()
@@ -191,7 +191,7 @@ void CommonExceptionTests::testEraseColumnExceptions()
     QFETCH(IntMatrix, matrix);
     QFETCH(IntMatrixSizeType, erasePosition);
 
-    QVERIFY_EXCEPTION_THROWN({matrix.eraseColumn(erasePosition);}, std::runtime_error);
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.eraseColumn(erasePosition);});
 }
 
 void CommonExceptionTests::testCatByRowExceptions()
@@ -201,7 +201,8 @@ void CommonExceptionTests::testCatByRowExceptions()
     QFETCH(IntMatrix, secondSrcMatrix);
     QFETCH(ConcatMode, mode);
 
-    QVERIFY_EXCEPTION_THROWN({
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+                             {
                                  switch(mode)
                                  {
                                  case ConcatMode::ALL_DIFFERENT:
@@ -222,9 +223,7 @@ void CommonExceptionTests::testCatByRowExceptions()
                                  default:
                                      break;
                                  }
-                             },
-
-                             std::runtime_error);
+                             });
 }
 
 void CommonExceptionTests::testCatByColumnExceptions()
@@ -234,7 +233,8 @@ void CommonExceptionTests::testCatByColumnExceptions()
     QFETCH(IntMatrix, secondSrcMatrix);
     QFETCH(ConcatMode, mode);
 
-    QVERIFY_EXCEPTION_THROWN({
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+                             {
                                  switch(mode)
                                  {
                                  case ConcatMode::ALL_DIFFERENT:
@@ -255,9 +255,7 @@ void CommonExceptionTests::testCatByColumnExceptions()
                                  default:
                                      break;
                                  }
-                             },
-
-                             std::runtime_error);
+                             });
 }
 
 void CommonExceptionTests::testSplitByRowExceptions()
@@ -268,7 +266,8 @@ void CommonExceptionTests::testSplitByRowExceptions()
     QFETCH(IntMatrixSizeType, splitPosition);
     QFETCH(SplitMode, mode);
 
-    QVERIFY_EXCEPTION_THROWN({
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+                             {
                                  switch(mode)
                                  {
                                  case SplitMode::ALL_DIFFERENT:
@@ -289,9 +288,7 @@ void CommonExceptionTests::testSplitByRowExceptions()
                                  default:
                                      break;
                                  }
-                             },
-
-                             std::runtime_error);
+                             });
 }
 
 void CommonExceptionTests::testSplitByColumnExceptions()
@@ -302,7 +299,8 @@ void CommonExceptionTests::testSplitByColumnExceptions()
     QFETCH(IntMatrixSizeType, splitPosition);
     QFETCH(SplitMode, mode);
 
-    QVERIFY_EXCEPTION_THROWN({
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+                             {
                                  switch(mode)
                                  {
                                  case SplitMode::ALL_DIFFERENT:
@@ -323,9 +321,7 @@ void CommonExceptionTests::testSplitByColumnExceptions()
                                  default:
                                      break;
                                  }
-                             },
-
-                             std::runtime_error);
+                             });
 }
 
 void CommonExceptionTests::testSwapItemsExceptions()
@@ -338,7 +334,8 @@ void CommonExceptionTests::testSwapItemsExceptions()
     QFETCH(IntMatrixSizeType, secondItemColumnNr);
     QFETCH(bool, isSwapWithinMatrix);
 
-    QVERIFY_EXCEPTION_THROWN({
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+                             {
                                  if (isSwapWithinMatrix)
                                  {
                                      firstMatrix.swapItems(firstItemRowNr, firstItemColumnNr, firstMatrix, secondItemRowNr, secondItemColumnNr);
@@ -347,9 +344,7 @@ void CommonExceptionTests::testSwapItemsExceptions()
                                  {
                                      firstMatrix.swapItems(firstItemRowNr, firstItemColumnNr, secondMatrix, secondItemRowNr, secondItemColumnNr);
                                  }
-                             },
-
-                             std::runtime_error);
+                             });
 }
 
 void CommonExceptionTests::testSwapRowsOrColumnsExceptions()
@@ -366,7 +361,8 @@ void CommonExceptionTests::testSwapRowsOrColumnsExceptions()
     firstMatrix.transpose(firstMatrixTransposed);
     secondMatrix.transpose(secondMatrixTransposed);
 
-    QVERIFY_EXCEPTION_THROWN({
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+                             {
                                  if (isSwapWithinMatrix)
                                  {
                                      firstMatrix.swapRows(firstRowColumnNr, firstMatrix, secondRowColumnNr);
@@ -375,11 +371,10 @@ void CommonExceptionTests::testSwapRowsOrColumnsExceptions()
                                  {
                                      firstMatrix.swapRows(firstRowColumnNr, secondMatrix, secondRowColumnNr);
                                  }
-                             },
+                             });
 
-                             std::runtime_error);
-
-    QVERIFY_EXCEPTION_THROWN({
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+                             {
                                  if (isSwapWithinMatrix)
                                  {
                                      firstMatrixTransposed.swapColumns(firstRowColumnNr, firstMatrixTransposed, secondRowColumnNr);
@@ -388,9 +383,7 @@ void CommonExceptionTests::testSwapRowsOrColumnsExceptions()
                                  {
                                      firstMatrixTransposed.swapColumns(firstRowColumnNr, secondMatrixTransposed, secondRowColumnNr);
                                  }
-                             },
-
-                             std::runtime_error);
+                             });
 }
 
 void CommonExceptionTests::testSwapRowColumnExceptions()
@@ -401,7 +394,8 @@ void CommonExceptionTests::testSwapRowColumnExceptions()
     QFETCH(IntMatrixSizeType, columnNr);
     QFETCH(bool, isSwapWithinMatrix);
 
-    QVERIFY_EXCEPTION_THROWN({
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+                             {
                                  if (isSwapWithinMatrix)
                                  {
                                      firstMatrix.swapRowColumn(rowNr, firstMatrix, columnNr);
@@ -410,9 +404,7 @@ void CommonExceptionTests::testSwapRowColumnExceptions()
                                  {
                                      firstMatrix.swapRowColumn(rowNr, secondMatrix, columnNr);
                                  }
-                             },
-
-                             std::runtime_error);
+                             });
 }
 
 void CommonExceptionTests::testCopyExceptions()
@@ -427,7 +419,8 @@ void CommonExceptionTests::testCopyExceptions()
     QFETCH(IntMatrixSizeType, destCopyColumnNr);
     QFETCH(bool, isSameMatrix);
 
-    QVERIFY_EXCEPTION_THROWN({
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+                             {
                                  if (isSameMatrix)
                                  {
                                      destMatrix.copy(destMatrix, copiedRowsCount, copiedColumnsCount, srcCopyRowNr, srcCopyColumnNr, destCopyRowNr, destCopyColumnNr);
@@ -436,9 +429,7 @@ void CommonExceptionTests::testCopyExceptions()
                                  {
                                      destMatrix.copy(srcMatrix, copiedRowsCount, copiedColumnsCount, srcCopyRowNr, srcCopyColumnNr, destCopyRowNr, destCopyColumnNr);
                                  }
-                             },
-
-                             std::runtime_error);
+                             });
 }
 
 void CommonExceptionTests::testIdenticalMatrixConstructorExceptions_data()
