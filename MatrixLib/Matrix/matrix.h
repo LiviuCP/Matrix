@@ -428,6 +428,9 @@ private:
     // initialize all or part of the elements by copying from source matrix
     void _copyInitItems(const Matrix<DataType>& srcMatrix, size_type srcStartingRowNumber, size_type srcColumnOffset, size_type startingRowNumber, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
 
+    // initialize all or part of the elements by filling in the same value
+    void _fillInitItems(size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns, const DataType& value);
+
     // destroy the elements contained within interval
     void _destroyItems(size_type startingRowNr, size_type endingRowNr, size_type nrOfItemsToDestroyPerRow, size_type columnOffset = 0);
 
@@ -3222,11 +3225,7 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
     const size_type c_ColumnCapacityToAlloc{nrOfColumns + nrOfColumns / 4};
 
     _allocMemory(nrOfRows, nrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
-
-    for (size_type rowNr{0}; rowNr < nrOfRows; ++rowNr)
-    {
-        std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr], nrOfColumns, value);
-    }
+    _fillInitItems(0, 0, nrOfRows, nrOfColumns, value);
 }
 
 template <typename DataType>
@@ -4756,6 +4755,20 @@ void Matrix<DataType>::_copyInitItems(const Matrix<DataType>& srcMatrix,
             std::uninitialized_copy_n(srcMatrix.m_pBaseArrayPtr[rowNr] + c_SrcColumnOffset, c_NrOfColumns, m_pBaseArrayPtr[currentRowNr] + c_ColumnOffset);
             ++currentRowNr;
         }
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::_fillInitItems(size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns, const DataType& value)
+{
+    const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
+    const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
+    const size_type c_NrOfRows{std::clamp(nrOfRows, 0, m_NrOfRows - c_StartingRowNr)};
+    const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, m_NrOfColumns - c_ColumnOffset)};
+
+    for (size_type rowNr{c_StartingRowNr}; rowNr != c_StartingRowNr + c_NrOfRows; ++rowNr)
+    {
+        std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfColumns, value);
     }
 }
 
