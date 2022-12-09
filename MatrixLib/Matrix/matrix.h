@@ -3528,19 +3528,13 @@ void Matrix<DataType>::resizeWithValue(Matrix<DataType>::size_type nrOfRows,
     // initialize new elements to the right side of the retained ones
     if (m_NrOfColumns > c_RemainingElementsData.second)
     {
-        for(size_type rowNr{0}; rowNr < c_RemainingElementsData.first; ++rowNr)
-        {
-            std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + c_RemainingElementsData.second, m_NrOfColumns - c_RemainingElementsData.second, value);
-        }
+        _fillInitItems(0, c_RemainingElementsData.second, c_RemainingElementsData.first, m_NrOfColumns - c_RemainingElementsData.second, value);
     }
 
     // same for the ones below
     if (m_NrOfRows > c_RemainingElementsData.first)
     {
-        for(size_type rowNr{c_RemainingElementsData.first}; rowNr < nrOfRows; ++rowNr)
-        {
-            std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr], m_NrOfColumns, value);
-        }
+        _fillInitItems(c_RemainingElementsData.first, 0, nrOfRows - c_RemainingElementsData.first, m_NrOfColumns, value);
     }
 }
 
