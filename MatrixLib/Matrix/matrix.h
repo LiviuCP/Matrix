@@ -431,6 +431,9 @@ private:
     // initialize all or part of the elements by filling in the same value
     void _fillInitItems(size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns, const DataType& value);
 
+    // initialize all or part of the elements with default constructor
+    void _defaultConstructInitItems(size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
+
     // destroy the elements contained within interval
     void _destroyItems(size_type startingRowNr, size_type endingRowNr, size_type nrOfItemsToDestroyPerRow, size_type columnOffset = 0);
 
@@ -3498,19 +3501,13 @@ void Matrix<DataType>::resize(Matrix<DataType>::size_type nrOfRows,
     // initialize new elements to the right side of the retained ones
     if (m_NrOfColumns > c_RemainingElements.second)
     {
-        for(size_type rowNr{0}; rowNr < c_RemainingElements.first; ++rowNr)
-        {
-            std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + c_RemainingElements.second, m_NrOfColumns - c_RemainingElements.second);
-        }
+        _defaultConstructInitItems(0, c_RemainingElements.second, c_RemainingElements.first, m_NrOfColumns - c_RemainingElements.second);
     }
 
     // same for the ones below
     if (m_NrOfRows > c_RemainingElements.first)
     {
-        for(size_type rowNr{c_RemainingElements.first}; rowNr < nrOfRows; ++rowNr)
-        {
-            std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr], m_NrOfColumns);
-        }
+        _defaultConstructInitItems(c_RemainingElements.first, 0, nrOfRows - c_RemainingElements.first, m_NrOfColumns);
     }
 }
 
@@ -4765,6 +4762,23 @@ void Matrix<DataType>::_fillInitItems(Matrix<DataType>::size_type startingRowNr,
     for (size_type rowNr{c_StartingRowNr}; rowNr != c_StartingRowNr + c_NrOfRows; ++rowNr)
     {
         std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfColumns, value);
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::_defaultConstructInitItems(Matrix<DataType>::size_type startingRowNr,
+                                                  Matrix<DataType>::size_type columnOffset,
+                                                  Matrix<DataType>::size_type nrOfRows,
+                                                  Matrix<DataType>::size_type nrOfColumns)
+{
+    const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
+    const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
+    const size_type c_NrOfRows{std::clamp(nrOfRows, 0, m_NrOfRows - c_StartingRowNr)};
+    const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, m_NrOfColumns - c_ColumnOffset)};
+
+    for (size_type rowNr{c_StartingRowNr}; rowNr != c_StartingRowNr + c_NrOfRows; ++rowNr)
+    {
+        std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfColumns);
     }
 }
 
