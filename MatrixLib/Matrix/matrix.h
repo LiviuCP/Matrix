@@ -3446,8 +3446,8 @@ void Matrix<DataType>::transpose(Matrix<DataType>& transposedMatrix)
         const size_type c_ResultingNrOfRows{m_NrOfColumns};
         const size_type c_ResultingNrOfColumns{m_NrOfRows};
 
-        Matrix<DataType> helperMatrix;
-        const Matrix<DataType>& srcMatrix{&transposedMatrix != this ? *this : helperMatrix};
+        Matrix helperMatrix;
+        const Matrix& srcMatrix{&transposedMatrix != this ? *this : helperMatrix};
 
         if (&transposedMatrix == this)
         {
@@ -3549,7 +3549,7 @@ void Matrix<DataType>::shrinkToFit()
 {
     if (m_RowCapacity != m_NrOfRows || m_ColumnCapacity != m_NrOfColumns)
     {
-        Matrix<DataType> matrix{std::move(*this)};
+        Matrix matrix{std::move(*this)};
         _deallocMemory(); // just for safety purposes, not actually needed
         _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
         _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, m_NrOfColumns);
@@ -3602,7 +3602,8 @@ void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr)
 }
 
 template<typename DataType>
-void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr, const DataType& value)
+void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr,
+                                    const DataType& value)
 {
     CHECK_ERROR_CONDITION(!m_NrOfRows, Matr::errorMessages[Matr::Errors::EMPTY_MATRIX]);
     CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
@@ -3659,7 +3660,7 @@ void Matrix<DataType>::eraseColumn(Matrix<DataType>::size_type columnNr)
     }
     else if (m_NrOfColumns - 1 <= m_ColumnCapacity / 4)
     {
-        Matrix<DataType> matrix{};
+        Matrix matrix{};
         std::swap(*this, matrix);
         _deallocMemory();
         _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns - 1, matrix.m_RowCapacity, (matrix.m_NrOfColumns - 1) * 2);
@@ -3689,7 +3690,7 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix,
     const size_type c_NewRowCapacity{c_NewNrOfRows + c_NewNrOfRows / 4};
     const size_type c_NewColumnCapacity{c_NewNrOfColumns + c_NewNrOfColumns / 4};
 
-    Matrix<DataType> matrix{};
+    Matrix matrix{};
 
     if (&firstSrcMatrix == this || &secondSrcMatrix == this)
     {
@@ -3699,8 +3700,8 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix,
     _deallocMemory();
     _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
 
-    const Matrix<DataType>& firstConcatenatedMatrix{&firstSrcMatrix == this ? matrix : firstSrcMatrix};
-    const Matrix<DataType>& secondConcatenatedMatrix{&secondSrcMatrix == this ? matrix : secondSrcMatrix};
+    const Matrix& firstConcatenatedMatrix{&firstSrcMatrix == this ? matrix : firstSrcMatrix};
+    const Matrix& secondConcatenatedMatrix{&secondSrcMatrix == this ? matrix : secondSrcMatrix};
 
     _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
     _copyInitItems(secondConcatenatedMatrix, 0, 0, firstConcatenatedMatrix.m_NrOfRows, 0, m_NrOfRows - firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
@@ -3717,7 +3718,7 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix,
     const size_type c_NewRowCapacity{c_NewNrOfRows + c_NewNrOfRows / 4};
     const size_type c_NewColumnCapacity{c_NewNrOfColumns + c_NewNrOfColumns / 4};
 
-    Matrix<DataType> matrix{};
+    Matrix matrix{};
 
     if (&firstSrcMatrix == this || &secondSrcMatrix == this)
     {
@@ -3727,8 +3728,8 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix,
     _deallocMemory();
     _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
 
-    const Matrix<DataType>& firstConcatenatedMatrix{&firstSrcMatrix == this ? matrix : firstSrcMatrix};
-    const Matrix<DataType>& secondConcatenatedMatrix{&secondSrcMatrix == this ? matrix : secondSrcMatrix};
+    const Matrix& firstConcatenatedMatrix{&firstSrcMatrix == this ? matrix : firstSrcMatrix};
+    const Matrix& secondConcatenatedMatrix{&secondSrcMatrix == this ? matrix : secondSrcMatrix};
 
     _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, m_NrOfRows, firstConcatenatedMatrix.m_NrOfColumns);
     _copyInitItems(secondConcatenatedMatrix, 0, 0, 0, firstConcatenatedMatrix.m_NrOfColumns, m_NrOfRows, secondConcatenatedMatrix.m_NrOfColumns);
@@ -3794,7 +3795,7 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix,
         secondDestMatrix._adjustSizeAndCapacity(c_NrOfRows, c_SecondDestMatrixNrOfColumns);
         secondDestMatrix._copyInitItems(*this, 0, splitColumnNr, 0, 0, c_NrOfRows, m_NrOfColumns - splitColumnNr);
 
-        Matrix<DataType> matrix{std::move(*this)};
+        Matrix matrix{std::move(*this)};
         _deallocMemory(); // actually not required, just for the good practice's sake!
         _allocMemory(c_NrOfRows, c_FirstDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
 
@@ -3805,7 +3806,7 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix,
         firstDestMatrix._adjustSizeAndCapacity(c_NrOfRows, c_FirstDestMatrixNrOfColumns);
         firstDestMatrix._copyInitItems(*this, 0, 0, 0, 0, c_NrOfRows, splitColumnNr);
 
-        Matrix<DataType> matrix{std::move(*this)};
+        Matrix matrix{std::move(*this)};
         _deallocMemory(); // actually not required, just for the good practice's sake!
         _allocMemory(c_NrOfRows, c_SecondDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
 
@@ -4568,7 +4569,7 @@ std::pair<typename Matrix<DataType>::size_type,
     if (c_NewRowCapacity != m_RowCapacity || c_NewColumnCapacity != m_ColumnCapacity)
     {
 
-        Matrix<DataType> matrix{std::move(*this)};
+        Matrix matrix{std::move(*this)};
         _deallocMemory(); // actually not required, just for safety purposes
         _allocMemory(nrOfRows, nrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
 
@@ -4597,7 +4598,7 @@ std::pair<typename Matrix<DataType>::size_type,
 }
 
 template<typename DataType>
-void Matrix<DataType>::_insertUninitializedRow(size_type rowNr)
+void Matrix<DataType>::_insertUninitializedRow(Matrix<DataType>::size_type rowNr)
 {
     // double row capacity if no spare capacity left (to defer any re-size when inserting further rows)
     if (m_NrOfRows == m_RowCapacity)
@@ -4620,13 +4621,13 @@ void Matrix<DataType>::_insertUninitializedRow(size_type rowNr)
 }
 
 template<typename DataType>
-typename Matrix<DataType>::size_type Matrix<DataType>::_insertUninitializedColumn(size_type columnNr)
+typename Matrix<DataType>::size_type Matrix<DataType>::_insertUninitializedColumn(Matrix<DataType>::size_type columnNr)
 {
     size_type uninitializedColumnNr{columnNr};
 
     if (m_NrOfColumns == m_ColumnCapacity)
     {
-        Matrix<DataType> matrix{std::move(*this)};
+        Matrix matrix{std::move(*this)};
 
         _deallocMemory(); // not quite necessary, just for safety/consistency purposes
         _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns + 1, matrix.m_RowCapacity, 2 * matrix.m_NrOfColumns);
@@ -4719,7 +4720,7 @@ void Matrix<DataType>::_deallocMemory()
 
 template<typename DataType>
 void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRows,
-                                               Matrix<DataType>::size_type nrOfColumns)
+                                              Matrix<DataType>::size_type nrOfColumns)
 {
     const size_type c_NewRowCapacity{nrOfRows + nrOfRows / 4};
     const size_type c_NewColumnCapacity{nrOfColumns + nrOfColumns / 4};
@@ -4732,12 +4733,12 @@ void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRo
 
 template<typename DataType>
 void Matrix<DataType>::_copyInitItems(const Matrix<DataType>& srcMatrix,
-                                      size_type srcStartingRowNr,
-                                      size_type srcColumnOffset,
-                                      size_type startingRowNr,
-                                      size_type columnOffset,
-                                      size_type nrOfRows,
-                                      size_type nrOfColumns)
+                                      Matrix<DataType>::size_type srcStartingRowNr,
+                                      Matrix<DataType>::size_type srcColumnOffset,
+                                      Matrix<DataType>::size_type startingRowNr,
+                                      Matrix<DataType>::size_type columnOffset,
+                                      Matrix<DataType>::size_type nrOfRows,
+                                      Matrix<DataType>::size_type nrOfColumns)
 {
     if (m_NrOfRows > 0 && m_NrOfColumns > 0 && srcMatrix.m_NrOfRows > 0 && srcMatrix.m_NrOfColumns > 0)
     {
@@ -4759,7 +4760,11 @@ void Matrix<DataType>::_copyInitItems(const Matrix<DataType>& srcMatrix,
 }
 
 template<typename DataType>
-void Matrix<DataType>::_fillInitItems(size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns, const DataType& value)
+void Matrix<DataType>::_fillInitItems(Matrix<DataType>::size_type startingRowNr,
+                                      Matrix<DataType>::size_type columnOffset,
+                                      Matrix<DataType>::size_type nrOfRows,
+                                      Matrix<DataType>::size_type nrOfColumns,
+                                      const DataType& value)
 {
     const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
     const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
@@ -4773,7 +4778,10 @@ void Matrix<DataType>::_fillInitItems(size_type startingRowNr, size_type columnO
 }
 
 template<typename DataType>
-void Matrix<DataType>::_destroyItems(size_type startingRowNr, size_type endingRowNr, size_type nrOfItemsToDestroyPerRow, size_type columnOffset)
+void Matrix<DataType>::_destroyItems(Matrix<DataType>::size_type startingRowNr,
+                                     Matrix<DataType>::size_type endingRowNr,
+                                     Matrix<DataType>::size_type nrOfItemsToDestroyPerRow,
+                                     Matrix<DataType>::size_type columnOffset)
 {
     if (m_NrOfRows > 0 && m_NrOfColumns > 0)
     {
