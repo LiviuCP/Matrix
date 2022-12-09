@@ -3605,10 +3605,7 @@ void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr,
 
     const size_type c_UninitializedColumnNr{_insertUninitializedColumn(columnNr)};
 
-    for(size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-    {
-        std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + c_UninitializedColumnNr, 1, value);
-    }
+    _fillInitItems(0, c_UninitializedColumnNr, m_NrOfRows, 1, value);
 
     if (c_UninitializedColumnNr != columnNr)
     {
