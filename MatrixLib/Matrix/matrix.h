@@ -426,7 +426,7 @@ private:
     void _adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns);
 
     // initialize all or part of the elements by copying from source matrix
-    void _copyInitItems(const Matrix<DataType>& srcMatrix, size_type srcStartingRowNumber, size_type srcColumnOffset, size_type startingRowNumber, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
+    void _copyInitItems(const Matrix<DataType>& srcMatrix, size_type srcStartingRowNr, size_type srcColumnOffset, size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
 
     // initialize all or part of the elements by filling in the same value
     void _fillInitItems(size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns, const DataType& value);
@@ -4732,25 +4732,25 @@ void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRo
 
 template<typename DataType>
 void Matrix<DataType>::_copyInitItems(const Matrix<DataType>& srcMatrix,
-                                      size_type srcStartingRowNumber,
+                                      size_type srcStartingRowNr,
                                       size_type srcColumnOffset,
-                                      size_type startingRowNumber,
+                                      size_type startingRowNr,
                                       size_type columnOffset,
                                       size_type nrOfRows,
                                       size_type nrOfColumns)
 {
     if (m_NrOfRows > 0 && m_NrOfColumns > 0 && srcMatrix.m_NrOfRows > 0 && srcMatrix.m_NrOfColumns > 0)
     {
-        const size_type c_SrcStartingRowNumber{std::clamp(srcStartingRowNumber, 0, srcMatrix.m_NrOfRows)};
+        const size_type c_SrcStartingRowNr{std::clamp(srcStartingRowNr, 0, srcMatrix.m_NrOfRows)};
         const size_type c_SrcColumnOffset{std::clamp(srcColumnOffset, 0, srcMatrix.m_NrOfColumns)};
-        const size_type c_StartingRowNumber{std::clamp(startingRowNumber, 0, m_NrOfRows)};
+        const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
         const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
-        const size_type c_NrOfRows{std::clamp(nrOfRows, 0, std::min(srcMatrix.m_NrOfRows - c_SrcStartingRowNumber, m_NrOfRows - c_StartingRowNumber))};
+        const size_type c_NrOfRows{std::clamp(nrOfRows, 0, std::min(srcMatrix.m_NrOfRows - c_SrcStartingRowNr, m_NrOfRows - c_StartingRowNr))};
         const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, std::min(srcMatrix.m_NrOfColumns - c_SrcColumnOffset, m_NrOfColumns - c_ColumnOffset))};
 
-        size_type currentRowNr{c_StartingRowNumber};
+        size_type currentRowNr{c_StartingRowNr};
 
-        for (size_type rowNr{c_SrcStartingRowNumber}; rowNr != c_SrcStartingRowNumber + c_NrOfRows; ++rowNr)
+        for (size_type rowNr{c_SrcStartingRowNr}; rowNr != c_SrcStartingRowNr + c_NrOfRows; ++rowNr)
         {
             std::uninitialized_copy_n(srcMatrix.m_pBaseArrayPtr[rowNr] + c_SrcColumnOffset, c_NrOfColumns, m_pBaseArrayPtr[currentRowNr] + c_ColumnOffset);
             ++currentRowNr;
