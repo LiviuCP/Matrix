@@ -3774,38 +3774,32 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix,
     CHECK_ERROR_CONDITION(splitColumnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
     CHECK_ERROR_CONDITION(splitColumnNr == 0, Matr::errorMessages[Matr::Errors::RESULT_NO_COLUMNS]);
 
-    const size_type c_NrOfRows{m_NrOfRows};
-    const size_type c_FirstDestMatrixNrOfColumns{splitColumnNr};
-    const size_type c_SecondDestMatrixNrOfColumns{m_NrOfColumns - splitColumnNr};
-
-    if (&firstDestMatrix == this && (&secondDestMatrix != this))
+    if (&firstDestMatrix == this || &secondDestMatrix == this)
     {
-        secondDestMatrix._adjustSizeAndCapacity(c_NrOfRows, c_SecondDestMatrixNrOfColumns);
-        secondDestMatrix._copyInitItems(*this, 0, splitColumnNr, 0, 0, c_NrOfRows, m_NrOfColumns - splitColumnNr);
+        Matrix& currentMatrix{&firstDestMatrix == this ? firstDestMatrix : secondDestMatrix};
+        Matrix& otherMatrix{&firstDestMatrix == this ? secondDestMatrix : firstDestMatrix};
 
-        Matrix matrix{std::move(*this)};
-        _deallocMemory(); // actually not required, just for the good practice's sake!
-        _allocMemory(c_NrOfRows, c_FirstDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
+        const size_type c_NrOfRows{currentMatrix.m_NrOfRows};
+        const size_type c_CurrentMatrixNewNrOfColumns{&firstDestMatrix == this ? splitColumnNr : currentMatrix.m_NrOfColumns - splitColumnNr};
+        const size_type c_CurrentMatrixColumnOffset{&firstDestMatrix == this ? 0 : splitColumnNr};
 
-        firstDestMatrix._copyInitItems(matrix, 0, 0, 0, 0, c_NrOfRows, splitColumnNr);
-    }
-    else if (&firstDestMatrix != this && (&secondDestMatrix == this))
-    {
-        firstDestMatrix._adjustSizeAndCapacity(c_NrOfRows, c_FirstDestMatrixNrOfColumns);
-        firstDestMatrix._copyInitItems(*this, 0, 0, 0, 0, c_NrOfRows, splitColumnNr);
+        // step 1: copy items that should be removed from current matrix ("this") to the other destination matrix
+        otherMatrix._adjustSizeAndCapacity(c_NrOfRows, currentMatrix.m_NrOfColumns - c_CurrentMatrixNewNrOfColumns);
+        otherMatrix._copyInitItems(currentMatrix, 0, splitColumnNr - c_CurrentMatrixColumnOffset, 0, 0, c_NrOfRows, otherMatrix.m_NrOfColumns);
 
-        Matrix matrix{std::move(*this)};
-        _deallocMemory(); // actually not required, just for the good practice's sake!
-        _allocMemory(c_NrOfRows, c_SecondDestMatrixNrOfColumns, matrix.m_RowCapacity, matrix.m_ColumnCapacity);
+        Matrix helperMatrix{std::move(currentMatrix)};
 
-        _copyInitItems(matrix, 0, splitColumnNr, 0, 0, c_NrOfRows, c_SecondDestMatrixNrOfColumns);
+        // step 2: update the current matrix, remove elements that belong to the other destination matrix
+        currentMatrix._deallocMemory(); // actually not required, just for the good practice's sake!
+        currentMatrix._allocMemory(c_NrOfRows, c_CurrentMatrixNewNrOfColumns, helperMatrix.m_RowCapacity, helperMatrix.m_ColumnCapacity);
+        currentMatrix._copyInitItems(helperMatrix, 0, c_CurrentMatrixColumnOffset, 0, 0, c_NrOfRows, currentMatrix.m_NrOfColumns);
     }
     else
     {
-        firstDestMatrix._adjustSizeAndCapacity(c_NrOfRows, c_FirstDestMatrixNrOfColumns);
-        firstDestMatrix._copyInitItems(*this, 0, 0, 0, 0, c_NrOfRows, splitColumnNr);
-        secondDestMatrix._adjustSizeAndCapacity(c_NrOfRows, c_SecondDestMatrixNrOfColumns);
-        secondDestMatrix._copyInitItems(*this, 0, splitColumnNr, 0, 0, c_NrOfRows, m_NrOfColumns - splitColumnNr);
+        firstDestMatrix._adjustSizeAndCapacity(m_NrOfRows, splitColumnNr);
+        firstDestMatrix._copyInitItems(*this, 0, 0, 0, 0, m_NrOfRows, splitColumnNr);
+        secondDestMatrix._adjustSizeAndCapacity(m_NrOfRows, m_NrOfColumns - splitColumnNr);
+        secondDestMatrix._copyInitItems(*this, 0, splitColumnNr, 0, 0, m_NrOfRows, secondDestMatrix.m_NrOfColumns);
     }
 }
 
