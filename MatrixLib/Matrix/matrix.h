@@ -3733,34 +3733,29 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix,
     CHECK_ERROR_CONDITION(splitRowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
     CHECK_ERROR_CONDITION(splitRowNr == 0, Matr::errorMessages[Matr::Errors::RESULT_NO_ROWS]);
 
-    const size_type c_FirstDestMatrixNrOfRows{splitRowNr};
-    const size_type c_SecondDestMatrixNrOfRows{m_NrOfRows - splitRowNr};
-    const size_type c_NrOfColumns{m_NrOfColumns};
-
-    if (&firstDestMatrix == this && (&secondDestMatrix != this))
+    if (&firstDestMatrix == this || &secondDestMatrix == this)
     {
-        secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_NrOfColumns);
-        secondDestMatrix._copyInitItems(*this, splitRowNr, 0, 0, 0, m_NrOfRows - splitRowNr, m_NrOfColumns);
-        firstDestMatrix.m_NrOfRows = c_FirstDestMatrixNrOfRows;
-    }
-    else if (&firstDestMatrix != this && (&secondDestMatrix == this))
-    {
-        firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_NrOfColumns);
-        firstDestMatrix._copyInitItems(*this, 0, 0, 0, 0, splitRowNr, m_NrOfColumns);
+        Matrix& currentMatrix{&firstDestMatrix == this ? firstDestMatrix : secondDestMatrix};
+        Matrix& otherMatrix{&firstDestMatrix == this ? secondDestMatrix : firstDestMatrix};
 
-        for (size_type rowNr{0}; rowNr < c_SecondDestMatrixNrOfRows; ++rowNr)
-        {
-            swapRows(rowNr, *this, rowNr + splitRowNr);
-        }
+        const size_type c_CurrentMatrixNewNrOfRows{&firstDestMatrix == this ? splitRowNr : currentMatrix.m_NrOfRows - splitRowNr};
+        const size_type c_CurrentMatrixRemainingItemsStartingRowNr{&firstDestMatrix == this ? 0 : splitRowNr};
 
-        m_NrOfRows = c_SecondDestMatrixNrOfRows;
+        // step 1: copy items that should be removed from current matrix ("this") to the other destination matrix
+        otherMatrix._adjustSizeAndCapacity(currentMatrix.m_NrOfRows - c_CurrentMatrixNewNrOfRows, currentMatrix.m_NrOfColumns);
+        otherMatrix._copyInitItems(currentMatrix, splitRowNr - c_CurrentMatrixRemainingItemsStartingRowNr, 0, 0, 0, otherMatrix.m_NrOfRows, otherMatrix.m_NrOfColumns);
+
+        // step 2: update the current matrix: move kept elements into correct positions and remove/destroy elements that belong to the other destination matrix
+        std::rotate(currentMatrix.m_pBaseArrayPtr, currentMatrix.m_pBaseArrayPtr + c_CurrentMatrixRemainingItemsStartingRowNr, currentMatrix.m_pBaseArrayPtr + currentMatrix.m_NrOfRows);
+        currentMatrix._destroyItems(splitRowNr, currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns);
+        currentMatrix.m_NrOfRows = c_CurrentMatrixNewNrOfRows;
     }
     else
     {
-        firstDestMatrix._adjustSizeAndCapacity(c_FirstDestMatrixNrOfRows, c_NrOfColumns);
-        firstDestMatrix._copyInitItems(*this, 0, 0, 0, 0, splitRowNr, m_NrOfColumns);
-        secondDestMatrix._adjustSizeAndCapacity(c_SecondDestMatrixNrOfRows, c_NrOfColumns);
-        secondDestMatrix._copyInitItems(*this, splitRowNr, 0, 0, 0, m_NrOfRows - splitRowNr, m_NrOfColumns);
+        firstDestMatrix._adjustSizeAndCapacity(splitRowNr, m_NrOfColumns);
+        firstDestMatrix._copyInitItems(*this, 0, 0, 0, 0, firstDestMatrix.m_NrOfRows, m_NrOfColumns);
+        secondDestMatrix._adjustSizeAndCapacity(m_NrOfRows - splitRowNr, m_NrOfColumns);
+        secondDestMatrix._copyInitItems(*this, splitRowNr, 0, 0, 0, secondDestMatrix.m_NrOfRows, m_NrOfColumns);
     }
 }
 
