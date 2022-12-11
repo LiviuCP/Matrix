@@ -3774,20 +3774,21 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix,
         Matrix& currentMatrix{&firstDestMatrix == this ? firstDestMatrix : secondDestMatrix};
         Matrix& otherMatrix{&firstDestMatrix == this ? secondDestMatrix : firstDestMatrix};
 
-        const size_type c_NrOfRows{currentMatrix.m_NrOfRows};
         const size_type c_CurrentMatrixNewNrOfColumns{&firstDestMatrix == this ? splitColumnNr : currentMatrix.m_NrOfColumns - splitColumnNr};
-        const size_type c_CurrentMatrixColumnOffset{&firstDestMatrix == this ? 0 : splitColumnNr};
+        const size_type c_CurrentMatrixRemainingItemsColumnOffset{&firstDestMatrix == this ? 0 : splitColumnNr};
 
         // step 1: copy items that should be removed from current matrix ("this") to the other destination matrix
-        otherMatrix._adjustSizeAndCapacity(c_NrOfRows, currentMatrix.m_NrOfColumns - c_CurrentMatrixNewNrOfColumns);
-        otherMatrix._copyInitItems(currentMatrix, 0, splitColumnNr - c_CurrentMatrixColumnOffset, 0, 0, c_NrOfRows, otherMatrix.m_NrOfColumns);
+        otherMatrix._adjustSizeAndCapacity(currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns - c_CurrentMatrixNewNrOfColumns);
+        otherMatrix._copyInitItems(currentMatrix, 0, splitColumnNr - c_CurrentMatrixRemainingItemsColumnOffset, 0, 0, otherMatrix.m_NrOfRows, otherMatrix.m_NrOfColumns);
 
-        Matrix helperMatrix{std::move(currentMatrix)};
+        // step 2: update the current matrix: move kept elements into correct positions and remove/destroy elements that belong to the other destination matrix
+        for (size_type rowNr{0}; rowNr < currentMatrix.m_NrOfRows; ++rowNr)
+        {
+            std::copy(currentMatrix.m_pBaseArrayPtr[rowNr] + c_CurrentMatrixRemainingItemsColumnOffset, currentMatrix.m_pBaseArrayPtr[rowNr] + currentMatrix.m_NrOfColumns, currentMatrix.m_pBaseArrayPtr[rowNr]);
+        }
 
-        // step 2: update the current matrix, remove elements that belong to the other destination matrix
-        currentMatrix._deallocMemory(); // actually not required, just for the good practice's sake!
-        currentMatrix._allocMemory(c_NrOfRows, c_CurrentMatrixNewNrOfColumns, helperMatrix.m_RowCapacity, helperMatrix.m_ColumnCapacity);
-        currentMatrix._copyInitItems(helperMatrix, 0, c_CurrentMatrixColumnOffset, 0, 0, c_NrOfRows, currentMatrix.m_NrOfColumns);
+        currentMatrix._destroyItems(0, currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns - c_CurrentMatrixNewNrOfColumns, c_CurrentMatrixNewNrOfColumns);
+        currentMatrix.m_NrOfColumns = c_CurrentMatrixNewNrOfColumns;
     }
     else
     {
