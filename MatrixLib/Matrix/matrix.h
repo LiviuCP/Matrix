@@ -435,7 +435,7 @@ private:
     void _defaultConstructInitItems(size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
 
     // destroy the elements contained within interval
-    void _destroyItems(size_type startingRowNr, size_type endingRowNr, size_type nrOfItemsToDestroyPerRow, size_type columnOffset = 0);
+    void _destroyItems(size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
 
     bool _isEqualTo(const Matrix<DataType>& matrix) const;
 
@@ -3342,7 +3342,7 @@ Matrix<DataType>& Matrix<DataType>::operator=(const Matrix<DataType>& matrix)
             /* ensure existing elements are destroyed correctly
                (the number of rows/columns between the two matrixes might not coincide meaning some elements might be left "hanging" - outside bounds elements should be uninitialized)
             */
-            _destroyItems(0, m_NrOfRows, m_NrOfColumns);
+            _destroyItems(0, 0, m_NrOfRows, m_NrOfColumns);
 
             m_NrOfRows = matrix.m_NrOfRows;
             m_NrOfColumns = matrix.m_NrOfColumns;
@@ -3747,7 +3747,7 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix,
 
         // step 2: update the current matrix: move kept elements into correct positions and remove/destroy elements that belong to the other destination matrix
         std::rotate(currentMatrix.m_pBaseArrayPtr, currentMatrix.m_pBaseArrayPtr + c_CurrentMatrixRemainingItemsStartingRowNr, currentMatrix.m_pBaseArrayPtr + currentMatrix.m_NrOfRows);
-        currentMatrix._destroyItems(splitRowNr, currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns);
+        currentMatrix._destroyItems(splitRowNr, 0, currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns);
         currentMatrix.m_NrOfRows = c_CurrentMatrixNewNrOfRows;
     }
     else
@@ -3787,7 +3787,7 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix,
             std::copy(currentMatrix.m_pBaseArrayPtr[rowNr] + c_CurrentMatrixRemainingItemsColumnOffset, currentMatrix.m_pBaseArrayPtr[rowNr] + currentMatrix.m_NrOfColumns, currentMatrix.m_pBaseArrayPtr[rowNr]);
         }
 
-        currentMatrix._destroyItems(0, currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns - c_CurrentMatrixNewNrOfColumns, c_CurrentMatrixNewNrOfColumns);
+        currentMatrix._destroyItems(0, c_CurrentMatrixNewNrOfColumns, currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns - c_CurrentMatrixNewNrOfColumns);
         currentMatrix.m_NrOfColumns = c_CurrentMatrixNewNrOfColumns;
     }
     else
@@ -4557,13 +4557,13 @@ std::pair<typename Matrix<DataType>::size_type,
         // ensure the items from the right side of the retained items get properly destroyed
         if (nrOfColumns < m_NrOfColumns)
         {
-            _destroyItems(0, c_NrOfRowsToKeep, m_NrOfColumns - nrOfColumns, c_NrOfColumnsToKeep);
+            _destroyItems(0, c_NrOfColumnsToKeep, c_NrOfRowsToKeep, m_NrOfColumns - nrOfColumns);
         }
 
         // same for the items below
         if (nrOfRows < m_NrOfRows)
         {
-            _destroyItems(c_NrOfRowsToKeep, m_NrOfRows, m_NrOfColumns);
+            _destroyItems(c_NrOfRowsToKeep, 0, m_NrOfRows, m_NrOfColumns);
         }
 
         m_NrOfRows = nrOfRows;
@@ -4676,7 +4676,7 @@ void Matrix<DataType>::_deallocMemory()
     if (m_pBaseArrayPtr)
     {
         // ensure the objects contained within matrix are properly disposed
-        _destroyItems(0, m_NrOfRows, m_NrOfColumns);
+        _destroyItems(0, 0, m_NrOfRows, m_NrOfColumns);
 
         // cut access of row pointers to allocated memory
         std::fill_n(m_pBaseArrayPtr, m_RowCapacity, nullptr);
@@ -4778,20 +4778,20 @@ void Matrix<DataType>::_defaultConstructInitItems(Matrix<DataType>::size_type st
 
 template<typename DataType>
 void Matrix<DataType>::_destroyItems(Matrix<DataType>::size_type startingRowNr,
-                                     Matrix<DataType>::size_type endingRowNr,
-                                     Matrix<DataType>::size_type nrOfItemsToDestroyPerRow,
-                                     Matrix<DataType>::size_type columnOffset)
+                                     Matrix<DataType>::size_type columnOffset,
+                                     Matrix<DataType>::size_type nrOfRows,
+                                     Matrix<DataType>::size_type nrOfColumns)
 {
     if (m_NrOfRows > 0 && m_NrOfColumns > 0)
     {
         const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
-        const size_type c_EndingRowNr{std::clamp(endingRowNr, c_StartingRowNr, m_NrOfRows)};
         const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
-        const size_type c_NrOfItemsToDestroyPerRow{std::clamp(nrOfItemsToDestroyPerRow, 0, m_NrOfColumns - c_ColumnOffset)};
+        const size_type c_NrOfRows{std::clamp(nrOfRows, 0, m_NrOfRows - c_StartingRowNr)};
+        const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, m_NrOfColumns - c_ColumnOffset)};
 
-        for (size_type rowNr{c_StartingRowNr}; rowNr < c_EndingRowNr; ++rowNr)
+        for (size_type rowNr{c_StartingRowNr}; rowNr != c_StartingRowNr + c_NrOfRows; ++rowNr)
         {
-            std::destroy_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfItemsToDestroyPerRow);
+            std::destroy_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfColumns);
         }
     }
 }
