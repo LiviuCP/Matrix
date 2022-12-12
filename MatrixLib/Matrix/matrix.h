@@ -4742,14 +4742,17 @@ void Matrix<DataType>::_fillInitItems(Matrix<DataType>::size_type startingRowNr,
                                       Matrix<DataType>::size_type nrOfColumns,
                                       const DataType& value)
 {
-    const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
-    const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
-    const size_type c_NrOfRows{std::clamp(nrOfRows, 0, m_NrOfRows - c_StartingRowNr)};
-    const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, m_NrOfColumns - c_ColumnOffset)};
-
-    for (size_type rowNr{c_StartingRowNr}; rowNr != c_StartingRowNr + c_NrOfRows; ++rowNr)
+    if (m_NrOfRows > 0 && m_NrOfColumns > 0)
     {
-        std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfColumns, value);
+        const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
+        const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
+        const size_type c_NrOfRows{std::clamp(nrOfRows, 0, m_NrOfRows - c_StartingRowNr)};
+        const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, m_NrOfColumns - c_ColumnOffset)};
+
+        for (size_type rowNr{c_StartingRowNr}; rowNr != c_StartingRowNr + c_NrOfRows; ++rowNr)
+        {
+            std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfColumns, value);
+        }
     }
 }
 
@@ -4759,14 +4762,17 @@ void Matrix<DataType>::_defaultConstructInitItems(Matrix<DataType>::size_type st
                                                   Matrix<DataType>::size_type nrOfRows,
                                                   Matrix<DataType>::size_type nrOfColumns)
 {
-    const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
-    const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
-    const size_type c_NrOfRows{std::clamp(nrOfRows, 0, m_NrOfRows - c_StartingRowNr)};
-    const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, m_NrOfColumns - c_ColumnOffset)};
-
-    for (size_type rowNr{c_StartingRowNr}; rowNr != c_StartingRowNr + c_NrOfRows; ++rowNr)
+    if (m_NrOfRows > 0 && m_NrOfColumns > 0)
     {
-        std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfColumns);
+        const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
+        const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
+        const size_type c_NrOfRows{std::clamp(nrOfRows, 0, m_NrOfRows - c_StartingRowNr)};
+        const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, m_NrOfColumns - c_ColumnOffset)};
+
+        for (size_type rowNr{c_StartingRowNr}; rowNr != c_StartingRowNr + c_NrOfRows; ++rowNr)
+        {
+            std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfColumns);
+        }
     }
 }
 
