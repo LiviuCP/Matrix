@@ -3895,12 +3895,10 @@ void Matrix<DataType>::copy(const Matrix<DataType>& srcMatrix,
     CHECK_ERROR_CONDITION(srcMatrixRowNr + nrOfRows > srcMatrix.m_NrOfRows || srcMatrixColumnNr + nrOfColumns > srcMatrix.m_NrOfColumns || destMatrixRowNr + nrOfRows > m_NrOfRows || destMatrixColumnNr + nrOfColumns > m_NrOfColumns,
                           Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
 
-    if (nrOfRows != 0 && nrOfColumns != 0)
+
+    for (size_type rowNr{0}; rowNr < nrOfRows; ++rowNr)
     {
-        for (size_type rowNr{0}; rowNr < nrOfRows; ++rowNr)
-        {
-            std::copy_n(srcMatrix.m_pBaseArrayPtr[srcMatrixRowNr + rowNr] + srcMatrixColumnNr, nrOfColumns, m_pBaseArrayPtr[destMatrixRowNr + rowNr] + destMatrixColumnNr);
-        }
+        std::copy_n(srcMatrix.m_pBaseArrayPtr[srcMatrixRowNr + rowNr] + srcMatrixColumnNr, nrOfColumns, m_pBaseArrayPtr[destMatrixRowNr + rowNr] + destMatrixColumnNr);
     }
 }
 
