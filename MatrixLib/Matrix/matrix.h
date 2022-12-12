@@ -437,6 +437,9 @@ private:
     // destroy the elements contained within interval
     void _destroyItems(size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
 
+    // ensures the selected sub-matrix (elements to change) fits into matrix
+    void _clampSubMatrixSelectionParameters(size_type& startingRowNr, size_type& columnOffset, size_type& nrOfRows, size_type& nrOfColumns);
+
     bool _isEqualTo(const Matrix<DataType>& matrix) const;
 
     DataType* m_pAllocPtr; // use only this pointer in _allocMemory()/_deallocMemory() to allocate/de-allocate matrix elements
@@ -4744,14 +4747,11 @@ void Matrix<DataType>::_fillInitItems(Matrix<DataType>::size_type startingRowNr,
 {
     if (m_NrOfRows > 0 && m_NrOfColumns > 0)
     {
-        const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
-        const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
-        const size_type c_NrOfRows{std::clamp(nrOfRows, 0, m_NrOfRows - c_StartingRowNr)};
-        const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, m_NrOfColumns - c_ColumnOffset)};
+        _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
 
-        for (size_type rowNr{c_StartingRowNr}; rowNr != c_StartingRowNr + c_NrOfRows; ++rowNr)
+        for (size_type rowNr{startingRowNr}; rowNr != startingRowNr + nrOfRows; ++rowNr)
         {
-            std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfColumns, value);
+            std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + columnOffset, nrOfColumns, value);
         }
     }
 }
@@ -4764,14 +4764,11 @@ void Matrix<DataType>::_defaultConstructInitItems(Matrix<DataType>::size_type st
 {
     if (m_NrOfRows > 0 && m_NrOfColumns > 0)
     {
-        const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
-        const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
-        const size_type c_NrOfRows{std::clamp(nrOfRows, 0, m_NrOfRows - c_StartingRowNr)};
-        const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, m_NrOfColumns - c_ColumnOffset)};
+        _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
 
-        for (size_type rowNr{c_StartingRowNr}; rowNr != c_StartingRowNr + c_NrOfRows; ++rowNr)
+        for (size_type rowNr{startingRowNr}; rowNr != startingRowNr + nrOfRows; ++rowNr)
         {
-            std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfColumns);
+            std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + columnOffset, nrOfColumns);
         }
     }
 }
@@ -4784,16 +4781,24 @@ void Matrix<DataType>::_destroyItems(Matrix<DataType>::size_type startingRowNr,
 {
     if (m_NrOfRows > 0 && m_NrOfColumns > 0)
     {
-        const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
-        const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
-        const size_type c_NrOfRows{std::clamp(nrOfRows, 0, m_NrOfRows - c_StartingRowNr)};
-        const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, m_NrOfColumns - c_ColumnOffset)};
+        _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
 
-        for (size_type rowNr{c_StartingRowNr}; rowNr != c_StartingRowNr + c_NrOfRows; ++rowNr)
+        for (size_type rowNr{startingRowNr}; rowNr != startingRowNr + nrOfRows; ++rowNr)
         {
-            std::destroy_n(m_pBaseArrayPtr[rowNr] + c_ColumnOffset, c_NrOfColumns);
+            std::destroy_n(m_pBaseArrayPtr[rowNr] + columnOffset, nrOfColumns);
         }
     }
+}
+
+template<typename DataType>
+void Matrix<DataType>::_clampSubMatrixSelectionParameters(size_type& startingRowNr, size_type& columnOffset, size_type& nrOfRows, size_type& nrOfColumns)
+{
+    assert(m_NrOfRows > 0 && m_NrOfColumns > 0);
+
+    startingRowNr = std::clamp(startingRowNr, 0, m_NrOfRows);
+    columnOffset = std::clamp(columnOffset, 0, m_NrOfColumns);
+    nrOfRows = std::clamp(nrOfRows, 0, m_NrOfRows - startingRowNr);
+    nrOfColumns = std::clamp(nrOfColumns, 0, m_NrOfColumns - columnOffset);
 }
 
 template<typename DataType>
