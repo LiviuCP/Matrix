@@ -98,15 +98,15 @@ void SwappingTests::testStringMatrixSwapColumns()
 
 void SwappingTests::testStringMatrixSwapRowColumn()
 {
-    mPrimaryStringMatrix = {4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}};
-    mSecondaryStringMatrix = {3, 4, {"13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"}};
+    mPrimaryStringMatrix = {4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
+    mSecondaryStringMatrix = {3, 4, {"13th", "14th", "15th", "16th", "17th", "18th", "19th", "20th", "21st", "22nd", "23rd", "24th"}};
 
     mPrimaryStringMatrix.swapRowColumn(0, mSecondaryStringMatrix, 3);
 
-    QVERIFY2(mPrimaryStringMatrix == StringMatrix(4, 3, {"16", "20", "24", "4", "5", "6", "7", "8", "9", "10", "11", "12"}),
+    QVERIFY2(mPrimaryStringMatrix == StringMatrix(4, 3, {"16th", "20th", "24th", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}),
              "Row from first matrix is incorrectly swapped with column from the second, first matrix does not have the desired value after swap!");
 
-    QVERIFY2(mSecondaryStringMatrix == StringMatrix(3, 4, {"13", "14", "15", "1", "17", "18", "19", "2", "21", "22", "23", "3"}),
+    QVERIFY2(mSecondaryStringMatrix == StringMatrix(3, 4, {"13th", "14th", "15th", "First", "17th", "18th", "19th", "Second", "21st", "22nd", "23rd", "Third"}),
              "Row from first matrix is incorrectly swapped with column from the second, second matrix does not have the desired value after swap!");
 }
 
@@ -173,9 +173,9 @@ void SwappingTests::testSwapStringMatrixes_data()
     QTest::addColumn<StringMatrix>("firstMatrix");
     QTest::addColumn<StringMatrix>("secondMatrix");
 
-    QTest::newRow("non-empty matrixes") << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}} << StringMatrix{3, 2, {"7", "8", "9", "10", "11", "12"}};
-    QTest::newRow("one empty matrix") << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}} << StringMatrix{};
-    QTest::newRow("one empty matrix") << StringMatrix{} << StringMatrix{3, 2, {"7", "8", "9", "10", "11", "12"}};
+    QTest::newRow("non-empty matrixes") << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << StringMatrix{3, 2, {"Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
+    QTest::newRow("one empty matrix") << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << StringMatrix{};
+    QTest::newRow("one empty matrix") << StringMatrix{} << StringMatrix{3, 2, {"Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("both matrixes empty") << StringMatrix{} << StringMatrix{};
 }
 
@@ -191,9 +191,9 @@ void SwappingTests::testStringMatrixSwapItems_data()
     QTest::addColumn<StringMatrix>("expectedFirstMatrix");
     QTest::addColumn<StringMatrix>("expectedSecondMatrix");
 
-    QTest::newRow("same matrix, different items") << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}} << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}} << 1 << 2 << 0 << 1 << true << StringMatrix{2, 3, {"1", "6", "3", "4", "5", "2"}} << StringMatrix{2, 3, {"1", "6", "3", "4", "5", "2"}};
-    QTest::newRow("same matrix, same item") << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}} << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}} << 0 << 1 << 0 << 1 << true << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}} << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}};
-    QTest::newRow("different matrixes") << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}} << StringMatrix{3, 2, {"7", "8", "9", "10", "11", "12"}} << 1 << 2 << 2 << 0 << false << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "11"}} << StringMatrix{3, 2, {"7", "8", "9", "10", "6", "12"}};
+    QTest::newRow("same matrix, different items") << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << 1 << 2 << 0 << 1 << true << StringMatrix{2, 3, {"First", "Sixth", "Third", "Fourth", "Fifth", "Second"}} << StringMatrix{2, 3, {"First", "Sixth", "Third", "Fourth", "Fifth", "Second"}};
+    QTest::newRow("same matrix, same item") << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << 0 << 1 << 0 << 1 << true << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
+    QTest::newRow("different matrixes") << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << StringMatrix{3, 2, {"Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 1 << 2 << 2 << 0 << false << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Eleventh"}} << StringMatrix{3, 2, {"Seventh", "Eighth", "Ninth", "Tenth", "Sixth", "Twelfth"}};
 }
 
 void SwappingTests::testStringMatrixSwapRows_data()
@@ -206,9 +206,9 @@ void SwappingTests::testStringMatrixSwapRows_data()
     QTest::addColumn<StringMatrix>("expectedFirstMatrix");
     QTest::addColumn<StringMatrix>("expectedSecondMatrix");
 
-    QTest::newRow("same matrix, different rows") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << 2 << true << StringMatrix{4, 3, {"7", "8", "9", "4", "5", "6", "1", "2", "3", "10", "11", "12"}} << StringMatrix{4, 3, {"7", "8", "9", "4", "5", "6", "1", "2", "3", "10", "11", "12"}};
-    QTest::newRow("same matrix, same row") << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 1 << 1 << true << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << StringMatrix{4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}};
-    QTest::newRow("different matrixes") << StringMatrix{2, 3, {"1", "2", "3", "4", "5", "6"}} << StringMatrix{4, 3, {"7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18"}} << 0 << 3 << false << StringMatrix{2, 3, {"16", "17", "18", "4", "5", "6"}} << StringMatrix{4, 3, {"7", "8", "9", "10", "11", "12", "13", "14", "15", "1", "2", "3"}};
+    QTest::newRow("same matrix, different rows") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 0 << 2 << true << StringMatrix{4, 3, {"Seventh", "Eighth", "Ninth", "Fourth", "Fifth", "Sixth", "First", "Second", "Third", "Tenth", "Eleventh", "Twelfth"}} << StringMatrix{4, 3, {"Seventh", "Eighth", "Ninth", "Fourth", "Fifth", "Sixth", "First", "Second", "Third", "Tenth", "Eleventh", "Twelfth"}};
+    QTest::newRow("same matrix, same row") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 1 << 1 << true << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
+    QTest::newRow("different matrixes") << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << StringMatrix{4, 3, {"Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "13th", "14th", "15th", "16th", "17th", "18th"}} << 0 << 3 << false << StringMatrix{2, 3, {"16th", "17th", "18th", "Fourth", "Fifth", "Sixth"}} << StringMatrix{4, 3, {"Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "13th", "14th", "15th", "First", "Second", "Third"}};
 }
 
 void SwappingTests::testStringMatrixSwapColumns_data()
@@ -221,9 +221,9 @@ void SwappingTests::testStringMatrixSwapColumns_data()
     QTest::addColumn<StringMatrix>("expectedFirstMatrix");
     QTest::addColumn<StringMatrix>("expectedSecondMatrix");
 
-    QTest::newRow("same matrix, different columns") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 0 << 2 << true << StringMatrix{3, 4, {"3", "2", "1", "4", "7", "6", "5", "8", "11", "10", "9", "12"}} << StringMatrix{3, 4, {"3", "2", "1", "4", "7", "6", "5", "8", "11", "10", "9", "12"}};
-    QTest::newRow("same matrix, same column") << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << 1 << 1 << true << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}} << StringMatrix{3, 4, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}};
-    QTest::newRow("different matrixes") << StringMatrix{3, 2, {"1", "2", "3", "4", "5", "6"}} << StringMatrix{3, 4, {"7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18"}} << 0 << 3 << false << StringMatrix{3, 2, {"10", "2", "14", "4", "18", "6"}} << StringMatrix{3, 4, {"7", "8", "9", "1", "11", "12", "13", "3", "15", "16", "17", "5"}};
+    QTest::newRow("same matrix, different columns") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 0 << 2 << true << StringMatrix{3, 4, {"Third", "Second", "First", "Fourth", "Seventh", "Sixth", "Fifth", "Eighth", "Eleventh", "Tenth", "Ninth", "Twelfth"}} << StringMatrix{3, 4, {"Third", "Second", "First", "Fourth", "Seventh", "Sixth", "Fifth", "Eighth", "Eleventh", "Tenth", "Ninth", "Twelfth"}};
+    QTest::newRow("same matrix, same column") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 1 << 1 << true << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
+    QTest::newRow("different matrixes") << StringMatrix{3, 2, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << StringMatrix{3, 4, {"Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "13th", "14th", "15th", "16th", "17th", "18th"}} << 0 << 3 << false << StringMatrix{3, 2, {"Tenth", "Second", "14th", "Fourth", "18th", "Sixth"}} << StringMatrix{3, 4, {"Seventh", "Eighth", "Ninth", "First", "Eleventh", "Twelfth", "13th", "Third", "15th", "16th", "17th", "Fifth"}};
 }
 
 QTEST_APPLESS_MAIN(SwappingTests)

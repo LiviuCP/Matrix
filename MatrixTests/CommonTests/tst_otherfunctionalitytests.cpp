@@ -180,72 +180,72 @@ void OtherFunctionalityTests::testStringMatrixesAreNotEqual()
 
 void OtherFunctionalityTests::testStringMatrixFunctionAt()
 {
-    mPrimaryStringMatrix = {2, 3, "5"};
+    mPrimaryStringMatrix = {2, 3, "Five"};
 
-    mPrimaryStringMatrix.at(0, 0) = "10";
-    mPrimaryStringMatrix.at(0, 1) = "20";
-    mPrimaryStringMatrix.at(0, 2) = "30";
-    mPrimaryStringMatrix.at(1, 0) = "40";
-    mPrimaryStringMatrix.at(1, 1) = "50";
-    mPrimaryStringMatrix.at(1, 2) = "60";
+    mPrimaryStringMatrix.at(0, 0) = "Ten";
+    mPrimaryStringMatrix.at(0, 1) = "Twenty";
+    mPrimaryStringMatrix.at(0, 2) = "Thirty";
+    mPrimaryStringMatrix.at(1, 0) = "Forty";
+    mPrimaryStringMatrix.at(1, 1) = "Fifty";
+    mPrimaryStringMatrix.at(1, 2) = "Sixty";
 
-    QVERIFY2(mPrimaryStringMatrix == StringMatrix(2, 3, {"10", "20", "30", "40", "50", "60"}), "The write at() method does not work properly, values are not correctly written!");
+    QVERIFY2(mPrimaryStringMatrix == StringMatrix(2, 3, {"Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty"}), "The write at() method does not work properly, values are not correctly written!");
 
     // "const" at() - trivial too but tested here just to ensure it exists (it is required for reading values from const matrixes)
-    const StringMatrix matrix{2, 3, {"70", "80", "90", "100", "110", "120"}};
+    const StringMatrix matrix{2, 3, {"Seventy", "Eighty", "Ninety", "OneHundred", "OneHundredAndTen", "OneHundredAndTwenty"}};
 
-    QVERIFY2(matrix.at(0, 0) == "70" &&
-             matrix.at(0, 1) == "80" &&
-             matrix.at(0, 2) == "90" &&
-             matrix.at(1, 0) == "100" &&
-             matrix.at(1, 1) == "110" &&
-             matrix.at(1, 2) == "120", "The const at() method does not work correctly, read values are wrong!");
+    QVERIFY2(matrix.at(0, 0) == "Seventy" &&
+             matrix.at(0, 1) == "Eighty" &&
+             matrix.at(0, 2) == "Ninety" &&
+             matrix.at(1, 0) == "OneHundred" &&
+             matrix.at(1, 1) == "OneHundredAndTen" &&
+             matrix.at(1, 2) == "OneHundredAndTwenty", "The const at() method does not work correctly, read values are wrong!");
 }
 
 void OtherFunctionalityTests::testStringMatrixSquareBracketsOperator()
 {
-    mPrimaryStringMatrix = {4, 3, {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}};
+    mPrimaryStringMatrix = {4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
 
-    QVERIFY2(mPrimaryStringMatrix[0] == "1" &&
-             mPrimaryStringMatrix[1] == "2" &&
-             mPrimaryStringMatrix[2] == "3" &&
-             mPrimaryStringMatrix[3] == "4" &&
-             mPrimaryStringMatrix[4] == "5" &&
-             mPrimaryStringMatrix[5] == "6" &&
-             mPrimaryStringMatrix[6] == "7" &&
-             mPrimaryStringMatrix[7] == "8" &&
-             mPrimaryStringMatrix[8] == "9" &&
-             mPrimaryStringMatrix[9] == "10" &&
-             mPrimaryStringMatrix[10] == "11" &&
-             mPrimaryStringMatrix[11] == "12", "The square brackets operator did not return the right values!");
+    QVERIFY2(mPrimaryStringMatrix[0] == "First" &&
+             mPrimaryStringMatrix[1] == "Second" &&
+             mPrimaryStringMatrix[2] == "Third" &&
+             mPrimaryStringMatrix[3] == "Fourth" &&
+             mPrimaryStringMatrix[4] == "Fifth" &&
+             mPrimaryStringMatrix[5] == "Sixth" &&
+             mPrimaryStringMatrix[6] == "Seventh" &&
+             mPrimaryStringMatrix[7] == "Eighth" &&
+             mPrimaryStringMatrix[8] == "Ninth" &&
+             mPrimaryStringMatrix[9] == "Tenth" &&
+             mPrimaryStringMatrix[10] == "Eleventh" &&
+             mPrimaryStringMatrix[11] == "Twelfth", "The square brackets operator did not return the right values!");
 
 
-    mPrimaryStringMatrix = {2, 3, "5"};
+    mPrimaryStringMatrix = {2, 3, "Five"};
 
-    mPrimaryStringMatrix[0] = "70";
-    mPrimaryStringMatrix[1] = "80";
-    mPrimaryStringMatrix[2] = "90";
-    mPrimaryStringMatrix[3] = "100";
-    mPrimaryStringMatrix[4] = "110";
-    mPrimaryStringMatrix[5] = "120";
+    mPrimaryStringMatrix[0] = "Seventy";
+    mPrimaryStringMatrix[1] = "Eighty";
+    mPrimaryStringMatrix[2] = "Ninety";
+    mPrimaryStringMatrix[3] = "OneHundred";
+    mPrimaryStringMatrix[4] = "OneHundredAndTen";
+    mPrimaryStringMatrix[5] = "OneHundredAndTwenty";
 
-    QVERIFY2(mPrimaryStringMatrix == StringMatrix(2, 3, {"70", "80", "90", "100", "110", "120"}), "The square brackets operator did not write the right values!");
+    QVERIFY2(mPrimaryStringMatrix == StringMatrix(2, 3, {"Seventy", "Eighty", "Ninety", "OneHundred", "OneHundredAndTen", "OneHundredAndTwenty"}), "The square brackets operator did not write the right values!");
 
     // test the "const" square brackets operator too (similar to "const" at() - just to ensure it has been created)
-    const StringMatrix matrix{4, 3, {"10", "20", "30", "40", "50", "60", "70", "80", "90", "100", "110", "120"}};
+    const StringMatrix matrix{4, 3, {"Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety", "OneHundred", "OneHundredAndTen", "OneHundredAndTwenty"}};
 
-    QVERIFY2(matrix[0] == "10" &&
-             matrix[1] == "20" &&
-             matrix[2] == "30" &&
-             matrix[3] == "40" &&
-             matrix[4] == "50" &&
-             matrix[5] == "60" &&
-             matrix[6] == "70" &&
-             matrix[7] == "80" &&
-             matrix[8] == "90" &&
-             matrix[9] == "100" &&
-             matrix[10] == "110" &&
-             matrix[11] == "120", "The const square brackets operator does not work correctly, read values are wrong!");
+    QVERIFY2(matrix[0] == "Ten" &&
+             matrix[1] == "Twenty" &&
+             matrix[2] == "Thirty" &&
+             matrix[3] == "Forty" &&
+             matrix[4] == "Fifty" &&
+             matrix[5] == "Sixty" &&
+             matrix[6] == "Seventy" &&
+             matrix[7] == "Eighty" &&
+             matrix[8] == "Ninety" &&
+             matrix[9] == "OneHundred" &&
+             matrix[10] == "OneHundredAndTen" &&
+             matrix[11] == "OneHundredAndTwenty", "The const square brackets operator does not work correctly, read values are wrong!");
 }
 
 void OtherFunctionalityTests::testStringMatrixGetBaseArray()
@@ -260,7 +260,7 @@ void OtherFunctionalityTests::testStringMatrixGetBaseArray()
         QFAIL("Passing resources outside the matrix failed, either the pointer is not null or the number of elements is different from 0!");
     }
 
-    mPrimaryStringMatrix = {2, 3, {"1", "2", "3", "4", "5", "6"}};
+    mPrimaryStringMatrix = {2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
 
     baseArrayPtr = static_cast<std::string*>(mPrimaryStringMatrix.getBaseArray(nrOfElements));
 
@@ -269,12 +269,12 @@ void OtherFunctionalityTests::testStringMatrixGetBaseArray()
         QFAIL("Passing resources outside the matrix failed, either the pointer is null or the number of elements is not correct!");
     }
 
-    QVERIFY2(baseArrayPtr[0] == "1" &&
-             baseArrayPtr[1] == "2" &&
-             baseArrayPtr[2] == "3" &&
-             baseArrayPtr[3] == "4" &&
-             baseArrayPtr[4] == "5" &&
-             baseArrayPtr[5] == "6", "Passing resources outside the matrix failed, the element values are not correct!");
+    QVERIFY2(baseArrayPtr[0] == "First" &&
+             baseArrayPtr[1] == "Second" &&
+             baseArrayPtr[2] == "Third" &&
+             baseArrayPtr[3] == "Fourth" &&
+             baseArrayPtr[4] == "Fifth" &&
+             baseArrayPtr[5] == "Sixth", "Passing resources outside the matrix failed, the element values are not correct!");
 
     QVERIFY(mPrimaryStringMatrix == StringMatrix{});
 
