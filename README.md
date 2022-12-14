@@ -9,6 +9,7 @@ However please do not use it in critical applications. Although I tested the fun
 
 To conclude: use it at your own risk, I will not be held accountable for any damages it might cause whatsoever. Thanks for understanding!
 
+
 1. INSTALLATION SCENARIOS
 
 Please note that for scenarios 1.1 and 1.2 you need to have the Qt framework installed. This is because the unit tests have been written using Qt tests. I recommend using Qt creator for performing the build although this is not mandatory (I recently migrated the whole project to CMake so it should be possible to use other IDEs too). For using other IDEs additional setup would be required so CMake properly detects the Qt environment (otherwise CMake excludes all tests from build). So far I have only run the tests after building from Qt Creator.
@@ -47,7 +48,15 @@ Please follow these steps:
 2) Add following path to the include paths of your project: [PATH TO THIRD-PARTY DIR]/Matrix/MatrixLib/Matrix
 3) #include "matrix.h" (and/or any other file contained within MatrixLib/Matrix) wherever required
 
-Note: please do NOT directly #include any of the files belonging to MatrixLib/Utils into your code files! These are only meant for internal use by the Matrix library.
+Notes:
+- please do NOT directly #include any of the files belonging to MatrixLib/Utils into your code files! These are only meant for internal use by the Matrix library.
+- the matrix library requires C++17 and above
+
+Important notice! Each object used as matrix template type should satisfy following requirements:
+- it should be default constructible
+- it should be move/copy constructible/assignable and swappable
+- it should support the comparison operators == and !=
+
 
 2. ESSENTIAL FUNCTIONALITY
 
@@ -127,6 +136,7 @@ The M-Iterators have following sub-types:
 Final iterator notes:
 - the begin() function has been implemented to make it possible to pass through matrix elements by using the auto keyword. This can only be done in the "Z" direction starting with element [0][0] as begin() returns a ZIterator object.
 - the isValidWithMatrix() method of all iterator classes has been created mainly as a helper function for writing unit tests for iterators. Although it can be used in "production" scenarios it is not recommended to do so. Instead it should be assumed that an iterator becomes invalid once the structure of the matrix it points to changes. Examples of structure modifications are: matrix resize, using the move constructor, using assignment operators, removing a row/column, clearing the matrix content, etc. In this case the iterator should be reset (e.g. to matrix begin) or a new one should be created.
+
 
 3. ERROR HANDLING
 
