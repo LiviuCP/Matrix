@@ -425,6 +425,9 @@ private:
     // resize the matrix (no elements initialization) by ensuring the new row/column capacity is not lower than the new number of rows/columns
     void _adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns);
 
+    // used for matrix-to-matrix copy construction and assignment
+    void _copyAllItemsFromMatrix(const Matrix<DataType>& matrix);
+
     // used for the matrix-to-matrix move construction and assignment
     void _moveAllItemsFromMatrix(Matrix<DataType>& matrix);
 
@@ -3256,12 +3259,9 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRowsColumns,
 
 template <typename DataType>
 Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
+    : Matrix{}
 {
-    const size_type c_RowCapacityToAlloc{matrix.m_NrOfRows + matrix.m_NrOfRows / 4};
-    const size_type c_ColumnCapacityToAlloc{matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4};
-
-    _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
-    _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, m_NrOfColumns);
+    _copyAllItemsFromMatrix(matrix);
 }
 
 template<typename DataType>
@@ -3317,30 +3317,7 @@ const DataType& Matrix<DataType>::operator[](Matrix<DataType>::size_type index) 
 template <typename DataType>
 Matrix<DataType>& Matrix<DataType>::operator=(const Matrix<DataType>& matrix)
 {
-    if (&matrix != this && (m_pBaseArrayPtr || matrix.m_pBaseArrayPtr))
-    {
-        const size_type c_RowCapacityToAlloc{matrix.m_NrOfRows + matrix.m_NrOfRows / 4};
-        const size_type c_ColumnCapacityToAlloc{matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4};
-
-        if (m_RowCapacity != c_RowCapacityToAlloc || m_ColumnCapacity != c_ColumnCapacityToAlloc)
-        {
-            _deallocMemory();
-            _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
-        }
-        else
-        {
-            /* ensure existing elements are destroyed correctly
-               (the number of rows/columns between the two matrixes might not coincide meaning some elements might be left "hanging" - outside bounds elements should be uninitialized)
-            */
-            _destroyItems(0, 0, m_NrOfRows, m_NrOfColumns);
-
-            m_NrOfRows = matrix.m_NrOfRows;
-            m_NrOfColumns = matrix.m_NrOfColumns;
-        }
-
-        _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, m_NrOfColumns);
-    }
-
+    _copyAllItemsFromMatrix(matrix);
     return *this;
 }
 
@@ -4680,6 +4657,34 @@ void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRo
 
     _deallocMemory();
     _allocMemory(nrOfRows, nrOfColumns, c_OldRowCapacity < nrOfRows ? c_NewRowCapacity : c_OldRowCapacity, c_OldColumnCapacity < nrOfColumns ? c_NewColumnCapacity : c_OldColumnCapacity);
+}
+
+template<typename DataType>
+void Matrix<DataType>::_copyAllItemsFromMatrix(const Matrix<DataType>& matrix)
+{
+    if (&matrix != this)
+    {
+        const size_type c_RowCapacityToAlloc{matrix.m_NrOfRows + matrix.m_NrOfRows / 4};
+        const size_type c_ColumnCapacityToAlloc{matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4};
+
+        if (m_RowCapacity != c_RowCapacityToAlloc || m_ColumnCapacity != c_ColumnCapacityToAlloc)
+        {
+            _deallocMemory();
+            _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
+        }
+        else
+        {
+            /* ensure existing elements are destroyed correctly
+              (the number of rows/columns between the two matrixes might not coincide meaning some elements might be left "hanging" - outside bounds elements should be uninitialized)
+            */
+            _destroyItems(0, 0, m_NrOfRows, m_NrOfColumns);
+
+            m_NrOfRows = matrix.m_NrOfRows;
+            m_NrOfColumns = matrix.m_NrOfColumns;
+        }
+
+        _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, m_NrOfColumns);
+    }
 }
 
 template<typename DataType>
