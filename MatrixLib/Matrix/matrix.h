@@ -425,6 +425,9 @@ private:
     // resize the matrix (no elements initialization) by ensuring the new row/column capacity is not lower than the new number of rows/columns
     void _adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns);
 
+    // used for the matrix-to-matrix move construction and assignment
+    void _moveAllItemsFromMatrix(Matrix<DataType>& matrix);
+
     // initialize all or part of the elements by copying from source matrix
     void _copyInitItems(const Matrix<DataType>& srcMatrix, size_type srcStartingRowNr, size_type srcColumnOffset, size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
 
@@ -3263,19 +3266,8 @@ Matrix<DataType>::Matrix(const Matrix<DataType>& matrix)
 
 template<typename DataType>
 Matrix<DataType>::Matrix(Matrix<DataType>&& matrix)
-    : m_pAllocPtr{matrix.m_pAllocPtr}
-    , m_pBaseArrayPtr{matrix.m_pBaseArrayPtr}
-    , m_NrOfRows{matrix.m_NrOfRows}
-    , m_NrOfColumns{matrix.m_NrOfColumns}
-    , m_RowCapacity{matrix.m_RowCapacity}
-    , m_ColumnCapacity{matrix.m_ColumnCapacity}
 {
-    matrix.m_pAllocPtr = nullptr;
-    matrix.m_pBaseArrayPtr = nullptr;
-    matrix.m_NrOfRows = 0;
-    matrix.m_NrOfColumns = 0;
-    matrix.m_RowCapacity = 0;
-    matrix.m_ColumnCapacity = 0;
+    _moveAllItemsFromMatrix(matrix);
 }
 
 template<typename DataType>
@@ -3362,22 +3354,7 @@ Matrix<DataType>& Matrix<DataType>::operator=(Matrix<DataType>&& matrix)
             _deallocMemory();
         }
 
-        if (matrix.m_pBaseArrayPtr)
-        {
-            m_pAllocPtr = matrix.m_pAllocPtr;
-            m_pBaseArrayPtr = matrix.m_pBaseArrayPtr;
-            m_NrOfRows = matrix.m_NrOfRows;
-            m_NrOfColumns = matrix.m_NrOfColumns;
-            m_RowCapacity = matrix.m_RowCapacity;
-            m_ColumnCapacity = matrix.m_ColumnCapacity;
-
-            matrix.m_pAllocPtr = nullptr;
-            matrix.m_pBaseArrayPtr = nullptr;
-            matrix.m_NrOfRows = 0;
-            matrix.m_NrOfColumns = 0;
-            matrix.m_RowCapacity = 0;
-            matrix.m_ColumnCapacity = 0;
-        }
+        _moveAllItemsFromMatrix(matrix);
     }
 
     return *this;
@@ -4703,6 +4680,19 @@ void Matrix<DataType>::_adjustSizeAndCapacity(Matrix<DataType>::size_type nrOfRo
 
     _deallocMemory();
     _allocMemory(nrOfRows, nrOfColumns, c_OldRowCapacity < nrOfRows ? c_NewRowCapacity : c_OldRowCapacity, c_OldColumnCapacity < nrOfColumns ? c_NewColumnCapacity : c_OldColumnCapacity);
+}
+
+template<typename DataType>
+void Matrix<DataType>::_moveAllItemsFromMatrix(Matrix<DataType>& matrix)
+{
+    m_pAllocPtr = matrix.m_pAllocPtr;
+    m_pBaseArrayPtr = matrix.m_pBaseArrayPtr;
+    m_NrOfRows = matrix.m_NrOfRows;
+    m_NrOfColumns = matrix.m_NrOfColumns;
+    m_RowCapacity = matrix.m_RowCapacity;
+    m_ColumnCapacity = matrix.m_ColumnCapacity;
+
+    matrix._allocMemory(0, 0);
 }
 
 template<typename DataType>
