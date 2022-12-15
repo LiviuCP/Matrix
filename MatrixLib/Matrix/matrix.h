@@ -3189,13 +3189,8 @@ void Matrix<DataType>::ConstReverseMIterator::_decrement()
 
 template <typename DataType>
 Matrix<DataType>::Matrix()
-    : m_pAllocPtr{nullptr}
-    , m_pBaseArrayPtr{nullptr}
-    , m_NrOfRows{0}
-    , m_NrOfColumns{0}
-    , m_RowCapacity{0}
-    , m_ColumnCapacity{0}
 {
+    _allocMemory(0, 0);
 }
 
 template<typename DataType>
