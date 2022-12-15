@@ -446,6 +446,9 @@ private:
     // ensures the selected sub-matrix (elements to change) fits into matrix
     void _clampSubMatrixSelectionParameters(size_type& startingRowNr, size_type& columnOffset, size_type& nrOfRows, size_type& nrOfColumns);
 
+    // converts the matrix to a single dimensional array of elements of m_RowCapacity * m_ColumnCapacity size (might include uninitialized elements)
+    void* _convertToArray(size_type& nrOfElements);
+
     bool _isEqualTo(const Matrix<DataType>& matrix) const;
 
     DataType* m_pAllocPtr; // use only this pointer in _allocMemory()/_deallocMemory() to allocate/de-allocate matrix elements
@@ -3345,21 +3348,8 @@ void* Matrix<DataType>::getBaseArray(Matrix<DataType>::size_type& nrOfElements)
 
     if (m_pBaseArrayPtr)
     {
-        // when transfering ownership user should get exactly the number of elements contained in the used lines and columns (no extra capacity to be included)
-        shrinkToFit();
-
-        // effective transfer of ownership
-        nrOfElements = m_NrOfRows * m_NrOfColumns;
-        pAllocPtr = m_pAllocPtr;
-
-        // empty the matrix object
-        std::free(m_pBaseArrayPtr);
-        m_pBaseArrayPtr = nullptr;
-        m_pAllocPtr = nullptr;
-        m_NrOfRows = 0;
-        m_NrOfColumns = 0;
-        m_RowCapacity = 0;
-        m_ColumnCapacity = 0;
+        shrinkToFit(); // when transfering ownership user should get exactly the number of elements contained in the used lines and columns (no extra capacity to be included)
+        pAllocPtr = _convertToArray(nrOfElements);
     }
     else
     {
@@ -4789,6 +4779,27 @@ void Matrix<DataType>::_clampSubMatrixSelectionParameters(size_type& startingRow
     columnOffset = std::clamp(columnOffset, 0, m_NrOfColumns);
     nrOfRows = std::clamp(nrOfRows, 0, m_NrOfRows - startingRowNr);
     nrOfColumns = std::clamp(nrOfColumns, 0, m_NrOfColumns - columnOffset);
+}
+
+template<typename DataType>
+void* Matrix<DataType>::_convertToArray(Matrix<DataType>::size_type& nrOfElements)
+{
+    // effective transfer of ownership (items - including uninitalized ones)
+    void* pAllocPtr{m_pAllocPtr};
+    nrOfElements = m_RowCapacity * m_ColumnCapacity;
+
+    // delete the matrix row pointers
+    std::free(m_pBaseArrayPtr);
+
+    // reset all internal variables to bring the matrix to empty state
+    m_pBaseArrayPtr = nullptr;
+    m_pAllocPtr = nullptr;
+    m_NrOfRows = 0;
+    m_NrOfColumns = 0;
+    m_RowCapacity = 0;
+    m_ColumnCapacity = 0;
+
+    return pAllocPtr;
 }
 
 template<typename DataType>
