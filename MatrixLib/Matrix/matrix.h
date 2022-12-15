@@ -4699,22 +4699,19 @@ void Matrix<DataType>::_copyInitItems(const Matrix<DataType>& srcMatrix,
                                       Matrix<DataType>::size_type nrOfRows,
                                       Matrix<DataType>::size_type nrOfColumns)
 {
-    if (m_NrOfRows > 0 && m_NrOfColumns > 0 && srcMatrix.m_NrOfRows > 0 && srcMatrix.m_NrOfColumns > 0)
+    const size_type c_SrcStartingRowNr{std::clamp(srcStartingRowNr, 0, srcMatrix.m_NrOfRows)};
+    const size_type c_SrcColumnOffset{std::clamp(srcColumnOffset, 0, srcMatrix.m_NrOfColumns)};
+    const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
+    const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
+    const size_type c_NrOfRows{std::clamp(nrOfRows, 0, std::min(srcMatrix.m_NrOfRows - c_SrcStartingRowNr, m_NrOfRows - c_StartingRowNr))};
+    const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, std::min(srcMatrix.m_NrOfColumns - c_SrcColumnOffset, m_NrOfColumns - c_ColumnOffset))};
+
+    size_type currentRowNr{c_StartingRowNr};
+
+    for (size_type rowNr{c_SrcStartingRowNr}; rowNr != c_SrcStartingRowNr + c_NrOfRows; ++rowNr)
     {
-        const size_type c_SrcStartingRowNr{std::clamp(srcStartingRowNr, 0, srcMatrix.m_NrOfRows)};
-        const size_type c_SrcColumnOffset{std::clamp(srcColumnOffset, 0, srcMatrix.m_NrOfColumns)};
-        const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
-        const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
-        const size_type c_NrOfRows{std::clamp(nrOfRows, 0, std::min(srcMatrix.m_NrOfRows - c_SrcStartingRowNr, m_NrOfRows - c_StartingRowNr))};
-        const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, std::min(srcMatrix.m_NrOfColumns - c_SrcColumnOffset, m_NrOfColumns - c_ColumnOffset))};
-
-        size_type currentRowNr{c_StartingRowNr};
-
-        for (size_type rowNr{c_SrcStartingRowNr}; rowNr != c_SrcStartingRowNr + c_NrOfRows; ++rowNr)
-        {
-            std::uninitialized_copy_n(srcMatrix.m_pBaseArrayPtr[rowNr] + c_SrcColumnOffset, c_NrOfColumns, m_pBaseArrayPtr[currentRowNr] + c_ColumnOffset);
-            ++currentRowNr;
-        }
+        std::uninitialized_copy_n(srcMatrix.m_pBaseArrayPtr[rowNr] + c_SrcColumnOffset, c_NrOfColumns, m_pBaseArrayPtr[currentRowNr] + c_ColumnOffset);
+        ++currentRowNr;
     }
 }
 
@@ -4725,14 +4722,11 @@ void Matrix<DataType>::_fillInitItems(Matrix<DataType>::size_type startingRowNr,
                                       Matrix<DataType>::size_type nrOfColumns,
                                       const DataType& value)
 {
-    if (m_NrOfRows > 0 && m_NrOfColumns > 0)
-    {
-        _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
+    _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
 
-        for (size_type rowNr{startingRowNr}; rowNr != startingRowNr + nrOfRows; ++rowNr)
-        {
-            std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + columnOffset, nrOfColumns, value);
-        }
+    for (size_type rowNr{startingRowNr}; rowNr != startingRowNr + nrOfRows; ++rowNr)
+    {
+        std::uninitialized_fill_n(m_pBaseArrayPtr[rowNr] + columnOffset, nrOfColumns, value);
     }
 }
 
@@ -4742,14 +4736,11 @@ void Matrix<DataType>::_defaultConstructInitItems(Matrix<DataType>::size_type st
                                                   Matrix<DataType>::size_type nrOfRows,
                                                   Matrix<DataType>::size_type nrOfColumns)
 {
-    if (m_NrOfRows > 0 && m_NrOfColumns > 0)
-    {
-        _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
+    _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
 
-        for (size_type rowNr{startingRowNr}; rowNr != startingRowNr + nrOfRows; ++rowNr)
-        {
-            std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + columnOffset, nrOfColumns);
-        }
+    for (size_type rowNr{startingRowNr}; rowNr != startingRowNr + nrOfRows; ++rowNr)
+    {
+        std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + columnOffset, nrOfColumns);
     }
 }
 
@@ -4759,22 +4750,20 @@ void Matrix<DataType>::_destroyItems(Matrix<DataType>::size_type startingRowNr,
                                      Matrix<DataType>::size_type nrOfRows,
                                      Matrix<DataType>::size_type nrOfColumns)
 {
-    if (m_NrOfRows > 0 && m_NrOfColumns > 0)
-    {
-        _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
+    _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
 
-        for (size_type rowNr{startingRowNr}; rowNr != startingRowNr + nrOfRows; ++rowNr)
-        {
-            std::destroy_n(m_pBaseArrayPtr[rowNr] + columnOffset, nrOfColumns);
-        }
+    for (size_type rowNr{startingRowNr}; rowNr != startingRowNr + nrOfRows; ++rowNr)
+    {
+        std::destroy_n(m_pBaseArrayPtr[rowNr] + columnOffset, nrOfColumns);
     }
 }
 
 template<typename DataType>
-void Matrix<DataType>::_clampSubMatrixSelectionParameters(size_type& startingRowNr, size_type& columnOffset, size_type& nrOfRows, size_type& nrOfColumns)
+void Matrix<DataType>::_clampSubMatrixSelectionParameters(Matrix<DataType>::size_type& startingRowNr,
+                                                          Matrix<DataType>::size_type& columnOffset,
+                                                          Matrix<DataType>::size_type& nrOfRows,
+                                                          Matrix<DataType>::size_type& nrOfColumns)
 {
-    assert(m_NrOfRows > 0 && m_NrOfColumns > 0);
-
     startingRowNr = std::clamp(startingRowNr, 0, m_NrOfRows);
     columnOffset = std::clamp(columnOffset, 0, m_NrOfColumns);
     nrOfRows = std::clamp(nrOfRows, 0, m_NrOfRows - startingRowNr);
