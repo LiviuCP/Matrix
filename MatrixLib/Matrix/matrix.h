@@ -4486,17 +4486,19 @@ std::pair<typename Matrix<DataType>::size_type,
                                                                                                       Matrix<DataType>::size_type rowCapacity,
                                                                                                       Matrix<DataType>::size_type columnCapacity)
 {
-    const size_type c_NewRowCapacity{rowCapacity > nrOfRows ? rowCapacity : nrOfRows};
-    const size_type c_NewColumnCapacity{columnCapacity > nrOfColumns ? columnCapacity : nrOfColumns};
-    const size_type c_NrOfRowsToKeep{nrOfRows > m_NrOfRows ? m_NrOfRows : nrOfRows};
-    const size_type c_NrOfColumnsToKeep{nrOfColumns > m_NrOfColumns ? m_NrOfColumns : nrOfColumns};
+    const size_type c_NewNrOfRows{(nrOfRows > 0 && nrOfColumns > 0) ? nrOfRows : 0};
+    const size_type c_NewNrOfColumns{c_NewNrOfRows > 0 ? nrOfColumns : 0};
+    const size_type c_NewRowCapacity{std::max(rowCapacity, c_NewNrOfRows)};
+    const size_type c_NewColumnCapacity{std::max(columnCapacity, c_NewNrOfColumns)};
+    const size_type c_NrOfRowsToKeep{std::min(m_NrOfRows, c_NewNrOfRows)};
+    const size_type c_NrOfColumnsToKeep{std::min(m_NrOfColumns, c_NewNrOfColumns)};
 
     if (c_NewRowCapacity != m_RowCapacity || c_NewColumnCapacity != m_ColumnCapacity)
     {
 
         Matrix matrix{std::move(*this)};
         _deallocMemory(); // actually not required, just for safety purposes
-        _allocMemory(nrOfRows, nrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
+        _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
 
         // copy the retained items back
         _copyInitItems(matrix, 0, 0, 0, 0, c_NrOfRowsToKeep, c_NrOfColumnsToKeep);
@@ -4504,19 +4506,19 @@ std::pair<typename Matrix<DataType>::size_type,
     else
     {
         // ensure the items from the right side of the retained items get properly destroyed
-        if (nrOfColumns < m_NrOfColumns)
+        if (c_NewNrOfColumns < m_NrOfColumns)
         {
-            _destroyItems(0, c_NrOfColumnsToKeep, c_NrOfRowsToKeep, m_NrOfColumns - nrOfColumns);
+            _destroyItems(0, c_NrOfColumnsToKeep, c_NrOfRowsToKeep, m_NrOfColumns - c_NewNrOfColumns);
         }
 
         // same for the items below
-        if (nrOfRows < m_NrOfRows)
+        if (c_NewNrOfRows < m_NrOfRows)
         {
-            _destroyItems(c_NrOfRowsToKeep, 0, m_NrOfRows, m_NrOfColumns);
+            _destroyItems(c_NrOfRowsToKeep, 0, m_NrOfRows - c_NewNrOfRows, m_NrOfColumns);
         }
 
-        m_NrOfRows = nrOfRows;
-        m_NrOfColumns = nrOfColumns;
+        m_NrOfRows = c_NewNrOfRows;
+        m_NrOfColumns = c_NewNrOfColumns;
     }
 
     return {c_NrOfRowsToKeep, c_NrOfColumnsToKeep};
