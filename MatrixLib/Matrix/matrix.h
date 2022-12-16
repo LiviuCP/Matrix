@@ -407,10 +407,13 @@ public:
     ConstZIterator end() const;
 
 private:
+    // resize matrix, returns number of preserved elements (rows * columns), new elements should be initialized by caller
     std::pair<size_type, size_type> _resizeWithUninitializedNewElements(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity, size_type columnCapacity);
+
+    // inserts the uninitialized row into the required position, initialialization is left to the caller
     void _insertUninitializedRow(size_type rowNr);
 
-    // inserts the uninitialized column either in the required position or in the last position (depending on available column capacity)
+    // inserts the uninitialized column either into the required position or into the last position (depending on available column capacity)
     size_type _insertUninitializedColumn(size_type columnNr);
 
     // places the last column into the new position by performing a left rotation
@@ -449,10 +452,12 @@ private:
     // converts the matrix to a single dimensional array of elements of m_RowCapacity * m_ColumnCapacity size (might include uninitialized elements)
     void* _convertToArray(size_type& nrOfElements);
 
+    // used by == and != operators
     bool _isEqualTo(const Matrix<DataType>& matrix) const;
 
     DataType* m_pAllocPtr; // use only this pointer in _allocMemory()/_deallocMemory() to allocate/de-allocate matrix elements
     DataType** m_pBaseArrayPtr; // this pointer manages the row pointers array
+
     size_type m_NrOfRows;
     size_type m_NrOfColumns;
     size_type m_RowCapacity;
@@ -3527,6 +3532,7 @@ void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr)
         std::uninitialized_default_construct_n(m_pBaseArrayPtr[rowNr] + c_UninitializedColumnNr, 1);
     }
 
+    // the rotation of the column should be done after initialization, otherwise an error occurs when rotating uninitialized elements
     if (c_UninitializedColumnNr != columnNr)
     {
         assert(c_UninitializedColumnNr == m_NrOfColumns - 1);
@@ -3546,6 +3552,7 @@ void Matrix<DataType>::insertColumn(Matrix<DataType>::size_type columnNr,
 
     _fillInitItems(0, c_UninitializedColumnNr, m_NrOfRows, 1, value);
 
+    // the rotation of the column should be done after initialization, otherwise an error occurs when rotating uninitialized elements
     if (c_UninitializedColumnNr != columnNr)
     {
         assert(c_UninitializedColumnNr == m_NrOfColumns - 1);
@@ -4518,49 +4525,50 @@ std::pair<typename Matrix<DataType>::size_type,
 template<typename DataType>
 void Matrix<DataType>::_insertUninitializedRow(Matrix<DataType>::size_type rowNr)
 {
+    const size_type c_RowNr{std::clamp(rowNr, 0, m_NrOfRows)};
+
     // double row capacity if no spare capacity left (to defer any re-size when inserting further rows)
     if (m_NrOfRows == m_RowCapacity)
     {
-        resize(m_NrOfRows, m_NrOfColumns, 2 * m_RowCapacity, m_ColumnCapacity);
+        Matrix helperMatrix{std::move(*this)};
+        _deallocMemory(); // not quite necessary, just for safety/consistency purposes
+        _allocMemory(helperMatrix.m_NrOfRows + 1, helperMatrix.m_NrOfColumns, 2 * helperMatrix.m_NrOfRows, helperMatrix.m_ColumnCapacity);
+
+        // copy everything back to the top/bottom of the inserted row (this one stays uninitialized - will be initialized in a separate step)
+        _copyInitItems(helperMatrix, 0, 0, 0, 0, c_RowNr, m_NrOfColumns);
+        _copyInitItems(helperMatrix, c_RowNr, 0, c_RowNr + 1, 0, m_NrOfRows - c_RowNr, m_NrOfColumns);
     }
-
-    ++m_NrOfRows;
-
-    // move the (previously) first row from unused capacity area into the insert position (all rows after the insert position moved one position upwards)
-    DataType* pInsertedRow{m_pBaseArrayPtr[m_NrOfRows-1]};
-
-    for (size_type row{m_NrOfRows - 1}; row > rowNr; --row)
+    else
     {
-        m_pBaseArrayPtr[row] = m_pBaseArrayPtr[row - 1];
+        // new row is initially last row, move it into the insert position (all rows after the insert position moved one position downwards)
+        ++m_NrOfRows;
+        std::rotate(m_pBaseArrayPtr + c_RowNr, m_pBaseArrayPtr + m_NrOfRows - 1, m_pBaseArrayPtr + m_NrOfRows);
     }
-
-    m_pBaseArrayPtr[rowNr] = pInsertedRow;
-    pInsertedRow = nullptr;
 }
 
 template<typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::_insertUninitializedColumn(Matrix<DataType>::size_type columnNr)
 {
-    size_type uninitializedColumnNr{columnNr};
+    size_type resultingColumnNr{std::clamp(columnNr, 0, m_NrOfColumns)};
 
     if (m_NrOfColumns == m_ColumnCapacity)
     {
-        Matrix matrix{std::move(*this)};
+        Matrix helperMatrix{std::move(*this)};
 
         _deallocMemory(); // not quite necessary, just for safety/consistency purposes
-        _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns + 1, matrix.m_RowCapacity, 2 * matrix.m_NrOfColumns);
+        _allocMemory(helperMatrix.m_NrOfRows, helperMatrix.m_NrOfColumns + 1, helperMatrix.m_RowCapacity, 2 * helperMatrix.m_NrOfColumns);
 
         // copy everything back to the left/right of the inserted column (this one stays uninitialized - will be initialized in a separate step)
-        _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, columnNr);
-        _copyInitItems(matrix, 0, columnNr, 0, columnNr + 1, m_NrOfRows, m_NrOfColumns - columnNr);
+        _copyInitItems(helperMatrix, 0, 0, 0, 0, m_NrOfRows, resultingColumnNr);
+        _copyInitItems(helperMatrix, 0, resultingColumnNr, 0, resultingColumnNr + 1, m_NrOfRows, m_NrOfColumns - resultingColumnNr);
     }
     else
     {
-        uninitializedColumnNr = m_NrOfColumns;
+        resultingColumnNr = m_NrOfColumns;
         ++m_NrOfColumns;
     }
 
-    return uninitializedColumnNr;
+    return resultingColumnNr;
 }
 
 template<typename DataType>
