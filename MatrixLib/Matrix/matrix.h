@@ -416,6 +416,15 @@ private:
     // inserts the uninitialized column either into the required position or into the last position (depending on available column capacity)
     size_type _insertUninitializedColumn(size_type columnNr);
 
+    // erases the row or column (depending on isRow) by reallocating memory and putting back all elements except the row/column (dimension element) to be removed
+    void _reallocEraseDimensionElement(size_type dimensionElementNr, bool isRow);
+
+    // erases the row without changing matrix capacity (shift bottom rows to top)
+    void _shiftEraseRow(size_type rowNr);
+
+    // erases the column without changing matrix capacity (shift right columns to left)
+    void _shiftEraseColumn(size_type columnNr);
+
     // places the last column into the new position by performing a left rotation
     void _rotateLastColumn(size_type newColumnNr);
 
@@ -3566,22 +3575,19 @@ void Matrix<DataType>::eraseRow(Matrix<DataType>::size_type rowNr)
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
     CHECK_ERROR_CONDITION(rowNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
 
-    if (m_NrOfRows > 1)
-    {
-        std::rotate(m_pBaseArrayPtr + rowNr, m_pBaseArrayPtr + rowNr + 1, m_pBaseArrayPtr + m_NrOfRows);
-        std::destroy_n(m_pBaseArrayPtr[m_NrOfRows - 1], m_NrOfColumns); // the memory outside matrix bounds should be uninitialized
-        --m_NrOfRows;
+    const size_type c_RequiredNrOfRows{m_NrOfRows - 1};
 
-        // prevent overcapacity
-        if (m_NrOfRows <= m_RowCapacity / 4)
-        {
-            resize(m_NrOfRows, m_NrOfColumns, 2 * m_NrOfRows, m_ColumnCapacity);
-        }
+    if (0 == c_RequiredNrOfRows)
+    {
+        _deallocMemory();
+    }
+    else if (c_RequiredNrOfRows <= m_RowCapacity / 4)
+    {
+        _reallocEraseDimensionElement(rowNr, true);
     }
     else
     {
-        // this corner case needs to be considered for avoiding situations when number of rows is 0 and number of columns is different from 0
-        _deallocMemory();
+        _shiftEraseRow(rowNr);
     }
 }
 
@@ -3591,28 +3597,19 @@ void Matrix<DataType>::eraseColumn(Matrix<DataType>::size_type columnNr)
     CHECK_ERROR_CONDITION(columnNr < 0, Matr::errorMessages[Matr::Errors::NEGATIVE_ARG]);
     CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
 
-    if (1 == m_NrOfColumns)
+    const size_type c_RequiredNrOfColumns{m_NrOfColumns - 1};
+
+    if (0 == c_RequiredNrOfColumns)
     {
         _deallocMemory();
     }
-    else if (m_NrOfColumns - 1 <= m_ColumnCapacity / 4)
+    else if (c_RequiredNrOfColumns <= m_ColumnCapacity / 4)
     {
-        Matrix matrix{};
-        std::swap(*this, matrix);
-        _deallocMemory();
-        _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns - 1, matrix.m_RowCapacity, (matrix.m_NrOfColumns - 1) * 2);
-        _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, columnNr);
-        _copyInitItems(matrix, 0, columnNr + 1, 0, columnNr, m_NrOfRows, m_NrOfColumns - columnNr);
+        _reallocEraseDimensionElement(columnNr, false);
     }
     else
     {
-        for(size_type row{0}; row<m_NrOfRows; ++row)
-        {
-            std::copy(m_pBaseArrayPtr[row] + columnNr + 1, m_pBaseArrayPtr[row] + m_NrOfColumns, m_pBaseArrayPtr[row] + columnNr);
-            std::destroy_n(m_pBaseArrayPtr[row] + m_NrOfColumns - 1, 1); // the memory outside matrix bounds should be uninitialized
-        }
-
-        --m_NrOfColumns;
+        _shiftEraseColumn(columnNr);
     }
 }
 
@@ -4571,6 +4568,70 @@ typename Matrix<DataType>::size_type Matrix<DataType>::_insertUninitializedColum
     }
 
     return resultingColumnNr;
+}
+
+template<typename DataType>
+void Matrix<DataType>::_reallocEraseDimensionElement(Matrix<DataType>::size_type dimensionElementNr, bool isRow)
+{
+    if (m_pBaseArrayPtr)
+    {
+        const size_type c_RequiredNrOfRows{isRow ? m_NrOfRows - 1 : m_NrOfRows};
+        const size_type c_RequiredNrOfColumns{isRow ? m_NrOfColumns : m_NrOfColumns - 1};
+        const size_type c_RequiredRowCapacity{isRow ? 2 * c_RequiredNrOfRows : m_RowCapacity};
+        const size_type c_RequiredColumnCapacity{isRow ? m_ColumnCapacity : 2 * c_RequiredNrOfColumns};
+
+        // row or column nr depending on scenario (variable isRow)
+        const size_type c_DimensionElementNr{std::clamp(dimensionElementNr, 0, isRow ? c_RequiredNrOfRows : c_RequiredNrOfColumns)};
+
+        // part one: top part (rows) / left part (columns) - relative to erased row/column
+        const size_type c_PartOneNrOfRows{isRow ? c_DimensionElementNr : c_RequiredNrOfRows};
+        const size_type c_PartOneNrOfColumns{isRow ? c_RequiredNrOfColumns : c_DimensionElementNr};
+
+        // part two: bottom part (rows) / right part (columns) - relative to erased row/column
+        const size_type c_PartTwoSrcStartingRowNr{isRow ? c_DimensionElementNr + 1 : 0};
+        const size_type c_PartTwoSrcColumnOffset{c_DimensionElementNr + 1 - c_PartTwoSrcStartingRowNr};
+        const size_type c_PartTwoStartingRowNr{isRow ? c_DimensionElementNr : 0};
+        const size_type c_PartTwoColumnOffset{c_DimensionElementNr - c_PartTwoStartingRowNr};
+        const size_type c_PartTwoNrOfRows{c_RequiredNrOfRows - c_PartTwoStartingRowNr};
+        const size_type c_PartTwoNrOfColumns{c_RequiredNrOfColumns - c_PartTwoColumnOffset};
+
+        Matrix helperMatrix{std::move(*this)};
+
+        _deallocMemory(); // not really necessary, just for safety purposes
+        _allocMemory(c_RequiredNrOfRows, c_RequiredNrOfColumns, c_RequiredRowCapacity, c_RequiredColumnCapacity);
+        _copyInitItems(helperMatrix, 0, 0, 0, 0, c_PartOneNrOfRows, c_PartOneNrOfColumns);
+        _copyInitItems(helperMatrix, c_PartTwoSrcStartingRowNr, c_PartTwoSrcColumnOffset, c_PartTwoStartingRowNr, c_PartTwoColumnOffset, c_PartTwoNrOfRows, c_PartTwoNrOfColumns);
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::_shiftEraseRow(Matrix<DataType>::size_type rowNr)
+{
+    if (m_NrOfRows > 0)
+    {
+        const size_type c_RowNr{std::clamp(rowNr, 0, m_NrOfRows - 1)};
+
+        std::rotate(m_pBaseArrayPtr + c_RowNr, m_pBaseArrayPtr + c_RowNr + 1, m_pBaseArrayPtr + m_NrOfRows);
+        std::destroy_n(m_pBaseArrayPtr[m_NrOfRows - 1], m_NrOfColumns); // the memory outside matrix bounds should be uninitialized
+        --m_NrOfRows;
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::_shiftEraseColumn(Matrix<DataType>::size_type columnNr)
+{
+    if (m_NrOfColumns > 0)
+    {
+        const size_type c_ColumnNr{std::clamp(columnNr, 0, m_NrOfColumns - 1)};
+
+        for(size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
+        {
+            std::copy(m_pBaseArrayPtr[rowNr] + c_ColumnNr + 1, m_pBaseArrayPtr[rowNr] + m_NrOfColumns, m_pBaseArrayPtr[rowNr] + c_ColumnNr);
+            std::destroy_n(m_pBaseArrayPtr[rowNr] + m_NrOfColumns - 1, 1); // the memory outside matrix bounds should be uninitialized
+        }
+
+        --m_NrOfColumns;
+    }
 }
 
 template<typename DataType>
