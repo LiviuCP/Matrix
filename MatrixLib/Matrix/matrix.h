@@ -231,8 +231,8 @@ public:
     Matrix(size_type nrOfRows, size_type nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
     Matrix(size_type nrOfRows, size_type nrOfColumns, const DataType& value);
     Matrix(size_type nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues);
-    Matrix(const Matrix<DataType>& matrix);
-    Matrix(Matrix<DataType>&& matrix);
+    Matrix(const Matrix& matrix);
+    Matrix(Matrix&& matrix);
     ~Matrix();
 
     DataType& at(size_type rowNr, size_type columnNr);
@@ -241,8 +241,8 @@ public:
     DataType& operator[] (size_type index);
     const DataType& operator[](size_type index) const;
 
-    Matrix<DataType>& operator=(const Matrix<DataType>& matrix);
-    Matrix<DataType>& operator=(Matrix<DataType>&& matrix);
+    Matrix& operator=(const Matrix& matrix);
+    Matrix& operator=(Matrix&& matrix);
 
     // transfers ownership of the data to the user (object becomes empty and user becomes responsible for de-allocating the data properly)
     void* getBaseArray(size_type& nrOfElements);
@@ -252,7 +252,7 @@ public:
     size_type getRowCapacity() const;
     size_type getColumnCapacity() const;
 
-    void transpose(Matrix<DataType>& transposedMatrix);
+    void transpose(Matrix& transposedMatrix);
 
     void clear();
 
@@ -272,29 +272,29 @@ public:
     void eraseColumn(size_type columnNr);
 
     // vertical concatenation (cumulated rows)
-    void catByRow(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
+    void catByRow(Matrix& firstSrcMatrix, Matrix& secondSrcMatrix);
 
     // horizontal concatenation (cumulated columns)
-    void catByColumn(Matrix<DataType>& firstSrcMatrix, Matrix<DataType>& secondSrcMatrix);
+    void catByColumn(Matrix& firstSrcMatrix, Matrix& secondSrcMatrix);
 
     // vertical splitting
-    void splitByRow(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, size_type splitRowNr);
+    void splitByRow(Matrix& firstDestMatrix, Matrix& secondDestMatrix, size_type splitRowNr);
 
     // horizontal splitting
-    void splitByColumn(Matrix<DataType>& firstDestMatrix, Matrix<DataType>& secondDestMatrix, size_type splitColumnNr);
+    void splitByColumn(Matrix& firstDestMatrix, Matrix& secondDestMatrix, size_type splitColumnNr);
 
-    void swapItems(size_type rowNr, size_type columnNr, Matrix<DataType>& matrix, size_type matrixRowNr, size_type matrixColumnNr);
-    void swapRows(size_type rowNr, Matrix<DataType>& matrix, size_type matrixRowNr);
-    void swapColumns(size_type columnNr, Matrix<DataType>& matrix, size_type matrixColumnNr);
-    void swapRowColumn(size_type rowNr, Matrix<DataType>& matrix, size_type matrixColumnNr);
+    void swapItems(size_type rowNr, size_type columnNr, Matrix& matrix, size_type matrixRowNr, size_type matrixColumnNr);
+    void swapRows(size_type rowNr, Matrix& matrix, size_type matrixRowNr);
+    void swapColumns(size_type columnNr, Matrix& matrix, size_type matrixColumnNr);
+    void swapRowColumn(size_type rowNr, Matrix& matrix, size_type matrixColumnNr);
 
     void setAllItemsToValue(const DataType& value);
-    void copy(const Matrix<DataType>& src, size_type nrOfRows, size_type nrOfColumns, size_type srcMatrixRowNr = 0, size_type srcMatrixColumnNr = 0, size_type destMatrixRowNr = 0, size_type destMatrixColumnNr = 0);
+    void copy(const Matrix& src, size_type nrOfRows, size_type nrOfColumns, size_type srcMatrixRowNr = 0, size_type srcMatrixColumnNr = 0, size_type destMatrixRowNr = 0, size_type destMatrixColumnNr = 0);
 
     // logical operators (DataType should have them implemented, otherwise a template specialization is required)
     operator bool() const;
-    bool operator== (const Matrix<DataType>& matrix) const;
-    bool operator!= (const Matrix<DataType>& matrix) const;
+    bool operator== (const Matrix& matrix) const;
+    bool operator!= (const Matrix& matrix) const;
 
     ZIterator zBegin();
     ZIterator zEnd();
@@ -438,16 +438,16 @@ private:
     void _adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns);
 
     // used for matrix-to-matrix copy construction and assignment
-    void _copyAllItemsFromMatrix(const Matrix<DataType>& matrix);
+    void _copyAllItemsFromMatrix(const Matrix& matrix);
 
     // used for the matrix-to-matrix move construction and assignment
-    void _moveAllItemsFromMatrix(Matrix<DataType>& matrix);
+    void _moveAllItemsFromMatrix(Matrix& matrix);
 
     // initialize all or part of the elements by copying from source matrix
-    void _copyInitItems(const Matrix<DataType>& srcMatrix, size_type srcStartingRowNr, size_type srcColumnOffset, size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
+    void _copyInitItems(const Matrix& srcMatrix, size_type srcStartingRowNr, size_type srcColumnOffset, size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
 
     // initialize all or part of the elements by moving from source matrix
-    void _moveInitItems(const Matrix<DataType>& srcMatrix, size_type srcStartingRowNr, size_type srcColumnOffset, size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
+    void _moveInitItems(const Matrix& srcMatrix, size_type srcStartingRowNr, size_type srcColumnOffset, size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
 
     // initialize all or part of the elements by filling in the same value
     void _fillInitItems(size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns, const DataType& value);
@@ -462,13 +462,13 @@ private:
     void _clampSubMatrixSelectionParameters(size_type& startingRowNr, size_type& columnOffset, size_type& nrOfRows, size_type& nrOfColumns);
 
     // similar to previous but this time clamping is done by also taking the parameters of a source matrix into account
-    void _externalClampSubMatrixSelectionParameters(const Matrix<DataType>& srcMatrix, size_type& srcStartingRowNr, size_type& srcColumnOffset, size_type& startingRowNr, size_type& columnOffset, size_type& nrOfRows, size_type& nrOfColumns);
+    void _externalClampSubMatrixSelectionParameters(const Matrix& srcMatrix, size_type& srcStartingRowNr, size_type& srcColumnOffset, size_type& startingRowNr, size_type& columnOffset, size_type& nrOfRows, size_type& nrOfColumns);
 
     // converts the matrix to a single dimensional array of elements of m_RowCapacity * m_ColumnCapacity size (might include uninitialized elements)
     void* _convertToArray(size_type& nrOfElements);
 
     // used by == and != operators
-    bool _isEqualTo(const Matrix<DataType>& matrix) const;
+    bool _isEqualTo(const Matrix& matrix) const;
 
     DataType* m_pAllocPtr; // use only this pointer in _allocMemory()/_deallocMemory() to allocate/de-allocate matrix elements
     DataType** m_pBaseArrayPtr; // this pointer manages the row pointers array
