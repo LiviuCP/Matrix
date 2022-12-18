@@ -446,6 +446,9 @@ private:
     // initialize all or part of the elements by copying from source matrix
     void _copyInitItems(const Matrix<DataType>& srcMatrix, size_type srcStartingRowNr, size_type srcColumnOffset, size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
 
+    // initialize all or part of the elements by moving from source matrix
+    void _moveInitItems(const Matrix<DataType>& srcMatrix, size_type srcStartingRowNr, size_type srcColumnOffset, size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
+
     // initialize all or part of the elements by filling in the same value
     void _fillInitItems(size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns, const DataType& value);
 
@@ -457,6 +460,9 @@ private:
 
     // ensures the selected sub-matrix (elements to change) fits into matrix
     void _clampSubMatrixSelectionParameters(size_type& startingRowNr, size_type& columnOffset, size_type& nrOfRows, size_type& nrOfColumns);
+
+    // similar to previous but this time clamping is done by also taking the parameters of a source matrix into account
+    void _externalClampSubMatrixSelectionParameters(const Matrix<DataType>& srcMatrix, size_type& srcStartingRowNr, size_type& srcColumnOffset, size_type& startingRowNr, size_type& columnOffset, size_type& nrOfRows, size_type& nrOfColumns);
 
     // converts the matrix to a single dimensional array of elements of m_RowCapacity * m_ColumnCapacity size (might include uninitialized elements)
     void* _convertToArray(size_type& nrOfElements);
@@ -3417,18 +3423,27 @@ void Matrix<DataType>::transpose(Matrix<DataType>& transposedMatrix)
 
             _deallocMemory(); // not actually required, just for "safety" and consistency purposes
             _allocMemory(helperMatrix.m_NrOfColumns, helperMatrix.m_NrOfRows, c_NewRowCapacity, c_NewColumnCapacity);
+
+            // no use of _moveInitItems(), too much overhead
+            for (size_type rowNr{0}; rowNr < c_ResultingNrOfRows; ++rowNr)
+            {
+                for (size_type columnNr{0}; columnNr < c_ResultingNrOfColumns; ++columnNr)
+                {
+                    std::uninitialized_move_n(srcMatrix.m_pBaseArrayPtr[columnNr] + rowNr, 1, transposedMatrix.m_pBaseArrayPtr[rowNr] + columnNr);
+                }
+            }
         }
         else
         {
             transposedMatrix._adjustSizeAndCapacity(m_NrOfColumns, m_NrOfRows);
-        }
 
-        // no use of _copyInitItems(), too much overhead
-        for (size_type rowNr{0}; rowNr < c_ResultingNrOfRows; ++rowNr)
-        {
-            for (size_type columnNr{0}; columnNr < c_ResultingNrOfColumns; ++columnNr)
+            // no use of _copyInitItems(), too much overhead
+            for (size_type rowNr{0}; rowNr < c_ResultingNrOfRows; ++rowNr)
             {
-                std::uninitialized_copy_n(srcMatrix.m_pBaseArrayPtr[columnNr] + rowNr, 1, transposedMatrix.m_pBaseArrayPtr[rowNr] + columnNr);
+                for (size_type columnNr{0}; columnNr < c_ResultingNrOfColumns; ++columnNr)
+                {
+                    std::uninitialized_copy_n(srcMatrix.m_pBaseArrayPtr[columnNr] + rowNr, 1, transposedMatrix.m_pBaseArrayPtr[rowNr] + columnNr);
+                }
             }
         }
     }
@@ -3496,10 +3511,11 @@ void Matrix<DataType>::shrinkToFit()
 {
     if (m_RowCapacity != m_NrOfRows || m_ColumnCapacity != m_NrOfColumns)
     {
-        Matrix matrix{std::move(*this)};
+        Matrix helperMatrix{std::move(*this)};
+
         _deallocMemory(); // just for safety purposes, not actually needed
-        _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
-        _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, m_NrOfColumns);
+        _allocMemory(helperMatrix.m_NrOfRows, helperMatrix.m_NrOfColumns);
+        _moveInitItems(helperMatrix, 0, 0, 0, 0, m_NrOfRows, m_NrOfColumns);
     }
 }
 
@@ -3624,21 +3640,34 @@ void Matrix<DataType>::catByRow(Matrix<DataType>& firstSrcMatrix,
     const size_type c_NewRowCapacity{c_NewNrOfRows + c_NewNrOfRows / 4};
     const size_type c_NewColumnCapacity{c_NewNrOfColumns + c_NewNrOfColumns / 4};
 
-    Matrix matrix{};
+    Matrix helperMatrix{};
 
     if (&firstSrcMatrix == this || &secondSrcMatrix == this)
     {
-        matrix = std::move(*this);
+        helperMatrix = std::move(*this);
     }
 
     _deallocMemory();
     _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
 
-    const Matrix& firstConcatenatedMatrix{&firstSrcMatrix == this ? matrix : firstSrcMatrix};
-    const Matrix& secondConcatenatedMatrix{&secondSrcMatrix == this ? matrix : secondSrcMatrix};
+    const Matrix& firstConcatenatedMatrix{&firstSrcMatrix == this ? helperMatrix : firstSrcMatrix};
+    const Matrix& secondConcatenatedMatrix{&secondSrcMatrix == this ? helperMatrix : secondSrcMatrix};
 
-    _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
-    _copyInitItems(secondConcatenatedMatrix, 0, 0, firstConcatenatedMatrix.m_NrOfRows, 0, m_NrOfRows - firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
+    if (&secondConcatenatedMatrix == &helperMatrix) // 2 cases, same behavior: a) both matrixes to concatenate are current matrix (this) b) only second matrix is current matrix
+    {
+        _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
+        _moveInitItems(secondConcatenatedMatrix, 0, 0, firstConcatenatedMatrix.m_NrOfRows, 0, m_NrOfRows - firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
+    }
+    else if (&firstConcatenatedMatrix == &helperMatrix) // only first matrix to concatenate is current matrix
+    {
+        _moveInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
+        _copyInitItems(secondConcatenatedMatrix, 0, 0, firstConcatenatedMatrix.m_NrOfRows, 0, m_NrOfRows - firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
+    }
+    else // both matrixes to concatenate are different from current matrix
+    {
+        _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
+        _copyInitItems(secondConcatenatedMatrix, 0, 0, firstConcatenatedMatrix.m_NrOfRows, 0, m_NrOfRows - firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
+    }
 }
 
 template<typename DataType>
@@ -3652,21 +3681,34 @@ void Matrix<DataType>::catByColumn(Matrix<DataType>& firstSrcMatrix,
     const size_type c_NewRowCapacity{c_NewNrOfRows + c_NewNrOfRows / 4};
     const size_type c_NewColumnCapacity{c_NewNrOfColumns + c_NewNrOfColumns / 4};
 
-    Matrix matrix{};
+    Matrix helperMatrix{};
 
     if (&firstSrcMatrix == this || &secondSrcMatrix == this)
     {
-        matrix = std::move(*this);
+        helperMatrix = std::move(*this);
     }
 
     _deallocMemory();
     _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
 
-    const Matrix& firstConcatenatedMatrix{&firstSrcMatrix == this ? matrix : firstSrcMatrix};
-    const Matrix& secondConcatenatedMatrix{&secondSrcMatrix == this ? matrix : secondSrcMatrix};
+    const Matrix& firstConcatenatedMatrix{&firstSrcMatrix == this ? helperMatrix : firstSrcMatrix};
+    const Matrix& secondConcatenatedMatrix{&secondSrcMatrix == this ? helperMatrix : secondSrcMatrix};
 
-    _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, m_NrOfRows, firstConcatenatedMatrix.m_NrOfColumns);
-    _copyInitItems(secondConcatenatedMatrix, 0, 0, 0, firstConcatenatedMatrix.m_NrOfColumns, m_NrOfRows, secondConcatenatedMatrix.m_NrOfColumns);
+    if (&secondConcatenatedMatrix == &helperMatrix) // 2 cases, same behavior: a) both matrixes to concatenate are current matrix (this) b) only second matrix is current matrix
+    {
+        _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, m_NrOfRows, firstConcatenatedMatrix.m_NrOfColumns);
+        _moveInitItems(secondConcatenatedMatrix, 0, 0, 0, firstConcatenatedMatrix.m_NrOfColumns, m_NrOfRows, secondConcatenatedMatrix.m_NrOfColumns);
+    }
+    else if (&firstConcatenatedMatrix == &helperMatrix) // only first matrix to concatenate is current matrix
+    {
+        _moveInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, m_NrOfRows, firstConcatenatedMatrix.m_NrOfColumns);
+        _copyInitItems(secondConcatenatedMatrix, 0, 0, 0, firstConcatenatedMatrix.m_NrOfColumns, m_NrOfRows, secondConcatenatedMatrix.m_NrOfColumns);
+    }
+    else // both matrixes to concatenate are different from current matrix
+    {
+        _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, m_NrOfRows, firstConcatenatedMatrix.m_NrOfColumns);
+        _copyInitItems(secondConcatenatedMatrix, 0, 0, 0, firstConcatenatedMatrix.m_NrOfColumns, m_NrOfRows, secondConcatenatedMatrix.m_NrOfColumns);
+    }
 }
 
 template<typename DataType>
@@ -3687,11 +3729,11 @@ void Matrix<DataType>::splitByRow(Matrix<DataType>& firstDestMatrix,
         const size_type c_CurrentMatrixNewNrOfRows{&firstDestMatrix == this ? splitRowNr : currentMatrix.m_NrOfRows - splitRowNr};
         const size_type c_CurrentMatrixRemainingItemsStartingRowNr{&firstDestMatrix == this ? 0 : splitRowNr};
 
-        // step 1: copy items that should be removed from current matrix ("this") to the other destination matrix
+        // step 1: move items that should be removed from current matrix ("this") to the other destination matrix
         otherMatrix._adjustSizeAndCapacity(currentMatrix.m_NrOfRows - c_CurrentMatrixNewNrOfRows, currentMatrix.m_NrOfColumns);
-        otherMatrix._copyInitItems(currentMatrix, splitRowNr - c_CurrentMatrixRemainingItemsStartingRowNr, 0, 0, 0, otherMatrix.m_NrOfRows, otherMatrix.m_NrOfColumns);
+        otherMatrix._moveInitItems(currentMatrix, splitRowNr - c_CurrentMatrixRemainingItemsStartingRowNr, 0, 0, 0, otherMatrix.m_NrOfRows, otherMatrix.m_NrOfColumns);
 
-        // step 2: update the current matrix: move kept elements into correct positions and remove/destroy elements that belong to the other destination matrix
+        // step 2: update the current matrix: move kept elements into correct positions and remove/destroy elements that belong to the other destination matrix (their content already moved in previous step)
         std::rotate(currentMatrix.m_pBaseArrayPtr, currentMatrix.m_pBaseArrayPtr + c_CurrentMatrixRemainingItemsStartingRowNr, currentMatrix.m_pBaseArrayPtr + currentMatrix.m_NrOfRows);
         currentMatrix._destroyItems(splitRowNr, 0, currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns);
         currentMatrix.m_NrOfRows = c_CurrentMatrixNewNrOfRows;
@@ -3723,11 +3765,11 @@ void Matrix<DataType>::splitByColumn(Matrix<DataType>& firstDestMatrix,
         const size_type c_CurrentMatrixNewNrOfColumns{&firstDestMatrix == this ? splitColumnNr : currentMatrix.m_NrOfColumns - splitColumnNr};
         const size_type c_CurrentMatrixRemainingItemsColumnOffset{&firstDestMatrix == this ? 0 : splitColumnNr};
 
-        // step 1: copy items that should be removed from current matrix ("this") to the other destination matrix
+        // step 1: move items that should be removed from current matrix ("this") to the other destination matrix
         otherMatrix._adjustSizeAndCapacity(currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns - c_CurrentMatrixNewNrOfColumns);
-        otherMatrix._copyInitItems(currentMatrix, 0, splitColumnNr - c_CurrentMatrixRemainingItemsColumnOffset, 0, 0, otherMatrix.m_NrOfRows, otherMatrix.m_NrOfColumns);
+        otherMatrix._moveInitItems(currentMatrix, 0, splitColumnNr - c_CurrentMatrixRemainingItemsColumnOffset, 0, 0, otherMatrix.m_NrOfRows, otherMatrix.m_NrOfColumns);
 
-        // step 2: update the current matrix: move kept elements into correct positions and remove/destroy elements that belong to the other destination matrix
+        // step 2: update the current matrix: move kept elements into correct positions and remove/destroy elements that belong to the other destination matrix (their content already moved in previous step)
         for (size_type rowNr{0}; rowNr < currentMatrix.m_NrOfRows; ++rowNr)
         {
             std::copy(currentMatrix.m_pBaseArrayPtr[rowNr] + c_CurrentMatrixRemainingItemsColumnOffset, currentMatrix.m_pBaseArrayPtr[rowNr] + currentMatrix.m_NrOfColumns, currentMatrix.m_pBaseArrayPtr[rowNr]);
@@ -4497,8 +4539,8 @@ std::pair<typename Matrix<DataType>::size_type,
         _deallocMemory(); // actually not required, just for safety purposes
         _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
 
-        // copy the retained items back
-        _copyInitItems(matrix, 0, 0, 0, 0, c_NrOfRowsToKeep, c_NrOfColumnsToKeep);
+        // move the retained items back
+        _moveInitItems(matrix, 0, 0, 0, 0, c_NrOfRowsToKeep, c_NrOfColumnsToKeep);
     }
     else
     {
@@ -4533,9 +4575,9 @@ void Matrix<DataType>::_insertUninitializedRow(Matrix<DataType>::size_type rowNr
         _deallocMemory(); // not quite necessary, just for safety/consistency purposes
         _allocMemory(helperMatrix.m_NrOfRows + 1, helperMatrix.m_NrOfColumns, 2 * helperMatrix.m_NrOfRows, helperMatrix.m_ColumnCapacity);
 
-        // copy everything back to the top/bottom of the inserted row (this one stays uninitialized - will be initialized in a separate step)
-        _copyInitItems(helperMatrix, 0, 0, 0, 0, c_RowNr, m_NrOfColumns);
-        _copyInitItems(helperMatrix, c_RowNr, 0, c_RowNr + 1, 0, m_NrOfRows - c_RowNr, m_NrOfColumns);
+        // move everything back to the top/bottom of the inserted row (this one stays uninitialized - will be initialized in a separate step)
+        _moveInitItems(helperMatrix, 0, 0, 0, 0, c_RowNr, m_NrOfColumns);
+        _moveInitItems(helperMatrix, c_RowNr, 0, c_RowNr + 1, 0, m_NrOfRows - c_RowNr, m_NrOfColumns);
     }
     else
     {
@@ -4557,9 +4599,9 @@ typename Matrix<DataType>::size_type Matrix<DataType>::_insertUninitializedColum
         _deallocMemory(); // not quite necessary, just for safety/consistency purposes
         _allocMemory(helperMatrix.m_NrOfRows, helperMatrix.m_NrOfColumns + 1, helperMatrix.m_RowCapacity, 2 * helperMatrix.m_NrOfColumns);
 
-        // copy everything back to the left/right of the inserted column (this one stays uninitialized - will be initialized in a separate step)
-        _copyInitItems(helperMatrix, 0, 0, 0, 0, m_NrOfRows, resultingColumnNr);
-        _copyInitItems(helperMatrix, 0, resultingColumnNr, 0, resultingColumnNr + 1, m_NrOfRows, m_NrOfColumns - resultingColumnNr);
+        // move everything back to the left/right of the inserted column (this one stays uninitialized - will be initialized in a separate step)
+        _moveInitItems(helperMatrix, 0, 0, 0, 0, m_NrOfRows, resultingColumnNr);
+        _moveInitItems(helperMatrix, 0, resultingColumnNr, 0, resultingColumnNr + 1, m_NrOfRows, m_NrOfColumns - resultingColumnNr);
     }
     else
     {
@@ -4599,8 +4641,8 @@ void Matrix<DataType>::_reallocEraseDimensionElement(Matrix<DataType>::size_type
 
         _deallocMemory(); // not really necessary, just for safety purposes
         _allocMemory(c_RequiredNrOfRows, c_RequiredNrOfColumns, c_RequiredRowCapacity, c_RequiredColumnCapacity);
-        _copyInitItems(helperMatrix, 0, 0, 0, 0, c_PartOneNrOfRows, c_PartOneNrOfColumns);
-        _copyInitItems(helperMatrix, c_PartTwoSrcStartingRowNr, c_PartTwoSrcColumnOffset, c_PartTwoStartingRowNr, c_PartTwoColumnOffset, c_PartTwoNrOfRows, c_PartTwoNrOfColumns);
+        _moveInitItems(helperMatrix, 0, 0, 0, 0, c_PartOneNrOfRows, c_PartOneNrOfColumns);
+        _moveInitItems(helperMatrix, c_PartTwoSrcStartingRowNr, c_PartTwoSrcColumnOffset, c_PartTwoStartingRowNr, c_PartTwoColumnOffset, c_PartTwoNrOfRows, c_PartTwoNrOfColumns);
     }
 }
 
@@ -4770,18 +4812,33 @@ void Matrix<DataType>::_copyInitItems(const Matrix<DataType>& srcMatrix,
                                       Matrix<DataType>::size_type nrOfRows,
                                       Matrix<DataType>::size_type nrOfColumns)
 {
-    const size_type c_SrcStartingRowNr{std::clamp(srcStartingRowNr, 0, srcMatrix.m_NrOfRows)};
-    const size_type c_SrcColumnOffset{std::clamp(srcColumnOffset, 0, srcMatrix.m_NrOfColumns)};
-    const size_type c_StartingRowNr{std::clamp(startingRowNr, 0, m_NrOfRows)};
-    const size_type c_ColumnOffset{std::clamp(columnOffset, 0, m_NrOfColumns)};
-    const size_type c_NrOfRows{std::clamp(nrOfRows, 0, std::min(srcMatrix.m_NrOfRows - c_SrcStartingRowNr, m_NrOfRows - c_StartingRowNr))};
-    const size_type c_NrOfColumns{std::clamp(nrOfColumns, 0, std::min(srcMatrix.m_NrOfColumns - c_SrcColumnOffset, m_NrOfColumns - c_ColumnOffset))};
+    _externalClampSubMatrixSelectionParameters(srcMatrix, srcStartingRowNr, srcColumnOffset, startingRowNr, columnOffset, nrOfRows, nrOfColumns);
 
-    size_type currentRowNr{c_StartingRowNr};
+    size_type currentRowNr{startingRowNr};
 
-    for (size_type rowNr{c_SrcStartingRowNr}; rowNr != c_SrcStartingRowNr + c_NrOfRows; ++rowNr)
+    for (size_type rowNr{srcStartingRowNr}; rowNr != srcStartingRowNr + nrOfRows; ++rowNr)
     {
-        std::uninitialized_copy_n(srcMatrix.m_pBaseArrayPtr[rowNr] + c_SrcColumnOffset, c_NrOfColumns, m_pBaseArrayPtr[currentRowNr] + c_ColumnOffset);
+        std::uninitialized_copy_n(srcMatrix.m_pBaseArrayPtr[rowNr] + srcColumnOffset, nrOfColumns, m_pBaseArrayPtr[currentRowNr] + columnOffset);
+        ++currentRowNr;
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::_moveInitItems(const Matrix<DataType>& srcMatrix,
+                                      Matrix<DataType>::size_type srcStartingRowNr,
+                                      Matrix<DataType>::size_type srcColumnOffset,
+                                      Matrix<DataType>::size_type startingRowNr,
+                                      Matrix<DataType>::size_type columnOffset,
+                                      Matrix<DataType>::size_type nrOfRows,
+                                      Matrix<DataType>::size_type nrOfColumns)
+{
+    _externalClampSubMatrixSelectionParameters(srcMatrix, srcStartingRowNr, srcColumnOffset, startingRowNr, columnOffset, nrOfRows, nrOfColumns);
+
+    size_type currentRowNr{startingRowNr};
+
+    for (size_type rowNr{srcStartingRowNr}; rowNr != srcStartingRowNr + nrOfRows; ++rowNr)
+    {
+        std::uninitialized_move_n(srcMatrix.m_pBaseArrayPtr[rowNr] + srcColumnOffset, nrOfColumns, m_pBaseArrayPtr[currentRowNr] + columnOffset);
         ++currentRowNr;
     }
 }
@@ -4839,6 +4896,24 @@ void Matrix<DataType>::_clampSubMatrixSelectionParameters(Matrix<DataType>::size
     columnOffset = std::clamp(columnOffset, 0, m_NrOfColumns);
     nrOfRows = std::clamp(nrOfRows, 0, m_NrOfRows - startingRowNr);
     nrOfColumns = std::clamp(nrOfColumns, 0, m_NrOfColumns - columnOffset);
+}
+
+
+template<typename DataType>
+void Matrix<DataType>::_externalClampSubMatrixSelectionParameters(const Matrix<DataType>& srcMatrix,
+                                                                  Matrix<DataType>::size_type& srcStartingRowNr,
+                                                                  Matrix<DataType>::size_type& srcColumnOffset,
+                                                                  Matrix<DataType>::size_type& startingRowNr,
+                                                                  Matrix<DataType>::size_type& columnOffset,
+                                                                  Matrix<DataType>::size_type& nrOfRows,
+                                                                  Matrix<DataType>::size_type& nrOfColumns)
+{
+    srcStartingRowNr = std::clamp(srcStartingRowNr, 0, srcMatrix.m_NrOfRows);
+    srcColumnOffset = std::clamp(srcColumnOffset, 0, srcMatrix.m_NrOfColumns);
+    startingRowNr = std::clamp(startingRowNr, 0, m_NrOfRows);
+    columnOffset = std::clamp(columnOffset, 0, m_NrOfColumns);
+    nrOfRows = std::clamp(nrOfRows, 0, std::min(srcMatrix.m_NrOfRows - srcStartingRowNr, m_NrOfRows - startingRowNr));
+    nrOfColumns = std::clamp(nrOfColumns, 0, std::min(srcMatrix.m_NrOfColumns - srcColumnOffset, m_NrOfColumns - columnOffset));
 }
 
 template<typename DataType>
