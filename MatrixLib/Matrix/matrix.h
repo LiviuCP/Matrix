@@ -251,6 +251,7 @@ public:
     size_type getNrOfColumns() const;
     size_type getRowCapacity() const;
     size_type getColumnCapacity() const;
+    bool isEmpty() const;
 
     void transpose(Matrix& transposedMatrix);
 
@@ -3366,7 +3367,7 @@ void* Matrix<DataType>::getBaseArray(Matrix<DataType>::size_type& nrOfElements)
 {
     void* pAllocPtr{nullptr};
 
-    if (m_pBaseArrayPtr)
+    if (!isEmpty())
     {
         shrinkToFit(); // when transfering ownership user should get exactly the number of elements contained in the used lines and columns (no extra capacity to be included)
         pAllocPtr = _convertToArray(nrOfElements);
@@ -3403,10 +3404,25 @@ typename Matrix<DataType>::size_type Matrix<DataType>::getColumnCapacity() const
     return m_ColumnCapacity;
 }
 
+template<typename DataType>
+bool Matrix<DataType>::isEmpty() const
+{
+    if (m_pAllocPtr)
+    {
+        assert(m_pBaseArrayPtr && m_NrOfRows > 0 && m_NrOfColumns > 0 && m_RowCapacity >= m_NrOfRows && m_ColumnCapacity >= m_NrOfColumns);
+    }
+    else
+    {
+        assert(!m_pBaseArrayPtr && 0 == m_NrOfRows && 0 == m_NrOfColumns && 0 == m_RowCapacity && 0 == m_ColumnCapacity);
+    }
+
+    return !m_pAllocPtr;
+}
+
 template <typename DataType>
 void Matrix<DataType>::transpose(Matrix<DataType>& transposedMatrix)
 {
-    if (0 != m_NrOfRows)
+    if (!isEmpty())
     {
         const size_type c_ResultingNrOfRows{m_NrOfColumns};
         const size_type c_ResultingNrOfColumns{m_NrOfRows};
@@ -4615,7 +4631,7 @@ typename Matrix<DataType>::size_type Matrix<DataType>::_insertUninitializedColum
 template<typename DataType>
 void Matrix<DataType>::_reallocEraseDimensionElement(Matrix<DataType>::size_type dimensionElementNr, bool isRow)
 {
-    if (m_pBaseArrayPtr)
+    if (!isEmpty())
     {
         const size_type c_RequiredNrOfRows{isRow ? m_NrOfRows - 1 : m_NrOfRows};
         const size_type c_RequiredNrOfColumns{isRow ? m_NrOfColumns : m_NrOfColumns - 1};
@@ -4649,7 +4665,7 @@ void Matrix<DataType>::_reallocEraseDimensionElement(Matrix<DataType>::size_type
 template<typename DataType>
 void Matrix<DataType>::_shiftEraseRow(Matrix<DataType>::size_type rowNr)
 {
-    if (m_NrOfRows > 0)
+    if (!isEmpty())
     {
         const size_type c_RowNr{std::clamp(rowNr, 0, m_NrOfRows - 1)};
 
@@ -4662,7 +4678,7 @@ void Matrix<DataType>::_shiftEraseRow(Matrix<DataType>::size_type rowNr)
 template<typename DataType>
 void Matrix<DataType>::_shiftEraseColumn(Matrix<DataType>::size_type columnNr)
 {
-    if (m_NrOfColumns > 0)
+    if (!isEmpty())
     {
         const size_type c_ColumnNr{std::clamp(columnNr, 0, m_NrOfColumns - 1)};
 
@@ -4679,7 +4695,7 @@ void Matrix<DataType>::_shiftEraseColumn(Matrix<DataType>::size_type columnNr)
 template<typename DataType>
 void Matrix<DataType>::_rotateLastColumn(Matrix<DataType>::size_type newColumnNr)
 {
-    if (m_NrOfColumns > 0)
+    if (!isEmpty())
     {
         const size_type c_LastColumnNr{m_NrOfColumns - 1};
         const size_type c_NewColumnNr{std::clamp(newColumnNr, 0, c_LastColumnNr)};
@@ -4728,7 +4744,7 @@ void Matrix<DataType>::_allocMemory(Matrix<DataType>::size_type nrOfRows,
 template<typename DataType>
 void Matrix<DataType>::_deallocMemory()
 {
-    if (m_pBaseArrayPtr)
+    if (!isEmpty())
     {
         // ensure the objects contained within matrix are properly disposed
         _destroyItems(0, 0, m_NrOfRows, m_NrOfColumns);
