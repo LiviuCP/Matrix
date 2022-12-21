@@ -4,10 +4,13 @@
 #include <tuple>
 
 #include "testutils.h"
+#include "tst_capacitytests.h"
+#include "tst_resizingtests.h"
 
 Q_DECLARE_METATYPE(IntMatrix)
-Q_DECLARE_METATYPE(TripleSizeTypeTuple)
-Q_DECLARE_METATYPE(TripleSizeTypeTupleArray)
+Q_DECLARE_METATYPE(TripleSizeTypeTuple) // used for any data type (contains integer size_type values) - it cannot be redeclared with Q_DECL...
+Q_DECLARE_METATYPE(TripleSizeTypeTupleArray) // same here
+Q_DECLARE_METATYPE(StringMatrix)
 Q_DECLARE_METATYPE(ConcatMode)
 Q_DECLARE_METATYPE(SplitMode)
 
@@ -17,259 +20,182 @@ class CapacityTests : public QObject
 
 private slots:
     // test functions
-    void testCapacityWithInitListConstructor();
-    void testCapacityWithIdenticalMatrixConstructor();
-    void testCapacityWithDiagonalMatrixConstructor();
-    void testCapacityWithCopyConstructor();
-    void testCapacityWithMoveConstructor();
-    void testCapacityWithCopyAssignmentOperator();
-    void testCapacityWithMoveAssignmentOperator();
-    void testCapacityWithTranspose();
-    void testCapacityWithResizeWithoutFillingInNewValues();
-    void testCapacityWithResizeAndFillInNewValues();
-    void testCapacityWithInsertRow();
-    void testCapacityWithInsertColumn();
-    void testCapacityWithEraseRow();
-    void testCapacityWithEraseColumn();
-    void testCapacityWithCatByRow();
-    void testCapacityWithCatByColumn();
-    void testCapacityWithSplitByRow();
-    void testCapacityWithSplitByColumn();
+    void testIntMatrixCapacityWithInitListConstructor();
+    void testIntMatrixCapacityWithIdenticalMatrixConstructor();
+    void testIntMatrixCapacityWithDiagonalMatrixConstructor();
+    void testIntMatrixCapacityWithCopyConstructor();
+    void testIntMatrixCapacityWithMoveConstructor();
+    void testIntMatrixCapacityWithCopyAssignmentOperator();
+    void testIntMatrixCapacityWithMoveAssignmentOperator();
+    void testIntMatrixCapacityWithTranspose();
+    void testIntMatrixCapacityWithResizeWithoutFillingInNewValues();
+    void testIntMatrixCapacityWithResizeAndFillInNewValues();
+    void testIntMatrixCapacityWithInsertRow();
+    void testIntMatrixCapacityWithInsertColumn();
+    void testIntMatrixCapacityWithEraseRow();
+    void testIntMatrixCapacityWithEraseColumn();
+    void testIntMatrixCapacityWithCatByRow();
+    void testIntMatrixCapacityWithCatByColumn();
+    void testIntMatrixCapacityWithSplitByRow();
+    void testIntMatrixCapacityWithSplitByColumn();
+
+    void testStringMatrixCapacityWithInitListConstructor();
+    void testStringMatrixCapacityWithIdenticalMatrixConstructor();
+    void testStringMatrixCapacityWithDiagonalMatrixConstructor();
+    void testStringMatrixCapacityWithCopyConstructor();
+    void testStringMatrixCapacityWithMoveConstructor();
+    void testStringMatrixCapacityWithCopyAssignmentOperator();
+    void testStringMatrixCapacityWithMoveAssignmentOperator();
+    void testStringMatrixCapacityWithTranspose();
+    void testStringMatrixCapacityWithResizeWithoutFillingInNewValues();
+    void testStringMatrixCapacityWithResizeAndFillInNewValues();
+    void testStringMatrixCapacityWithInsertRow();
+    void testStringMatrixCapacityWithInsertColumn();
+    void testStringMatrixCapacityWithEraseRow();
+    void testStringMatrixCapacityWithEraseColumn();
+    void testStringMatrixCapacityWithCatByRow();
+    void testStringMatrixCapacityWithCatByColumn();
+    void testStringMatrixCapacityWithSplitByRow();
+    void testStringMatrixCapacityWithSplitByColumn();
 
     // test data
-    void testCapacityWithIdenticalMatrixConstructor_data();
-    void testCapacityWithDiagonalMatrixConstructor_data();
-    void testCapacityWithCopyConstructor_data();
-    void testCapacityWithMoveConstructor_data();
-    void testCapacityWithCopyAssignmentOperator_data();
-    void testCapacityWithMoveAssignmentOperator_data();
-    void testCapacityWithTranspose_data();
-    void testCapacityWithResizeWithoutFillingInNewValues_data();
-    void testCapacityWithResizeAndFillInNewValues_data();
-    void testCapacityWithInsertRow_data();
-    void testCapacityWithInsertColumn_data();
-    void testCapacityWithEraseRow_data();
-    void testCapacityWithEraseColumn_data();
-    void testCapacityWithCatByRow_data();
-    void testCapacityWithCatByColumn_data();
-    void testCapacityWithSplitByRow_data();
-    void testCapacityWithSplitByColumn_data();
+    void testIntMatrixCapacityWithIdenticalMatrixConstructor_data();
+    void testIntMatrixCapacityWithDiagonalMatrixConstructor_data();
+    void testIntMatrixCapacityWithCopyConstructor_data();
+    void testIntMatrixCapacityWithMoveConstructor_data();
+    void testIntMatrixCapacityWithCopyAssignmentOperator_data();
+    void testIntMatrixCapacityWithMoveAssignmentOperator_data();
+    void testIntMatrixCapacityWithTranspose_data();
+    void testIntMatrixCapacityWithResizeWithoutFillingInNewValues_data();
+    void testIntMatrixCapacityWithResizeAndFillInNewValues_data();
+    void testIntMatrixCapacityWithInsertRow_data();
+    void testIntMatrixCapacityWithInsertColumn_data();
+    void testIntMatrixCapacityWithEraseRow_data();
+    void testIntMatrixCapacityWithEraseColumn_data();
+    void testIntMatrixCapacityWithCatByRow_data();
+    void testIntMatrixCapacityWithCatByColumn_data();
+    void testIntMatrixCapacityWithSplitByRow_data();
+    void testIntMatrixCapacityWithSplitByColumn_data();
+
+    void testStringMatrixCapacityWithIdenticalMatrixConstructor_data();
+    void testStringMatrixCapacityWithDiagonalMatrixConstructor_data();
+    void testStringMatrixCapacityWithCopyConstructor_data();
+    void testStringMatrixCapacityWithMoveConstructor_data();
+    void testStringMatrixCapacityWithCopyAssignmentOperator_data();
+    void testStringMatrixCapacityWithMoveAssignmentOperator_data();
+    void testStringMatrixCapacityWithTranspose_data();
+    void testStringMatrixCapacityWithResizeWithoutFillingInNewValues_data();
+    void testStringMatrixCapacityWithResizeAndFillInNewValues_data();
+    void testStringMatrixCapacityWithInsertRow_data();
+    void testStringMatrixCapacityWithInsertColumn_data();
+    void testStringMatrixCapacityWithEraseRow_data();
+    void testStringMatrixCapacityWithEraseColumn_data();
+    void testStringMatrixCapacityWithCatByRow_data();
+    void testStringMatrixCapacityWithCatByColumn_data();
+    void testStringMatrixCapacityWithSplitByRow_data();
+    void testStringMatrixCapacityWithSplitByColumn_data();
 
 private:
     // test data helper methods
-    void _buildCapacityWithMoveCopyConstructorsTestingTable();
-    void _buildCapacityWithAssignmentOperatorsTestingTable();
-    void _buildCapacityWithResizeTestingTable();
+    void _buildIntMatrixCapacityWithMoveCopyConstructorsTestingTable();
+    void _buildIntMatrixCapacityWithAssignmentOperatorsTestingTable();
+    void _buildIntMatrixCapacityWithResizeTestingTable();
+
+    void _buildStringMatrixCapacityWithMoveCopyConstructorsTestingTable();
+    void _buildStringMatrixCapacityWithAssignmentOperatorsTestingTable();
+    void _buildStringMatrixCapacityWithResizeTestingTable();
 
     IntMatrix mPrimaryIntMatrix;
     IntMatrix mSecondaryIntMatrix;
+
+    StringMatrix mPrimaryStringMatrix;
+    StringMatrix mSecondaryStringMatrix;
 };
 
-void CapacityTests::testCapacityWithInitListConstructor()
+void CapacityTests::testIntMatrixCapacityWithInitListConstructor()
 {
     {
         IntMatrix matrix{3, 4, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-
-        QVERIFY2(matrix.getRowCapacity() == 3 &&
-                 matrix.getColumnCapacity() == 5, "Init list constructor initialized matrix with wrong capacity");
+        TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 3, 5);
     }
 
     {
         IntMatrix matrix{4, 3, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-
-        QVERIFY2(matrix.getRowCapacity() == 5 &&
-                 matrix.getColumnCapacity() == 3, "Init list constructor initialized matrix with wrong capacity");
+        TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 5, 3);
     }
 
     {
-        IntMatrix matrix{
-                            8, 10, {
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-                                  }
-                        };
+        IntMatrix matrix{8, 10, {
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                                }};
 
-        QVERIFY2(matrix.getRowCapacity() == 10 &&
-                 matrix.getColumnCapacity() == 12, "Init list constructor initialized matrix with wrong capacity");
+        TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 10, 12);
     }
 
     {
-        IntMatrix matrix{
-                            10, 8, {
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0, 0
-                                    }
-                        };
+        IntMatrix matrix{10, 8, {
+                                     0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0
+                                }};
 
-        QVERIFY2(matrix.getRowCapacity() == 12 &&
-                 matrix.getColumnCapacity() == 10, "Init list constructor initialized matrix with wrong capacity");
+        TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 12, 10);
     }
 }
 
-void CapacityTests::testCapacityWithIdenticalMatrixConstructor()
+void CapacityTests::testIntMatrixCapacityWithIdenticalMatrixConstructor()
 {
-    QFETCH(IntMatrixSizeType, rowsCount);
-    QFETCH(IntMatrixSizeType, columnsCount);
-    QFETCH(int, elementValue);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-
-    IntMatrix matrix{rowsCount, columnsCount, elementValue};
-
-    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity &&
-             matrix.getColumnCapacity() == expectedColumnCapacity, "Identical matrix constructor initialized matrix with wrong capacity");
+    TEST_CAPACITY_WITH_IDENTICAL_MATRIX_CONSTRUCTOR(int);
 }
 
-void CapacityTests::testCapacityWithDiagonalMatrixConstructor()
+void CapacityTests::testIntMatrixCapacityWithDiagonalMatrixConstructor()
 {
-    QFETCH(IntMatrixSizeType, rowsColumnsCount);
-    QFETCH(int, nonDiagonalValue);
-    QFETCH(int, diagonalValue);
-    QFETCH(IntMatrixSizeType, expectedRowColumnCapacity);
-
-    IntMatrix matrix{rowsColumnsCount, std::pair<int, int>{nonDiagonalValue, diagonalValue}};
-
-    QVERIFY2(matrix.getRowCapacity() == expectedRowColumnCapacity &&
-             matrix.getColumnCapacity() == expectedRowColumnCapacity, "Diag matrix constructor initialized matrix with wrong capacity");
+    TEST_CAPACITY_WITH_DIAGONAL_MATRIX_CONSTRUCTOR(int);
 }
 
-void CapacityTests::testCapacityWithCopyConstructor()
+void CapacityTests::testIntMatrixCapacityWithCopyConstructor()
 {
-    QFETCH(IntMatrixSizeType, rowsCount);
-    QFETCH(IntMatrixSizeType, columnsCount);
-    QFETCH(int, elementValue);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-
-    IntMatrix srcMatrix{rowsCount, columnsCount, elementValue};
-    IntMatrix destMatrix{srcMatrix};
-
-    QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
-             destMatrix.getColumnCapacity() == expectedColumnCapacity, "Copy constructor failed, capacity of the destination matrix is not correct!");
+    TEST_CAPACITY_WITH_COPY_CONSTRUCTOR(int);
 }
 
-void CapacityTests::testCapacityWithMoveConstructor()
+void CapacityTests::testIntMatrixCapacityWithMoveConstructor()
 {
-    QFETCH(IntMatrixSizeType, rowsCount);
-    QFETCH(IntMatrixSizeType, columnsCount);
-    QFETCH(int, elementValue);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-
-    IntMatrix srcMatrix{rowsCount, columnsCount, elementValue};
-    IntMatrix destMatrix{std::move(srcMatrix)};
-
-    QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
-             destMatrix.getColumnCapacity() == expectedColumnCapacity, "Move constructor failed, capacity of the destination matrix is not correct!");
+    TEST_CAPACITY_WITH_MOVE_CONSTRUCTOR(int);
 }
 
-void CapacityTests::testCapacityWithCopyAssignmentOperator()
+void CapacityTests::testIntMatrixCapacityWithCopyAssignmentOperator()
 {
-    QFETCH(IntMatrixSizeType, srcMatrixRowsCount);
-    QFETCH(IntMatrixSizeType, srcMatrixColumnsCount);
-    QFETCH(int, srcMatrixElementValue);
-    QFETCH(IntMatrixSizeType, destMatrixRowsCount);
-    QFETCH(IntMatrixSizeType, destMatrixColumnsCount);
-    QFETCH(int, destMatrixElementValue);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-
-    IntMatrix srcMatrix{srcMatrixRowsCount, srcMatrixColumnsCount, srcMatrixElementValue};
-
-    if (destMatrixRowsCount != 0 && destMatrixColumnsCount != 0)
-    {
-        IntMatrix destMatrix{destMatrixRowsCount, destMatrixColumnsCount, destMatrixElementValue};
-        destMatrix = srcMatrix;
-
-        QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
-                 destMatrix.getColumnCapacity() == expectedColumnCapacity, "Copy assignment failed, capacity of the destination matrix is not correct!");
-    }
-    else
-    {
-        IntMatrix destMatrix;
-        destMatrix = srcMatrix;
-
-        QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
-                 destMatrix.getColumnCapacity() == expectedColumnCapacity, "Copy assignment failed, capacity of the destination matrix is not correct!");
-    }
+    TEST_CAPACITY_WITH_COPY_ASSIGNMENT_OPERATOR(int);
 }
 
-void CapacityTests::testCapacityWithMoveAssignmentOperator()
+void CapacityTests::testIntMatrixCapacityWithMoveAssignmentOperator()
 {
-    QFETCH(IntMatrixSizeType, srcMatrixRowsCount);
-    QFETCH(IntMatrixSizeType, srcMatrixColumnsCount);
-    QFETCH(int, srcMatrixElementValue);
-    QFETCH(IntMatrixSizeType, destMatrixRowsCount);
-    QFETCH(IntMatrixSizeType, destMatrixColumnsCount);
-    QFETCH(int, destMatrixElementValue);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-
-    IntMatrix srcMatrix{srcMatrixRowsCount, srcMatrixColumnsCount, srcMatrixElementValue};
-
-    if (destMatrixRowsCount != 0 && destMatrixColumnsCount != 0)
-    {
-        IntMatrix destMatrix{destMatrixRowsCount, destMatrixColumnsCount, destMatrixElementValue};
-        destMatrix = std::move(srcMatrix);
-
-        QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
-                 destMatrix.getColumnCapacity() == expectedColumnCapacity, "Copy assignment failed, capacity of the destination matrix is not correct!");
-    }
-    else
-    {
-        IntMatrix destMatrix;
-        destMatrix = std::move(srcMatrix);
-
-        QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
-                 destMatrix.getColumnCapacity() == expectedColumnCapacity, "Copy assignment failed, capacity of the destination matrix is not correct!");
-    }
+    TEST_CAPACITY_WITH_MOVE_ASSIGNMENT_OPERATOR(int);
 }
 
-void CapacityTests::testCapacityWithTranspose()
+void CapacityTests::testIntMatrixCapacityWithTranspose()
 {
-    QFETCH(IntMatrix, srcMatrix);
-    QFETCH(IntMatrix, destMatrix);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-    QFETCH(bool, isTransposedToItself);
-
-    mPrimaryIntMatrix = srcMatrix;
-
-    if (isTransposedToItself)
-    {
-        mPrimaryIntMatrix.transpose(mPrimaryIntMatrix);
-
-        QVERIFY2(mPrimaryIntMatrix.getRowCapacity() == expectedRowCapacity &&
-                 mPrimaryIntMatrix.getColumnCapacity() == expectedColumnCapacity, "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
-    }
-    else
-    {
-        mSecondaryIntMatrix = destMatrix;
-        mPrimaryIntMatrix.transpose(mSecondaryIntMatrix);
-
-        QVERIFY2(mSecondaryIntMatrix.getRowCapacity() == expectedRowCapacity &&
-                 mSecondaryIntMatrix.getColumnCapacity() == expectedColumnCapacity, "Calculating transposed matrix failed, capacity of the destination (transposed) matrix is not correct!");
-    }
+    TEST_CAPACITY_WITH_TRANSPOSE(int, mPrimaryIntMatrix, mSecondaryIntMatrix);
 }
 
 /* In addition to testing resulting capacity a consistency check (size and retained element values comparison) is required in order to ensure
    the resizing with explicitly given capacity is consistent with the one where the capacity is not explicitly provided as argument
 */
-void CapacityTests::testCapacityWithResizeWithoutFillingInNewValues()
+void CapacityTests::testIntMatrixCapacityWithResizeWithoutFillingInNewValues()
 {
     QFETCH(IntMatrix, matrix);
     QFETCH(IntMatrixSizeType, resizeRowsCount);
@@ -288,323 +214,219 @@ void CapacityTests::testCapacityWithResizeWithoutFillingInNewValues()
     mPrimaryIntMatrix.resize(resizeRowsCount, resizeColumnsCount);
     mSecondaryIntMatrix.resize(resizeRowsCount, resizeColumnsCount, requestedRowCapacity, requestedColumnCapacity);
 
-    if (mSecondaryIntMatrix.getRowCapacity() != expectedRowCapacity || mSecondaryIntMatrix.getColumnCapacity() != expectedColumnCapacity)
-    {
-        QFAIL("Resizing failed, capacity of the matrix is not correct!");
-    }
-    else if (mSecondaryIntMatrix.getNrOfRows() != mPrimaryIntMatrix.getNrOfRows() || mSecondaryIntMatrix.getNrOfColumns() != mPrimaryIntMatrix.getNrOfColumns())
-    {
-        QFAIL("Resizing failed, number of rows or columns of the matrix is not correct!");
-    }
-    else
-    {
-        bool areRetainedValuesCorrect{true};
+    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(mSecondaryIntMatrix, mPrimaryIntMatrix.getNrOfRows(), mPrimaryIntMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity);
 
-        for (IntMatrixSizeType rowNr{0}; rowNr < c_RetainedNrOfRows; ++rowNr)
+    bool areRetainedValuesCorrect{true};
+
+    for (IntMatrixSizeType rowNr{0}; rowNr < c_RetainedNrOfRows; ++rowNr)
+    {
+        for (IntMatrixSizeType columnNr{0}; columnNr < c_RetainedNrOfColumns; ++columnNr)
         {
-            for (IntMatrixSizeType columnNr{0}; columnNr < c_RetainedNrOfColumns; ++columnNr)
-            {
-                areRetainedValuesCorrect = areRetainedValuesCorrect && (mSecondaryIntMatrix.at(rowNr, columnNr) == mPrimaryIntMatrix.at(rowNr, columnNr));
-            }
+            areRetainedValuesCorrect = areRetainedValuesCorrect && (mSecondaryIntMatrix.at(rowNr, columnNr) == mPrimaryIntMatrix.at(rowNr, columnNr));
         }
-
-        QVERIFY2(areRetainedValuesCorrect, "Resizing failed, the matrix does not have the correct values for the retained items!");
     }
+
+    QVERIFY2(areRetainedValuesCorrect, "Resizing failed, the matrix does not have the correct values for the retained items!");
 }
 
 /* In addition to testing resulting capacity a consistency check (size and element values comparison) is required in order to ensure
    the resizing with explicitly given capacity is consistent with the one where the capacity is not explicitly provided as argument
 */
-void CapacityTests::testCapacityWithResizeAndFillInNewValues()
+void CapacityTests::testIntMatrixCapacityWithResizeAndFillInNewValues()
 {
-    QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, resizeRowsCount);
-    QFETCH(IntMatrixSizeType, resizeColumnsCount);
-    QFETCH(int, resizeElementValue);
-    QFETCH(IntMatrixSizeType, requestedRowCapacity);
-    QFETCH(IntMatrixSizeType, requestedColumnCapacity);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
+    TEST_CAPACITY_WITH_RESIZE_AND_FILL_IN_NEW_VALUES(int, mPrimaryIntMatrix, mSecondaryIntMatrix);
+}
 
-    mPrimaryIntMatrix = matrix;
-    mSecondaryIntMatrix = mPrimaryIntMatrix;
+void CapacityTests::testIntMatrixCapacityWithInsertRow()
+{
+    TEST_CAPACITY_WITH_INSERT_ROW(int);
+}
 
-    mPrimaryIntMatrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue);
-    mSecondaryIntMatrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue, requestedRowCapacity, requestedColumnCapacity);
+void CapacityTests::testIntMatrixCapacityWithInsertColumn()
+{
+    TEST_CAPACITY_WITH_INSERT_COLUMN(int);
+}
 
-    if (mSecondaryIntMatrix.getRowCapacity() != expectedRowCapacity || mSecondaryIntMatrix.getColumnCapacity() != expectedColumnCapacity)
+void CapacityTests::testIntMatrixCapacityWithEraseRow()
+{
+    TEST_CAPACITY_WITH_ERASE_ROW(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithEraseColumn()
+{
+    TEST_CAPACITY_WITH_ERASE_COLUMN(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithCatByRow()
+{
+    TEST_CAPACITY_WITH_CAT_BY_ROW(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithCatByColumn()
+{
+    TEST_CAPACITY_WITH_CAT_BY_COLUMN(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithSplitByRow()
+{
+    TEST_CAPACITY_WITH_SPLIT_BY_ROW(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithSplitByColumn()
+{
+    TEST_CAPACITY_WITH_SPLIT_BY_COLUMN(int);
+}
+
+void CapacityTests::testStringMatrixCapacityWithInitListConstructor()
+{
     {
-        QFAIL("Resizing failed, capacity of the matrix is not correct!");
+        StringMatrix matrix{3, 4, {"Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"}};
+        TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 3, 5);
     }
-    else
+
     {
-        QVERIFY2(mSecondaryIntMatrix == mPrimaryIntMatrix, "Resizing failed, the matrix does not have the correct size and/or values!");
+        StringMatrix matrix{4, 3, {"Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"}};
+        TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 5, 3);
+    }
+
+    {
+        StringMatrix matrix{8, 10, {
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"
+                                   }};
+
+        TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 10, 12);
+    }
+
+    {
+        StringMatrix matrix{10, 8, {
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"
+                                   }};
+
+        TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 12, 10);
     }
 }
 
-void CapacityTests::testCapacityWithInsertRow()
+void CapacityTests::testStringMatrixCapacityWithIdenticalMatrixConstructor()
 {
-    QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, insertPosition);
-    QFETCH(int, insertedRowValue);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-    QFETCH(bool, isInsertedRowValueSet);
-
-    if (isInsertedRowValueSet)
-    {
-        matrix.insertRow(insertPosition, insertedRowValue);
-    }
-    else
-    {
-        matrix.insertRow(insertPosition);
-    }
-
-    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity &&
-             matrix.getColumnCapacity() == expectedColumnCapacity, "Insert row failed, capacity of the matrix is not correct!");
+    TEST_CAPACITY_WITH_IDENTICAL_MATRIX_CONSTRUCTOR(std::string);
 }
 
-void CapacityTests::testCapacityWithInsertColumn()
+void CapacityTests::testStringMatrixCapacityWithDiagonalMatrixConstructor()
 {
-    QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, insertPosition);
-    QFETCH(int, insertedColumnValue);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-    QFETCH(bool, isInsertedColumnValueSet);
-
-    if (isInsertedColumnValueSet)
-    {
-        matrix.insertColumn(insertPosition, insertedColumnValue);
-    }
-    else
-    {
-        matrix.insertColumn(insertPosition);
-    }
-
-    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity &&
-             matrix.getColumnCapacity() == expectedColumnCapacity, "Insert column failed, capacity of the matrix is not correct!");
+    TEST_CAPACITY_WITH_DIAGONAL_MATRIX_CONSTRUCTOR(std::string);
 }
 
-void CapacityTests::testCapacityWithEraseRow()
+void CapacityTests::testStringMatrixCapacityWithCopyConstructor()
 {
-    QFETCH(IntMatrix, matrix);
-    QFETCH(TripleSizeTypeTupleArray, erasedRowAndExpectedCapacity);
-
-    for (const auto& data : erasedRowAndExpectedCapacity)
-    {
-        matrix.eraseRow(std::get<0>(data));
-
-        QVERIFY2(matrix.getRowCapacity() == std::get<1>(data) &&
-                 matrix.getColumnCapacity() == std::get<2>(data), "Erase row failed, capacity of the matrix is not correct!");
-    }
+    TEST_CAPACITY_WITH_COPY_CONSTRUCTOR(std::string);
 }
 
-void CapacityTests::testCapacityWithEraseColumn()
+void CapacityTests::testStringMatrixCapacityWithMoveConstructor()
 {
-    QFETCH(IntMatrix, matrix);
-    QFETCH(TripleSizeTypeTupleArray, erasedColumnAndExpectedCapacity);
-
-    for (const auto& data : erasedColumnAndExpectedCapacity)
-    {
-        matrix.eraseColumn(std::get<0>(data));
-
-        QVERIFY2(matrix.getRowCapacity() == std::get<1>(data) &&
-                 matrix.getColumnCapacity() == std::get<2>(data), "Erase row failed, capacity of the matrix is not correct!");
-    }
+    TEST_CAPACITY_WITH_MOVE_CONSTRUCTOR(std::string);
 }
 
-void CapacityTests::testCapacityWithCatByRow()
+void CapacityTests::testStringMatrixCapacityWithCopyAssignmentOperator()
 {
-    QFETCH(IntMatrix, destMatrix);
-    QFETCH(IntMatrix, firstSrcMatrix);
-    QFETCH(IntMatrix, secondSrcMatrix);
-    QFETCH(ConcatMode, mode);
-    QFETCH(IntMatrixSizeType, resizeRowsCount);
-    QFETCH(IntMatrixSizeType, resizeColumnsCount);
-    QFETCH(IntMatrixSizeType, resizeRowCapacity);
-    QFETCH(IntMatrixSizeType, resizeColumnCapacity);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-
-    if (resizeRowsCount > 0 && resizeColumnsCount > 0)
-    {
-        destMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
-    }
-
-    switch(mode)
-    {
-    case ConcatMode::ALL_DIFFERENT:
-        destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix);
-        break;
-    case ConcatMode::DESTINATION_FIRST:
-        destMatrix.catByRow(destMatrix, secondSrcMatrix);
-        break;
-    case ConcatMode::DESTINATION_SECOND:
-        destMatrix.catByRow(firstSrcMatrix, destMatrix);
-        break;
-    case ConcatMode::DESTINATION_ALL:
-        destMatrix.catByRow(destMatrix, destMatrix);
-        break;
-    case ConcatMode::SOURCE_BOTH:
-        destMatrix.catByRow(firstSrcMatrix, firstSrcMatrix);
-        break;
-    default:
-        break;
-    }
-
-    QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
-             destMatrix.getColumnCapacity() == expectedColumnCapacity, "Vertical concatenation failed, capacity of the destination matrix is not correct!");
+    TEST_CAPACITY_WITH_COPY_ASSIGNMENT_OPERATOR(std::string);
 }
 
-void CapacityTests::testCapacityWithCatByColumn()
+void CapacityTests::testStringMatrixCapacityWithMoveAssignmentOperator()
 {
-    QFETCH(IntMatrix, destMatrix);
-    QFETCH(IntMatrix, firstSrcMatrix);
-    QFETCH(IntMatrix, secondSrcMatrix);
-    QFETCH(ConcatMode, mode);
-    QFETCH(IntMatrixSizeType, resizeRowsCount);
-    QFETCH(IntMatrixSizeType, resizeColumnsCount);
-    QFETCH(IntMatrixSizeType, resizeRowCapacity);
-    QFETCH(IntMatrixSizeType, resizeColumnCapacity);
-    QFETCH(IntMatrixSizeType, expectedRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedColumnCapacity);
-
-    if (resizeRowsCount > 0 && resizeColumnsCount > 0)
-    {
-        destMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
-    }
-
-    switch(mode)
-    {
-    case ConcatMode::ALL_DIFFERENT:
-        destMatrix.catByColumn(firstSrcMatrix, secondSrcMatrix);
-        break;
-    case ConcatMode::DESTINATION_FIRST:
-        destMatrix.catByColumn(destMatrix, secondSrcMatrix);
-        break;
-    case ConcatMode::DESTINATION_SECOND:
-        destMatrix.catByColumn(firstSrcMatrix, destMatrix);
-        break;
-    case ConcatMode::DESTINATION_ALL:
-        destMatrix.catByColumn(destMatrix, destMatrix);
-        break;
-    case ConcatMode::SOURCE_BOTH:
-        destMatrix.catByColumn(firstSrcMatrix, firstSrcMatrix);
-        break;
-    default:
-        break;
-    }
-
-    QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity &&
-             destMatrix.getColumnCapacity() == expectedColumnCapacity, "Horizontal concatenation failed, capacity of the destination matrix is not correct!");
+    TEST_CAPACITY_WITH_MOVE_ASSIGNMENT_OPERATOR(std::string);
 }
 
-void CapacityTests::testCapacityWithSplitByRow()
+void CapacityTests::testStringMatrixCapacityWithTranspose()
 {
-    QFETCH(IntMatrix, srcMatrix);
-    QFETCH(IntMatrix, firstDestMatrix);
-    QFETCH(IntMatrix, secondDestMatrix);
-    QFETCH(IntMatrixSizeType, splitPosition);
-    QFETCH(SplitMode, mode);
-    QFETCH(IntMatrixSizeType, resizeRowsCount);
-    QFETCH(IntMatrixSizeType, resizeColumnsCount);
-    QFETCH(IntMatrixSizeType, resizeRowCapacity);
-    QFETCH(IntMatrixSizeType, resizeColumnCapacity);
-    QFETCH(bool, isFirstDestResized);
-    QFETCH(IntMatrixSizeType, expectedFirstDestRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedFirstDestColumnCapacity);
-    QFETCH(IntMatrixSizeType, expectedSecondDestRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedSecondDestColumnCapacity);
-
-    if (resizeRowsCount > 0 && resizeColumnsCount > 0)
-    {
-        if (isFirstDestResized)
-        {
-            firstDestMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
-        }
-        else
-        {
-            secondDestMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
-        }
-    }
-
-    switch(mode)
-    {
-    case SplitMode::ALL_DIFFERENT:
-        srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
-        break;
-    case SplitMode::SOURCE_FIRST:
-        firstDestMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
-        break;
-    case SplitMode::SOURCE_SECOND:
-        secondDestMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
-        break;
-    default:
-        QFAIL("exception scenario");
-        break;
-    }
-
-    QVERIFY2(firstDestMatrix.getRowCapacity() == expectedFirstDestRowCapacity &&
-             firstDestMatrix.getColumnCapacity() == expectedFirstDestColumnCapacity, "Vertical split failed, capacity of the first destination matrix is not correct!");
-
-    QVERIFY2(secondDestMatrix.getRowCapacity() == expectedSecondDestRowCapacity &&
-             secondDestMatrix.getColumnCapacity() == expectedSecondDestColumnCapacity, "Vertical split failed, capacity of the second destination matrix is not correct!");
+    TEST_CAPACITY_WITH_TRANSPOSE(std::string, mPrimaryStringMatrix, mSecondaryStringMatrix);
 }
 
-void CapacityTests::testCapacityWithSplitByColumn()
+/* Unlike the integer matrix scenario here it is possible to perform the consistency check by comparing the two resized matrixes (==)
+   as the default values of the new elements are well determined */
+void CapacityTests::testStringMatrixCapacityWithResizeWithoutFillingInNewValues()
 {
-    QFETCH(IntMatrix, srcMatrix);
-    QFETCH(IntMatrix, firstDestMatrix);
-    QFETCH(IntMatrix, secondDestMatrix);
-    QFETCH(IntMatrixSizeType, splitPosition);
-    QFETCH(SplitMode, mode);
-    QFETCH(IntMatrixSizeType, resizeRowsCount);
-    QFETCH(IntMatrixSizeType, resizeColumnsCount);
-    QFETCH(IntMatrixSizeType, resizeRowCapacity);
-    QFETCH(IntMatrixSizeType, resizeColumnCapacity);
-    QFETCH(bool, isFirstDestResized);
-    QFETCH(IntMatrixSizeType, expectedFirstDestRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedFirstDestColumnCapacity);
-    QFETCH(IntMatrixSizeType, expectedSecondDestRowCapacity);
-    QFETCH(IntMatrixSizeType, expectedSecondDestColumnCapacity);
+    QFETCH(StringMatrix, matrix);
+    QFETCH(StringMatrixSizeType, resizeRowsCount);
+    QFETCH(StringMatrixSizeType, resizeColumnsCount);
+    QFETCH(StringMatrixSizeType, requestedRowCapacity);
+    QFETCH(StringMatrixSizeType, requestedColumnCapacity);
+    QFETCH(StringMatrixSizeType, expectedRowCapacity);
+    QFETCH(StringMatrixSizeType, expectedColumnCapacity);
 
-    if (resizeRowsCount > 0 && resizeColumnsCount > 0)
-    {
-        if (isFirstDestResized)
-        {
-            firstDestMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
-        }
-        else
-        {
-            secondDestMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
-        }
-    }
+    mPrimaryStringMatrix = matrix;
+    mSecondaryStringMatrix = mPrimaryStringMatrix;
 
-    switch(mode)
-    {
-    case SplitMode::ALL_DIFFERENT:
-        srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
-        break;
-    case SplitMode::SOURCE_FIRST:
-        firstDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
-        break;
-    case SplitMode::SOURCE_SECOND:
-        secondDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
-        break;
-    default:
-        QFAIL("exception scenario");
-        break;
-    }
+    mPrimaryStringMatrix.resize(resizeRowsCount, resizeColumnsCount);
+    mSecondaryStringMatrix.resize(resizeRowsCount, resizeColumnsCount, requestedRowCapacity, requestedColumnCapacity);
 
-    QVERIFY2(firstDestMatrix.getRowCapacity() == expectedFirstDestRowCapacity &&
-             firstDestMatrix.getColumnCapacity() == expectedFirstDestColumnCapacity, "Horizontal split failed, capacity of the first destination matrix is not correct!");
+    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(mSecondaryStringMatrix, mPrimaryStringMatrix.getNrOfRows(), mPrimaryStringMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity);
 
-    QVERIFY2(secondDestMatrix.getRowCapacity() == expectedSecondDestRowCapacity &&
-             secondDestMatrix.getColumnCapacity() == expectedSecondDestColumnCapacity, "Horizontal split failed, capacity of the second destination matrix is not correct!");
+    QVERIFY2(mSecondaryStringMatrix == mPrimaryStringMatrix, "Resizing failed, the matrix does not have the correct size and/or values!");
 }
 
-void CapacityTests::testCapacityWithIdenticalMatrixConstructor_data()
+/* Same way to perform consistency check as for integer matrix scenario */
+void CapacityTests::testStringMatrixCapacityWithResizeAndFillInNewValues()
+{
+    TEST_CAPACITY_WITH_RESIZE_AND_FILL_IN_NEW_VALUES(std::string, mPrimaryStringMatrix, mSecondaryStringMatrix);
+}
+
+void CapacityTests::testStringMatrixCapacityWithInsertRow()
+{
+    TEST_CAPACITY_WITH_INSERT_ROW(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithInsertColumn()
+{
+    TEST_CAPACITY_WITH_INSERT_COLUMN(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithEraseRow()
+{
+    TEST_CAPACITY_WITH_ERASE_ROW(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithEraseColumn()
+{
+    TEST_CAPACITY_WITH_ERASE_COLUMN(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithCatByRow()
+{
+    TEST_CAPACITY_WITH_CAT_BY_ROW(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithCatByColumn()
+{
+    TEST_CAPACITY_WITH_CAT_BY_COLUMN(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithSplitByRow()
+{
+    TEST_CAPACITY_WITH_SPLIT_BY_ROW(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithSplitByColumn()
+{
+    TEST_CAPACITY_WITH_SPLIT_BY_COLUMN(std::string);
+}
+
+void CapacityTests::testIntMatrixCapacityWithIdenticalMatrixConstructor_data()
 {
     QTest::addColumn<IntMatrixSizeType>("rowsCount");
     QTest::addColumn<IntMatrixSizeType>("columnsCount");
@@ -618,7 +440,7 @@ void CapacityTests::testCapacityWithIdenticalMatrixConstructor_data()
     QTest::newRow("large size matrix") << 20 << 25 << -2 << 25 << 31;
 }
 
-void CapacityTests::testCapacityWithDiagonalMatrixConstructor_data()
+void CapacityTests::testIntMatrixCapacityWithDiagonalMatrixConstructor_data()
 {
     QTest::addColumn<IntMatrixSizeType>("rowsColumnsCount");
     QTest::addColumn<int>("nonDiagonalValue");
@@ -631,27 +453,27 @@ void CapacityTests::testCapacityWithDiagonalMatrixConstructor_data()
     QTest::newRow("medium size matrix") << 10 << -2 << -3 << 12;
 }
 
-void CapacityTests::testCapacityWithCopyConstructor_data()
+void CapacityTests::testIntMatrixCapacityWithCopyConstructor_data()
 {
-    _buildCapacityWithMoveCopyConstructorsTestingTable();
+    _buildIntMatrixCapacityWithMoveCopyConstructorsTestingTable();
 }
 
-void CapacityTests::testCapacityWithMoveConstructor_data()
+void CapacityTests::testIntMatrixCapacityWithMoveConstructor_data()
 {
-    _buildCapacityWithMoveCopyConstructorsTestingTable();
+    _buildIntMatrixCapacityWithMoveCopyConstructorsTestingTable();
 }
 
-void CapacityTests::testCapacityWithCopyAssignmentOperator_data()
+void CapacityTests::testIntMatrixCapacityWithCopyAssignmentOperator_data()
 {
-    _buildCapacityWithAssignmentOperatorsTestingTable();
+    _buildIntMatrixCapacityWithAssignmentOperatorsTestingTable();
 }
 
-void CapacityTests::testCapacityWithMoveAssignmentOperator_data()
+void CapacityTests::testIntMatrixCapacityWithMoveAssignmentOperator_data()
 {
-    _buildCapacityWithAssignmentOperatorsTestingTable();
+    _buildIntMatrixCapacityWithAssignmentOperatorsTestingTable();
 }
 
-void CapacityTests::testCapacityWithTranspose_data()
+void CapacityTests::testIntMatrixCapacityWithTranspose_data()
 {
     QTest::addColumn<IntMatrix>("srcMatrix");
     QTest::addColumn<IntMatrix>("destMatrix");
@@ -676,17 +498,17 @@ void CapacityTests::testCapacityWithTranspose_data()
     QTest::newRow("matrix transposed to itself") << IntMatrix{8, 7, 2} << IntMatrix{8, 7, 2} << 10 << 8 << true;
 }
 
-void CapacityTests::testCapacityWithResizeWithoutFillingInNewValues_data()
+void CapacityTests::testIntMatrixCapacityWithResizeWithoutFillingInNewValues_data()
 {
-    _buildCapacityWithResizeTestingTable();
+    _buildIntMatrixCapacityWithResizeTestingTable();
 }
 
-void CapacityTests::testCapacityWithResizeAndFillInNewValues_data()
+void CapacityTests::testIntMatrixCapacityWithResizeAndFillInNewValues_data()
 {
-    _buildCapacityWithResizeTestingTable();
+    _buildIntMatrixCapacityWithResizeTestingTable();
 }
 
-void CapacityTests::testCapacityWithInsertRow_data()
+void CapacityTests::testIntMatrixCapacityWithInsertRow_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("insertPosition");
@@ -703,7 +525,7 @@ void CapacityTests::testCapacityWithInsertRow_data()
     QTest::newRow("inserted row value set") << IntMatrix{8, 2, -2} << 5 << 5 << 10 << 2 << true;
 }
 
-void CapacityTests::testCapacityWithInsertColumn_data()
+void CapacityTests::testIntMatrixCapacityWithInsertColumn_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("insertPosition");
@@ -720,7 +542,7 @@ void CapacityTests::testCapacityWithInsertColumn_data()
     QTest::newRow("inserted column value set") << IntMatrix{5, 14, 4} << 1 << 1 << 6 << 17 << true;
 }
 
-void CapacityTests::testCapacityWithEraseRow_data()
+void CapacityTests::testIntMatrixCapacityWithEraseRow_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<TripleSizeTypeTupleArray>("erasedRowAndExpectedCapacity");
@@ -730,7 +552,7 @@ void CapacityTests::testCapacityWithEraseRow_data()
     QTest::newRow("more rows than columns") << IntMatrix{7, 5, -2} << TripleSizeTypeTupleArray{{1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 4, 6}, {1, 2, 6}, {0, 0, 0}};
 }
 
-void CapacityTests::testCapacityWithEraseColumn_data()
+void CapacityTests::testIntMatrixCapacityWithEraseColumn_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<TripleSizeTypeTupleArray>("erasedColumnAndExpectedCapacity");
@@ -740,7 +562,7 @@ void CapacityTests::testCapacityWithEraseColumn_data()
     QTest::newRow("more columns than rows") << IntMatrix{5, 7, 4} << TripleSizeTypeTupleArray{{1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 4}, {1, 6, 2}, {0, 0, 0}};
 }
 
-void CapacityTests::testCapacityWithCatByRow_data()
+void CapacityTests::testIntMatrixCapacityWithCatByRow_data()
 {
     QTest::addColumn<IntMatrix>("destMatrix");
     QTest::addColumn<IntMatrix>("firstSrcMatrix");
@@ -817,7 +639,7 @@ void CapacityTests::testCapacityWithCatByRow_data()
     QTest::newRow("scenario: all different") << IntMatrix{7, 6, -1} << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 0 << 0;
 }
 
-void CapacityTests::testCapacityWithCatByColumn_data()
+void CapacityTests::testIntMatrixCapacityWithCatByColumn_data()
 {
     QTest::addColumn<IntMatrix>("destMatrix");
     QTest::addColumn<IntMatrix>("firstSrcMatrix");
@@ -894,7 +716,7 @@ void CapacityTests::testCapacityWithCatByColumn_data()
     QTest::newRow("scenario: all different") << IntMatrix{6, 7, -1} << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 0 << 0;
 }
 
-void CapacityTests::testCapacityWithSplitByRow_data()
+void CapacityTests::testIntMatrixCapacityWithSplitByRow_data()
 {
     QTest::addColumn<IntMatrix>("srcMatrix");
     QTest::addColumn<IntMatrix>("firstDestMatrix");
@@ -961,7 +783,7 @@ void CapacityTests::testCapacityWithSplitByRow_data()
     QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{7, 17, 2} << IntMatrix{8, 17, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 10 << 21;
 }
 
-void CapacityTests::testCapacityWithSplitByColumn_data()
+void CapacityTests::testIntMatrixCapacityWithSplitByColumn_data()
 {
     QTest::addColumn<IntMatrix>("srcMatrix");
     QTest::addColumn<IntMatrix>("firstDestMatrix");
@@ -1028,7 +850,431 @@ void CapacityTests::testCapacityWithSplitByColumn_data()
     QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{17, 7, 2} << IntMatrix{17, 8, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
 }
 
-void CapacityTests::_buildCapacityWithMoveCopyConstructorsTestingTable()
+void CapacityTests::testStringMatrixCapacityWithIdenticalMatrixConstructor_data()
+{
+    QTest::addColumn<StringMatrixSizeType>("rowsCount");
+    QTest::addColumn<StringMatrixSizeType>("columnsCount");
+    QTest::addColumn<std::string>("elementValue");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("small size matrix") << 3 << 4 << std::string{"Value1"} << 3 << 5;
+    QTest::newRow("small size matrix") << 4 << 3 << std::string{"Value1"} << 5 << 3;
+    QTest::newRow("large size matrix") << 25 << 20 << std::string{"Value2"} << 31 << 25;
+    QTest::newRow("large size matrix") << 20 << 25 << std::string{"Value2"} << 25 << 31;
+}
+
+void CapacityTests::testStringMatrixCapacityWithDiagonalMatrixConstructor_data()
+{
+    QTest::addColumn<StringMatrixSizeType>("rowsColumnsCount");
+    QTest::addColumn<std::string>("nonDiagonalValue");
+    QTest::addColumn<std::string>("diagonalValue");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowColumnCapacity");
+
+    QTest::newRow("small size matrix") << 3 << std::string{"Value1"} << std::string{"Value2"} << 3;
+    QTest::newRow("small size matrix") << 4 << std::string{"Value1"} << std::string{"Value2"} << 5;
+    QTest::newRow("medium size matrix") << 8 << std::string{"Value1"} << std::string{"Value2"} << 10;
+    QTest::newRow("medium size matrix") << 10 << std::string{"Value1"} << std::string{"Value2"} << 12;
+}
+
+void CapacityTests::testStringMatrixCapacityWithCopyConstructor_data()
+{
+    _buildStringMatrixCapacityWithMoveCopyConstructorsTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithMoveConstructor_data()
+{
+    _buildStringMatrixCapacityWithMoveCopyConstructorsTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithCopyAssignmentOperator_data()
+{
+    _buildStringMatrixCapacityWithAssignmentOperatorsTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithMoveAssignmentOperator_data()
+{
+    _buildStringMatrixCapacityWithAssignmentOperatorsTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithTranspose_data()
+{
+    QTest::addColumn<StringMatrix>("srcMatrix");
+    QTest::addColumn<StringMatrix>("destMatrix");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<bool>("isTransposedToItself");
+
+    QTest::newRow("transposed matrix initially empty") << StringMatrix{3, 4, "Value"} << StringMatrix{} << 5 << 3 << false;
+    QTest::newRow("transposed matrix initially empty") << StringMatrix{4, 3, "Value"} << StringMatrix{} << 3 << 5 << false;
+    QTest::newRow("transposed matrix initially empty") << StringMatrix{7, 8, "Value"} << StringMatrix{} << 10 << 8 << false;
+    QTest::newRow("transposed matrix initially empty") << StringMatrix{8, 7, "Value"} << StringMatrix{} << 8 << 10 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{8, 7, "Value"} << StringMatrix{5, 6, "Value"} << 8 << 10 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{8, 7, "Value"} << StringMatrix{6, 6, "Value"} << 7 << 10 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{8, 7, "Value"} << StringMatrix{5, 7, "Value"} << 8 << 8 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{8, 7, "Value"} << StringMatrix{6, 7, "Value"} << 7 << 8 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{8, 7, "Value"} << StringMatrix{7, 8, "Value"} << 8 << 10 << false;
+    QTest::newRow("matrix transposed to itself") << StringMatrix{3, 3, "Value"} << StringMatrix{3, 3, "Value"} << 3 << 3 << true;
+    QTest::newRow("matrix transposed to itself") << StringMatrix{3, 4, "Value"} << StringMatrix{3, 4, "Value"} << 5 << 5 << true;
+    QTest::newRow("matrix transposed to itself") << StringMatrix{4, 3, "Value"} << StringMatrix{4, 3, "Value"} << 5 << 5 << true;
+    QTest::newRow("matrix transposed to itself") << StringMatrix{4, 4, "Value"} << StringMatrix{4, 4, "Value"} << 5 << 5 << true;
+    QTest::newRow("matrix transposed to itself") << StringMatrix{7, 8, "Value"} << StringMatrix{7, 8, "Value"} << 8 << 10 << true;
+    QTest::newRow("matrix transposed to itself") << StringMatrix{8, 7, "Value"} << StringMatrix{8, 7, "Value"} << 10 << 8 << true;
+}
+
+void CapacityTests::testStringMatrixCapacityWithResizeWithoutFillingInNewValues_data()
+{
+    _buildStringMatrixCapacityWithResizeTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithResizeAndFillInNewValues_data()
+{
+    _buildStringMatrixCapacityWithResizeTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithInsertRow_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("insertPosition");
+    QTest::addColumn<std::string>("insertedRowValue");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<bool>("isInsertedRowValueSet");
+
+    QTest::newRow("inserted row value NOT set") << StringMatrix{3, 4, "Value1"} << 1 << std::string{"Value2"} << 6 << 5 << false;
+    QTest::newRow("inserted row value set") << StringMatrix{3, 4, "Value1"} << 1 << std::string{"Value2"} << 6 << 5 << true;
+    QTest::newRow("inserted row value NOT set") << StringMatrix{6, 5, "Value1"} << 3 << std::string{"Value2"} << 7 << 6 << false;
+    QTest::newRow("inserted row value set") << StringMatrix{6, 5, "Value1"} << 3 << std::string{"Value2"} << 7 << 6 << true;
+    QTest::newRow("inserted row value NOT set") << StringMatrix{8, 2, "Value1"} << 5 << std::string{"Value2"} << 10 << 2 << false;
+    QTest::newRow("inserted row value set") << StringMatrix{8, 2, "Value1"} << 5 << std::string{"Value2"} << 10 << 2 << true;
+}
+
+void CapacityTests::testStringMatrixCapacityWithInsertColumn_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<IntMatrixSizeType>("insertPosition");
+    QTest::addColumn<std::string>("insertedColumnValue");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<bool>("isInsertedColumnValueSet");
+
+    QTest::newRow("inserted column value NOT set") << StringMatrix{5, 3, "Value1"} << 1 << std::string{"Value2"} << 6 << 6 << false;
+    QTest::newRow("inserted column value set") << StringMatrix{5, 3, "Value1"} << 1 << std::string{"Value2"} << 6 << 6 << true;
+    QTest::newRow("inserted column value NOT set") << StringMatrix{5, 7, "Value1"} << 1 << std::string{"Value2"} << 6 << 8 << false;
+    QTest::newRow("inserted column value set") << StringMatrix{5, 7, "Value1"} << 1 << std::string{"Value2"} << 6 << 8 << true;
+    QTest::newRow("inserted column value NOT set") << StringMatrix{5, 14, "Value1"} << 1 << std::string{"Value2"} << 6 << 17 << false;
+    QTest::newRow("inserted column value set") << StringMatrix{5, 14, "Value1"} << 1 << std::string{"Value2"} << 6 << 17 << true;
+}
+
+void CapacityTests::testStringMatrixCapacityWithEraseRow_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<TripleSizeTypeTupleArray>("erasedRowAndExpectedCapacity");
+
+    QTest::newRow("less rows than columns") << StringMatrix{3, 4, "Value"} << TripleSizeTypeTupleArray{{1, 3, 5}, {1, 3, 5}, {0, 0, 0}};
+    QTest::newRow("square matrix") << StringMatrix{4, 4, "Value"} << TripleSizeTypeTupleArray{{1, 5, 5}, {1, 5, 5}, {1, 2, 5}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << StringMatrix{7, 5, "Value"} << TripleSizeTypeTupleArray{{1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 4, 6}, {1, 2, 6}, {0, 0, 0}};
+}
+
+void CapacityTests::testStringMatrixCapacityWithEraseColumn_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<TripleSizeTypeTupleArray>("erasedColumnAndExpectedCapacity");
+
+    QTest::newRow("less columns than rows") << StringMatrix{4, 3, "Value"} << TripleSizeTypeTupleArray{{1, 5, 3}, {1, 5, 3}, {0, 0, 0}};
+    QTest::newRow("square matrix") << StringMatrix{4, 4, "Value"} << TripleSizeTypeTupleArray{{1, 5, 5}, {1, 5, 5}, {1, 5, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << StringMatrix{5, 7, "Value"} << TripleSizeTypeTupleArray{{1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 4}, {1, 6, 2}, {0, 0, 0}};
+}
+
+void CapacityTests::testStringMatrixCapacityWithCatByRow_data()
+{
+    QTest::addColumn<StringMatrix>("destMatrix");
+    QTest::addColumn<StringMatrix>("firstSrcMatrix");
+    QTest::addColumn<StringMatrix>("secondSrcMatrix");
+    QTest::addColumn<ConcatMode>("mode");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("scenario: destination first") << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::DESTINATION_FIRST << 0 << 0 << 0 << 0 << 11 << 8;
+    QTest::newRow("scenario: destination first") << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::DESTINATION_FIRST << 4 << 7 << 8 << 8 << 11 << 8;
+    QTest::newRow("scenario: destination first") << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::DESTINATION_FIRST << 4 << 7 << 9 << 8 << 11 << 8;
+    QTest::newRow("scenario: destination first") << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::DESTINATION_FIRST << 4 << 7 << 10 << 8 << 11 << 8;
+    QTest::newRow("scenario: destination first") << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::DESTINATION_FIRST << 4 << 7 << 11 << 8 << 11 << 8;
+    QTest::newRow("scenario: destination first") << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::DESTINATION_FIRST << 4 << 7 << 12 << 8 << 11 << 8;
+    QTest::newRow("scenario: destination second") << StringMatrix{5, 7, "Value2"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::DESTINATION_SECOND << 0 << 0 << 0 << 0 << 11 << 8;
+    QTest::newRow("scenario: destination second") << StringMatrix{5, 7, "Value2"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::DESTINATION_SECOND << 5 << 7 << 8 << 8 << 11 << 8;
+    QTest::newRow("scenario: destination second") << StringMatrix{5, 7, "Value2"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::DESTINATION_SECOND << 5 << 7 << 9 << 8 << 11 << 8;
+    QTest::newRow("scenario: destination second") << StringMatrix{5, 7, "Value2"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::DESTINATION_SECOND << 5 << 7 << 10 << 8 << 11 << 8;
+    QTest::newRow("scenario: destination second") << StringMatrix{5, 7, "Value2"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::DESTINATION_SECOND << 5 << 7 << 11 << 8 << 11 << 8;
+    QTest::newRow("scenario: destination second") << StringMatrix{5, 7, "Value2"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::DESTINATION_SECOND << 5 << 7 << 12 << 8 << 11 << 8;
+    QTest::newRow("scenario: source both") << StringMatrix{5, 7, "Value2"} << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 10 << 8;
+    QTest::newRow("scenario: source both") << StringMatrix{5, 7, "Value2"} << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << ConcatMode::SOURCE_BOTH << 5 << 7 << 7 << 8 << 10 << 8;
+    QTest::newRow("scenario: source both") << StringMatrix{5, 7, "Value2"} << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << ConcatMode::SOURCE_BOTH << 5 << 7 << 8 << 8 << 10 << 8;
+    QTest::newRow("scenario: source both") << StringMatrix{5, 7, "Value2"} << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << ConcatMode::SOURCE_BOTH << 5 << 7 << 9 << 8 << 10 << 8;
+    QTest::newRow("scenario: source both") << StringMatrix{5, 7, "Value2"} << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << ConcatMode::SOURCE_BOTH << 5 << 7 << 10 << 8 << 10 << 8;
+    QTest::newRow("scenario: source both") << StringMatrix{5, 7, "Value2"} << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << ConcatMode::SOURCE_BOTH << 5 << 7 << 11 << 8 << 10 << 8;
+    QTest::newRow("scenario: destination all") << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << ConcatMode::DESTINATION_ALL << 0 << 0 << 0 << 0 << 10 << 8;
+    QTest::newRow("scenario: destination all") << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << ConcatMode::DESTINATION_ALL << 4 << 7 << 7 << 8 << 10 << 8;
+    QTest::newRow("scenario: destination all") << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << ConcatMode::DESTINATION_ALL << 4 << 7 << 8 << 8 << 10 << 8;
+    QTest::newRow("scenario: destination all") << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << ConcatMode::DESTINATION_ALL << 4 << 7 << 9 << 8 << 10 << 8;
+    QTest::newRow("scenario: destination all") << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << ConcatMode::DESTINATION_ALL << 4 << 7 << 10 << 8 << 10 << 8;
+    QTest::newRow("scenario: destination all") << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << StringMatrix{4, 7, "Value1"} << ConcatMode::DESTINATION_ALL << 4 << 7 << 11 << 8 << 10 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value3"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value3"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 8 << 8 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value3"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 9 << 8 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value3"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 10 << 8 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value3"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 11 << 8 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value3"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 12 << 8 << 11 << 8;
+
+    // column capacity too
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 8 << 6 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 8 << 7 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 8 << 8 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 8 << 9 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 9 << 6 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 9 << 7 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 9 << 8 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 9 << 9 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 10 << 6 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 10 << 7 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 10 << 8 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 10 << 9 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 11 << 6 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 11 << 7 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 11 << 8 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 11 << 9 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 12 << 6 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 12 << 7 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 12 << 8 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 12 << 9 << 11 << 8;
+
+    // additional tests
+    QTest::newRow("scenario: all different") << StringMatrix{} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 5, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{10, 5, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 11 << 8;
+
+    // empty matrix concatenation
+    QTest::newRow("scenario: source both") << StringMatrix{7, 6, "Value4"} << StringMatrix{} << StringMatrix{} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 0 << 0;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value4"} << StringMatrix{} << StringMatrix{} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 0 << 0;
+}
+
+void CapacityTests::testStringMatrixCapacityWithCatByColumn_data()
+{
+    QTest::addColumn<StringMatrix>("destMatrix");
+    QTest::addColumn<StringMatrix>("firstSrcMatrix");
+    QTest::addColumn<StringMatrix>("secondSrcMatrix");
+    QTest::addColumn<ConcatMode>("mode");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("scenario: destination first") << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::DESTINATION_FIRST << 0 << 0 << 0 << 0 << 8 << 11;
+    QTest::newRow("scenario: destination first") << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::DESTINATION_FIRST << 7 << 4 << 8 << 8 << 8 << 11;
+    QTest::newRow("scenario: destination first") << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::DESTINATION_FIRST << 7 << 4 << 8 << 9 << 8 << 11;
+    QTest::newRow("scenario: destination first") << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::DESTINATION_FIRST << 7 << 4 << 8 << 10 << 8 << 11;
+    QTest::newRow("scenario: destination first") << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::DESTINATION_FIRST << 7 << 4 << 8 << 11 << 8 << 11;
+    QTest::newRow("scenario: destination first") << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::DESTINATION_FIRST << 7 << 4 << 8 << 12 << 8 << 11;
+    QTest::newRow("scenario: destination second") << StringMatrix{7, 5, "Value2"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::DESTINATION_SECOND << 0 << 0 << 0 << 0 << 8 << 11;
+    QTest::newRow("scenario: destination second") << StringMatrix{7, 5, "Value2"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::DESTINATION_SECOND << 7 << 5 << 8 << 8 << 8 << 11;
+    QTest::newRow("scenario: destination second") << StringMatrix{7, 5, "Value2"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::DESTINATION_SECOND << 7 << 5 << 8 << 9 << 8 << 11;
+    QTest::newRow("scenario: destination second") << StringMatrix{7, 5, "Value2"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::DESTINATION_SECOND << 7 << 5 << 8 << 10 << 8 << 11;
+    QTest::newRow("scenario: destination second") << StringMatrix{7, 5, "Value2"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::DESTINATION_SECOND << 7 << 5 << 8 << 11 << 8 << 11;
+    QTest::newRow("scenario: destination second") << StringMatrix{7, 5, "Value2"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::DESTINATION_SECOND << 7 << 5 << 8 << 12 << 8 << 11;
+    QTest::newRow("scenario: source both") << StringMatrix{7, 5, "Value2"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 8 << 10;
+    QTest::newRow("scenario: source both") << StringMatrix{7, 5, "Value2"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << ConcatMode::SOURCE_BOTH << 7 << 5 << 8 << 7 << 8 << 10;
+    QTest::newRow("scenario: source both") << StringMatrix{7, 5, "Value2"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << ConcatMode::SOURCE_BOTH << 7 << 5 << 8 << 8 << 8 << 10;
+    QTest::newRow("scenario: source both") << StringMatrix{7, 5, "Value2"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << ConcatMode::SOURCE_BOTH << 7 << 5 << 8 << 9 << 8 << 10;
+    QTest::newRow("scenario: source both") << StringMatrix{7, 5, "Value2"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << ConcatMode::SOURCE_BOTH << 7 << 5 << 8 << 10 << 8 << 10;
+    QTest::newRow("scenario: source both") << StringMatrix{7, 5, "Value2"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << ConcatMode::SOURCE_BOTH << 7 << 5 << 8 << 11 << 8 << 10;
+    QTest::newRow("scenario: destination all") << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << ConcatMode::DESTINATION_ALL << 0 << 0 << 0 << 0 << 8 << 10;
+    QTest::newRow("scenario: destination all") << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << ConcatMode::DESTINATION_ALL << 7 << 4 << 8 << 7 << 8 << 10;
+    QTest::newRow("scenario: destination all") << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << ConcatMode::DESTINATION_ALL << 7 << 4 << 8 << 8 << 8 << 10;
+    QTest::newRow("scenario: destination all") << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << ConcatMode::DESTINATION_ALL << 7 << 4 << 8 << 9 << 8 << 10;
+    QTest::newRow("scenario: destination all") << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << ConcatMode::DESTINATION_ALL << 7 << 4 << 8 << 10 << 8 << 10;
+    QTest::newRow("scenario: destination all") << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 4, "Value1"} << ConcatMode::DESTINATION_ALL << 7 << 4 << 8 << 11 << 8 << 10;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value3"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value3"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 8 << 8 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value3"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 8 << 9 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value3"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 8 << 10 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value3"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 8 << 11 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{7, 6, "Value3"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 7 << 6 << 8 << 12 << 8 << 11;
+
+    // row capacity too
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 6 << 8 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 7 << 8 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 8 << 8 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 9 << 8 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 6 << 9 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 7 << 9 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 8 << 9 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 9 << 9 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 6 << 10 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 7 << 10 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 8 << 10 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 9 << 10 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 6 << 11 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 7 << 11 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 8 << 11 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 9 << 11 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 6 << 12 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 7 << 12 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 8 << 12 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 6 << 7 << 9 << 12 << 8 << 11;
+
+    // additional tests
+    QTest::newRow("scenario: all different") << StringMatrix{} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{5, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{5, 10, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 6, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 11;
+
+    // empty matrix concatenation
+    QTest::newRow("scenario: source both") << StringMatrix{6, 7, "Value4"} << StringMatrix{} << StringMatrix{} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 0 << 0;
+    QTest::newRow("scenario: all different") << StringMatrix{6, 7, "Value4"} << StringMatrix{} << StringMatrix{} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 0 << 0;
+}
+
+void CapacityTests::testStringMatrixCapacityWithSplitByRow_data()
+{
+    QTest::addColumn<StringMatrix>("srcMatrix");
+    QTest::addColumn<StringMatrix>("firstDestMatrix");
+    QTest::addColumn<StringMatrix>("secondDestMatrix");
+    QTest::addColumn<StringMatrixSizeType>("splitPosition");
+    QTest::addColumn<SplitMode>("mode");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnCapacity");
+    QTest::addColumn<bool>("isFirstDestResized");
+    QTest::addColumn<StringMatrixSizeType>("expectedFirstDestRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedFirstDestColumnCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedSecondDestRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedSecondDestColumnCapacity");
+
+    QTest::newRow("scenario: source first") << StringMatrix{15, 17, "Value1"} << StringMatrix{15, 17, "Value1"} << StringMatrix{} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 18 << 21 << 8 << 21;
+    QTest::newRow("scenario: source first") << StringMatrix{15, 17, "Value1"} << StringMatrix{15, 17, "Value1"} << StringMatrix{5, 8, "Value2"} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 18 << 21 << 8 << 21;
+    QTest::newRow("scenario: source first") << StringMatrix{15, 17, "Value1"} << StringMatrix{15, 17, "Value1"} << StringMatrix{5, 8, "Value2"} << 8 << SplitMode::SOURCE_FIRST << 5 << 8 << 6 << 17 << false << 18 << 21 << 8 << 17;
+    QTest::newRow("scenario: source first") << StringMatrix{15, 17, "Value1"} << StringMatrix{15, 17, "Value1"} << StringMatrix{5, 8, "Value2"} << 8 << SplitMode::SOURCE_FIRST << 5 << 8 << 6 << 18 << false << 18 << 21 << 8 << 18;
+    QTest::newRow("scenario: source first") << StringMatrix{15, 17, "Value1"} << StringMatrix{15, 17, "Value1"} << StringMatrix{6, 15, "Value2"} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 18 << 21 << 7 << 18;
+    QTest::newRow("scenario: source first") << StringMatrix{15, 17, "Value1"} << StringMatrix{15, 17, "Value1"} << StringMatrix{7, 17, "Value2"} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 18 << 21 << 8 << 21;
+    QTest::newRow("scenario: source second") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{15, 17, "Value1"} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 10 << 21 << 18 << 21;
+    QTest::newRow("scenario: source second") << StringMatrix{15, 17, "Value1"} << StringMatrix{5, 8, "Value2"} << StringMatrix{15, 17, "Value1"} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 10 << 21 << 18 << 21;
+    QTest::newRow("scenario: source second") << StringMatrix{15, 17, "Value1"} << StringMatrix{6, 8, "Value2"} << StringMatrix{15, 17, "Value1"} << 8 << SplitMode::SOURCE_SECOND << 6 << 8 << 7 << 17 << true << 10 << 17 << 18 << 21;
+    QTest::newRow("scenario: source second") << StringMatrix{15, 17, "Value1"} << StringMatrix{6, 8, "Value2"} << StringMatrix{15, 17, "Value1"} << 8 << SplitMode::SOURCE_SECOND << 6 << 8 << 7 << 18 << true << 10 << 18 << 18 << 21;
+    QTest::newRow("scenario: source second") << StringMatrix{15, 17, "Value1"} << StringMatrix{7, 15, "Value2"} << StringMatrix{15, 17, "Value1"} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 8 << 18 << 18 << 21;
+    QTest::newRow("scenario: source second") << StringMatrix{15, 17, "Value1"} << StringMatrix{8, 17, "Value2"} << StringMatrix{15, 17, "Value1"} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 10 << 21 << 18 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 10 << 21 << 8 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{5, 8, "Value2"} << StringMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 10 << 21 << 8 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{6, 8, "Value2"} << StringMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 6 << 8 << 7 << 17 << true << 10 << 17 << 8 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{6, 8, "Value2"} << StringMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 6 << 8 << 7 << 18 << true << 10 << 18 << 8 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{7, 15, "Value2"} << StringMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 18 << 8 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{8, 17, "Value2"} << StringMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 10 << 21 << 8 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{5, 8, "Value2"} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 10 << 21 << 8 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{5, 8, "Value2"} << 8 << SplitMode::ALL_DIFFERENT << 5 << 8 << 6 << 17 << false << 10 << 21 << 8 << 17;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{5, 8, "Value2"} << 8 << SplitMode::ALL_DIFFERENT << 5 << 8 << 6 << 18 << false << 10 << 21 << 8 << 18;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{6, 15, "Value2"} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 10 << 21 << 7 << 18;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{7, 17, "Value2"} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 10 << 21 << 8 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{8, 17, "Value2"} << StringMatrix{7, 17, "Value2"} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 10 << 21 << 8 << 21;
+    QTest::newRow("scenario: source first") << StringMatrix{15, 17, "Value1"} << StringMatrix{15, 17, "Value1"} << StringMatrix{} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 18 << 21 << 10 << 21;
+    QTest::newRow("scenario: source first") << StringMatrix{15, 17, "Value1"} << StringMatrix{15, 17, "Value1"} << StringMatrix{6, 8, "Value2"} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 18 << 21 << 10 << 21;
+    QTest::newRow("scenario: source first") << StringMatrix{15, 17, "Value1"} << StringMatrix{15, 17, "Value1"} << StringMatrix{6, 8, "Value2"} << 7 << SplitMode::SOURCE_FIRST << 6 << 8 << 7 << 17 << false << 18 << 21 << 10 << 17;
+    QTest::newRow("scenario: source first") << StringMatrix{15, 17, "Value1"} << StringMatrix{15, 17, "Value1"} << StringMatrix{6, 8, "Value2"} << 7 << SplitMode::SOURCE_FIRST << 6 << 8 << 7 << 18 << false << 18 << 21 << 10 << 18;
+    QTest::newRow("scenario: source first") << StringMatrix{15, 17, "Value1"} << StringMatrix{15, 17, "Value1"} << StringMatrix{7, 15, "Value2"} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 18 << 21 << 8 << 18;
+    QTest::newRow("scenario: source first") << StringMatrix{15, 17, "Value1"} << StringMatrix{15, 17, "Value1"} << StringMatrix{8, 17, "Value2"} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 18 << 21 << 10 << 21;
+    QTest::newRow("scenario: source second") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{15, 17, "Value1"} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 8 << 21 << 18 << 21;
+    QTest::newRow("scenario: source second") << StringMatrix{15, 17, "Value1"} << StringMatrix{5, 8, "Value2"} << StringMatrix{15, 17, "Value1"} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 8 << 21 << 18 << 21;
+    QTest::newRow("scenario: source second") << StringMatrix{15, 17, "Value1"} << StringMatrix{5, 8, "Value2"} << StringMatrix{15, 17, "Value1"} << 7 << SplitMode::SOURCE_SECOND << 5 << 8 << 6 << 17 << true << 8 << 17 << 18 << 21;
+    QTest::newRow("scenario: source second") << StringMatrix{15, 17, "Value1"} << StringMatrix{5, 8, "Value2"} << StringMatrix{15, 17, "Value1"} << 7 << SplitMode::SOURCE_SECOND << 5 << 8 << 6 << 18 << true << 8 << 18 << 18 << 21;
+    QTest::newRow("scenario: source second") << StringMatrix{15, 17, "Value1"} << StringMatrix{6, 15, "Value2"} << StringMatrix{15, 17, "Value1"} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 7 << 18 << 18 << 21;
+    QTest::newRow("scenario: source second") << StringMatrix{15, 17, "Value1"} << StringMatrix{7, 17, "Value2"} << StringMatrix{15, 17, "Value1"} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 8 << 21 << 18 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 10 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{5, 8, "Value2"} << StringMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 10 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{5, 8, "Value2"} << StringMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 5 << 8 << 6 << 17 << true << 8 << 17 << 10 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{5, 8, "Value2"} << StringMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 5 << 8 << 6 << 18 << true << 8 << 18 << 10 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{6, 15, "Value2"} << StringMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 7 << 18 << 10 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{7, 17, "Value2"} << StringMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 10 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{6, 8, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 10 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{6, 8, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 6 << 8 << 7 << 17 << false << 8 << 21 << 10 << 17;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{6, 8, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 6 << 8 << 7 << 18 << false << 8 << 21 << 10 << 18;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{7, 15, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 8 << 18;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{8, 17, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 10 << 21;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{7, 17, "Value2"} << StringMatrix{8, 17, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 10 << 21;
+}
+
+void CapacityTests::testStringMatrixCapacityWithSplitByColumn_data()
+{
+    QTest::addColumn<StringMatrix>("srcMatrix");
+    QTest::addColumn<StringMatrix>("firstDestMatrix");
+    QTest::addColumn<StringMatrix>("secondDestMatrix");
+    QTest::addColumn<StringMatrixSizeType>("splitPosition");
+    QTest::addColumn<SplitMode>("mode");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnCapacity");
+    QTest::addColumn<bool>("isFirstDestResized");
+    QTest::addColumn<StringMatrixSizeType>("expectedFirstDestRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedFirstDestColumnCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedSecondDestRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedSecondDestColumnCapacity");
+
+    QTest::newRow("scenario: source first") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 15, "Value1"} << StringMatrix{} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 21 << 18 << 21 << 8;
+    QTest::newRow("scenario: source first") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 5, "Value2"} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 21 << 18 << 21 << 8;
+    QTest::newRow("scenario: source first") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 5, "Value2"} << 8 << SplitMode::SOURCE_FIRST << 8 << 5 << 17 << 6 << false << 21 << 18 << 17 << 8;
+    QTest::newRow("scenario: source first") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 5, "Value2"} << 8 << SplitMode::SOURCE_FIRST << 8 << 5 << 18 << 6 << false << 21 << 18 << 18 << 8;
+    QTest::newRow("scenario: source first") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 15, "Value1"} << StringMatrix{15, 6, "Value2"} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 21 << 18 << 18 << 7;
+    QTest::newRow("scenario: source first") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 7, "Value2"} << 8 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 21 << 18 << 21 << 8;
+    QTest::newRow("scenario: source second") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{17, 15, "Value1"} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 21 << 10 << 21 << 18;
+    QTest::newRow("scenario: source second") << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 5, "Value2"} << StringMatrix{17, 15, "Value1"} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 21 << 10 << 21 << 18;
+    QTest::newRow("scenario: source second") << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 6, "Value2"} << StringMatrix{17, 15, "Value1"} << 8 << SplitMode::SOURCE_SECOND << 8 << 6 << 17 << 7 << true << 17 << 10 << 21 << 18;
+    QTest::newRow("scenario: source second") << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 6, "Value2"} << StringMatrix{17, 15, "Value1"} << 8 << SplitMode::SOURCE_SECOND << 8 << 6 << 18 << 7 << true << 18 << 10 << 21 << 18;
+    QTest::newRow("scenario: source second") << StringMatrix{17, 15, "Value1"} << StringMatrix{15, 7, "Value2"} << StringMatrix{17, 15, "Value1"} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 18 << 8 << 21 << 18;
+    QTest::newRow("scenario: source second") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 8, "Value2"} << StringMatrix{17, 15, "Value1"} << 8 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 21 << 10 << 21 << 18;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 10 << 21 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 5, "Value2"} << StringMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 10 << 21 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 6, "Value2"} << StringMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 8 << 6 << 17 << 7 << true << 17 << 10 << 21 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 6, "Value2"} << StringMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 8 << 6 << 18 << 7 << true << 18 << 10 << 21 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{15, 7, "Value2"} << StringMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 18 << 8 << 21 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 8, "Value2"} << StringMatrix{} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 10 << 21 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{8, 5, "Value2"} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 10 << 21 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{8, 5, "Value2"} << 8 << SplitMode::ALL_DIFFERENT << 8 << 5 << 17 << 6 << false << 21 << 10 << 17 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{8, 5, "Value2"} << 8 << SplitMode::ALL_DIFFERENT << 8 << 5 << 18 << 6 << false << 21 << 10 << 18 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{15, 6, "Value2"} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 10 << 18 << 7;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{17, 7, "Value2"} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 10 << 21 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 8, "Value2"} << StringMatrix{17, 7, "Value2"} << 8 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 10 << 21 << 8;
+    QTest::newRow("scenario: source first") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 15, "Value1"} << StringMatrix{} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 21 << 18 << 21 << 10;
+    QTest::newRow("scenario: source first") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 6, "Value2"} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 21 << 18 << 21 << 10;
+    QTest::newRow("scenario: source first") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 6, "Value2"} << 7 << SplitMode::SOURCE_FIRST << 8 << 6 << 17 << 7 << false << 21 << 18 << 17 << 10;
+    QTest::newRow("scenario: source first") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 6, "Value2"} << 7 << SplitMode::SOURCE_FIRST << 8 << 6 << 18 << 7 << false << 21 << 18 << 18 << 10;
+    QTest::newRow("scenario: source first") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 15, "Value1"} << StringMatrix{15, 7, "Value2"} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 21 << 18 << 18 << 8;
+    QTest::newRow("scenario: source first") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 8, "Value2"} << 7 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 21 << 18 << 21 << 10;
+    QTest::newRow("scenario: source second") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{17, 15, "Value1"} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 18;
+    QTest::newRow("scenario: source second") << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 5, "Value2"} << StringMatrix{17, 15, "Value1"} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 18;
+    QTest::newRow("scenario: source second") << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 5, "Value2"} << StringMatrix{17, 15, "Value1"} << 7 << SplitMode::SOURCE_SECOND << 8 << 5 << 17 << 6 << true << 17 << 8 << 21 << 18;
+    QTest::newRow("scenario: source second") << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 5, "Value2"} << StringMatrix{17, 15, "Value1"} << 7 << SplitMode::SOURCE_SECOND << 8 << 5 << 18 << 6 << true << 18 << 8 << 21 << 18;
+    QTest::newRow("scenario: source second") << StringMatrix{17, 15, "Value1"} << StringMatrix{15, 6, "Value2"} << StringMatrix{17, 15, "Value1"} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 18 << 7 << 21 << 18;
+    QTest::newRow("scenario: source second") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 7, "Value2"} << StringMatrix{17, 15, "Value1"} << 7 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 18;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 5, "Value2"} << StringMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 5, "Value2"} << StringMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 8 << 5 << 17 << 6 << true << 17 << 8 << 21 << 10;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{8, 5, "Value2"} << StringMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 8 << 5 << 18 << 6 << true << 18 << 8 << 21 << 10;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{15, 6, "Value2"} << StringMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 18 << 7 << 21 << 10;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 7, "Value2"} << StringMatrix{} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{8, 6, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{8, 6, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 8 << 6 << 17 << 7 << false << 21 << 8 << 17 << 10;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{8, 6, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 8 << 6 << 18 << 7 << false << 21 << 8 << 18 << 10;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{15, 7, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 18 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{17, 8, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
+    QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 7, "Value2"} << StringMatrix{17, 8, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
+}
+
+void CapacityTests::_buildIntMatrixCapacityWithMoveCopyConstructorsTestingTable()
 {
     QTest::addColumn<IntMatrixSizeType>("rowsCount");
     QTest::addColumn<IntMatrixSizeType>("columnsCount");
@@ -1042,7 +1288,7 @@ void CapacityTests::_buildCapacityWithMoveCopyConstructorsTestingTable()
     QTest::newRow("medium size matrix") << 8 << 7 << -1 << 10 << 8;
 }
 
-void CapacityTests::_buildCapacityWithAssignmentOperatorsTestingTable()
+void CapacityTests::_buildIntMatrixCapacityWithAssignmentOperatorsTestingTable()
 {
     QTest::addColumn<IntMatrixSizeType>("srcMatrixRowsCount");
     QTest::addColumn<IntMatrixSizeType>("srcMatrixColumnsCount");
@@ -1063,7 +1309,7 @@ void CapacityTests::_buildCapacityWithAssignmentOperatorsTestingTable()
     QTest::newRow("destination matrix initially NOT empty") << 8 << 7 << -1 << 3 << 4 << -5 << 10 << 8;
 }
 
-void CapacityTests::_buildCapacityWithResizeTestingTable()
+void CapacityTests::_buildIntMatrixCapacityWithResizeTestingTable()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
@@ -1405,6 +1651,385 @@ void CapacityTests::_buildCapacityWithResizeTestingTable()
     QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 3 << 1 << 3 << 1;
     QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 3 << 2 << 3 << 2;
     QTest::newRow("more rows, more columns") << IntMatrix{} << 1 << 1 << -5 << 3 << 3 << 3 << 3;
+}
+
+void CapacityTests::_buildStringMatrixCapacityWithMoveCopyConstructorsTestingTable()
+{
+    QTest::addColumn<StringMatrixSizeType>("rowsCount");
+    QTest::addColumn<StringMatrixSizeType>("columnsCount");
+    QTest::addColumn<std::string>("elementValue");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("small size matrix") << 3 << 4 << std::string{"Value"} << 3 << 5;
+    QTest::newRow("small size matrix") << 4 << 3 << std::string{"Value"} << 5 << 3;
+    QTest::newRow("medium size matrix") << 7 << 8 << std::string{"Value"} << 8 << 10;
+    QTest::newRow("medium size matrix") << 8 << 7 << std::string{"Value"} << 10 << 8;
+}
+
+void CapacityTests::_buildStringMatrixCapacityWithAssignmentOperatorsTestingTable()
+{
+    QTest::addColumn<StringMatrixSizeType>("srcMatrixRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("srcMatrixColumnsCount");
+    QTest::addColumn<std::string>("srcMatrixElementValue");
+    QTest::addColumn<StringMatrixSizeType>("destMatrixRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("destMatrixColumnsCount");
+    QTest::addColumn<std::string>("destMatrixElementValue");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("destination matrix initially empty") << 3 << 4 << std::string{"Value1"} << 0 << 0 << std::string{"Value2"} << 3 << 5;
+    QTest::newRow("destination matrix initially empty") << 4 << 3 << std::string{"Value1"} << 0 << 0 << std::string{"Value2"} << 5 << 3;
+    QTest::newRow("destination matrix initially empty") << 7 << 8 << std::string{"Value1"} << 0 << 0 << std::string{"Value2"} << 8 << 10;
+    QTest::newRow("destination matrix initially empty") << 8 << 7 << std::string{"Value1"} << 0 << 0 << std::string{"Value2"} << 10 << 8;
+    QTest::newRow("destination matrix initially NOT empty") << 3 << 4 << std::string{"Value1"} << 2 << 3 << std::string{"Value3"} << 3 << 5;
+    QTest::newRow("destination matrix initially NOT empty") << 4 << 3 << std::string{"Value1"} << 2 << 3 << std::string{"Value3"} << 5 << 3;
+    QTest::newRow("destination matrix initially NOT empty") << 7 << 8 << std::string{"Value1"} << 3 << 4 << std::string{"Value3"} << 8 << 10;
+    QTest::newRow("destination matrix initially NOT empty") << 8 << 7 << std::string{"Value1"} << 3 << 4 << std::string{"Value3"} << 10 << 8;
+}
+
+void CapacityTests::_buildStringMatrixCapacityWithResizeTestingTable()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<std::string>("resizeElementValue");
+    QTest::addColumn<StringMatrixSizeType>("requestedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("requestedColumnCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 9 << 6 << 10 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 9 << 7 << 10 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 9 << 8 << 10 << 8;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 9 << 9 << 10 << 9;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 9 << 10 << 10 << 10;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 9 << 11 << 10 << 11;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 9 << 0 << 10 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 10 << 6 << 10 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 10 << 7 << 10 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 10 << 8 << 10 << 8;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 10 << 9 << 10 << 9;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 10 << 10 << 10 << 10;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 10 << 11 << 10 << 11;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 10 << 0 << 10 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 11 << 6 << 11 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 11 << 7 << 11 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 11 << 8 << 11 << 8;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 11 << 9 << 11 << 9;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 11 << 10 << 11 << 10;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 11 << 11 << 11 << 11;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 11 << 0 << 11 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 12 << 6 << 12 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 12 << 7 << 12 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 12 << 8 << 12 << 8;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 12 << 9 << 12 << 9;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 12 << 10 << 12 << 10;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 12 << 11 << 12 << 11;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 12 << 0 << 12 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 13 << 6 << 13 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 13 << 7 << 13 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 13 << 8 << 13 << 8;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 13 << 9 << 13 << 9;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 13 << 10 << 13 << 10;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 13 << 11 << 13 << 11;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 13 << 0 << 13 << 7;
+    QTest::newRow("equal rows, less columns") << StringMatrix{10, 8, "Value1"} << 10 << 7 << std::string{"Value2"} << 0 << 0 << 10 << 7;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 8 << 7 << 9 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 8 << 8 << 9 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 8 << 9 << 9 << 9;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 8 << 10 << 9 << 10;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 8 << 11 << 9 << 11;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 8 << 0 << 9 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 9 << 7 << 9 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 9 << 8 << 9 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 9 << 9 << 9 << 9;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 9 << 10 << 9 << 10;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 9 << 11 << 9 << 11;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 9 << 0 << 9 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 10 << 7 << 10 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 10 << 8 << 10 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 10 << 9 << 10 << 9;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 10 << 10 << 10 << 10;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 10 << 11 << 10 << 11;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 10 << 0 << 10 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 11 << 7 << 11 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 11 << 8 << 11 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 11 << 9 << 11 << 9;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 11 << 10 << 11 << 10;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 11 << 11 << 11 << 11;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 11 << 0 << 11 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 12 << 7 << 12 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 12 << 8 << 12 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 12 << 9 << 12 << 9;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 12 << 10 << 12 << 10;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 12 << 11 << 12 << 11;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 12 << 0 << 12 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 13 << 7 << 13 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 13 << 8 << 13 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 13 << 9 << 13 << 9;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 13 << 10 << 13 << 10;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 13 << 11 << 13 << 11;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 13 << 0 << 13 << 8;
+    QTest::newRow("less rows, equal columns") << StringMatrix{10, 8, "Value1"} << 9 << 8 << std::string{"Value2"} << 0 << 0 << 9 << 8;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 8 << 6 << 9 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 8 << 7 << 9 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 8 << 8 << 9 << 8;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 8 << 9 << 9 << 9;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 8 << 10 << 9 << 10;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 8 << 11 << 9 << 11;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 8 << 0 << 9 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 9 << 6 << 9 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 9 << 7 << 9 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 9 << 8 << 9 << 8;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 9 << 9 << 9 << 9;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 9 << 10 << 9 << 10;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 9 << 11 << 9 << 11;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 9 << 0 << 9 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 10 << 6 << 10 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 10 << 7 << 10 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 10 << 8 << 10 << 8;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 10 << 9 << 10 << 9;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 10 << 10 << 10 << 10;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 10 << 11 << 10 << 11;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 10 << 0 << 10 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 11 << 6 << 11 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 11 << 7 << 11 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 11 << 8 << 11 << 8;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 11 << 9 << 11 << 9;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 11 << 10 << 11 << 10;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 11 << 11 << 11 << 11;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 11 << 0 << 11 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 12 << 6 << 12 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 12 << 7 << 12 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 12 << 8 << 12 << 8;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 12 << 9 << 12 << 9;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 12 << 10 << 12 << 10;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 12 << 11 << 12 << 11;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 12 << 0 << 12 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 13 << 6 << 13 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 13 << 7 << 13 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 13 << 8 << 13 << 8;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 13 << 9 << 13 << 9;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 13 << 10 << 13 << 10;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 13 << 11 << 13 << 11;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 13 << 0 << 13 << 7;
+    QTest::newRow("less rows, less columns") << StringMatrix{10, 8, "Value1"} << 9 << 7 << std::string{"Value2"} << 0 << 0 << 9 << 7;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 9 << 7 << 10 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 9 << 8 << 10 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 9 << 9 << 10 << 9;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 9 << 10 << 10 << 10;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 9 << 11 << 10 << 11;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 9 << 0 << 10 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 10 << 7 << 10 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 10 << 8 << 10 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 10 << 9 << 10 << 9;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 10 << 10 << 10 << 10;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 10 << 11 << 10 << 11;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 10 << 0 << 10 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 11 << 7 << 11 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 11 << 8 << 11 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 11 << 9 << 11 << 9;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 11 << 10 << 11 << 10;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 11 << 11 << 11 << 11;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 11 << 0 << 11 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 12 << 7 << 12 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 12 << 8 << 12 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 12 << 9 << 12 << 9;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 12 << 10 << 12 << 10;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 12 << 11 << 12 << 11;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 12 << 0 << 12 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 13 << 7 << 13 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 13 << 8 << 13 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 13 << 9 << 13 << 9;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 13 << 10 << 13 << 10;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 13 << 11 << 13 << 11;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 13 << 0 << 13 << 8;
+    QTest::newRow("same rows, same columns") << StringMatrix{10, 8, "Value1"} << 10 << 8 << std::string{"Value2"} << 0 << 0 << 10 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 9 << 7 << 11 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 9 << 8 << 11 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 9 << 9 << 11 << 9;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 9 << 10 << 11 << 10;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 9 << 11 << 11 << 11;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 9 << 0 << 11 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 10 << 7 << 11 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 10 << 8 << 11 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 10 << 9 << 11 << 9;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 10 << 10 << 11 << 10;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 10 << 11 << 11 << 11;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 10 << 0 << 11 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 11 << 7 << 11 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 11 << 8 << 11 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 11 << 9 << 11 << 9;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 11 << 10 << 11 << 10;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 11 << 11 << 11 << 11;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 11 << 0 << 11 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 12 << 7 << 12 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 12 << 8 << 12 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 12 << 9 << 12 << 9;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 12 << 10 << 12 << 10;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 12 << 11 << 12 << 11;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 12 << 0 << 12 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 13 << 7 << 13 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 13 << 8 << 13 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 13 << 9 << 13 << 9;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 13 << 10 << 13 << 10;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 13 << 11 << 13 << 11;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 13 << 0 << 13 << 8;
+    QTest::newRow("more rows, same columns") << StringMatrix{10, 8, "Value1"} << 11 << 8 << std::string{"Value2"} << 0 << 0 << 11 << 8;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 9 << 7 << 10 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 9 << 8 << 10 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 9 << 9 << 10 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 9 << 10 << 10 << 10;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 9 << 11 << 10 << 11;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 9 << 0 << 10 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 10 << 7 << 10 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 10 << 8 << 10 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 10 << 9 << 10 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 10 << 10 << 10 << 10;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 10 << 11 << 10 << 11;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 10 << 0 << 10 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 11 << 7 << 11 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 11 << 8 << 11 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 11 << 9 << 11 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 11 << 10 << 11 << 10;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 11 << 11 << 11 << 11;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 11 << 0 << 11 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 12 << 7 << 12 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 12 << 8 << 12 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 12 << 9 << 12 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 12 << 10 << 12 << 10;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 12 << 11 << 12 << 11;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 12 << 0 << 12 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 13 << 7 << 13 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 13 << 8 << 13 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 13 << 9 << 13 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 13 << 10 << 13 << 10;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 13 << 11 << 13 << 11;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 13 << 0 << 13 << 9;
+    QTest::newRow("same rows, more columns") << StringMatrix{10, 8, "Value1"} << 10 << 9 << std::string{"Value2"} << 0 << 0 << 10 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 9 << 7 << 11 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 9 << 8 << 11 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 9 << 9 << 11 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 9 << 10 << 11 << 10;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 9 << 11 << 11 << 11;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 9 << 0 << 11 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 10 << 7 << 11 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 10 << 8 << 11 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 10 << 9 << 11 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 10 << 10 << 11 << 10;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 10 << 11 << 11 << 11;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 10 << 0 << 11 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 11 << 7 << 11 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 11 << 8 << 11 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 11 << 9 << 11 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 11 << 10 << 11 << 10;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 11 << 11 << 11 << 11;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 11 << 0 << 11 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 12 << 7 << 12 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 12 << 8 << 12 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 12 << 9 << 12 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 12 << 10 << 12 << 10;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 12 << 11 << 12 << 11;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 12 << 0 << 12 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 13 << 7 << 13 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 13 << 8 << 13 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 13 << 9 << 13 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 13 << 10 << 13 << 10;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 13 << 11 << 13 << 11;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 13 << 0 << 13 << 9;
+    QTest::newRow("more rows, more columns") << StringMatrix{10, 8, "Value1"} << 11 << 9 << std::string{"Value2"} << 0 << 0 << 11 << 9;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 9 << 6 << 11 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 9 << 7 << 11 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 9 << 8 << 11 << 8;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 9 << 9 << 11 << 9;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 9 << 10 << 11 << 10;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 9 << 11 << 11 << 11;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 9 << 0 << 11 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 10 << 6 << 11 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 10 << 7 << 11 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 10 << 8 << 11 << 8;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 10 << 9 << 11 << 9;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 10 << 10 << 11 << 10;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 10 << 11 << 11 << 11;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 10 << 0 << 11 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 11 << 6 << 11 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 11 << 7 << 11 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 11 << 8 << 11 << 8;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 11 << 9 << 11 << 9;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 11 << 10 << 11 << 10;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 11 << 11 << 11 << 11;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 11 << 0 << 11 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 12 << 6 << 12 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 12 << 7 << 12 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 12 << 8 << 12 << 8;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 12 << 9 << 12 << 9;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 12 << 10 << 12 << 10;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 12 << 11 << 12 << 11;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 12 << 0 << 12 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 13 << 6 << 13 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 13 << 7 << 13 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 13 << 8 << 13 << 8;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 13 << 9 << 13 << 9;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 13 << 10 << 13 << 10;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 13 << 11 << 13 << 11;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 13 << 0 << 13 << 7;
+    QTest::newRow("more rows, less columns") << StringMatrix{10, 8, "Value1"} << 11 << 7 << std::string{"Value2"} << 0 << 0 << 11 << 7;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 8 << 7 << 9 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 8 << 8 << 9 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 8 << 9 << 9 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 8 << 10 << 9 << 10;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 8 << 11 << 9 << 11;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 8 << 0 << 9 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 9 << 7 << 9 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 9 << 8 << 9 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 9 << 9 << 9 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 9 << 10 << 9 << 10;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 9 << 11 << 9 << 11;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 9 << 0 << 9 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 10 << 7 << 10 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 10 << 8 << 10 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 10 << 9 << 10 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 10 << 10 << 10 << 10;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 10 << 11 << 10 << 11;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 10 << 0 << 10 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 11 << 7 << 11 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 11 << 8 << 11 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 11 << 9 << 11 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 11 << 10 << 11 << 10;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 11 << 11 << 11 << 11;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 11 << 0 << 11 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 12 << 7 << 12 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 12 << 8 << 12 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 12 << 9 << 12 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 12 << 10 << 12 << 10;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 12 << 11 << 12 << 11;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 12 << 0 << 12 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 13 << 7 << 13 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 13 << 8 << 13 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 13 << 9 << 13 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 13 << 10 << 13 << 10;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 13 << 11 << 13 << 11;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 13 << 0 << 13 << 9;
+    QTest::newRow("less rows, more columns") << StringMatrix{10, 8, "Value1"} << 9 << 9 << std::string{"Value2"} << 0 << 0 << 9 << 9;
+
+    // empty matrix
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 0 << 0 << 1 << 1;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 0 << 1 << 1 << 1;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 0 << 2 << 1 << 2;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 0 << 3 << 1 << 3;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 1 << 0 << 1 << 1;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 1 << 1 << 1 << 1;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 1 << 2 << 1 << 2;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 1 << 3 << 1 << 3;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 2 << 0 << 2 << 1;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 2 << 1 << 2 << 1;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 2 << 2 << 2 << 2;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 2 << 3 << 2 << 3;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 3 << 0 << 3 << 1;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 3 << 1 << 3 << 1;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 3 << 2 << 3 << 2;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 1 << 1 << std::string{"Value2"} << 3 << 3 << 3 << 3;
 }
 
 QTEST_APPLESS_MAIN(CapacityTests)
