@@ -38,6 +38,7 @@ private slots:
     void testIntMatrixCapacityWithCatByColumn();
     void testIntMatrixCapacityWithSplitByRow();
     void testIntMatrixCapacityWithSplitByColumn();
+    void testIntMatrixCapacityWithResizeAndEraseRowAndOrColumn(); // combined IntMatrix test (resize + erase row/column)
 
     void testStringMatrixCapacityWithInitListConstructor();
     void testStringMatrixCapacityWithIdenticalMatrixConstructor();
@@ -57,6 +58,7 @@ private slots:
     void testStringMatrixCapacityWithCatByColumn();
     void testStringMatrixCapacityWithSplitByRow();
     void testStringMatrixCapacityWithSplitByColumn();
+    void testStringMatrixCapacityWithResizeAndEraseRowAndOrColumn(); // combined StringMatrix test (resize + erase row/column)
 
     // test data
     void testIntMatrixCapacityWithIdenticalMatrixConstructor_data();
@@ -76,6 +78,7 @@ private slots:
     void testIntMatrixCapacityWithCatByColumn_data();
     void testIntMatrixCapacityWithSplitByRow_data();
     void testIntMatrixCapacityWithSplitByColumn_data();
+    void testIntMatrixCapacityWithResizeAndEraseRowAndOrColumn_data();
 
     void testStringMatrixCapacityWithIdenticalMatrixConstructor_data();
     void testStringMatrixCapacityWithDiagonalMatrixConstructor_data();
@@ -94,6 +97,7 @@ private slots:
     void testStringMatrixCapacityWithCatByColumn_data();
     void testStringMatrixCapacityWithSplitByRow_data();
     void testStringMatrixCapacityWithSplitByColumn_data();
+    void testStringMatrixCapacityWithResizeAndEraseRowAndOrColumn_data();
 
 private:
     // test data helper methods
@@ -277,6 +281,11 @@ void CapacityTests::testIntMatrixCapacityWithSplitByColumn()
     TEST_CAPACITY_WITH_SPLIT_BY_COLUMN(int);
 }
 
+void CapacityTests::testIntMatrixCapacityWithResizeAndEraseRowAndOrColumn()
+{
+    TEST_CAPACITY_WITH_REZIZE_AND_ERASE_ROW_AND_OR_COLUMN(int, mPrimaryIntMatrix, mSecondaryIntMatrix);
+}
+
 void CapacityTests::testStringMatrixCapacityWithInitListConstructor()
 {
     {
@@ -424,6 +433,11 @@ void CapacityTests::testStringMatrixCapacityWithSplitByRow()
 void CapacityTests::testStringMatrixCapacityWithSplitByColumn()
 {
     TEST_CAPACITY_WITH_SPLIT_BY_COLUMN(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithResizeAndEraseRowAndOrColumn()
+{
+    TEST_CAPACITY_WITH_REZIZE_AND_ERASE_ROW_AND_OR_COLUMN(std::string, mPrimaryStringMatrix, mSecondaryStringMatrix);
 }
 
 void CapacityTests::testIntMatrixCapacityWithIdenticalMatrixConstructor_data()
@@ -850,6 +864,72 @@ void CapacityTests::testIntMatrixCapacityWithSplitByColumn_data()
     QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{17, 7, 2} << IntMatrix{17, 8, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
 }
 
+void CapacityTests::testIntMatrixCapacityWithResizeAndEraseRowAndOrColumn_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<int>("resizeElementValue");
+    QTest::addColumn<IntMatrixSizeType>("requestedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("requestedColumnCapacity");
+    QTest::addColumn<IntMatrixSizeType>("erasedRowNr");
+    QTest::addColumn<IntMatrixSizeType>("erasedColumnNr");
+    QTest::addColumn<bool>("shouldEraseColumnBeforeRow");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("oversized row capacity, erase row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 29 << 8 << 2 << -1 << false << 12 << 8;
+    QTest::newRow("oversized row capacity, erase row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 28 << 7 << 2 << -1 << false << 12 << 7;
+    QTest::newRow("oversized row capacity, erase row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 27 << 6 << 2 << -1 << false << 12 << 6;
+    QTest::newRow("oversized row capacity, erase row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 24 << 5 << 2 << -1 << false << 12 << 6;
+    QTest::newRow("oversized row capacity, erase row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 23 << 4 << 2 << -1 << false << 23 << 6;
+    QTest::newRow("oversized row capacity, erase column") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 29 << 8 << -1 << 1 << false << 29 << 8;
+    QTest::newRow("oversized row capacity, erase column") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 28 << 7 << -1 << 1 << false << 28 << 7;
+    QTest::newRow("oversized row capacity, erase column") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 27 << 6 << -1 << 1 << false << 27 << 6;
+    QTest::newRow("oversized row capacity, erase column") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 24 << 5 << -1 << 1 << false << 24 << 6;
+    QTest::newRow("oversized row capacity, erase column") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 23 << 4 << -1 << 1 << false << 23 << 6;
+    QTest::newRow("oversized row and column capacity, erase row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 29 << 25 << 2 << -1 << false << 12 << 25;
+    QTest::newRow("oversized row and column capacity, erase row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 28 << 24 << 2 << -1 << false << 12 << 24;
+    QTest::newRow("oversized row and column capacity, erase row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 27 << 23 << 2 << -1 << false << 12 << 23;
+    QTest::newRow("oversized row and column capacity, erase row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 24 << 20 << 2 << -1 << false << 12 << 20;
+    QTest::newRow("oversized row and column capacity, erase row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 23 << 19 << 2 << -1 << false << 23 << 19;
+    QTest::newRow("oversized row and column capacity, erase row then column") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 29 << 25 << 2 << 1 << false << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase row then column") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 28 << 24 << 2 << 1 << false << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase row then column") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 27 << 23 << 2 << 1 << false << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase row then column") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 24 << 20 << 2 << 1 << false << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase row then column") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 23 << 19 << 2 << 1 << false << 23 << 19;
+    QTest::newRow("oversized row and column capacity, erase column then row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 29 << 25 << 2 << 1 << true << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase column then row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 28 << 24 << 2 << 1 << true << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase column then row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 27 << 23 << 2 << 1 << true << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase column then row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 24 << 20 << 2 << 1 << true << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase column then row") << IntMatrix{6, 5, -3} << 7 << 6 << 5 << 23 << 19 << 2 << 1 << true << 23 << 19;
+    QTest::newRow("oversized column capacity, erase column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 8 << 29 << -1 << 2 << false << 8 << 12;
+    QTest::newRow("oversized column capacity, erase column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 7 << 28 << -1 << 2 << false << 7 << 12;
+    QTest::newRow("oversized column capacity, erase column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 6 << 27 << -1 << 2 << false << 6 << 12;
+    QTest::newRow("oversized column capacity, erase column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 5 << 24 << -1 << 2 << false << 6 << 12;
+    QTest::newRow("oversized column capacity, erase column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 4 << 23 << -1 << 2 << false << 6 << 23;
+    QTest::newRow("oversized column capacity, erase row") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 8 << 29 << 1 << -1 << false << 8 << 29;
+    QTest::newRow("oversized column capacity, erase row") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 7 << 28 << 1 << -1 << false << 7 << 28;
+    QTest::newRow("oversized column capacity, erase row") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 6 << 27 << 1 << -1 << false << 6 << 27;
+    QTest::newRow("oversized column capacity, erase row") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 5 << 24 << 1 << -1 << false << 6 << 24;
+    QTest::newRow("oversized column capacity, erase row") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 4 << 23 << 1 << -1 << false << 6 << 23;
+    QTest::newRow("oversized row and column capacity, erase column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 25 << 29 << -1 << 2 << false << 25 << 12;
+    QTest::newRow("oversized row and column capacity, erase column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 24 << 28 << -1 << 2 << false << 24 << 12;
+    QTest::newRow("oversized row and column capacity, erase column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 23 << 27 << -1 << 2 << false << 23 << 12;
+    QTest::newRow("oversized row and column capacity, erase column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 20 << 24 << -1 << 2 << false << 20 << 12;
+    QTest::newRow("oversized row and column capacity, erase column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 19 << 23 << -1 << 2 << false << 19 << 23;
+    QTest::newRow("oversized row and column capacity, erase column then row") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 25 << 29 << 1 << 2 << true << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase column then row") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 24 << 28 << 1 << 2 << true << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase column then row") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 23 << 27 << 1 << 2 << true << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase column then row") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 20 << 24 << 1 << 2 << true << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase column then row") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 19 << 23 << 1 << 2 << true << 19 << 23;
+    QTest::newRow("oversized row and column capacity, erase row then column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 25 << 29 << 1 << 2 << false << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase row then column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 24 << 28 << 1 << 2 << false << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase row then column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 23 << 27 << 1 << 2 << false << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase row then column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 20 << 24 << 1 << 2 << false << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase row then column") << IntMatrix{5, 6, -3} << 6 << 7 << 5 << 19 << 23 << 1 << 2 << false << 19 << 23;
+}
+
 void CapacityTests::testStringMatrixCapacityWithIdenticalMatrixConstructor_data()
 {
     QTest::addColumn<StringMatrixSizeType>("rowsCount");
@@ -1272,6 +1352,72 @@ void CapacityTests::testStringMatrixCapacityWithSplitByColumn_data()
     QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{15, 7, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 18 << 8;
     QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{17, 8, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
     QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 7, "Value2"} << StringMatrix{17, 8, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
+}
+
+void CapacityTests::testStringMatrixCapacityWithResizeAndEraseRowAndOrColumn_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<std::string>("resizeElementValue");
+    QTest::addColumn<StringMatrixSizeType>("requestedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("requestedColumnCapacity");
+    QTest::addColumn<StringMatrixSizeType>("erasedRowNr");
+    QTest::addColumn<StringMatrixSizeType>("erasedColumnNr");
+    QTest::addColumn<bool>("shouldEraseColumnBeforeRow");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+
+    QTest::newRow("oversized row capacity, erase row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 29 << 8 << 2 << -1 << false << 12 << 8;
+    QTest::newRow("oversized row capacity, erase row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 28 << 7 << 2 << -1 << false << 12 << 7;
+    QTest::newRow("oversized row capacity, erase row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 27 << 6 << 2 << -1 << false << 12 << 6;
+    QTest::newRow("oversized row capacity, erase row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 24 << 5 << 2 << -1 << false << 12 << 6;
+    QTest::newRow("oversized row capacity, erase row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 23 << 4 << 2 << -1 << false << 23 << 6;
+    QTest::newRow("oversized row capacity, erase column") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 29 << 8 << -1 << 1 << false << 29 << 8;
+    QTest::newRow("oversized row capacity, erase column") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 28 << 7 << -1 << 1 << false << 28 << 7;
+    QTest::newRow("oversized row capacity, erase column") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 27 << 6 << -1 << 1 << false << 27 << 6;
+    QTest::newRow("oversized row capacity, erase column") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 24 << 5 << -1 << 1 << false << 24 << 6;
+    QTest::newRow("oversized row capacity, erase column") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 23 << 4 << -1 << 1 << false << 23 << 6;
+    QTest::newRow("oversized row and column capacity, erase row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 29 << 25 << 2 << -1 << false << 12 << 25;
+    QTest::newRow("oversized row and column capacity, erase row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 28 << 24 << 2 << -1 << false << 12 << 24;
+    QTest::newRow("oversized row and column capacity, erase row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 27 << 23 << 2 << -1 << false << 12 << 23;
+    QTest::newRow("oversized row and column capacity, erase row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 24 << 20 << 2 << -1 << false << 12 << 20;
+    QTest::newRow("oversized row and column capacity, erase row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 23 << 19 << 2 << -1 << false << 23 << 19;
+    QTest::newRow("oversized row and column capacity, erase row then column") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 29 << 25 << 2 << 1 << false << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase row then column") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 28 << 24 << 2 << 1 << false << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase row then column") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 27 << 23 << 2 << 1 << false << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase row then column") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 24 << 20 << 2 << 1 << false << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase row then column") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 23 << 19 << 2 << 1 << false << 23 << 19;
+    QTest::newRow("oversized row and column capacity, erase column then row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 29 << 25 << 2 << 1 << true << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase column then row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 28 << 24 << 2 << 1 << true << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase column then row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 27 << 23 << 2 << 1 << true << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase column then row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 24 << 20 << 2 << 1 << true << 12 << 10;
+    QTest::newRow("oversized row and column capacity, erase column then row") << StringMatrix{6, 5, "Value1"} << 7 << 6 << std::string{"Value2"} << 23 << 19 << 2 << 1 << true << 23 << 19;
+    QTest::newRow("oversized column capacity, erase column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 8 << 29 << -1 << 2 << false << 8 << 12;
+    QTest::newRow("oversized column capacity, erase column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 7 << 28 << -1 << 2 << false << 7 << 12;
+    QTest::newRow("oversized column capacity, erase column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 6 << 27 << -1 << 2 << false << 6 << 12;
+    QTest::newRow("oversized column capacity, erase column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 5 << 24 << -1 << 2 << false << 6 << 12;
+    QTest::newRow("oversized column capacity, erase column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 4 << 23 << -1 << 2 << false << 6 << 23;
+    QTest::newRow("oversized column capacity, erase row") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 8 << 29 << 1 << -1 << false << 8 << 29;
+    QTest::newRow("oversized column capacity, erase row") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 7 << 28 << 1 << -1 << false << 7 << 28;
+    QTest::newRow("oversized column capacity, erase row") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 6 << 27 << 1 << -1 << false << 6 << 27;
+    QTest::newRow("oversized column capacity, erase row") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 5 << 24 << 1 << -1 << false << 6 << 24;
+    QTest::newRow("oversized column capacity, erase row") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 4 << 23 << 1 << -1 << false << 6 << 23;
+    QTest::newRow("oversized row and column capacity, erase column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 25 << 29 << -1 << 2 << false << 25 << 12;
+    QTest::newRow("oversized row and column capacity, erase column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 24 << 28 << -1 << 2 << false << 24 << 12;
+    QTest::newRow("oversized row and column capacity, erase column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 23 << 27 << -1 << 2 << false << 23 << 12;
+    QTest::newRow("oversized row and column capacity, erase column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 20 << 24 << -1 << 2 << false << 20 << 12;
+    QTest::newRow("oversized row and column capacity, erase column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 19 << 23 << -1 << 2 << false << 19 << 23;
+    QTest::newRow("oversized row and column capacity, erase column then row") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 25 << 29 << 1 << 2 << true << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase column then row") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 24 << 28 << 1 << 2 << true << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase column then row") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 23 << 27 << 1 << 2 << true << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase column then row") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 20 << 24 << 1 << 2 << true << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase column then row") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 19 << 23 << 1 << 2 << true << 19 << 23;
+    QTest::newRow("oversized row and column capacity, erase row then column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 25 << 29 << 1 << 2 << false << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase row then column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 24 << 28 << 1 << 2 << false << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase row then column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 23 << 27 << 1 << 2 << false << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase row then column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 20 << 24 << 1 << 2 << false << 10 << 12;
+    QTest::newRow("oversized row and column capacity, erase row then column") << StringMatrix{5, 6, "Value1"} << 6 << 7 << std::string{"Value2"} << 19 << 23 << 1 << 2 << false << 19 << 23;
 }
 
 void CapacityTests::_buildIntMatrixCapacityWithMoveCopyConstructorsTestingTable()

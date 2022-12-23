@@ -412,4 +412,56 @@
     QVERIFY2(secondDestMatrix.getRowCapacity() == expectedSecondDestRowCapacity && \
              secondDestMatrix.getColumnCapacity() == expectedSecondDestColumnCapacity, "Horizontal split failed, capacity of the second destination matrix is not correct!");
 
+#define TEST_CAPACITY_WITH_REZIZE_AND_ERASE_ROW_AND_OR_COLUMN(matrixType, primaryMatrix, secondaryMatrix) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
+    QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
+    QFETCH(matrixType, resizeElementValue); \
+    QFETCH(Matrix<matrixType>::size_type, requestedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, requestedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, erasedRowNr); \
+    QFETCH(Matrix<matrixType>::size_type, erasedColumnNr); \
+    QFETCH(bool, shouldEraseColumnBeforeRow); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+\
+    primaryMatrix = matrix; /* used for consistency check (similarly to resizing tests) */ \
+    secondaryMatrix = primaryMatrix; /* tested matrix */ \
+\
+    primaryMatrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue); \
+    secondaryMatrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue, requestedRowCapacity, requestedColumnCapacity); \
+\
+    const bool c_ShouldEraseRow{erasedRowNr >= 0 && erasedRowNr < matrix.getNrOfRows()}; \
+    const bool c_ShouldEraseColumn{erasedColumnNr >= 0 && erasedColumnNr < matrix.getNrOfColumns()}; \
+    const bool c_ShouldEraseBoth{c_ShouldEraseRow && c_ShouldEraseColumn}; \
+    const bool c_ShouldEraseBothInReverse{c_ShouldEraseBoth && shouldEraseColumnBeforeRow}; \
+\
+    if (c_ShouldEraseBothInReverse) \
+    { \
+        primaryMatrix.eraseColumn(erasedColumnNr); \
+        secondaryMatrix.eraseColumn(erasedColumnNr); \
+        primaryMatrix.eraseRow(erasedRowNr); \
+        secondaryMatrix.eraseRow(erasedRowNr); \
+    } \
+    else if (c_ShouldEraseBoth) \
+    { \
+        primaryMatrix.eraseRow(erasedRowNr); \
+        secondaryMatrix.eraseRow(erasedRowNr); \
+        primaryMatrix.eraseColumn(erasedColumnNr); \
+        secondaryMatrix.eraseColumn(erasedColumnNr); \
+    } \
+    else if (c_ShouldEraseRow) \
+    { \
+        primaryMatrix.eraseRow(erasedRowNr); \
+        secondaryMatrix.eraseRow(erasedRowNr); \
+    } \
+    else if (c_ShouldEraseColumn) \
+    { \
+        primaryMatrix.eraseColumn(erasedColumnNr); \
+        secondaryMatrix.eraseColumn(erasedColumnNr); \
+    } \
+\
+    QVERIFY(expectedRowCapacity == secondaryMatrix.getRowCapacity() && expectedColumnCapacity == secondaryMatrix.getColumnCapacity()); \
+    QVERIFY(secondaryMatrix == primaryMatrix);
+
 #endif // TST_CAPACITYTESTS_H
