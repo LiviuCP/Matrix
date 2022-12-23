@@ -1,11 +1,10 @@
-# Matrix
-A template library implementing a bidimentional matrix class.
+Matrix is template library class implementing bidimensional arrays (matrixes) that are dynamically allocatable.
 
 0. DISCLAIMER:
 
 Thanks for using this library!
 
-However please do not use it in critical applications. Although I tested the functionality to my best knowledge and effort there might still be bugs or crashes within the code.
+However please do not use it in critical applications. Although I tested the functionality to my best knowledge and effort there might still be bugs or crashes within the code. Also it might pose some security concerns. For example when the memory is de-allocated it is not overwritten by using a memset(_s) or similar method.
 
 To conclude: use it at your own risk, I will not be held accountable for any damages it might cause whatsoever. Thanks for understanding!
 
@@ -60,11 +59,27 @@ Important notice! Each object used as matrix template type should satisfy follow
 
 2. ESSENTIAL FUNCTIONALITY
 
-Important functionality contained in the Matrix class is:
+Important functionality contained within Matrix class is:
+- matrix capacity
+- iterators
 
-1) Matrix capacity. It's similar to the capacity of std::vector, however it's a bidimentional capacity (rows/columns). It is essential for minimizing performance costs when a matrix has to be redimensioned, either by resize() or by another size-changing operation like adding a row, column etc.
+2.1. Matrix capacity
 
-2) Iterators. Following iterator types are available:
+It's similar to the capacity of std::vector, however it's a bidimentional capacity (rows/columns). It is essential for minimizing performance costs when a matrix needs to be redimensioned, either by resize() or by another size-changing operation like adding a row, column etc.
+
+To be noted: unlike std::vector there is currently no reserve() method for growing capacity without affecting the actual size of the container. This job is instead fulfilled by the resize() method which comes in two flavors:
+- resize(): additional elements added when size grows are initialized with a default constructed value
+- resizeWithValue(): additional elements are initialized with a specified value
+
+If only the capacity of the matrix needs to be modified, then any resize method should take as arguments:
+- the same number of rows and columns as before
+- the newly requested row/column capacities
+
+If either capacity is lower than the corresponding size, then the size is taken as (minimal) capacity. For example if the matrix has 3 rows and 5 columns and the requested row/column capacities are 1 and 2, then the matrix will finally have row capacity 3 and column capacity 5. Otherwise the requested capacity is allocated.
+
+2.2. Iterators
+
+Following iterator types are available:
 
 a) Z-Iterators. These traverse the matrix row by row. For example by using a ZIterator pointing to the first element ([0][0]) of this matrix:
 
