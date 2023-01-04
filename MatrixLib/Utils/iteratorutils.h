@@ -184,7 +184,7 @@
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]); \
 \
     const size_type c_FirstItIndex{mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + mIteratorSecondaryCoordinate}; \
-    const size_type c_SecondItIndex{secondIterator.mIteratorPrimaryCoordinate * it.mIteratorSecondaryDimension + secondIterator.mIteratorSecondaryCoordinate}; \
+    const size_type c_SecondItIndex{secondIterator.mIteratorPrimaryCoordinate * secondIterator.mIteratorSecondaryDimension + secondIterator.mIteratorSecondaryCoordinate}; \
 \
     return (c_SecondItIndex - c_FirstItIndex);
 
