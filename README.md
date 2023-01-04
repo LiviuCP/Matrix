@@ -49,7 +49,9 @@ Please follow these steps:
 
 Notes:
 - please do NOT directly #include any of the files belonging to MatrixLib/Utils into your code files! These are only meant for internal use by the Matrix library.
-- the matrix library requires C++17 and above
+- the code can be pulled from one of the two Git branches:
+  - master: the branch is kept up-to-date, currently the minimum required CPP version is C++20
+  - LegacyCode: the matrix library requires C++17 and above, use this code where C++20 is not an option (please note that this branch is rarely maintained and might not have the latest functionality)
 
 Important notice! Each object used as matrix template type should satisfy following requirements:
 - it should be default constructible
