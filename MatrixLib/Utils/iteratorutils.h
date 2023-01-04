@@ -188,7 +188,7 @@
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]); \
 \
     const size_type c_FirstItIndex{mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + mIteratorSecondaryCoordinate}; \
-    const size_type c_SecondItIndex{secondIterator.mIteratorPrimaryCoordinate * it.mIteratorSecondaryDimension + secondIterator.mIteratorSecondaryCoordinate}; \
+    const size_type c_SecondItIndex{secondIterator.mIteratorPrimaryCoordinate * secondIterator.mIteratorSecondaryDimension + secondIterator.mIteratorSecondaryCoordinate}; \
 \
     return (c_SecondItIndex - c_FirstItIndex);
 
@@ -207,14 +207,14 @@
            (secondIterator.mIteratorPrimaryCoordinate == mIteratorPrimaryCoordinate && secondIterator.mIteratorSecondaryCoordinate Operator mIteratorSecondaryCoordinate);
 
 #define FORWARD_NON_DIAG_ITERATOR_CHECK_INEQUALITY(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, Operator, secondIterator) \
-    CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr || mIteratorPrimaryDimension != secondIterator.mIteratorPrimaryDimension || mIteratorSecondaryDimension != it.mIteratorSecondaryDimension, \
+    CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr || mIteratorPrimaryDimension != secondIterator.mIteratorPrimaryDimension || mIteratorSecondaryDimension != secondIterator.mIteratorSecondaryDimension, \
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]); \
 \
     return (mIteratorPrimaryCoordinate Operator secondIterator.mIteratorPrimaryCoordinate) || \
            (mIteratorPrimaryCoordinate == secondIterator.mIteratorPrimaryCoordinate && (mIteratorSecondaryCoordinate Operator secondIterator.mIteratorSecondaryCoordinate || mIteratorSecondaryCoordinate == secondIterator.mIteratorSecondaryCoordinate));
 
 #define REVERSE_NON_DIAG_ITERATOR_CHECK_INEQUALITY(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, Operator, secondIterator) \
-    CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr || mIteratorPrimaryDimension != secondIterator.mIteratorPrimaryDimension || mIteratorSecondaryDimension != it.mIteratorSecondaryDimension, \
+    CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr || mIteratorPrimaryDimension != secondIterator.mIteratorPrimaryDimension || mIteratorSecondaryDimension != secondIterator.mIteratorSecondaryDimension, \
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]); \
 \
     return (secondIterator.mIteratorPrimaryCoordinate Operator mIteratorPrimaryCoordinate) || \
