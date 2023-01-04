@@ -295,7 +295,6 @@ public:
     // logical operators (DataType should have them implemented, otherwise a template specialization is required)
     operator bool() const;
     bool operator== (const Matrix& matrix) const;
-    bool operator!= (const Matrix& matrix) const;
 
     ZIterator zBegin();
     ZIterator zEnd();
@@ -468,9 +467,6 @@ private:
     // converts the matrix to a single dimensional array of elements of m_RowCapacity * m_ColumnCapacity size (might include uninitialized elements)
     void* _convertToArray(size_type& nrOfElements);
 
-    // used by == and != operators
-    bool _isEqualTo(const Matrix& matrix) const;
-
     DataType* m_pAllocPtr; // use only this pointer in _allocMemory()/_deallocMemory() to allocate/de-allocate matrix elements
     DataType** m_pBaseArrayPtr; // this pointer manages the row pointers array
 
@@ -536,39 +532,15 @@ typename Matrix<DataType>::ZIterator::difference_type Matrix<DataType>::ZIterato
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ZIterator::operator<=>(const Matrix<DataType>::ZIterator& it) const
+{
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, *this, it);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ZIterator::operator==(const Matrix<DataType>::ZIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUAL(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ZIterator::operator!=(const Matrix<DataType>::ZIterator& it) const
-{
-    NON_DIAG_ITERATOR_CHECK_DIFFERENT(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ZIterator::operator<(const Matrix<DataType>::ZIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ZIterator::operator<=(const Matrix<DataType>::ZIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ZIterator::operator>(const Matrix<DataType>::ZIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ZIterator::operator>=(const Matrix<DataType>::ZIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, >, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
 }
 
 template<typename DataType>
@@ -697,39 +669,15 @@ typename Matrix<DataType>::ConstZIterator::difference_type Matrix<DataType>::Con
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ConstZIterator::operator<=>(const Matrix<DataType>::ConstZIterator& it) const
+{
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, *this, it);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ConstZIterator::operator==(const Matrix<DataType>::ConstZIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUAL(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstZIterator::operator!=(const Matrix<DataType>::ConstZIterator& it) const
-{
-    NON_DIAG_ITERATOR_CHECK_DIFFERENT(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstZIterator::operator<(const Matrix<DataType>::ConstZIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstZIterator::operator<=(const Matrix<DataType>::ConstZIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstZIterator::operator>(const Matrix<DataType>::ConstZIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstZIterator::operator>=(const Matrix<DataType>::ConstZIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, >, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
 }
 
 template<typename DataType>
@@ -868,39 +816,15 @@ typename Matrix<DataType>::ReverseZIterator::difference_type Matrix<DataType>::R
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ReverseZIterator::operator<=>(const Matrix<DataType>::ReverseZIterator& it) const
+{
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it, *this);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ReverseZIterator::operator==(const Matrix<DataType>::ReverseZIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUAL(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseZIterator::operator!=(const Matrix<DataType>::ReverseZIterator& it) const
-{
-    NON_DIAG_ITERATOR_CHECK_DIFFERENT(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseZIterator::operator<(const Matrix<DataType>::ReverseZIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseZIterator::operator<=(const Matrix<DataType>::ReverseZIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseZIterator::operator>(const Matrix<DataType>::ReverseZIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseZIterator::operator>=(const Matrix<DataType>::ReverseZIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, >, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
 }
 
 template<typename DataType>
@@ -1029,39 +953,15 @@ typename Matrix<DataType>::ConstReverseZIterator::difference_type Matrix<DataTyp
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ConstReverseZIterator::operator<=>(const Matrix<DataType>::ConstReverseZIterator& it) const
+{
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it, *this);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ConstReverseZIterator::operator==(const Matrix<DataType>::ConstReverseZIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUAL(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseZIterator::operator!=(const Matrix<DataType>::ConstReverseZIterator& it) const
-{
-    NON_DIAG_ITERATOR_CHECK_DIFFERENT(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseZIterator::operator<(const Matrix<DataType>::ConstReverseZIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseZIterator::operator<=(const Matrix<DataType>::ConstReverseZIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseZIterator::operator>(const Matrix<DataType>::ConstReverseZIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseZIterator::operator>=(const Matrix<DataType>::ConstReverseZIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, >, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
 }
 
 template<typename DataType>
@@ -1199,39 +1099,15 @@ typename Matrix<DataType>::NIterator::difference_type Matrix<DataType>::NIterato
 }
 
 template<typename DataType>
+auto Matrix<DataType>::NIterator::operator<=>(const Matrix<DataType>::NIterator& it) const
+{
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, *this, it);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::NIterator::operator==(const Matrix<DataType>::NIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUAL(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::NIterator::operator!=(const Matrix<DataType>::NIterator& it) const
-{
-    NON_DIAG_ITERATOR_CHECK_DIFFERENT(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::NIterator::operator<(const Matrix<DataType>::NIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::NIterator::operator<=(const Matrix<DataType>::NIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::NIterator::operator>(const Matrix<DataType>::NIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::NIterator::operator>=(const Matrix<DataType>::NIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, >, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
 }
 
 template<typename DataType>
@@ -1359,39 +1235,15 @@ typename Matrix<DataType>::ConstNIterator::difference_type Matrix<DataType>::Con
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ConstNIterator::operator<=>(const Matrix<DataType>::ConstNIterator& it) const
+{
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, *this, it);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ConstNIterator::operator==(const Matrix<DataType>::ConstNIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUAL(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstNIterator::operator!=(const Matrix<DataType>::ConstNIterator& it) const
-{
-    NON_DIAG_ITERATOR_CHECK_DIFFERENT(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstNIterator::operator<(const Matrix<DataType>::ConstNIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstNIterator::operator<=(const Matrix<DataType>::ConstNIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstNIterator::operator>(const Matrix<DataType>::ConstNIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstNIterator::operator>=(const Matrix<DataType>::ConstNIterator& it) const
-{
-    FORWARD_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, >, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
 }
 
 template<typename DataType>
@@ -1530,39 +1382,15 @@ typename Matrix<DataType>::ReverseNIterator::difference_type Matrix<DataType>::R
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ReverseNIterator::operator<=>(const Matrix<DataType>::ReverseNIterator& it) const
+{
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, it, *this);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ReverseNIterator::operator==(const Matrix<DataType>::ReverseNIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUAL(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseNIterator::operator!=(const Matrix<DataType>::ReverseNIterator& it) const
-{
-    NON_DIAG_ITERATOR_CHECK_DIFFERENT(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseNIterator::operator<(const Matrix<DataType>::ReverseNIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseNIterator::operator<=(const Matrix<DataType>::ReverseNIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseNIterator::operator>(const Matrix<DataType>::ReverseNIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseNIterator::operator>=(const Matrix<DataType>::ReverseNIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, >, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
 }
 
 template<typename DataType>
@@ -1691,39 +1519,15 @@ typename Matrix<DataType>::ConstReverseNIterator::difference_type Matrix<DataTyp
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ConstReverseNIterator::operator<=>(const Matrix<DataType>::ConstReverseNIterator& it) const
+{
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, it, *this);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ConstReverseNIterator::operator==(const Matrix<DataType>::ConstReverseNIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUAL(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseNIterator::operator!=(const Matrix<DataType>::ConstReverseNIterator& it) const
-{
-    NON_DIAG_ITERATOR_CHECK_DIFFERENT(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseNIterator::operator<(const Matrix<DataType>::ConstReverseNIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseNIterator::operator<=(const Matrix<DataType>::ConstReverseNIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseNIterator::operator>(const Matrix<DataType>::ConstReverseNIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseNIterator::operator>=(const Matrix<DataType>::ConstReverseNIterator& it) const
-{
-    REVERSE_NON_DIAG_ITERATOR_CHECK_INEQUALITY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, >, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
 }
 
 template<typename DataType>
@@ -1862,39 +1666,15 @@ typename Matrix<DataType>::DIterator::difference_type Matrix<DataType>::DIterato
 }
 
 template<typename DataType>
+auto Matrix<DataType>::DIterator::operator<=>(const Matrix<DataType>::DIterator& it) const
+{
+    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=>, it);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::DIterator::operator==(const Matrix<DataType>::DIterator& it) const
 {
     DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, ==, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::DIterator::operator!=(const Matrix<DataType>::DIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, !=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::DIterator::operator<(const Matrix<DataType>::DIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::DIterator::operator<=(const Matrix<DataType>::DIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::DIterator::operator>(const Matrix<DataType>::DIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::DIterator::operator>=(const Matrix<DataType>::DIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >=, it);
 }
 
 template<typename DataType>
@@ -2032,39 +1812,15 @@ typename Matrix<DataType>::ConstDIterator::difference_type Matrix<DataType>::Con
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ConstDIterator::operator<=>(const Matrix<DataType>::ConstDIterator& it) const
+{
+    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=>, it);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ConstDIterator::operator==(const Matrix<DataType>::ConstDIterator& it) const
 {
     DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, ==, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::operator!=(const Matrix<DataType>::ConstDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, !=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::operator<(const Matrix<DataType>::ConstDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::operator<=(const Matrix<DataType>::ConstDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::operator>(const Matrix<DataType>::ConstDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstDIterator::operator>=(const Matrix<DataType>::ConstDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >=, it);
 }
 
 template<typename DataType>
@@ -2211,39 +1967,15 @@ typename Matrix<DataType>::ReverseDIterator::difference_type Matrix<DataType>::R
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ReverseDIterator::operator<=>(const Matrix<DataType>::ReverseDIterator& it) const
+{
+    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=>, it);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ReverseDIterator::operator==(const Matrix<DataType>::ReverseDIterator& it) const
 {
     DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, ==, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::operator!=(const Matrix<DataType>::ReverseDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, !=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::operator<(const Matrix<DataType>::ReverseDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::operator<=(const Matrix<DataType>::ReverseDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::operator>(const Matrix<DataType>::ReverseDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseDIterator::operator>=(const Matrix<DataType>::ReverseDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >=, it);
 }
 
 template<typename DataType>
@@ -2382,39 +2114,15 @@ typename Matrix<DataType>::ConstReverseDIterator::difference_type Matrix<DataTyp
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ConstReverseDIterator::operator<=>(const Matrix<DataType>::ConstReverseDIterator& it) const
+{
+    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=>, it);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ConstReverseDIterator::operator==(const Matrix<DataType>::ConstReverseDIterator& it) const
 {
     DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, ==, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::operator!=(const Matrix<DataType>::ConstReverseDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, !=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::operator<(const Matrix<DataType>::ConstReverseDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::operator<=(const Matrix<DataType>::ConstReverseDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::operator>(const Matrix<DataType>::ConstReverseDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseDIterator::operator>=(const Matrix<DataType>::ConstReverseDIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >=, it);
 }
 
 template<typename DataType>
@@ -2562,39 +2270,15 @@ typename Matrix<DataType>::MIterator::difference_type Matrix<DataType>::MIterato
 }
 
 template<typename DataType>
+auto Matrix<DataType>::MIterator::operator<=>(const Matrix<DataType>::MIterator& it) const
+{
+    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=>, it);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::MIterator::operator==(const Matrix<DataType>::MIterator& it) const
 {
     DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, ==, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::MIterator::operator!=(const Matrix<DataType>::MIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, !=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::MIterator::operator<(const Matrix<DataType>::MIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::MIterator::operator<=(const Matrix<DataType>::MIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::MIterator::operator>(const Matrix<DataType>::MIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::MIterator::operator>=(const Matrix<DataType>::MIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >=, it);
 }
 
 template<typename DataType>
@@ -2734,39 +2418,15 @@ typename Matrix<DataType>::ConstMIterator::difference_type Matrix<DataType>::Con
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ConstMIterator::operator<=>(const Matrix<DataType>::ConstMIterator& it) const
+{
+    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=>, it);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ConstMIterator::operator==(const Matrix<DataType>::ConstMIterator& it) const
 {
     DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, ==, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstMIterator::operator!=(const Matrix<DataType>::ConstMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, !=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstMIterator::operator<(const Matrix<DataType>::ConstMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstMIterator::operator<=(const Matrix<DataType>::ConstMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstMIterator::operator>(const Matrix<DataType>::ConstMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstMIterator::operator>=(const Matrix<DataType>::ConstMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >=, it);
 }
 
 template<typename DataType>
@@ -2916,39 +2576,15 @@ typename Matrix<DataType>::ReverseMIterator::difference_type Matrix<DataType>::R
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ReverseMIterator::operator<=>(const Matrix<DataType>::ReverseMIterator& it) const
+{
+    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=>, it);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ReverseMIterator::operator==(const Matrix<DataType>::ReverseMIterator& it) const
 {
     DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, ==, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseMIterator::operator!=(const Matrix<DataType>::ReverseMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, !=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseMIterator::operator<(const Matrix<DataType>::ReverseMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseMIterator::operator<=(const Matrix<DataType>::ReverseMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseMIterator::operator>(const Matrix<DataType>::ReverseMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ReverseMIterator::operator>=(const Matrix<DataType>::ReverseMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >=, it);
 }
 
 template<typename DataType>
@@ -3089,39 +2725,15 @@ typename Matrix<DataType>::ConstReverseMIterator::difference_type Matrix<DataTyp
 }
 
 template<typename DataType>
+auto Matrix<DataType>::ConstReverseMIterator::operator<=>(const Matrix<DataType>::ConstReverseMIterator& it) const
+{
+    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=>, it);
+}
+
+template<typename DataType>
 bool Matrix<DataType>::ConstReverseMIterator::operator==(const Matrix<DataType>::ConstReverseMIterator& it) const
 {
     DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, ==, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseMIterator::operator!=(const Matrix<DataType>::ConstReverseMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, !=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseMIterator::operator<(const Matrix<DataType>::ConstReverseMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseMIterator::operator<=(const Matrix<DataType>::ConstReverseMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, <=, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseMIterator::operator>(const Matrix<DataType>::ConstReverseMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >, it);
-}
-
-template<typename DataType>
-bool Matrix<DataType>::ConstReverseMIterator::operator>=(const Matrix<DataType>::ConstReverseMIterator& it) const
-{
-    DIAG_ITERATOR_COMPARE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, >=, it);
 }
 
 template<typename DataType>
@@ -3932,13 +3544,31 @@ Matrix<DataType>::operator bool() const
 template <typename DataType>
 bool Matrix<DataType>::operator==(const Matrix<DataType>& matrix) const
 {
-    return _isEqualTo(matrix);
-}
+    bool areEqual{true};
 
-template<typename DataType>
-bool Matrix<DataType>::operator!=(const Matrix<DataType>& matrix) const
-{
-    return !_isEqualTo(matrix);
+    if (&matrix != this)
+    {
+        if (m_NrOfRows == matrix.m_NrOfRows && m_NrOfColumns == matrix.m_NrOfColumns)
+        {
+            areEqual = true;
+
+            for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
+            {
+                areEqual = areEqual && std::equal(m_pBaseArrayPtr[rowNr], m_pBaseArrayPtr[rowNr] + m_NrOfColumns, matrix.m_pBaseArrayPtr[rowNr]);
+
+                if (!areEqual)
+                {
+                    break;
+                }
+            }
+        }
+        else
+        {
+            areEqual = false;
+        }
+    }
+
+    return areEqual;
 }
 
 template<typename DataType>
@@ -4953,36 +4583,6 @@ void* Matrix<DataType>::_convertToArray(Matrix<DataType>::size_type& nrOfElement
     return pAllocPtr;
 }
 
-template<typename DataType>
-bool Matrix<DataType>::_isEqualTo(const Matrix<DataType>& matrix) const
-{
-    bool areEqual{true};
-
-    if (&matrix != this)
-    {
-        if (m_NrOfRows == matrix.m_NrOfRows && m_NrOfColumns == matrix.m_NrOfColumns)
-        {
-            areEqual = true;
-
-            for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-            {
-                areEqual = areEqual && std::equal(m_pBaseArrayPtr[rowNr], m_pBaseArrayPtr[rowNr] + m_NrOfColumns, matrix.m_pBaseArrayPtr[rowNr]);
-
-                if (!areEqual)
-                {
-                    break;
-                }
-            }
-        }
-        else
-        {
-            areEqual = false;
-        }
-    }
-
-    return areEqual;
-}
-
 #undef CHECK_ERROR_CONDITION
 
 #undef COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS
@@ -5004,12 +4604,8 @@ bool Matrix<DataType>::_isEqualTo(const Matrix<DataType>& matrix) const
 #undef REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR
 #undef FORWARD_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE
 #undef REVERSE_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE
-#undef FORWARD_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY
-#undef REVERSE_NON_DIAG_ITERATOR_CHECK_STRICT_INEQUALITY
-#undef FORWARD_NON_DIAG_ITERATOR_CHECK_INEQUALITY
-#undef REVERSE_NON_DIAG_ITERATOR_CHECK_INEQUALITY
-#undef NON_DIAG_ITERATOR_CHECK_EQUAL
-#undef NON_DIAG_ITERATOR_CHECK_DIFFERENT
+#undef NON_DIAG_ITERATOR_CHECK_EQUIVALENCE
+#undef NON_DIAG_ITERATOR_CHECK_EQUALITY
 #undef FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE
 #undef REVERSE_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE
 #undef FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE
