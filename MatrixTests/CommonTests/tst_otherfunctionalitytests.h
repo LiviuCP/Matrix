@@ -1,19 +1,6 @@
 #ifndef TST_OTHERFUNCTIONALITYTESTS_H
 #define TST_OTHERFUNCTIONALITYTESTS_H
 
-#define TEST_MATRIX_BOOLEAN_OPERATOR(matrixType) \
-    QFETCH(Matrix<matrixType>, matrix); \
-    QFETCH(bool, checkTrue); \
- \
-    if (checkTrue) \
-    { \
-        QVERIFY2(matrix, "The boolean operator does not return the expected value (true)!"); \
-    } \
-    else \
-    { \
-        QVERIFY2(!matrix, "The boolean operator does not return the expected value (false)!"); \
-    }
-
 #define TEST_MATRIXES_ARE_EQUAL(matrixType) \
     QFETCH(Matrix<matrixType>, firstMatrix); \
     QFETCH(Matrix<matrixType>, secondMatrix); \

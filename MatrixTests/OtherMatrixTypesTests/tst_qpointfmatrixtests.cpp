@@ -11,30 +11,13 @@ class QPointFMatrixTests : public QObject
 
 private slots:
     // test functions
-    void testBooleanOperator();
     void testMatrixesAreEqual();
     void testMatrixesAreNotEqual();
 
     // test data
-    void testBooleanOperator_data();
     void testMatrixesAreEqual_data();
     void testMatrixesAreNotEqual_data();
 };
-
-void QPointFMatrixTests::testBooleanOperator()
-{
-    QFETCH(QPointFMatrix, matrix);
-    QFETCH(bool, checkTrue);
-
-    if (checkTrue)
-    {
-        QVERIFY2(matrix, "The boolean operator does not return the expected value (true)!");
-    }
-    else
-    {
-        QVERIFY2(!matrix, "The boolean operator does not return the expected value (false)!");
-    }
-}
 
 void QPointFMatrixTests::testMatrixesAreEqual()
 {
@@ -61,17 +44,6 @@ void QPointFMatrixTests::testMatrixesAreNotEqual()
 
     QVERIFY2(firstMatrix != secondMatrix &&
             !(firstMatrix == secondMatrix), "The matrixes should not be equal!");
-}
-
-void QPointFMatrixTests::testBooleanOperator_data()
-{
-    QTest::addColumn<QPointFMatrix>("matrix");
-    QTest::addColumn<bool>("checkTrue");
-
-    QTest::newRow("check false") << QPointFMatrix{} << false;
-    QTest::newRow("check false") << QPointFMatrix{2, 3, {QPointF(0.0, 0.00), QPointF(-0.0, 0.000), QPointF(0.00, 0.0), QPointF(0.0, -0.000), QPointF(0.0000, 0.00), QPointF(-0.0000, 0.00)}} << false;
-    QTest::newRow("check true") << QPointFMatrix{2, 3, {QPointF(0.12, 10.00), QPointF(-0.5, 0.123), QPointF(1000.00, 100.1), QPointF(0.4, -0.005), QPointF(2.1234, 0.00), QPointF(-0.0001, 0.05)}} << true;
-    QTest::newRow("check true") << QPointFMatrix{2, 3, {QPointF(0.0, 0.00), QPointF(-0.0, 0.000), QPointF(0.00, 0.0), QPointF(0.3, -0.000), QPointF(0.0000, 0.00), QPointF(-0.0000, 0.00)}} << true;
 }
 
 void QPointFMatrixTests::testMatrixesAreEqual_data()

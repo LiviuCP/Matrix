@@ -292,8 +292,7 @@ public:
     void setAllItemsToValue(const DataType& value);
     void copy(const Matrix& src, size_type nrOfRows, size_type nrOfColumns, size_type srcMatrixRowNr = 0, size_type srcMatrixColumnNr = 0, size_type destMatrixRowNr = 0, size_type destMatrixColumnNr = 0);
 
-    // logical operators (DataType should have them implemented, otherwise a template specialization is required)
-    operator bool() const;
+    // the template type should have operator == implemented, otherwise a template specialization is required
     bool operator== (const Matrix& matrix) const;
     bool operator!= (const Matrix& matrix) const;
 
@@ -3904,29 +3903,6 @@ void Matrix<DataType>::copy(const Matrix<DataType>& srcMatrix,
     {
         std::copy_n(srcMatrix.m_pBaseArrayPtr[srcMatrixRowNr + rowNr] + srcMatrixColumnNr, nrOfColumns, m_pBaseArrayPtr[destMatrixRowNr + rowNr] + destMatrixColumnNr);
     }
-}
-
-template<typename DataType>
-Matrix<DataType>::operator bool() const
-{
-    bool result{false};
-
-    if (m_pBaseArrayPtr)
-    {
-        for (size_type rowNr{0}; rowNr < m_NrOfRows; ++rowNr)
-        {
-            const DataType* const pCurrentRowBegin{m_pBaseArrayPtr[rowNr]};
-            const DataType* const pCurrentRowEnd{pCurrentRowBegin + m_NrOfColumns};
-
-            if (pCurrentRowEnd != std::find_if(pCurrentRowBegin, pCurrentRowEnd, [](const DataType& value) {return DataType{} != value;}))
-            {
-                result = true;
-                break;
-            }
-        }
-    }
-
-    return result;
 }
 
 template <typename DataType>

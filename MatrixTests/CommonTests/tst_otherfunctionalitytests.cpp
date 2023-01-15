@@ -12,14 +12,12 @@ class OtherFunctionalityTests : public QObject
 
 private slots:
     // test functions
-    void testIntMatrixBooleanOperator();
     void testIntMatrixesAreEqual();
     void testIntMatrixesAreNotEqual();
     void testIntMatrixFunctionAt();
     void testSquareBracketsOperator();
     void testIntMatrixGetBaseArray();
 
-    void testStringMatrixBooleanOperator();
     void testStringMatrixesAreEqual();
     void testStringMatrixesAreNotEqual();
     void testStringMatrixFunctionAt();
@@ -27,11 +25,9 @@ private slots:
     void testStringMatrixGetBaseArray();
 
     // test data
-    void testIntMatrixBooleanOperator_data();
     void testIntMatrixesAreEqual_data();
     void testIntMatrixesAreNotEqual_data();
 
-    void testStringMatrixBooleanOperator_data();
     void testStringMatrixesAreEqual_data();
     void testStringMatrixesAreNotEqual_data();
 
@@ -39,11 +35,6 @@ private:
     IntMatrix mPrimaryIntMatrix;
     StringMatrix mPrimaryStringMatrix;
 };
-
-void OtherFunctionalityTests::testIntMatrixBooleanOperator()
-{
-    TEST_MATRIX_BOOLEAN_OPERATOR(int);
-}
 
 void OtherFunctionalityTests::testIntMatrixesAreEqual()
 {
@@ -163,11 +154,6 @@ void OtherFunctionalityTests::testIntMatrixGetBaseArray()
     baseArrayPtr = nullptr;
 }
 
-void OtherFunctionalityTests::testStringMatrixBooleanOperator()
-{
-    TEST_MATRIX_BOOLEAN_OPERATOR(std::string);
-}
-
 void OtherFunctionalityTests::testStringMatrixesAreEqual()
 {
     TEST_MATRIXES_ARE_EQUAL(std::string);
@@ -283,17 +269,6 @@ void OtherFunctionalityTests::testStringMatrixGetBaseArray()
     baseArrayPtr = nullptr;
 }
 
-void OtherFunctionalityTests::testIntMatrixBooleanOperator_data()
-{
-    QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<bool>("checkTrue");
-
-    QTest::newRow("check false") << IntMatrix{} << false;
-    QTest::newRow("check false") << IntMatrix{2, 3, {0, 0, 0, 0, 0, 0}} << false;
-    QTest::newRow("check true") << IntMatrix{2, 3, {3, -25, 26, -38, 0, -1}} << true;
-    QTest::newRow("check true") << IntMatrix{2, 3, {0, 0, 0, 0, -25, 0}} << true;
-}
-
 void OtherFunctionalityTests::testIntMatrixesAreEqual_data()
 {
     QTest::addColumn<IntMatrix>("firstMatrix");
@@ -316,18 +291,6 @@ void OtherFunctionalityTests::testIntMatrixesAreNotEqual_data()
     QTest::newRow("different rows count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{3, 3, {5, 75, -5, 15, 833, -8333, 5, 5, -125}};
     QTest::newRow("different rows/columns count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{3, 2, {5, 75, 15, 833, -5, -8333}};
     QTest::newRow("different rows/columns count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{};
-}
-
-void OtherFunctionalityTests::testStringMatrixBooleanOperator_data()
-{
-    QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<bool>("checkTrue");
-
-    QTest::newRow("check false") << StringMatrix{} << false;
-    QTest::newRow("check false") << StringMatrix{2, 3, {"", "", "", "", "", ""}} << false;
-    QTest::newRow("check true") << StringMatrix{2, 3, {"abcD", "-a bcd", "-0.123", " ", "1aBc-", ".A1b2"}} << true;
-    QTest::newRow("check true") << StringMatrix{2, 3, {"", " ", "", "", "", ""}} << true;
-    QTest::newRow("check true") << StringMatrix{2, 3, {"", "", "", "", "abc", ""}} << true;
 }
 
 void OtherFunctionalityTests::testStringMatrixesAreEqual_data()

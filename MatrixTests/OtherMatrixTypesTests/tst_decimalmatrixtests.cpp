@@ -10,30 +10,13 @@ class DecimalMatrixTests : public QObject
 
 private slots:
     // test functions
-    void testBooleanOperator();
     void testMatrixesAreEqual();
     void testMatrixesAreNotEqual();
 
     // test data
-    void testBooleanOperator_data();
     void testMatrixesAreEqual_data();
     void testMatrixesAreNotEqual_data();
 };
-
-void DecimalMatrixTests::testBooleanOperator()
-{
-    QFETCH(DecMatrix, matrix);
-    QFETCH(bool, checkTrue);
-
-    if (checkTrue)
-    {
-        QVERIFY2(matrix, "The boolean operator does not return the expected value (true)!");
-    }
-    else
-    {
-        QVERIFY2(!matrix, "The boolean operator does not return the expected value (false)!");
-    }
-}
 
 void DecimalMatrixTests::testMatrixesAreEqual()
 {
@@ -60,17 +43,6 @@ void DecimalMatrixTests::testMatrixesAreNotEqual()
 
     QVERIFY2(firstMatrix != secondMatrix &&
             !(firstMatrix == secondMatrix), "The matrixes should not be equal!");
-}
-
-void DecimalMatrixTests::testBooleanOperator_data()
-{
-    QTest::addColumn<DecMatrix>("matrix");
-    QTest::addColumn<bool>("checkTrue");
-
-    QTest::newRow("check false") << DecMatrix{} << false;
-    QTest::newRow("check false") << DecMatrix{2, 3, {0.0, 0.00, 0.000, 0.0000, 0.00000, 0.000000}} << false;
-    QTest::newRow("check true") << DecMatrix{2, 3, {0.33333333, -0.25, 2.6, -3.8, 0.00, -0.1}} << true;
-    QTest::newRow("check true") << DecMatrix{2, 3, {0.0, 0.00, 0.000, 0.0000, -0.25, 0.000000}} << true;
 }
 
 void DecimalMatrixTests::testMatrixesAreEqual_data()
