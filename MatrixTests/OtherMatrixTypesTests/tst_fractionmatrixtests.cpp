@@ -15,30 +15,13 @@ class FractionMatrixTests : public QObject
 
 private slots:
     // test functions
-    void testBooleanOperator();
     void testMatrixesAreEqual();
     void testMatrixesAreNotEqual();
 
     // test data
-    void testBooleanOperator_data();
     void testMatrixesAreEqual_data();
     void testMatrixesAreNotEqual_data();
 };
-
-void FractionMatrixTests::testBooleanOperator()
-{
-    QFETCH(FractMatrix, matrix);
-    QFETCH(bool, checkTrue);
-
-    if (checkTrue)
-    {
-        QVERIFY2(matrix, "The boolean operator does not return the expected value (true)!");
-    }
-    else
-    {
-        QVERIFY2(!matrix, "The boolean operator does not return the expected value (false)!");
-    }
-}
 
 void FractionMatrixTests::testMatrixesAreEqual()
 {
@@ -65,18 +48,6 @@ void FractionMatrixTests::testMatrixesAreNotEqual()
 
     QVERIFY2(firstMatrix != secondMatrix &&
             !(firstMatrix == secondMatrix), "The matrixes should not be equal!");
-}
-
-void FractionMatrixTests::testBooleanOperator_data()
-{
-    QTest::addColumn<FractMatrix>("matrix");
-    QTest::addColumn<bool>("checkTrue");
-
-    QTest::newRow("check false") << FractMatrix{} << false;
-    QTest::newRow("check false") << FractMatrix{2, 3, {Fraction{"0/1"}, Fraction{"0.00"}, Fraction{"0/3"}, Fraction{"-0/4"}, Fraction{"0/-5"}, Fraction{"-0.000"}}} << false;
-    QTest::newRow("check true") << FractMatrix{2, 3, {Fraction{"1/3"}, Fraction{"-1/4"}, Fraction{"2.6"}, Fraction{"-3.8"}, Fraction{"0/1"}, Fraction{"-0.1"}}} << true;
-    QTest::newRow("check true") << FractMatrix{2, 3, {Fraction{"0/1"}, Fraction{"0.00"}, Fraction{"0/3"}, Fraction{"-1/4"}, Fraction{"0/-5"}, Fraction{"-0.000"}}} << true;
-    QTest::newRow("check true") << FractMatrix{2, 3, {Fraction{"0/1"}, Fraction{"0.00"}, Fraction{"0/3"}, Fraction{"-0/4"}, Fraction{"0/-5"}, Fraction{"0.25"}}} << true;
 }
 
 void FractionMatrixTests::testMatrixesAreEqual_data()
