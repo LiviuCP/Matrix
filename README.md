@@ -15,7 +15,7 @@ Please note that for scenarios 1.1 and 1.2 you need to have the Qt framework ins
 
 1.1. Running the Tests (excluding FractionMatrixTests)
 
-1) Download the Matrix repo (e.g. by using git clone): https://github.com/LiviuCP/Matrix.git
+1) Download the Matrix repo (e.g. by using git clone): https://github.com/LiviuCP/Matrix.git. Switch to LegacyCode branch if your compiler does not support a standard higher than C++17.
 2) Build it
 3) Run the tests either from IDE or from command line (CLI)
 
@@ -25,14 +25,15 @@ This is an extension of the previous scenario. For running the tests for fractio
 
 After building and running the tests for the Matrix library (see section 1.1) the required steps for successfully testing fraction matrixes are:
 
-1) Download (e.g. by using git clone) and build the Fractions repo: https://github.com/LiviuCP/Fractions.git
-2) Go to subdir Matrix/MatrixTests/OtherMatrixTypesTests and open CMakeLists.txt
-3) Do the following changes:
+1) Download (e.g. by using git clone) the Fractions repo: https://github.com/LiviuCP/Fractions.git. Switch to LegacyCode branch if your compiler does not support a standard higher than C++17.
+2) Build Fractions library
+3) Go to subdir Matrix/MatrixTests/OtherMatrixTypesTests and open CMakeLists.txt
+4) Do the following changes:
 - adjust the path of the Fractions include directory (FractionLib) by modifying: include_directories(../../../Fractions/FractionLib)
 - adjust the path of the Fractions library (built in step 1) by modifying: set_target_properties(fractionlib PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/../../../Fractions/FractionLib/libFractionLib.so)
 - modify the extension of the Fractions library file accordingly (check the Fractions build directory, subdir FractionLib): .so for Linux, .dylib for MacOS, etc. Please note the for Windows this library is built statically
 - set the CMake variable FRACTION_LIB_ENABLED to ON
-4) Build and run FractionMatrixTests
+5) Build and run FractionMatrixTests
 
 1.3. Running the Example application
 
@@ -43,15 +44,15 @@ Please note that it is not required to have Qt installed for having the example 
 
 Please follow these steps:
 
-1) Download the Matrix repository into a "third-party" directory belonging to your application
+1) Download the Matrix repository into a "third-party" directory belonging to your application. Switch to LegacyCode branch if your compiler does not support a standard higher than C++17.
 2) Add following path to the include paths of your project: [PATH TO THIRD-PARTY DIR]/Matrix/MatrixLib/Matrix
 3) #include "matrix.h" (and/or any other file contained within MatrixLib/Matrix) wherever required
 
 Notes:
 - please do NOT directly #include any of the files belonging to MatrixLib/Utils into your code files! These are only meant for internal use by the Matrix library.
-- the code can be pulled from one of the two Git branches:
+- the code can be built out of the following Git branches:
   - master: the branch is kept up-to-date, currently the minimum required CPP version is C++20
-  - LegacyCode: the matrix library requires C++17 and above, use this code where C++20 is not an option (please note that this branch is rarely maintained and might not have the latest functionality)
+  - LegacyCode: the matrix library requires C++17. Use this code when C++20 (or above) is not an option (please note that this branch is rarely maintained and might not have the latest functionality)
 
 Important notice! Each object used as matrix template type should satisfy following requirements:
 - it should be default constructible
