@@ -15,16 +15,13 @@
     using difference_type = DifferenceType; \
     using pointer = IterableType**; \
 \
-    IteratorType operator++(); \
+    IteratorType& operator++(); \
     IteratorType operator++(int unused); \
-    IteratorType operator--(); \
+    IteratorType& operator--(); \
     IteratorType operator--(int unused); \
 \
-    IteratorType operator+(DifferenceType offset); \
-    IteratorType operator-(DifferenceType offset); \
-\
-    void operator+=(DifferenceType offset); \
-    void operator-=(DifferenceType offset); \
+    IteratorType& operator+=(DifferenceType offset); \
+    IteratorType& operator-=(DifferenceType offset); \
 \
     DifferenceType operator-(const IteratorType& it) const; \
 \
@@ -39,14 +36,33 @@
     SizeType getColumnNr() const; \
 \
     /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any empty matrix */ \
-    IteratorType();
+    IteratorType(); \
+\
+    friend Matrix<IterableType>::IteratorType operator+(const Matrix<IterableType>::IteratorType& it, Matrix<IterableType>::IteratorType::difference_type offset) \
+    { \
+        typename Matrix<IterableType>::IteratorType temp{it}; \
+        temp += offset; \
+        return temp; \
+    } \
+\
+    friend Matrix<IterableType>::IteratorType operator+(Matrix<IterableType>::IteratorType::difference_type offset, const Matrix<IterableType>::IteratorType& it) \
+    { \
+        return it + offset; \
+    } \
+\
+    friend Matrix<IterableType>::IteratorType operator-(const Matrix<IterableType>::IteratorType& it, Matrix<IterableType>::IteratorType::difference_type offset) \
+    { \
+        typename Matrix<IterableType>::IteratorType temp{it}; \
+        temp -= offset; \
+        return temp; \
+    }
 
 #define COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(IterableType, DifferenceType) \
     using reference = IterableType&; \
 \
-    IterableType& operator*(); \
-    IterableType* operator->(); \
-    IterableType& operator[](DifferenceType index);
+    IterableType& operator*() const; \
+    IterableType* operator->() const; \
+    IterableType& operator[](DifferenceType index) const;
 
 #define COMMON_PUBLIC_CONST_ITERATOR_CODE_DECLARATIONS(IterableType, DifferenceType) \
     using reference = const IterableType&; \
@@ -134,41 +150,31 @@
         mIteratorSecondaryCoordinate = matrixSecondaryCoordinate; \
     }
 
-#define FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR(IteratorType, mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, Sign, scalarValue) \
-    IteratorType it{}; \
-\
+#define FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, Sign, scalarValue) \
     if (mpIteratorPtr) \
     { \
         const size_type c_CurrentIndex{mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + mIteratorSecondaryCoordinate}; \
         const size_type c_ResultingIndex{c_CurrentIndex Sign scalarValue}; \
         const size_type c_UpperBound{mIteratorPrimaryDimension * mIteratorSecondaryDimension}; \
 \
-        it.mpIteratorPtr = mpIteratorPtr; \
-        it.mIteratorPrimaryDimension = mIteratorPrimaryDimension; \
-        it.mIteratorSecondaryDimension = mIteratorSecondaryDimension; \
-        it.mIteratorPrimaryCoordinate = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? mIteratorPrimaryDimension - 1 : c_ResultingIndex / mIteratorSecondaryDimension; \
-        it.mIteratorSecondaryCoordinate = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? mIteratorSecondaryDimension : c_ResultingIndex % mIteratorSecondaryDimension; \
+        mIteratorPrimaryCoordinate = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? mIteratorPrimaryDimension - 1 : c_ResultingIndex / mIteratorSecondaryDimension; \
+        mIteratorSecondaryCoordinate = c_ResultingIndex <= 0 ? 0 : c_ResultingIndex >= c_UpperBound ? mIteratorSecondaryDimension : c_ResultingIndex % mIteratorSecondaryDimension; \
     } \
 \
-    return it;
+    return *this;
 
-#define REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR(IteratorType, mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, Sign, scalarValue) \
-    IteratorType it{}; \
-\
+#define REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, Sign, scalarValue) \
     if (mpIteratorPtr) \
     { \
         const size_type c_CurrentIndex{mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + mIteratorSecondaryCoordinate}; \
         const size_type c_ResultingIndex{c_CurrentIndex Sign scalarValue}; \
         const size_type c_UpperBound{mIteratorPrimaryDimension * mIteratorSecondaryDimension}; \
 \
-        it.mpIteratorPtr = mpIteratorPtr; \
-        it.mIteratorPrimaryDimension = mIteratorPrimaryDimension; \
-        it.mIteratorSecondaryDimension = mIteratorSecondaryDimension; \
-        it.mIteratorPrimaryCoordinate = c_ResultingIndex <= -1 ? 0 : c_ResultingIndex >= c_UpperBound ? mIteratorPrimaryDimension - 1 : c_ResultingIndex / mIteratorSecondaryDimension; \
-        it.mIteratorSecondaryCoordinate = c_ResultingIndex <= -1 ? -1 : c_ResultingIndex >= c_UpperBound ? mIteratorSecondaryDimension - 1 : c_ResultingIndex % mIteratorSecondaryDimension; \
+        mIteratorPrimaryCoordinate = c_ResultingIndex <= -1 ? 0 : c_ResultingIndex >= c_UpperBound ? mIteratorPrimaryDimension - 1 : c_ResultingIndex / mIteratorSecondaryDimension; \
+        mIteratorSecondaryCoordinate = c_ResultingIndex <= -1 ? -1 : c_ResultingIndex >= c_UpperBound ? mIteratorSecondaryDimension - 1 : c_ResultingIndex % mIteratorSecondaryDimension; \
     } \
 \
-    return it;
+    return *this;
 
 #define FORWARD_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, secondIterator) \
     CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr || mIteratorPrimaryDimension != secondIterator.mIteratorPrimaryDimension || mIteratorSecondaryDimension != secondIterator.mIteratorSecondaryDimension, \
@@ -307,12 +313,11 @@
 
 // common DIterator/MIterator macros
 
-#define DIAG_ITERATOR_ADD_SCALAR(IteratorType, mIteratorDiagonalSize, mIteratorDiagonalIndex, Sign, scalarValue) \
-    IteratorType it{*this}; \
-    const size_type c_ResultingIndex = it.mIteratorDiagonalIndex Sign scalarValue; \
-    it.mIteratorDiagonalIndex = c_ResultingIndex < 0 ? 0 : c_ResultingIndex > it.mIteratorDiagonalSize ? it.mIteratorDiagonalSize : c_ResultingIndex; \
+#define DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(mIteratorDiagonalSize, mIteratorDiagonalIndex, Sign, scalarValue) \
+    const size_type c_ResultingIndex = mIteratorDiagonalIndex Sign scalarValue; \
+    mIteratorDiagonalIndex = c_ResultingIndex < 0 ? 0 : c_ResultingIndex > mIteratorDiagonalSize ? mIteratorDiagonalSize : c_ResultingIndex; \
 \
-    return it;
+    return *this;
 
 #define DIAG_ITERATOR_DO_INCREMENT(mIteratorDiagonalSize, mIteratorDiagonalIndex) \
     if (mIteratorDiagonalIndex < mIteratorDiagonalSize) \

@@ -229,7 +229,7 @@ void NIteratorTests::testCombinedIncrementOperators()
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(4, 5);
     m_SecondaryIntIterator = ++(++m_PrimaryIntIterator);
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getNIterator(5, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getNIterator(6, 5),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getNIterator(6, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getNIterator(6, 5),
              "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(4, 5);
@@ -239,7 +239,7 @@ void NIteratorTests::testCombinedIncrementOperators()
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(4, 5);
     m_SecondaryIntIterator = (++m_PrimaryIntIterator)++;
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getNIterator(5, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getNIterator(5, 5),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getNIterator(6, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getNIterator(5, 5),
              "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(4, 5);
@@ -278,7 +278,7 @@ void NIteratorTests::testCombinedDecrementOperators()
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(6, 5);
     m_SecondaryIntIterator = --(--m_PrimaryIntIterator);
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getNIterator(5, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getNIterator(4, 5),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getNIterator(4, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getNIterator(4, 5),
              "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(6, 5);
@@ -288,7 +288,7 @@ void NIteratorTests::testCombinedDecrementOperators()
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(6, 5);
     m_SecondaryIntIterator = (--m_PrimaryIntIterator)--;
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getNIterator(5, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getNIterator(5, 5),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getNIterator(4, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getNIterator(5, 5),
              "The pre- and post-decrement operators do not work correctly, the resulting iterator doesn't point to the right element!");
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(6, 5);

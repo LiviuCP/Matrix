@@ -477,7 +477,7 @@ private:
 
 // 1) ZIterator - iterates within matrix from [0][0] to the end row by row
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator++()
+typename Matrix<DataType>::ZIterator& Matrix<DataType>::ZIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -489,7 +489,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator++(int
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator--()
+typename Matrix<DataType>::ZIterator& Matrix<DataType>::ZIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -501,27 +501,15 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator--(int
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator+(Matrix<DataType>::ZIterator::difference_type offset)
+typename Matrix<DataType>::ZIterator& Matrix<DataType>::ZIterator::operator+=(Matrix<DataType>::ZIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR(ZIterator, m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, +, offset);
+    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, +, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::ZIterator::operator-(Matrix<DataType>::ZIterator::difference_type offset)
+typename Matrix<DataType>::ZIterator& Matrix<DataType>::ZIterator::operator-=(Matrix<DataType>::ZIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR(ZIterator, m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, -, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ZIterator::operator+=(Matrix<DataType>::ZIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ZIterator::operator-=(Matrix<DataType>::ZIterator::difference_type offset)
-{
-    *this = *this - offset;
+    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, -, offset);
 }
 
 template<typename DataType>
@@ -561,19 +549,19 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ZIterator::getColumnNr() 
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ZIterator::operator*()
+DataType& Matrix<DataType>::ZIterator::operator*() const
 {
     FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
 }
 
 template<typename DataType>
-DataType* Matrix<DataType>::ZIterator::operator->()
+DataType* Matrix<DataType>::ZIterator::operator->() const
 {
     FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ZIterator::operator[](Matrix<DataType>::ZIterator::difference_type index)
+DataType& Matrix<DataType>::ZIterator::operator[](Matrix<DataType>::ZIterator::difference_type index) const
 {
     NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, +, /, %, index);
 }
@@ -614,7 +602,7 @@ void Matrix<DataType>::ZIterator::_decrement()
 // 2) ConstZIterator
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator++()
+typename Matrix<DataType>::ConstZIterator& Matrix<DataType>::ConstZIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -626,7 +614,7 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator--()
+typename Matrix<DataType>::ConstZIterator& Matrix<DataType>::ConstZIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -638,27 +626,15 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator+(Matrix<DataType>::ConstZIterator::difference_type offset)
+typename Matrix<DataType>::ConstZIterator& Matrix<DataType>::ConstZIterator::operator+=(Matrix<DataType>::ConstZIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR(ConstZIterator, m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, +, offset);
+    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, +, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::ConstZIterator::operator-(Matrix<DataType>::ConstZIterator::difference_type offset)
+typename Matrix<DataType>::ConstZIterator& Matrix<DataType>::ConstZIterator::operator-=(Matrix<DataType>::ConstZIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR(ConstZIterator, m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, -, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstZIterator::operator+=(Matrix<DataType>::ConstZIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstZIterator::operator-=(Matrix<DataType>::ConstZIterator::difference_type offset)
-{
-    *this = *this - offset;
+    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, -, offset);
 }
 
 template<typename DataType>
@@ -761,7 +737,7 @@ void Matrix<DataType>::ConstZIterator::_decrement()
 // 3) ReverseZIterator - iterates within matrix from end to [0][0] row by row (in reverse direction comparing to ZIterator)
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::operator++()
+typename Matrix<DataType>::ReverseZIterator& Matrix<DataType>::ReverseZIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -773,7 +749,7 @@ typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::operator--()
+typename Matrix<DataType>::ReverseZIterator& Matrix<DataType>::ReverseZIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -785,27 +761,15 @@ typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::operator+(Matrix<DataType>::ReverseZIterator::difference_type offset)
+typename Matrix<DataType>::ReverseZIterator& Matrix<DataType>::ReverseZIterator::operator+=(Matrix<DataType>::ReverseZIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR(ReverseZIterator, m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, -, offset);
+    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, -, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::ReverseZIterator::operator-(Matrix<DataType>::ReverseZIterator::difference_type offset)
+typename Matrix<DataType>::ReverseZIterator& Matrix<DataType>::ReverseZIterator::operator-=(Matrix<DataType>::ReverseZIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR(ReverseZIterator, m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, +, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ReverseZIterator::operator+=(Matrix<DataType>::ReverseZIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ReverseZIterator::operator-=(Matrix<DataType>::ReverseZIterator::difference_type offset)
-{
-    *this = *this - offset;
+    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, +, offset);
 }
 
 template<typename DataType>
@@ -845,19 +809,19 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ReverseZIterator::getColu
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ReverseZIterator::operator*()
+DataType& Matrix<DataType>::ReverseZIterator::operator*() const
 {
     REVERSE_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
 }
 
 template<typename DataType>
-DataType* Matrix<DataType>::ReverseZIterator::operator->()
+DataType* Matrix<DataType>::ReverseZIterator::operator->() const
 {
     REVERSE_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ReverseZIterator::operator[](Matrix<DataType>::ReverseZIterator::difference_type index)
+DataType& Matrix<DataType>::ReverseZIterator::operator[](Matrix<DataType>::ReverseZIterator::difference_type index) const
 {
     NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, -, /, %, index);
 }
@@ -898,7 +862,7 @@ void Matrix<DataType>::ReverseZIterator::_decrement()
 // 4) ConstReverseZIterator
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZIterator::operator++()
+typename Matrix<DataType>::ConstReverseZIterator& Matrix<DataType>::ConstReverseZIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -910,7 +874,7 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZ
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZIterator::operator--()
+typename Matrix<DataType>::ConstReverseZIterator& Matrix<DataType>::ConstReverseZIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -922,27 +886,15 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZ
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZIterator::operator+(Matrix<DataType>::ConstReverseZIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseZIterator& Matrix<DataType>::ConstReverseZIterator::operator+=(Matrix<DataType>::ConstReverseZIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR(ConstReverseZIterator, m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, -, offset);
+    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, -, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::ConstReverseZIterator::operator-(Matrix<DataType>::ConstReverseZIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseZIterator& Matrix<DataType>::ConstReverseZIterator::operator-=(Matrix<DataType>::ConstReverseZIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR(ConstReverseZIterator, m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, +, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstReverseZIterator::operator+=(Matrix<DataType>::ConstReverseZIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstReverseZIterator::operator-=(Matrix<DataType>::ConstReverseZIterator::difference_type offset)
-{
-    *this = *this - offset;
+    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, +, offset);
 }
 
 template<typename DataType>
@@ -1044,7 +996,7 @@ void Matrix<DataType>::ConstReverseZIterator::_decrement()
 
 // 5) NIterator - iterates within matrix from [0][0] to the end column by column
 template<typename DataType>
-typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator++()
+typename Matrix<DataType>::NIterator& Matrix<DataType>::NIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT()
 }
@@ -1056,7 +1008,7 @@ typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator++(int
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator--()
+typename Matrix<DataType>::NIterator& Matrix<DataType>::NIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -1068,27 +1020,15 @@ typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator--(int
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator+(Matrix<DataType>::NIterator::difference_type offset)
+typename Matrix<DataType>::NIterator& Matrix<DataType>::NIterator::operator+=(Matrix<DataType>::NIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR(NIterator, m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, +, offset);
+    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, +, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator Matrix<DataType>::NIterator::operator-(Matrix<DataType>::NIterator::difference_type offset)
+typename Matrix<DataType>::NIterator& Matrix<DataType>::NIterator::operator-=(Matrix<DataType>::NIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR(NIterator, m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, -, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::NIterator::operator+=(Matrix<DataType>::NIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::NIterator::operator-=(Matrix<DataType>::NIterator::difference_type offset)
-{
-    *this = *this - offset;
+    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, -, offset);
 }
 
 template<typename DataType>
@@ -1128,19 +1068,19 @@ typename Matrix<DataType>::size_type Matrix<DataType>::NIterator::getColumnNr() 
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::NIterator::operator*()
+DataType& Matrix<DataType>::NIterator::operator*() const
 {
     FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_RowNr, m_ColumnNr, m_RowNr);
 }
 
 template<typename DataType>
-DataType* Matrix<DataType>::NIterator::operator->()
+DataType* Matrix<DataType>::NIterator::operator->() const
 {
     FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_RowNr, m_ColumnNr, m_RowNr);
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::NIterator::operator[](Matrix<DataType>::NIterator::difference_type index)
+DataType& Matrix<DataType>::NIterator::operator[](Matrix<DataType>::NIterator::difference_type index) const
 {
     NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, +, %, /, index);
 }
@@ -1180,7 +1120,7 @@ void Matrix<DataType>::NIterator::_decrement()
 
 // 6) ConstNIterator
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::operator++()
+typename Matrix<DataType>::ConstNIterator& Matrix<DataType>::ConstNIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -1192,7 +1132,7 @@ typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::operator--()
+typename Matrix<DataType>::ConstNIterator& Matrix<DataType>::ConstNIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -1204,27 +1144,15 @@ typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::operator+(Matrix<DataType>::ConstNIterator::difference_type offset)
+typename Matrix<DataType>::ConstNIterator& Matrix<DataType>::ConstNIterator::operator+=(Matrix<DataType>::ConstNIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR(ConstNIterator, m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, +, offset);
+    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, +, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator Matrix<DataType>::ConstNIterator::operator-(Matrix<DataType>::ConstNIterator::difference_type offset)
+typename Matrix<DataType>::ConstNIterator& Matrix<DataType>::ConstNIterator::operator-=(Matrix<DataType>::ConstNIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR(ConstNIterator, m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, -, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstNIterator::operator+=(Matrix<DataType>::ConstNIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstNIterator::operator-=(Matrix<DataType>::ConstNIterator::difference_type offset)
-{
-    *this = *this - offset;
+    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, -, offset);
 }
 
 template<typename DataType>
@@ -1327,7 +1255,7 @@ void Matrix<DataType>::ConstNIterator::_decrement()
 // 7) ReverseNIterator - iterates within matrix from end to [0][0] column by column (in reverse direction comparing to NIterator)
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::operator++()
+typename Matrix<DataType>::ReverseNIterator& Matrix<DataType>::ReverseNIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -1339,7 +1267,7 @@ typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::operator--()
+typename Matrix<DataType>::ReverseNIterator& Matrix<DataType>::ReverseNIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -1351,27 +1279,15 @@ typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::operator+(Matrix<DataType>::ReverseNIterator::difference_type offset)
+typename Matrix<DataType>::ReverseNIterator& Matrix<DataType>::ReverseNIterator::operator+=(Matrix<DataType>::ReverseNIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR(ReverseNIterator, m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, -, offset);
+    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, -, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::ReverseNIterator::operator-(Matrix<DataType>::ReverseNIterator::difference_type offset)
+typename Matrix<DataType>::ReverseNIterator& Matrix<DataType>::ReverseNIterator::operator-=(Matrix<DataType>::ReverseNIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR(ReverseNIterator, m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, +, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ReverseNIterator::operator+=(Matrix<DataType>::ReverseNIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ReverseNIterator::operator-=(Matrix<DataType>::ReverseNIterator::difference_type offset)
-{
-    *this = *this - offset;
+    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, +, offset);
 }
 
 template<typename DataType>
@@ -1411,19 +1327,19 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ReverseNIterator::getColu
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ReverseNIterator::operator*()
+DataType& Matrix<DataType>::ReverseNIterator::operator*() const
 {
     REVERSE_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_RowNr, m_ColumnNr, m_RowNr);
 }
 
 template<typename DataType>
-DataType* Matrix<DataType>::ReverseNIterator::operator->()
+DataType* Matrix<DataType>::ReverseNIterator::operator->() const
 {
     REVERSE_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_RowNr, m_ColumnNr, m_RowNr);
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ReverseNIterator::operator[](Matrix<DataType>::ReverseNIterator::difference_type index)
+DataType& Matrix<DataType>::ReverseNIterator::operator[](Matrix<DataType>::ReverseNIterator::difference_type index) const
 {
     NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, -, %, /, index);
 }
@@ -1464,7 +1380,7 @@ void Matrix<DataType>::ReverseNIterator::_decrement()
 // 8) ConstReverseNIterator
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseNIterator::operator++()
+typename Matrix<DataType>::ConstReverseNIterator& Matrix<DataType>::ConstReverseNIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -1476,7 +1392,7 @@ typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseN
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseNIterator::operator--()
+typename Matrix<DataType>::ConstReverseNIterator& Matrix<DataType>::ConstReverseNIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -1488,27 +1404,15 @@ typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseN
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseNIterator::operator+(Matrix<DataType>::ConstReverseNIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseNIterator& Matrix<DataType>::ConstReverseNIterator::operator+=(Matrix<DataType>::ConstReverseNIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR(ConstReverseNIterator, m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, -, offset);
+    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, -, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::ConstReverseNIterator::operator-(Matrix<DataType>::ConstReverseNIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseNIterator& Matrix<DataType>::ConstReverseNIterator::operator-=(Matrix<DataType>::ConstReverseNIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR(ConstReverseNIterator, m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, +, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstReverseNIterator::operator+=(Matrix<DataType>::ConstReverseNIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstReverseNIterator::operator-=(Matrix<DataType>::ConstReverseNIterator::difference_type offset)
-{
-    *this = *this - offset;
+    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr, +, offset);
 }
 
 template<typename DataType>
@@ -1611,7 +1515,7 @@ void Matrix<DataType>::ConstReverseNIterator::_decrement()
 // 9) DIterator (diagonal iterator, traverses a matrix diagonal)
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator++()
+typename Matrix<DataType>::DIterator& Matrix<DataType>::DIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -1623,7 +1527,7 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator++(int
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator--()
+typename Matrix<DataType>::DIterator& Matrix<DataType>::DIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -1635,27 +1539,15 @@ typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator--(int
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator+(Matrix<DataType>::DIterator::difference_type offset)
+typename Matrix<DataType>::DIterator& Matrix<DataType>::DIterator::operator+=(Matrix<DataType>::DIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(DIterator, m_DiagonalSize, m_DiagonalIndex, +, offset);
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, +, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::DIterator Matrix<DataType>::DIterator::operator-(Matrix<DataType>::DIterator::difference_type offset)
+typename Matrix<DataType>::DIterator& Matrix<DataType>::DIterator::operator-=(Matrix<DataType>::DIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(DIterator, m_DiagonalSize, m_DiagonalIndex, -, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::DIterator::operator+=(Matrix<DataType>::DIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::DIterator::operator-=(Matrix<DataType>::DIterator::difference_type offset)
-{
-    *this = *this - offset;
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, -, offset);
 }
 
 template<typename DataType>
@@ -1707,19 +1599,19 @@ typename Matrix<DataType>::size_type Matrix<DataType>::DIterator::getDiagonalInd
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::DIterator::operator*()
+DataType& Matrix<DataType>::DIterator::operator*() const
 {
     FORWARD_DITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
 }
 
 template<typename DataType>
-DataType* Matrix<DataType>::DIterator::operator->()
+DataType* Matrix<DataType>::DIterator::operator->() const
 {
     FORWARD_DITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::DIterator::operator[](Matrix<DataType>::DIterator::difference_type index)
+DataType& Matrix<DataType>::DIterator::operator[](Matrix<DataType>::DIterator::difference_type index) const
 {
     FORWARD_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
 }
@@ -1757,7 +1649,7 @@ void Matrix<DataType>::DIterator::_decrement()
 // 10) ConstDIterator (const diagonal iterator, traverses a matrix diagonal)
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator++()
+typename Matrix<DataType>::ConstDIterator& Matrix<DataType>::ConstDIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -1769,7 +1661,7 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator--()
+typename Matrix<DataType>::ConstDIterator& Matrix<DataType>::ConstDIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -1781,27 +1673,15 @@ typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator+(Matrix<DataType>::ConstDIterator::difference_type offset)
+typename Matrix<DataType>::ConstDIterator& Matrix<DataType>::ConstDIterator::operator+=(Matrix<DataType>::ConstDIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(ConstDIterator, m_DiagonalSize, m_DiagonalIndex, +, offset);
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, +, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstDIterator Matrix<DataType>::ConstDIterator::operator-(Matrix<DataType>::ConstDIterator::difference_type offset)
+typename Matrix<DataType>::ConstDIterator& Matrix<DataType>::ConstDIterator::operator-=(Matrix<DataType>::ConstDIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(ConstDIterator, m_DiagonalSize, m_DiagonalIndex, -, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstDIterator::operator+=(Matrix<DataType>::ConstDIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstDIterator::operator-=(Matrix<DataType>::ConstDIterator::difference_type offset)
-{
-    *this = *this - offset;
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, -, offset);
 }
 
 template<typename DataType>
@@ -1912,7 +1792,7 @@ void Matrix<DataType>::ConstDIterator::_decrement()
 // 11) ReverseDIterator (diagonal iterator, traverses a matrix diagonal in reverse direction comparing to the DIterator)
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::operator++()
+typename Matrix<DataType>::ReverseDIterator& Matrix<DataType>::ReverseDIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -1924,7 +1804,7 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::operator--()
+typename Matrix<DataType>::ReverseDIterator& Matrix<DataType>::ReverseDIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -1936,27 +1816,15 @@ typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::operator+(Matrix<DataType>::ReverseDIterator::difference_type offset)
+typename Matrix<DataType>::ReverseDIterator& Matrix<DataType>::ReverseDIterator::operator+=(Matrix<DataType>::ReverseDIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(ReverseDIterator, m_DiagonalSize, m_DiagonalIndex, +, offset);
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, +, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseDIterator Matrix<DataType>::ReverseDIterator::operator-(Matrix<DataType>::ReverseDIterator::difference_type offset)
+typename Matrix<DataType>::ReverseDIterator& Matrix<DataType>::ReverseDIterator::operator-=(Matrix<DataType>::ReverseDIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(ReverseDIterator, m_DiagonalSize, m_DiagonalIndex, -, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ReverseDIterator::operator+=(Matrix<DataType>::ReverseDIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ReverseDIterator::operator-=(Matrix<DataType>::ReverseDIterator::difference_type offset)
-{
-    *this = *this - offset;
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, -, offset);
 }
 
 template<typename DataType>
@@ -2008,19 +1876,19 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ReverseDIterator::getDiag
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ReverseDIterator::operator*()
+DataType& Matrix<DataType>::ReverseDIterator::operator*() const
 {
     REVERSE_DITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
 }
 
 template<typename DataType>
-DataType* Matrix<DataType>::ReverseDIterator::operator->()
+DataType* Matrix<DataType>::ReverseDIterator::operator->() const
 {
     REVERSE_DITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ReverseDIterator::operator[](Matrix<DataType>::ReverseDIterator::difference_type index)
+DataType& Matrix<DataType>::ReverseDIterator::operator[](Matrix<DataType>::ReverseDIterator::difference_type index) const
 {
     REVERSE_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
 }
@@ -2059,7 +1927,7 @@ void Matrix<DataType>::ReverseDIterator::_decrement()
 // 12) ConstReverseDIterator (const diagonal iterator, traverses a matrix diagonal in reverse direction comparing to the DIterator)
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator++()
+typename Matrix<DataType>::ConstReverseDIterator& Matrix<DataType>::ConstReverseDIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -2071,7 +1939,7 @@ typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseD
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator--()
+typename Matrix<DataType>::ConstReverseDIterator& Matrix<DataType>::ConstReverseDIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -2083,27 +1951,15 @@ typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseD
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator+(Matrix<DataType>::ConstReverseDIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseDIterator& Matrix<DataType>::ConstReverseDIterator::operator+=(Matrix<DataType>::ConstReverseDIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(ConstReverseDIterator, m_DiagonalSize, m_DiagonalIndex, +, offset);
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, +, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseDIterator Matrix<DataType>::ConstReverseDIterator::operator-(Matrix<DataType>::ConstReverseDIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseDIterator& Matrix<DataType>::ConstReverseDIterator::operator-=(Matrix<DataType>::ConstReverseDIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(ConstReverseDIterator, m_DiagonalSize, m_DiagonalIndex, -, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstReverseDIterator::operator+=(Matrix<DataType>::ConstReverseDIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstReverseDIterator::operator-=(Matrix<DataType>::ConstReverseDIterator::difference_type offset)
-{
-    *this = *this - offset;
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, -, offset);
 }
 
 template<typename DataType>
@@ -2215,7 +2071,7 @@ void Matrix<DataType>::ConstReverseDIterator::_decrement()
 // 13) MIterator (mirrored diagonal iterator, traverses a matrix diagonal from the other side (symetrically to DIterator); diagonal 0 passes through the upper right corner of the matrix)
 
 template<typename DataType>
-typename Matrix<DataType>::MIterator Matrix<DataType>::MIterator::operator++()
+typename Matrix<DataType>::MIterator& Matrix<DataType>::MIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -2227,7 +2083,7 @@ typename Matrix<DataType>::MIterator Matrix<DataType>::MIterator::operator++(int
 }
 
 template<typename DataType>
-typename Matrix<DataType>::MIterator Matrix<DataType>::MIterator::operator--()
+typename Matrix<DataType>::MIterator& Matrix<DataType>::MIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -2239,27 +2095,15 @@ typename Matrix<DataType>::MIterator Matrix<DataType>::MIterator::operator--(int
 }
 
 template<typename DataType>
-typename Matrix<DataType>::MIterator Matrix<DataType>::MIterator::operator+(Matrix<DataType>::MIterator::difference_type offset)
+typename Matrix<DataType>::MIterator& Matrix<DataType>::MIterator::operator+=(Matrix<DataType>::MIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(MIterator, m_DiagonalSize, m_DiagonalIndex, +, offset);
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, +, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::MIterator Matrix<DataType>::MIterator::operator-(Matrix<DataType>::MIterator::difference_type offset)
+typename Matrix<DataType>::MIterator& Matrix<DataType>::MIterator::operator-=(Matrix<DataType>::MIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(MIterator, m_DiagonalSize, m_DiagonalIndex, -, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::MIterator::operator+=(Matrix<DataType>::MIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::MIterator::operator-=(Matrix<DataType>::MIterator::difference_type offset)
-{
-    *this = *this - offset;
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, -, offset);
 }
 
 template<typename DataType>
@@ -2311,19 +2155,19 @@ typename Matrix<DataType>::size_type Matrix<DataType>::MIterator::getDiagonalInd
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::MIterator::operator*()
+DataType& Matrix<DataType>::MIterator::operator*() const
 {
     FORWARD_MITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template<typename DataType>
-DataType* Matrix<DataType>::MIterator::operator->()
+DataType* Matrix<DataType>::MIterator::operator->() const
 {
     FORWARD_MITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::MIterator::operator[](Matrix<DataType>::MIterator::difference_type index)
+DataType& Matrix<DataType>::MIterator::operator[](Matrix<DataType>::MIterator::difference_type index) const
 {
     FORWARD_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
 }
@@ -2363,7 +2207,7 @@ void Matrix<DataType>::MIterator::_decrement()
 // 14) ConstMIterator
 
 template<typename DataType>
-typename Matrix<DataType>::ConstMIterator Matrix<DataType>::ConstMIterator::operator++()
+typename Matrix<DataType>::ConstMIterator& Matrix<DataType>::ConstMIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -2375,7 +2219,7 @@ typename Matrix<DataType>::ConstMIterator Matrix<DataType>::ConstMIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstMIterator Matrix<DataType>::ConstMIterator::operator--()
+typename Matrix<DataType>::ConstMIterator& Matrix<DataType>::ConstMIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -2387,27 +2231,15 @@ typename Matrix<DataType>::ConstMIterator Matrix<DataType>::ConstMIterator::oper
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstMIterator Matrix<DataType>::ConstMIterator::operator+(Matrix<DataType>::ConstMIterator::difference_type offset)
+typename Matrix<DataType>::ConstMIterator& Matrix<DataType>::ConstMIterator::operator+=(Matrix<DataType>::ConstMIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(ConstMIterator, m_DiagonalSize, m_DiagonalIndex, +, offset);
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, +, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstMIterator Matrix<DataType>::ConstMIterator::operator-(Matrix<DataType>::ConstMIterator::difference_type offset)
+typename Matrix<DataType>::ConstMIterator& Matrix<DataType>::ConstMIterator::operator-=(Matrix<DataType>::ConstMIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(ConstMIterator, m_DiagonalSize, m_DiagonalIndex, -, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstMIterator::operator+=(Matrix<DataType>::ConstMIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstMIterator::operator-=(Matrix<DataType>::ConstMIterator::difference_type offset)
-{
-    *this = *this - offset;
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, -, offset);
 }
 
 template<typename DataType>
@@ -2521,7 +2353,7 @@ void Matrix<DataType>::ConstMIterator::_decrement()
 // 15) ReverseMIterator (diagonal iterator, traverses a matrix diagonal in reverse direction comparing to the MIterator)
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseMIterator Matrix<DataType>::ReverseMIterator::operator++()
+typename Matrix<DataType>::ReverseMIterator& Matrix<DataType>::ReverseMIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -2533,7 +2365,7 @@ typename Matrix<DataType>::ReverseMIterator Matrix<DataType>::ReverseMIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseMIterator Matrix<DataType>::ReverseMIterator::operator--()
+typename Matrix<DataType>::ReverseMIterator& Matrix<DataType>::ReverseMIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -2545,27 +2377,15 @@ typename Matrix<DataType>::ReverseMIterator Matrix<DataType>::ReverseMIterator::
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseMIterator Matrix<DataType>::ReverseMIterator::operator+(Matrix<DataType>::ReverseMIterator::difference_type offset)
+typename Matrix<DataType>::ReverseMIterator& Matrix<DataType>::ReverseMIterator::operator+=(Matrix<DataType>::ReverseMIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(ReverseMIterator, m_DiagonalSize, m_DiagonalIndex, +, offset);
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, +, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseMIterator Matrix<DataType>::ReverseMIterator::operator-(Matrix<DataType>::ReverseMIterator::difference_type offset)
+typename Matrix<DataType>::ReverseMIterator& Matrix<DataType>::ReverseMIterator::operator-=(Matrix<DataType>::ReverseMIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(ReverseMIterator, m_DiagonalSize, m_DiagonalIndex, -, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ReverseMIterator::operator+=(Matrix<DataType>::ReverseMIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ReverseMIterator::operator-=(Matrix<DataType>::ReverseMIterator::difference_type offset)
-{
-    *this = *this - offset;
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, -, offset);
 }
 
 template<typename DataType>
@@ -2617,19 +2437,19 @@ typename Matrix<DataType>::size_type Matrix<DataType>::ReverseMIterator::getDiag
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ReverseMIterator::operator*()
+DataType& Matrix<DataType>::ReverseMIterator::operator*() const
 {
     REVERSE_MITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template<typename DataType>
-DataType* Matrix<DataType>::ReverseMIterator::operator->()
+DataType* Matrix<DataType>::ReverseMIterator::operator->() const
 {
     REVERSE_MITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::ReverseMIterator::operator[](Matrix<DataType>::ReverseMIterator::difference_type index)
+DataType& Matrix<DataType>::ReverseMIterator::operator[](Matrix<DataType>::ReverseMIterator::difference_type index) const
 {
     REVERSE_MITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns, index);
 }
@@ -2670,7 +2490,7 @@ void Matrix<DataType>::ReverseMIterator::_decrement()
 // 16) ConstReverseMIterator
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::ConstReverseMIterator::operator++()
+typename Matrix<DataType>::ConstReverseMIterator& Matrix<DataType>::ConstReverseMIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
@@ -2682,7 +2502,7 @@ typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::ConstReverseM
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::ConstReverseMIterator::operator--()
+typename Matrix<DataType>::ConstReverseMIterator& Matrix<DataType>::ConstReverseMIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
@@ -2694,27 +2514,15 @@ typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::ConstReverseM
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::ConstReverseMIterator::operator+(Matrix<DataType>::ConstReverseMIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseMIterator& Matrix<DataType>::ConstReverseMIterator::operator+=(Matrix<DataType>::ConstReverseMIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(ConstReverseMIterator, m_DiagonalSize, m_DiagonalIndex, +, offset);
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, +, offset);
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseMIterator Matrix<DataType>::ConstReverseMIterator::operator-(Matrix<DataType>::ConstReverseMIterator::difference_type offset)
+typename Matrix<DataType>::ConstReverseMIterator& Matrix<DataType>::ConstReverseMIterator::operator-=(Matrix<DataType>::ConstReverseMIterator::difference_type offset)
 {
-    DIAG_ITERATOR_ADD_SCALAR(ConstReverseMIterator, m_DiagonalSize, m_DiagonalIndex, -, offset);
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstReverseMIterator::operator+=(Matrix<DataType>::ConstReverseMIterator::difference_type offset)
-{
-    *this = *this + offset;
-}
-
-template<typename DataType>
-void Matrix<DataType>::ConstReverseMIterator::operator-=(Matrix<DataType>::ConstReverseMIterator::difference_type offset)
-{
-    *this = *this - offset;
+    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, -, offset);
 }
 
 template<typename DataType>

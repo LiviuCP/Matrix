@@ -201,7 +201,7 @@ void ConstReverseDIteratorTests::testIncrementOperators()
     m_PrimaryIntIterator = m_PrimaryIntMatrix.constReverseDBegin(-1);
     m_SecondaryIntIterator = ++(++m_PrimaryIntIterator);
 
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(1, 0),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(1, 0) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(1, 0),
              "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
 
@@ -220,7 +220,7 @@ void ConstReverseDIteratorTests::testIncrementOperators()
     m_PrimaryIntIterator = m_PrimaryIntMatrix.constReverseDBegin(-1);
     m_SecondaryIntIterator = (++m_PrimaryIntIterator)++;
 
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(2, 1),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(1, 0) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(2, 1),
              "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.constReverseDBegin(-1);
@@ -261,13 +261,13 @@ void ConstReverseDIteratorTests::testDecrementOperators()
     m_PrimaryIntIterator = m_PrimaryIntMatrix.constReverseDEnd(-1);
     m_SecondaryIntIterator = --(--m_PrimaryIntIterator);
 
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(1, 0) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(2, 1),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(2, 1),
              "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstReverseDIterator(1, 0);
     m_SecondaryIntIterator = --(--m_PrimaryIntIterator);
 
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(3, 2),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(3, 2) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(3, 2),
              "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
 
@@ -298,13 +298,13 @@ void ConstReverseDIteratorTests::testDecrementOperators()
     m_PrimaryIntIterator = m_PrimaryIntMatrix.constReverseDEnd(-1);
     m_SecondaryIntIterator = (--m_PrimaryIntIterator)--;
 
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(1, 0) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(1, 0),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(1, 0),
              "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element!");
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstReverseDIterator(1, 0);
     m_SecondaryIntIterator = (--m_PrimaryIntIterator)--;
 
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(2, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(2, 1),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(3, 2) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getConstReverseDIterator(2, 1),
              "The pre- and post-decrement operator do not work correctly, the resulting iterator doesn't point to the right element!");
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.constReverseDEnd(-1);
