@@ -1,4 +1,5 @@
 #include <QtTest>
+#include <cmath>
 
 #include "testutils.h"
 
