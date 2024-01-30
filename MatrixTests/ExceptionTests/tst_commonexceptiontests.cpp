@@ -8,15 +8,17 @@ Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(ConcatMode)
 Q_DECLARE_METATYPE(SplitMode)
 
-static_assert(std::ranges::range<IntMatrix>);
-static_assert(std::ranges::common_range<IntMatrix>);
-static_assert(std::ranges::random_access_range<IntMatrix>);
-static_assert(std::ranges::sized_range<IntMatrix>);
+// uncomment if compiler supports std::ranges
 
-static_assert(!std::ranges::view<IntMatrix>);
-static_assert(!std::ranges::viewable_range<IntMatrix>);
-static_assert(!std::ranges::contiguous_range<IntMatrix>);
-static_assert(!std::ranges::borrowed_range<IntMatrix>);
+// static_assert(std::ranges::range<IntMatrix>);
+// static_assert(std::ranges::common_range<IntMatrix>);
+// static_assert(std::ranges::random_access_range<IntMatrix>);
+// static_assert(std::ranges::sized_range<IntMatrix>);
+
+// static_assert(!std::ranges::view<IntMatrix>);
+// static_assert(!std::ranges::viewable_range<IntMatrix>);
+// static_assert(!std::ranges::contiguous_range<IntMatrix>);
+// static_assert(!std::ranges::borrowed_range<IntMatrix>);
 
 class CommonExceptionTests : public QObject
 {
