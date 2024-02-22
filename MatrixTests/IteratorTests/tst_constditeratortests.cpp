@@ -14,7 +14,6 @@ private slots:
     // test functions
     void testIteratorCreation();
     void testIteratorCreationFromNonConstIterator();
-    void testIteratorIsValidWithOneMatrix();
     void testEmptyIterator();
     void testIteratorsAreEqual();
     void testIteratorEqualToItself();
@@ -82,8 +81,7 @@ void ConstDIteratorTests::testIteratorCreation()
     QVERIFY2(iterator.getRowNr() == expectedRowNr &&
              iterator.getColumnNr() == expectedColumnNr &&
              iterator.getDiagonalNr() == expectedDiagonalNr &&
-             iterator.getDiagonalIndex() == expectedDiagonalIndex &&
-             iterator.isValidWithMatrix(m_PrimaryIntMatrix),
+             iterator.getDiagonalIndex() == expectedDiagonalIndex,
              "The iterator has not been correctly created!");
 }
 
@@ -100,19 +98,8 @@ void ConstDIteratorTests::testIteratorCreationFromNonConstIterator()
     QVERIFY2(constIterator.getRowNr() == expectedRowNr &&
              constIterator.getColumnNr() == expectedColumnNr &&
              constIterator.getDiagonalNr() == expectedDiagonalNr &&
-             constIterator.getDiagonalIndex() == expectedDiagonalIndex &&
-             constIterator.isValidWithMatrix(m_PrimaryIntMatrix),
+             constIterator.getDiagonalIndex() == expectedDiagonalIndex,
              "The iterator has not been correctly created!");
-}
-
-// additional test for checking that an iterator is only valid with the matrix with which it is created
-void ConstDIteratorTests::testIteratorIsValidWithOneMatrix()
-{
-    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-    m_SecondaryIntMatrix = m_PrimaryIntMatrix;
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(2, 1);
-
-    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
 void ConstDIteratorTests::testEmptyIterator()
@@ -123,7 +110,6 @@ void ConstDIteratorTests::testEmptyIterator()
     IntMatrixConstDIterator emptyIterator;
 
     QVERIFY2(emptyIterator.getRowNr() == -1 && emptyIterator.getColumnNr() == -1 && emptyIterator.getDiagonalNr() == 0 && emptyIterator.getDiagonalIndex() == -1, "The iterator has not been correctly created");
-    QVERIFY(!emptyIterator.isValidWithMatrix(m_PrimaryIntMatrix) && emptyIterator.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
 void ConstDIteratorTests::testIteratorsAreEqual()

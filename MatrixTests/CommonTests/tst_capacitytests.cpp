@@ -1,8 +1,5 @@
 #include <QtTest>
 
-#include <vector>
-#include <tuple>
-
 #include "testutils.h"
 #include "tst_capacitytests.h"
 #include "tst_resizingtests.h"

@@ -12,7 +12,6 @@ class NIteratorTests : public QObject
 private slots:
     // test functions
     void testIteratorCreation();
-    void testIteratorIsValidWithOneMatrix();
     void testEmptyIterator();
     void testIteratorsAreEqual();
     void testIteratorEqualToItself();
@@ -92,38 +91,10 @@ void NIteratorTests::testIteratorCreation()
     QFETCH(IntMatrixNIterator, iterator);
     QFETCH(IntMatrix::size_type, expectedRowNr);
     QFETCH(IntMatrix::size_type, expectedColumnNr);
-    QFETCH(bool, isPrimaryMatrix);
-    QFETCH(bool, expectedValidity);
 
     QVERIFY2(iterator.getRowNr() == expectedRowNr &&
-             iterator.getColumnNr() == expectedColumnNr &&
-             iterator.isValidWithMatrix(isPrimaryMatrix ? m_PrimaryIntMatrix : m_SecondaryIntMatrix) == expectedValidity,
+             iterator.getColumnNr() == expectedColumnNr,
              "The iterator has not been correctly created!");
-}
-
-void NIteratorTests::testIteratorIsValidWithOneMatrix()
-{
-    m_PrimaryIntMatrix = {8, 9, -5};
-    m_SecondaryIntMatrix = {8, 9, -5};
-
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(4, 5);
-    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
-
-    m_SecondaryIntMatrix.clear();
-    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
-
-    m_PrimaryIntIterator = m_SecondaryIntMatrix.nBegin();
-    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_PrimaryIntMatrix));
-
-    m_PrimaryIntIterator = m_SecondaryIntMatrix.nEnd();
-    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_PrimaryIntMatrix));
-
-    m_PrimaryIntMatrix.clear();
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.nBegin();
-    QVERIFY(m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
-
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.nEnd();
-    QVERIFY(m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
 void NIteratorTests::testEmptyIterator()
@@ -133,7 +104,6 @@ void NIteratorTests::testEmptyIterator()
     IntMatrixNIterator emptyIt;
 
     QVERIFY2(emptyIt.getRowNr() == -1 && emptyIt.getColumnNr() == -1, "The iterator has not been correctly created!");
-    QVERIFY(!emptyIt.isValidWithMatrix(m_PrimaryIntMatrix) && emptyIt.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
 void NIteratorTests::testIteratorsAreEqual()
@@ -665,33 +635,31 @@ void NIteratorTests::testIteratorCreation_data()
     QTest::addColumn<IntMatrixNIterator>("iterator");
     QTest::addColumn<IntMatrixSizeType>("expectedRowNr");
     QTest::addColumn<IntMatrixSizeType>("expectedColumnNr");
-    QTest::addColumn<bool>("isPrimaryMatrix");
-    QTest::addColumn<bool>("expectedValidity");
 
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.nBegin() << 0 << 0 << true << true;
-    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.nEnd() << 8 << 8 << true << true;
-    QTest::newRow("{column begin iterator}") << m_PrimaryIntMatrix.nColumnBegin(0) << 0 << 0 << true << true;
-    QTest::newRow("{column begin iterator}") << m_PrimaryIntMatrix.nColumnBegin(1) << 0 << 1 << true << true;
-    QTest::newRow("{column begin iterator}") << m_PrimaryIntMatrix.nColumnBegin(4) << 0 << 4 << true << true;
-    QTest::newRow("{column begin iterator}") << m_PrimaryIntMatrix.nColumnBegin(7) << 0 << 7 << true << true;
-    QTest::newRow("{column begin iterator}") << m_PrimaryIntMatrix.nColumnBegin(8) << 0 << 8 << true << true;
-    QTest::newRow("{column end iterator}") << m_PrimaryIntMatrix.nColumnEnd(0) << 0 << 1 << true << true;
-    QTest::newRow("{column end iterator}") << m_PrimaryIntMatrix.nColumnEnd(1) << 0 << 2 << true << true;
-    QTest::newRow("{column end iterator}") << m_PrimaryIntMatrix.nColumnEnd(4) << 0 << 5 << true << true;
-    QTest::newRow("{column end iterator}") << m_PrimaryIntMatrix.nColumnEnd(7) << 0 << 8 << true << true;
-    QTest::newRow("{column end iterator}") << m_PrimaryIntMatrix.nColumnEnd(8) << 8 << 8 << true << true;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(0, 0) << 0 << 0 << true << true;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(1, 0) << 1 << 0 << true << true;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(4, 5) << 4 << 5 << true << true;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(6, 8) << 6 << 8 << true << true;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(7, 8) << 7 << 8 << true << true;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(0) << 0 << 0 << true << true;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(1) << 1 << 0 << true << true;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(44) << 4 << 5 << true << true;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(70) << 6 << 8 << true << true;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(71) << 7 << 8 << true << true;
-    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.nBegin() << -1 << -1 << false << true;
-    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.nEnd() << -1 << -1 << false << true;
+    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.nBegin() << 0 << 0;
+    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.nEnd() << 8 << 8;
+    QTest::newRow("{column begin iterator}") << m_PrimaryIntMatrix.nColumnBegin(0) << 0 << 0;
+    QTest::newRow("{column begin iterator}") << m_PrimaryIntMatrix.nColumnBegin(1) << 0 << 1;
+    QTest::newRow("{column begin iterator}") << m_PrimaryIntMatrix.nColumnBegin(4) << 0 << 4;
+    QTest::newRow("{column begin iterator}") << m_PrimaryIntMatrix.nColumnBegin(7) << 0 << 7;
+    QTest::newRow("{column begin iterator}") << m_PrimaryIntMatrix.nColumnBegin(8) << 0 << 8;
+    QTest::newRow("{column end iterator}") << m_PrimaryIntMatrix.nColumnEnd(0) << 0 << 1;
+    QTest::newRow("{column end iterator}") << m_PrimaryIntMatrix.nColumnEnd(1) << 0 << 2;
+    QTest::newRow("{column end iterator}") << m_PrimaryIntMatrix.nColumnEnd(4) << 0 << 5;
+    QTest::newRow("{column end iterator}") << m_PrimaryIntMatrix.nColumnEnd(7) << 0 << 8;
+    QTest::newRow("{column end iterator}") << m_PrimaryIntMatrix.nColumnEnd(8) << 8 << 8;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(0, 0) << 0 << 0;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(1, 0) << 1 << 0;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(4, 5) << 4 << 5;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(6, 8) << 6 << 8;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(7, 8) << 7 << 8;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(0) << 0 << 0;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(1) << 1 << 0;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(44) << 4 << 5;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(70) << 6 << 8;
+    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getNIterator(71) << 7 << 8;
+    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.nBegin() << -1 << -1;
+    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.nEnd() << -1 << -1;
 }
 
 void NIteratorTests::testIteratorsAreEqual_data()
