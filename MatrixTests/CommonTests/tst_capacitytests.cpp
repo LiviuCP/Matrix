@@ -1489,6 +1489,8 @@ void CapacityTests::_buildIntMatrixCapacityWithMoveCopyConstructorsTestingTable(
     QTest::newRow("small size matrix") << 4 << 3 << -1 << 5 << 3;
     QTest::newRow("medium size matrix") << 7 << 8 << -1 << 8 << 10;
     QTest::newRow("medium size matrix") << 8 << 7 << -1 << 10 << 8;
+    QTest::newRow("large size matrix") << 20 << 25 << -1 << 25 << 31;
+    QTest::newRow("large size matrix") << 25 << 20 << -1 << 31 << 25;
 }
 
 void CapacityTests::_buildIntMatrixCapacityWithAssignmentOperatorsTestingTable()
@@ -1506,10 +1508,18 @@ void CapacityTests::_buildIntMatrixCapacityWithAssignmentOperatorsTestingTable()
     QTest::newRow("destination matrix initially empty") << 4 << 3 << -1 << 0 << 0 << 0 << 5 << 3;
     QTest::newRow("destination matrix initially empty") << 7 << 8 << -1 << 0 << 0 << 0 << 8 << 10;
     QTest::newRow("destination matrix initially empty") << 8 << 7 << -1 << 0 << 0 << 0 << 10 << 8;
+    QTest::newRow("destination matrix initially empty") << 20 << 25 << -1 << 0 << 0 << 0 << 25 << 31;
+    QTest::newRow("destination matrix initially empty") << 25 << 20 << -1 << 0 << 0 << 0 << 31 << 25;
     QTest::newRow("destination matrix initially NOT empty") << 3 << 4 << -1 << 2 << 3 << -5 << 3 << 5;
     QTest::newRow("destination matrix initially NOT empty") << 4 << 3 << -1 << 2 << 3 << -5 << 5 << 3;
     QTest::newRow("destination matrix initially NOT empty") << 7 << 8 << -1 << 3 << 4 << -5 << 8 << 10;
     QTest::newRow("destination matrix initially NOT empty") << 8 << 7 << -1 << 3 << 4 << -5 << 10 << 8;
+    QTest::newRow("destination matrix initially NOT empty") << 20 << 25 << -1 << 15 << 20 << -5 << 25 << 31;
+    QTest::newRow("destination matrix initially NOT empty") << 25 << 20 << -1 << 15 << 20 << -5 << 31 << 25;
+    QTest::newRow("destination matrix initially NOT empty") << 20 << 25 << -1 << 25 << 20 << -5 << 25 << 31;
+    QTest::newRow("destination matrix initially NOT empty") << 25 << 20 << -1 << 20 << 25 << -5 << 31 << 25;
+    QTest::newRow("destination matrix initially NOT empty") << 25 << 20 << -1 << 25 << 20 << -5 << 31 << 25;
+    QTest::newRow("destination matrix initially NOT empty") << 15 << 20 << -1 << 20 << 25 << -5 << 18 << 25;
 }
 
 void CapacityTests::_buildIntMatrixCapacityWithResizeTestingTable()
@@ -1868,6 +1878,8 @@ void CapacityTests::_buildStringMatrixCapacityWithMoveCopyConstructorsTestingTab
     QTest::newRow("small size matrix") << 4 << 3 << std::string{"Value"} << 5 << 3;
     QTest::newRow("medium size matrix") << 7 << 8 << std::string{"Value"} << 8 << 10;
     QTest::newRow("medium size matrix") << 8 << 7 << std::string{"Value"} << 10 << 8;
+    QTest::newRow("large size matrix") << 20 << 25 << std::string{"Value"} << 25 << 31;
+    QTest::newRow("large size matrix") << 25 << 20 << std::string{"Value"} << 31 << 25;
 }
 
 void CapacityTests::_buildStringMatrixCapacityWithAssignmentOperatorsTestingTable()
@@ -1885,10 +1897,18 @@ void CapacityTests::_buildStringMatrixCapacityWithAssignmentOperatorsTestingTabl
     QTest::newRow("destination matrix initially empty") << 4 << 3 << std::string{"Value1"} << 0 << 0 << std::string{"Value2"} << 5 << 3;
     QTest::newRow("destination matrix initially empty") << 7 << 8 << std::string{"Value1"} << 0 << 0 << std::string{"Value2"} << 8 << 10;
     QTest::newRow("destination matrix initially empty") << 8 << 7 << std::string{"Value1"} << 0 << 0 << std::string{"Value2"} << 10 << 8;
+    QTest::newRow("destination matrix initially empty") << 20 << 25 << std::string{"Value1"} << 0 << 0 << std::string{"Value2"} << 25 << 31;
+    QTest::newRow("destination matrix initially empty") << 25 << 20 << std::string{"Value1"} << 0 << 0 << std::string{"Value2"} << 31 << 25;
     QTest::newRow("destination matrix initially NOT empty") << 3 << 4 << std::string{"Value1"} << 2 << 3 << std::string{"Value3"} << 3 << 5;
     QTest::newRow("destination matrix initially NOT empty") << 4 << 3 << std::string{"Value1"} << 2 << 3 << std::string{"Value3"} << 5 << 3;
     QTest::newRow("destination matrix initially NOT empty") << 7 << 8 << std::string{"Value1"} << 3 << 4 << std::string{"Value3"} << 8 << 10;
     QTest::newRow("destination matrix initially NOT empty") << 8 << 7 << std::string{"Value1"} << 3 << 4 << std::string{"Value3"} << 10 << 8;
+    QTest::newRow("destination matrix initially NOT empty") << 20 << 25 << std::string{"Value1"} << 15 << 20 << std::string{"Value3"} << 25 << 31;
+    QTest::newRow("destination matrix initially NOT empty") << 25 << 20 << std::string{"Value1"} << 15 << 20 << std::string{"Value3"} << 31 << 25;
+    QTest::newRow("destination matrix initially NOT empty") << 20 << 25 << std::string{"Value1"} << 25 << 20 << std::string{"Value3"} << 25 << 31;
+    QTest::newRow("destination matrix initially NOT empty") << 25 << 20 << std::string{"Value1"} << 20 << 25 << std::string{"Value3"} << 31 << 25;
+    QTest::newRow("destination matrix initially NOT empty") << 25 << 20 << std::string{"Value1"} << 25 << 20 << std::string{"Value3"} << 31 << 25;
+    QTest::newRow("destination matrix initially NOT empty") << 15 << 20 << std::string{"Value1"} << 20 << 25 << std::string{"Value3"} << 18 << 25;
 }
 
 void CapacityTests::_buildStringMatrixCapacityWithResizeTestingTable()
