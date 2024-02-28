@@ -376,11 +376,25 @@ void ConstDIteratorTests::testAsteriskOperator()
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(2, 1);
 
     QVERIFY2(*m_PrimaryIntIterator == -8, "The asterisk operator does not work correctly when reading the value!");
+
+    // test with row capacity offset
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    m_PrimaryIntMatrix.resize(4, 3, 6, 3);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstDIterator(2, 1);
+
+    QVERIFY2(*m_PrimaryIntIterator == -8, "The asterisk operator does not work correctly when reading the value!");
 }
 
 void ConstDIteratorTests::testArrowOperator()
 {
     m_StringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+    m_StringIterator = m_StringMatrix.constDBegin(0, 1);
+
+    QVERIFY2(m_StringIterator->size() == 5, "The arrow operator does not work correctly when reading the value!");
+
+    // test with column capacity offset
+    m_StringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+    m_StringMatrix.resize(2, 3, 2, 5);
     m_StringIterator = m_StringMatrix.constDBegin(0, 1);
 
     QVERIFY2(m_StringIterator->size() == 5, "The arrow operator does not work correctly when reading the value!");
@@ -612,6 +626,19 @@ void ConstDIteratorTests::testSquareBracketsOperator_data()
     QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constDEnd(0) << -3 << 1;
     QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constDEnd(0) << -2 << -5;
     QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constDEnd(0) << -1 << 9;
+
+    // test with row/column capacity offset
+    m_SecondaryIntMatrix = m_PrimaryIntMatrix;
+    m_SecondaryIntMatrix.resize(4, 3, 6, 5);
+
+    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.constDBegin(0, 1) << 0 << 2;
+    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.constDBegin(0, 1) << 1 << 6;
+    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstDIterator(2, 1) << -1 << 4;
+    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstDIterator(2, 1) << 0 << -8;
+    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstDIterator(2, 1) << 1 << 12;
+    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.constDEnd(0) << -3 << 1;
+    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.constDEnd(0) << -2 << -5;
+    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.constDEnd(0) << -1 << 9;
 }
 
 void ConstDIteratorTests::testStdCount_data()
