@@ -550,6 +550,12 @@ void CapacityTests::testIntMatrixCapacityWithInsertRow_data()
     QTest::newRow("inserted row value set") << IntMatrix{6, 5, -2} << 3 << 5 << 7 << 6 << true;
     QTest::newRow("inserted row value NOT set") << IntMatrix{8, 2, -2} << 5 << 5 << 10 << 2 << false;
     QTest::newRow("inserted row value set") << IntMatrix{8, 2, -2} << 5 << 5 << 10 << 2 << true;
+    QTest::newRow("inserted row value NOT set") << IntMatrix{25, 20, -2} << 0 << 5 << 31 << 25 << false;
+    QTest::newRow("inserted row value set") << IntMatrix{25, 20, -2} << 0 << 5 << 31 << 25 << true;
+    QTest::newRow("inserted row value NOT set") << IntMatrix{25, 20, -2} << 11 << 5 << 31 << 25 << false;
+    QTest::newRow("inserted row value set") << IntMatrix{25, 20, -2} << 11 << 5 << 31 << 25 << true;
+    QTest::newRow("inserted row value NOT set") << IntMatrix{25, 20, -2} << 25 << 5 << 31 << 25 << false;
+    QTest::newRow("inserted row value set") << IntMatrix{25, 20, -2} << 25 << 5 << 31 << 25 << true;
 }
 
 void CapacityTests::testIntMatrixCapacityWithInsertColumn_data()
@@ -567,6 +573,12 @@ void CapacityTests::testIntMatrixCapacityWithInsertColumn_data()
     QTest::newRow("inserted column value set") << IntMatrix{5, 7, 4} << 1 << 1 << 6 << 8 << true;
     QTest::newRow("inserted column value NOT set") << IntMatrix{5, 14, 4} << 1 << 1 << 6 << 17 << false;
     QTest::newRow("inserted column value set") << IntMatrix{5, 14, 4} << 1 << 1 << 6 << 17 << true;
+    QTest::newRow("inserted column value NOT set") << IntMatrix{20, 25, 4} << 0 << 1 << 25 << 31 << false;
+    QTest::newRow("inserted column value set") << IntMatrix{20, 25, 4} << 0 << 1 << 25 << 31 << true;
+    QTest::newRow("inserted column value NOT set") << IntMatrix{20, 25, 4} << 14 << 1 << 25 << 31 << false;
+    QTest::newRow("inserted column value set") << IntMatrix{20, 25, 4} << 14 << 1 << 25 << 31 << true;
+    QTest::newRow("inserted column value NOT set") << IntMatrix{20, 25, 4} << 25 << 1 << 25 << 31 << false;
+    QTest::newRow("inserted column value set") << IntMatrix{20, 25, 4} << 25 << 1 << 25 << 31 << true;
 }
 
 void CapacityTests::testIntMatrixCapacityWithEraseRow_data()
@@ -1086,6 +1098,12 @@ void CapacityTests::testStringMatrixCapacityWithInsertRow_data()
     QTest::newRow("inserted row value set") << StringMatrix{6, 5, "Value1"} << 3 << std::string{"Value2"} << 7 << 6 << true;
     QTest::newRow("inserted row value NOT set") << StringMatrix{8, 2, "Value1"} << 5 << std::string{"Value2"} << 10 << 2 << false;
     QTest::newRow("inserted row value set") << StringMatrix{8, 2, "Value1"} << 5 << std::string{"Value2"} << 10 << 2 << true;
+    QTest::newRow("inserted row value NOT set") << StringMatrix{25, 20, "Value1"} << 0 << std::string{"Value2"} << 31 << 25 << false;
+    QTest::newRow("inserted row value set") << StringMatrix{25, 20, "Value1"} << 0 << std::string{"Value2"} << 31 << 25 << true;
+    QTest::newRow("inserted row value NOT set") << StringMatrix{25, 20, "Value1"} << 11 << std::string{"Value2"} << 31 << 25 << false;
+    QTest::newRow("inserted row value set") << StringMatrix{25, 20, "Value1"} << 11 << std::string{"Value2"} << 31 << 25 << true;
+    QTest::newRow("inserted row value NOT set") << StringMatrix{25, 20, "Value1"} << 25 << std::string{"Value2"} << 31 << 25 << false;
+    QTest::newRow("inserted row value set") << StringMatrix{25, 20, "Value1"} << 25 << std::string{"Value2"} << 31 << 25 << true;
 }
 
 void CapacityTests::testStringMatrixCapacityWithInsertColumn_data()
@@ -1103,6 +1121,12 @@ void CapacityTests::testStringMatrixCapacityWithInsertColumn_data()
     QTest::newRow("inserted column value set") << StringMatrix{5, 7, "Value1"} << 1 << std::string{"Value2"} << 6 << 8 << true;
     QTest::newRow("inserted column value NOT set") << StringMatrix{5, 14, "Value1"} << 1 << std::string{"Value2"} << 6 << 17 << false;
     QTest::newRow("inserted column value set") << StringMatrix{5, 14, "Value1"} << 1 << std::string{"Value2"} << 6 << 17 << true;
+    QTest::newRow("inserted column value NOT set") << StringMatrix{20, 25, "Value1"} << 0 << std::string{"Value2"} << 25 << 31 << false;
+    QTest::newRow("inserted column value set") << StringMatrix{20, 25, "Value1"} << 0 << std::string{"Value2"} << 25 << 31 << true;
+    QTest::newRow("inserted column value NOT set") << StringMatrix{20, 25, "Value1"} << 14 << std::string{"Value2"} << 25 << 31 << false;
+    QTest::newRow("inserted column value set") << StringMatrix{20, 25, "Value1"} << 14 << std::string{"Value2"} << 25 << 31 << true;
+    QTest::newRow("inserted column value NOT set") << StringMatrix{20, 25, "Value1"} << 25 << std::string{"Value2"} << 25 << 31 << false;
+    QTest::newRow("inserted column value set") << StringMatrix{20, 25, "Value1"} << 25 << std::string{"Value2"} << 25 << 31 << true;
 }
 
 void CapacityTests::testStringMatrixCapacityWithEraseRow_data()
