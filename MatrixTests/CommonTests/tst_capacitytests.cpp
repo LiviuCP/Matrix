@@ -496,17 +496,33 @@ void CapacityTests::testIntMatrixCapacityWithTranspose_data()
     QTest::newRow("transposed matrix initially empty") << IntMatrix{4, 3, 2} << IntMatrix{} << 3 << 5 << false;
     QTest::newRow("transposed matrix initially empty") << IntMatrix{7, 8, 2} << IntMatrix{} << 10 << 8 << false;
     QTest::newRow("transposed matrix initially empty") << IntMatrix{8, 7, 2} << IntMatrix{} << 8 << 10 << false;
+    QTest::newRow("transposed matrix initially empty") << IntMatrix{20, 25, 2} << IntMatrix{} << 31 << 25 << false;
+    QTest::newRow("transposed matrix initially empty") << IntMatrix{25, 20, 2} << IntMatrix{} << 25 << 31 << false;
     QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{8, 7, 2} << IntMatrix{5, 6, 2} << 8 << 10 << false;
     QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{8, 7, 2} << IntMatrix{6, 6, 2} << 7 << 10 << false;
     QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{8, 7, 2} << IntMatrix{5, 7, 2} << 8 << 8 << false;
     QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{8, 7, 2} << IntMatrix{6, 7, 2} << 7 << 8 << false;
     QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{8, 7, 2} << IntMatrix{7, 8, 2} << 8 << 10 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{25, 20, 2} << IntMatrix{15, 19, 2} << 25 << 31 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{25, 20, 2} << IntMatrix{16, 19, 2} << 20 << 31 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{25, 20, 2} << IntMatrix{15, 20, 2} << 25 << 25 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{25, 20, 2} << IntMatrix{16, 20, 2} << 20 << 25 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{25, 20, 2} << IntMatrix{20, 25, 2} << 25 << 31 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{25, 20, 2} << IntMatrix{15, 25, 2} << 25 << 31 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{25, 20, 2} << IntMatrix{16, 25, 2} << 20 << 31 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{25, 20, 2} << IntMatrix{20, 19, 2} << 25 << 31 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << IntMatrix{25, 20, 2} << IntMatrix{20, 20, 2} << 25 << 25 << false;
     QTest::newRow("matrix transposed to itself") << IntMatrix{3, 3, 2} << IntMatrix{3, 3, 2} << 3 << 3 << true;
     QTest::newRow("matrix transposed to itself") << IntMatrix{3, 4, 2} << IntMatrix{3, 4, 2} << 5 << 5 << true;
     QTest::newRow("matrix transposed to itself") << IntMatrix{4, 3, 2} << IntMatrix{4, 3, 2} << 5 << 5 << true;
     QTest::newRow("matrix transposed to itself") << IntMatrix{4, 4, 2} << IntMatrix{4, 4, 2} << 5 << 5 << true;
     QTest::newRow("matrix transposed to itself") << IntMatrix{7, 8, 2} << IntMatrix{7, 8, 2} << 8 << 10 << true;
     QTest::newRow("matrix transposed to itself") << IntMatrix{8, 7, 2} << IntMatrix{8, 7, 2} << 10 << 8 << true;
+    QTest::newRow("matrix transposed to itself") << IntMatrix{20, 25, 2} << IntMatrix{20, 25, 2} << 25 << 31 << true;
+    QTest::newRow("matrix transposed to itself") << IntMatrix{25, 20, 2} << IntMatrix{25, 20, 2} << 31 << 25 << true;
+    QTest::newRow("matrix transposed to itself") << IntMatrix{25, 25, 2} << IntMatrix{25, 25, 2} << 31 << 31 << true;
+    QTest::newRow("matrix transposed to itself") << IntMatrix{20, 26, 2} << IntMatrix{20, 26, 2} << 32 << 32 << true;
+    QTest::newRow("matrix transposed to itself") << IntMatrix{26, 20, 2} << IntMatrix{26, 20, 2} << 32 << 32 << true;
 }
 
 void CapacityTests::testIntMatrixCapacityWithResizeWithoutFillingInNewValues_data()
@@ -1016,17 +1032,33 @@ void CapacityTests::testStringMatrixCapacityWithTranspose_data()
     QTest::newRow("transposed matrix initially empty") << StringMatrix{4, 3, "Value"} << StringMatrix{} << 3 << 5 << false;
     QTest::newRow("transposed matrix initially empty") << StringMatrix{7, 8, "Value"} << StringMatrix{} << 10 << 8 << false;
     QTest::newRow("transposed matrix initially empty") << StringMatrix{8, 7, "Value"} << StringMatrix{} << 8 << 10 << false;
+    QTest::newRow("transposed matrix initially empty") << StringMatrix{20, 25, "Value"} << StringMatrix{} << 31 << 25 << false;
+    QTest::newRow("transposed matrix initially empty") << StringMatrix{25, 20, "Value"} << StringMatrix{} << 25 << 31 << false;
     QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{8, 7, "Value"} << StringMatrix{5, 6, "Value"} << 8 << 10 << false;
     QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{8, 7, "Value"} << StringMatrix{6, 6, "Value"} << 7 << 10 << false;
     QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{8, 7, "Value"} << StringMatrix{5, 7, "Value"} << 8 << 8 << false;
     QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{8, 7, "Value"} << StringMatrix{6, 7, "Value"} << 7 << 8 << false;
     QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{8, 7, "Value"} << StringMatrix{7, 8, "Value"} << 8 << 10 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{25, 20, "Value"} << StringMatrix{15, 19, "Value"} << 25 << 31 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{25, 20, "Value"} << StringMatrix{16, 19, "Value"} << 20 << 31 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{25, 20, "Value"} << StringMatrix{15, 20, "Value"} << 25 << 25 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{25, 20, "Value"} << StringMatrix{16, 20, "Value"} << 20 << 25 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{25, 20, "Value"} << StringMatrix{20, 25, "Value"} << 25 << 31 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{25, 20, "Value"} << StringMatrix{15, 25, "Value"} << 25 << 31 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{25, 20, "Value"} << StringMatrix{16, 25, "Value"} << 20 << 31 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{25, 20, "Value"} << StringMatrix{20, 19, "Value"} << 25 << 31 << false;
+    QTest::newRow("transposed matrix initially NOT empty") << StringMatrix{25, 20, "Value"} << StringMatrix{20, 20, "Value"} << 25 << 25 << false;
     QTest::newRow("matrix transposed to itself") << StringMatrix{3, 3, "Value"} << StringMatrix{3, 3, "Value"} << 3 << 3 << true;
     QTest::newRow("matrix transposed to itself") << StringMatrix{3, 4, "Value"} << StringMatrix{3, 4, "Value"} << 5 << 5 << true;
     QTest::newRow("matrix transposed to itself") << StringMatrix{4, 3, "Value"} << StringMatrix{4, 3, "Value"} << 5 << 5 << true;
     QTest::newRow("matrix transposed to itself") << StringMatrix{4, 4, "Value"} << StringMatrix{4, 4, "Value"} << 5 << 5 << true;
     QTest::newRow("matrix transposed to itself") << StringMatrix{7, 8, "Value"} << StringMatrix{7, 8, "Value"} << 8 << 10 << true;
     QTest::newRow("matrix transposed to itself") << StringMatrix{8, 7, "Value"} << StringMatrix{8, 7, "Value"} << 10 << 8 << true;
+    QTest::newRow("matrix transposed to itself") << StringMatrix{20, 25, "Value"} << StringMatrix{20, 25, "Value"} << 25 << 31 << true;
+    QTest::newRow("matrix transposed to itself") << StringMatrix{25, 20, "Value"} << StringMatrix{25, 20, "Value"} << 31 << 25 << true;
+    QTest::newRow("matrix transposed to itself") << StringMatrix{25, 25, "Value"} << StringMatrix{25, 25, "Value"} << 31 << 31 << true;
+    QTest::newRow("matrix transposed to itself") << StringMatrix{20, 26, "Value"} << StringMatrix{20, 26, "Value"} << 32 << 32 << true;
+    QTest::newRow("matrix transposed to itself") << StringMatrix{26, 20, "Value"} << StringMatrix{26, 20, "Value"} << 32 << 32 << true;
 }
 
 void CapacityTests::testStringMatrixCapacityWithResizeWithoutFillingInNewValues_data()
