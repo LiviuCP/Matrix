@@ -587,8 +587,23 @@ void CapacityTests::testIntMatrixCapacityWithEraseRow_data()
     QTest::addColumn<TripleSizeTypeTupleArray>("erasedRowAndExpectedCapacity");
 
     QTest::newRow("less rows than columns") << IntMatrix{3, 4, -2} << TripleSizeTypeTupleArray{{1, 3, 5}, {1, 3, 5}, {0, 0, 0}};
+    QTest::newRow("less rows than columns") << IntMatrix{10, 15, -2} << TripleSizeTypeTupleArray{{1, 12, 18}, {1, 12, 18}, {1, 12, 18}, {1, 12, 18}, {1, 12, 18}, {1, 12, 18}, {1, 6, 18}, {1, 6, 18}, {1, 2, 18}, {0, 0, 0}};
+    QTest::newRow("less rows than columns") << IntMatrix{10, 15, -2} << TripleSizeTypeTupleArray{{8, 12, 18}, {7, 12, 18}, {6, 12, 18}, {5, 12, 18}, {4, 12, 18}, {3, 12, 18}, {2, 6, 18}, {1, 6, 18}, {0, 2, 18}, {0, 0, 0}};
+    QTest::newRow("less rows than columns") << IntMatrix{10, 15, -2} << TripleSizeTypeTupleArray{{0, 12, 18}, {8, 12, 18}, {0, 12, 18}, {6, 12, 18}, {0, 12, 18}, {4, 12, 18}, {0, 6, 18}, {2, 6, 18}, {0, 2, 18}, {0, 0, 0}};
+    QTest::newRow("less rows than columns") << IntMatrix{10, 15, -2} << TripleSizeTypeTupleArray{{9, 12, 18}, {0, 12, 18}, {7, 12, 18}, {0, 12, 18}, {5, 12, 18}, {0, 12, 18}, {3, 6, 18}, {0, 6, 18}, {1, 2, 18}, {0, 0, 0}};
+    QTest::newRow("less rows than columns") << IntMatrix{10, 15, -2} << TripleSizeTypeTupleArray{{3, 12, 18}, {6, 12, 18}, {7, 12, 18}, {2, 12, 18}, {1, 12, 18}, {2, 12, 18}, {0, 6, 18}, {1, 6, 18}, {1, 2, 18}, {0, 0, 0}};
     QTest::newRow("square matrix") << IntMatrix{4, 4, -2} << TripleSizeTypeTupleArray{{1, 5, 5}, {1, 5, 5}, {1, 2, 5}, {0, 0, 0}};
+    QTest::newRow("square matrix") << IntMatrix{10, 10, -2} << TripleSizeTypeTupleArray{{1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 6, 12}, {1, 6, 12}, {1, 2, 12}, {0, 0, 0}};
+    QTest::newRow("square matrix") << IntMatrix{10, 10, -2} << TripleSizeTypeTupleArray{{8, 12, 12}, {7, 12, 12}, {6, 12, 12}, {5, 12, 12}, {4, 12, 12}, {3, 12, 12}, {2, 6, 12}, {1, 6, 12}, {0, 2, 12}, {0, 0, 0}};
+    QTest::newRow("square matrix") << IntMatrix{10, 10, -2} << TripleSizeTypeTupleArray{{0, 12, 12}, {8, 12, 12}, {0, 12, 12}, {6, 12, 12}, {0, 12, 12}, {4, 12, 12}, {0, 6, 12}, {2, 6, 12}, {0, 2, 12}, {0, 0, 0}};
+    QTest::newRow("square matrix") << IntMatrix{10, 10, -2} << TripleSizeTypeTupleArray{{9, 12, 12}, {0, 12, 12}, {7, 12, 12}, {0, 12, 12}, {5, 12, 12}, {0, 12, 12}, {3, 6, 12}, {0, 6, 12}, {1, 2, 12}, {0, 0, 0}};
+    QTest::newRow("square matrix") << IntMatrix{10, 10, -2} << TripleSizeTypeTupleArray{{3, 12, 12}, {6, 12, 12}, {7, 12, 12}, {2, 12, 12}, {1, 12, 12}, {2, 12, 12}, {0, 6, 12}, {1, 6, 12}, {1, 2, 12}, {0, 0, 0}};
     QTest::newRow("more rows than columns") << IntMatrix{7, 5, -2} << TripleSizeTypeTupleArray{{1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 4, 6}, {1, 2, 6}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << IntMatrix{10, 9, -2} << TripleSizeTypeTupleArray{{1, 12, 11}, {1, 12, 11}, {1, 12, 11}, {1, 12, 11}, {1, 12, 11}, {1, 12, 11}, {1, 6, 11}, {1, 6, 11}, {1, 2, 11}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << IntMatrix{10, 9, -2} << TripleSizeTypeTupleArray{{8, 12, 11}, {7, 12, 11}, {6, 12, 11}, {5, 12, 11}, {4, 12, 11}, {3, 12, 11}, {2, 6, 11}, {1, 6, 11}, {0, 2, 11}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << IntMatrix{10, 9, -2} << TripleSizeTypeTupleArray{{0, 12, 11}, {8, 12, 11}, {0, 12, 11}, {6, 12, 11}, {0, 12, 11}, {4, 12, 11}, {0, 6, 11}, {2, 6, 11}, {0, 2, 11}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << IntMatrix{10, 9, -2} << TripleSizeTypeTupleArray{{9, 12, 11}, {0, 12, 11}, {7, 12, 11}, {0, 12, 11}, {5, 12, 11}, {0, 12, 11}, {3, 6, 11}, {0, 6, 11}, {1, 2, 11}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << IntMatrix{10, 9, -2} << TripleSizeTypeTupleArray{{3, 12, 11}, {6, 12, 11}, {7, 12, 11}, {2, 12, 11}, {1, 12, 11}, {2, 12, 11}, {0, 6, 11}, {1, 6, 11}, {1, 2, 11}, {0, 0, 0}};
 }
 
 void CapacityTests::testIntMatrixCapacityWithEraseColumn_data()
@@ -597,8 +612,23 @@ void CapacityTests::testIntMatrixCapacityWithEraseColumn_data()
     QTest::addColumn<TripleSizeTypeTupleArray>("erasedColumnAndExpectedCapacity");
 
     QTest::newRow("less columns than rows") << IntMatrix{4, 3, 4} << TripleSizeTypeTupleArray{{1, 5, 3}, {1, 5, 3}, {0, 0, 0}};
+    QTest::newRow("less columns than rows") << IntMatrix{15, 10, 4} << TripleSizeTypeTupleArray{{1, 18, 12}, {1, 18, 12}, {1, 18, 12}, {1, 18, 12}, {1, 18, 12}, {1, 18, 12}, {1, 18, 6}, {1, 18, 6}, {1, 18, 2}, {0, 0, 0}};
+    QTest::newRow("less columns than rows") << IntMatrix{15, 10, 4} << TripleSizeTypeTupleArray{{8, 18, 12}, {7, 18, 12}, {6, 18, 12}, {5, 18, 12}, {4, 18, 12}, {3, 18, 12}, {2, 18, 6}, {1, 18, 6}, {0, 18, 2}, {0, 0, 0}};
+    QTest::newRow("less columns than rows") << IntMatrix{15, 10, 4} << TripleSizeTypeTupleArray{{0, 18, 12}, {8, 18, 12}, {0, 18, 12}, {6, 18, 12}, {0, 18, 12}, {4, 18, 12}, {0, 18, 6}, {2, 18, 6}, {0, 18, 2}, {0, 0, 0}};
+    QTest::newRow("less columns than rows") << IntMatrix{15, 10, 4} << TripleSizeTypeTupleArray{{9, 18, 12}, {0, 18, 12}, {7, 18, 12}, {0, 18, 12}, {5, 18, 12}, {0, 18, 12}, {3, 18, 6}, {0, 18, 6}, {1, 18, 2}, {0, 0, 0}};
+    QTest::newRow("less columns than rows") << IntMatrix{15, 10, 4} << TripleSizeTypeTupleArray{{3, 18, 12}, {6, 18, 12}, {7, 18, 12}, {2, 18, 12}, {1, 18, 12}, {2, 18, 12}, {0, 18, 6}, {1, 18, 6}, {1, 18, 2}, {0, 0, 0}};
     QTest::newRow("square matrix") << IntMatrix{4, 4, 4} << TripleSizeTypeTupleArray{{1, 5, 5}, {1, 5, 5}, {1, 5, 2}, {0, 0, 0}};
+    QTest::newRow("square matrix") << IntMatrix{10, 10, 4} << TripleSizeTypeTupleArray{{1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 6}, {1, 12, 6}, {1, 12, 2}, {0, 0, 0}};
+    QTest::newRow("square matrix") << IntMatrix{10, 10, 4} << TripleSizeTypeTupleArray{{8, 12, 12}, {7, 12, 12}, {6, 12, 12}, {5, 12, 12}, {4, 12, 12}, {3, 12, 12}, {2, 12, 6}, {1, 12, 6}, {0, 12, 2}, {0, 0, 0}};
+    QTest::newRow("square matrix") << IntMatrix{10, 10, 4} << TripleSizeTypeTupleArray{{0, 12, 12}, {8, 12, 12}, {0, 12, 12}, {6, 12, 12}, {0, 12, 12}, {4, 12, 12}, {0, 12, 6}, {2, 12, 6}, {0, 12, 2}, {0, 0, 0}};
+    QTest::newRow("square matrix") << IntMatrix{10, 10, 4} << TripleSizeTypeTupleArray{{9, 12, 12}, {0, 12, 12}, {7, 12, 12}, {0, 12, 12}, {5, 12, 12}, {0, 12, 12}, {3, 12, 6}, {0, 12, 6}, {1, 12, 2}, {0, 0, 0}};
+    QTest::newRow("square matrix") << IntMatrix{10, 10, 4} << TripleSizeTypeTupleArray{{3, 12, 12}, {6, 12, 12}, {7, 12, 12}, {2, 12, 12}, {1, 12, 12}, {2, 12, 12}, {0, 12, 6}, {1, 12, 6}, {1, 12, 2}, {0, 0, 0}};
     QTest::newRow("more columns than rows") << IntMatrix{5, 7, 4} << TripleSizeTypeTupleArray{{1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 4}, {1, 6, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << IntMatrix{9, 10, 4} << TripleSizeTypeTupleArray{{1, 11, 12}, {1, 11, 12}, {1, 11, 12}, {1, 11, 12}, {1, 11, 12}, {1, 11, 12}, {1, 11, 6}, {1, 11, 6}, {1, 11, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << IntMatrix{9, 10, 4} << TripleSizeTypeTupleArray{{8, 11, 12}, {7, 11, 12}, {6, 11, 12}, {5, 11, 12}, {4, 11, 12}, {3, 11, 12}, {2, 11, 6}, {1, 11, 6}, {0, 11, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << IntMatrix{9, 10, 4} << TripleSizeTypeTupleArray{{0, 11, 12}, {8, 11, 12}, {0, 11, 12}, {6, 11, 12}, {0, 11, 12}, {4, 11, 12}, {0, 11, 6}, {2, 11, 6}, {0, 11, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << IntMatrix{9, 10, 4} << TripleSizeTypeTupleArray{{9, 11, 12}, {0, 11, 12}, {7, 11, 12}, {0, 11, 12}, {5, 11, 12}, {0, 11, 12}, {3, 11, 6}, {0, 11, 6}, {1, 11, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << IntMatrix{9, 10, 4} << TripleSizeTypeTupleArray{{3, 11, 12}, {6, 11, 12}, {7, 11, 12}, {2, 11, 12}, {1, 11, 12}, {2, 11, 12}, {0, 11, 6}, {1, 11, 6}, {1, 11, 2}, {0, 0, 0}};
 }
 
 void CapacityTests::testIntMatrixCapacityWithCatByRow_data()
@@ -1135,8 +1165,23 @@ void CapacityTests::testStringMatrixCapacityWithEraseRow_data()
     QTest::addColumn<TripleSizeTypeTupleArray>("erasedRowAndExpectedCapacity");
 
     QTest::newRow("less rows than columns") << StringMatrix{3, 4, "Value"} << TripleSizeTypeTupleArray{{1, 3, 5}, {1, 3, 5}, {0, 0, 0}};
+    QTest::newRow("less rows than columns") << StringMatrix{10, 15, "Value"} << TripleSizeTypeTupleArray{{1, 12, 18}, {1, 12, 18}, {1, 12, 18}, {1, 12, 18}, {1, 12, 18}, {1, 12, 18}, {1, 6, 18}, {1, 6, 18}, {1, 2, 18}, {0, 0, 0}};
+    QTest::newRow("less rows than columns") << StringMatrix{10, 15, "Value"} << TripleSizeTypeTupleArray{{8, 12, 18}, {7, 12, 18}, {6, 12, 18}, {5, 12, 18}, {4, 12, 18}, {3, 12, 18}, {2, 6, 18}, {1, 6, 18}, {0, 2, 18}, {0, 0, 0}};
+    QTest::newRow("less rows than columns") << StringMatrix{10, 15, "Value"} << TripleSizeTypeTupleArray{{0, 12, 18}, {8, 12, 18}, {0, 12, 18}, {6, 12, 18}, {0, 12, 18}, {4, 12, 18}, {0, 6, 18}, {2, 6, 18}, {0, 2, 18}, {0, 0, 0}};
+    QTest::newRow("less rows than columns") << StringMatrix{10, 15, "Value"} << TripleSizeTypeTupleArray{{9, 12, 18}, {0, 12, 18}, {7, 12, 18}, {0, 12, 18}, {5, 12, 18}, {0, 12, 18}, {3, 6, 18}, {0, 6, 18}, {1, 2, 18}, {0, 0, 0}};
+    QTest::newRow("less rows than columns") << StringMatrix{10, 15, "Value"} << TripleSizeTypeTupleArray{{3, 12, 18}, {6, 12, 18}, {7, 12, 18}, {2, 12, 18}, {1, 12, 18}, {2, 12, 18}, {0, 6, 18}, {1, 6, 18}, {1, 2, 18}, {0, 0, 0}};
     QTest::newRow("square matrix") << StringMatrix{4, 4, "Value"} << TripleSizeTypeTupleArray{{1, 5, 5}, {1, 5, 5}, {1, 2, 5}, {0, 0, 0}};
+    QTest::newRow("square matrix") << StringMatrix{10, 10, "Value"} << TripleSizeTypeTupleArray{{1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 6, 12}, {1, 6, 12}, {1, 2, 12}, {0, 0, 0}};
+    QTest::newRow("square matrix") << StringMatrix{10, 10, "Value"} << TripleSizeTypeTupleArray{{8, 12, 12}, {7, 12, 12}, {6, 12, 12}, {5, 12, 12}, {4, 12, 12}, {3, 12, 12}, {2, 6, 12}, {1, 6, 12}, {0, 2, 12}, {0, 0, 0}};
+    QTest::newRow("square matrix") << StringMatrix{10, 10, "Value"} << TripleSizeTypeTupleArray{{0, 12, 12}, {8, 12, 12}, {0, 12, 12}, {6, 12, 12}, {0, 12, 12}, {4, 12, 12}, {0, 6, 12}, {2, 6, 12}, {0, 2, 12}, {0, 0, 0}};
+    QTest::newRow("square matrix") << StringMatrix{10, 10, "Value"} << TripleSizeTypeTupleArray{{9, 12, 12}, {0, 12, 12}, {7, 12, 12}, {0, 12, 12}, {5, 12, 12}, {0, 12, 12}, {3, 6, 12}, {0, 6, 12}, {1, 2, 12}, {0, 0, 0}};
+    QTest::newRow("square matrix") << StringMatrix{10, 10, "Value"} << TripleSizeTypeTupleArray{{3, 12, 12}, {6, 12, 12}, {7, 12, 12}, {2, 12, 12}, {1, 12, 12}, {2, 12, 12}, {0, 6, 12}, {1, 6, 12}, {1, 2, 12}, {0, 0, 0}};
     QTest::newRow("more rows than columns") << StringMatrix{7, 5, "Value"} << TripleSizeTypeTupleArray{{1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 8, 6}, {1, 4, 6}, {1, 2, 6}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << StringMatrix{10, 9, "Value"} << TripleSizeTypeTupleArray{{1, 12, 11}, {1, 12, 11}, {1, 12, 11}, {1, 12, 11}, {1, 12, 11}, {1, 12, 11}, {1, 6, 11}, {1, 6, 11}, {1, 2, 11}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << StringMatrix{10, 9, "Value"} << TripleSizeTypeTupleArray{{8, 12, 11}, {7, 12, 11}, {6, 12, 11}, {5, 12, 11}, {4, 12, 11}, {3, 12, 11}, {2, 6, 11}, {1, 6, 11}, {0, 2, 11}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << StringMatrix{10, 9, "Value"} << TripleSizeTypeTupleArray{{0, 12, 11}, {8, 12, 11}, {0, 12, 11}, {6, 12, 11}, {0, 12, 11}, {4, 12, 11}, {0, 6, 11}, {2, 6, 11}, {0, 2, 11}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << StringMatrix{10, 9, "Value"} << TripleSizeTypeTupleArray{{9, 12, 11}, {0, 12, 11}, {7, 12, 11}, {0, 12, 11}, {5, 12, 11}, {0, 12, 11}, {3, 6, 11}, {0, 6, 11}, {1, 2, 11}, {0, 0, 0}};
+    QTest::newRow("more rows than columns") << StringMatrix{10, 9, "Value"} << TripleSizeTypeTupleArray{{3, 12, 11}, {6, 12, 11}, {7, 12, 11}, {2, 12, 11}, {1, 12, 11}, {2, 12, 11}, {0, 6, 11}, {1, 6, 11}, {1, 2, 11}, {0, 0, 0}};
 }
 
 void CapacityTests::testStringMatrixCapacityWithEraseColumn_data()
@@ -1145,8 +1190,23 @@ void CapacityTests::testStringMatrixCapacityWithEraseColumn_data()
     QTest::addColumn<TripleSizeTypeTupleArray>("erasedColumnAndExpectedCapacity");
 
     QTest::newRow("less columns than rows") << StringMatrix{4, 3, "Value"} << TripleSizeTypeTupleArray{{1, 5, 3}, {1, 5, 3}, {0, 0, 0}};
+    QTest::newRow("less columns than rows") << StringMatrix{15, 10, "Value"} << TripleSizeTypeTupleArray{{1, 18, 12}, {1, 18, 12}, {1, 18, 12}, {1, 18, 12}, {1, 18, 12}, {1, 18, 12}, {1, 18, 6}, {1, 18, 6}, {1, 18, 2}, {0, 0, 0}};
+    QTest::newRow("less columns than rows") << StringMatrix{15, 10, "Value"} << TripleSizeTypeTupleArray{{8, 18, 12}, {7, 18, 12}, {6, 18, 12}, {5, 18, 12}, {4, 18, 12}, {3, 18, 12}, {2, 18, 6}, {1, 18, 6}, {0, 18, 2}, {0, 0, 0}};
+    QTest::newRow("less columns than rows") << StringMatrix{15, 10, "Value"} << TripleSizeTypeTupleArray{{0, 18, 12}, {8, 18, 12}, {0, 18, 12}, {6, 18, 12}, {0, 18, 12}, {4, 18, 12}, {0, 18, 6}, {2, 18, 6}, {0, 18, 2}, {0, 0, 0}};
+    QTest::newRow("less columns than rows") << StringMatrix{15, 10, "Value"} << TripleSizeTypeTupleArray{{9, 18, 12}, {0, 18, 12}, {7, 18, 12}, {0, 18, 12}, {5, 18, 12}, {0, 18, 12}, {3, 18, 6}, {0, 18, 6}, {1, 18, 2}, {0, 0, 0}};
+    QTest::newRow("less columns than rows") << StringMatrix{15, 10, "Value"} << TripleSizeTypeTupleArray{{3, 18, 12}, {6, 18, 12}, {7, 18, 12}, {2, 18, 12}, {1, 18, 12}, {2, 18, 12}, {0, 18, 6}, {1, 18, 6}, {1, 18, 2}, {0, 0, 0}};
     QTest::newRow("square matrix") << StringMatrix{4, 4, "Value"} << TripleSizeTypeTupleArray{{1, 5, 5}, {1, 5, 5}, {1, 5, 2}, {0, 0, 0}};
+    QTest::newRow("square matrix") << StringMatrix{10, 10, "Value"} << TripleSizeTypeTupleArray{{1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 12}, {1, 12, 6}, {1, 12, 6}, {1, 12, 2}, {0, 0, 0}};
+    QTest::newRow("square matrix") << StringMatrix{10, 10, "Value"} << TripleSizeTypeTupleArray{{8, 12, 12}, {7, 12, 12}, {6, 12, 12}, {5, 12, 12}, {4, 12, 12}, {3, 12, 12}, {2, 12, 6}, {1, 12, 6}, {0, 12, 2}, {0, 0, 0}};
+    QTest::newRow("square matrix") << StringMatrix{10, 10, "Value"} << TripleSizeTypeTupleArray{{0, 12, 12}, {8, 12, 12}, {0, 12, 12}, {6, 12, 12}, {0, 12, 12}, {4, 12, 12}, {0, 12, 6}, {2, 12, 6}, {0, 12, 2}, {0, 0, 0}};
+    QTest::newRow("square matrix") << StringMatrix{10, 10, "Value"} << TripleSizeTypeTupleArray{{9, 12, 12}, {0, 12, 12}, {7, 12, 12}, {0, 12, 12}, {5, 12, 12}, {0, 12, 12}, {3, 12, 6}, {0, 12, 6}, {1, 12, 2}, {0, 0, 0}};
+    QTest::newRow("square matrix") << StringMatrix{10, 10, "Value"} << TripleSizeTypeTupleArray{{3, 12, 12}, {6, 12, 12}, {7, 12, 12}, {2, 12, 12}, {1, 12, 12}, {2, 12, 12}, {0, 12, 6}, {1, 12, 6}, {1, 12, 2}, {0, 0, 0}};
     QTest::newRow("more columns than rows") << StringMatrix{5, 7, "Value"} << TripleSizeTypeTupleArray{{1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 8}, {1, 6, 4}, {1, 6, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << StringMatrix{9, 10, "Value"} << TripleSizeTypeTupleArray{{1, 11, 12}, {1, 11, 12}, {1, 11, 12}, {1, 11, 12}, {1, 11, 12}, {1, 11, 12}, {1, 11, 6}, {1, 11, 6}, {1, 11, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << StringMatrix{9, 10, "Value"} << TripleSizeTypeTupleArray{{8, 11, 12}, {7, 11, 12}, {6, 11, 12}, {5, 11, 12}, {4, 11, 12}, {3, 11, 12}, {2, 11, 6}, {1, 11, 6}, {0, 11, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << StringMatrix{9, 10, "Value"} << TripleSizeTypeTupleArray{{0, 11, 12}, {8, 11, 12}, {0, 11, 12}, {6, 11, 12}, {0, 11, 12}, {4, 11, 12}, {0, 11, 6}, {2, 11, 6}, {0, 11, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << StringMatrix{9, 10, "Value"} << TripleSizeTypeTupleArray{{9, 11, 12}, {0, 11, 12}, {7, 11, 12}, {0, 11, 12}, {5, 11, 12}, {0, 11, 12}, {3, 11, 6}, {0, 11, 6}, {1, 11, 2}, {0, 0, 0}};
+    QTest::newRow("more columns than rows") << StringMatrix{9, 10, "Value"} << TripleSizeTypeTupleArray{{3, 11, 12}, {6, 11, 12}, {7, 11, 12}, {2, 11, 12}, {1, 11, 12}, {2, 11, 12}, {0, 11, 6}, {1, 11, 6}, {1, 11, 2}, {0, 0, 0}};
 }
 
 void CapacityTests::testStringMatrixCapacityWithCatByRow_data()
