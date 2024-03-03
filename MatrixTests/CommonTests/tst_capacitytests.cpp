@@ -878,6 +878,16 @@ void CapacityTests::testIntMatrixCapacityWithSplitByRow_data()
     QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{7, 15, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 8 << 18;
     QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{} << IntMatrix{8, 17, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 10 << 21;
     QTest::newRow("scenario: all different") << IntMatrix{15, 17, -3} << IntMatrix{7, 17, 2} << IntMatrix{8, 17, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 10 << 21;
+
+    // additional tests
+    QTest::newRow("scenario: all different") << IntMatrix{25, 20, -3} << IntMatrix{9, 12, 2} << IntMatrix{18, 9, 2} << 11 << SplitMode::ALL_DIFFERENT << 9 << 12 << 14 << 18 << true << 14 << 25 << 22 << 25;
+    QTest::newRow("scenario: all different") << IntMatrix{25, 20, -3} << IntMatrix{9, 12, 2} << IntMatrix{18, 9, 2} << 11 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 11 << 25 << 22 << 25;
+    QTest::newRow("scenario: all different") << IntMatrix{25, 20, -3} << IntMatrix{9, 12, 2} << IntMatrix{18, 9, 2} << 11 << SplitMode::ALL_DIFFERENT << 9 << 12 << 9 << 20 << true << 13 << 20 << 22 << 25;
+    QTest::newRow("scenario: all different") << IntMatrix{25, 20, -3} << IntMatrix{} << IntMatrix{} << 11 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 13 << 25 << 17 << 25;
+    QTest::newRow("scenario: source first") << IntMatrix{25, 20, -3} << IntMatrix{25, 20, -3} << IntMatrix{18, 9, 2} << 11 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 31 << 25 << 22 << 25;
+    QTest::newRow("scenario: source first") << IntMatrix{25, 20, -3} << IntMatrix{25, 20, -3} << IntMatrix{} << 11 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 31 << 25 << 17 << 25;
+    QTest::newRow("scenario: source second") << IntMatrix{25, 20, -3} << IntMatrix{9, 12, 2} << IntMatrix{25, 20, -3} << 11 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 11 << 25 << 31 << 25;
+    QTest::newRow("scenario: source second") << IntMatrix{25, 20, -3} << IntMatrix{} << IntMatrix{25, 20, -3} << 11 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 13 << 25 << 31 << 25;
 }
 
 void CapacityTests::testIntMatrixCapacityWithSplitByColumn_data()
@@ -945,6 +955,16 @@ void CapacityTests::testIntMatrixCapacityWithSplitByColumn_data()
     QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{15, 7, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 18 << 8;
     QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{} << IntMatrix{17, 8, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
     QTest::newRow("scenario: all different") << IntMatrix{17, 15, -3} << IntMatrix{17, 7, 2} << IntMatrix{17, 8, 2} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
+
+    // additional tests
+    QTest::newRow("scenario: all different") << IntMatrix{20, 25, -3} << IntMatrix{12, 9, 2} << IntMatrix{9, 18, 2} << 11 << SplitMode::ALL_DIFFERENT << 12 << 9 << 18 << 14 << true << 25 << 14 << 25 << 22;
+    QTest::newRow("scenario: all different") << IntMatrix{20, 25, -3} << IntMatrix{12, 9, 2} << IntMatrix{9, 18, 2} << 11 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 25 << 11 << 25 << 22;
+    QTest::newRow("scenario: all different") << IntMatrix{20, 25, -3} << IntMatrix{12, 9, 2} << IntMatrix{9, 18, 2} << 11 << SplitMode::ALL_DIFFERENT << 12 << 9 << 20 << 9 << true << 20 << 13 << 25 << 22;
+    QTest::newRow("scenario: all different") << IntMatrix{20, 25, -3} << IntMatrix{} << IntMatrix{} << 11 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 25 << 13 << 25 << 17;
+    QTest::newRow("scenario: source first") << IntMatrix{20, 25, -3} << IntMatrix{20, 25, -3} << IntMatrix{9, 18, 2} << 11 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 25 << 31 << 25 << 22;
+    QTest::newRow("scenario: source first") << IntMatrix{20, 25, -3} << IntMatrix{20, 25, -3} << IntMatrix{} << 11 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 25 << 31 << 25 << 17;
+    QTest::newRow("scenario: source second") << IntMatrix{20, 25, -3} << IntMatrix{12, 9, 2} << IntMatrix{20, 25, -3} << 11 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 25 << 11 << 25 << 31;
+    QTest::newRow("scenario: source second") << IntMatrix{20, 25, -3} << IntMatrix{} << IntMatrix{20, 25, -3} << 11 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 25 << 13 << 25 << 31;
 }
 
 void CapacityTests::testIntMatrixCapacityWithResizeAndEraseRowAndOrColumn_data()
@@ -1484,6 +1504,16 @@ void CapacityTests::testStringMatrixCapacityWithSplitByRow_data()
     QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{7, 15, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 8 << 18;
     QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{} << StringMatrix{8, 17, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 10 << 21;
     QTest::newRow("scenario: all different") << StringMatrix{15, 17, "Value1"} << StringMatrix{7, 17, "Value2"} << StringMatrix{8, 17, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 8 << 21 << 10 << 21;
+
+    // additional tests
+    QTest::newRow("scenario: all different") << StringMatrix{25, 20, "Value1"} << StringMatrix{9, 12, "Value2"} << StringMatrix{18, 9, "Value2"} << 11 << SplitMode::ALL_DIFFERENT << 9 << 12 << 14 << 18 << true << 14 << 25 << 22 << 25;
+    QTest::newRow("scenario: all different") << StringMatrix{25, 20, "Value1"} << StringMatrix{9, 12, "Value2"} << StringMatrix{18, 9, "Value2"} << 11 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 11 << 25 << 22 << 25;
+    QTest::newRow("scenario: all different") << StringMatrix{25, 20, "Value1"} << StringMatrix{9, 12, "Value2"} << StringMatrix{18, 9, "Value2"} << 11 << SplitMode::ALL_DIFFERENT << 9 << 12 << 9 << 20 << true << 13 << 20 << 22 << 25;
+    QTest::newRow("scenario: all different") << StringMatrix{25, 20, "Value1"} << StringMatrix{} << StringMatrix{} << 11 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 13 << 25 << 17 << 25;
+    QTest::newRow("scenario: source first") << StringMatrix{25, 20, "Value1"} << StringMatrix{25, 20, "Value1"} << StringMatrix{18, 9, "Value2"} << 11 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 31 << 25 << 22 << 25;
+    QTest::newRow("scenario: source first") << StringMatrix{25, 20, "Value1"} << StringMatrix{25, 20, "Value1"} << StringMatrix{} << 11 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 31 << 25 << 17 << 25;
+    QTest::newRow("scenario: source second") << StringMatrix{25, 20, "Value1"} << StringMatrix{9, 12, "Value2"} << StringMatrix{25, 20, "Value1"} << 11 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 11 << 25 << 31 << 25;
+    QTest::newRow("scenario: source second") << StringMatrix{25, 20, "Value1"} << StringMatrix{} << StringMatrix{25, 20, "Value1"} << 11 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 13 << 25 << 31 << 25;
 }
 
 void CapacityTests::testStringMatrixCapacityWithSplitByColumn_data()
@@ -1551,6 +1581,16 @@ void CapacityTests::testStringMatrixCapacityWithSplitByColumn_data()
     QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{15, 7, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 18 << 8;
     QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{} << StringMatrix{17, 8, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
     QTest::newRow("scenario: all different") << StringMatrix{17, 15, "Value1"} << StringMatrix{17, 7, "Value2"} << StringMatrix{17, 8, "Value2"} << 7 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 21 << 8 << 21 << 10;
+
+    // additional tests
+    QTest::newRow("scenario: all different") << StringMatrix{20, 25, "Value1"} << StringMatrix{12, 9, "Value2"} << StringMatrix{9, 18, "Value2"} << 11 << SplitMode::ALL_DIFFERENT << 12 << 9 << 18 << 14 << true << 25 << 14 << 25 << 22;
+    QTest::newRow("scenario: all different") << StringMatrix{20, 25, "Value1"} << StringMatrix{12, 9, "Value2"} << StringMatrix{9, 18, "Value2"} << 11 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 25 << 11 << 25 << 22;
+    QTest::newRow("scenario: all different") << StringMatrix{20, 25, "Value1"} << StringMatrix{12, 9, "Value2"} << StringMatrix{9, 18, "Value2"} << 11 << SplitMode::ALL_DIFFERENT << 12 << 9 << 20 << 9 << true << 20 << 13 << 25 << 22;
+    QTest::newRow("scenario: all different") << StringMatrix{20, 25, "Value1"} << StringMatrix{} << StringMatrix{} << 11 << SplitMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << false << 25 << 13 << 25 << 17;
+    QTest::newRow("scenario: source first") << StringMatrix{20, 25, "Value1"} << StringMatrix{20, 25, "Value1"} << StringMatrix{9, 18, "Value2"} << 11 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 25 << 31 << 25 << 22;
+    QTest::newRow("scenario: source first") << StringMatrix{20, 25, "Value1"} << StringMatrix{20, 25, "Value1"} << StringMatrix{} << 11 << SplitMode::SOURCE_FIRST << 0 << 0 << 0 << 0 << false << 25 << 31 << 25 << 17;
+    QTest::newRow("scenario: source second") << StringMatrix{20, 25, "Value1"} << StringMatrix{12, 9, "Value2"} << StringMatrix{20, 25, "Value1"} << 11 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 25 << 11 << 25 << 31;
+    QTest::newRow("scenario: source second") << StringMatrix{20, 25, "Value1"} << StringMatrix{} << StringMatrix{20, 25, "Value1"} << 11 << SplitMode::SOURCE_SECOND << 0 << 0 << 0 << 0 << false << 25 << 13 << 25 << 31;
 }
 
 void CapacityTests::testStringMatrixCapacityWithResizeAndEraseRowAndOrColumn_data()
