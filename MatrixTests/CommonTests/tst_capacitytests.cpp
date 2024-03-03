@@ -702,6 +702,20 @@ void CapacityTests::testIntMatrixCapacityWithCatByRow_data()
     QTest::newRow("scenario: all different") << IntMatrix{7, 5, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 11 << 8;
     QTest::newRow("scenario: all different") << IntMatrix{10, 5, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 11 << 8;
     QTest::newRow("scenario: all different") << IntMatrix{6, 6, -1} << IntMatrix{4, 7, 5} << IntMatrix{5, 7, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 11 << 8;
+    QTest::newRow("scenario: all different") << IntMatrix{12, 15, -1} << IntMatrix{16, 22, 5} << IntMatrix{10, 22, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 32 << 27;
+    QTest::newRow("scenario: all different") << IntMatrix{12, 15, -1} << IntMatrix{16, 22, 5} << IntMatrix{10, 22, -2} << ConcatMode::ALL_DIFFERENT << 12 << 15 << 26 << 22 << 32 << 27;
+    QTest::newRow("scenario: all different") << IntMatrix{12, 15, -1} << IntMatrix{16, 22, 5} << IntMatrix{10, 22, -2} << ConcatMode::ALL_DIFFERENT << 12 << 15 << 31 << 26 << 32 << 27;
+    QTest::newRow("scenario: all different") << IntMatrix{12, 15, -1} << IntMatrix{16, 22, 5} << IntMatrix{10, 22, -2} << ConcatMode::ALL_DIFFERENT << 12 << 15 << 32 << 27 << 32 << 27;
+    QTest::newRow("scenario: all different") << IntMatrix{12, 15, -1} << IntMatrix{16, 22, 5} << IntMatrix{10, 22, -2} << ConcatMode::ALL_DIFFERENT << 12 << 15 << 33 << 28 << 32 << 27;
+    QTest::newRow("scenario: all different") << IntMatrix{12, 15, -1} << IntMatrix{16, 22, 5} << IntMatrix{10, 22, -2} << ConcatMode::ALL_DIFFERENT << 26 << 22 << 26 << 22 << 32 << 27;
+    QTest::newRow("scenario: all different") << IntMatrix{12, 15, -1} << IntMatrix{16, 22, 5} << IntMatrix{10, 22, -2} << ConcatMode::ALL_DIFFERENT << 26 << 22 << 31 << 26 << 32 << 27;
+    QTest::newRow("scenario: all different") << IntMatrix{12, 15, -1} << IntMatrix{16, 22, 5} << IntMatrix{10, 22, -2} << ConcatMode::ALL_DIFFERENT << 26 << 22 << 32 << 27 << 32 << 27;
+    QTest::newRow("scenario: all different") << IntMatrix{12, 15, -1} << IntMatrix{16, 22, 5} << IntMatrix{10, 22, -2} << ConcatMode::ALL_DIFFERENT << 26 << 22 << 33 << 28 << 32 << 27;
+    QTest::newRow("scenario: all different") << IntMatrix{12, 15, -1} << IntMatrix{16, 22, 5} << IntMatrix{10, 22, -2} << ConcatMode::ALL_DIFFERENT << 27 << 23 << 33 << 28 << 32 << 27;
+    QTest::newRow("scenario: destination first") << IntMatrix{16, 22, 5} << IntMatrix{16, 22, 5} << IntMatrix{10, 22, -2} << ConcatMode::DESTINATION_FIRST << 0 << 0 << 0 << 0 << 32 << 27;
+    QTest::newRow("scenario: destination second") << IntMatrix{10, 22, -2} << IntMatrix{16, 22, 5} << IntMatrix{10, 22, -2} << ConcatMode::DESTINATION_SECOND << 0 << 0 << 0 << 0 << 32 << 27;
+    QTest::newRow("scenario: destination all") << IntMatrix{16, 22, 5} << IntMatrix{16, 22, 5} << IntMatrix{16, 22, 5} << ConcatMode::DESTINATION_ALL << 0 << 0 << 0 << 0 << 40 << 27;
+    QTest::newRow("scenario: source both") << IntMatrix{10, 22, -2} << IntMatrix{16, 22, 5} << IntMatrix{16, 22, 5} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 40 << 27;
 
     // empty matrix concatenation
     QTest::newRow("scenario: source both") << IntMatrix{7, 6, -1} << IntMatrix{} << IntMatrix{} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 0 << 0;
@@ -779,6 +793,20 @@ void CapacityTests::testIntMatrixCapacityWithCatByColumn_data()
     QTest::newRow("scenario: all different") << IntMatrix{5, 7, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 11;
     QTest::newRow("scenario: all different") << IntMatrix{5, 10, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 11;
     QTest::newRow("scenario: all different") << IntMatrix{6, 6, -1} << IntMatrix{7, 4, 5} << IntMatrix{7, 5, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 11;
+    QTest::newRow("scenario: all different") << IntMatrix{15, 12, -1} << IntMatrix{22, 16, 5} << IntMatrix{22, 10, -2} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 27 << 32;
+    QTest::newRow("scenario: all different") << IntMatrix{15, 12, -1} << IntMatrix{22, 16, 5} << IntMatrix{22, 10, -2} << ConcatMode::ALL_DIFFERENT << 15 << 12 << 22 << 26 << 27 << 32;
+    QTest::newRow("scenario: all different") << IntMatrix{15, 12, -1} << IntMatrix{22, 16, 5} << IntMatrix{22, 10, -2} << ConcatMode::ALL_DIFFERENT << 15 << 12 << 26 << 31 << 27 << 32;
+    QTest::newRow("scenario: all different") << IntMatrix{15, 12, -1} << IntMatrix{22, 16, 5} << IntMatrix{22, 10, -2} << ConcatMode::ALL_DIFFERENT << 15 << 12 << 27 << 32 << 27 << 32;
+    QTest::newRow("scenario: all different") << IntMatrix{15, 12, -1} << IntMatrix{22, 16, 5} << IntMatrix{22, 10, -2} << ConcatMode::ALL_DIFFERENT << 15 << 12 << 28 << 33 << 27 << 32;
+    QTest::newRow("scenario: all different") << IntMatrix{15, 12, -1} << IntMatrix{22, 16, 5} << IntMatrix{22, 10, -2} << ConcatMode::ALL_DIFFERENT << 22 << 26 << 22 << 26 << 27 << 32;
+    QTest::newRow("scenario: all different") << IntMatrix{15, 12, -1} << IntMatrix{22, 16, 5} << IntMatrix{22, 10, -2} << ConcatMode::ALL_DIFFERENT << 22 << 26 << 26 << 31 << 27 << 32;
+    QTest::newRow("scenario: all different") << IntMatrix{15, 12, -1} << IntMatrix{22, 16, 5} << IntMatrix{22, 10, -2} << ConcatMode::ALL_DIFFERENT << 22 << 26 << 27 << 32 << 27 << 32;
+    QTest::newRow("scenario: all different") << IntMatrix{15, 12, -1} << IntMatrix{22, 16, 5} << IntMatrix{22, 10, -2} << ConcatMode::ALL_DIFFERENT << 22 << 26 << 28 << 33 << 27 << 32;
+    QTest::newRow("scenario: all different") << IntMatrix{15, 12, -1} << IntMatrix{22, 16, 5} << IntMatrix{22, 10, -2} << ConcatMode::ALL_DIFFERENT << 23 << 27 << 28 << 33 << 27 << 32;
+    QTest::newRow("scenario: destination first") << IntMatrix{22, 16, 5} << IntMatrix{22, 16, 5} << IntMatrix{22, 10, -2} << ConcatMode::DESTINATION_FIRST << 0 << 0 << 0 << 0 << 27 << 32;
+    QTest::newRow("scenario: destination second") << IntMatrix{22, 10, -2} << IntMatrix{22, 16, 5} << IntMatrix{22, 10, -2} << ConcatMode::DESTINATION_SECOND << 0 << 0 << 0 << 0 << 27 << 32;
+    QTest::newRow("scenario: destination all") << IntMatrix{22, 16, 5} << IntMatrix{22, 16, 5} << IntMatrix{22, 16, 5} << ConcatMode::DESTINATION_ALL << 0 << 0 << 0 << 0 << 27 << 40;
+    QTest::newRow("scenario: source both") << IntMatrix{22, 10, -2} << IntMatrix{22, 16, 5} << IntMatrix{22, 16, 5} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 27 << 40;
 
     // empty matrix concatenation
     QTest::newRow("scenario: source both") << IntMatrix{6, 7, -1} << IntMatrix{} << IntMatrix{} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 0 << 0;
@@ -1280,6 +1308,20 @@ void CapacityTests::testStringMatrixCapacityWithCatByRow_data()
     QTest::newRow("scenario: all different") << StringMatrix{7, 5, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 11 << 8;
     QTest::newRow("scenario: all different") << StringMatrix{10, 5, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 11 << 8;
     QTest::newRow("scenario: all different") << StringMatrix{6, 6, "Value4"} << StringMatrix{4, 7, "Value1"} << StringMatrix{5, 7, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 11 << 8;
+    QTest::newRow("scenario: all different") << StringMatrix{12, 15, "Value4"} << StringMatrix{16, 22, "Value1"} << StringMatrix{10, 22, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 32 << 27;
+    QTest::newRow("scenario: all different") << StringMatrix{12, 15, "Value4"} << StringMatrix{16, 22, "Value1"} << StringMatrix{10, 22, "Value2"} << ConcatMode::ALL_DIFFERENT << 12 << 15 << 26 << 22 << 32 << 27;
+    QTest::newRow("scenario: all different") << StringMatrix{12, 15, "Value4"} << StringMatrix{16, 22, "Value1"} << StringMatrix{10, 22, "Value2"} << ConcatMode::ALL_DIFFERENT << 12 << 15 << 31 << 26 << 32 << 27;
+    QTest::newRow("scenario: all different") << StringMatrix{12, 15, "Value4"} << StringMatrix{16, 22, "Value1"} << StringMatrix{10, 22, "Value2"} << ConcatMode::ALL_DIFFERENT << 12 << 15 << 32 << 27 << 32 << 27;
+    QTest::newRow("scenario: all different") << StringMatrix{12, 15, "Value4"} << StringMatrix{16, 22, "Value1"} << StringMatrix{10, 22, "Value2"} << ConcatMode::ALL_DIFFERENT << 12 << 15 << 33 << 28 << 32 << 27;
+    QTest::newRow("scenario: all different") << StringMatrix{12, 15, "Value4"} << StringMatrix{16, 22, "Value1"} << StringMatrix{10, 22, "Value2"} << ConcatMode::ALL_DIFFERENT << 26 << 22 << 26 << 22 << 32 << 27;
+    QTest::newRow("scenario: all different") << StringMatrix{12, 15, "Value4"} << StringMatrix{16, 22, "Value1"} << StringMatrix{10, 22, "Value2"} << ConcatMode::ALL_DIFFERENT << 26 << 22 << 31 << 26 << 32 << 27;
+    QTest::newRow("scenario: all different") << StringMatrix{12, 15, "Value4"} << StringMatrix{16, 22, "Value1"} << StringMatrix{10, 22, "Value2"} << ConcatMode::ALL_DIFFERENT << 26 << 22 << 32 << 27 << 32 << 27;
+    QTest::newRow("scenario: all different") << StringMatrix{12, 15, "Value4"} << StringMatrix{16, 22, "Value1"} << StringMatrix{10, 22, "Value2"} << ConcatMode::ALL_DIFFERENT << 26 << 22 << 33 << 28 << 32 << 27;
+    QTest::newRow("scenario: all different") << StringMatrix{12, 15, "Value4"} << StringMatrix{16, 22, "Value1"} << StringMatrix{10, 22, "Value2"} << ConcatMode::ALL_DIFFERENT << 27 << 23 << 33 << 28 << 32 << 27;
+    QTest::newRow("scenario: destination first") << StringMatrix{16, 22, "Value1"} << StringMatrix{16, 22, "Value1"} << StringMatrix{10, 22, "Value2"} << ConcatMode::DESTINATION_FIRST << 0 << 0 << 0 << 0 << 32 << 27;
+    QTest::newRow("scenario: destination second") << StringMatrix{10, 22, "Value2"} << StringMatrix{16, 22, "Value1"} << StringMatrix{10, 22, "Value2"} << ConcatMode::DESTINATION_SECOND << 0 << 0 << 0 << 0 << 32 << 27;
+    QTest::newRow("scenario: destination all") << StringMatrix{16, 22, "Value1"} << StringMatrix{16, 22, "Value1"} << StringMatrix{16, 22, "Value1"} << ConcatMode::DESTINATION_ALL << 0 << 0 << 0 << 0 << 40 << 27;
+    QTest::newRow("scenario: source both") << StringMatrix{10, 22, "Value2"} << StringMatrix{16, 22, "Value1"} << StringMatrix{16, 22, "Value1"} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 40 << 27;
 
     // empty matrix concatenation
     QTest::newRow("scenario: source both") << StringMatrix{7, 6, "Value4"} << StringMatrix{} << StringMatrix{} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 0 << 0;
@@ -1357,6 +1399,20 @@ void CapacityTests::testStringMatrixCapacityWithCatByColumn_data()
     QTest::newRow("scenario: all different") << StringMatrix{5, 7, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 11;
     QTest::newRow("scenario: all different") << StringMatrix{5, 10, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 11;
     QTest::newRow("scenario: all different") << StringMatrix{6, 6, "Value4"} << StringMatrix{7, 4, "Value1"} << StringMatrix{7, 5, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 8 << 11;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 12, "Value4"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 10, "Value2"} << ConcatMode::ALL_DIFFERENT << 0 << 0 << 0 << 0 << 27 << 32;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 12, "Value4"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 10, "Value2"} << ConcatMode::ALL_DIFFERENT << 15 << 12 << 22 << 26 << 27 << 32;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 12, "Value4"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 10, "Value2"} << ConcatMode::ALL_DIFFERENT << 15 << 12 << 26 << 31 << 27 << 32;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 12, "Value4"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 10, "Value2"} << ConcatMode::ALL_DIFFERENT << 15 << 12 << 27 << 32 << 27 << 32;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 12, "Value4"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 10, "Value2"} << ConcatMode::ALL_DIFFERENT << 15 << 12 << 28 << 33 << 27 << 32;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 12, "Value4"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 10, "Value2"} << ConcatMode::ALL_DIFFERENT << 22 << 26 << 22 << 26 << 27 << 32;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 12, "Value4"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 10, "Value2"} << ConcatMode::ALL_DIFFERENT << 22 << 26 << 26 << 31 << 27 << 32;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 12, "Value4"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 10, "Value2"} << ConcatMode::ALL_DIFFERENT << 22 << 26 << 27 << 32 << 27 << 32;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 12, "Value4"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 10, "Value2"} << ConcatMode::ALL_DIFFERENT << 22 << 26 << 28 << 33 << 27 << 32;
+    QTest::newRow("scenario: all different") << StringMatrix{15, 12, "Value4"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 10, "Value2"} << ConcatMode::ALL_DIFFERENT << 23 << 27 << 28 << 33 << 27 << 32;
+    QTest::newRow("scenario: destination first") << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 10, "Value2"} << ConcatMode::DESTINATION_FIRST << 0 << 0 << 0 << 0 << 27 << 32;
+    QTest::newRow("scenario: destination second") << StringMatrix{22, 10, "Value2"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 10, "Value2"} << ConcatMode::DESTINATION_SECOND << 0 << 0 << 0 << 0 << 27 << 32;
+    QTest::newRow("scenario: destination all") << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 16, "Value1"} << ConcatMode::DESTINATION_ALL << 0 << 0 << 0 << 0 << 27 << 40;
+    QTest::newRow("scenario: source both") << StringMatrix{22, 10, "Value2"} << StringMatrix{22, 16, "Value1"} << StringMatrix{22, 16, "Value1"} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 27 << 40;
 
     // empty matrix concatenation
     QTest::newRow("scenario: source both") << StringMatrix{6, 7, "Value4"} << StringMatrix{} << StringMatrix{} << ConcatMode::SOURCE_BOTH << 0 << 0 << 0 << 0 << 0 << 0;
