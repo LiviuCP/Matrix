@@ -150,6 +150,33 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyConstructor()
     }
 
     {
+        const IntMatrix srcMatrix{8, 10, { -1,  2,  -3,  4,  -5,  6,  -7,  8,  -9, 10,
+                                          -11, 12, -13, 14, -15, 16, -17, 18, -19, 20,
+                                          -21, 22, -23, 24, -25, 26, -27, 28, -29, 30,
+                                          -31, 32, -33, 34, -35, 36, -37, 38, -39, 40,
+                                          -41, 42, -43, 44, -45, 46, -47, 48, -49, 50,
+                                          -51, 52, -53, 54, -55, 56, -57, 58, -59, 60,
+                                          -61, 62, -63, 64, -65, 66, -67, 68, -69, 70,
+                                          -71, 72, -73, 74, -75, 76, -77, 78, -79, 80
+                                  }};
+
+        IntMatrix destMatrix{srcMatrix};
+
+        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12);
+
+        const IntMatrix& dest{destMatrix};
+
+        QVERIFY(dest.at(0, 0) ==  -1 && dest.at(0, 1) ==  2 && dest.at(0, 2) ==  -3 && dest.at(0, 3) ==  4 && dest.at(0, 4) ==  -5 && dest.at(0, 5) ==  6 && dest.at(0, 6) ==  -7 && dest.at(0, 7) ==  8 && dest.at(0, 8) ==  -9 && dest.at(0, 9) == 10 &&
+                dest.at(1, 0) == -11 && dest.at(1, 1) == 12 && dest.at(1, 2) == -13 && dest.at(1, 3) == 14 && dest.at(1, 4) == -15 && dest.at(1, 5) == 16 && dest.at(1, 6) == -17 && dest.at(1, 7) == 18 && dest.at(1, 8) == -19 && dest.at(1, 9) == 20 &&
+                dest.at(2, 0) == -21 && dest.at(2, 1) == 22 && dest.at(2, 2) == -23 && dest.at(2, 3) == 24 && dest.at(2, 4) == -25 && dest.at(2, 5) == 26 && dest.at(2, 6) == -27 && dest.at(2, 7) == 28 && dest.at(2, 8) == -29 && dest.at(2, 9) == 30 &&
+                dest.at(3, 0) == -31 && dest.at(3, 1) == 32 && dest.at(3, 2) == -33 && dest.at(3, 3) == 34 && dest.at(3, 4) == -35 && dest.at(3, 5) == 36 && dest.at(3, 6) == -37 && dest.at(3, 7) == 38 && dest.at(3, 8) == -39 && dest.at(3, 9) == 40 &&
+                dest.at(4, 0) == -41 && dest.at(4, 1) == 42 && dest.at(4, 2) == -43 && dest.at(4, 3) == 44 && dest.at(4, 4) == -45 && dest.at(4, 5) == 46 && dest.at(4, 6) == -47 && dest.at(4, 7) == 48 && dest.at(4, 8) == -49 && dest.at(4, 9) == 50 &&
+                dest.at(5, 0) == -51 && dest.at(5, 1) == 52 && dest.at(5, 2) == -53 && dest.at(5, 3) == 54 && dest.at(5, 4) == -55 && dest.at(5, 5) == 56 && dest.at(5, 6) == -57 && dest.at(5, 7) == 58 && dest.at(5, 8) == -59 && dest.at(5, 9) == 60 &&
+                dest.at(6, 0) == -61 && dest.at(6, 1) == 62 && dest.at(6, 2) == -63 && dest.at(6, 3) == 64 && dest.at(6, 4) == -65 && dest.at(6, 5) == 66 && dest.at(6, 6) == -67 && dest.at(6, 7) == 68 && dest.at(6, 8) == -69 && dest.at(6, 9) == 70 &&
+                dest.at(7, 0) == -71 && dest.at(7, 1) == 72 && dest.at(7, 2) == -73 && dest.at(7, 3) == 74 && dest.at(7, 4) == -75 && dest.at(7, 5) == 76 && dest.at(7, 6) == -77 && dest.at(7, 7) == 78 && dest.at(7, 8) == -79 && dest.at(7, 9) == 80);
+    }
+
+    {
         const IntMatrix srcMatrix{};
         IntMatrix destMatrix{srcMatrix};
 
@@ -567,6 +594,33 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyConstructor()
                  destMatrix.at(1, 0) == "Fourth" &&
                  destMatrix.at(1, 1) == "Fifth" &&
                  destMatrix.at(1, 2) == "Sixth", "Matrix elements have not been correctly initialized by the copy constructor");
+    }
+
+    {
+        const StringMatrix srcMatrix{8, 10, { "-1a",  "2B",  "-3c",  "4D",  "-5e",  "6F",  "-7g",  "8H",  "-9i", "10J",
+                                             "-11a", "12B", "-13c", "14D", "-15e", "16F", "-17g", "18H", "-19i", "20J",
+                                             "-21a", "22B", "-23c", "24D", "-25e", "26F", "-27g", "28H", "-29i", "30J",
+                                             "-31a", "32B", "-33c", "34D", "-35e", "36F", "-37g", "38H", "-39i", "40J",
+                                             "-41a", "42B", "-43c", "44D", "-45e", "46F", "-47g", "48H", "-49i", "50J",
+                                             "-51a", "52B", "-53c", "54D", "-55e", "56F", "-57g", "58H", "-59i", "60J",
+                                             "-61a", "62B", "-63c", "64D", "-65e", "66F", "-67g", "68H", "-69i", "70J",
+                                             "-71a", "72B", "-73c", "74D", "-75e", "76F", "-77g", "78H", "-79i", "80J"
+                                     }};
+
+        StringMatrix destMatrix{srcMatrix};
+
+        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12);
+
+        const StringMatrix& dest{destMatrix};
+
+        QVERIFY(dest.at(0, 0) ==  "-1a" && dest.at(0, 1) ==  "2B" && dest.at(0, 2) ==  "-3c" && dest.at(0, 3) ==  "4D" && dest.at(0, 4) ==  "-5e" && dest.at(0, 5) ==  "6F" && dest.at(0, 6) ==  "-7g" && dest.at(0, 7) ==  "8H" && dest.at(0, 8) ==  "-9i" && dest.at(0, 9) == "10J" &&
+                dest.at(1, 0) == "-11a" && dest.at(1, 1) == "12B" && dest.at(1, 2) == "-13c" && dest.at(1, 3) == "14D" && dest.at(1, 4) == "-15e" && dest.at(1, 5) == "16F" && dest.at(1, 6) == "-17g" && dest.at(1, 7) == "18H" && dest.at(1, 8) == "-19i" && dest.at(1, 9) == "20J" &&
+                dest.at(2, 0) == "-21a" && dest.at(2, 1) == "22B" && dest.at(2, 2) == "-23c" && dest.at(2, 3) == "24D" && dest.at(2, 4) == "-25e" && dest.at(2, 5) == "26F" && dest.at(2, 6) == "-27g" && dest.at(2, 7) == "28H" && dest.at(2, 8) == "-29i" && dest.at(2, 9) == "30J" &&
+                dest.at(3, 0) == "-31a" && dest.at(3, 1) == "32B" && dest.at(3, 2) == "-33c" && dest.at(3, 3) == "34D" && dest.at(3, 4) == "-35e" && dest.at(3, 5) == "36F" && dest.at(3, 6) == "-37g" && dest.at(3, 7) == "38H" && dest.at(3, 8) == "-39i" && dest.at(3, 9) == "40J" &&
+                dest.at(4, 0) == "-41a" && dest.at(4, 1) == "42B" && dest.at(4, 2) == "-43c" && dest.at(4, 3) == "44D" && dest.at(4, 4) == "-45e" && dest.at(4, 5) == "46F" && dest.at(4, 6) == "-47g" && dest.at(4, 7) == "48H" && dest.at(4, 8) == "-49i" && dest.at(4, 9) == "50J" &&
+                dest.at(5, 0) == "-51a" && dest.at(5, 1) == "52B" && dest.at(5, 2) == "-53c" && dest.at(5, 3) == "54D" && dest.at(5, 4) == "-55e" && dest.at(5, 5) == "56F" && dest.at(5, 6) == "-57g" && dest.at(5, 7) == "58H" && dest.at(5, 8) == "-59i" && dest.at(5, 9) == "60J" &&
+                dest.at(6, 0) == "-61a" && dest.at(6, 1) == "62B" && dest.at(6, 2) == "-63c" && dest.at(6, 3) == "64D" && dest.at(6, 4) == "-65e" && dest.at(6, 5) == "66F" && dest.at(6, 6) == "-67g" && dest.at(6, 7) == "68H" && dest.at(6, 8) == "-69i" && dest.at(6, 9) == "70J" &&
+                dest.at(7, 0) == "-71a" && dest.at(7, 1) == "72B" && dest.at(7, 2) == "-73c" && dest.at(7, 3) == "74D" && dest.at(7, 4) == "-75e" && dest.at(7, 5) == "76F" && dest.at(7, 6) == "-77g" && dest.at(7, 7) == "78H" && dest.at(7, 8) == "-79i" && dest.at(7, 9) == "80J");
     }
 
     {
