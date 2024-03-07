@@ -74,16 +74,31 @@ void ConstructionAndAssignmentTests::testIntMatrixInitListConstructor()
 
 void ConstructionAndAssignmentTests::testIntMatrixIdenticalMatrixConstructor()
 {
-    IntMatrix matrix{3, 2, 4};
+    IntMatrix smallMatrix{3, 2, 4};
 
-    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 3, 2, 3, 2);
+    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 3, 2, 3, 2);
 
-    QVERIFY2(matrix.at(0, 0) == 4 &&
-             matrix.at(0, 1) == 4 &&
-             matrix.at(1, 0) == 4 &&
-             matrix.at(1, 1) == 4 &&
-             matrix.at(2, 0) == 4 &&
-             matrix.at(2, 1) == 4, "Matrix elements have not been correctly initialized by the identical matrix constructor");
+    QVERIFY2(smallMatrix.at(0, 0) == 4 &&
+             smallMatrix.at(0, 1) == 4 &&
+             smallMatrix.at(1, 0) == 4 &&
+             smallMatrix.at(1, 1) == 4 &&
+             smallMatrix.at(2, 0) == 4 &&
+             smallMatrix.at(2, 1) == 4, "Matrix elements have not been correctly initialized by the identical matrix constructor");
+
+    IntMatrix largeMatrix{10, 8, -5};
+
+    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 10, 8, 12, 10);
+
+    for (IntMatrix::size_type rowNr{0}; rowNr < largeMatrix.getNrOfRows(); ++rowNr)
+    {
+        for (IntMatrix::size_type columnNr{0}; columnNr < largeMatrix.getNrOfColumns(); ++columnNr)
+        {
+            if (largeMatrix.at(rowNr, columnNr) != -5)
+            {
+                QFAIL("Matrix elements have not been correctly initialized by the identical matrix constructor");
+            }
+        }
+    }
 }
 
 void ConstructionAndAssignmentTests::testIntMatrixDiagonalMatrixConstructor()
@@ -464,16 +479,31 @@ void ConstructionAndAssignmentTests::testStringMatrixInitListConstructor()
 
 void ConstructionAndAssignmentTests::testStringMatrixIdenticalMatrixConstructor()
 {
-    StringMatrix matrix{3, 2, "Fourth"};
+    StringMatrix smallMatrix{3, 2, "Fourth"};
 
-    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 3, 2, 3, 2);
+    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 3, 2, 3, 2);
 
-    QVERIFY2(matrix.at(0, 0) == "Fourth" &&
-             matrix.at(0, 1) == "Fourth" &&
-             matrix.at(1, 0) == "Fourth" &&
-             matrix.at(1, 1) == "Fourth" &&
-             matrix.at(2, 0) == "Fourth" &&
-             matrix.at(2, 1) == "Fourth", "Matrix elements have not been correctly initialized by the identical matrix constructor");
+    QVERIFY2(smallMatrix.at(0, 0) == "Fourth" &&
+             smallMatrix.at(0, 1) == "Fourth" &&
+             smallMatrix.at(1, 0) == "Fourth" &&
+             smallMatrix.at(1, 1) == "Fourth" &&
+             smallMatrix.at(2, 0) == "Fourth" &&
+             smallMatrix.at(2, 1) == "Fourth", "Matrix elements have not been correctly initialized by the identical matrix constructor");
+
+    StringMatrix largeMatrix{10, 8, "_Fifth"};
+
+    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 10, 8, 12, 10);
+
+    for (StringMatrix::size_type rowNr{0}; rowNr < largeMatrix.getNrOfRows(); ++rowNr)
+    {
+        for (StringMatrix::size_type columnNr{0}; columnNr < largeMatrix.getNrOfColumns(); ++columnNr)
+        {
+            if (largeMatrix.at(rowNr, columnNr) != "_Fifth")
+            {
+                QFAIL("Matrix elements have not been correctly initialized by the identical matrix constructor");
+            }
+        }
+    }
 }
 
 void ConstructionAndAssignmentTests::testStringMatrixDiagonalMatrixConstructor()
