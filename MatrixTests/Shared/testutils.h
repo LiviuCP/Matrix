@@ -103,4 +103,16 @@ enum class SplitMode : unsigned short
         } \
     }
 
+#define CHECK_MATRIX_IS_DIAGONAL_WITH_CORRECT_ELEMENT_VALUES(matrix, nonDiagElementValue, diagElementValue, errorMessage) \
+    for (StringMatrix::size_type rowNr{0}; rowNr < matrix.getNrOfRows(); ++rowNr) \
+    { \
+        for (StringMatrix::size_type columnNr{0}; columnNr < matrix.getNrOfColumns(); ++columnNr) \
+        { \
+            if ((rowNr != columnNr && matrix.at(rowNr, columnNr) != nonDiagElementValue) || (rowNr == columnNr && matrix.at(rowNr, columnNr) != diagElementValue)) \
+            { \
+                QFAIL(errorMessage); \
+            } \
+        } \
+    }
+
 #endif // TESTUTILS_H
