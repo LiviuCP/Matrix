@@ -65,7 +65,7 @@ void OtherFunctionalityTests::testIntMatrixFunctionAt()
 
     mPrimaryIntMatrix = {10, 10, 2};
 
-    for (IntMatrix::size_type rowColumnNr{0}; rowColumnNr < 10; ++rowColumnNr)
+    for (IntMatrix::size_type rowColumnNr{0}; rowColumnNr < mPrimaryIntMatrix.getNrOfRows(); ++rowColumnNr)
     {
         mPrimaryIntMatrix.at(rowColumnNr, rowColumnNr) = -5;
     }
@@ -215,7 +215,7 @@ void OtherFunctionalityTests::testStringMatrixFunctionAt()
 
     mPrimaryStringMatrix = {10, 10, "Two"};
 
-    for (StringMatrix::size_type rowColumnNr{0}; rowColumnNr < 10; ++rowColumnNr)
+    for (StringMatrix::size_type rowColumnNr{0}; rowColumnNr < mPrimaryStringMatrix.getNrOfRows(); ++rowColumnNr)
     {
         mPrimaryStringMatrix.at(rowColumnNr, rowColumnNr) = "_Five";
     }
