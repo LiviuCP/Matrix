@@ -169,7 +169,6 @@ void OtherFunctionalityTests::testIntMatrixGetBaseArray()
     }
 
     mPrimaryIntMatrix = {2, 3, {1, 2, 3, 4, 5, 6}};
-
     baseArrayPtr = static_cast<int*>(mPrimaryIntMatrix.getBaseArray(nrOfElements));
 
     if (!baseArrayPtr || nrOfElements != 6)
@@ -184,7 +183,32 @@ void OtherFunctionalityTests::testIntMatrixGetBaseArray()
              baseArrayPtr[4] == 5 &&
              baseArrayPtr[5] == 6, "Passing resources outside the matrix failed, the element values are not correct!");
 
-    QVERIFY(mPrimaryIntMatrix == IntMatrix{});
+    QVERIFY(mPrimaryIntMatrix.isEmpty());
+
+    std::free(baseArrayPtr);
+    baseArrayPtr = nullptr;
+
+    mPrimaryIntMatrix = {10, {2, -5}};
+    baseArrayPtr = static_cast<int*>(mPrimaryIntMatrix.getBaseArray(nrOfElements));
+
+    if (!baseArrayPtr || nrOfElements != 100)
+    {
+        QFAIL("Passing resources outside the matrix failed, either the pointer is null or the number of elements is not correct!");
+    }
+
+    QVERIFY2(baseArrayPtr[0] == -5 &&
+             baseArrayPtr[12] == 2 &&
+             baseArrayPtr[24] == 2 &&
+             baseArrayPtr[33] == -5 &&
+             baseArrayPtr[48] == 2 &&
+             baseArrayPtr[59] == 2 &&
+             baseArrayPtr[66] == -5 &&
+             baseArrayPtr[78] == 2 &&
+             baseArrayPtr[88] == -5 &&
+             baseArrayPtr[95] == 2 &&
+             baseArrayPtr[99] == -5,  "Passing resources outside the matrix failed, the element values are not correct!");
+
+    QVERIFY(mPrimaryIntMatrix.isEmpty());
 
     std::free(baseArrayPtr);
     baseArrayPtr = nullptr;
@@ -319,7 +343,6 @@ void OtherFunctionalityTests::testStringMatrixGetBaseArray()
     }
 
     mPrimaryStringMatrix = {2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
-
     baseArrayPtr = static_cast<std::string*>(mPrimaryStringMatrix.getBaseArray(nrOfElements));
 
     if (!baseArrayPtr || nrOfElements != 6)
@@ -334,7 +357,33 @@ void OtherFunctionalityTests::testStringMatrixGetBaseArray()
              baseArrayPtr[4] == "Fifth" &&
              baseArrayPtr[5] == "Sixth", "Passing resources outside the matrix failed, the element values are not correct!");
 
-    QVERIFY(mPrimaryStringMatrix == StringMatrix{});
+    QVERIFY(mPrimaryStringMatrix.isEmpty());
+
+    std::destroy_n(baseArrayPtr, nrOfElements);
+    std::free(baseArrayPtr);
+    baseArrayPtr = nullptr;
+
+    mPrimaryStringMatrix = {10, {"Two", "_Five"}};
+    baseArrayPtr = static_cast<std::string*>(mPrimaryStringMatrix.getBaseArray(nrOfElements));
+
+    if (!baseArrayPtr || nrOfElements != 100)
+    {
+        QFAIL("Passing resources outside the matrix failed, either the pointer is null or the number of elements is not correct!");
+    }
+
+    QVERIFY2(baseArrayPtr[0] == "_Five" &&
+             baseArrayPtr[12] == "Two" &&
+             baseArrayPtr[24] == "Two" &&
+             baseArrayPtr[33] == "_Five" &&
+             baseArrayPtr[48] == "Two" &&
+             baseArrayPtr[59] == "Two" &&
+             baseArrayPtr[66] == "_Five" &&
+             baseArrayPtr[78] == "Two" &&
+             baseArrayPtr[88] == "_Five" &&
+             baseArrayPtr[95] == "Two" &&
+             baseArrayPtr[99] == "_Five",  "Passing resources outside the matrix failed, the element values are not correct!");
+
+    QVERIFY(mPrimaryStringMatrix.isEmpty());
 
     std::destroy_n(baseArrayPtr, nrOfElements);
     std::free(baseArrayPtr);
