@@ -63,15 +63,27 @@ void OtherFunctionalityTests::testIntMatrixFunctionAt()
 
     QVERIFY2(mPrimaryIntMatrix == IntMatrix(2, 3, {10, 20, 30, 40, 50, 60}), "The write at() method does not work properly, values are not correctly written!");
 
-    // "const" at() - trivial too but tested here just to ensure it exists (it is required for reading values from const matrixes)
-    const IntMatrix matrix{2, 3, {70, 80, 90, 100, 110, 120}};
+    mPrimaryIntMatrix = {10, 10, 2};
 
-    QVERIFY2(matrix.at(0, 0) == 70 &&
-             matrix.at(0, 1) == 80 &&
-             matrix.at(0, 2) == 90 &&
-             matrix.at(1, 0) == 100 &&
-             matrix.at(1, 1) == 110 &&
-             matrix.at(1, 2) == 120, "The const at() method does not work correctly, read values are wrong!");
+    for (IntMatrix::size_type rowColumnNr{0}; rowColumnNr < 10; ++rowColumnNr)
+    {
+        mPrimaryIntMatrix.at(rowColumnNr, rowColumnNr) = -5;
+    }
+
+    QVERIFY2(mPrimaryIntMatrix == IntMatrix(10, {2, -5}), "The write at() method does not work properly, values are not correctly written!");
+
+    // "const" at() - trivial too but tested here just to ensure it exists (it is required for reading values from const matrixes)
+    const IntMatrix firstMatrix{2, 3, {70, 80, 90, 100, 110, 120}};
+
+    QVERIFY2(firstMatrix.at(0, 0) == 70 &&
+             firstMatrix.at(0, 1) == 80 &&
+             firstMatrix.at(0, 2) == 90 &&
+             firstMatrix.at(1, 0) == 100 &&
+             firstMatrix.at(1, 1) == 110 &&
+             firstMatrix.at(1, 2) == 120, "The const at() method does not work correctly, read values are wrong!");
+
+    const IntMatrix secondMatrix{mPrimaryIntMatrix};
+    CHECK_MATRIX_IS_DIAGONAL_WITH_CORRECT_ELEMENT_VALUES(secondMatrix, 2, -5, "The const at() method does not work correctly, read values are wrong!");
 }
 
 void OtherFunctionalityTests::testSquareBracketsOperator()
@@ -177,15 +189,27 @@ void OtherFunctionalityTests::testStringMatrixFunctionAt()
 
     QVERIFY2(mPrimaryStringMatrix == StringMatrix(2, 3, {"Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty"}), "The write at() method does not work properly, values are not correctly written!");
 
-    // "const" at() - trivial too but tested here just to ensure it exists (it is required for reading values from const matrixes)
-    const StringMatrix matrix{2, 3, {"Seventy", "Eighty", "Ninety", "OneHundred", "OneHundredAndTen", "OneHundredAndTwenty"}};
+    mPrimaryStringMatrix = {10, 10, "Two"};
 
-    QVERIFY2(matrix.at(0, 0) == "Seventy" &&
-             matrix.at(0, 1) == "Eighty" &&
-             matrix.at(0, 2) == "Ninety" &&
-             matrix.at(1, 0) == "OneHundred" &&
-             matrix.at(1, 1) == "OneHundredAndTen" &&
-             matrix.at(1, 2) == "OneHundredAndTwenty", "The const at() method does not work correctly, read values are wrong!");
+    for (StringMatrix::size_type rowColumnNr{0}; rowColumnNr < 10; ++rowColumnNr)
+    {
+        mPrimaryStringMatrix.at(rowColumnNr, rowColumnNr) = "_Five";
+    }
+
+    QVERIFY2(mPrimaryStringMatrix == StringMatrix(10, {"Two", "_Five"}), "The write at() method does not work properly, values are not correctly written!");
+
+    // "const" at() - trivial too but tested here just to ensure it exists (it is required for reading values from const matrixes)
+    const StringMatrix firstMatrix{2, 3, {"Seventy", "Eighty", "Ninety", "OneHundred", "OneHundredAndTen", "OneHundredAndTwenty"}};
+
+    QVERIFY2(firstMatrix.at(0, 0) == "Seventy" &&
+             firstMatrix.at(0, 1) == "Eighty" &&
+             firstMatrix.at(0, 2) == "Ninety" &&
+             firstMatrix.at(1, 0) == "OneHundred" &&
+             firstMatrix.at(1, 1) == "OneHundredAndTen" &&
+             firstMatrix.at(1, 2) == "OneHundredAndTwenty", "The const at() method does not work correctly, read values are wrong!");
+
+    const StringMatrix secondMatrix{mPrimaryStringMatrix};
+    CHECK_MATRIX_IS_DIAGONAL_WITH_CORRECT_ELEMENT_VALUES(secondMatrix, "Two", "_Five", "The const at() method does not work correctly, read values are wrong!")
 }
 
 void OtherFunctionalityTests::testStringMatrixSquareBracketsOperator()
