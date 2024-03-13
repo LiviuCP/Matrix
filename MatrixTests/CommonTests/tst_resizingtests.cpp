@@ -1,6 +1,7 @@
 #include <QtTest>
 
 #include "tst_resizingtests.h"
+#include "tst_resizingtests_data.h"
 
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(StringMatrix)
@@ -318,6 +319,21 @@ void ResizingTests::testIntMatrixResizeWithoutFillingInNewValues_data()
     QTest::newRow("equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 3 << 4 << 3 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 4 << 3 << 4 << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
     QTest::newRow("more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 2 << 5 << 2 << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+    QTest::newRow("equal rows, less columns") << c_IntMatrix1_10x9 << 10 << 7 << 10 << 7 << c_IntMatrix1_10x7;
+    QTest::newRow("equal rows, less columns") << c_IntMatrix1_10x9 << 10 << 8 << 10 << 8 << c_IntMatrix1_10x8;
+    QTest::newRow("less rows, equal columns") << c_IntMatrix1_10x9 << 7 << 9 << 7 << 9 << c_IntMatrix1_7x9;
+    QTest::newRow("less rows, equal columns") << c_IntMatrix1_10x9 << 8 << 9 << 8 << 9 << c_IntMatrix1_8x9;
+    QTest::newRow("less rows, less columns") << c_IntMatrix1_10x9 << 7 << 7 << 7 << 7 << c_IntMatrix1_7x7;
+    QTest::newRow("less rows, less columns") << c_IntMatrix1_10x9 << 8 << 8 << 8 << 8 << c_IntMatrix1_8x8;
+    QTest::newRow("equal rows, more columns") << c_IntMatrix1_10x9 << 10 << 11 << 10 << 11 << c_IntMatrix1_10x9;
+    QTest::newRow("more rows, equal columns") << c_IntMatrix1_10x9 << 12 << 9 << 12 << 9 << c_IntMatrix1_10x9;
+    QTest::newRow("more rows, more columns") << c_IntMatrix1_10x9 << 12 << 11 << 12 << 11 << c_IntMatrix1_10x9;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 12 << 11 << 12 << 11 << IntMatrix{};
+    QTest::newRow("equal rows, equal columns") << c_IntMatrix1_10x9 << 10 << 9 << 10 << 9 << c_IntMatrix1_10x9;
+    QTest::newRow("less rows, more columns") << c_IntMatrix1_10x9 << 7 << 11 << 7 << 11 << c_IntMatrix1_7x9;
+    QTest::newRow("less rows, more columns") << c_IntMatrix1_10x9 << 8 << 11 << 8 << 11 << c_IntMatrix1_8x9;
+    QTest::newRow("more rows, less columns") << c_IntMatrix1_10x9 << 12 << 7 << 12 << 7 << c_IntMatrix1_10x7;
+    QTest::newRow("more rows, less columns") << c_IntMatrix1_10x9 << 12 << 8 << 12 << 8 << c_IntMatrix1_10x8;
 
     // additional tests for unchanged capacity
     QTest::newRow("equal rows, more columns") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 5 << 3 << 5 << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
@@ -345,6 +361,21 @@ void ResizingTests::testIntMatrixResizeAndFillInNewValues_data()
     QTest::newRow("equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 3 << -1 << 4 << 3 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 4 << -1 << 3 << 4 << IntMatrix{3, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1}};
     QTest::newRow("more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 2 << -1 << 5 << 2 << IntMatrix{5, 2, {1, 2, 4, 5, 7, 8, 10, 11, -1, -1}};
+    QTest::newRow("equal rows, less columns") << c_IntMatrix1_10x9 << 10 << 7 << 5 << 10 << 7 << c_IntMatrix1_10x7;
+    QTest::newRow("equal rows, less columns") << c_IntMatrix1_10x9 << 10 << 8 << 5 << 10 << 8 << c_IntMatrix1_10x8;
+    QTest::newRow("less rows, equal columns") << c_IntMatrix1_10x9 << 7 << 9 << 5 << 7 << 9 << c_IntMatrix1_7x9;
+    QTest::newRow("less rows, equal columns") << c_IntMatrix1_10x9 << 8 << 9 << 5 << 8 << 9 << c_IntMatrix1_8x9;
+    QTest::newRow("less rows, less columns") << c_IntMatrix1_10x9 << 7 << 7 << 5 << 7 << 7 << c_IntMatrix1_7x7;
+    QTest::newRow("less rows, less columns") << c_IntMatrix1_10x9 << 8 << 8 << 5 << 8 << 8 << c_IntMatrix1_8x8;
+    QTest::newRow("equal rows, more columns") << c_IntMatrix1_10x9 << 10 << 11 << 5 << 10 << 11 << c_IntMatrix2_10x11;
+    QTest::newRow("more rows, equal columns") << c_IntMatrix1_10x9 << 12 << 9 << 5 << 12 << 9 << c_IntMatrix2_12x9;
+    QTest::newRow("more rows, more columns") << c_IntMatrix1_10x9 << 12 << 11 << 5 << 12 << 11 << c_IntMatrix2_12x11;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 12 << 11 << 5 << 12 << 11 << IntMatrix{12, 11, 5};
+    QTest::newRow("equal rows, equal columns") << c_IntMatrix1_10x9 << 10 << 9 << 5 << 10 << 9 << c_IntMatrix1_10x9;
+    QTest::newRow("less rows, more columns") << c_IntMatrix1_10x9 << 7 << 11 << 5 << 7 << 11 << c_IntMatrix2_7x11;
+    QTest::newRow("less rows, more columns") << c_IntMatrix1_10x9 << 8 << 11 << 5 << 8 << 11 << c_IntMatrix2_8x11;
+    QTest::newRow("more rows, less columns") << c_IntMatrix1_10x9 << 12 << 7 << 5 << 12 << 7 << c_IntMatrix2_12x7;
+    QTest::newRow("more rows, less columns") << c_IntMatrix1_10x9 << 12 << 8 << 5 << 12 << 8 << c_IntMatrix2_12x8;
 
     // additional tests for unchanged capacity
     QTest::newRow("equal rows, more columns") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 5 << -1 << 3 << 5 << IntMatrix{3, 5, {1, 2, 3, 4, -1, 5, 6, 7, 8, -1, 9, 10, 11, 12, -1}};
@@ -466,6 +497,21 @@ void ResizingTests::testStringMatrixResizeWithoutFillingInNewValues_data()
     QTest::newRow("equal rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 4 << 3 << 4 << 3 << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 4 << 3 << 4 << StringMatrix{3, 4, {"First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", ""}};
     QTest::newRow("more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 5 << 2 << 5 << 2 << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "", ""}};
+    QTest::newRow("equal rows, less columns") << c_StringMatrix1_10x9 << 10 << 7 << 10 << 7 << c_StringMatrix1_10x7;
+    QTest::newRow("equal rows, less columns") << c_StringMatrix1_10x9 << 10 << 8 << 10 << 8 << c_StringMatrix1_10x8;
+    QTest::newRow("less rows, equal columns") << c_StringMatrix1_10x9 << 7 << 9  << 7 << 9 << c_StringMatrix1_7x9;
+    QTest::newRow("less rows, equal columns") << c_StringMatrix1_10x9 << 8 << 9  << 8 << 9 << c_StringMatrix1_8x9;
+    QTest::newRow("less rows, less columns") << c_StringMatrix1_10x9 << 7 << 7 << 7 << 7 << c_StringMatrix1_7x7;
+    QTest::newRow("less rows, less columns") << c_StringMatrix1_10x9 << 8 << 8 << 8 << 8 << c_StringMatrix1_8x8;
+    QTest::newRow("equal rows, more columns") << c_StringMatrix1_10x9 << 10 << 11 << 10 << 11 << c_StringMatrix1_10x11;
+    QTest::newRow("more rows, equal columns") << c_StringMatrix1_10x9 << 12 << 9 << 12 << 9 << c_StringMatrix1_12x9;
+    QTest::newRow("more rows, more columns") << c_StringMatrix1_10x9 << 12 << 11 << 12 << 11 << c_StringMatrix1_12x11;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 12 << 11 << 12 << 11 << StringMatrix{12, 11, ""};
+    QTest::newRow("equal rows, equal columns") << c_StringMatrix1_10x9 << 10 << 9 << 10 << 9 << c_StringMatrix1_10x9;
+    QTest::newRow("less rows, more columns") << c_StringMatrix1_10x9 << 7 << 11 << 7 << 11 << c_StringMatrix1_7x11;
+    QTest::newRow("less rows, more columns") << c_StringMatrix1_10x9 << 8 << 11 << 8 << 11 << c_StringMatrix1_8x11;
+    QTest::newRow("more rows, less columns") << c_StringMatrix1_10x9 << 12 << 7 << 12 << 7 << c_StringMatrix1_12x7;
+    QTest::newRow("more rows, less columns") << c_StringMatrix1_10x9 << 12 << 8 << 12 << 8 << c_StringMatrix1_12x8;
 
     // additional tests for unchanged capacity
     QTest::newRow("equal rows, more columns") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 5 << 3 << 5 << StringMatrix{3, 5, {"First", "Second", "Third", "Fourth", "", "Fifth", "Sixth", "Seventh", "Eighth", "", "Ninth", "Tenth", "Eleventh", "Twelfth", ""}};
@@ -493,6 +539,21 @@ void ResizingTests::testStringMatrixResizeAndFillInNewValues_data()
     QTest::newRow("equal rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 4 << 3 << std::string{"/NEW_VALUE/"} << 4 << 3 << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 4 << std::string{"/NEW_VALUE/"} << 3 << 4 << StringMatrix{3, 4, {"First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/"}};
     QTest::newRow("more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 5 << 2 << std::string{"/NEW_VALUE/"} << 5 << 2 << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "/NEW_VALUE/", "/NEW_VALUE/"}};
+    QTest::newRow("equal rows, less columns") << c_StringMatrix1_10x9 << 10 << 7 << std::string{"5Z"} << 10 << 7 << c_StringMatrix1_10x7;
+    QTest::newRow("equal rows, less columns") << c_StringMatrix1_10x9 << 10 << 8 << std::string{"5Z"} << 10 << 8 << c_StringMatrix1_10x8;
+    QTest::newRow("less rows, equal columns") << c_StringMatrix1_10x9 << 7 << 9 << std::string{"5Z"} << 7 << 9 << c_StringMatrix1_7x9;
+    QTest::newRow("less rows, equal columns") << c_StringMatrix1_10x9 << 8 << 9 << std::string{"5Z"} << 8 << 9 << c_StringMatrix1_8x9;
+    QTest::newRow("less rows, less columns") << c_StringMatrix1_10x9 << 7 << 7 << std::string{"5Z"} << 7 << 7 << c_StringMatrix1_7x7;
+    QTest::newRow("less rows, less columns") << c_StringMatrix1_10x9 << 8 << 8 << std::string{"5Z"} << 8 << 8 << c_StringMatrix1_8x8;
+    QTest::newRow("equal rows, more columns") << c_StringMatrix1_10x9 << 10 << 11 << std::string{"5Z"} << 10 << 11 << c_StringMatrix2_10x11;
+    QTest::newRow("more rows, equal columns") << c_StringMatrix1_10x9 << 12 << 9 << std::string{"5Z"} << 12 << 9 << c_StringMatrix2_12x9;
+    QTest::newRow("more rows, more columns") << c_StringMatrix1_10x9 << 12 << 11 << std::string{"5Z"} << 12 << 11 << c_StringMatrix2_12x11;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 12 << 11 << std::string{"5Z"} << 12 << 11 << StringMatrix{12, 11, "5Z"};
+    QTest::newRow("equal rows, equal columns") << c_StringMatrix1_10x9 << 10 << 9 << std::string{"5Z"} << 10 << 9 << c_StringMatrix1_10x9;
+    QTest::newRow("less rows, more columns") << c_StringMatrix1_10x9 << 7 << 11 << std::string{"5Z"} << 7 << 11 << c_StringMatrix2_7x11;
+    QTest::newRow("less rows, more columns") << c_StringMatrix1_10x9 << 8 << 11 << std::string{"5Z"} << 8 << 11 << c_StringMatrix2_8x11;
+    QTest::newRow("more rows, less columns") << c_StringMatrix1_10x9 << 12 << 7 << std::string{"5Z"} << 12 << 7 << c_StringMatrix2_12x7;
+    QTest::newRow("more rows, less columns") << c_StringMatrix1_10x9 << 12 << 8 << std::string{"5Z"} << 12 << 8 << c_StringMatrix2_12x8;
 
     // additional tests for unchanged capacity
     QTest::newRow("equal rows, more columns") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 5 << std::string{"/NEW_VALUE/"} << 3 << 5 << StringMatrix{3, 5, {"First", "Second", "Third", "Fourth", "/NEW_VALUE/", "Fifth", "Sixth", "Seventh", "Eighth", "/NEW_VALUE/", "Ninth", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/"}};

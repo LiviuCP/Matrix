@@ -3905,8 +3905,10 @@ std::pair<typename Matrix<DataType>::size_type,
     const size_type c_NewColumnCapacity{std::max(columnCapacity, c_NewNrOfColumns)};
     const size_type c_NrOfRowsToKeep{std::min(m_NrOfRows, c_NewNrOfRows)};
     const size_type c_NrOfColumnsToKeep{std::min(m_NrOfColumns, c_NewNrOfColumns)};
+    const size_type c_NewRowCapacityOffset{c_NewNrOfRows > 0 ? (c_NewRowCapacity - c_NewNrOfRows) / 2 : -1};
+    const size_type c_NewColumnCapacityOffset{c_NewNrOfColumns > 0 ? (c_NewColumnCapacity - c_NewNrOfColumns) / 2 : -1};
 
-    if (c_NewRowCapacity != m_RowCapacity || c_NewColumnCapacity != m_ColumnCapacity)
+    if (m_RowCapacityOffset < 0 || c_NewRowCapacityOffset < 0 || c_NewRowCapacity != m_RowCapacity || c_NewColumnCapacity != m_ColumnCapacity || c_NewColumnCapacityOffset != m_ColumnCapacityOffset)
     {
 
         Matrix matrix{std::move(*this)};
@@ -3918,6 +3920,13 @@ std::pair<typename Matrix<DataType>::size_type,
     }
     else
     {
+        // TODO: adjust row capacity offset to obtain centered row capacity after resize
+        if (m_RowCapacityOffset > 0)
+        {
+            std::rotate(m_pBaseArrayPtr, m_pBaseArrayPtr + m_RowCapacityOffset, m_pBaseArrayPtr + m_RowCapacityOffset + m_NrOfRows);
+            m_RowCapacityOffset = 0;
+        }
+
         // ensure the items from the right side of the retained items get properly destroyed
         if (c_NewNrOfColumns < m_NrOfColumns)
         {
