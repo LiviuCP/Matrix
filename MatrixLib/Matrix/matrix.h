@@ -428,6 +428,9 @@ private:
     // places the last column into the new position by performing a rotation
     void _rotateLastColumn(size_type newColumnNr);
 
+    // normalize row capacity to have equal top/bottom unused capacity
+    void _normalizeRowCapacity();
+
     // ensure the currently allocated memory is first released (_deallocMemory()) prior to using this function
     void _allocMemory(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity = 0, size_type columnCapacity = 0);
 
@@ -2867,6 +2870,8 @@ void Matrix<DataType>::resize(Matrix<DataType>::size_type nrOfRows,
     {
         _defaultConstructInitItems(c_NrOfRemainingRows, 0, nrOfRows - c_NrOfRemainingRows, m_NrOfColumns);
     }
+
+    _normalizeRowCapacity();
 }
 
 template <typename DataType>
@@ -2891,6 +2896,8 @@ void Matrix<DataType>::resizeWithValue(Matrix<DataType>::size_type nrOfRows,
     {
         _fillInitItems(c_NrOfRemainingRows, 0, nrOfRows - c_NrOfRemainingRows, m_NrOfColumns, value);
     }
+
+    _normalizeRowCapacity();
 }
 
 template<typename DataType>
@@ -3920,7 +3927,7 @@ std::pair<typename Matrix<DataType>::size_type,
     }
     else
     {
-        // TODO: adjust row capacity offset to obtain centered row capacity after resize
+        // move unused top capacity to the bottom to avoid alignment issues (should be re-centered once resize is complete)
         if (m_RowCapacityOffset > 0)
         {
             std::rotate(m_pBaseArrayPtr, m_pBaseArrayPtr + m_RowCapacityOffset, m_pBaseArrayPtr + m_RowCapacityOffset + m_NrOfRows);
@@ -4145,6 +4152,31 @@ void Matrix<DataType>::_rotateLastColumn(Matrix<DataType>::size_type newColumnNr
         {
             std::rotate(m_pBaseArrayPtr[absRowNr] + c_NewColumnNr, m_pBaseArrayPtr[absRowNr] + c_LastColumnNr, m_pBaseArrayPtr[absRowNr] + m_NrOfColumns);
         }
+    }
+}
+
+template<typename DataType>
+void Matrix<DataType>::_normalizeRowCapacity()
+{
+    const size_type c_NormalizedRowCapacityOffset{m_NrOfRows > 0 ? (m_RowCapacity - m_NrOfRows) / 2 : -1};
+
+    if (m_RowCapacityOffset >= 0 && c_NormalizedRowCapacityOffset > 0 && m_RowCapacityOffset < c_NormalizedRowCapacityOffset)
+    {
+        const size_type c_LastRowNr{m_NrOfRows - 1};
+        DataType** const pStartingRow{m_pBaseArrayPtr + m_RowCapacityOffset};
+        DataType** const pEndingRow{pStartingRow + c_LastRowNr};
+        DataType** const pStartingRowToReplace{m_pBaseArrayPtr + c_NormalizedRowCapacityOffset};
+        DataType** const pEndingRowToReplace{pStartingRowToReplace + c_LastRowNr};
+
+        DataType** pRowToReplace{pEndingRowToReplace};
+
+        for (DataType** pCurrentRow{pEndingRow}; pCurrentRow >= pStartingRow; --pCurrentRow)
+        {
+            std::iter_swap(pCurrentRow, pRowToReplace);
+            --pRowToReplace;
+        }
+
+        m_RowCapacityOffset = c_NormalizedRowCapacityOffset;
     }
 }
 
