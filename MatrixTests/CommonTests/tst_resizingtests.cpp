@@ -467,6 +467,7 @@ void ResizingTests::testIntMatrixClear_data()
     QTest::addColumn<IntMatrix>("matrix");
 
     QTest::newRow("non-empty matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("non-empty matrix") << c_IntMatrix1_8x9;
     QTest::newRow("empty matrix") << IntMatrix{};
 }
 
@@ -759,6 +760,7 @@ void ResizingTests::testStringMatrixClear_data()
     QTest::addColumn<StringMatrix>("matrix");
 
     QTest::newRow("non-empty matrix") << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
+    QTest::newRow("non-empty matrix") << c_StringMatrix1_8x9;
     QTest::newRow("empty matrix") << StringMatrix{};
 }
 
