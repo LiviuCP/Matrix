@@ -53,6 +53,19 @@
  \
     QVERIFY2(matrix == expectedMatrix, "Resizing failed, the matrix does not have the correct values!");
 
+#define TEST_MATRIX_RESIZE_CHECK_RETAINED_ELEMENT_VALUES(matrixType, matrix, expectedRetainedElementsMatrix) \
+    bool areRetainedValuesCorrect{true}; \
+\
+    for(Matrix<matrixType>::size_type rowNr{0}; rowNr < expectedRetainedElementsMatrix.getNrOfRows(); ++rowNr) \
+    { \
+        for(Matrix<matrixType>::size_type columnNr{0}; columnNr < expectedRetainedElementsMatrix.getNrOfColumns(); ++columnNr) \
+        { \
+            areRetainedValuesCorrect = areRetainedValuesCorrect && (matrix.at(rowNr, columnNr) == expectedRetainedElementsMatrix.at(rowNr, columnNr)); \
+        } \
+    } \
+\
+    QVERIFY2(areRetainedValuesCorrect, "Resizing failed, the retained element values are not correct!");
+
 #define TEST_MATRIX_SHRINK_TO_FIT(matrixType, primaryMatrix) \
     QFETCH(Matrix<matrixType>, matrix); \
  \

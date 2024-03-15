@@ -86,18 +86,7 @@ void ResizingTests::testIntMatrixResizeWithoutFillingInNewValues()
     matrix.resize(resizeRowsCount, resizeColumnsCount);
 
     TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity);
-
-    bool areRetainedValuesCorrect{true};
-
-    for(IntMatrixSizeType rowNr{0}; rowNr < expectedRetainedElementsMatrix.getNrOfRows(); ++rowNr)
-    {
-        for(IntMatrixSizeType columnNr{0}; columnNr < expectedRetainedElementsMatrix.getNrOfColumns(); ++columnNr)
-        {
-            areRetainedValuesCorrect = areRetainedValuesCorrect && (matrix.at(rowNr, columnNr) == expectedRetainedElementsMatrix.at(rowNr, columnNr));
-        }
-    }
-
-    QVERIFY2(areRetainedValuesCorrect, "Resizing failed, the retained element values are not correct!");
+    TEST_MATRIX_RESIZE_CHECK_RETAINED_ELEMENT_VALUES(int, matrix, expectedRetainedElementsMatrix);
 }
 
 void ResizingTests::testIntMatrixResizeAndFillInNewValues()
