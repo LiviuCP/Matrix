@@ -381,6 +381,9 @@ void ResizingTests::testIntMatrixShrinkToFit_data()
     QTest::newRow("more rows than columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("less rows than columns") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("square matrix") << IntMatrix{4, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("square matrix") << c_IntMatrix1_8x8;
+    QTest::newRow("more rows than columns") << c_IntMatrix1_10x9;
+    QTest::newRow("less rows than columns") << c_IntMatrix1_8x9;
 }
 
 void ResizingTests::testIntMatrixInsertRowNoSetValue_data()
@@ -559,6 +562,10 @@ void ResizingTests::testStringMatrixShrinkToFit_data()
     QTest::newRow("more rows than columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("less rows than columns") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("square matrix") << StringMatrix{4, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("square matrix") << c_StringMatrix1_8x8;
+    QTest::newRow("more rows than columns") << c_StringMatrix1_10x9;
+    QTest::newRow("less rows than columns") << c_StringMatrix1_8x9;
+
 }
 
 void ResizingTests::testStringMatrixInsertRowNoSetValue_data()
