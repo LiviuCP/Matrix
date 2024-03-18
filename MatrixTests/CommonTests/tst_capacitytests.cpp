@@ -25,8 +25,8 @@ private slots:
     void testIntMatrixCapacityWithCopyAssignmentOperator();
     void testIntMatrixCapacityWithMoveAssignmentOperator();
     void testIntMatrixCapacityWithTranspose();
-    void testIntMatrixCapacityWithResizeWithoutFillingInNewValues();
-    void testIntMatrixCapacityWithResizeAndFillInNewValues();
+    void testIntMatrixCapacityWithResizeWithDefaultNewValues();
+    void testIntMatrixCapacityWithResizeAndSetNewValues();
     void testIntMatrixCapacityWithInsertRow();
     void testIntMatrixCapacityWithInsertColumn();
     void testIntMatrixCapacityWithEraseRow();
@@ -45,8 +45,8 @@ private slots:
     void testStringMatrixCapacityWithCopyAssignmentOperator();
     void testStringMatrixCapacityWithMoveAssignmentOperator();
     void testStringMatrixCapacityWithTranspose();
-    void testStringMatrixCapacityWithResizeWithoutFillingInNewValues();
-    void testStringMatrixCapacityWithResizeAndFillInNewValues();
+    void testStringMatrixCapacityWithResizeWithDefaultNewValues();
+    void testStringMatrixCapacityWithResizeAndSetNewValues();
     void testStringMatrixCapacityWithInsertRow();
     void testStringMatrixCapacityWithInsertColumn();
     void testStringMatrixCapacityWithEraseRow();
@@ -65,8 +65,8 @@ private slots:
     void testIntMatrixCapacityWithCopyAssignmentOperator_data();
     void testIntMatrixCapacityWithMoveAssignmentOperator_data();
     void testIntMatrixCapacityWithTranspose_data();
-    void testIntMatrixCapacityWithResizeWithoutFillingInNewValues_data();
-    void testIntMatrixCapacityWithResizeAndFillInNewValues_data();
+    void testIntMatrixCapacityWithResizeWithDefaultNewValues_data();
+    void testIntMatrixCapacityWithResizeAndSetNewValues_data();
     void testIntMatrixCapacityWithInsertRow_data();
     void testIntMatrixCapacityWithInsertColumn_data();
     void testIntMatrixCapacityWithEraseRow_data();
@@ -84,8 +84,8 @@ private slots:
     void testStringMatrixCapacityWithCopyAssignmentOperator_data();
     void testStringMatrixCapacityWithMoveAssignmentOperator_data();
     void testStringMatrixCapacityWithTranspose_data();
-    void testStringMatrixCapacityWithResizeWithoutFillingInNewValues_data();
-    void testStringMatrixCapacityWithResizeAndFillInNewValues_data();
+    void testStringMatrixCapacityWithResizeWithDefaultNewValues_data();
+    void testStringMatrixCapacityWithResizeAndSetNewValues_data();
     void testStringMatrixCapacityWithInsertRow_data();
     void testStringMatrixCapacityWithInsertColumn_data();
     void testStringMatrixCapacityWithEraseRow_data();
@@ -196,7 +196,7 @@ void CapacityTests::testIntMatrixCapacityWithTranspose()
 /* In addition to testing resulting capacity a consistency check (size and retained element values comparison) is required in order to ensure
    the resizing with explicitly given capacity is consistent with the one where the capacity is not explicitly provided as argument
 */
-void CapacityTests::testIntMatrixCapacityWithResizeWithoutFillingInNewValues()
+void CapacityTests::testIntMatrixCapacityWithResizeWithDefaultNewValues()
 {
     QFETCH(IntMatrix, matrix);
     QFETCH(IntMatrixSizeType, resizeRowsCount);
@@ -233,7 +233,7 @@ void CapacityTests::testIntMatrixCapacityWithResizeWithoutFillingInNewValues()
 /* In addition to testing resulting capacity a consistency check (size and element values comparison) is required in order to ensure
    the resizing with explicitly given capacity is consistent with the one where the capacity is not explicitly provided as argument
 */
-void CapacityTests::testIntMatrixCapacityWithResizeAndFillInNewValues()
+void CapacityTests::testIntMatrixCapacityWithResizeAndSetNewValues()
 {
     TEST_CAPACITY_WITH_RESIZE_AND_FILL_IN_NEW_VALUES(int, mPrimaryIntMatrix, mSecondaryIntMatrix);
 }
@@ -365,7 +365,7 @@ void CapacityTests::testStringMatrixCapacityWithTranspose()
 
 /* Unlike the integer matrix scenario here it is possible to perform the consistency check by comparing the two resized matrixes (==)
    as the default values of the new elements are well determined */
-void CapacityTests::testStringMatrixCapacityWithResizeWithoutFillingInNewValues()
+void CapacityTests::testStringMatrixCapacityWithResizeWithDefaultNewValues()
 {
     QFETCH(StringMatrix, matrix);
     QFETCH(StringMatrixSizeType, resizeRowsCount);
@@ -387,7 +387,7 @@ void CapacityTests::testStringMatrixCapacityWithResizeWithoutFillingInNewValues(
 }
 
 /* Same way to perform consistency check as for integer matrix scenario */
-void CapacityTests::testStringMatrixCapacityWithResizeAndFillInNewValues()
+void CapacityTests::testStringMatrixCapacityWithResizeAndSetNewValues()
 {
     TEST_CAPACITY_WITH_RESIZE_AND_FILL_IN_NEW_VALUES(std::string, mPrimaryStringMatrix, mSecondaryStringMatrix);
 }
@@ -525,12 +525,12 @@ void CapacityTests::testIntMatrixCapacityWithTranspose_data()
     QTest::newRow("matrix transposed to itself") << IntMatrix{26, 20, 2} << IntMatrix{26, 20, 2} << 32 << 32 << true;
 }
 
-void CapacityTests::testIntMatrixCapacityWithResizeWithoutFillingInNewValues_data()
+void CapacityTests::testIntMatrixCapacityWithResizeWithDefaultNewValues_data()
 {
     _buildIntMatrixCapacityWithResizeTestingTable();
 }
 
-void CapacityTests::testIntMatrixCapacityWithResizeAndFillInNewValues_data()
+void CapacityTests::testIntMatrixCapacityWithResizeAndSetNewValues_data()
 {
     _buildIntMatrixCapacityWithResizeTestingTable();
 }
@@ -1151,12 +1151,12 @@ void CapacityTests::testStringMatrixCapacityWithTranspose_data()
     QTest::newRow("matrix transposed to itself") << StringMatrix{26, 20, "Value"} << StringMatrix{26, 20, "Value"} << 32 << 32 << true;
 }
 
-void CapacityTests::testStringMatrixCapacityWithResizeWithoutFillingInNewValues_data()
+void CapacityTests::testStringMatrixCapacityWithResizeWithDefaultNewValues_data()
 {
     _buildStringMatrixCapacityWithResizeTestingTable();
 }
 
-void CapacityTests::testStringMatrixCapacityWithResizeAndFillInNewValues_data()
+void CapacityTests::testStringMatrixCapacityWithResizeAndSetNewValues_data()
 {
     _buildStringMatrixCapacityWithResizeTestingTable();
 }

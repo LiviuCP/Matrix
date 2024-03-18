@@ -38,7 +38,7 @@
                                    "Clear failed, number of rows or columns of the matrix is not correct!", \
                                    "Clear failed, capacity of the matrix is not correct!")
 
-#define TEST_MATRIX_RESIZE_AND_FILL_IN_NEW_VALUES(matrixType) \
+#define TEST_MATRIX_RESIZE_WITH_DEFAULT_CAPACITY_AND_SET_NEW_VALUES(matrixType) \
     QFETCH(Matrix<matrixType>, matrix); \
     QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
     QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
@@ -50,6 +50,22 @@
     matrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, fillValue); \
  \
     TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity); \
+ \
+    QVERIFY2(matrix == expectedMatrix, "Resizing failed, the matrix does not have the correct values!");
+
+#define TEST_MATRIX_RESIZE_WITH_FIXED_CAPACITY_AND_SET_NEW_VALUES(matrixType) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
+    QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
+    QFETCH(matrixType, fillValue); \
+    QFETCH(Matrix<matrixType>::size_type, resizeRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, resizeColumnCapacity); \
+    QFETCH(Matrix<matrixType>, expectedMatrix); \
+ \
+    matrix.resizeWithValue(matrix.getNrOfRows(), matrix.getNrOfColumns(), fillValue, resizeRowCapacity, resizeColumnCapacity); \
+    matrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, fillValue, resizeRowCapacity, resizeColumnCapacity); \
+ \
+    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity); \
  \
     QVERIFY2(matrix == expectedMatrix, "Resizing failed, the matrix does not have the correct values!");
 
