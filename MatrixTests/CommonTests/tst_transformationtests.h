@@ -208,15 +208,6 @@
         QVERIFY2(secondDestMatrix == expectedSecondDestMatrix, "Horizontal split failed, second destination matrix has incorrect values!"); \
     }
 
-#define TEST_MATRIX_SET_ALL_ITEMS_TO_VALUE(matrixType) \
-    QFETCH(Matrix<matrixType>, matrix); \
-    QFETCH(matrixType, value); \
-    QFETCH(Matrix<matrixType>, expectedMatrix); \
- \
-    matrix.setAllItemsToValue(value); \
- \
-    QVERIFY2(matrix == expectedMatrix, "Setting all matrix items to same value failed, matrix has incorrect values!");
-
 #define TEST_MATRIX_COPY(matrixType) \
     QFETCH(Matrix<matrixType>, srcMatrix); \
     QFETCH(Matrix<matrixType>, destMatrix); \

@@ -287,7 +287,6 @@ public:
     void swapColumns(size_type columnNr, Matrix& matrix, size_type matrixColumnNr);
     void swapRowColumn(size_type rowNr, Matrix& matrix, size_type matrixColumnNr);
 
-    void setAllItemsToValue(const DataType& value);
     void copy(const Matrix& matrix, size_type nrOfRows, size_type nrOfColumns, size_type matrixRowNr = 0, size_type matrixColumnNr = 0, size_type rowNr = 0, size_type columnNr = 0);
 
     // the template type should have operator == implemented, otherwise a template specialization is required
@@ -3275,15 +3274,6 @@ void Matrix<DataType>::swapRowColumn(Matrix<DataType>::size_type rowNr,
     for (size_type matrixAbsRowNr{matrix.m_RowCapacityOffset}, columnNr{0}; columnNr < m_NrOfColumns; ++columnNr, ++matrixAbsRowNr)
     {
         std::swap(m_pBaseArrayPtr[c_AbsRowNr][columnNr], matrix.m_pBaseArrayPtr[matrixAbsRowNr][c_MatrixColumnNr]);
-    }
-}
-
-template <typename DataType>
-void Matrix<DataType>::setAllItemsToValue(const DataType& value)
-{
-    for (size_type absRowNr{m_RowCapacityOffset}; absRowNr != m_NrOfRows + m_RowCapacityOffset; ++absRowNr)
-    {
-        std::fill_n(m_pBaseArrayPtr[absRowNr], m_NrOfColumns, value);
     }
 }
 

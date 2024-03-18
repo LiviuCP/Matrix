@@ -19,7 +19,6 @@ private slots:
     void testIntMatrixCatByColumn();
     void testIntMatrixSplitByRow();
     void testIntMatrixSplitByColumn();
-    void testIntMatrixSetAllItemsToValue();
     void testIntMatrixCopy();
 
     void testStringMatrixTranspose();
@@ -27,7 +26,6 @@ private slots:
     void testStringMatrixCatByColumn();
     void testStringMatrixSplitByRow();
     void testStringMatrixSplitByColumn();
-    void testStringMatrixSetAllItemsToValue();
     void testStringMatrixCopy();
 
     // test data
@@ -36,7 +34,6 @@ private slots:
     void testIntMatrixCatByColumn_data();
     void testIntMatrixSplitByRow_data();
     void testIntMatrixSplitByColumn_data();
-    void testIntMatrixSetAllItemsToValue_data();
     void testIntMatrixCopy_data();
 
     void testStringMatrixTranspose_data();
@@ -44,7 +41,6 @@ private slots:
     void testStringMatrixCatByColumn_data();
     void testStringMatrixSplitByRow_data();
     void testStringMatrixSplitByColumn_data();
-    void testStringMatrixSetAllItemsToValue_data();
     void testStringMatrixCopy_data();
 
 private:
@@ -79,11 +75,6 @@ void TransformationTests::testIntMatrixSplitByColumn()
     TEST_MATRIX_SPLIT_BY_COLUMN(int);
 }
 
-void TransformationTests::testIntMatrixSetAllItemsToValue()
-{
-    TEST_MATRIX_SET_ALL_ITEMS_TO_VALUE(int);
-}
-
 void TransformationTests::testIntMatrixCopy()
 {
     TEST_MATRIX_COPY(int);
@@ -112,11 +103,6 @@ void TransformationTests::testStringMatrixSplitByRow()
 void TransformationTests::testStringMatrixSplitByColumn()
 {
     TEST_MATRIX_SPLIT_BY_COLUMN(std::string);
-}
-
-void TransformationTests::testStringMatrixSetAllItemsToValue()
-{
-    TEST_MATRIX_SET_ALL_ITEMS_TO_VALUE(std::string);
 }
 
 void TransformationTests::testStringMatrixCopy()
@@ -239,16 +225,6 @@ void TransformationTests::testIntMatrixSplitByColumn_data()
     QTest::newRow("scenario: source first") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {9, 10, 11, 12}} << 2 << SplitMode::SOURCE_FIRST << 2 << 3 << 2 << 2 << IntMatrix{2, 2, {1, 2, 4, 5}} << IntMatrix{2, 1, {3, 6}};
     QTest::newRow("scenario: source second") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2 << SplitMode::SOURCE_SECOND << 2 << 2 << 2 << 3 << IntMatrix{2, 2, {1, 2, 4, 5}} << IntMatrix{2, 1, {3, 6}};
     QTest::newRow("scenario: source second") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{1, 2, {7, 8}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2 << SplitMode::SOURCE_SECOND << 2 << 2 << 2 << 3 << IntMatrix{2, 2, {1, 2, 4, 5}} << IntMatrix{2, 1, {3, 6}};
-}
-
-void TransformationTests::testIntMatrixSetAllItemsToValue_data()
-{
-    QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<int>("value");
-    QTest::addColumn<IntMatrix>("expectedMatrix");
-
-    QTest::newRow("non-empty matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 7 << IntMatrix{2, 3, 7};
-    QTest::newRow("empty matrix") << IntMatrix{} << 7 << IntMatrix{};
 }
 
 void TransformationTests::testIntMatrixCopy_data()
@@ -384,16 +360,6 @@ void TransformationTests::testStringMatrixSplitByColumn_data()
     QTest::newRow("scenario: source first") << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << StringMatrix{2, 2, {"Ninth", "Tenth", "Eleventh", "Twelfth"}} << 2 << SplitMode::SOURCE_FIRST << 2 << 3 << 2 << 2 << StringMatrix{2, 2, {"First", "Second", "Fourth", "Fifth"}} << StringMatrix{2, 1, {"Third", "Sixth"}};
     QTest::newRow("scenario: source second") << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << StringMatrix{} << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << 2 << SplitMode::SOURCE_SECOND << 2 << 2 << 2 << 3 << StringMatrix{2, 2, {"First", "Second", "Fourth", "Fifth"}} << StringMatrix{2, 1, {"Third", "Sixth"}};
     QTest::newRow("scenario: source second") << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << StringMatrix{1, 2, {"Seventh", "Eighth"}} << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << 2 << SplitMode::SOURCE_SECOND << 2 << 2 << 2 << 3 << StringMatrix{2, 2, {"First", "Second", "Fourth", "Fifth"}} << StringMatrix{2, 1, {"Third", "Sixth"}};
-}
-
-void TransformationTests::testStringMatrixSetAllItemsToValue_data()
-{
-    QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<std::string>("value");
-    QTest::addColumn<StringMatrix>("expectedMatrix");
-
-    QTest::newRow("non-empty matrix") << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}} << std::string{"Seventh"} << StringMatrix{2, 3, "Seventh"};
-    QTest::newRow("empty matrix") << StringMatrix{} << std::string{"Seventh"} << StringMatrix{};
 }
 
 void TransformationTests::testStringMatrixCopy_data()
