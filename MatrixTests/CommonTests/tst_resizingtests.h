@@ -120,6 +120,50 @@
  \
     QVERIFY2(matrix == referenceMatrix, "Insert column failed, the matrix doesn't have the right values!");
 
+#define TEST_MATRIX_INSERT_MULTIPLE_ROWS_SET_VALUE(matrixType) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(std::vector<Matrix<matrixType>::size_type>, insertPositions); \
+    QFETCH(matrixType, insertedRowValue); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>, referenceMatrix); \
+ \
+    for (const auto insertPosition : insertPositions) \
+    { \
+        if (insertPosition < 0 || insertPosition > matrix.getNrOfRows()) \
+        { \
+            QFAIL("Insert row failed: invalid row insert position, cannot insert!"); \
+        } \
+ \
+        matrix.insertRow(insertPosition, insertedRowValue); \
+    } \
+ \
+    TEST_INSERT_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity); \
+ \
+    QVERIFY2(matrix == referenceMatrix, "Insert row failed, the matrix doesn't have the right values!");
+
+#define TEST_MATRIX_INSERT_MULTIPLE_COLUMNS_SET_VALUE(matrixType) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(std::vector<Matrix<matrixType>::size_type>, insertPositions); \
+    QFETCH(matrixType, insertedColumnValue); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>, referenceMatrix); \
+ \
+    for (const auto insertPosition : insertPositions) \
+    { \
+        if (insertPosition < 0 || insertPosition > matrix.getNrOfColumns()) \
+        { \
+            QFAIL("Insert column failed: invalid column insert position, cannot insert!"); \
+        } \
+ \
+        matrix.insertColumn(insertPosition, insertedColumnValue); \
+    } \
+ \
+    TEST_INSERT_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity); \
+ \
+    QVERIFY2(matrix == referenceMatrix, "Insert column failed, the matrix doesn't have the right values!");
+
 #define TEST_MATRIX_ERASE_ROW(matrixType) \
     QFETCH(Matrix<matrixType>, matrix); \
     QFETCH(Matrix<matrixType>::size_type, erasePosition); \
