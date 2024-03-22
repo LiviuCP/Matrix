@@ -542,7 +542,15 @@ void ResizingTests::testIntMatrixInsertMultipleRowsSetValue_data()
     QTest::newRow("insert in the first half, then in the second") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{2, 9} << 5 << 12 << 11 << c_IntMatrix3c_12x9;
     QTest::newRow("insert in the second half, then in the first") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{8, 2} << 5 << 12 << 11 << c_IntMatrix3c_12x9;
     QTest::newRow("insert both in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{5, 5} << 5 << 12 << 11 << c_IntMatrix3d_12x9;
-    QTest::newRow("insert both in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{4, 5} << 5 << 11 << 12 << c_IntMatrix3_11x10;
+    QTest::newRow("insert both in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{4, 5} << 5 << 11 << 12 << c_IntMatrix3a_11x10;
+    QTest::newRow("prepend, then insert in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{0, 5} << 5 << 12 << 11 << c_IntMatrix3e_12x9;
+    QTest::newRow("insert in the middle, then prepend") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{5, 0} << 5 << 12 << 11 << c_IntMatrix3f_12x9;
+    QTest::newRow("prepend, then insert in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{0, 5} << 5 << 11 << 12 << c_IntMatrix3b_11x10;
+    QTest::newRow("insert in the middle, then prepend") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{4, 0} << 5 << 11 << 12 << c_IntMatrix3b_11x10;
+    QTest::newRow("insert in the middle, then append") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{5, 11} << 5 << 12 << 11 << c_IntMatrix3g_12x9;
+    QTest::newRow("append, then insert in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{10, 5} << 5 << 12 << 11 << c_IntMatrix3g_12x9;
+    QTest::newRow("insert in the middle, then append") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{4, 10} << 5 << 11 << 12 << c_IntMatrix3c_11x10;
+    QTest::newRow("append, then insert in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{9, 5} << 5 << 11 << 12 << c_IntMatrix3d_11x10;
 }
 
 void ResizingTests::testIntMatrixInsertMultipleColumnsSetValue_data()
@@ -561,7 +569,15 @@ void ResizingTests::testIntMatrixInsertMultipleColumnsSetValue_data()
     QTest::newRow("insert in the first half, then in the second") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{2, 9} << 5 << 11 << 12 << c_IntMatrix3d_9x12;
     QTest::newRow("insert in the second half, then in the first") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{8, 2} << 5 << 11 << 12 << c_IntMatrix3d_9x12;
     QTest::newRow("insert both in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{5, 5} << 5 << 11 << 12 << c_IntMatrix3e_9x12;
-    QTest::newRow("insert both in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{4, 5} << 5 << 12 << 11 << c_IntMatrix3_10x11;
+    QTest::newRow("insert both in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{4, 5} << 5 << 12 << 11 << c_IntMatrix3a_10x11;
+    QTest::newRow("prepend, then insert in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{0, 5} << 5 << 11 << 12 << c_IntMatrix3f_9x12;
+    QTest::newRow("insert in the middle, then prepend") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{5, 0} << 5 << 11 << 12 << c_IntMatrix3g_9x12;
+    QTest::newRow("prepend, then insert in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{0, 5} << 5 << 12 << 11 << c_IntMatrix3b_10x11;
+    QTest::newRow("insert in the middle, then prepend") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{4, 0} << 5 << 12 << 11 << c_IntMatrix3b_10x11;
+    QTest::newRow("insert in the middle, then append") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{5, 11} << 5 << 11 << 12 << c_IntMatrix3h_9x12;
+    QTest::newRow("append, then insert in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{10, 5} << 5 << 11 << 12 << c_IntMatrix3h_9x12;
+    QTest::newRow("insert in the middle, then append") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{4, 10} << 5 << 12 << 11 << c_IntMatrix3c_10x11;
+    QTest::newRow("append, then insert in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{9, 5} << 5 << 12 << 11 << c_IntMatrix3d_10x11;
 }
 
 void ResizingTests::testIntMatrixEraseRow_data()
@@ -915,14 +931,22 @@ void ResizingTests::testStringMatrixInsertMultipleRowsSetValue_data()
     QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
     QTest::addColumn<StringMatrix>("referenceMatrix");
 
-    QTest::newRow("prepend both") << c_StringMatrix1_10x9 << std::vector<IntMatrixSizeType>{0, 0} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3a_12x9;
-    QTest::newRow("append both") << c_StringMatrix1_10x9 << std::vector<IntMatrixSizeType>{10, 11} << std::string{"5Z"} << 12 << 11 << c_StringMatrix2_12x9;
-    QTest::newRow("prepend, then append") << c_StringMatrix1_10x9 << std::vector<IntMatrixSizeType>{0, 11} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3b_12x9;
-    QTest::newRow("append, then prepend") << c_StringMatrix1_10x9 << std::vector<IntMatrixSizeType>{10, 0} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3b_12x9;
-    QTest::newRow("insert in the first half, then in the second") << c_StringMatrix1_10x9 << std::vector<IntMatrixSizeType>{2, 9} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3c_12x9;
-    QTest::newRow("insert in the second half, then in the first") << c_StringMatrix1_10x9 << std::vector<IntMatrixSizeType>{8, 2} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3c_12x9;
-    QTest::newRow("insert both in the middle") << c_StringMatrix1_10x9 << std::vector<IntMatrixSizeType>{5, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3d_12x9;
-    QTest::newRow("insert both in the middle") << c_StringMatrix3_9x10 << std::vector<IntMatrixSizeType>{4, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3_11x10;
+    QTest::newRow("prepend both") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{0, 0} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3a_12x9;
+    QTest::newRow("append both") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{10, 11} << std::string{"5Z"} << 12 << 11 << c_StringMatrix2_12x9;
+    QTest::newRow("prepend, then append") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{0, 11} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3b_12x9;
+    QTest::newRow("append, then prepend") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{10, 0} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3b_12x9;
+    QTest::newRow("insert in the first half, then in the second") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{2, 9} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3c_12x9;
+    QTest::newRow("insert in the second half, then in the first") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{8, 2} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3c_12x9;
+    QTest::newRow("insert both in the middle") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{5, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3d_12x9;
+    QTest::newRow("insert both in the middle") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{4, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3a_11x10;
+    QTest::newRow("prepend, then insert in the middle") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{0, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3e_12x9;
+    QTest::newRow("insert in the middle, then prepend") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{5, 0} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3f_12x9;
+    QTest::newRow("prepend, then insert in the middle") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{0, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3b_11x10;
+    QTest::newRow("insert in the middle, then prepend") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{4, 0} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3b_11x10;
+    QTest::newRow("insert in the middle, then append") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{5, 11} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3g_12x9;
+    QTest::newRow("append, then insert in the middle") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{10, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3g_12x9;
+    QTest::newRow("insert in the middle, then append") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{4, 10} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3c_11x10;
+    QTest::newRow("append, then insert in the middle") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{9, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3d_11x10;
 }
 
 void ResizingTests::testStringMatrixInsertMultipleColumnsSetValue_data()
@@ -934,14 +958,22 @@ void ResizingTests::testStringMatrixInsertMultipleColumnsSetValue_data()
     QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
     QTest::addColumn<StringMatrix>("referenceMatrix");
 
-    QTest::newRow("prepend both") << c_StringMatrix3_9x10 << std::vector<IntMatrixSizeType>{0, 0} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3a_9x12;
-    QTest::newRow("append both") << c_StringMatrix3_9x10 << std::vector<IntMatrixSizeType>{10, 11} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3b_9x12;
-    QTest::newRow("prepend, then append") << c_StringMatrix3_9x10 << std::vector<IntMatrixSizeType>{0, 11} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3c_9x12;
-    QTest::newRow("append, then prepend") << c_StringMatrix3_9x10 << std::vector<IntMatrixSizeType>{10, 0} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3c_9x12;
-    QTest::newRow("insert in the first half, then in the second") << c_StringMatrix3_9x10 << std::vector<IntMatrixSizeType>{2, 9} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3d_9x12;
-    QTest::newRow("insert in the second half, then in the first") << c_StringMatrix3_9x10 << std::vector<IntMatrixSizeType>{8, 2} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3d_9x12;
-    QTest::newRow("insert both in the middle") << c_StringMatrix3_9x10 << std::vector<IntMatrixSizeType>{5, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3e_9x12;
-    QTest::newRow("insert both in the middle") << c_StringMatrix1_10x9 << std::vector<IntMatrixSizeType>{4, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3_10x11;
+    QTest::newRow("prepend both") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{0, 0} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3a_9x12;
+    QTest::newRow("append both") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{10, 11} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3b_9x12;
+    QTest::newRow("prepend, then append") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{0, 11} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3c_9x12;
+    QTest::newRow("append, then prepend") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{10, 0} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3c_9x12;
+    QTest::newRow("insert in the first half, then in the second") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{2, 9} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3d_9x12;
+    QTest::newRow("insert in the second half, then in the first") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{8, 2} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3d_9x12;
+    QTest::newRow("insert both in the middle") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{5, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3e_9x12;
+    QTest::newRow("insert both in the middle") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{4, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3a_10x11;
+    QTest::newRow("prepend, then insert in the middle") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{0, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3f_9x12;
+    QTest::newRow("insert in the middle, then prepend") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{5, 0} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3g_9x12;
+    QTest::newRow("prepend, then insert in the middle") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{0, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3b_10x11;
+    QTest::newRow("insert in the middle, then prepend") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{4, 0} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3b_10x11;
+    QTest::newRow("insert in the middle, then append") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{5, 11} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3h_9x12;
+    QTest::newRow("append, then insert in the middle") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{10, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3h_9x12;
+    QTest::newRow("insert in the middle, then append") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{4, 10} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3c_10x11;
+    QTest::newRow("append, then insert in the middle") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{9, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3d_10x11;
 }
 
 void ResizingTests::testStringMatrixEraseRow_data()
