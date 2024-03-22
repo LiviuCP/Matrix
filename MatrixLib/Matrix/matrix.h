@@ -4120,12 +4120,11 @@ void Matrix<DataType>::_rotateFirstColumn(size_type newColumnNr)
 {
     if (!isEmpty())
     {
-        const size_type c_FirstColumnNr{0};
         const size_type c_NewColumnNr{std::clamp(newColumnNr, 0, m_NrOfColumns)};
 
         for(size_type absRowNr{m_RowCapacityOffset}; absRowNr != m_RowCapacityOffset + m_NrOfRows; ++absRowNr)
         {
-            std::rotate(m_pBaseArrayPtr[absRowNr], m_pBaseArrayPtr[absRowNr] + 1, m_pBaseArrayPtr[absRowNr] + newColumnNr + 1);
+            std::rotate(m_pBaseArrayPtr[absRowNr], m_pBaseArrayPtr[absRowNr] + 1, m_pBaseArrayPtr[absRowNr] + c_NewColumnNr + 1);
         }
     }
 }
