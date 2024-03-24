@@ -179,21 +179,19 @@
 
 #define TEST_MATRIX_ERASE_MULTIPLE_ROWS(matrixType) \
     QFETCH(Matrix<matrixType>, matrix); \
-    QFETCH(Matrix<matrixType>::size_type, erasePosition); \
-    QFETCH(Matrix<matrixType>::size_type, erasedRowsCount); \
+    QFETCH(std::vector<Matrix<matrixType>::size_type>, erasePositions); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
-    while (erasedRowsCount > 0) \
+    for (const auto erasePosition : erasePositions) \
     { \
-        if (erasePosition >= matrix.getNrOfRows()) \
+        if (erasePosition < 0 || erasePosition >= matrix.getNrOfRows()) \
         { \
             QFAIL("Erase row failed: invalid row number, cannot erase!"); \
         } \
-\
+ \
         matrix.eraseRow(erasePosition); \
-        --erasedRowsCount; \
     } \
  \
     TEST_ERASE_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, expectedMatrix.getNrOfRows(), expectedMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity); \
@@ -215,21 +213,19 @@
 
 #define TEST_MATRIX_ERASE_MULTIPLE_COLUMNS(matrixType) \
     QFETCH(Matrix<matrixType>, matrix); \
-    QFETCH(Matrix<matrixType>::size_type, erasePosition); \
-    QFETCH(Matrix<matrixType>::size_type, erasedColumnsCount); \
+    QFETCH(std::vector<Matrix<matrixType>::size_type>, erasePositions); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
-    while (erasedColumnsCount > 0) \
+    for (const auto erasePosition : erasePositions) \
     { \
-        if (erasePosition >= matrix.getNrOfRows()) \
+        if (erasePosition < 0 || erasePosition >= matrix.getNrOfColumns()) \
         { \
             QFAIL("Erase column failed: invalid column number, cannot erase!"); \
         } \
-\
+ \
         matrix.eraseColumn(erasePosition); \
-        --erasedColumnsCount; \
     } \
  \
     TEST_ERASE_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, expectedMatrix.getNrOfRows(), expectedMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity); \
