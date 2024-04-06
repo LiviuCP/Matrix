@@ -28,10 +28,6 @@
     auto operator<=>(const IteratorType& it) const; \
     bool operator==(const IteratorType& it) const; \
 \
-    /* This function was created mainly for testing purposes although it can be used in "production" as well. */ \
-    /* However it's best to assume an iterator has become invalid if matrix has been changed structure-wise (resize, assignments, clear, row/column insertion, etc) */ \
-    bool isValidWithMatrix(const Matrix<IterableType>& matrix) const; \
-\
     SizeType getRowNr() const; \
     SizeType getColumnNr() const; \
 \
@@ -239,9 +235,6 @@
     CHECK_ERROR_CONDITION(c_ResultingIndex < 0 || c_ResultingIndex >= c_UpperBound, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
     return mpIteratorPtr[c_ResultingIndex FirstOperator mIteratorSecondaryDimension][c_ResultingIndex SecondOperator mIteratorSecondaryDimension];
-
-#define NON_DIAG_ITERATOR_IS_VALID_WITH_MATRIX(mpIteratorPtr, mIteratorRowsCount, mIteratorColumnsCount, pMatrixPtr, matrixRowsCount, matrixColumnsCount) \
-    return (mpIteratorPtr == pMatrixPtr && mIteratorRowsCount == matrixRowsCount && mIteratorColumnsCount == matrixColumnsCount);
 
 #define FORWARD_NON_DIAG_ITERATOR_DO_INCREMENT(mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate) \
     if (mIteratorSecondaryCoordinate != mIteratorSecondaryDimension || mIteratorPrimaryCoordinate != (mIteratorPrimaryDimension - 1)) \
@@ -486,29 +479,6 @@
                                     : (mIteratorDiagonalNr <= 0 ? c_MaxSize + mIteratorDiagonalNr + c_Delta : c_MaxSize - mIteratorDiagonalNr); \
     mIteratorDiagonalIndex = relativeParamsUsed ? secondParam : (mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - 1 - secondParam : mIteratorDiagonalSize - 1 - firstParam);
 
-#define DITERATOR_IS_VALID_WITH_MATRIX(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, pMatrixPtr, matrixRowsCount, matrixColumnsCount) \
-    bool isValid{true}; \
-\
-    if (mpIteratorPtr != pMatrixPtr) \
-    { \
-        isValid = false; \
-    } \
-    else if ((mIteratorDiagonalNr < 0 && -mIteratorDiagonalNr >= matrixRowsCount) || (mIteratorDiagonalNr > 0 && mIteratorDiagonalNr >= matrixColumnsCount)) \
-    { \
-        isValid = false; \
-    } \
-    else \
-    { \
-        const size_type c_DiagonalSize{mIteratorDiagonalNr < 0 ? std::min(matrixRowsCount + mIteratorDiagonalNr, matrixColumnsCount) \
-                                                            : std::min(matrixRowsCount, matrixColumnsCount - mIteratorDiagonalNr)}; \
-        if (mIteratorDiagonalSize != c_DiagonalSize) \
-        { \
-            isValid = false; \
-        } \
-    } \
-\
-    return isValid;
-
 #define FORWARD_DITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex) \
     CHECK_ERROR_CONDITION(mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
@@ -640,29 +610,6 @@
     mIteratorDiagonalSize = (c_Delta >= 0) ? (mIteratorDiagonalNr < 0 ? c_MaxSize + mIteratorDiagonalNr : c_MaxSize - mIteratorDiagonalNr - c_Delta) \
                                     : (mIteratorDiagonalNr <= 0 ? c_MaxSize + mIteratorDiagonalNr + c_Delta : c_MaxSize - mIteratorDiagonalNr); \
     mIteratorDiagonalIndex = relativeParamsUsed ? secondParam : (mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - mIteratorColumnsCount + secondParam : mIteratorDiagonalSize - 1 - firstParam);
-
-#define MITERATOR_IS_VALID_WITH_MATRIX(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorColumnsCount, pMatrixPtr, matrixRowsCount, matrixColumnsCount) \
-    bool isValid{true}; \
-\
-    if (mpIteratorPtr != pMatrixPtr || mIteratorColumnsCount != matrixColumnsCount) \
-    { \
-        isValid = false; \
-    } \
-    else if ((mIteratorDiagonalNr < 0 && -mIteratorDiagonalNr >= matrixRowsCount) || (mIteratorDiagonalNr > 0 && mIteratorDiagonalNr >= matrixColumnsCount)) \
-    { \
-        isValid = false; \
-    } \
-    else \
-    { \
-        const size_type c_DiagonalSize{mIteratorDiagonalNr < 0 ? std::min(matrixRowsCount + mIteratorDiagonalNr, matrixColumnsCount) \
-                                                            : std::min(matrixRowsCount, matrixColumnsCount - mIteratorDiagonalNr)}; \
-        if (mIteratorDiagonalSize != c_DiagonalSize) \
-        { \
-            isValid = false; \
-        } \
-    } \
-\
-    return isValid;
 
 #define FORWARD_MITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount) \
     CHECK_ERROR_CONDITION(mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \

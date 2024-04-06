@@ -1,6 +1,7 @@
 #include <QtTest>
 
 #include "tst_resizingtests.h"
+#include "tst_resizingtests_data.h"
 
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(StringMatrix)
@@ -11,26 +12,34 @@ class ResizingTests : public QObject
 
 private slots:
     // test functions
-    void testIntMatrixResizeWithoutFillingInNewValues();
-    void testIntMatrixResizeAndFillInNewValues();
+    void testIntMatrixResizeWithDefaultCapacityAndDefaultNewValues();
+    void testIntMatrixResizeWithDefaultCapacityAndSetNewValues();
+    void testIntMatrixResizeWithFixedCapacityAndDefaultNewValues();
+    void testIntMatrixResizeWithFixedCapacityAndSetNewValues();
     void testIntMatrixShrinkToFit();
     void testIntMatrixInsertRowNoSetValue();
     void testIntMatrixInsertRowSetValue();
     void testIntMatrixInsertColumnNoSetValue();
     void testIntMatrixInsertColumnSetValue();
+    void testIntMatrixInsertMultipleRowsSetValue();
+    void testIntMatrixInsertMultipleColumnsSetValue();
     void testIntMatrixEraseRow();
     void testIntMatrixEraseMultipleRows();
     void testIntMatrixEraseColumn();
     void testIntMatrixEraseMultipleColumns();
     void testIntMatrixClear();
 
-    void testStringMatrixResizeWithoutFillingInNewValues();
-    void testStringMatrixResizeAndFillInNewValues();
+    void testStringMatrixResizeWithDefaultCapacityAndDefaultNewValues();
+    void testStringMatrixResizeWithDefaultCapacityAndSetNewValues();
+    void testStringMatrixResizeWithFixedCapacityAndDefaultNewValues();
+    void testStringMatrixResizeWithFixedCapacityAndSetNewValues();
     void testStringMatrixShrinkToFit();
     void testStringMatrixInsertRowNoSetValue();
     void testStringMatrixInsertRowSetValue();
     void testStringMatrixInsertColumnNoSetValue();
     void testStringMatrixInsertColumnSetValue();
+    void testStringMatrixInsertMultipleRowsSetValue();
+    void testStringMatrixInsertMultipleColumnsSetValue();
     void testStringMatrixEraseRow();
     void testStringMatrixEraseMultipleRows();
     void testStringMatrixEraseColumn();
@@ -38,26 +47,34 @@ private slots:
     void testStringMatrixClear();
 
     // test data
-    void testIntMatrixResizeWithoutFillingInNewValues_data();
-    void testIntMatrixResizeAndFillInNewValues_data();
+    void testIntMatrixResizeWithDefaultCapacityAndDefaultNewValues_data();
+    void testIntMatrixResizeWithDefaultCapacityAndSetNewValues_data();
+    void testIntMatrixResizeWithFixedCapacityAndDefaultNewValues_data();
+    void testIntMatrixResizeWithFixedCapacityAndSetNewValues_data();
     void testIntMatrixShrinkToFit_data();
     void testIntMatrixInsertRowNoSetValue_data();
     void testIntMatrixInsertRowSetValue_data();
     void testIntMatrixInsertColumnNoSetValue_data();
     void testIntMatrixInsertColumnSetValue_data();
+    void testIntMatrixInsertMultipleRowsSetValue_data();
+    void testIntMatrixInsertMultipleColumnsSetValue_data();
     void testIntMatrixEraseRow_data();
     void testIntMatrixEraseMultipleRows_data();
     void testIntMatrixEraseColumn_data();
     void testIntMatrixEraseMultipleColumns_data();
     void testIntMatrixClear_data();
 
-    void testStringMatrixResizeWithoutFillingInNewValues_data();
-    void testStringMatrixResizeAndFillInNewValues_data();
+    void testStringMatrixResizeWithDefaultCapacityAndDefaultNewValues_data();
+    void testStringMatrixResizeWithDefaultCapacityAndSetNewValues_data();
+    void testStringMatrixResizeWithFixedCapacityAndDefaultNewValues_data();
+    void testStringMatrixResizeWithFixedCapacityAndSetNewValues_data();
     void testStringMatrixShrinkToFit_data();
     void testStringMatrixInsertRowNoSetValue_data();
     void testStringMatrixInsertRowSetValue_data();
     void testStringMatrixInsertColumnNoSetValue_data();
     void testStringMatrixInsertColumnSetValue_data();
+    void testStringMatrixInsertMultipleRowsSetValue_data();
+    void testStringMatrixInsertMultipleColumnsSetValue_data();
     void testStringMatrixEraseRow_data();
     void testStringMatrixEraseMultipleRows_data();
     void testStringMatrixEraseColumn_data();
@@ -73,7 +90,7 @@ private:
     StringMatrix mPrimaryStringMatrix;
 };
 
-void ResizingTests::testIntMatrixResizeWithoutFillingInNewValues()
+void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndDefaultNewValues()
 {
     QFETCH(IntMatrix, matrix);
     QFETCH(IntMatrixSizeType, resizeRowsCount);
@@ -85,23 +102,33 @@ void ResizingTests::testIntMatrixResizeWithoutFillingInNewValues()
     matrix.resize(resizeRowsCount, resizeColumnsCount);
 
     TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity);
-
-    bool areRetainedValuesCorrect{true};
-
-    for(IntMatrixSizeType rowNr{0}; rowNr < expectedRetainedElementsMatrix.getNrOfRows(); ++rowNr)
-    {
-        for(IntMatrixSizeType columnNr{0}; columnNr < expectedRetainedElementsMatrix.getNrOfColumns(); ++columnNr)
-        {
-            areRetainedValuesCorrect = areRetainedValuesCorrect && (matrix.at(rowNr, columnNr) == expectedRetainedElementsMatrix.at(rowNr, columnNr));
-        }
-    }
-
-    QVERIFY2(areRetainedValuesCorrect, "Resizing failed, the retained element values are not correct!");
+    TEST_MATRIX_RESIZE_CHECK_RETAINED_ELEMENT_VALUES(int, matrix, expectedRetainedElementsMatrix);
 }
 
-void ResizingTests::testIntMatrixResizeAndFillInNewValues()
+void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndSetNewValues()
 {
-    TEST_MATRIX_RESIZE_AND_FILL_IN_NEW_VALUES(int);
+    TEST_MATRIX_RESIZE_WITH_DEFAULT_CAPACITY_AND_SET_NEW_VALUES(int);
+}
+
+void ResizingTests::testIntMatrixResizeWithFixedCapacityAndDefaultNewValues()
+{
+    QFETCH(IntMatrix, matrix);
+    QFETCH(IntMatrixSizeType, resizeRowsCount);
+    QFETCH(IntMatrixSizeType, resizeColumnsCount);
+    QFETCH(IntMatrixSizeType, resizeRowCapacity);
+    QFETCH(IntMatrixSizeType, resizeColumnCapacity);
+    QFETCH(IntMatrix, expectedRetainedElementsMatrix);
+
+    matrix.resize(matrix.getNrOfRows(), matrix.getNrOfColumns(), resizeRowCapacity, resizeColumnCapacity);
+    matrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
+
+    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
+    TEST_MATRIX_RESIZE_CHECK_RETAINED_ELEMENT_VALUES(int, matrix, expectedRetainedElementsMatrix);
+}
+
+void ResizingTests::testIntMatrixResizeWithFixedCapacityAndSetNewValues()
+{
+    TEST_MATRIX_RESIZE_WITH_FIXED_CAPACITY_AND_SET_NEW_VALUES(int);
 }
 
 void ResizingTests::testIntMatrixShrinkToFit()
@@ -183,6 +210,16 @@ void ResizingTests::testIntMatrixInsertColumnSetValue()
     TEST_MATRIX_INSERT_COLUMN_SET_VALUE(int);
 }
 
+void ResizingTests::testIntMatrixInsertMultipleRowsSetValue()
+{
+    TEST_MATRIX_INSERT_MULTIPLE_ROWS_SET_VALUE(int);
+}
+
+void ResizingTests::testIntMatrixInsertMultipleColumnsSetValue()
+{
+    TEST_MATRIX_INSERT_MULTIPLE_COLUMNS_SET_VALUE(int);
+}
+
 void ResizingTests::testIntMatrixEraseRow()
 {
     TEST_MATRIX_ERASE_ROW(int);
@@ -208,7 +245,7 @@ void ResizingTests::testIntMatrixClear()
     TEST_MATRIX_CLEAR(int, mPrimaryIntMatrix);
 }
 
-void ResizingTests::testStringMatrixResizeWithoutFillingInNewValues()
+void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndDefaultNewValues()
 {
     QFETCH(StringMatrix, matrix);
     QFETCH(StringMatrixSizeType, resizeRowsCount);
@@ -224,9 +261,31 @@ void ResizingTests::testStringMatrixResizeWithoutFillingInNewValues()
     QVERIFY2(matrix == expectedMatrix, "Resizing failed, the matrix does not have the correct values!");
 }
 
-void ResizingTests::testStringMatrixResizeAndFillInNewValues()
+void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndSetNewValues()
 {
-    TEST_MATRIX_RESIZE_AND_FILL_IN_NEW_VALUES(std::string);
+    TEST_MATRIX_RESIZE_WITH_DEFAULT_CAPACITY_AND_SET_NEW_VALUES(std::string);
+}
+
+void ResizingTests::testStringMatrixResizeWithFixedCapacityAndDefaultNewValues()
+{
+    QFETCH(StringMatrix, matrix);
+    QFETCH(StringMatrixSizeType, resizeRowsCount);
+    QFETCH(StringMatrixSizeType, resizeColumnsCount);
+    QFETCH(StringMatrixSizeType, resizeRowCapacity);
+    QFETCH(StringMatrixSizeType, resizeColumnCapacity);
+    QFETCH(StringMatrix, expectedMatrix);
+
+    matrix.resize(matrix.getNrOfRows(), matrix.getNrOfColumns(), resizeRowCapacity, resizeColumnCapacity);
+    matrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
+
+    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
+
+    QVERIFY2(matrix == expectedMatrix, "Resizing failed, the matrix does not have the correct values!");
+}
+
+void ResizingTests::testStringMatrixResizeWithFixedCapacityAndSetNewValues()
+{
+    TEST_MATRIX_RESIZE_WITH_FIXED_CAPACITY_AND_SET_NEW_VALUES(std::string);
 }
 
 void ResizingTests::testStringMatrixShrinkToFit()
@@ -274,6 +333,16 @@ void ResizingTests::testStringMatrixInsertColumnSetValue()
     TEST_MATRIX_INSERT_COLUMN_SET_VALUE(std::string);
 }
 
+void ResizingTests::testStringMatrixInsertMultipleRowsSetValue()
+{
+    TEST_MATRIX_INSERT_MULTIPLE_ROWS_SET_VALUE(std::string);
+}
+
+void ResizingTests::testStringMatrixInsertMultipleColumnsSetValue()
+{
+    TEST_MATRIX_INSERT_MULTIPLE_COLUMNS_SET_VALUE(std::string);
+}
+
 void ResizingTests::testStringMatrixEraseRow()
 {
     TEST_MATRIX_ERASE_ROW(std::string);
@@ -299,7 +368,7 @@ void ResizingTests::testStringMatrixClear()
     TEST_MATRIX_CLEAR(std::string, mPrimaryStringMatrix);
 }
 
-void ResizingTests::testIntMatrixResizeWithoutFillingInNewValues_data()
+void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndDefaultNewValues_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
@@ -318,6 +387,21 @@ void ResizingTests::testIntMatrixResizeWithoutFillingInNewValues_data()
     QTest::newRow("equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 3 << 4 << 3 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 4 << 3 << 4 << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
     QTest::newRow("more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 2 << 5 << 2 << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+    QTest::newRow("equal rows, less columns") << c_IntMatrix1_10x9 << 10 << 7 << 10 << 7 << c_IntMatrix1_10x7;
+    QTest::newRow("equal rows, less columns") << c_IntMatrix1_10x9 << 10 << 8 << 10 << 8 << c_IntMatrix1_10x8;
+    QTest::newRow("less rows, equal columns") << c_IntMatrix1_10x9 << 7 << 9 << 7 << 9 << c_IntMatrix1_7x9;
+    QTest::newRow("less rows, equal columns") << c_IntMatrix1_10x9 << 8 << 9 << 8 << 9 << c_IntMatrix1_8x9;
+    QTest::newRow("less rows, less columns") << c_IntMatrix1_10x9 << 7 << 7 << 7 << 7 << c_IntMatrix1_7x7;
+    QTest::newRow("less rows, less columns") << c_IntMatrix1_10x9 << 8 << 8 << 8 << 8 << c_IntMatrix1_8x8;
+    QTest::newRow("equal rows, more columns") << c_IntMatrix1_10x9 << 10 << 11 << 10 << 11 << c_IntMatrix1_10x9;
+    QTest::newRow("more rows, equal columns") << c_IntMatrix1_10x9 << 12 << 9 << 12 << 9 << c_IntMatrix1_10x9;
+    QTest::newRow("more rows, more columns") << c_IntMatrix1_10x9 << 12 << 11 << 12 << 11 << c_IntMatrix1_10x9;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 12 << 11 << 12 << 11 << IntMatrix{};
+    QTest::newRow("equal rows, equal columns") << c_IntMatrix1_10x9 << 10 << 9 << 10 << 9 << c_IntMatrix1_10x9;
+    QTest::newRow("less rows, more columns") << c_IntMatrix1_10x9 << 7 << 11 << 7 << 11 << c_IntMatrix1_7x9;
+    QTest::newRow("less rows, more columns") << c_IntMatrix1_10x9 << 8 << 11 << 8 << 11 << c_IntMatrix1_8x9;
+    QTest::newRow("more rows, less columns") << c_IntMatrix1_10x9 << 12 << 7 << 12 << 7 << c_IntMatrix1_10x7;
+    QTest::newRow("more rows, less columns") << c_IntMatrix1_10x9 << 12 << 8 << 12 << 8 << c_IntMatrix1_10x8;
 
     // additional tests for unchanged capacity
     QTest::newRow("equal rows, more columns") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 5 << 3 << 5 << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
@@ -325,7 +409,7 @@ void ResizingTests::testIntMatrixResizeWithoutFillingInNewValues_data()
     QTest::newRow("equal rows, equal columns") << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}} << 3 << 3 << 3 << 3 << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
 }
 
-void ResizingTests::testIntMatrixResizeAndFillInNewValues_data()
+void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndSetNewValues_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
@@ -345,11 +429,67 @@ void ResizingTests::testIntMatrixResizeAndFillInNewValues_data()
     QTest::newRow("equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 3 << -1 << 4 << 3 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 4 << -1 << 3 << 4 << IntMatrix{3, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1}};
     QTest::newRow("more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 2 << -1 << 5 << 2 << IntMatrix{5, 2, {1, 2, 4, 5, 7, 8, 10, 11, -1, -1}};
+    QTest::newRow("equal rows, less columns") << c_IntMatrix1_10x9 << 10 << 7 << 5 << 10 << 7 << c_IntMatrix1_10x7;
+    QTest::newRow("equal rows, less columns") << c_IntMatrix1_10x9 << 10 << 8 << 5 << 10 << 8 << c_IntMatrix1_10x8;
+    QTest::newRow("less rows, equal columns") << c_IntMatrix1_10x9 << 7 << 9 << 5 << 7 << 9 << c_IntMatrix1_7x9;
+    QTest::newRow("less rows, equal columns") << c_IntMatrix1_10x9 << 8 << 9 << 5 << 8 << 9 << c_IntMatrix1_8x9;
+    QTest::newRow("less rows, less columns") << c_IntMatrix1_10x9 << 7 << 7 << 5 << 7 << 7 << c_IntMatrix1_7x7;
+    QTest::newRow("less rows, less columns") << c_IntMatrix1_10x9 << 8 << 8 << 5 << 8 << 8 << c_IntMatrix1_8x8;
+    QTest::newRow("equal rows, more columns") << c_IntMatrix1_10x9 << 10 << 11 << 5 << 10 << 11 << c_IntMatrix2_10x11;
+    QTest::newRow("more rows, equal columns") << c_IntMatrix1_10x9 << 12 << 9 << 5 << 12 << 9 << c_IntMatrix2_12x9;
+    QTest::newRow("more rows, more columns") << c_IntMatrix1_10x9 << 12 << 11 << 5 << 12 << 11 << c_IntMatrix2_12x11;
+    QTest::newRow("more rows, more columns") << IntMatrix{} << 12 << 11 << 5 << 12 << 11 << IntMatrix{12, 11, 5};
+    QTest::newRow("equal rows, equal columns") << c_IntMatrix1_10x9 << 10 << 9 << 5 << 10 << 9 << c_IntMatrix1_10x9;
+    QTest::newRow("less rows, more columns") << c_IntMatrix1_10x9 << 7 << 11 << 5 << 7 << 11 << c_IntMatrix2_7x11;
+    QTest::newRow("less rows, more columns") << c_IntMatrix1_10x9 << 8 << 11 << 5 << 8 << 11 << c_IntMatrix2_8x11;
+    QTest::newRow("more rows, less columns") << c_IntMatrix1_10x9 << 12 << 7 << 5 << 12 << 7 << c_IntMatrix2_12x7;
+    QTest::newRow("more rows, less columns") << c_IntMatrix1_10x9 << 12 << 8 << 5 << 12 << 8 << c_IntMatrix2_12x8;
 
     // additional tests for unchanged capacity
     QTest::newRow("equal rows, more columns") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 5 << -1 << 3 << 5 << IntMatrix{3, 5, {1, 2, 3, 4, -1, 5, 6, 7, 8, -1, 9, 10, 11, 12, -1}};
     QTest::newRow("more rows, more columns") << IntMatrix{4, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 5 << 5 << -1 << 5 << 5 << IntMatrix{5, 5, {1, 2, 3, 4, -1, 5, 6, 7, 8, -1, 9, 10, 11, 12, -1, 13, 14, 15, 16, -1, -1, -1, -1, -1, -1}};
     QTest::newRow("equal rows, equal columns") << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}} << 3 << 3 << -1 << 3 << 3 << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
+}
+
+void ResizingTests::testIntMatrixResizeWithFixedCapacityAndDefaultNewValues_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnCapacity");
+    QTest::addColumn<IntMatrix>("expectedRetainedElementsMatrix");
+
+    QTest::newRow("equal rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 2 << 10 << 8 << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+    QTest::newRow("less rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 3 << 10 << 8 << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 2 << 11 << 10 << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
+    QTest::newRow("equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 5 << 11 << 10 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("more rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 3 << 10 << 8 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("more rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 4 << 10 << 9 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 3 << 10 << 9 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 4 << 11 << 9 << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    QTest::newRow("more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 2 << 10 << 8 << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+}
+
+void ResizingTests::testIntMatrixResizeWithFixedCapacityAndSetNewValues_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<int>("fillValue");
+    QTest::addColumn<IntMatrixSizeType>("resizeRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("resizeColumnCapacity");
+    QTest::addColumn<IntMatrix>("expectedMatrix");
+
+    QTest::newRow("equal rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 2 << -1 << 10 << 8 << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+    QTest::newRow("less rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 3 << -1 << 10 << 8 << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 2 << -1 << 11 << 10 << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
+    QTest::newRow("equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 5 << -1 << 11 << 10 << IntMatrix{4, 5, {1, 2, 3, -1, -1, 4, 5, 6, -1, -1, 7, 8, 9, -1, -1, 10, 11, 12, -1, -1}};
+    QTest::newRow("more rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 3 << -1 << 10 << 8 << IntMatrix{5, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, -1, -1}};
+    QTest::newRow("more rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 4 << -1 << 10 << 9 << IntMatrix{5, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1, 10, 11, 12, -1, -1, -1, -1, -1}};
+    QTest::newRow("equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 3 << -1 << 10 << 9 << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 4 << -1 << 11 << 9 << IntMatrix{3, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1}};
+    QTest::newRow("more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 2 << -1 << 10 << 8 << IntMatrix{5, 2, {1, 2, 4, 5, 7, 8, 10, 11, -1, -1}};
 }
 
 void ResizingTests::testIntMatrixShrinkToFit_data()
@@ -361,6 +501,9 @@ void ResizingTests::testIntMatrixShrinkToFit_data()
     QTest::newRow("more rows than columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("less rows than columns") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("square matrix") << IntMatrix{4, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("square matrix") << c_IntMatrix1_8x8;
+    QTest::newRow("more rows than columns") << c_IntMatrix1_10x9;
+    QTest::newRow("less rows than columns") << c_IntMatrix1_8x9;
 }
 
 void ResizingTests::testIntMatrixInsertRowNoSetValue_data()
@@ -383,6 +526,60 @@ void ResizingTests::testIntMatrixInsertColumnSetValue_data()
     _buildIntMatrixInsertColumnTestingTable();
 }
 
+void ResizingTests::testIntMatrixInsertMultipleRowsSetValue_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<std::vector<IntMatrixSizeType>>("insertPositions");
+    QTest::addColumn<int>("insertedRowValue");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<IntMatrix>("referenceMatrix");
+
+    QTest::newRow("prepend both") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{0, 0} << 5 << 12 << 11 << c_IntMatrix3a_12x9;
+    QTest::newRow("append both") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{10, 11} << 5 << 12 << 11 << c_IntMatrix2_12x9;
+    QTest::newRow("prepend, then append") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{0, 11} << 5 << 12 << 11 << c_IntMatrix3b_12x9;
+    QTest::newRow("append, then prepend") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{10, 0} << 5 << 12 << 11 << c_IntMatrix3b_12x9;
+    QTest::newRow("insert in the first half, then in the second") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{2, 9} << 5 << 12 << 11 << c_IntMatrix3c_12x9;
+    QTest::newRow("insert in the second half, then in the first") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{8, 2} << 5 << 12 << 11 << c_IntMatrix3c_12x9;
+    QTest::newRow("insert both in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{5, 5} << 5 << 12 << 11 << c_IntMatrix3d_12x9;
+    QTest::newRow("insert both in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{4, 5} << 5 << 11 << 12 << c_IntMatrix3a_11x10;
+    QTest::newRow("prepend, then insert in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{0, 5} << 5 << 12 << 11 << c_IntMatrix3e_12x9;
+    QTest::newRow("insert in the middle, then prepend") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{5, 0} << 5 << 12 << 11 << c_IntMatrix3f_12x9;
+    QTest::newRow("prepend, then insert in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{0, 5} << 5 << 11 << 12 << c_IntMatrix3b_11x10;
+    QTest::newRow("insert in the middle, then prepend") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{4, 0} << 5 << 11 << 12 << c_IntMatrix3b_11x10;
+    QTest::newRow("insert in the middle, then append") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{5, 11} << 5 << 12 << 11 << c_IntMatrix3g_12x9;
+    QTest::newRow("append, then insert in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{10, 5} << 5 << 12 << 11 << c_IntMatrix3g_12x9;
+    QTest::newRow("insert in the middle, then append") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{4, 10} << 5 << 11 << 12 << c_IntMatrix3c_11x10;
+    QTest::newRow("append, then insert in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{9, 5} << 5 << 11 << 12 << c_IntMatrix3d_11x10;
+}
+
+void ResizingTests::testIntMatrixInsertMultipleColumnsSetValue_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<std::vector<IntMatrixSizeType>>("insertPositions");
+    QTest::addColumn<int>("insertedColumnValue");
+    QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<IntMatrix>("referenceMatrix");
+
+    QTest::newRow("prepend both") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{0, 0} << 5 << 11 << 12 << c_IntMatrix3a_9x12;
+    QTest::newRow("append both") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{10, 11} << 5 << 11 << 12 << c_IntMatrix3b_9x12;
+    QTest::newRow("prepend, then append") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{0, 11} << 5 << 11 << 12 << c_IntMatrix3c_9x12;
+    QTest::newRow("append, then prepend") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{10, 0} << 5 << 11 << 12 << c_IntMatrix3c_9x12;
+    QTest::newRow("insert in the first half, then in the second") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{2, 9} << 5 << 11 << 12 << c_IntMatrix3d_9x12;
+    QTest::newRow("insert in the second half, then in the first") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{8, 2} << 5 << 11 << 12 << c_IntMatrix3d_9x12;
+    QTest::newRow("insert both in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{5, 5} << 5 << 11 << 12 << c_IntMatrix3e_9x12;
+    QTest::newRow("insert both in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{4, 5} << 5 << 12 << 11 << c_IntMatrix3a_10x11;
+    QTest::newRow("prepend, then insert in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{0, 5} << 5 << 11 << 12 << c_IntMatrix3f_9x12;
+    QTest::newRow("insert in the middle, then prepend") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{5, 0} << 5 << 11 << 12 << c_IntMatrix3g_9x12;
+    QTest::newRow("prepend, then insert in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{0, 5} << 5 << 12 << 11 << c_IntMatrix3b_10x11;
+    QTest::newRow("insert in the middle, then prepend") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{4, 0} << 5 << 12 << 11 << c_IntMatrix3b_10x11;
+    QTest::newRow("insert in the middle, then append") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{5, 11} << 5 << 11 << 12 << c_IntMatrix3h_9x12;
+    QTest::newRow("append, then insert in the middle") << c_IntMatrix3_9x10 << std::vector<IntMatrixSizeType>{10, 5} << 5 << 11 << 12 << c_IntMatrix3h_9x12;
+    QTest::newRow("insert in the middle, then append") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{4, 10} << 5 << 12 << 11 << c_IntMatrix3c_10x11;
+    QTest::newRow("append, then insert in the middle") << c_IntMatrix1_10x9 << std::vector<IntMatrixSizeType>{9, 5} << 5 << 12 << 11 << c_IntMatrix3d_10x11;
+}
+
 void ResizingTests::testIntMatrixEraseRow_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
@@ -392,23 +589,82 @@ void ResizingTests::testIntMatrixEraseRow_data()
     QTest::addColumn<IntMatrix>("expectedMatrix");
 
     QTest::newRow("erase at beginning position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 3 << 5 << IntMatrix{2, 4, {5, 6, 7, 8, 9, 10, 11, 12}};
-    QTest::newRow("erase at random position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << 3 << 5 << IntMatrix{2, 4, {1, 2, 3, 4, 9, 10, 11, 12}};
+    QTest::newRow("erase at middle position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << 3 << 5 << IntMatrix{2, 4, {1, 2, 3, 4, 9, 10, 11, 12}};
     QTest::newRow("erase at end position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 3 << 5 << IntMatrix{2, 4, {1, 2, 3, 4, 5, 6, 7, 8}};
     QTest::newRow("erase the only row") << IntMatrix{1, 4, {1, 2, 3, 4}} << 0 << 0 << 0 << IntMatrix{};
+    QTest::newRow("erase at beginning position") << IntMatrix{6, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 7 << 2 << IntMatrix{5, 2, {3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("erase at random position") << IntMatrix{6, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 7 << 2 << IntMatrix{5, 2, {1, 2, 3, 4, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("erase at middle position") << IntMatrix{6, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 7 << 2 << IntMatrix{5, 2, {1, 2, 3, 4, 5, 6, 9, 10, 11, 12}};
+    QTest::newRow("erase at random position") << IntMatrix{6, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 7 << 2 << IntMatrix{5, 2, {1, 2, 3, 4, 5, 6, 7, 8, 11, 12}};
+    QTest::newRow("erase at end position") << IntMatrix{6, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 7 << 2 << IntMatrix{5, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}};
+    QTest::newRow("erase at beginning position") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << 0 << 8 << 2 << IntMatrix{6, 2, {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}};
+    QTest::newRow("erase at random position") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << 2 << 8 << 2 << IntMatrix{6, 2, {1, 2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14}};
+    QTest::newRow("erase at middle position") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << 3 << 8 << 2 << IntMatrix{6, 2, {1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 14}};
+    QTest::newRow("erase at random position") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << 4 << 8 << 2 << IntMatrix{6, 2, {1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14}};
+    QTest::newRow("erase at end position") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << 6 << 8 << 2 << IntMatrix{6, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("erase at beginning position") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 0 << 10 << 2 << IntMatrix{7, 2, {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("erase at random position") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 3 << 10 << 2 << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("erase at middle position") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 4 << 10 << 2 << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("erase at random position") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 5 << 10 << 2 << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 15, 16}};
+    QTest::newRow("erase at end position") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 7 << 10 << 2 << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}};
+    QTest::newRow("erase at beginning position") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 0 << 11 << 2 << IntMatrix{8, 2, {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("erase at random position") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 3 << 11 << 2 << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("erase at middle position") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 4 << 11 << 2 << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("erase at random position") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 5 << 11 << 2 << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("erase at end position") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 8 << 11 << 2 << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("erase the only row") << IntMatrix{1, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9}} << 0 << 0 << 0 << IntMatrix{};
 }
 
 void ResizingTests::testIntMatrixEraseMultipleRows_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<IntMatrixSizeType>("erasePosition");
-    QTest::addColumn<IntMatrixSizeType>("erasedRowsCount");
+    QTest::addColumn<std::vector<IntMatrixSizeType>>("erasePositions");
     QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
     QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
     QTest::addColumn<IntMatrix>("expectedMatrix");
 
-    QTest::newRow("erase at beginning position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 4 << 0 << 0 << IntMatrix{};
-    QTest::newRow("erase at random position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << 3 << 2 << 3 << IntMatrix{1, 3, {1, 2, 3}};
-    QTest::newRow("erase at random position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 2 << 5 << 3 << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("erase from beginning") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{0, 0, 0, 0} << 0 << 0 << IntMatrix{};
+    QTest::newRow("erase from random positions") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{1, 1, 1} << 2 << 3 << IntMatrix{1, 3, {1, 2, 3}};
+    QTest::newRow("erase from random positions") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{2, 2} << 5 << 3 << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("erase from random positions") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{1, 2, 0, 0} << 0 << 0 << IntMatrix{};
+    QTest::newRow("erase from middle") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{2, 1, 1, 0} << 0 << 0 << IntMatrix{};
+    QTest::newRow("erase from end") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{3, 2, 1, 0} << 0 << 0 << IntMatrix{};
+    QTest::newRow("erase from beginning/end") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{0, 2} << 5 << 3 << IntMatrix{2, 3, {4, 5, 6, 7, 8, 9}};
+    QTest::newRow("erase from end/beginning") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{3, 0} << 5 << 3 << IntMatrix{2, 3, {4, 5, 6, 7, 8, 9}};
+    QTest::newRow("erase from beginning/end") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{0, 6} << 10 << 2 << IntMatrix{6, 2, {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}};
+    QTest::newRow("erase from end/beginning") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{7, 0} << 10 << 2 << IntMatrix{6, 2, {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}};
+    QTest::newRow("erase from beginning/end by changing order") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{0, 5, 4, 0} << 8 << 2 << IntMatrix{3, 2, {5, 6, 7, 8, 9, 10}};
+    QTest::newRow("erase from beginning/end by changing order") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{0, 5, 4, 0, 0} << 4 << 2 << IntMatrix{2, 2, {7, 8, 9, 10}};
+    QTest::newRow("erase from beginning/end by changing order") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{0, 6, 5, 0, 0} << 10 << 2 << IntMatrix{3, 2, {7, 8, 9, 10, 11, 12}};
+    QTest::newRow("erase from beginning/end by changing order") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{0, 6, 5, 0, 0, 2} << 4 << 2 << IntMatrix{2, 2, {7, 8, 9, 10}};
+    QTest::newRow("erase from end/beginning by changing order") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{6, 0, 0, 3} << 8 << 2 << IntMatrix{3, 2, {5, 6, 7, 8, 9, 10}};
+    QTest::newRow("erase from end/beginning by changing order") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{6, 0, 0, 3, 2} << 4 << 2 << IntMatrix{2, 2, {5, 6, 7, 8}};
+    QTest::newRow("erase from end/beginning by changing order") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{7, 0, 0, 4, 3} << 10 << 2 << IntMatrix{3, 2, {5, 6, 7, 8, 9, 10}};
+    QTest::newRow("erase from end/beginning by changing order") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{7, 0, 0, 4, 3, 0} << 4 << 2 << IntMatrix{2, 2, {7, 8, 9, 10}};
+    QTest::newRow("erase from beginning") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{0, 0, 0, 0} << 8 << 2 << IntMatrix{3, 2, {9, 10, 11, 12, 13, 14}};
+    QTest::newRow("erase from beginning") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{0, 0, 0, 0, 0} << 4 << 2 << IntMatrix{2, 2, {11, 12, 13, 14}};
+    QTest::newRow("erase from beginning") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{0, 0, 0, 0, 0} << 10 << 2 << IntMatrix{3, 2, {11, 12, 13, 14, 15, 16}};
+    QTest::newRow("erase from beginning") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{0, 0, 0, 0, 0, 0} << 4 << 2 << IntMatrix{2, 2, {13, 14, 15, 16}};
+    QTest::newRow("erase from middle") << IntMatrix{6, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{3, 2, 2, 1} << 7 << 2 << IntMatrix{2, 2, {1, 2, 11, 12}};
+    QTest::newRow("erase from middle") << IntMatrix{6, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{3, 2, 2, 1, 1} << 2 << 2 << IntMatrix{1, 2, {1, 2}};
+    QTest::newRow("erase from middle") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{3, 3, 2, 2} << 8 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 13, 14}};
+    QTest::newRow("erase from middle") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{3, 3, 2, 2, 1} << 4 << 2 << IntMatrix{2, 2, {1, 2, 13, 14}};
+    QTest::newRow("erase from middle") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{4, 3, 3, 2, 2} << 10 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 15, 16}};
+    QTest::newRow("erase from middle") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{4, 3, 3, 2, 2, 1} << 4 << 2 << IntMatrix{2, 2, {1, 2, 15, 16}};
+    QTest::newRow("erase from middle") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << std::vector<IntMatrixSizeType>{4, 4, 3, 3, 2, 2} << 11 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 17, 18}};
+    QTest::newRow("erase from middle") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << std::vector<IntMatrixSizeType>{4, 4, 3, 3, 2, 2, 1} << 4 << 2 << IntMatrix{2, 2, {1, 2, 17, 18}};
+    QTest::newRow("erase from end") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{6, 5, 4, 3} << 8 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("erase from end") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{6, 5, 4, 3, 2} << 4 << 2 << IntMatrix{2, 2, {1, 2, 3, 4}};
+    QTest::newRow("erase from end") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{7, 6, 5, 4, 3} << 10 << 2 << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("erase from end") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{7, 6, 5, 4, 3, 2} << 4 << 2 << IntMatrix{2, 2, {1, 2, 3, 4}};
+    QTest::newRow("erase from random positions") << IntMatrix{6, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{1, 1, 2, 0} << 7 << 2 << IntMatrix{2, 2, {7, 8, 11, 12}};
+    QTest::newRow("erase from random positions") << IntMatrix{6, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{2, 4, 1, 2, 0} << 2 << 2 << IntMatrix{1, 2, {7, 8}};
+    QTest::newRow("erase from random positions") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{2, 4, 1, 2} << 8 << 2 << IntMatrix{3, 2, {1, 2, 7, 8, 13, 14}};
+    QTest::newRow("erase from random positions") << IntMatrix{7, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{1, 0, 3, 1, 2} << 4 << 2 << IntMatrix{2, 2, {5, 6, 9, 10}};
+    QTest::newRow("erase from random positions") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{6, 0, 2, 4, 2} << 10 << 2 << IntMatrix{3, 2, {3, 4, 5, 6, 11, 12}};
+    QTest::newRow("erase from random positions") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{4, 0, 5, 1, 1, 1} << 4 << 2 << IntMatrix{2, 2, {3, 4, 13, 14}};
+    QTest::newRow("erase from random positions") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << std::vector<IntMatrixSizeType>{5, 5, 1, 1, 3, 3} << 11 << 2 << IntMatrix{3, 2, {1, 2, 7, 8, 9, 10}};
+    QTest::newRow("erase from random positions") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << std::vector<IntMatrixSizeType>{1, 6, 5, 1, 3, 1, 0} << 4 << 2 << IntMatrix{2, 2, {9, 10, 17, 18}};
 }
 
 void ResizingTests::testIntMatrixEraseColumn_data()
@@ -420,23 +676,82 @@ void ResizingTests::testIntMatrixEraseColumn_data()
     QTest::addColumn<IntMatrix>("expectedMatrix");
 
     QTest::newRow("erase at beginning position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 5 << 3 << IntMatrix{4, 2, {2, 3, 5, 6, 8, 9, 11, 12}};
-    QTest::newRow("erase at random position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << 5 << 3 << IntMatrix{4, 2, {1, 3, 4, 6, 7, 9, 10, 12}};
+    QTest::newRow("erase at middle position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << 5 << 3 << IntMatrix{4, 2, {1, 3, 4, 6, 7, 9, 10, 12}};
     QTest::newRow("erase at end position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 5 << 3 << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
     QTest::newRow("erase the only column") << IntMatrix{4, 1, {1, 2, 3, 4}} << 0 << 0 << 0 << IntMatrix{};
+    QTest::newRow("erase at beginning position") << IntMatrix{2, 6, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 2 << 7 << IntMatrix{2, 5, {2, 3, 4, 5, 6, 8, 9, 10, 11, 12}};
+    QTest::newRow("erase at random position") << IntMatrix{2, 6, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 2 << 7 << IntMatrix{2, 5, {1, 2, 4, 5, 6, 7, 8, 10, 11, 12}};
+    QTest::newRow("erase at middle position") << IntMatrix{2, 6, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << 2 << 7 << IntMatrix{2, 5, {1, 2, 3, 5, 6, 7, 8, 9, 11, 12}};
+    QTest::newRow("erase at random position") << IntMatrix{2, 6, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 4 << 2 << 7 << IntMatrix{2, 5, {1, 2, 3, 4, 6, 7, 8, 9, 10, 12}};
+    QTest::newRow("erase at end position") << IntMatrix{2, 6, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 5 << 2 << 7 << IntMatrix{2, 5, {1, 2, 3, 4, 5, 7, 8, 9, 10, 11}};
+    QTest::newRow("erase at beginning position") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << 0 << 2 << 8 << IntMatrix{2, 6, {2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14}};
+    QTest::newRow("erase at random position") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << 2 << 2 << 8 << IntMatrix{2, 6, {1, 2, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14}};
+    QTest::newRow("erase at middle position") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << 3 << 2 << 8 << IntMatrix{2, 6, {1, 2, 3, 5, 6, 7, 8, 9, 10, 12, 13, 14}};
+    QTest::newRow("erase at random position") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << 4 << 2 << 8 << IntMatrix{2, 6, {1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 13, 14}};
+    QTest::newRow("erase at end position") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << 6 << 2 << 8 << IntMatrix{2, 6, {1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13}};
+    QTest::newRow("erase at beginning position") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 0 << 2 << 10 << IntMatrix{2, 7, {2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("erase at random position") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 3 << 2 << 10 << IntMatrix{2, 7, {1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16}};
+    QTest::newRow("erase at middle position") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 4 << 2 << 10 << IntMatrix{2, 7, {1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16}};
+    QTest::newRow("erase at random position") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 5 << 2 << 10 << IntMatrix{2, 7, {1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 15, 16}};
+    QTest::newRow("erase at end position") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 7 << 2 << 10 << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15}};
+    QTest::newRow("erase at beginning position") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 0 << 2 << 11 << IntMatrix{2, 8, {2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("erase at random position") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 3 << 2 << 11 << IntMatrix{2, 8, {1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18}};
+    QTest::newRow("erase at middle position") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 4 << 2 << 11 << IntMatrix{2, 8, {1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18}};
+    QTest::newRow("erase at random position") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 5 << 2 << 11 << IntMatrix{2, 8, {1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18}};
+    QTest::newRow("erase at end position") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 8 << 2 << 11 << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17}};
+    QTest::newRow("erase the only column") << IntMatrix{9, 1, {1, 2, 3, 4, 5, 6, 7, 8, 9}} << 0 << 0 << 0 << IntMatrix{};
 }
 
 void ResizingTests::testIntMatrixEraseMultipleColumns_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<IntMatrixSizeType>("erasePosition");
-    QTest::addColumn<IntMatrixSizeType>("erasedColumnsCount");
+    QTest::addColumn<std::vector<IntMatrixSizeType>>("erasePositions");
     QTest::addColumn<IntMatrixSizeType>("expectedRowCapacity");
     QTest::addColumn<IntMatrixSizeType>("expectedColumnCapacity");
     QTest::addColumn<IntMatrix>("expectedMatrix");
 
-    QTest::newRow("erase at beginning position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << 4 << 0 << 0 << IntMatrix{};
-    QTest::newRow("erase at random position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << 3 << 3 << 2 << IntMatrix{3, 1, {1, 5, 9}};
-    QTest::newRow("erase at random position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 2 << 2 << 3 << 5 << IntMatrix{3, 2, {1, 2, 5, 6, 9, 10}};
+    QTest::newRow("erase from beginning") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{0, 0, 0, 0} << 0 << 0 << IntMatrix{};
+    QTest::newRow("erase from random positions") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{1, 1, 1} << 3 << 2 << IntMatrix{3, 1, {1, 5, 9}};
+    QTest::newRow("erase from random positions") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{2, 2} << 3 << 5 << IntMatrix{3, 2, {1, 2, 5, 6, 9, 10}};
+    QTest::newRow("erase from random positions") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{1, 2, 0, 0} << 0 << 0 << IntMatrix{};
+    QTest::newRow("erase from middle") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{2, 1, 1, 0} << 0 << 0 << IntMatrix{};
+    QTest::newRow("erase from end") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{3, 2, 1, 0} << 0 << 0 << IntMatrix{};
+    QTest::newRow("erase from beginning/end") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{0, 2} << 3 << 5 << IntMatrix{3, 2, {2, 3, 6, 7, 10, 11}};
+    QTest::newRow("erase from end/beginning") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{3, 0} << 3 << 5 << IntMatrix{3, 2, {2, 3, 6, 7, 10, 11}};
+    QTest::newRow("erase from beginning/end") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{0, 6} << 2 << 10 << IntMatrix{2, 6, {2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15}};
+    QTest::newRow("erase from end/beginning") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{7, 0} << 2 << 10 << IntMatrix{2, 6, {2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15}};
+    QTest::newRow("erase from beginning/end by changing order") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{0, 5, 4, 0} << 2 << 8 << IntMatrix{2, 3, {3, 4, 5, 10, 11, 12}};
+    QTest::newRow("erase from beginning/end by changing order") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{0, 5, 4, 0, 0} << 2 << 4 << IntMatrix{2, 2, {4, 5, 11, 12}};
+    QTest::newRow("erase from beginning/end by changing order") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{0, 6, 5, 0, 0} << 2 << 10 << IntMatrix{2, 3, {4, 5, 6, 12, 13, 14}};
+    QTest::newRow("erase from beginning/end by changing order") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{0, 6, 5, 0, 0, 2} << 2 << 4 << IntMatrix{2, 2, {4, 5, 12, 13}};
+    QTest::newRow("erase from end/beginning by changing order") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{6, 0, 0, 3} << 2 << 8 << IntMatrix{2, 3, {3, 4, 5, 10, 11, 12}};
+    QTest::newRow("erase from end/beginning by changing order") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{6, 0, 0, 3, 2} << 2 << 4 << IntMatrix{2, 2, {3, 4, 10, 11}};
+    QTest::newRow("erase from end/beginning by changing order") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{7, 0, 0, 4, 3} << 2 << 10 << IntMatrix{2, 3, {3, 4, 5, 11, 12, 13}};
+    QTest::newRow("erase from end/beginning by changing order") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{7, 0, 0, 4, 3, 0} << 2 << 4 << IntMatrix{2, 2, {4, 5, 12, 13}};
+    QTest::newRow("erase from beginning") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{0, 0, 0, 0} << 2 << 8 << IntMatrix{2, 3, {5, 6, 7, 12, 13, 14}};
+    QTest::newRow("erase from beginning") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{0, 0, 0, 0, 0} << 2 << 4 << IntMatrix{2, 2, {6, 7, 13, 14}};
+    QTest::newRow("erase from beginning") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{0, 0, 0, 0, 0} << 2 << 10 << IntMatrix{2, 3, {6, 7, 8, 14, 15, 16}};
+    QTest::newRow("erase from beginning") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{0, 0, 0, 0, 0, 0} << 2 << 4 << IntMatrix{2, 2, {7, 8, 15, 16}};
+    QTest::newRow("erase from middle") << IntMatrix{2, 6, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{3, 2, 2, 1} << 2 << 7 << IntMatrix{2, 2, {1, 6, 7, 12}};
+    QTest::newRow("erase from middle") << IntMatrix{2, 6, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{3, 2, 2, 1, 1} << 2 << 2 << IntMatrix{2, 1, {1, 7}};
+    QTest::newRow("erase from middle") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{3, 3, 2, 2} << 2 << 8 << IntMatrix{2, 3, {1, 2, 7, 8, 9, 14}};
+    QTest::newRow("erase from middle") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{3, 3, 2, 2, 1} << 2 << 4 << IntMatrix{2, 2, {1, 7, 8, 14}};
+    QTest::newRow("erase from middle") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{4, 3, 3, 2, 2} << 2 << 10 << IntMatrix{2, 3, {1, 2, 8, 9, 10, 16}};
+    QTest::newRow("erase from middle") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{4, 3, 3, 2, 2, 1} << 2 << 4 << IntMatrix{2, 2, {1, 8, 9, 16}};
+    QTest::newRow("erase from middle") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << std::vector<IntMatrixSizeType>{4, 4, 3, 3, 2, 2} << 2 << 11 << IntMatrix{2, 3, {1, 2, 9, 10, 11, 18}};
+    QTest::newRow("erase from middle") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << std::vector<IntMatrixSizeType>{4, 4, 3, 3, 2, 2, 1} << 2 << 4 << IntMatrix{2, 2, {1, 9, 10, 18}};
+    QTest::newRow("erase from end") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{6, 5, 4, 3} << 2 << 8 << IntMatrix{2, 3, {1, 2, 3, 8, 9, 10}};
+    QTest::newRow("erase from end") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{6, 5, 4, 3, 2} << 2 << 4 << IntMatrix{2, 2, {1, 2, 8, 9}};
+    QTest::newRow("erase from end") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{7, 6, 5, 4, 3} << 2 << 10 << IntMatrix{2, 3, {1, 2, 3, 9, 10, 11}};
+    QTest::newRow("erase from end") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{7, 6, 5, 4, 3, 2} << 2 << 4 << IntMatrix{2, 2, {1, 2, 9, 10}};
+    QTest::newRow("erase from random positions") << IntMatrix{2, 6, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{1, 1, 2, 0} << 2 << 7 << IntMatrix{2, 2, {4, 6, 10, 12}};
+    QTest::newRow("erase from random positions") << IntMatrix{2, 6, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << std::vector<IntMatrixSizeType>{2, 4, 1, 2, 0} << 2 << 2 << IntMatrix{2, 1, {4, 10}};
+    QTest::newRow("erase from random positions") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{2, 4, 1, 2} << 2 << 8 << IntMatrix{2, 3, {1, 4, 7, 8, 11, 14}};
+    QTest::newRow("erase from random positions") << IntMatrix{2, 7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}} << std::vector<IntMatrixSizeType>{1, 0, 3, 1, 2} << 2 << 4 << IntMatrix{2, 2, {3, 5, 10, 12}};
+    QTest::newRow("erase from random positions") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{6, 0, 2, 4, 2} << 2 << 10 << IntMatrix{2, 3, {2, 3, 6, 10, 11, 14}};
+    QTest::newRow("erase from random positions") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << std::vector<IntMatrixSizeType>{4, 0, 5, 1, 1, 1} << 2 << 4 << IntMatrix{2, 2, {2, 7, 10, 15}};
+    QTest::newRow("erase from random positions") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << std::vector<IntMatrixSizeType>{5, 5, 1, 1, 3, 3} << 2 << 11 << IntMatrix{2, 3, {1, 4, 5, 10, 13, 14}};
+    QTest::newRow("erase from random positions") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << std::vector<IntMatrixSizeType>{1, 6, 5, 1, 3, 1, 0} << 2 << 4 << IntMatrix{2, 2, {5, 9, 14, 18}};
 }
 
 void ResizingTests::testIntMatrixClear_data()
@@ -444,10 +759,11 @@ void ResizingTests::testIntMatrixClear_data()
     QTest::addColumn<IntMatrix>("matrix");
 
     QTest::newRow("non-empty matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("non-empty matrix") << c_IntMatrix1_8x9;
     QTest::newRow("empty matrix") << IntMatrix{};
 }
 
-void ResizingTests::testStringMatrixResizeWithoutFillingInNewValues_data()
+void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndDefaultNewValues_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
     QTest::addColumn<StringMatrixSizeType>("resizeRowsCount");
@@ -466,6 +782,21 @@ void ResizingTests::testStringMatrixResizeWithoutFillingInNewValues_data()
     QTest::newRow("equal rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 4 << 3 << 4 << 3 << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 4 << 3 << 4 << StringMatrix{3, 4, {"First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", ""}};
     QTest::newRow("more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 5 << 2 << 5 << 2 << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "", ""}};
+    QTest::newRow("equal rows, less columns") << c_StringMatrix1_10x9 << 10 << 7 << 10 << 7 << c_StringMatrix1_10x7;
+    QTest::newRow("equal rows, less columns") << c_StringMatrix1_10x9 << 10 << 8 << 10 << 8 << c_StringMatrix1_10x8;
+    QTest::newRow("less rows, equal columns") << c_StringMatrix1_10x9 << 7 << 9  << 7 << 9 << c_StringMatrix1_7x9;
+    QTest::newRow("less rows, equal columns") << c_StringMatrix1_10x9 << 8 << 9  << 8 << 9 << c_StringMatrix1_8x9;
+    QTest::newRow("less rows, less columns") << c_StringMatrix1_10x9 << 7 << 7 << 7 << 7 << c_StringMatrix1_7x7;
+    QTest::newRow("less rows, less columns") << c_StringMatrix1_10x9 << 8 << 8 << 8 << 8 << c_StringMatrix1_8x8;
+    QTest::newRow("equal rows, more columns") << c_StringMatrix1_10x9 << 10 << 11 << 10 << 11 << c_StringMatrix1_10x11;
+    QTest::newRow("more rows, equal columns") << c_StringMatrix1_10x9 << 12 << 9 << 12 << 9 << c_StringMatrix1_12x9;
+    QTest::newRow("more rows, more columns") << c_StringMatrix1_10x9 << 12 << 11 << 12 << 11 << c_StringMatrix1_12x11;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 12 << 11 << 12 << 11 << StringMatrix{12, 11, ""};
+    QTest::newRow("equal rows, equal columns") << c_StringMatrix1_10x9 << 10 << 9 << 10 << 9 << c_StringMatrix1_10x9;
+    QTest::newRow("less rows, more columns") << c_StringMatrix1_10x9 << 7 << 11 << 7 << 11 << c_StringMatrix1_7x11;
+    QTest::newRow("less rows, more columns") << c_StringMatrix1_10x9 << 8 << 11 << 8 << 11 << c_StringMatrix1_8x11;
+    QTest::newRow("more rows, less columns") << c_StringMatrix1_10x9 << 12 << 7 << 12 << 7 << c_StringMatrix1_12x7;
+    QTest::newRow("more rows, less columns") << c_StringMatrix1_10x9 << 12 << 8 << 12 << 8 << c_StringMatrix1_12x8;
 
     // additional tests for unchanged capacity
     QTest::newRow("equal rows, more columns") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 5 << 3 << 5 << StringMatrix{3, 5, {"First", "Second", "Third", "Fourth", "", "Fifth", "Sixth", "Seventh", "Eighth", "", "Ninth", "Tenth", "Eleventh", "Twelfth", ""}};
@@ -473,7 +804,7 @@ void ResizingTests::testStringMatrixResizeWithoutFillingInNewValues_data()
     QTest::newRow("equal rows, equal columns") << StringMatrix{3, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth"}} << 3 << 3 << 3 << 3 << StringMatrix{3, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth"}};
 }
 
-void ResizingTests::testStringMatrixResizeAndFillInNewValues_data()
+void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndSetNewValues_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
     QTest::addColumn<StringMatrixSizeType>("resizeRowsCount");
@@ -493,11 +824,67 @@ void ResizingTests::testStringMatrixResizeAndFillInNewValues_data()
     QTest::newRow("equal rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 4 << 3 << std::string{"/NEW_VALUE/"} << 4 << 3 << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 4 << std::string{"/NEW_VALUE/"} << 3 << 4 << StringMatrix{3, 4, {"First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/"}};
     QTest::newRow("more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 5 << 2 << std::string{"/NEW_VALUE/"} << 5 << 2 << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "/NEW_VALUE/", "/NEW_VALUE/"}};
+    QTest::newRow("equal rows, less columns") << c_StringMatrix1_10x9 << 10 << 7 << std::string{"5Z"} << 10 << 7 << c_StringMatrix1_10x7;
+    QTest::newRow("equal rows, less columns") << c_StringMatrix1_10x9 << 10 << 8 << std::string{"5Z"} << 10 << 8 << c_StringMatrix1_10x8;
+    QTest::newRow("less rows, equal columns") << c_StringMatrix1_10x9 << 7 << 9 << std::string{"5Z"} << 7 << 9 << c_StringMatrix1_7x9;
+    QTest::newRow("less rows, equal columns") << c_StringMatrix1_10x9 << 8 << 9 << std::string{"5Z"} << 8 << 9 << c_StringMatrix1_8x9;
+    QTest::newRow("less rows, less columns") << c_StringMatrix1_10x9 << 7 << 7 << std::string{"5Z"} << 7 << 7 << c_StringMatrix1_7x7;
+    QTest::newRow("less rows, less columns") << c_StringMatrix1_10x9 << 8 << 8 << std::string{"5Z"} << 8 << 8 << c_StringMatrix1_8x8;
+    QTest::newRow("equal rows, more columns") << c_StringMatrix1_10x9 << 10 << 11 << std::string{"5Z"} << 10 << 11 << c_StringMatrix2_10x11;
+    QTest::newRow("more rows, equal columns") << c_StringMatrix1_10x9 << 12 << 9 << std::string{"5Z"} << 12 << 9 << c_StringMatrix2_12x9;
+    QTest::newRow("more rows, more columns") << c_StringMatrix1_10x9 << 12 << 11 << std::string{"5Z"} << 12 << 11 << c_StringMatrix2_12x11;
+    QTest::newRow("more rows, more columns") << StringMatrix{} << 12 << 11 << std::string{"5Z"} << 12 << 11 << StringMatrix{12, 11, "5Z"};
+    QTest::newRow("equal rows, equal columns") << c_StringMatrix1_10x9 << 10 << 9 << std::string{"5Z"} << 10 << 9 << c_StringMatrix1_10x9;
+    QTest::newRow("less rows, more columns") << c_StringMatrix1_10x9 << 7 << 11 << std::string{"5Z"} << 7 << 11 << c_StringMatrix2_7x11;
+    QTest::newRow("less rows, more columns") << c_StringMatrix1_10x9 << 8 << 11 << std::string{"5Z"} << 8 << 11 << c_StringMatrix2_8x11;
+    QTest::newRow("more rows, less columns") << c_StringMatrix1_10x9 << 12 << 7 << std::string{"5Z"} << 12 << 7 << c_StringMatrix2_12x7;
+    QTest::newRow("more rows, less columns") << c_StringMatrix1_10x9 << 12 << 8 << std::string{"5Z"} << 12 << 8 << c_StringMatrix2_12x8;
 
     // additional tests for unchanged capacity
     QTest::newRow("equal rows, more columns") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 5 << std::string{"/NEW_VALUE/"} << 3 << 5 << StringMatrix{3, 5, {"First", "Second", "Third", "Fourth", "/NEW_VALUE/", "Fifth", "Sixth", "Seventh", "Eighth", "/NEW_VALUE/", "Ninth", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/"}};
     QTest::newRow("more rows, more columns") << StringMatrix{4, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "13th", "14th", "15th", "16th"}} << 5 << 5 << std::string{"/NEW_VALUE/"} << 5 << 5 << StringMatrix{5, 5, {"First", "Second", "Third", "Fourth", "/NEW_VALUE/", "Fifth", "Sixth", "Seventh", "Eighth", "/NEW_VALUE/", "Ninth", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "13th", "14th", "15th", "16th", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/"}};
     QTest::newRow("equal rows, equal columns") << StringMatrix{3, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth"}} << 3 << 3 << std::string{"/NEW_VALUE/"} << 3 << 3 << StringMatrix{3, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth"}};
+}
+
+void ResizingTests::testStringMatrixResizeWithFixedCapacityAndDefaultNewValues_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnCapacity");
+    QTest::addColumn<StringMatrix>("expectedMatrix");
+
+    QTest::newRow("equal rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 4 << 2 << 10 << 8 << StringMatrix{4, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh"}};
+    QTest::newRow("less rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 2 << 3 << 10 << 8 << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
+    QTest::newRow("less rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 2  << 11 << 10 << StringMatrix{3, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth"}};
+    QTest::newRow("equal rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 4 << 5 << 11 << 10 << StringMatrix{4, 5, {"First", "Second", "Third", "", "", "Fourth", "Fifth", "Sixth", "", "", "Seventh", "Eighth", "Ninth", "", "", "Tenth", "Eleventh", "Twelfth", "", ""}};
+    QTest::newRow("more rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 5 << 3 << 10 << 8 << StringMatrix{5, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "", "", ""}};
+    QTest::newRow("more rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 5 << 4 << 10 << 9 << StringMatrix{5, 4, {"First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", "", "Tenth", "Eleventh", "Twelfth", "", "", "", "", ""}};
+    QTest::newRow("equal rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 4 << 3 << 10 << 9 << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
+    QTest::newRow("less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 4 << 11 << 9 << StringMatrix{3, 4, {"First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", ""}};
+    QTest::newRow("more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 5 << 2 << 10 << 8 << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "", ""}};
+}
+
+void ResizingTests::testStringMatrixResizeWithFixedCapacityAndSetNewValues_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowsCount");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<std::string>("fillValue");
+    QTest::addColumn<StringMatrixSizeType>("resizeRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("resizeColumnCapacity");
+    QTest::addColumn<StringMatrix>("expectedMatrix");
+
+    QTest::newRow("equal rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 4 << 2 << std::string{"/NEW_VALUE/"} << 10 << 8 << StringMatrix{4, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh"}};
+    QTest::newRow("less rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 2 << 3 << std::string{"/NEW_VALUE/"} << 10 << 8 << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
+    QTest::newRow("less rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 2 << std::string{"/NEW_VALUE/"} << 11 << 10 << StringMatrix{3, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth"}};
+    QTest::newRow("equal rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 4 << 5 << std::string{"/NEW_VALUE/"} << 11 << 10 << StringMatrix{4, 5, {"First", "Second", "Third", "/NEW_VALUE/", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/", "/NEW_VALUE/", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/"}};
+    QTest::newRow("more rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 5 << 3 << std::string{"/NEW_VALUE/"} << 10 << 8 << StringMatrix{5, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/"}};
+    QTest::newRow("more rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 5 << 4 << std::string{"/NEW_VALUE/"} << 10 << 9 << StringMatrix{5, 4, {"First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/"}};
+    QTest::newRow("equal rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 4 << 3 << std::string{"/NEW_VALUE/"} << 10 << 9 << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
+    QTest::newRow("less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 4 << std::string{"/NEW_VALUE/"} << 11 << 9 << StringMatrix{3, 4, {"First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/"}};
+    QTest::newRow("more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 5 << 2 << std::string{"/NEW_VALUE/"} << 10 << 8 << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "/NEW_VALUE/", "/NEW_VALUE/"}};
 }
 
 void ResizingTests::testStringMatrixShrinkToFit_data()
@@ -509,6 +896,10 @@ void ResizingTests::testStringMatrixShrinkToFit_data()
     QTest::newRow("more rows than columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("less rows than columns") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("square matrix") << StringMatrix{4, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("square matrix") << c_StringMatrix1_8x8;
+    QTest::newRow("more rows than columns") << c_StringMatrix1_10x9;
+    QTest::newRow("less rows than columns") << c_StringMatrix1_8x9;
+
 }
 
 void ResizingTests::testStringMatrixInsertRowNoSetValue_data()
@@ -527,6 +918,22 @@ void ResizingTests::testStringMatrixInsertRowNoSetValue_data()
     QTest::newRow("insert at random position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 1 << 6 << 5 << StringMatrix{4, 4, {"First", "Second", "Third", "Fourth", "", "", "", "", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("insert at beginning position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 0 << 6 << 5 << StringMatrix{4, 4, {"", "", "", "", "First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("insert at end position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 6 << 5 << StringMatrix{4, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "", "", "", ""}};
+
+    // test left/right available capacity scenarios
+    QTest::newRow("insert at beginning position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 0 << 10 << 2 << StringMatrix{9, 2, {"", "", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 2 << 10 << 2 << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "", "", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 3 << 10 << 2 << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "", "", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 4 << 10 << 2 << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "", "", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 5 << 10 << 2 << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "", "", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 7 << 10 << 2 << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "", "", "15th", "16th"}};
+    QTest::newRow("insert at end position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 8 << 10 << 2 << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "", ""}};
+    QTest::newRow("insert at beginning position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 0 << 11 << 2 << StringMatrix{10, 2, {"", "", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 2 << 11 << 2 << StringMatrix{10, 2, {"1st", "2nd", "3rd", "4th", "", "", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 3 << 11 << 2 << StringMatrix{10, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "", "", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 4 << 11 << 2 << StringMatrix{10, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "", "", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 5 << 11 << 2 << StringMatrix{10, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "", "", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 7 << 11 << 2 << StringMatrix{10, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "", "", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at end position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 9 << 11 << 2 << StringMatrix{10, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th", "", ""}};
 }
 
 void ResizingTests::testStringMatrixInsertRowSetValue_data()
@@ -546,6 +953,22 @@ void ResizingTests::testStringMatrixInsertRowSetValue_data()
     QTest::newRow("insert at random position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 1 << std::string{"/NEW_VALUE/"} << 6 << 5 << StringMatrix{4, 4, {"First", "Second", "Third", "Fourth", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("insert at beginning position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 0 << std::string{"/NEW_VALUE/"} << 6 << 5 << StringMatrix{4, 4, {"/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("insert at end position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << std::string{"/NEW_VALUE/"} << 6 << 5 << StringMatrix{4, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/"}};
+
+    // test left/right available capacity scenarios
+    QTest::newRow("insert at beginning position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 0 << std::string{"/New/"} << 10 << 2 << StringMatrix{9, 2, {"/New/", "/New/", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 2 << std::string{"/New/"} << 10 << 2 << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "/New/", "/New/", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 3 << std::string{"/New/"} << 10 << 2 << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "/New/", "/New/", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 4 << std::string{"/New/"} << 10 << 2 << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "/New/", "/New/", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 5 << std::string{"/New/"} << 10 << 2 << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "/New/", "/New/", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 7 << std::string{"/New/"} << 10 << 2 << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "/New/", "/New/", "15th", "16th"}};
+    QTest::newRow("insert at end position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 8 << std::string{"/New/"} << 10 << 2 << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "/New/", "/New/"}};
+    QTest::newRow("insert at beginning position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 0 << std::string{"/New/"} << 11 << 2 << StringMatrix{10, 2, {"/New/", "/New/", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 2 << std::string{"/New/"} << 11 << 2 << StringMatrix{10, 2, {"1st", "2nd", "3rd", "4th", "/New/", "/New/", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 3 << std::string{"/New/"} << 11 << 2 << StringMatrix{10, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "/New/", "/New/", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 4 << std::string{"/New/"} << 11 << 2 << StringMatrix{10, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "/New/", "/New/", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 5 << std::string{"/New/"} << 11 << 2 << StringMatrix{10, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "/New/", "/New/", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 7 << std::string{"/New/"} << 11 << 2 << StringMatrix{10, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "/New/", "/New/", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at end position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 9 << std::string{"/New/"} << 11 << 2 << StringMatrix{10, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th", "/New/", "/New/"}};
 }
 
 void ResizingTests::testStringMatrixInsertColumnNoSetValue_data()
@@ -564,6 +987,22 @@ void ResizingTests::testStringMatrixInsertColumnNoSetValue_data()
     QTest::newRow("insert at random position") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 1 << 5 << 6 << StringMatrix{4, 4, {"First", "", "Second", "Third", "Fourth", "", "Fifth", "Sixth", "Seventh", "", "Eighth", "Ninth", "Tenth", "", "Eleventh", "Twelfth"}};
     QTest::newRow("insert at beginning position") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 0 << 5 << 6 << StringMatrix{4, 4, {"", "First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", "", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("insert at end position") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << 5 << 6 << StringMatrix{4, 4, {"First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", "", "Tenth", "Eleventh", "Twelfth", ""}};
+
+    // test left/right available capacity scenarios
+    QTest::newRow("insert at beginning position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 0 << 2 << 10 << StringMatrix{2, 9, {"", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 2 << 2 << 10 << StringMatrix{2, 9, {"1st", "2nd", "", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 3 << 2 << 10 << StringMatrix{2, 9, {"1st", "2nd", "3rd", "", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 4 << 2 << 10 << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 5 << 2 << 10 << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 7 << 2 << 10 << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "", "16th"}};
+    QTest::newRow("insert at end position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 8 << 2 << 10 << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", ""}};
+    QTest::newRow("insert at beginning position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 0 << 2 << 11 << StringMatrix{2, 10, {"", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 2 << 2 << 11 << StringMatrix{2, 10, {"1st", "2nd", "", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 3 << 2 << 11 << StringMatrix{2, 10, {"1st", "2nd", "3rd", "", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 4 << 2 << 11 << StringMatrix{2, 10, {"1st", "2nd", "3rd", "4th", "", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 5 << 2 << 11 << StringMatrix{2, 10, {"1st", "2nd", "3rd", "4th", "5th", "", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 7 << 2 << 11 << StringMatrix{2, 10, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "", "17th", "18th"}};
+    QTest::newRow("insert at end position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 9 << 2 << 11 << StringMatrix{2, 10, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th", ""}};
 }
 
 void ResizingTests::testStringMatrixInsertColumnSetValue_data()
@@ -584,6 +1023,75 @@ void ResizingTests::testStringMatrixInsertColumnSetValue_data()
     QTest::newRow("insert at beginning position") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 0 << std::string{"/NEW_VALUE/"} << 5 << 6 << StringMatrix{4, 4, {"/NEW_VALUE/", "First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("insert at end position") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 3 << std::string{"/NEW_VALUE/"} << 5 << 6 << StringMatrix{4, 4, {"First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/"}};
 
+    // test left/right available capacity scenarios
+    QTest::newRow("insert at beginning position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 0 << std::string{"/New/"} << 2 << 10 << StringMatrix{2, 9, {"/New/", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "/New/", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 2 << std::string{"/New/"} << 2 << 10 << StringMatrix{2, 9, {"1st", "2nd", "/New/", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "/New/", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 3 << std::string{"/New/"} << 2 << 10 << StringMatrix{2, 9, {"1st", "2nd", "3rd", "/New/", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "/New/", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 4 << std::string{"/New/"} << 2 << 10 << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "/New/", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "/New/", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 5 << std::string{"/New/"} << 2 << 10 << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "/New/", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "/New/", "14th", "15th", "16th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 7 << std::string{"/New/"} << 2 << 10 << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "/New/", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "/New/", "16th"}};
+    QTest::newRow("insert at end position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 8 << std::string{"/New/"} << 2 << 10 << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "/New/", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "/New/"}};
+    QTest::newRow("insert at beginning position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 0 << std::string{"/New/"} << 2 << 11 << StringMatrix{2, 10, {"/New/", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "/New/", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 2 << std::string{"/New/"} << 2 << 11 << StringMatrix{2, 10, {"1st", "2nd", "/New/", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "/New/", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 3 << std::string{"/New/"} << 2 << 11 << StringMatrix{2, 10, {"1st", "2nd", "3rd", "/New/", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "/New/", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 4 << std::string{"/New/"} << 2 << 11 << StringMatrix{2, 10, {"1st", "2nd", "3rd", "4th", "/New/", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "/New/", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 5 << std::string{"/New/"} << 2 << 11 << StringMatrix{2, 10, {"1st", "2nd", "3rd", "4th", "5th", "/New/", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "/New/", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("insert at random position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 7 << std::string{"/New/"} << 2 << 11 << StringMatrix{2, 10, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "/New/", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "/New/", "17th", "18th"}};
+    QTest::newRow("insert at end position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 9 << std::string{"/New/"} << 2 << 11 << StringMatrix{2, 10, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "/New/", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th", "/New/"}};
+}
+
+void ResizingTests::testStringMatrixInsertMultipleRowsSetValue_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<std::vector<StringMatrixSizeType>>("insertPositions");
+    QTest::addColumn<std::string>("insertedRowValue");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<StringMatrix>("referenceMatrix");
+
+    QTest::newRow("prepend both") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{0, 0} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3a_12x9;
+    QTest::newRow("append both") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{10, 11} << std::string{"5Z"} << 12 << 11 << c_StringMatrix2_12x9;
+    QTest::newRow("prepend, then append") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{0, 11} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3b_12x9;
+    QTest::newRow("append, then prepend") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{10, 0} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3b_12x9;
+    QTest::newRow("insert in the first half, then in the second") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{2, 9} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3c_12x9;
+    QTest::newRow("insert in the second half, then in the first") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{8, 2} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3c_12x9;
+    QTest::newRow("insert both in the middle") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{5, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3d_12x9;
+    QTest::newRow("insert both in the middle") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{4, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3a_11x10;
+    QTest::newRow("prepend, then insert in the middle") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{0, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3e_12x9;
+    QTest::newRow("insert in the middle, then prepend") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{5, 0} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3f_12x9;
+    QTest::newRow("prepend, then insert in the middle") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{0, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3b_11x10;
+    QTest::newRow("insert in the middle, then prepend") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{4, 0} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3b_11x10;
+    QTest::newRow("insert in the middle, then append") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{5, 11} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3g_12x9;
+    QTest::newRow("append, then insert in the middle") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{10, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3g_12x9;
+    QTest::newRow("insert in the middle, then append") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{4, 10} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3c_11x10;
+    QTest::newRow("append, then insert in the middle") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{9, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3d_11x10;
+}
+
+void ResizingTests::testStringMatrixInsertMultipleColumnsSetValue_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<std::vector<StringMatrixSizeType>>("insertPositions");
+    QTest::addColumn<std::string>("insertedColumnValue");
+    QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
+    QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
+    QTest::addColumn<StringMatrix>("referenceMatrix");
+
+    QTest::newRow("prepend both") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{0, 0} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3a_9x12;
+    QTest::newRow("append both") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{10, 11} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3b_9x12;
+    QTest::newRow("prepend, then append") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{0, 11} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3c_9x12;
+    QTest::newRow("append, then prepend") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{10, 0} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3c_9x12;
+    QTest::newRow("insert in the first half, then in the second") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{2, 9} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3d_9x12;
+    QTest::newRow("insert in the second half, then in the first") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{8, 2} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3d_9x12;
+    QTest::newRow("insert both in the middle") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{5, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3e_9x12;
+    QTest::newRow("insert both in the middle") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{4, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3a_10x11;
+    QTest::newRow("prepend, then insert in the middle") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{0, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3f_9x12;
+    QTest::newRow("insert in the middle, then prepend") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{5, 0} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3g_9x12;
+    QTest::newRow("prepend, then insert in the middle") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{0, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3b_10x11;
+    QTest::newRow("insert in the middle, then prepend") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{4, 0} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3b_10x11;
+    QTest::newRow("insert in the middle, then append") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{5, 11} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3h_9x12;
+    QTest::newRow("append, then insert in the middle") << c_StringMatrix3_9x10 << std::vector<StringMatrixSizeType>{10, 5} << std::string{"5Z"} << 11 << 12 << c_StringMatrix3h_9x12;
+    QTest::newRow("insert in the middle, then append") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{4, 10} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3c_10x11;
+    QTest::newRow("append, then insert in the middle") << c_StringMatrix1_10x9 << std::vector<StringMatrixSizeType>{9, 5} << std::string{"5Z"} << 12 << 11 << c_StringMatrix3d_10x11;
 }
 
 void ResizingTests::testStringMatrixEraseRow_data()
@@ -595,23 +1103,82 @@ void ResizingTests::testStringMatrixEraseRow_data()
     QTest::addColumn<StringMatrix>("expectedMatrix");
 
     QTest::newRow("erase at beginning position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 0 << 3 << 5 << StringMatrix{2, 4, {"Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
-    QTest::newRow("erase at random position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 1 << 3 << 5 << StringMatrix{2, 4, {"First", "Second", "Third", "Fourth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
+    QTest::newRow("erase at middle position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 1 << 3 << 5 << StringMatrix{2, 4, {"First", "Second", "Third", "Fourth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
     QTest::newRow("erase at end position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 2 << 3 << 5 << StringMatrix{2, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth"}};
     QTest::newRow("erase the only row") << StringMatrix{1, 4, {"First", "Second", "Third", "Fourth"}} << 0 << 0 << 0 << StringMatrix{};
+    QTest::newRow("erase at beginning position") << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << 0 << 7 << 2 << StringMatrix{5, 2, {"3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}};
+    QTest::newRow("erase at random position") << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << 2 << 7 << 2 << StringMatrix{5, 2, {"1st", "2nd", "3rd", "4th", "7th", "8th", "9th", "10th", "11th", "12th"}};
+    QTest::newRow("erase at middle position") << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << 3 << 7 << 2 << StringMatrix{5, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "9th", "10th", "11th", "12th"}};
+    QTest::newRow("erase at random position") << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << 4 << 7 << 2 << StringMatrix{5, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "11th", "12th"}};
+    QTest::newRow("erase at end position") << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << 5 << 7 << 2 << StringMatrix{5, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"}};
+    QTest::newRow("erase at beginning position") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << 0 << 8 << 2 << StringMatrix{6, 2, {"3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}};
+    QTest::newRow("erase at random position") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << 2 << 8 << 2 << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}};
+    QTest::newRow("erase at middle position") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << 3 << 8 << 2 << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "9th", "10th", "11th", "12th", "13th", "14th"}};
+    QTest::newRow("erase at random position") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << 4 << 8 << 2 << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "11th", "12th", "13th", "14th"}};
+    QTest::newRow("erase at end position") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << 6 << 8 << 2 << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}};
+    QTest::newRow("erase at beginning position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 0 << 10 << 2 << StringMatrix{7, 2, {"3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("erase at random position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 3 << 10 << 2 << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("erase at middle position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 4 << 10 << 2 << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("erase at random position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 5 << 10 << 2 << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("erase at end position") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 7 << 10 << 2 << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}};
+    QTest::newRow("erase at beginning position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 0 << 11 << 2 << StringMatrix{8, 2, {"3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("erase at random position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 3 << 11 << 2 << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("erase at middle position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 4 << 11 << 2 << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("erase at random position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 5 << 11 << 2 << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("erase at end position") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 8 << 11 << 2 << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("erase the only row") << StringMatrix{1, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"}} << 0 << 0 << 0 << StringMatrix{};
 }
 
 void ResizingTests::testStringMatrixEraseMultipleRows_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<StringMatrixSizeType>("erasePosition");
-    QTest::addColumn<StringMatrixSizeType>("erasedRowsCount");
+    QTest::addColumn<std::vector<StringMatrixSizeType>>("erasePositions");
     QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
     QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
     QTest::addColumn<StringMatrix>("expectedMatrix");
 
-    QTest::newRow("erase at beginning position") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 0 << 4 << 0 << 0 << StringMatrix{};
-    QTest::newRow("erase at random position") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 1 << 3 << 2 << 3 << StringMatrix{1, 3, {"First", "Second", "Third"}};
-    QTest::newRow("erase at random position") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 2 << 2 << 5 << 3 << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
+    QTest::newRow("erase from beginning") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{0, 0, 0, 0} << 0 << 0 << StringMatrix{};
+    QTest::newRow("erase from random positions") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{1, 1, 1} << 2 << 3 << StringMatrix{1, 3, {"First", "Second", "Third"}};
+    QTest::newRow("erase from random positions") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{2, 2} << 5 << 3 << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
+    QTest::newRow("erase from random positions") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{1, 2, 0, 0} << 0 << 0 << StringMatrix{};
+    QTest::newRow("erase from middle") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{2, 1, 1, 0} << 0 << 0 << StringMatrix{};
+    QTest::newRow("erase from end") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{3, 2, 1, 0} << 0 << 0 << StringMatrix{};
+    QTest::newRow("erase from beginning/end") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{0, 2} << 5 << 3 << StringMatrix{2, 3, {"Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth"}};
+    QTest::newRow("erase from end/beginning") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{3, 0} << 5 << 3 << StringMatrix{2, 3, {"Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth"}};
+    QTest::newRow("erase from beginning/end") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{0, 6} << 10 << 2 << StringMatrix{6, 2, {"3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}};
+    QTest::newRow("erase from end/beginning") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{7, 0} << 10 << 2 << StringMatrix{6, 2, {"3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}};
+    QTest::newRow("erase from beginning/end by changing order") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{0, 5, 4, 0} << 8 << 2 << StringMatrix{3, 2, {"5th", "6th", "7th", "8th", "9th", "10th"}};
+    QTest::newRow("erase from beginning/end by changing order") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{0, 5, 4, 0, 0} << 4 << 2 << StringMatrix{2, 2, {"7th", "8th", "9th", "10th"}};
+    QTest::newRow("erase from beginning/end by changing order") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{0, 6, 5, 0, 0} << 10 << 2 << StringMatrix{3, 2, {"7th", "8th", "9th", "10th", "11th", "12th"}};
+    QTest::newRow("erase from beginning/end by changing order") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{0, 6, 5, 0, 0, 2} << 4 << 2 << StringMatrix{2, 2, {"7th", "8th", "9th", "10th"}};
+    QTest::newRow("erase from end/beginning by changing order") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{6, 0, 0, 3} << 8 << 2 << StringMatrix{3, 2, {"5th", "6th", "7th", "8th", "9th", "10th"}};
+    QTest::newRow("erase from end/beginning by changing order") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{6, 0, 0, 3, 2} << 4 << 2 << StringMatrix{2, 2, {"5th", "6th", "7th", "8th"}};
+    QTest::newRow("erase from end/beginning by changing order") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{7, 0, 0, 4, 3} << 10 << 2 << StringMatrix{3, 2, {"5th", "6th", "7th", "8th", "9th", "10th"}};
+    QTest::newRow("erase from end/beginning by changing order") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{7, 0, 0, 4, 3, 0} << 4 << 2 << StringMatrix{2, 2, {"7th", "8th", "9th", "10th"}};
+    QTest::newRow("erase from beginning") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{0, 0, 0, 0} << 8 << 2 << StringMatrix{3, 2, {"9th", "10th", "11th", "12th", "13th", "14th"}};
+    QTest::newRow("erase from beginning") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{0, 0, 0, 0, 0} << 4 << 2 << StringMatrix{2, 2, {"11th", "12th", "13th", "14th"}};
+    QTest::newRow("erase from beginning") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{0, 0, 0, 0, 0} << 10 << 2 << StringMatrix{3, 2, {"11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("erase from beginning") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{0, 0, 0, 0, 0, 0} << 4 << 2 << StringMatrix{2, 2, {"13th", "14th", "15th", "16th"}};
+    QTest::newRow("erase from middle") << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << std::vector<StringMatrixSizeType>{3, 2, 2, 1} << 7 << 2 << StringMatrix{2, 2, {"1st", "2nd", "11th", "12th"}};
+    QTest::newRow("erase from middle") << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << std::vector<StringMatrixSizeType>{3, 2, 2, 1, 1} << 2 << 2 << StringMatrix{1, 2, {"1st", "2nd"}};
+    QTest::newRow("erase from middle") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{3, 3, 2, 2} << 8 << 2 << StringMatrix{3, 2, {"1st", "2nd", "3rd", "4th", "13th", "14th"}};
+    QTest::newRow("erase from middle") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{3, 3, 2, 2, 1} << 4 << 2 << StringMatrix{2, 2, {"1st", "2nd", "13th", "14th"}};
+    QTest::newRow("erase from middle") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{4, 3, 3, 2, 2} << 10 << 2 << StringMatrix{3, 2, {"1st", "2nd", "3rd", "4th", "15th", "16th"}};
+    QTest::newRow("erase from middle") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{4, 3, 3, 2, 2, 1} << 4 << 2 << StringMatrix{2, 2, {"1st", "2nd", "15th", "16th"}};
+    QTest::newRow("erase from middle") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << std::vector<StringMatrixSizeType>{4, 4, 3, 3, 2, 2} << 11 << 2 << StringMatrix{3, 2, {"1st", "2nd", "3rd", "4th", "17th", "18th"}};
+    QTest::newRow("erase from middle") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << std::vector<StringMatrixSizeType>{4, 4, 3, 3, 2, 2, 1} << 4 << 2 << StringMatrix{2, 2, {"1st", "2nd", "17th", "18th"}};
+    QTest::newRow("erase from end") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{6, 5, 4, 3} << 8 << 2 << StringMatrix{3, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th"}};
+    QTest::newRow("erase from end") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{6, 5, 4, 3, 2} << 4 << 2 << StringMatrix{2, 2, {"1st", "2nd", "3rd", "4th"}};
+    QTest::newRow("erase from end") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{7, 6, 5, 4, 3} << 10 << 2 << StringMatrix{3, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th"}};
+    QTest::newRow("erase from end") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{7, 6, 5, 4, 3, 2} << 4 << 2 << StringMatrix{2, 2, {"1st", "2nd", "3rd", "4th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << std::vector<StringMatrixSizeType>{1, 1, 2, 0} << 7 << 2 << StringMatrix{2, 2, {"7th", "8th", "11th", "12th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{6, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << std::vector<StringMatrixSizeType>{2, 4, 1, 2, 0} << 2 << 2 << StringMatrix{1, 2, {"7th", "8th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{2, 4, 1, 2} << 8 << 2 << StringMatrix{3, 2, {"1st", "2nd", "7th", "8th", "13th", "14th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{7, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{1, 0, 3, 1, 2} << 4 << 2 << StringMatrix{2, 2, {"5th", "6th", "9th", "10th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{6, 0, 2, 4, 2} << 10 << 2 << StringMatrix{3, 2, {"3rd", "4th", "5th", "6th", "11th", "12th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{8, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{4, 0, 5, 1, 1, 1} << 4 << 2 << StringMatrix{2, 2, {"3rd", "4th", "13th", "14th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << std::vector<StringMatrixSizeType>{5, 5, 1, 1, 3, 3} << 11 << 2 << StringMatrix{3, 2, {"1st", "2nd", "7th", "8th", "9th", "10th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{9, 2, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << std::vector<StringMatrixSizeType>{1, 6, 5, 1, 3, 1, 0} << 4 << 2 << StringMatrix{2, 2, {"9th", "10th", "17th", "18th"}};
 }
 
 void ResizingTests::testStringMatrixEraseColumn_data()
@@ -623,23 +1190,82 @@ void ResizingTests::testStringMatrixEraseColumn_data()
     QTest::addColumn<StringMatrix>("expectedMatrix");
 
     QTest::newRow("erase at beginning position") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 0 << 5 << 3 << StringMatrix{4, 2, {"Second", "Third", "Fifth", "Sixth", "Eighth", "Ninth", "Eleventh", "Twelfth"}};
-    QTest::newRow("erase at random position") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 1 << 5 << 3 << StringMatrix{4, 2, {"First", "Third", "Fourth", "Sixth", "Seventh", "Ninth", "Tenth", "Twelfth"}};
+    QTest::newRow("erase at middle position") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 1 << 5 << 3 << StringMatrix{4, 2, {"First", "Third", "Fourth", "Sixth", "Seventh", "Ninth", "Tenth", "Twelfth"}};
     QTest::newRow("erase at end position") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 2 << 5 << 3 << StringMatrix{4, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh"}};
     QTest::newRow("erase the only column") << StringMatrix{4, 1, {"First", "Second", "Third", "Fourth"}} << 0 << 0 << 0 << StringMatrix{};
+    QTest::newRow("erase at beginning position") << StringMatrix{2, 6, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << 0 << 2 << 7 << StringMatrix{2, 5, {"2nd", "3rd", "4th", "5th", "6th", "8th", "9th", "10th", "11th", "12th"}};
+    QTest::newRow("erase at random position") << StringMatrix{2, 6, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << 2 << 2 << 7 << StringMatrix{2, 5, {"1st", "2nd", "4th", "5th", "6th", "7th", "8th", "10th", "11th", "12th"}};
+    QTest::newRow("erase at middle position") << StringMatrix{2, 6, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << 3 << 2 << 7 << StringMatrix{2, 5, {"1st", "2nd", "3rd", "5th", "6th", "7th", "8th", "9th", "11th", "12th"}};
+    QTest::newRow("erase at random position") << StringMatrix{2, 6, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << 4 << 2 << 7 << StringMatrix{2, 5, {"1st", "2nd", "3rd", "4th", "6th", "7th", "8th", "9th", "10th", "12th"}};
+    QTest::newRow("erase at end position") << StringMatrix{2, 6, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << 5 << 2 << 7 << StringMatrix{2, 5, {"1st", "2nd", "3rd", "4th", "5th", "7th", "8th", "9th", "10th", "11th"}};
+    QTest::newRow("erase at beginning position") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << 0 << 2 << 8 << StringMatrix{2, 6, {"2nd", "3rd", "4th", "5th", "6th", "7th", "9th", "10th", "11th", "12th", "13th", "14th"}};
+    QTest::newRow("erase at random position") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << 2 << 2 << 8 << StringMatrix{2, 6, {"1st", "2nd", "4th", "5th", "6th", "7th", "8th", "9th", "11th", "12th", "13th", "14th"}};
+    QTest::newRow("erase at middle position") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << 3 << 2 << 8 << StringMatrix{2, 6, {"1st", "2nd", "3rd", "5th", "6th", "7th", "8th", "9th", "10th", "12th", "13th", "14th"}};
+    QTest::newRow("erase at random position") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << 4 << 2 << 8 << StringMatrix{2, 6, {"1st", "2nd", "3rd", "4th", "6th", "7th", "8th", "9th", "10th", "11th", "13th", "14th"}};
+    QTest::newRow("erase at end position") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << 6 << 2 << 8 << StringMatrix{2, 6, {"1st", "2nd", "3rd", "4th", "5th", "6th", "8th", "9th", "10th", "11th", "12th", "13th"}};
+    QTest::newRow("erase at beginning position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 0 << 2 << 10 << StringMatrix{2, 7, {"2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("erase at random position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 3 << 2 << 10 << StringMatrix{2, 7, {"1st", "2nd", "3rd", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "13th", "14th", "15th", "16th"}};
+    QTest::newRow("erase at middle position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 4 << 2 << 10 << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "14th", "15th", "16th"}};
+    QTest::newRow("erase at random position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 5 << 2 << 10 << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "15th", "16th"}};
+    QTest::newRow("erase at end position") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << 7 << 2 << 10 << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "9th", "10th", "11th", "12th", "13th", "14th", "15th"}};
+    QTest::newRow("erase at beginning position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 0 << 2 << 11 << StringMatrix{2, 8, {"2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("erase at random position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 3 << 2 << 11 << StringMatrix{2, 8, {"1st", "2nd", "3rd", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "14th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("erase at middle position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 4 << 2 << 11 << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "15th", "16th", "17th", "18th"}};
+    QTest::newRow("erase at random position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 5 << 2 << 11 << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "16th", "17th", "18th"}};
+    QTest::newRow("erase at end position") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << 8 << 2 << 11 << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th"}};
+    QTest::newRow("erase the only column") << StringMatrix{9, 1, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"}} << 0 << 0 << 0 << StringMatrix{};
 }
 
 void ResizingTests::testStringMatrixEraseMultipleColumns_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<StringMatrixSizeType>("erasePosition");
-    QTest::addColumn<StringMatrixSizeType>("erasedColumnsCount");
+    QTest::addColumn<std::vector<StringMatrixSizeType>>("erasePositions");
     QTest::addColumn<StringMatrixSizeType>("expectedRowCapacity");
     QTest::addColumn<StringMatrixSizeType>("expectedColumnCapacity");
     QTest::addColumn<StringMatrix>("expectedMatrix");
 
-    QTest::newRow("erase at beginning position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 0 << 4 << 0 << 0 << StringMatrix{};
-    QTest::newRow("erase at random position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 1 << 3 << 3 << 2 << StringMatrix{3, 1, {"First", "Fifth", "Ninth"}};
-    QTest::newRow("erase at random position") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 2 << 2 << 3 << 5 << StringMatrix{3, 2, {"First", "Second", "Fifth", "Sixth", "Ninth", "Tenth"}};
+    QTest::newRow("erase from beginning") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{0, 0, 0, 0} << 0 << 0 << StringMatrix{};
+    QTest::newRow("erase from random positions") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{1, 1, 1} << 3 << 2 << StringMatrix{3, 1, {"First", "Fifth", "Ninth"}};
+    QTest::newRow("erase from random positions") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{2, 2} << 3 << 5 << StringMatrix{3, 2, {"First", "Second", "Fifth", "Sixth", "Ninth", "Tenth"}};
+    QTest::newRow("erase from random positions") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{1, 2, 0, 0} << 0 << 0 << StringMatrix{};
+    QTest::newRow("erase from middle") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{2, 1, 1, 0} << 0 << 0 << StringMatrix{};
+    QTest::newRow("erase from end") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{3, 2, 1, 0} << 0 << 0 << StringMatrix{};
+    QTest::newRow("erase from beginning/end") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{0, 2} << 3 << 5 << StringMatrix{3, 2, {"Second", "Third", "Sixth", "Seventh", "Tenth", "Eleventh"}};
+    QTest::newRow("erase from end/beginning") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << std::vector<StringMatrixSizeType>{3, 0} << 3 << 5 << StringMatrix{3, 2, {"Second", "Third", "Sixth", "Seventh", "Tenth", "Eleventh"}};
+    QTest::newRow("erase from beginning/end") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{0, 6} << 2 << 10 << StringMatrix{2, 6, {"2nd", "3rd", "4th", "5th", "6th", "7th", "10th", "11th", "12th", "13th", "14th", "15th"}};
+    QTest::newRow("erase from end/beginning") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{7, 0} << 2 << 10 << StringMatrix{2, 6, {"2nd", "3rd", "4th", "5th", "6th", "7th", "10th", "11th", "12th", "13th", "14th", "15th"}};
+    QTest::newRow("erase from beginning/end by changing order") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{0, 5, 4, 0} << 2 << 8 << StringMatrix{2, 3, {"3rd", "4th", "5th", "10th", "11th", "12th"}};
+    QTest::newRow("erase from beginning/end by changing order") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{0, 5, 4, 0, 0} << 2 << 4 << StringMatrix{2, 2, {"4th", "5th", "11th", "12th"}};
+    QTest::newRow("erase from beginning/end by changing order") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{0, 6, 5, 0, 0} << 2 << 10 << StringMatrix{2, 3, {"4th", "5th", "6th", "12th", "13th", "14th"}};
+    QTest::newRow("erase from beginning/end by changing order") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{0, 6, 5, 0, 0, 2} << 2 << 4 << StringMatrix{2, 2, {"4th", "5th", "12th", "13th"}};
+    QTest::newRow("erase from end/beginning by changing order") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{6, 0, 0, 3} << 2 << 8 << StringMatrix{2, 3, {"3rd", "4th", "5th", "10th", "11th", "12th"}};
+    QTest::newRow("erase from end/beginning by changing order") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{6, 0, 0, 3, 2} << 2 << 4 << StringMatrix{2, 2, {"3rd", "4th", "10th", "11th"}};
+    QTest::newRow("erase from end/beginning by changing order") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{7, 0, 0, 4, 3} << 2 << 10 << StringMatrix{2, 3, {"3rd", "4th", "5th", "11th", "12th", "13th"}};
+    QTest::newRow("erase from end/beginning by changing order") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{7, 0, 0, 4, 3, 0} << 2 << 4 << StringMatrix{2, 2, {"4th", "5th", "12th", "13th"}};
+    QTest::newRow("erase from beginning") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{0, 0, 0, 0} << 2 << 8 << StringMatrix{2, 3, {"5th", "6th", "7th", "12th", "13th", "14th"}};
+    QTest::newRow("erase from beginning") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{0, 0, 0, 0, 0} << 2 << 4 << StringMatrix{2, 2, {"6th", "7th", "13th", "14th"}};
+    QTest::newRow("erase from beginning") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{0, 0, 0, 0, 0} << 2 << 10 << StringMatrix{2, 3, {"6th", "7th", "8th", "14th", "15th", "16th"}};
+    QTest::newRow("erase from beginning") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{0, 0, 0, 0, 0, 0} << 2 << 4 << StringMatrix{2, 2, {"7th", "8th", "15th", "16th"}};
+    QTest::newRow("erase from middle") << StringMatrix{2, 6, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << std::vector<StringMatrixSizeType>{3, 2, 2, 1} << 2 << 7 << StringMatrix{2, 2, {"1st", "6th", "7th", "12th"}};
+    QTest::newRow("erase from middle") << StringMatrix{2, 6, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << std::vector<StringMatrixSizeType>{3, 2, 2, 1, 1} << 2 << 2 << StringMatrix{2, 1, {"1st", "7th"}};
+    QTest::newRow("erase from middle") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{3, 3, 2, 2} << 2 << 8 << StringMatrix{2, 3, {"1st", "2nd", "7th", "8th", "9th", "14th"}};
+    QTest::newRow("erase from middle") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{3, 3, 2, 2, 1} << 2 << 4 << StringMatrix{2, 2, {"1st", "7th", "8th", "14th"}};
+    QTest::newRow("erase from middle") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{4, 3, 3, 2, 2} << 2 << 10 << StringMatrix{2, 3, {"1st", "2nd", "8th", "9th", "10th", "16th"}};
+    QTest::newRow("erase from middle") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{4, 3, 3, 2, 2, 1} << 2 << 4 << StringMatrix{2, 2, {"1st", "8th", "9th", "16th"}};
+    QTest::newRow("erase from middle") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << std::vector<StringMatrixSizeType>{4, 4, 3, 3, 2, 2} << 2 << 11 << StringMatrix{2, 3, {"1st", "2nd", "9th", "10th", "11th", "18th"}};
+    QTest::newRow("erase from middle") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << std::vector<StringMatrixSizeType>{4, 4, 3, 3, 2, 2, 1} << 2 << 4 << StringMatrix{2, 2, {"1st", "9th", "10th", "18th"}};
+    QTest::newRow("erase from end") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{6, 5, 4, 3} << 2 << 8 << StringMatrix{2, 3, {"1st", "2nd", "3rd", "8th", "9th", "10th"}};
+    QTest::newRow("erase from end") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{6, 5, 4, 3, 2} << 2 << 4 << StringMatrix{2, 2, {"1st", "2nd", "8th", "9th"}};
+    QTest::newRow("erase from end") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{7, 6, 5, 4, 3} << 2 << 10 << StringMatrix{2, 3, {"1st", "2nd", "3rd", "9th", "10th", "11th"}};
+    QTest::newRow("erase from end") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{7, 6, 5, 4, 3, 2} << 2 << 4 << StringMatrix{2, 2, {"1st", "2nd", "9th", "10th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{2, 6, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << std::vector<StringMatrixSizeType>{1, 1, 2, 0} << 2 << 7 << StringMatrix{2, 2, {"4th", "6th", "10th", "12th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{2, 6, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"}} << std::vector<StringMatrixSizeType>{2, 4, 1, 2, 0} << 2 << 2 << StringMatrix{2, 1, {"4th", "10th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{2, 4, 1, 2} << 2 << 8 << StringMatrix{2, 3, {"1st", "4th", "7th", "8th", "11th", "14th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{2, 7, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th"}} << std::vector<StringMatrixSizeType>{1, 0, 3, 1, 2} << 2 << 4 << StringMatrix{2, 2, {"3rd", "5th", "10th", "12th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{6, 0, 2, 4, 2} << 2 << 10 << StringMatrix{2, 3, {"2nd", "3rd", "6th", "10th", "11th", "14th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{2, 8, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th"}} << std::vector<StringMatrixSizeType>{4, 0, 5, 1, 1, 1} << 2 << 4 << StringMatrix{2, 2, {"2nd", "7th", "10th", "15th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << std::vector<StringMatrixSizeType>{5, 5, 1, 1, 3, 3} << 2 << 11 << StringMatrix{2, 3, {"1st", "4th", "5th", "10th", "13th", "14th"}};
+    QTest::newRow("erase from random positions") << StringMatrix{2, 9, {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th"}} << std::vector<StringMatrixSizeType>{1, 6, 5, 1, 3, 1, 0} << 2 << 4 << StringMatrix{2, 2, {"5th", "9th", "14th", "18th"}};
 }
 
 void ResizingTests::testStringMatrixClear_data()
@@ -647,6 +1273,7 @@ void ResizingTests::testStringMatrixClear_data()
     QTest::addColumn<StringMatrix>("matrix");
 
     QTest::newRow("non-empty matrix") << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
+    QTest::newRow("non-empty matrix") << c_StringMatrix1_8x9;
     QTest::newRow("empty matrix") << StringMatrix{};
 }
 
@@ -667,6 +1294,22 @@ void ResizingTests::_buildIntMatrixInsertRowTestingTable()
     QTest::newRow("insert at random position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << -1 << 6 << 5 << IntMatrix{4, 4, {1, 2, 3, 4, -1, -1, -1, -1, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("insert at beginning position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << -1 << 6 << 5 << IntMatrix{4, 4, {-1, -1, -1, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("insert at end position") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << -1 << 6 << 5 << IntMatrix{4, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, -1, -1, -1}};
+
+    // test left/right available capacity scenarios
+    QTest::newRow("insert at beginning position") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 0 << -1 << 10 << 2 << IntMatrix{9, 2, {-1, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("insert at random position") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 2 << -1 << 10 << 2 << IntMatrix{9, 2, {1, 2, 3, 4, -1, -1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("insert at random position") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 3 << -1 << 10 << 2 << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, -1, -1, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("insert at random position") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 4 << -1 << 10 << 2 << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, -1, -1, 9, 10, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("insert at random position") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 5 << -1 << 10 << 2 << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, -1, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("insert at random position") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 7 << -1 << 10 << 2 << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, -1, -1, 15, 16}};
+    QTest::newRow("insert at end position") << IntMatrix{8, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 8 << -1 << 10 << 2 << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, -1, -1}};
+    QTest::newRow("insert at beginning position") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 0 << -1 << 11 << 2 << IntMatrix{10, 2, {-1, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("insert at random position") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 2 << -1 << 11 << 2 << IntMatrix{10, 2, {1, 2, 3, 4, -1, -1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("insert at random position") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 3 << -1 << 11 << 2 << IntMatrix{10, 2, {1, 2, 3, 4, 5, 6, -1, -1, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("insert at random position") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 4 << -1 << 11 << 2 << IntMatrix{10, 2, {1, 2, 3, 4, 5, 6, 7, 8, -1, -1, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("insert at random position") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 5 << -1 << 11 << 2 << IntMatrix{10, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, -1, 11, 12, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("insert at random position") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 7 << -1 << 11 << 2 << IntMatrix{10, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, -1, -1, 15, 16, 17, 18}};
+    QTest::newRow("insert at end position") << IntMatrix{9, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 9 << -1 << 11 << 2 << IntMatrix{10, 2, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, -1, -1}};
 }
 
 void ResizingTests::_buildIntMatrixInsertColumnTestingTable()
@@ -686,6 +1329,22 @@ void ResizingTests::_buildIntMatrixInsertColumnTestingTable()
     QTest::newRow("insert at random position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 1 << -1 << 5 << 6 << IntMatrix{4, 4, {1, -1, 2, 3, 4, -1, 5, 6, 7, -1, 8, 9, 10, -1, 11, 12}};
     QTest::newRow("insert at beginning position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0 << -1 << 5 << 6 << IntMatrix{4, 4, {-1, 1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1, 10, 11, 12}};
     QTest::newRow("insert at end position") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 3 << -1 << 5 << 6 << IntMatrix{4, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1, 10, 11, 12, -1}};
+
+    // test left/right available capacity scenarios
+    QTest::newRow("insert at beginning position") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 0 << -1 << 2 << 10 << IntMatrix{2, 9, {-1, 1, 2, 3, 4, 5, 6, 7, 8, -1, 9, 10, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("insert at random position") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 2 << -1 << 2 << 10 << IntMatrix{2, 9, {1, 2, -1, 3, 4, 5, 6, 7, 8, 9, 10, -1, 11, 12, 13, 14, 15, 16}};
+    QTest::newRow("insert at random position") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 3 << -1 << 2 << 10 << IntMatrix{2, 9, {1, 2, 3, -1, 4, 5, 6, 7, 8, 9, 10, 11, -1, 12, 13, 14, 15, 16}};
+    QTest::newRow("insert at random position") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 4 << -1 << 2 << 10 << IntMatrix{2, 9, {1, 2, 3, 4, -1, 5, 6, 7, 8, 9, 10, 11, 12, -1, 13, 14, 15, 16}};
+    QTest::newRow("insert at random position") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 5 << -1 << 2 << 10 << IntMatrix{2, 9, {1, 2, 3, 4, 5, -1, 6, 7, 8, 9, 10, 11, 12, 13, -1, 14, 15, 16}};
+    QTest::newRow("insert at random position") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 7 << -1 << 2 << 10 << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, -1, 8, 9, 10, 11, 12, 13, 14, 15, -1, 16}};
+    QTest::newRow("insert at end position") << IntMatrix{2, 8, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}} << 8 << -1 << 2 << 10 << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, -1, 9, 10, 11, 12, 13, 14, 15, 16, -1}};
+    QTest::newRow("insert at beginning position") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 0 << -1 << 2 << 11 << IntMatrix{2, 10, {-1, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, 10, 11, 12, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("insert at random position") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 2 << -1 << 2 << 11 << IntMatrix{2, 10, {1, 2, -1, 3, 4, 5, 6, 7, 8, 9, 10, 11, -1, 12, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("insert at random position") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 3 << -1 << 2 << 11 << IntMatrix{2, 10, {1, 2, 3, -1, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, 13, 14, 15, 16, 17, 18}};
+    QTest::newRow("insert at random position") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 4 << -1 << 2 << 11 << IntMatrix{2, 10, {1, 2, 3, 4, -1, 5, 6, 7, 8, 9, 10, 11, 12, 13, -1, 14, 15, 16, 17, 18}};
+    QTest::newRow("insert at random position") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 5 << -1 << 2 << 11 << IntMatrix{2, 10, {1, 2, 3, 4, 5, -1, 6, 7, 8, 9, 10, 11, 12, 13, 14, -1, 15, 16, 17, 18}};
+    QTest::newRow("insert at random position") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 7 << -1 << 2 << 11 << IntMatrix{2, 10, {1, 2, 3, 4, 5, 6, 7, -1, 8, 9, 10, 11, 12, 13, 14, 15, 16, -1, 17, 18}};
+    QTest::newRow("insert at end position") << IntMatrix{2, 9, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}} << 9 << -1 << 2 << 11 << IntMatrix{2, 10, {1, 2, 3, 4, 5, 6, 7, 8, 9, -1, 10, 11, 12, 13, 14, 15, 16, 17, 18, -1}};
 }
 
 QTEST_APPLESS_MAIN(ResizingTests)

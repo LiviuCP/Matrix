@@ -208,28 +208,4 @@
         QVERIFY2(secondDestMatrix == expectedSecondDestMatrix, "Horizontal split failed, second destination matrix has incorrect values!"); \
     }
 
-#define TEST_MATRIX_SET_ALL_ITEMS_TO_VALUE(matrixType) \
-    QFETCH(Matrix<matrixType>, matrix); \
-    QFETCH(matrixType, value); \
-    QFETCH(Matrix<matrixType>, expectedMatrix); \
- \
-    matrix.setAllItemsToValue(value); \
- \
-    QVERIFY2(matrix == expectedMatrix, "Setting all matrix items to same value failed, matrix has incorrect values!");
-
-#define TEST_MATRIX_COPY(matrixType) \
-    QFETCH(Matrix<matrixType>, srcMatrix); \
-    QFETCH(Matrix<matrixType>, destMatrix); \
-    QFETCH(Matrix<matrixType>::size_type, copiedRowsCount); \
-    QFETCH(Matrix<matrixType>::size_type, copiedColumnsCount); \
-    QFETCH(Matrix<matrixType>::size_type, srcCopyRowNr); \
-    QFETCH(Matrix<matrixType>::size_type, srcCopyColumnNr); \
-    QFETCH(Matrix<matrixType>::size_type, destCopyRowNr); \
-    QFETCH(Matrix<matrixType>::size_type, destCopyColumnNr); \
-    QFETCH(Matrix<matrixType>, expectedDestMatrix); \
- \
-    destMatrix.copy(srcMatrix, copiedRowsCount, copiedColumnsCount, srcCopyRowNr, srcCopyColumnNr, destCopyRowNr, destCopyColumnNr); \
- \
-    QVERIFY2(destMatrix == expectedDestMatrix, "Copying items failed, destination matrix has incorrect values!");
-
 #endif // TST_TRANSFORMATIONTESTS_H

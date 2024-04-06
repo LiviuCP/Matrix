@@ -14,7 +14,6 @@ private slots:
     // test functions
     void testIteratorCreation();
     void testIteratorCreationFromNonConstIterator();
-    void testIteratorIsValidWithOneMatrix();
     void testEmptyIterator();
     void testIteratorsAreEqual();
     void testIteratorEqualToItself();
@@ -82,8 +81,7 @@ void ConstMIteratorTests::testIteratorCreation()
     QVERIFY2(iterator.getRowNr() == expectedRowNr &&
              iterator.getColumnNr() == expectedColumnNr &&
              iterator.getDiagonalNr() == expectedDiagonalNr &&
-             iterator.getDiagonalIndex() == expectedDiagonalIndex &&
-             iterator.isValidWithMatrix(m_PrimaryIntMatrix),
+             iterator.getDiagonalIndex() == expectedDiagonalIndex,
              "The iterator has not been correctly created!");
 }
 
@@ -100,19 +98,8 @@ void ConstMIteratorTests::testIteratorCreationFromNonConstIterator()
     QVERIFY2(constIterator.getRowNr() == expectedRowNr &&
              constIterator.getColumnNr() == expectedColumnNr &&
              constIterator.getDiagonalNr() == expectedDiagonalNr &&
-             constIterator.getDiagonalIndex() == expectedDiagonalIndex &&
-             constIterator.isValidWithMatrix(m_PrimaryIntMatrix),
+             constIterator.getDiagonalIndex() == expectedDiagonalIndex,
              "The iterator has not been correctly created!");
-}
-
-// additional test for checking that an iterator is only valid with the matrix with which it is created
-void ConstMIteratorTests::testIteratorIsValidWithOneMatrix()
-{
-    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-    m_SecondaryIntMatrix = m_PrimaryIntMatrix;
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstMIterator(2, 1);
-
-    QVERIFY(!m_PrimaryIntIterator.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
 void ConstMIteratorTests::testEmptyIterator()
@@ -123,7 +110,6 @@ void ConstMIteratorTests::testEmptyIterator()
     IntMatrixConstMIterator emptyIterator;
 
     QVERIFY2(emptyIterator.getRowNr() == -1 && emptyIterator.getColumnNr() == -1 && emptyIterator.getDiagonalNr() == 0 && emptyIterator.getDiagonalIndex() == -1, "The iterator has not been correctly created");
-    QVERIFY(!emptyIterator.isValidWithMatrix(m_PrimaryIntMatrix) && emptyIterator.isValidWithMatrix(m_SecondaryIntMatrix));
 }
 
 void ConstMIteratorTests::testIteratorsAreEqual()
@@ -390,11 +376,25 @@ void ConstMIteratorTests::testAsteriskOperator()
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstMIterator(2, 1);
 
     QVERIFY2(*m_PrimaryIntIterator == -8, "The asterisk operator does not work correctly when reading the value!");
+
+    // test with row capacity offset
+    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
+    m_PrimaryIntMatrix.resize(4, 3, 6, 3);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstMIterator(2, 1);
+
+    QVERIFY2(*m_PrimaryIntIterator == -8, "The asterisk operator does not work correctly when reading the value!");
 }
 
 void ConstMIteratorTests::testArrowOperator()
 {
     m_StringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+    m_StringIterator = m_StringMatrix.constMBegin(0, 1);
+
+    QVERIFY2(m_StringIterator->size() == 5, "The arrow operator does not work correctly when reading the value!");
+
+    // test with column capacity offset
+    m_StringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+    m_StringMatrix.resize(2, 3, 2, 5);
     m_StringIterator = m_StringMatrix.constMBegin(0, 1);
 
     QVERIFY2(m_StringIterator->size() == 5, "The arrow operator does not work correctly when reading the value!");
@@ -626,6 +626,19 @@ void ConstMIteratorTests::testSquareBracketsOperator_data()
     QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constMEnd(0) << -3 << -3;
     QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constMEnd(0) << -2 << -5;
     QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constMEnd(0) << -1 << 7;
+
+    // test with row/column capacity offset
+    m_SecondaryIntMatrix = m_PrimaryIntMatrix;
+    m_SecondaryIntMatrix.resize(4, 3, 6, 5);
+
+    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.constMBegin(0, 1) << 0 << 2;
+    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.constMBegin(0, 1) << 1 << 4;
+    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstMIterator(2, 1) << -1 << 6;
+    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstMIterator(2, 1) << 0 << -8;
+    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstMIterator(2, 1) << 1 << 10;
+    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.constMEnd(0) << -3 << -3;
+    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.constMEnd(0) << -2 << -5;
+    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.constMEnd(0) << -1 << 7;
 }
 
 void ConstMIteratorTests::testStdCount_data()
