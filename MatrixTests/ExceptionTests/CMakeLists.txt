@@ -19,6 +19,8 @@ enable_testing()
 include_directories(../Shared)
 include_directories(../../MatrixLib/Matrix)
 
+add_compile_definitions(CONVERT_TO_EXCEPTIONS)
+
 add_executable(CommonExceptionTests tst_commonexceptiontests.cpp)
 add_test(NAME CommonExceptionTests COMMAND CommonExceptionTests)
 

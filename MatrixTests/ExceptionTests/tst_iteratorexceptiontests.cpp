@@ -1,5 +1,3 @@
-#define CONVERT_TO_EXCEPTIONS
-
 #include <QtTest>
 
 #include "testutils.h"
