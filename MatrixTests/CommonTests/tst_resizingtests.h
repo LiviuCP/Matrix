@@ -3,40 +3,52 @@
 
 #include "testutils.h"
 
-#define TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, \
+#define TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
+                                                   requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset, \
                                    "Resizing failed, number of rows or columns of the matrix is not correct!", \
-                                   "Resizing failed, capacity of the matrix is not correct!")
+                                   "Resizing failed, capacity of the matrix is not correct!", \
+                                   "Resizing failed, capacity offset of the matrix is not correct!")
 
 #define TEST_SHRINK_TO_FIT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredNrOfRows, requiredNrOfColumns, \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredNrOfRows, requiredNrOfColumns, requiredNrOfRows == 0 ? -1 : 0, requiredNrOfColumns == 0 ? -1 : 0, \
                                    "Shrinking to fit failed, number of rows or columns of the matrix is not correct!", \
-                                   "Shrinking to fit failed, capacity of the matrix is not correct!")
+                                   "Shrinking to fit failed, capacity of the matrix is not correct!", \
+                                   "Shrinking to fit failed, capacity offset of the matrix is not correct!")
 
-#define TEST_INSERT_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, \
+#define TEST_INSERT_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
+                                                       requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset, \
                                    "Insert row failed, number of rows or columns of the matrix is not correct!", \
-                                   "Insert row failed, capacity of the matrix is not correct!")
+                                   "Insert row failed, capacity of the matrix is not correct!", \
+                                   "Insert row failed, capacity offset of the matrix is not correct!")
 
-#define TEST_INSERT_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, \
+#define TEST_INSERT_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, \
+                                                          requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset, \
                                    "Insert column failed, number of rows or columns of the matrix is not correct!", \
-                                   "Insert column failed, capacity of the matrix is not correct!")
+                                   "Insert column failed, capacity of the matrix is not correct!", \
+                                   "Insert column failed, capacity offset of the matrix is not correct!")
 
-#define TEST_ERASE_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, \
+#define TEST_ERASE_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
+                                                      requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset, \
                                    "Erase row failed, number of rows or columns of the matrix is not correct!", \
-                                   "Erase row failed, capacity of the matrix is not correct!")
+                                   "Erase row failed, capacity of the matrix is not correct!", \
+                                   "Erase row failed, capacity offset of the matrix is not correct!")
 
-#define TEST_ERASE_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, \
+#define TEST_ERASE_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
+                                                         requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset) \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset, \
                                    "Erase column failed, number of rows or columns of the matrix is not correct!", \
-                                   "Erase column failed, capacity of the matrix is not correct!")
+                                   "Erase column failed, capacity of the matrix is not correct!", \
+                                   "Erase column failed, capacity offset of the matrix is not correct!")
 
 #define TEST_CLEAR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1, \
                                    "Clear failed, number of rows or columns of the matrix is not correct!", \
-                                   "Clear failed, capacity of the matrix is not correct!")
+                                   "Clear failed, capacity of the matrix is not correct!", \
+                                   "Clear failed, capacity offset of the matrix is not correct!")
 
 #define TEST_MATRIX_RESIZE_WITH_DEFAULT_CAPACITY_AND_SET_NEW_VALUES(matrixType) \
     QFETCH(Matrix<matrixType>, matrix); \
@@ -45,11 +57,13 @@
     QFETCH(matrixType, fillValue); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
     matrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, fillValue); \
  \
-    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity); \
+    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
  \
     QVERIFY2(matrix == expectedMatrix, "Resizing failed, the matrix does not have the correct values!");
 
@@ -60,12 +74,14 @@
     QFETCH(matrixType, fillValue); \
     QFETCH(Matrix<matrixType>::size_type, resizeRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, resizeColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
     matrix.resizeWithValue(matrix.getNrOfRows(), matrix.getNrOfColumns(), fillValue, resizeRowCapacity, resizeColumnCapacity); \
     matrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, fillValue, resizeRowCapacity, resizeColumnCapacity); \
  \
-    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity); \
+    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
  \
     QVERIFY2(matrix == expectedMatrix, "Resizing failed, the matrix does not have the correct values!");
 
@@ -98,11 +114,14 @@
     QFETCH(matrixType, insertedRowValue); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, referenceMatrix); \
  \
     matrix.insertRow(insertPosition, insertedRowValue); \
  \
-    TEST_INSERT_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity); \
+    TEST_INSERT_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), \
+                                                   expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
  \
     QVERIFY2(matrix == referenceMatrix, "Insert row failed, the matrix doesn't have the right values!");
 
@@ -112,11 +131,14 @@
     QFETCH(matrixType, insertedColumnValue); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, referenceMatrix); \
  \
     matrix.insertColumn(insertPosition, insertedColumnValue); \
  \
-    TEST_INSERT_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity); \
+    TEST_INSERT_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), \
+                                                      expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
  \
     QVERIFY2(matrix == referenceMatrix, "Insert column failed, the matrix doesn't have the right values!");
 
@@ -126,6 +148,8 @@
     QFETCH(matrixType, insertedRowValue); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, referenceMatrix); \
  \
     for (const auto insertPosition : insertPositions) \
@@ -138,7 +162,8 @@
         matrix.insertRow(insertPosition, insertedRowValue); \
     } \
  \
-    TEST_INSERT_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity); \
+    TEST_INSERT_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), \
+                                                   expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
  \
     QVERIFY2(matrix == referenceMatrix, "Insert row failed, the matrix doesn't have the right values!");
 
@@ -148,6 +173,8 @@
     QFETCH(matrixType, insertedColumnValue); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, referenceMatrix); \
  \
     for (const auto insertPosition : insertPositions) \
@@ -160,7 +187,8 @@
         matrix.insertColumn(insertPosition, insertedColumnValue); \
     } \
  \
-    TEST_INSERT_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity); \
+    TEST_INSERT_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, referenceMatrix.getNrOfRows(), referenceMatrix.getNrOfColumns(), \
+                                                      expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
  \
     QVERIFY2(matrix == referenceMatrix, "Insert column failed, the matrix doesn't have the right values!");
 
@@ -169,11 +197,14 @@
     QFETCH(Matrix<matrixType>::size_type, erasePosition); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
     matrix.eraseRow(erasePosition); \
  \
-    TEST_ERASE_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, expectedMatrix.getNrOfRows(), expectedMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity); \
+    TEST_ERASE_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, expectedMatrix.getNrOfRows(), expectedMatrix.getNrOfColumns(), \
+                                                  expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
  \
     QVERIFY2(matrix == expectedMatrix, "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
 
@@ -182,6 +213,8 @@
     QFETCH(std::vector<Matrix<matrixType>::size_type>, erasePositions); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
     for (const auto erasePosition : erasePositions) \
@@ -194,7 +227,8 @@
         matrix.eraseRow(erasePosition); \
     } \
  \
-    TEST_ERASE_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, expectedMatrix.getNrOfRows(), expectedMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity); \
+    TEST_ERASE_ROW_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, expectedMatrix.getNrOfRows(), expectedMatrix.getNrOfColumns(), \
+                                                  expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
  \
     QVERIFY2(matrix == expectedMatrix, "Erase row failed, the matrix doesn't have the right values on the remaining rows!");
 
@@ -203,11 +237,14 @@
     QFETCH(Matrix<matrixType>::size_type, erasePosition); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
     matrix.eraseColumn(erasePosition); \
  \
-    TEST_ERASE_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, expectedMatrix.getNrOfRows(), expectedMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity); \
+    TEST_ERASE_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, expectedMatrix.getNrOfRows(), expectedMatrix.getNrOfColumns(), \
+                                                     expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
  \
     QVERIFY2(matrix == expectedMatrix, "Erase column failed, the matrix doesn't have the right values on the remaining columns!");
 
@@ -216,6 +253,8 @@
     QFETCH(std::vector<Matrix<matrixType>::size_type>, erasePositions); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
     for (const auto erasePosition : erasePositions) \
@@ -228,7 +267,8 @@
         matrix.eraseColumn(erasePosition); \
     } \
  \
-    TEST_ERASE_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, expectedMatrix.getNrOfRows(), expectedMatrix.getNrOfColumns(), expectedRowCapacity, expectedColumnCapacity); \
+    TEST_ERASE_COLUMN_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, expectedMatrix.getNrOfRows(), expectedMatrix.getNrOfColumns(), \
+                                                     expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
  \
     QVERIFY2(matrix == expectedMatrix, "Erase column failed, the matrix doesn't have the right values on the remaining columns!"); \
 

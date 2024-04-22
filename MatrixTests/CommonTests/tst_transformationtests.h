@@ -9,6 +9,10 @@
     QFETCH(Matrix<matrixType>::size_type, expectedSrcColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedDestRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedDestColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedSrcRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedSrcColumnCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedDestRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedDestColumnCapacityOffset); \
     QFETCH(bool, isTransposedToItself); \
  \
     primaryMatrix = initialSrcMatrix; \
@@ -19,7 +23,9 @@
  \
         QVERIFY2(primaryMatrix == expectedDestMatrix && \
                  primaryMatrix.getRowCapacity() == expectedDestRowCapacity && \
-                 primaryMatrix.getColumnCapacity() == expectedDestColumnCapacity, "Transposing failed, the resulting capacity, dimensions and/or values are incorrect!"); \
+                 primaryMatrix.getColumnCapacity() == expectedDestColumnCapacity && \
+                 primaryMatrix.getRowCapacityOffset() == expectedDestRowCapacityOffset && \
+                 primaryMatrix.getColumnCapacityOffset() == expectedDestColumnCapacityOffset, "Transposing failed, the resulting capacity (offset), dimensions and/or values are incorrect!"); \
     } \
     else \
     { \
@@ -29,11 +35,15 @@
  \
         QVERIFY2(primaryMatrix == initialSrcMatrix && \
                  primaryMatrix.getRowCapacity() == expectedSrcRowCapacity && \
-                 primaryMatrix.getColumnCapacity() == expectedSrcColumnCapacity, "Transposing failed, the source matrix shouldn't change!"); \
+                 primaryMatrix.getColumnCapacity() == expectedSrcColumnCapacity && \
+                 primaryMatrix.getRowCapacityOffset() == expectedSrcRowCapacityOffset && \
+                 primaryMatrix.getColumnCapacityOffset() == expectedSrcColumnCapacityOffset, "Transposing failed, the source matrix shouldn't change!"); \
  \
         QVERIFY2(secondaryMatrix == expectedDestMatrix && \
                  secondaryMatrix.getRowCapacity() == expectedDestRowCapacity && \
-                 secondaryMatrix.getColumnCapacity() == expectedDestColumnCapacity, "Transposing failed, the resulting capacity, dimensions and/or values of the transposed matrix are incorrect!"); \
+                 secondaryMatrix.getColumnCapacity() == expectedDestColumnCapacity && \
+                 secondaryMatrix.getRowCapacityOffset() == expectedDestRowCapacityOffset && \
+                 secondaryMatrix.getColumnCapacityOffset() == expectedDestColumnCapacityOffset, "Transposing failed, the resulting capacity (offset), dimensions and/or values of the transposed matrix are incorrect!"); \
     }
 
 #define TEST_MATRIX_CAT_BY_ROW(matrixType) \
@@ -43,6 +53,8 @@
     QFETCH(ConcatMode, mode); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedDestMatrix); \
 \
     switch(mode) \
@@ -66,9 +78,12 @@
         break; \
     } \
 \
-    if (destMatrix.getRowCapacity() != expectedRowCapacity || destMatrix.getColumnCapacity() != expectedColumnCapacity) \
+    if (destMatrix.getRowCapacity() != expectedRowCapacity || \
+        destMatrix.getColumnCapacity() != expectedColumnCapacity || \
+        destMatrix.getRowCapacityOffset() != expectedRowCapacityOffset || \
+        destMatrix.getColumnCapacityOffset() != expectedColumnCapacityOffset) \
     { \
-        QFAIL("Vertical concatenation failed, capacity of the destination matrix is not correct!"); \
+        QFAIL("Vertical concatenation failed, capacity (offset) of the destination matrix is not correct!"); \
     } \
     else \
     { \
@@ -82,6 +97,8 @@
     QFETCH(ConcatMode, mode); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedDestMatrix); \
 \
     switch(mode) \
@@ -105,9 +122,12 @@
         break; \
     } \
 \
-    if (destMatrix.getRowCapacity() != expectedRowCapacity || destMatrix.getColumnCapacity() != expectedColumnCapacity) \
+    if (destMatrix.getRowCapacity() != expectedRowCapacity || \
+        destMatrix.getColumnCapacity() != expectedColumnCapacity || \
+        destMatrix.getRowCapacityOffset() != expectedRowCapacityOffset || \
+        destMatrix.getColumnCapacityOffset() != expectedColumnCapacityOffset) \
     { \
-        QFAIL("Horizontal concatenation failed, capacity of the destination matrix is not correct!"); \
+        QFAIL("Horizontal concatenation failed, capacity (offset) of the destination matrix is not correct!"); \
     } \
     else \
     { \
@@ -124,6 +144,10 @@
     QFETCH(Matrix<matrixType>::size_type, expectedFirstDestColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedSecondDestRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedSecondDestColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedFirstDestRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedFirstDestColumnCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedSecondDestRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedSecondDestColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedFirstDestMatrix); \
     QFETCH(Matrix<matrixType>, expectedSecondDestMatrix); \
  \
@@ -143,18 +167,24 @@
         break; \
     } \
  \
-    if (firstDestMatrix.getRowCapacity() != expectedFirstDestRowCapacity || firstDestMatrix.getColumnCapacity() != expectedFirstDestColumnCapacity) \
+    if (firstDestMatrix.getRowCapacity() != expectedFirstDestRowCapacity || \
+        firstDestMatrix.getColumnCapacity() != expectedFirstDestColumnCapacity || \
+        firstDestMatrix.getRowCapacityOffset() != expectedFirstDestRowCapacityOffset || \
+        firstDestMatrix.getColumnCapacityOffset() != expectedFirstDestColumnCapacityOffset) \
     { \
-        QFAIL("Vertical split failed, capacity of the first destination matrix is not correct!"); \
+        QFAIL("Vertical split failed, capacity (offset) of the first destination matrix is not correct!"); \
     } \
     else \
     { \
         QVERIFY2(firstDestMatrix == expectedFirstDestMatrix, "Vertical split failed, first destination matrix has incorrect values!"); \
     } \
  \
-    if (secondDestMatrix.getRowCapacity() != expectedSecondDestRowCapacity || secondDestMatrix.getColumnCapacity() != expectedSecondDestColumnCapacity) \
+    if (secondDestMatrix.getRowCapacity() != expectedSecondDestRowCapacity || \
+        secondDestMatrix.getColumnCapacity() != expectedSecondDestColumnCapacity || \
+        secondDestMatrix.getRowCapacityOffset() != expectedSecondDestRowCapacityOffset || \
+        secondDestMatrix.getColumnCapacityOffset() != expectedSecondDestColumnCapacityOffset) \
     { \
-        QFAIL("Vertical split failed, capacity of the second destination matrix is not correct!"); \
+        QFAIL("Vertical split failed, capacity (offset) of the second destination matrix is not correct!"); \
     } \
     else \
     { \
@@ -171,6 +201,10 @@
     QFETCH(Matrix<matrixType>::size_type, expectedFirstDestColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedSecondDestRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedSecondDestColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedFirstDestRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedFirstDestColumnCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedSecondDestRowCapacityOffset); \
+    QFETCH(Matrix<matrixType>::size_type, expectedSecondDestColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedFirstDestMatrix); \
     QFETCH(Matrix<matrixType>, expectedSecondDestMatrix); \
  \
@@ -190,18 +224,24 @@
         break; \
     } \
  \
-    if (firstDestMatrix.getRowCapacity() != expectedFirstDestRowCapacity || firstDestMatrix.getColumnCapacity() != expectedFirstDestColumnCapacity) \
+    if (firstDestMatrix.getRowCapacity() != expectedFirstDestRowCapacity || \
+        firstDestMatrix.getColumnCapacity() != expectedFirstDestColumnCapacity || \
+        firstDestMatrix.getRowCapacityOffset() != expectedFirstDestRowCapacityOffset || \
+        firstDestMatrix.getColumnCapacityOffset() != expectedFirstDestColumnCapacityOffset) \
     { \
-        QFAIL("Horizontal split failed, capacity of the first destination matrix is not correct!"); \
+        QFAIL("Horizontal split failed, capacity (offset) of the first destination matrix is not correct!"); \
     } \
     else \
     { \
         QVERIFY2(firstDestMatrix == expectedFirstDestMatrix, "Horizontal split failed, first destination matrix has incorrect values!"); \
     } \
  \
-    if (secondDestMatrix.getRowCapacity() != expectedSecondDestRowCapacity || secondDestMatrix.getColumnCapacity() != expectedSecondDestColumnCapacity) \
+    if (secondDestMatrix.getRowCapacity() != expectedSecondDestRowCapacity || \
+        secondDestMatrix.getColumnCapacity() != expectedSecondDestColumnCapacity || \
+        secondDestMatrix.getRowCapacityOffset() != expectedSecondDestRowCapacityOffset || \
+        secondDestMatrix.getColumnCapacityOffset() != expectedSecondDestColumnCapacityOffset) \
     { \
-        QFAIL("Horizontal split failed, capacity of the second destination matrix is not correct!"); \
+        QFAIL("Horizontal split failed, capacity (offset) of the second destination matrix is not correct!"); \
     } \
     else \
     { \

@@ -39,7 +39,7 @@ void ConstructionAndAssignmentTests::testIntMatrixInitListConstructor()
 {
     IntMatrix smallMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
 
-    TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 2, 3, 2, 3);
+    TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 2, 3, 2, 3, 0, 0);
 
     QVERIFY2(smallMatrix.at(0, 0) == 1 &&
              smallMatrix.at(0, 1) == 2 &&
@@ -58,7 +58,7 @@ void ConstructionAndAssignmentTests::testIntMatrixInitListConstructor()
                                   -71, 72, -73, 74, -75, 76, -77, 78, -79, 80
                           }};
 
-    TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 8, 10, 10, 12);
+    TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 8, 10, 10, 12, 1, 1);
 
     const IntMatrix& lm{largeMatrix};
 
@@ -76,12 +76,12 @@ void ConstructionAndAssignmentTests::testIntMatrixIdenticalMatrixConstructor()
 {
     IntMatrix smallMatrix{3, 2, 4};
 
-    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 3, 2, 3, 2);
+    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 3, 2, 3, 2, 0, 0);
     CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(smallMatrix, 4, "Matrix elements have not been correctly initialized by the identical matrix constructor");
 
     IntMatrix largeMatrix{10, 8, -5};
 
-    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 10, 8, 12, 10);
+    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 10, 8, 12, 10, 1, 1);
     CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(largeMatrix, -5, "Matrix elements have not been correctly initialized by the identical matrix constructor");
 }
 
@@ -89,12 +89,12 @@ void ConstructionAndAssignmentTests::testIntMatrixDiagonalMatrixConstructor()
 {
     IntMatrix smallMatrix{3, std::pair<int, int>{2, 1}};
 
-    TEST_DIAGONAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 3, 3, 3, 3);
+    TEST_DIAGONAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 3, 3, 3, 3, 0, 0);
     CHECK_MATRIX_IS_DIAGONAL_WITH_CORRECT_ELEMENT_VALUES(smallMatrix, 2, 1, "Matrix elements have not been correctly initialized by the diagonal matrix constructor");
 
     IntMatrix largeMatrix{9, std::pair<int, int>{-5, -4}};
 
-    TEST_DIAGONAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 9, 9, 11, 11);
+    TEST_DIAGONAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 9, 9, 11, 11, 1, 1);
     CHECK_MATRIX_IS_DIAGONAL_WITH_CORRECT_ELEMENT_VALUES(largeMatrix, -5, -4, "Matrix elements have not been correctly initialized by the diagonal matrix constructor");
 }
 
@@ -104,7 +104,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyConstructor()
         const IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
         IntMatrix destMatrix{srcMatrix};
 
-        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3);
+        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(destMatrix.at(0, 0) == 1 &&
                  destMatrix.at(0, 1) == 2 &&
@@ -127,7 +127,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyConstructor()
 
         IntMatrix destMatrix{srcMatrix};
 
-        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12);
+        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12, 1, 1);
 
         const IntMatrix& dest{destMatrix};
 
@@ -145,7 +145,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyConstructor()
         const IntMatrix srcMatrix{};
         IntMatrix destMatrix{srcMatrix};
 
-        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0);
+        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
     }
 }
 
@@ -155,7 +155,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveConstructor()
         IntMatrix srcMatrix{2, 3, {1, 2, 3, 4, 5, 6} };
         IntMatrix destMatrix{std::move(srcMatrix)};
 
-        TEST_MOVE_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3);
+        TEST_MOVE_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(destMatrix.at(0, 0) == 1 &&
                      destMatrix.at(0, 1) == 2 &&
@@ -180,7 +180,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveConstructor()
 
         IntMatrix destMatrix{std::move(srcMatrix)};
 
-        TEST_MOVE_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12);
+        TEST_MOVE_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12, 1, 1);
 
         const IntMatrix& dest{destMatrix};
 
@@ -205,7 +205,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(destMatrix.at(0, 0) == 1 &&
                  destMatrix.at(0, 1) == 2 &&
@@ -221,7 +221,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(destMatrix.at(0, 0) == 1 &&
                  destMatrix.at(0, 1) == 2 &&
@@ -237,7 +237,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
     }
 
     {
@@ -246,7 +246,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
     }
 
     {
@@ -255,7 +255,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 3, 4, 3, 5);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 3, 4, 3, 5, 0, 0);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, 7, "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -265,7 +265,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 4, 3, 5, 3);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 4, 3, 5, 3, 0, 0);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, 9, "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -275,7 +275,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 4, 3, 5, 3);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 4, 3, 5, 3, 0, 0);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, 9, "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -285,7 +285,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 20, 20, 25, 25);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 20, 20, 25, 25, 2, 2);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, 11, "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -295,7 +295,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 22, 22, 27, 27);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 22, 22, 27, 27, 2, 2);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, 12, "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -304,7 +304,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         matrix = matrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 2, 3, 2, 3);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(matrix.at(0, 0) == 1 &&
                  matrix.at(0, 1) == 2 &&
@@ -319,7 +319,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         matrix = matrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1);
     }
 
     {
@@ -329,7 +329,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         firstMatrix = secondMatrix = thirdMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(firstMatrix, 2, 2, 2, 2);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(firstMatrix, 2, 2, 2, 2, 0, 0);
 
         QVERIFY2(firstMatrix.at(0, 0) == 13 &&
                  firstMatrix.at(0, 1) == 14 &&
@@ -344,7 +344,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 3, 5, 3, 6);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 3, 5, 3, 6, 0, 0);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, -2, "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -355,7 +355,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
         destMatrix.resize(4, 2, 11, 3);
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 9, 3, 11, 3);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 9, 3, 11, 3, 1, 0);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, -2, "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -375,7 +375,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12, 1, 1);
 
         const IntMatrix& dest{destMatrix};
 
@@ -398,7 +398,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(destMatrix.at(0, 0) == 1 &&
                  destMatrix.at(0, 1) == 2 &&
@@ -416,7 +416,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(destMatrix.at(0, 0) == 1 &&
                  destMatrix.at(0, 1) == 2 &&
@@ -434,7 +434,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
         TEST_MOVE_ASSIGNMENT_CHECK_SRC_MATRIX_SIZE_AND_CAPACITY(srcMatrix);
     }
 
@@ -444,7 +444,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
         TEST_MOVE_ASSIGNMENT_CHECK_SRC_MATRIX_SIZE_AND_CAPACITY(srcMatrix);
     }
 
@@ -455,7 +455,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
 
         firstMatrix = secondMatrix = std::move(thirdMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(firstMatrix, 2, 2, 2, 2);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(firstMatrix, 2, 2, 2, 2, 0, 0);
 
         QVERIFY2(firstMatrix.at(0, 0) == 13 &&
                  firstMatrix.at(0, 1) == 14 &&
@@ -470,7 +470,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
 
         firstMatrix = std::move(secondMatrix = thirdMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(firstMatrix, 2, 2, 2, 2);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(firstMatrix, 2, 2, 2, 2, 0, 0);
 
         QVERIFY2(firstMatrix.at(0, 0) == 13 &&
                  firstMatrix.at(0, 1) == 14 &&
@@ -483,7 +483,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
 
         matrix = std::move(matrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, 2, 3, 2, 3);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(matrix.at(0, 0) == 1 &&
                  matrix.at(0, 1) == 2 &&
@@ -498,7 +498,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
 
         matrix = std::move(matrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1);
     }
 
     // additional test
@@ -517,7 +517,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12, 1, 1);
 
         const IntMatrix& dest{destMatrix};
 
@@ -544,7 +544,7 @@ void ConstructionAndAssignmentTests::testStringMatrixInitListConstructor()
 {
     StringMatrix smallMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
 
-    TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 2, 3, 2, 3);
+    TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 2, 3, 2, 3, 0, 0);
 
     QVERIFY2(smallMatrix.at(0, 0) == "First" &&
              smallMatrix.at(0, 1) == "Second" &&
@@ -563,7 +563,7 @@ void ConstructionAndAssignmentTests::testStringMatrixInitListConstructor()
                                      "-71a", "72B", "-73c", "74D", "-75e", "76F", "-77g", "78H", "-79i", "80J"
                                  }};
 
-    TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 8, 10, 10, 12);
+    TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 8, 10, 10, 12, 1, 1);
 
     const StringMatrix& lm{largeMatrix};
 
@@ -581,12 +581,12 @@ void ConstructionAndAssignmentTests::testStringMatrixIdenticalMatrixConstructor(
 {
     StringMatrix smallMatrix{3, 2, "Fourth"};
 
-    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 3, 2, 3, 2);
+    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 3, 2, 3, 2, 0, 0);
     CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(smallMatrix, "Fourth", "Matrix elements have not been correctly initialized by the identical matrix constructor");
 
     StringMatrix largeMatrix{10, 8, "_Fifth"};
 
-    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 10, 8, 12, 10);
+    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 10, 8, 12, 10, 1, 1);
     CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(largeMatrix, "_Fifth", "Matrix elements have not been correctly initialized by the identical matrix constructor");
 }
 
@@ -594,12 +594,12 @@ void ConstructionAndAssignmentTests::testStringMatrixDiagonalMatrixConstructor()
 {
     StringMatrix smallMatrix{3, std::pair<std::string, std::string>{"Second", "First"}};
 
-    TEST_DIAGONAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 3, 3, 3, 3);
+    TEST_DIAGONAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 3, 3, 3, 3, 0, 0);
     CHECK_MATRIX_IS_DIAGONAL_WITH_CORRECT_ELEMENT_VALUES(smallMatrix, "Second", "First", "Matrix elements have not been correctly initialized by the diagonal matrix constructor");
 
     StringMatrix largeMatrix{9, std::pair<std::string, std::string>{"_Fifth", "_Fourth"}};
 
-    TEST_DIAGONAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 9, 9, 11, 11);
+    TEST_DIAGONAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 9, 9, 11, 11, 1, 1);
     CHECK_MATRIX_IS_DIAGONAL_WITH_CORRECT_ELEMENT_VALUES(largeMatrix, "_Fifth", "_Fourth", "Matrix elements have not been correctly initialized by the diagonal matrix constructor");
 }
 
@@ -609,7 +609,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyConstructor()
         const StringMatrix srcMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
         StringMatrix destMatrix{srcMatrix};
 
-        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3);
+        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(destMatrix.at(0, 0) == "First" &&
                  destMatrix.at(0, 1) == "Second" &&
@@ -632,7 +632,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyConstructor()
 
         StringMatrix destMatrix{srcMatrix};
 
-        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12);
+        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12, 1, 1);
 
         const StringMatrix& dest{destMatrix};
 
@@ -650,7 +650,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyConstructor()
         const StringMatrix srcMatrix{};
         StringMatrix destMatrix{srcMatrix};
 
-        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0);
+        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
     }
 }
 
@@ -660,7 +660,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveConstructor()
         StringMatrix srcMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"} };
         StringMatrix destMatrix{std::move(srcMatrix)};
 
-        TEST_MOVE_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3);
+        TEST_MOVE_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(destMatrix.at(0, 0) == "First" &&
                      destMatrix.at(0, 1) == "Second" &&
@@ -685,7 +685,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveConstructor()
 
         StringMatrix destMatrix{std::move(srcMatrix)};
 
-        TEST_MOVE_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12);
+        TEST_MOVE_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12, 1, 1);
 
         const StringMatrix& dest{destMatrix};
 
@@ -710,7 +710,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(destMatrix.at(0, 0) == "First" &&
                  destMatrix.at(0, 1) == "Second" &&
@@ -726,7 +726,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(destMatrix.at(0, 0) == "First" &&
                  destMatrix.at(0, 1) == "Second" &&
@@ -742,7 +742,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
     }
 
     {
@@ -751,7 +751,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
     }
 
     {
@@ -760,7 +760,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 3, 4, 3, 5);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 3, 4, 3, 5, 0, 0);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, "Seventh", "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -770,7 +770,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 4, 3, 5, 3);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 4, 3, 5, 3, 0, 0);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, "Ninth", "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -780,7 +780,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 4, 3, 5, 3);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 4, 3, 5, 3, 0, 0);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, "Ninth", "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -790,7 +790,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 20, 20, 25, 25);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 20, 20, 25, 25, 2, 2);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, "Eleventh", "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -800,7 +800,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 22, 22, 27, 27);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 22, 22, 27, 27, 2, 2);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, "Twelfth", "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -809,7 +809,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         matrix = matrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 2, 3, 2, 3);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(matrix.at(0, 0) == "First" &&
                  matrix.at(0, 1) == "Second" &&
@@ -824,7 +824,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         matrix = matrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1);
     }
 
     {
@@ -834,7 +834,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         firstMatrix = secondMatrix = thirdMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(firstMatrix, 2, 2, 2, 2);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(firstMatrix, 2, 2, 2, 2, 0, 0);
 
         QVERIFY2(firstMatrix.at(0, 0) == "13th" &&
                  firstMatrix.at(0, 1) == "14th" &&
@@ -849,7 +849,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 3, 5, 3, 6);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 3, 5, 3, 6, 0, 0);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, "/second", "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -860,7 +860,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
         destMatrix.resize(4, 2, 11, 3);
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 9, 3, 11, 3);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 9, 3, 11, 3, 1, 0);
         CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, "/second", "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
@@ -880,7 +880,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12, 1, 1);
 
         const StringMatrix& dest{destMatrix};
 
@@ -904,7 +904,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(destMatrix.at(0, 0) == "First" &&
                  destMatrix.at(0, 1) == "Second" &&
@@ -922,7 +922,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(destMatrix.at(0, 0) == "First" &&
                  destMatrix.at(0, 1) == "Second" &&
@@ -940,7 +940,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
         TEST_MOVE_ASSIGNMENT_CHECK_SRC_MATRIX_SIZE_AND_CAPACITY(srcMatrix);
     }
 
@@ -950,7 +950,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
         TEST_MOVE_ASSIGNMENT_CHECK_SRC_MATRIX_SIZE_AND_CAPACITY(srcMatrix);
     }
 
@@ -961,7 +961,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
 
         firstMatrix = secondMatrix = std::move(thirdMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(firstMatrix, 2, 2, 2, 2);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(firstMatrix, 2, 2, 2, 2, 0, 0);
 
         QVERIFY2(firstMatrix.at(0, 0) == "13th" &&
                  firstMatrix.at(0, 1) == "14th" &&
@@ -976,7 +976,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
 
         firstMatrix = std::move(secondMatrix = thirdMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(firstMatrix, 2, 2, 2, 2);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(firstMatrix, 2, 2, 2, 2, 0, 0);
 
         QVERIFY2(firstMatrix.at(0, 0) == "13th" &&
                  firstMatrix.at(0, 1) == "14th" &&
@@ -989,7 +989,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
 
         matrix = std::move(matrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, 2, 3, 2, 3);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, 2, 3, 2, 3, 0, 0);
 
         QVERIFY2(matrix.at(0, 0) == "First" &&
                  matrix.at(0, 1) == "Second" &&
@@ -1004,7 +1004,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
 
         matrix = std::move(matrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1);
     }
 
     // additional test
@@ -1023,7 +1023,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 8, 10, 10, 12, 1, 1);
 
         const StringMatrix& dest{destMatrix};
 

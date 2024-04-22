@@ -249,6 +249,10 @@ public:
     size_type getNrOfColumns() const;
     size_type getRowCapacity() const;
     size_type getColumnCapacity() const;
+#ifdef USE_CAPACITY_OFFSET
+    size_type getRowCapacityOffset() const;
+    size_type getColumnCapacityOffset() const;
+#endif
     bool isEmpty() const;
 
     void transpose(Matrix& transposedMatrix);
@@ -2772,7 +2776,19 @@ typename Matrix<DataType>::size_type Matrix<DataType>::getColumnCapacity() const
 {
     return m_ColumnCapacity;
 }
+#ifdef USE_CAPACITY_OFFSET
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::getRowCapacityOffset() const
+{
+    return m_RowCapacityOffset;
+}
 
+template<typename DataType>
+typename Matrix<DataType>::size_type Matrix<DataType>::getColumnCapacityOffset() const
+{
+    return m_ColumnCapacityOffset;
+}
+#endif
 template<typename DataType>
 bool Matrix<DataType>::isEmpty() const
 {

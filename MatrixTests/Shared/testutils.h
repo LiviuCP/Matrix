@@ -27,8 +27,8 @@ using IntMatrixConstReverseMIterator = Matrix<int>::ConstReverseMIterator;
 
 using IntMatrixSizeType = IntMatrix::size_type;
 using IntMatrixDiffType = IntMatrix::diff_type;
-using TripleSizeTypeTuple = std::tuple<IntMatrixSizeType, IntMatrixSizeType, IntMatrixSizeType>;
-using TripleSizeTypeTupleArray = std::vector<TripleSizeTypeTuple>;
+using FiveSizeTypesTuple = std::tuple<IntMatrixSizeType, IntMatrixSizeType, IntMatrixSizeType, IntMatrixSizeType, IntMatrixSizeType>; // can be any matrix size_type, does not depend on matrix data type
+using FiveSizeTypesTupleArray = std::vector<FiveSizeTypesTuple>;
 
 using StringMatrix = Matrix<std::string>;
 
@@ -78,7 +78,9 @@ enum class SplitMode : unsigned short
 };
 
 // useful macros shared between various test cases
-#define CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, dimensionsFailMessage, capacityFailMessage) \
+#define CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
+                                       requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset, \
+                                       dimensionsFailMessage, capacityFailMessage, capacityOffsetFailMessage) \
     if (matrix.getNrOfRows() != requiredNrOfRows || matrix.getNrOfColumns() != requiredNrOfColumns) \
     { \
         QFAIL(dimensionsFailMessage); \
@@ -87,8 +89,12 @@ enum class SplitMode : unsigned short
     if (matrix.getRowCapacity() != requiredRowCapacity || matrix.getColumnCapacity() != requiredColumnCapacity) \
     { \
         QFAIL(capacityFailMessage); \
+    } \
+\
+    if (matrix.getRowCapacityOffset() != requiredRowCapacityOffset || matrix.getColumnCapacityOffset() != requiredColumnCapacityOffset) \
+    { \
+        QFAIL(capacityOffsetFailMessage); \
     }
-
 
 #define CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(matrix, elementValue, errorMessage) \
     for (int rowNr{0}; rowNr < matrix.getNrOfRows(); ++rowNr) \
