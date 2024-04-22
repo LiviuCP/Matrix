@@ -347,14 +347,14 @@ void CommonExceptionTests::testIdenticalMatrixConstructorExceptions_data()
     QTest::addColumn<IntMatrixSizeType>("columnsCount");
     QTest::addColumn<int>("elementValue");
 
-    QTest::newRow("negative rows and columns count") << -2 << -2 << 5;
-    QTest::newRow("negative rows and null columns count") << -2 << 0 << 5;
-    QTest::newRow("negative rows count") << -2 << 2 << 5;
-    QTest::newRow("negative columns count") << 2 << -2 << 5;
-    QTest::newRow("null rows and negative columns count") << 0 << -2 << 5;
-    QTest::newRow("null rows and columns count") << 0 << 0 << 5;
-    QTest::newRow("null rows count") << 0 << 2 << 5;
-    QTest::newRow("null columns count") << 2 << 0 << 5;
+    QTest::newRow("1: negative rows and columns count") << -2 << -2 << 5;
+    QTest::newRow("2: negative rows and null columns count") << -2 << 0 << 5;
+    QTest::newRow("3: negative rows count") << -2 << 2 << 5;
+    QTest::newRow("4: negative columns count") << 2 << -2 << 5;
+    QTest::newRow("5: null rows and negative columns count") << 0 << -2 << 5;
+    QTest::newRow("6: null rows and columns count") << 0 << 0 << 5;
+    QTest::newRow("7: null rows count") << 0 << 2 << 5;
+    QTest::newRow("8: null columns count") << 2 << 0 << 5;
 }
 
 void CommonExceptionTests::testDiagMatrixConstructorExceptions_data()
@@ -363,8 +363,8 @@ void CommonExceptionTests::testDiagMatrixConstructorExceptions_data()
     QTest::addColumn<int>("nonDiagonalValue");
     QTest::addColumn<int>("diagonalValue");
 
-    QTest::newRow("negative size") << -2 << 2 << 5;
-    QTest::newRow("null size") << 0 << 2 << 5;
+    QTest::newRow("1: negative size") << -2 << 2 << 5;
+    QTest::newRow("2: null size") << 0 << 2 << 5;
 }
 
 void CommonExceptionTests::testFunctionAtExceptions_data()
@@ -374,15 +374,15 @@ void CommonExceptionTests::testFunctionAtExceptions_data()
     QTest::addColumn<IntMatrixSizeType>("columnNr");
     QTest::addColumn<int>("value");
 
-    QTest::newRow("negative row and column number") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << -1 << 0;
-    QTest::newRow("negative row number") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << 1 << 0;
-    QTest::newRow("negative row number, column number out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << 3 << 0;
-    QTest::newRow("negative column number") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 1 << -1 << 0;
-    QTest::newRow("column number out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 1 << 3 << 0;
-    QTest::newRow("row number out of range, negative column number") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2 << -1 << 0;
-    QTest::newRow("row number out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2 << 1 << 0;
-    QTest::newRow("row and column number out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2 << 3 << 0;
-    QTest::newRow("empty matrix") << IntMatrix{} << 0 << 0 << 0;
+    QTest::newRow("1: negative row and column number") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << -1 << 0;
+    QTest::newRow("2: negative row number") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << 1 << 0;
+    QTest::newRow("3: negative row number, column number out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << 3 << 0;
+    QTest::newRow("4: negative column number") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 1 << -1 << 0;
+    QTest::newRow("5: column number out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 1 << 3 << 0;
+    QTest::newRow("6: row number out of range, negative column number") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2 << -1 << 0;
+    QTest::newRow("7: row number out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2 << 1 << 0;
+    QTest::newRow("8: row and column number out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2 << 3 << 0;
+    QTest::newRow("9: empty matrix") << IntMatrix{} << 0 << 0 << 0;
 }
 
 void CommonExceptionTests::testSquareBracketsOperatorExceptions_data()
@@ -391,9 +391,9 @@ void CommonExceptionTests::testSquareBracketsOperatorExceptions_data()
     QTest::addColumn<IntMatrixSizeType>("index");
     QTest::addColumn<int>("value");
 
-    QTest::newRow("negative index") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << 0;
-    QTest::newRow("index out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 6 << 0;
-    QTest::newRow("empty matrix") << IntMatrix{} << 0 << 0;
+    QTest::newRow("1: negative index") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << 0;
+    QTest::newRow("2: index out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 6 << 0;
+    QTest::newRow("3: empty matrix") << IntMatrix{} << 0 << 0;
 }
 
 void CommonExceptionTests::testResizeWithoutFillingInNewValuesExceptions_data()
@@ -431,9 +431,9 @@ void CommonExceptionTests::testEraseRowExceptions_data()
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("erasePosition");
 
-    QTest::newRow("negative erase position") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1;
-    QTest::newRow("erase position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2;
-    QTest::newRow("empty matrix") << IntMatrix{} << 0;
+    QTest::newRow("1: negative erase position") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1;
+    QTest::newRow("2: erase position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2;
+    QTest::newRow("3: empty matrix") << IntMatrix{} << 0;
 }
 
 void CommonExceptionTests::testEraseColumnExceptions_data()
@@ -441,9 +441,9 @@ void CommonExceptionTests::testEraseColumnExceptions_data()
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<IntMatrixSizeType>("erasePosition");
 
-    QTest::newRow("negative erase position") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1;
-    QTest::newRow("erase position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3;
-    QTest::newRow("empty matrix") << IntMatrix{} << 0;
+    QTest::newRow("1: negative erase position") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1;
+    QTest::newRow("2: erase position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3;
+    QTest::newRow("3: empty matrix") << IntMatrix{} << 0;
 }
 
 void CommonExceptionTests::testCatByRowExceptions_data()
@@ -453,16 +453,11 @@ void CommonExceptionTests::testCatByRowExceptions_data()
     QTest::addColumn<IntMatrix>("secondSrcMatrix");
     QTest::addColumn<ConcatMode>("mode");
 
-    QTest::addColumn<IntMatrix>("destMatrix");
-    QTest::addColumn<IntMatrix>("firstSrcMatrix");
-    QTest::addColumn<IntMatrix>("secondSrcMatrix");
-    QTest::addColumn<ConcatMode>("mode");
-
-    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 1, 9} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 2, {7, 8}} << ConcatMode::DESTINATION_FIRST;
-    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{2, 1, {1, 2}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: destination second") << IntMatrix{} << IntMatrix{2, 2, {3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
+    QTest::newRow("1: all different") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("2: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 1, 9} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("3: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 2, {7, 8}} << ConcatMode::DESTINATION_FIRST;
+    QTest::newRow("4: all different") << IntMatrix{} << IntMatrix{2, 1, {1, 2}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("5: destination second") << IntMatrix{} << IntMatrix{2, 2, {3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
 }
 
 void CommonExceptionTests::testCatByColumnExceptions_data()
@@ -472,16 +467,11 @@ void CommonExceptionTests::testCatByColumnExceptions_data()
     QTest::addColumn<IntMatrix>("secondSrcMatrix");
     QTest::addColumn<ConcatMode>("mode");
 
-    QTest::addColumn<IntMatrix>("destMatrix");
-    QTest::addColumn<IntMatrix>("firstSrcMatrix");
-    QTest::addColumn<IntMatrix>("secondSrcMatrix");
-    QTest::addColumn<ConcatMode>("mode");
-
-    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 1, 9} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{2, 1, {7, 8}} << ConcatMode::DESTINATION_FIRST;
-    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{1, 2, {1, 2}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: destination second") << IntMatrix{} << IntMatrix{2, 2, {3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
+    QTest::newRow("1: all different") << IntMatrix{} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("2: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 1, 9} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("3: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{2, 1, {7, 8}} << ConcatMode::DESTINATION_FIRST;
+    QTest::newRow("4: all different") << IntMatrix{} << IntMatrix{1, 2, {1, 2}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("5: destination second") << IntMatrix{} << IntMatrix{2, 2, {3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
 }
 
 void CommonExceptionTests::testSplitByRowExceptions_data()
@@ -492,14 +482,14 @@ void CommonExceptionTests::testSplitByRowExceptions_data()
     QTest::addColumn<IntMatrixSizeType>("splitPosition");
     QTest::addColumn<SplitMode>("mode");
 
-    QTest::newRow("scenario: destination both") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 1 << SplitMode::DESTINATION_BOTH;
-    QTest::newRow("scenario: destination both") << IntMatrix{} << IntMatrix{} << IntMatrix{} << 0 << SplitMode::DESTINATION_BOTH;
-    QTest::newRow("scenario: destination all") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 1 << SplitMode::DESTINATION_ALL;
-    QTest::newRow("scenario: destination all") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 0 << SplitMode::DESTINATION_ALL;
-    QTest::newRow("scenario: all different") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << -1 << SplitMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: all different") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 0 << SplitMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: all different") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 2 << SplitMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{} << 0 << SplitMode::ALL_DIFFERENT;
+    QTest::newRow("1: destination both") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 1 << SplitMode::DESTINATION_BOTH;
+    QTest::newRow("2: destination both") << IntMatrix{} << IntMatrix{} << IntMatrix{} << 0 << SplitMode::DESTINATION_BOTH;
+    QTest::newRow("3: destination all") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 1 << SplitMode::DESTINATION_ALL;
+    QTest::newRow("4: destination all") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 0 << SplitMode::DESTINATION_ALL;
+    QTest::newRow("5: all different") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << -1 << SplitMode::ALL_DIFFERENT;
+    QTest::newRow("6: all different") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 0 << SplitMode::ALL_DIFFERENT;
+    QTest::newRow("7: all different") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 2 << SplitMode::ALL_DIFFERENT;
+    QTest::newRow("8: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{} << 0 << SplitMode::ALL_DIFFERENT;
 }
 
 void CommonExceptionTests::testSplitByColumnExceptions_data()
@@ -510,14 +500,14 @@ void CommonExceptionTests::testSplitByColumnExceptions_data()
     QTest::addColumn<IntMatrixSizeType>("splitPosition");
     QTest::addColumn<SplitMode>("mode");
 
-    QTest::newRow("scenario: destination both") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 1 << SplitMode::DESTINATION_BOTH;
-    QTest::newRow("scenario: destination both") << IntMatrix{} << IntMatrix{} << IntMatrix{} << 0 << SplitMode::DESTINATION_BOTH;
-    QTest::newRow("scenario: destination all") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 1 << SplitMode::DESTINATION_ALL;
-    QTest::newRow("scenario: destination all") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 0 << SplitMode::DESTINATION_ALL;
-    QTest::newRow("scenario: all different") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << -1 << SplitMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: all different") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 0 << SplitMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: all different") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 2 << SplitMode::ALL_DIFFERENT;
-    QTest::newRow("scenario: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{} << 0 << SplitMode::ALL_DIFFERENT;
+    QTest::newRow("1: destination both") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 1 << SplitMode::DESTINATION_BOTH;
+    QTest::newRow("2: destination both") << IntMatrix{} << IntMatrix{} << IntMatrix{} << 0 << SplitMode::DESTINATION_BOTH;
+    QTest::newRow("3: destination all") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 1 << SplitMode::DESTINATION_ALL;
+    QTest::newRow("4: destination all") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 0 << SplitMode::DESTINATION_ALL;
+    QTest::newRow("5: all different") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << -1 << SplitMode::ALL_DIFFERENT;
+    QTest::newRow("6: all different") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 0 << SplitMode::ALL_DIFFERENT;
+    QTest::newRow("7: all different") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 2 << SplitMode::ALL_DIFFERENT;
+    QTest::newRow("8: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{} << 0 << SplitMode::ALL_DIFFERENT;
 }
 
 void CommonExceptionTests::testSwapRowsOrColumnsExceptions_data()
@@ -526,19 +516,19 @@ void CommonExceptionTests::testSwapRowsOrColumnsExceptions_data()
     QTest::addColumn<IntMatrixSizeType>("firstRowColumnNr");
     QTest::addColumn<IntMatrixSizeType>("secondRowColumnNr");
 
-    QTest::newRow("negative first") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << 2;
-    QTest::newRow("negative second") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << -2;
-    QTest::newRow("both negative") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << -2;
-    QTest::newRow("second out of range") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << 4;
-    QTest::newRow("first out of range") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 4 << 1;
-    QTest::newRow("both out of range") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 4 << 4;
+    QTest::newRow("1: negative first") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << 2;
+    QTest::newRow("2: negative second") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << -2;
+    QTest::newRow("3: both negative") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << -1 << -2;
+    QTest::newRow("4: second out of range") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 1 << 4;
+    QTest::newRow("5: first out of range") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 4 << 1;
+    QTest::newRow("6: both out of range") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 4 << 4;
 
     // a combination of exceptions
-    QTest::newRow("first out of range, negative second") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << -1;
-    QTest::newRow("negative first, second out of range") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << -1 << 3;
+    QTest::newRow("7: first out of range, negative second") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << 3 << -1;
+    QTest::newRow("8: negative first, second out of range") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << -1 << 3;
 
     // empty matrixes involved
-    QTest::newRow("empty matrix") << IntMatrix{} << 0 << 0;
+    QTest::newRow("9: empty matrix") << IntMatrix{} << 0 << 0;
 }
 
 void CommonExceptionTests::_buildResizeExceptionsTestingTable()
@@ -548,22 +538,22 @@ void CommonExceptionTests::_buildResizeExceptionsTestingTable()
     QTest::addColumn<IntMatrixSizeType>("resizeColumnsCount");
     QTest::addColumn<int>("resizeElementValue");
 
-    QTest::newRow("negative rows and columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -3 << -4 << 5;
-    QTest::newRow("negative rows and columns count") << IntMatrix{} << -3 << -4 << 5;
-    QTest::newRow("negative rows, null columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -3 << 0 << 5;
-    QTest::newRow("negative rows, null columns count") << IntMatrix{} << -3 << 0 << 5;
-    QTest::newRow("negative rows count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -3 << 4 << 5;
-    QTest::newRow("negative rows count") << IntMatrix{} << -3 << 4 << 5;
-    QTest::newRow("null rows, negative columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 0 << -4 << 5;
-    QTest::newRow("null rows, negative columns count") << IntMatrix{} << 0 << -4 << 5;
-    QTest::newRow("null rows and columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 0 << 0 << 5;
-    QTest::newRow("null rows and columns count") << IntMatrix{} << 0 << 0 << 5;
-    QTest::newRow("null rows count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 0 << 4 << 5;
-    QTest::newRow("null rows count") << IntMatrix{} << 0 << 4 << 5;
-    QTest::newRow("negative columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3 << -4 << 5;
-    QTest::newRow("negative columns count") << IntMatrix{} << 3 << -4 << 5;
-    QTest::newRow("null columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3 << 0 << 5;
-    QTest::newRow("null columns count") << IntMatrix{} << 3 << 0 << 5;
+    QTest::newRow("1: negative rows and columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -3 << -4 << 5;
+    QTest::newRow("2: negative rows and columns count") << IntMatrix{} << -3 << -4 << 5;
+    QTest::newRow("3: negative rows, null columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -3 << 0 << 5;
+    QTest::newRow("4: negative rows, null columns count") << IntMatrix{} << -3 << 0 << 5;
+    QTest::newRow("5: negative rows count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -3 << 4 << 5;
+    QTest::newRow("6: negative rows count") << IntMatrix{} << -3 << 4 << 5;
+    QTest::newRow("7: null rows, negative columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 0 << -4 << 5;
+    QTest::newRow("8: null rows, negative columns count") << IntMatrix{} << 0 << -4 << 5;
+    QTest::newRow("9: null rows and columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 0 << 0 << 5;
+    QTest::newRow("10: null rows and columns count") << IntMatrix{} << 0 << 0 << 5;
+    QTest::newRow("11: null rows count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 0 << 4 << 5;
+    QTest::newRow("12: null rows count") << IntMatrix{} << 0 << 4 << 5;
+    QTest::newRow("13: negative columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3 << -4 << 5;
+    QTest::newRow("14: negative columns count") << IntMatrix{} << 3 << -4 << 5;
+    QTest::newRow("15: null columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3 << 0 << 5;
+    QTest::newRow("16: null columns count") << IntMatrix{} << 3 << 0 << 5;
 }
 
 void CommonExceptionTests::_buildInsertRowExceptionsTestingTable()
@@ -572,9 +562,9 @@ void CommonExceptionTests::_buildInsertRowExceptionsTestingTable()
     QTest::addColumn<IntMatrixSizeType>("insertPosition");
     QTest::addColumn<int>("insertedRowValue");
 
-    QTest::newRow("negative insert position") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << 5;
-    QTest::newRow("insert position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3 << 5;
-    QTest::newRow("empty matrix") << IntMatrix{} << 0 << 1;
+    QTest::newRow("1: negative insert position") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << 5;
+    QTest::newRow("2: insert position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3 << 5;
+    QTest::newRow("3: empty matrix") << IntMatrix{} << 0 << 1;
 }
 
 void CommonExceptionTests::_buildInsertColumnExceptionsTestingTable()
@@ -583,9 +573,9 @@ void CommonExceptionTests::_buildInsertColumnExceptionsTestingTable()
     QTest::addColumn<IntMatrixSizeType>("insertPosition");
     QTest::addColumn<int>("insertedColumnValue");
 
-    QTest::newRow("negative insert position") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << 5;
-    QTest::newRow("insert position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 4 << 5;
-    QTest::newRow("empty matrix") << IntMatrix{} << 0 << 2;
+    QTest::newRow("1: negative insert position") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << -1 << 5;
+    QTest::newRow("2: insert position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 4 << 5;
+    QTest::newRow("3: empty matrix") << IntMatrix{} << 0 << 2;
 }
 
 QTEST_APPLESS_MAIN(CommonExceptionTests)
