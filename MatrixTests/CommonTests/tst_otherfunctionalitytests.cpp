@@ -396,14 +396,14 @@ void OtherFunctionalityTests::testIntMatrixesAreEqual_data()
     QTest::addColumn<IntMatrix>("secondMatrix");
     QTest::addColumn<bool>("checkEqualityToItself");
 
-    QTest::newRow("distinct matrixes equality") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << false;
-    QTest::newRow("equality to itself") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << true;
-    QTest::newRow("distinct matrixes equality") << IntMatrix{8, 10, -2} << IntMatrix{8, 10, -2} << false;
-    QTest::newRow("equality to itself") << IntMatrix{8, 10, -2} << IntMatrix{8, 10, -2} << true;
-    QTest::newRow("distinct matrixes equality") << IntMatrix{10, {-4, 8}} << IntMatrix{10, {-4, 8}} << false;
-    QTest::newRow("equality to itself") << IntMatrix{10, {-4, 8}} << IntMatrix{10, {-4, 8}} << true;
-    QTest::newRow("distinct matrixes equality") << IntMatrix{} << IntMatrix{} << false;
-    QTest::newRow("equality to itself") << IntMatrix{} << IntMatrix{} << true;
+    QTest::newRow("1: distinct matrixes equality") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << false;
+    QTest::newRow("2: equality to itself") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << true;
+    QTest::newRow("3: distinct matrixes equality") << IntMatrix{8, 10, -2} << IntMatrix{8, 10, -2} << false;
+    QTest::newRow("4: equality to itself") << IntMatrix{8, 10, -2} << IntMatrix{8, 10, -2} << true;
+    QTest::newRow("5: distinct matrixes equality") << IntMatrix{10, {-4, 8}} << IntMatrix{10, {-4, 8}} << false;
+    QTest::newRow("6: equality to itself") << IntMatrix{10, {-4, 8}} << IntMatrix{10, {-4, 8}} << true;
+    QTest::newRow("7: distinct matrixes equality") << IntMatrix{} << IntMatrix{} << false;
+    QTest::newRow("8: equality to itself") << IntMatrix{} << IntMatrix{} << true;
 }
 
 void OtherFunctionalityTests::testIntMatrixesAreNotEqual_data()
@@ -411,12 +411,12 @@ void OtherFunctionalityTests::testIntMatrixesAreNotEqual_data()
     QTest::addColumn<IntMatrix>("firstMatrix");
     QTest::addColumn<IntMatrix>("secondMatrix");
 
-    QTest::newRow("same size matrixes") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 3, {5, 125, -5, 15, 833, -8333}};
-    QTest::newRow("same size matrixes") << IntMatrix{10, {5, -2}} << IntMatrix{10, {5, 3}};
-    QTest::newRow("different columns count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 2, {5, 75, 15, 833}};
-    QTest::newRow("different rows count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{3, 3, {5, 75, -5, 15, 833, -8333, 5, 5, -125}};
-    QTest::newRow("different rows/columns count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{3, 2, {5, 75, 15, 833, -5, -8333}};
-    QTest::newRow("different rows/columns count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{};
+    QTest::newRow("1: same size matrixes") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 3, {5, 125, -5, 15, 833, -8333}};
+    QTest::newRow("2: same size matrixes") << IntMatrix{10, {5, -2}} << IntMatrix{10, {5, 3}};
+    QTest::newRow("3: different columns count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 2, {5, 75, 15, 833}};
+    QTest::newRow("4: different rows count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{3, 3, {5, 75, -5, 15, 833, -8333, 5, 5, -125}};
+    QTest::newRow("5: different rows/columns count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{3, 2, {5, 75, 15, 833, -5, -8333}};
+    QTest::newRow("6: different rows/columns count") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{};
 }
 
 void OtherFunctionalityTests::testStringMatrixesAreEqual_data()
@@ -425,14 +425,14 @@ void OtherFunctionalityTests::testStringMatrixesAreEqual_data()
     QTest::addColumn<StringMatrix>("secondMatrix");
     QTest::addColumn<bool>("checkEqualityToItself");
 
-    QTest::newRow("distinct matrixes equality") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << false;
-    QTest::newRow("equality to itself") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << true;
-    QTest::newRow("distinct matrixes equality") << StringMatrix{8, 10, "_abc"} << StringMatrix{8, 10, "_abc"} << false;
-    QTest::newRow("equality to itself") << StringMatrix{8, 10, "_abc"} << StringMatrix{8, 10, "_abc"} << true;
-    QTest::newRow("distinct matrixes equality") << StringMatrix(10, {"_abc", "Abc"}) << StringMatrix(10, {"_abc", "Abc"}) << false;
-    QTest::newRow("equality to itself") << StringMatrix(10, {"_abc", "Abc"}) << StringMatrix(10, {"_abc", "Abc"}) << true;
-    QTest::newRow("distinct matrixes equality") << StringMatrix{} << StringMatrix{} << false;
-    QTest::newRow("equality to itself") << StringMatrix{} << StringMatrix{} << true;
+    QTest::newRow("1: distinct matrixes equality") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << false;
+    QTest::newRow("2: equality to itself") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << true;
+    QTest::newRow("3: distinct matrixes equality") << StringMatrix{8, 10, "_abc"} << StringMatrix{8, 10, "_abc"} << false;
+    QTest::newRow("4: equality to itself") << StringMatrix{8, 10, "_abc"} << StringMatrix{8, 10, "_abc"} << true;
+    QTest::newRow("5: distinct matrixes equality") << StringMatrix(10, {"_abc", "Abc"}) << StringMatrix(10, {"_abc", "Abc"}) << false;
+    QTest::newRow("6: equality to itself") << StringMatrix(10, {"_abc", "Abc"}) << StringMatrix(10, {"_abc", "Abc"}) << true;
+    QTest::newRow("7: distinct matrixes equality") << StringMatrix{} << StringMatrix{} << false;
+    QTest::newRow("8: equality to itself") << StringMatrix{} << StringMatrix{} << true;
 }
 
 void OtherFunctionalityTests::testStringMatrixesAreNotEqual_data()
@@ -440,12 +440,12 @@ void OtherFunctionalityTests::testStringMatrixesAreNotEqual_data()
     QTest::addColumn<StringMatrix>("firstMatrix");
     QTest::addColumn<StringMatrix>("secondMatrix");
 
-    QTest::newRow("same size matrixes") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{2, 3, {"abc", "abde", "-abc", "Abc", "1abc", "-0.8333"}};
-    QTest::newRow("same size matrixes") << StringMatrix{10, {"_abc", "Abc"}} << StringMatrix{10, {"_abc", "abc"}};
-    QTest::newRow("different columns count") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{2, 2, {"abc", "abdc", "Abc", "1abc"}};
-    QTest::newRow("different rows count") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{3, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333", "Abc", "c1D", "-A1bE2"}};
-    QTest::newRow("different rows/columns count") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{3, 2, {"abc", "abdc", "Abc", "1abc", "-abc", "-0.8333"}};
-    QTest::newRow("different rows/columns count") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{};
+    QTest::newRow("1: same size matrixes") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{2, 3, {"abc", "abde", "-abc", "Abc", "1abc", "-0.8333"}};
+    QTest::newRow("2: same size matrixes") << StringMatrix{10, {"_abc", "Abc"}} << StringMatrix{10, {"_abc", "abc"}};
+    QTest::newRow("3: different columns count") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{2, 2, {"abc", "abdc", "Abc", "1abc"}};
+    QTest::newRow("4: different rows count") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{3, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333", "Abc", "c1D", "-A1bE2"}};
+    QTest::newRow("5: different rows/columns count") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{3, 2, {"abc", "abdc", "Abc", "1abc", "-abc", "-0.8333"}};
+    QTest::newRow("6: different rows/columns count") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{};
 }
 
 QTEST_APPLESS_MAIN(OtherFunctionalityTests)
