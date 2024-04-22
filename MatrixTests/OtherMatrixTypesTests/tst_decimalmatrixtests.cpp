@@ -51,10 +51,10 @@ void DecimalMatrixTests::testMatrixesAreEqual_data()
     QTest::addColumn<DecMatrix>("secondMatrix");
     QTest::addColumn<bool>("checkEqualityToItself");
 
-    QTest::newRow("distinct matrixes equality") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << false;
-    QTest::newRow("equality to itself") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << true;
-    QTest::newRow("distinct matrixes equality") << DecMatrix{} << DecMatrix{} << false;
-    QTest::newRow("equality to itself") << DecMatrix{} << DecMatrix{} << true;
+    QTest::newRow("1: distinct matrixes equality") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << false;
+    QTest::newRow("2: equality to itself") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << true;
+    QTest::newRow("3: distinct matrixes equality") << DecMatrix{} << DecMatrix{} << false;
+    QTest::newRow("4: equality to itself") << DecMatrix{} << DecMatrix{} << true;
 }
 
 void DecimalMatrixTests::testMatrixesAreNotEqual_data()
@@ -62,11 +62,11 @@ void DecimalMatrixTests::testMatrixesAreNotEqual_data()
     QTest::addColumn<DecMatrix>("firstMatrix");
     QTest::addColumn<DecMatrix>("secondMatrix");
 
-    QTest::newRow("same size matrixes") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{2, 3, {0.5, 1.25, -0.5, 1.5, 0.8333333333, -0.8333}};
-    QTest::newRow("different columns count") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{2, 2, {0.5, 0.75, 1.5, 0.8333333333}};
-    QTest::newRow("different rows count") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{3, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333, 0.5, 0.5, -1.25}};
-    QTest::newRow("different rows/columns count") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{3, 2, {0.5, 0.75, 1.5, 0.8333333333, -0.5, -0.8333}};
-    QTest::newRow("different rows/columns count") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{};
+    QTest::newRow("1: same size matrixes") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{2, 3, {0.5, 1.25, -0.5, 1.5, 0.8333333333, -0.8333}};
+    QTest::newRow("2: different columns count") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{2, 2, {0.5, 0.75, 1.5, 0.8333333333}};
+    QTest::newRow("3: different rows count") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{3, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333, 0.5, 0.5, -1.25}};
+    QTest::newRow("4: different rows/columns count") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{3, 2, {0.5, 0.75, 1.5, 0.8333333333, -0.5, -0.8333}};
+    QTest::newRow("5: different rows/columns count") << DecMatrix{2, 3, {0.5, 0.75, -0.5, 1.5, 0.8333333333, -0.8333}} << DecMatrix{};
 }
 
 QTEST_APPLESS_MAIN(DecimalMatrixTests)

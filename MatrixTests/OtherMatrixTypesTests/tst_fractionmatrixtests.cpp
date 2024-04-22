@@ -56,10 +56,10 @@ void FractionMatrixTests::testMatrixesAreEqual_data()
     QTest::addColumn<FractMatrix>("secondMatrix");
     QTest::addColumn<bool>("checkEqualityToItself");
 
-    QTest::newRow("distinct matrixes equality") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{2, 3, {Fraction{"2/4"}, Fraction{"3/4"}, Fraction{"-4/8"}, Fraction{"1.5"}, Fraction{"10/12"}, Fraction{"-5/6"}}} << false;
-    QTest::newRow("equality to itself") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << true;
-    QTest::newRow("distinct matrixes equality") << FractMatrix{} << FractMatrix{} << false;
-    QTest::newRow("equality to itself") << FractMatrix{} << FractMatrix{} << true;
+    QTest::newRow("1: distinct matrixes equality") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{2, 3, {Fraction{"2/4"}, Fraction{"3/4"}, Fraction{"-4/8"}, Fraction{"1.5"}, Fraction{"10/12"}, Fraction{"-5/6"}}} << false;
+    QTest::newRow("2: equality to itself") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << true;
+    QTest::newRow("3: distinct matrixes equality") << FractMatrix{} << FractMatrix{} << false;
+    QTest::newRow("4: equality to itself") << FractMatrix{} << FractMatrix{} << true;
 }
 
 void FractionMatrixTests::testMatrixesAreNotEqual_data()
@@ -67,11 +67,11 @@ void FractionMatrixTests::testMatrixesAreNotEqual_data()
     QTest::addColumn<FractMatrix>("firstMatrix");
     QTest::addColumn<FractMatrix>("secondMatrix");
 
-    QTest::newRow("same size matrixes") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{2, 3, {Fraction{"2/4"}, Fraction{"10/8"}, Fraction{"-4/8"}, Fraction{"1.5"}, Fraction{"10/12"}, Fraction{"-5/6"}}};
-    QTest::newRow("different columns count") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{2, 2, {Fraction{"2/4"}, Fraction{"6/8"}, Fraction{"1.5"}, Fraction{"10/12"}}};
-    QTest::newRow("different rows count") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{3, 3, {Fraction{"2/4"}, Fraction{"6/8"}, Fraction{"-4/8"}, Fraction{"1.5"}, Fraction{"10/12"}, Fraction{"-5/6"}, Fraction{"1/2"}, Fraction{"3/6"}, Fraction{"-5/4"}}};
-    QTest::newRow("different rows/columns count") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{3, 2, {Fraction{"2/4"}, Fraction{"6/8"}, Fraction{"1.5"}, Fraction{"10/12"}, Fraction{"-4/8"}, Fraction{"-5/6"}}};
-    QTest::newRow("different rows/columns count") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{};
+    QTest::newRow("1: same size matrixes") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{2, 3, {Fraction{"2/4"}, Fraction{"10/8"}, Fraction{"-4/8"}, Fraction{"1.5"}, Fraction{"10/12"}, Fraction{"-5/6"}}};
+    QTest::newRow("2: different columns count") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{2, 2, {Fraction{"2/4"}, Fraction{"6/8"}, Fraction{"1.5"}, Fraction{"10/12"}}};
+    QTest::newRow("3: different rows count") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{3, 3, {Fraction{"2/4"}, Fraction{"6/8"}, Fraction{"-4/8"}, Fraction{"1.5"}, Fraction{"10/12"}, Fraction{"-5/6"}, Fraction{"1/2"}, Fraction{"3/6"}, Fraction{"-5/4"}}};
+    QTest::newRow("4: different rows/columns count") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{3, 2, {Fraction{"2/4"}, Fraction{"6/8"}, Fraction{"1.5"}, Fraction{"10/12"}, Fraction{"-4/8"}, Fraction{"-5/6"}}};
+    QTest::newRow("5: different rows/columns count") << FractMatrix{2, 3, {Fraction{"1/2"}, Fraction{"3/4"}, Fraction{"-1/2"}, Fraction{"3/2"}, Fraction{"5/6"}, Fraction{"-5/6"}}} << FractMatrix{};
 }
 
 QTEST_APPLESS_MAIN(FractionMatrixTests)
