@@ -613,26 +613,26 @@ void MIteratorTests::testIteratorCreation_data()
     QTest::addColumn<IntMatrixSizeType>("expectedDiagonalNr");
     QTest::addColumn<IntMatrixSizeType>("expectedDiagonalIndex");
 
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.mBegin(-2) << 2 << 2 << -2 << 0;
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.mBegin(0) << 0 << 2 << 0 << 0;
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.mBegin(1) << 0 << 1 << 1 << 0;
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.mBegin(2, 1) << 1 << 2 << -1 << 0;
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.mBegin(0, 2) << 0 << 2 << 0 << 0;
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.mBegin(1, 0) << 0 << 1 << 1 << 0;
-    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.mEnd(-2) << 4 << 0 << -2 << 2;
-    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.mEnd(0) << 3 << -1 << 0 << 3;
-    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.mEnd(1) << 2 << -1 << 1 << 2;
-    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.mEnd(2, 1) << 4 << -1 << -1 << 3;
-    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.mEnd(0, 2) << 3 << -1 << 0 << 3;
-    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.mEnd(1, 0) << 2 << -1 << 1 << 2;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getMIterator(1, 2) << 1 << 2 << -1 << 0;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getMIterator(0, 0) << 0 << 0 << 2 << 0;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getMIterator(2, 1) << 2 << 1 << -1 << 1;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getMIterator(2, 0) << 2 << 0 << 0 << 2;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getMIterator(-1, 0, true) << 1 << 2 << -1 << 0;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getMIterator(2, 0, true) << 0 << 0 << 2 << 0;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << 2 << 1 << -1 << 1;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getMIterator(0, 2, true) << 2 << 0 << 0 << 2;
+    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.mBegin(-2) << 2 << 2 << -2 << 0;
+    QTest::newRow("2: begin iterator") << m_PrimaryIntMatrix.mBegin(0) << 0 << 2 << 0 << 0;
+    QTest::newRow("3: begin iterator") << m_PrimaryIntMatrix.mBegin(1) << 0 << 1 << 1 << 0;
+    QTest::newRow("4: begin iterator") << m_PrimaryIntMatrix.mBegin(2, 1) << 1 << 2 << -1 << 0;
+    QTest::newRow("5: begin iterator") << m_PrimaryIntMatrix.mBegin(0, 2) << 0 << 2 << 0 << 0;
+    QTest::newRow("6: begin iterator") << m_PrimaryIntMatrix.mBegin(1, 0) << 0 << 1 << 1 << 0;
+    QTest::newRow("7: end iterator") << m_PrimaryIntMatrix.mEnd(-2) << 4 << 0 << -2 << 2;
+    QTest::newRow("8: end iterator") << m_PrimaryIntMatrix.mEnd(0) << 3 << -1 << 0 << 3;
+    QTest::newRow("9: end iterator") << m_PrimaryIntMatrix.mEnd(1) << 2 << -1 << 1 << 2;
+    QTest::newRow("10: end iterator") << m_PrimaryIntMatrix.mEnd(2, 1) << 4 << -1 << -1 << 3;
+    QTest::newRow("11: end iterator") << m_PrimaryIntMatrix.mEnd(0, 2) << 3 << -1 << 0 << 3;
+    QTest::newRow("12: end iterator") << m_PrimaryIntMatrix.mEnd(1, 0) << 2 << -1 << 1 << 2;
+    QTest::newRow("13: random iterator") << m_PrimaryIntMatrix.getMIterator(1, 2) << 1 << 2 << -1 << 0;
+    QTest::newRow("14: random iterator") << m_PrimaryIntMatrix.getMIterator(0, 0) << 0 << 0 << 2 << 0;
+    QTest::newRow("15: random iterator") << m_PrimaryIntMatrix.getMIterator(2, 1) << 2 << 1 << -1 << 1;
+    QTest::newRow("16: random iterator") << m_PrimaryIntMatrix.getMIterator(2, 0) << 2 << 0 << 0 << 2;
+    QTest::newRow("17: random iterator") << m_PrimaryIntMatrix.getMIterator(-1, 0, true) << 1 << 2 << -1 << 0;
+    QTest::newRow("18: random iterator") << m_PrimaryIntMatrix.getMIterator(2, 0, true) << 0 << 0 << 2 << 0;
+    QTest::newRow("19: random iterator") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << 2 << 1 << -1 << 1;
+    QTest::newRow("20: random iterator") << m_PrimaryIntMatrix.getMIterator(0, 2, true) << 2 << 0 << 0 << 2;
 }
 
 void MIteratorTests::testIteratorsAreEqual_data()
@@ -642,11 +642,11 @@ void MIteratorTests::testIteratorsAreEqual_data()
     QTest::addColumn<IntMatrixMIterator>("firstIterator");
     QTest::addColumn<IntMatrixMIterator>("secondIterator");
 
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getMIterator(1, 0) << m_PrimaryIntMatrix.getMIterator(1, 1, true);
-    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.mBegin(-1) << m_PrimaryIntMatrix.mBegin(2, 1); //
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.mBegin(2, 1) << m_PrimaryIntMatrix.getMIterator(1, 2); //
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getMIterator(1, 2) << m_PrimaryIntMatrix.getMIterator(-1, 0, true); //
-    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.mEnd(2) << m_PrimaryIntMatrix.mEnd(0, 0);
+    QTest::newRow("1: random iterator, random iterator") << m_PrimaryIntMatrix.getMIterator(1, 0) << m_PrimaryIntMatrix.getMIterator(1, 1, true);
+    QTest::newRow("2: begin iterator, begin iterator") << m_PrimaryIntMatrix.mBegin(-1) << m_PrimaryIntMatrix.mBegin(2, 1); //
+    QTest::newRow("3: begin iterator, random iterator") << m_PrimaryIntMatrix.mBegin(2, 1) << m_PrimaryIntMatrix.getMIterator(1, 2); //
+    QTest::newRow("4: random iterator, random iterator") << m_PrimaryIntMatrix.getMIterator(1, 2) << m_PrimaryIntMatrix.getMIterator(-1, 0, true); //
+    QTest::newRow("5: end iterator, end iterator") << m_PrimaryIntMatrix.mEnd(2) << m_PrimaryIntMatrix.mEnd(0, 0);
 }
 
 void MIteratorTests::testIteratorsAreNotEqual_data()
@@ -702,12 +702,12 @@ void MIteratorTests::testDifferenceOperator_data()
     QTest::addColumn<IntMatrixMIterator>("secondIterator");
     QTest::addColumn<IntMatrixDiffType>("expectedDifference");
 
-    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.mBegin(-1) << m_PrimaryIntMatrix.mBegin(1, 2) << 0;
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getMIterator(2, 0) << m_PrimaryIntMatrix.mBegin(0, 2) << -2;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getMIterator(2, 1) << m_PrimaryIntMatrix.getMIterator(-1, 2, true) << 1;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getMIterator(1, 0) << m_PrimaryIntMatrix.getMIterator(1, 0, true) << -1;
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getMIterator(-1, 0, true) << m_PrimaryIntMatrix.mEnd(-1) << 3;
-    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.mEnd(1) << m_PrimaryIntMatrix.mEnd(0, 1) << 0;
+    QTest::newRow("1: begin iterator, begin iterator") << m_PrimaryIntMatrix.mBegin(-1) << m_PrimaryIntMatrix.mBegin(1, 2) << 0;
+    QTest::newRow("2: random iterator, begin iterator") << m_PrimaryIntMatrix.getMIterator(2, 0) << m_PrimaryIntMatrix.mBegin(0, 2) << -2;
+    QTest::newRow("3: random iterator, random iterator") << m_PrimaryIntMatrix.getMIterator(2, 1) << m_PrimaryIntMatrix.getMIterator(-1, 2, true) << 1;
+    QTest::newRow("4: random iterator, random iterator") << m_PrimaryIntMatrix.getMIterator(1, 0) << m_PrimaryIntMatrix.getMIterator(1, 0, true) << -1;
+    QTest::newRow("5: random iterator, end iterator") << m_PrimaryIntMatrix.getMIterator(-1, 0, true) << m_PrimaryIntMatrix.mEnd(-1) << 3;
+    QTest::newRow("6: end iterator, end iterator") << m_PrimaryIntMatrix.mEnd(1) << m_PrimaryIntMatrix.mEnd(0, 1) << 0;
 }
 
 void MIteratorTests::testSquareBracketsOperatorRead_data()
@@ -718,27 +718,27 @@ void MIteratorTests::testSquareBracketsOperatorRead_data()
     QTest::addColumn<IntMatrixDiffType>("index");
     QTest::addColumn<int>("expectedValue");
 
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.mBegin(0, 1) << 0 << 2;
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.mBegin(0, 1) << 1 << 4;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getMIterator(2, 1) << -1 << 6;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getMIterator(2, 1) << 0 << -8;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getMIterator(2, 1) << 1 << 10;
-    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.mEnd(0) << -3 << -3;
-    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.mEnd(0) << -2 << -5;
-    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.mEnd(0) << -1 << 7;
+    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.mBegin(0, 1) << 0 << 2;
+    QTest::newRow("2: begin iterator") << m_PrimaryIntMatrix.mBegin(0, 1) << 1 << 4;
+    QTest::newRow("3: random iterator") << m_PrimaryIntMatrix.getMIterator(2, 1) << -1 << 6;
+    QTest::newRow("4: random iterator") << m_PrimaryIntMatrix.getMIterator(2, 1) << 0 << -8;
+    QTest::newRow("5: random iterator") << m_PrimaryIntMatrix.getMIterator(2, 1) << 1 << 10;
+    QTest::newRow("6: end iterator") << m_PrimaryIntMatrix.mEnd(0) << -3 << -3;
+    QTest::newRow("7: end iterator") << m_PrimaryIntMatrix.mEnd(0) << -2 << -5;
+    QTest::newRow("8: end iterator") << m_PrimaryIntMatrix.mEnd(0) << -1 << 7;
 
     // test with row/column capacity offset
     m_SecondaryIntMatrix = m_PrimaryIntMatrix;
     m_SecondaryIntMatrix.resize(4, 3, 6, 5);
 
-    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.mBegin(0, 1) << 0 << 2;
-    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.mBegin(0, 1) << 1 << 4;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getMIterator(2, 1) << -1 << 6;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getMIterator(2, 1) << 0 << -8;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getMIterator(2, 1) << 1 << 10;
-    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.mEnd(0) << -3 << -3;
-    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.mEnd(0) << -2 << -5;
-    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.mEnd(0) << -1 << 7;
+    QTest::newRow("9: begin iterator") << m_SecondaryIntMatrix.mBegin(0, 1) << 0 << 2;
+    QTest::newRow("10: begin iterator") << m_SecondaryIntMatrix.mBegin(0, 1) << 1 << 4;
+    QTest::newRow("11: random iterator") << m_SecondaryIntMatrix.getMIterator(2, 1) << -1 << 6;
+    QTest::newRow("12: random iterator") << m_SecondaryIntMatrix.getMIterator(2, 1) << 0 << -8;
+    QTest::newRow("13: random iterator") << m_SecondaryIntMatrix.getMIterator(2, 1) << 1 << 10;
+    QTest::newRow("14: end iterator") << m_SecondaryIntMatrix.mEnd(0) << -3 << -3;
+    QTest::newRow("15: end iterator") << m_SecondaryIntMatrix.mEnd(0) << -2 << -5;
+    QTest::newRow("16: end iterator") << m_SecondaryIntMatrix.mEnd(0) << -1 << 7;
 }
 
 void MIteratorTests::testStdCount_data()
@@ -759,11 +759,11 @@ void MIteratorTests::testStdCount_data()
     QTest::addColumn<int>("countedValue");
     QTest::addColumn<IntMatrixDiffType>("expectedCount");
 
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.mBegin(1) << m_PrimaryIntMatrix.mEnd(1) << -3 << 1;
-    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.mBegin(1) << m_SecondaryIntMatrix.mEnd(1) << -1 << 3;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getMIterator(0, 0) << m_PrimaryIntMatrix.getMIterator(1, 0, true) << -3 << 0;
-    QTest::newRow("{random iterator, random iterator}") << m_SecondaryIntMatrix.getMIterator(1, 1, true) << m_SecondaryIntMatrix.getMIterator(4, 1) << 4 << 1;
-    QTest::newRow("{random iterator, random iterator}") << m_SecondaryIntMatrix.getMIterator(2, 3) << m_SecondaryIntMatrix.getMIterator(1, 4, true) << 4 << 0;
+    QTest::newRow("1: begin iterator, end iterator") << m_PrimaryIntMatrix.mBegin(1) << m_PrimaryIntMatrix.mEnd(1) << -3 << 1;
+    QTest::newRow("2: begin iterator, end iterator") << m_SecondaryIntMatrix.mBegin(1) << m_SecondaryIntMatrix.mEnd(1) << -1 << 3;
+    QTest::newRow("3: random iterator, random iterator") << m_PrimaryIntMatrix.getMIterator(0, 0) << m_PrimaryIntMatrix.getMIterator(1, 0, true) << -3 << 0;
+    QTest::newRow("4: random iterator, random iterator") << m_SecondaryIntMatrix.getMIterator(1, 1, true) << m_SecondaryIntMatrix.getMIterator(4, 1) << 4 << 1;
+    QTest::newRow("5: random iterator, random iterator") << m_SecondaryIntMatrix.getMIterator(2, 3) << m_SecondaryIntMatrix.getMIterator(1, 4, true) << 4 << 0;
 }
 
 void MIteratorTests::testStdFind_data()
@@ -782,8 +782,8 @@ void MIteratorTests::testStdFind_data()
     QTest::addColumn<int>("searchedValue");
     QTest::addColumn<IntMatrixMIterator>("expectedIterator");
 
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.mBegin(1) << m_PrimaryIntMatrix.mEnd(1) << 5 << m_PrimaryIntMatrix.getMIterator(3, 2);
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.mBegin(1) << m_PrimaryIntMatrix.mEnd(1) << -9 << m_PrimaryIntMatrix.mEnd(1);
+    QTest::newRow("1: begin iterator, end iterator") << m_PrimaryIntMatrix.mBegin(1) << m_PrimaryIntMatrix.mEnd(1) << 5 << m_PrimaryIntMatrix.getMIterator(3, 2);
+    QTest::newRow("2: begin iterator, end iterator") << m_PrimaryIntMatrix.mBegin(1) << m_PrimaryIntMatrix.mEnd(1) << -9 << m_PrimaryIntMatrix.mEnd(1);
 }
 
 void MIteratorTests::_buildLessThanOperatorTestingTable()
@@ -793,8 +793,8 @@ void MIteratorTests::_buildLessThanOperatorTestingTable()
     QTest::addColumn<IntMatrixMIterator>("firstIterator");
     QTest::addColumn<IntMatrixMIterator>("secondIterator");
 
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.mBegin(1) << m_PrimaryIntMatrix.getMIterator(1, 0);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getMIterator(1, 0) << m_PrimaryIntMatrix.mEnd(1);
+    QTest::newRow("1: begin iterator, random iterator") << m_PrimaryIntMatrix.mBegin(1) << m_PrimaryIntMatrix.getMIterator(1, 0);
+    QTest::newRow("2: random iterator, end iterator") << m_PrimaryIntMatrix.getMIterator(1, 0) << m_PrimaryIntMatrix.mEnd(1);
 }
 
 void MIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
@@ -804,10 +804,10 @@ void MIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
     QTest::addColumn<IntMatrixMIterator>("firstIterator");
     QTest::addColumn<IntMatrixMIterator>("secondIterator");
 
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.mBegin(-1) << m_PrimaryIntMatrix.getMIterator(1, 2);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getMIterator(1, 2) << m_PrimaryIntMatrix.getMIterator(2, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getMIterator(2, 1) << m_PrimaryIntMatrix.getMIterator(-1, 1, true);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << m_PrimaryIntMatrix.mEnd(-1);
+    QTest::newRow("1: begin iterator, random iterator") << m_PrimaryIntMatrix.mBegin(-1) << m_PrimaryIntMatrix.getMIterator(1, 2);
+    QTest::newRow("2: random iterator, random iterator") << m_PrimaryIntMatrix.getMIterator(1, 2) << m_PrimaryIntMatrix.getMIterator(2, 1);
+    QTest::newRow("3: random iterator, random iterator") << m_PrimaryIntMatrix.getMIterator(2, 1) << m_PrimaryIntMatrix.getMIterator(-1, 1, true);
+    QTest::newRow("4: random iterator, end iterator") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << m_PrimaryIntMatrix.mEnd(-1);
 }
 
 void MIteratorTests::_buildOperatorPlusTestingTable()
@@ -819,28 +819,25 @@ void MIteratorTests::_buildOperatorPlusTestingTable()
     QTest::addColumn<IntMatrixDiffType>("scalarValue");
     QTest::addColumn<IntMatrixMIterator>("expectedIterator");
 
-    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.mBegin(-1) << -1 << m_PrimaryIntMatrix.mBegin(1, 2);
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.mBegin(-1) << 2 << m_PrimaryIntMatrix.getMIterator(3, 0);
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.mBegin(-1) << 3 << m_PrimaryIntMatrix.mEnd(1, 2);
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.mBegin(-1) << 4 << m_PrimaryIntMatrix.mEnd(1, 2);
-
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << -2 << m_PrimaryIntMatrix.mBegin(1, 2);
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << -1 << m_PrimaryIntMatrix.mBegin(1, 2);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << 0 << m_PrimaryIntMatrix.getMIterator(2, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << 1 << m_PrimaryIntMatrix.getMIterator(3, 0);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << 2 << m_PrimaryIntMatrix.mEnd(1, 2);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << 3 << m_PrimaryIntMatrix.mEnd(1, 2);
-
-    QTest::newRow("{end iterator, begin iterator}") << m_PrimaryIntMatrix.mEnd(-1) << -4 << m_PrimaryIntMatrix.mBegin(1, 2);
-    QTest::newRow("{end iterator, begin iterator}") << m_PrimaryIntMatrix.mEnd(-1) << -3 << m_PrimaryIntMatrix.mBegin(1, 2);
-    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.mEnd(-1) << -1 << m_PrimaryIntMatrix.getMIterator(3, 0);
-    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.mEnd(-1) << 1 << m_PrimaryIntMatrix.mEnd(1, 2);
-
-    QTest::newRow("{begin iterator, begin iterator}") << m_SecondaryIntMatrix.mBegin(0, 2) << -2 << m_SecondaryIntMatrix.mBegin(0, 2);
-    QTest::newRow("{begin iterator, begin iterator}") << m_SecondaryIntMatrix.mBegin(0, 2) << -1 << m_SecondaryIntMatrix.mBegin(0, 2);
-    QTest::newRow("{begin iterator, random iterator}") << m_SecondaryIntMatrix.mBegin(0, 2) << 2 << m_SecondaryIntMatrix.getMIterator(2, 0);
-    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.mBegin(0, 2) << 3 << m_SecondaryIntMatrix.mEnd(0, 2);
-    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.mBegin(0, 2) << 4 << m_SecondaryIntMatrix.mEnd(0, 2);
+    QTest::newRow("1: begin iterator, begin iterator") << m_PrimaryIntMatrix.mBegin(-1) << -1 << m_PrimaryIntMatrix.mBegin(1, 2);
+    QTest::newRow("2: begin iterator, random iterator") << m_PrimaryIntMatrix.mBegin(-1) << 2 << m_PrimaryIntMatrix.getMIterator(3, 0);
+    QTest::newRow("3: begin iterator, end iterator") << m_PrimaryIntMatrix.mBegin(-1) << 3 << m_PrimaryIntMatrix.mEnd(1, 2);
+    QTest::newRow("4: begin iterator, end iterator") << m_PrimaryIntMatrix.mBegin(-1) << 4 << m_PrimaryIntMatrix.mEnd(1, 2);
+    QTest::newRow("5: random iterator, begin iterator") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << -2 << m_PrimaryIntMatrix.mBegin(1, 2);
+    QTest::newRow("6: random iterator, begin iterator") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << -1 << m_PrimaryIntMatrix.mBegin(1, 2);
+    QTest::newRow("7: random iterator, random iterator") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << 0 << m_PrimaryIntMatrix.getMIterator(2, 1);
+    QTest::newRow("8: random iterator, random iterator") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << 1 << m_PrimaryIntMatrix.getMIterator(3, 0);
+    QTest::newRow("9: random iterator, end iterator") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << 2 << m_PrimaryIntMatrix.mEnd(1, 2);
+    QTest::newRow("10: random iterator, end iterator") << m_PrimaryIntMatrix.getMIterator(-1, 1, true) << 3 << m_PrimaryIntMatrix.mEnd(1, 2);
+    QTest::newRow("11: end iterator, begin iterator") << m_PrimaryIntMatrix.mEnd(-1) << -4 << m_PrimaryIntMatrix.mBegin(1, 2);
+    QTest::newRow("12: end iterator, begin iterator") << m_PrimaryIntMatrix.mEnd(-1) << -3 << m_PrimaryIntMatrix.mBegin(1, 2);
+    QTest::newRow("13: end iterator, random iterator") << m_PrimaryIntMatrix.mEnd(-1) << -1 << m_PrimaryIntMatrix.getMIterator(3, 0);
+    QTest::newRow("14: end iterator, end iterator") << m_PrimaryIntMatrix.mEnd(-1) << 1 << m_PrimaryIntMatrix.mEnd(1, 2);
+    QTest::newRow("15: begin iterator, begin iterator") << m_SecondaryIntMatrix.mBegin(0, 2) << -2 << m_SecondaryIntMatrix.mBegin(0, 2);
+    QTest::newRow("16: begin iterator, begin iterator") << m_SecondaryIntMatrix.mBegin(0, 2) << -1 << m_SecondaryIntMatrix.mBegin(0, 2);
+    QTest::newRow("17: begin iterator, random iterator") << m_SecondaryIntMatrix.mBegin(0, 2) << 2 << m_SecondaryIntMatrix.getMIterator(2, 0);
+    QTest::newRow("18: begin iterator, end iterator") << m_SecondaryIntMatrix.mBegin(0, 2) << 3 << m_SecondaryIntMatrix.mEnd(0, 2);
+    QTest::newRow("19: begin iterator, end iterator") << m_SecondaryIntMatrix.mBegin(0, 2) << 4 << m_SecondaryIntMatrix.mEnd(0, 2);
 }
 
 QTEST_APPLESS_MAIN(MIteratorTests)

@@ -552,30 +552,30 @@ void ConstZIteratorTests::testIteratorCreation_data()
     QTest::addColumn<bool>("isPrimaryMatrix");
     QTest::addColumn<bool>("expectedValidity");
 
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 0 << 0;
-    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.constZEnd() << 8 << 8;
-    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.constZRowBegin(0) << 0 << 0;
-    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << 1 << 0;
-    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.constZRowBegin(4) << 4 << 0;
-    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.constZRowBegin(7) << 7 << 0;
-    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.constZRowBegin(8) << 8 << 0;
-    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.constZRowEnd(0) << 1 << 0;
-    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.constZRowEnd(1) << 2 << 0;
-    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.constZRowEnd(4) << 5 << 0;
-    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.constZRowEnd(7) << 8 << 0;
-    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.constZRowEnd(8) << 8 << 8;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 0) << 0 << 0;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 0 << 1;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 5 << 4;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 8 << 6;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 8 << 7;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0) << 0 << 0;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1) << 0 << 1;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(44) << 5 << 4;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(70) << 8 << 6;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(71) << 8 << 7;
-    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.constZBegin() << -1 << -1;
-    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.constZEnd() << -1 << -1;
+    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.constZBegin() << 0 << 0;
+    QTest::newRow("2: end iterator") << m_PrimaryIntMatrix.constZEnd() << 8 << 8;
+    QTest::newRow("3: row begin iterator") << m_PrimaryIntMatrix.constZRowBegin(0) << 0 << 0;
+    QTest::newRow("4: row begin iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << 1 << 0;
+    QTest::newRow("5: row begin iterator") << m_PrimaryIntMatrix.constZRowBegin(4) << 4 << 0;
+    QTest::newRow("6: row begin iterator") << m_PrimaryIntMatrix.constZRowBegin(7) << 7 << 0;
+    QTest::newRow("7: row begin iterator") << m_PrimaryIntMatrix.constZRowBegin(8) << 8 << 0;
+    QTest::newRow("8: row end iterator") << m_PrimaryIntMatrix.constZRowEnd(0) << 1 << 0;
+    QTest::newRow("9: row end iterator") << m_PrimaryIntMatrix.constZRowEnd(1) << 2 << 0;
+    QTest::newRow("10: row end iterator") << m_PrimaryIntMatrix.constZRowEnd(4) << 5 << 0;
+    QTest::newRow("11: row end iterator") << m_PrimaryIntMatrix.constZRowEnd(7) << 8 << 0;
+    QTest::newRow("12: row end iterator") << m_PrimaryIntMatrix.constZRowEnd(8) << 8 << 8;
+    QTest::newRow("13: random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 0) << 0 << 0;
+    QTest::newRow("14: random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 0 << 1;
+    QTest::newRow("15: random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 5 << 4;
+    QTest::newRow("16: random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 8 << 6;
+    QTest::newRow("17: random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 8 << 7;
+    QTest::newRow("18: random iterator") << m_PrimaryIntMatrix.getConstZIterator(0) << 0 << 0;
+    QTest::newRow("19: random iterator") << m_PrimaryIntMatrix.getConstZIterator(1) << 0 << 1;
+    QTest::newRow("20: random iterator") << m_PrimaryIntMatrix.getConstZIterator(44) << 5 << 4;
+    QTest::newRow("21: random iterator") << m_PrimaryIntMatrix.getConstZIterator(70) << 8 << 6;
+    QTest::newRow("22: random iterator") << m_PrimaryIntMatrix.getConstZIterator(71) << 8 << 7;
+    QTest::newRow("23: begin iterator") << m_SecondaryIntMatrix.constZBegin() << -1 << -1;
+    QTest::newRow("24: end iterator") << m_SecondaryIntMatrix.constZEnd() << -1 << -1;
 }
 
 void ConstZIteratorTests::testIteratorCreationFromNonConstIterator_data()
@@ -589,30 +589,30 @@ void ConstZIteratorTests::testIteratorCreationFromNonConstIterator_data()
     QTest::addColumn<bool>("isPrimaryMatrix");
     QTest::addColumn<bool>("expectedValidity");
 
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.zBegin() << 0 << 0;
-    QTest::newRow("{end iterator}") << m_PrimaryIntMatrix.zEnd() << 8 << 8;
-    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.zRowBegin(0) << 0 << 0;
-    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.zRowBegin(1) << 1 << 0;
-    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.zRowBegin(4) << 4 << 0;
-    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.zRowBegin(7) << 7 << 0;
-    QTest::newRow("{row begin iterator}") << m_PrimaryIntMatrix.zRowBegin(8) << 8 << 0;
-    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.zRowEnd(0) << 1 << 0;
-    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.zRowEnd(1) << 2 << 0;
-    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.zRowEnd(4) << 5 << 0;
-    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.zRowEnd(7) << 8 << 0;
-    QTest::newRow("{row end iterator}") << m_PrimaryIntMatrix.zRowEnd(8) << 8 << 8;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(0, 0) << 0 << 0;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(0, 1) << 0 << 1;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(5, 4) << 5 << 4;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(8, 6) << 8 << 6;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(8, 7) << 8 << 7;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(0) << 0 << 0;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(1) << 0 << 1;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(44) << 5 << 4;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(70) << 8 << 6;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getZIterator(71) << 8 << 7;
-    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.zBegin() << -1 << -1;
-    QTest::newRow("{end iterator}") << m_SecondaryIntMatrix.zEnd() << -1 << -1;
+    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.zBegin() << 0 << 0;
+    QTest::newRow("2: end iterator") << m_PrimaryIntMatrix.zEnd() << 8 << 8;
+    QTest::newRow("3: row begin iterator") << m_PrimaryIntMatrix.zRowBegin(0) << 0 << 0;
+    QTest::newRow("4: row begin iterator") << m_PrimaryIntMatrix.zRowBegin(1) << 1 << 0;
+    QTest::newRow("5: row begin iterator") << m_PrimaryIntMatrix.zRowBegin(4) << 4 << 0;
+    QTest::newRow("6: row begin iterator") << m_PrimaryIntMatrix.zRowBegin(7) << 7 << 0;
+    QTest::newRow("7: row begin iterator") << m_PrimaryIntMatrix.zRowBegin(8) << 8 << 0;
+    QTest::newRow("8: row end iterator") << m_PrimaryIntMatrix.zRowEnd(0) << 1 << 0;
+    QTest::newRow("9: row end iterator") << m_PrimaryIntMatrix.zRowEnd(1) << 2 << 0;
+    QTest::newRow("10: row end iterator") << m_PrimaryIntMatrix.zRowEnd(4) << 5 << 0;
+    QTest::newRow("11: row end iterator") << m_PrimaryIntMatrix.zRowEnd(7) << 8 << 0;
+    QTest::newRow("12: row end iterator") << m_PrimaryIntMatrix.zRowEnd(8) << 8 << 8;
+    QTest::newRow("13: random iterator") << m_PrimaryIntMatrix.getZIterator(0, 0) << 0 << 0;
+    QTest::newRow("14: random iterator") << m_PrimaryIntMatrix.getZIterator(0, 1) << 0 << 1;
+    QTest::newRow("15: random iterator") << m_PrimaryIntMatrix.getZIterator(5, 4) << 5 << 4;
+    QTest::newRow("16: random iterator") << m_PrimaryIntMatrix.getZIterator(8, 6) << 8 << 6;
+    QTest::newRow("17: random iterator") << m_PrimaryIntMatrix.getZIterator(8, 7) << 8 << 7;
+    QTest::newRow("18: random iterator") << m_PrimaryIntMatrix.getZIterator(0) << 0 << 0;
+    QTest::newRow("19: random iterator") << m_PrimaryIntMatrix.getZIterator(1) << 0 << 1;
+    QTest::newRow("20: random iterator") << m_PrimaryIntMatrix.getZIterator(44) << 5 << 4;
+    QTest::newRow("21: random iterator") << m_PrimaryIntMatrix.getZIterator(70) << 8 << 6;
+    QTest::newRow("22: random iterator") << m_PrimaryIntMatrix.getZIterator(71) << 8 << 7;
+    QTest::newRow("23: begin iterator") << m_SecondaryIntMatrix.zBegin() << -1 << -1;
+    QTest::newRow("24: end iterator") << m_SecondaryIntMatrix.zEnd() << -1 << -1;
 }
 
 void ConstZIteratorTests::testIteratorsAreEqual_data()
@@ -623,23 +623,23 @@ void ConstZIteratorTests::testIteratorsAreEqual_data()
     QTest::addColumn<IntMatrixConstZIterator>("firstIterator");
     QTest::addColumn<IntMatrixConstZIterator>("secondIterator");
 
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 0);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0) << m_PrimaryIntMatrix.getConstZIterator(0, 0);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1) << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(44) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(70) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(71) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{row begin iterator, random iterator}") << m_PrimaryIntMatrix.constZRowBegin(0) << m_PrimaryIntMatrix.getConstZIterator(0, 0);
-    QTest::newRow("{row begin iterator, random iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.getConstZIterator(1, 0);
-    QTest::newRow("{row begin iterator, random iterator}") << m_PrimaryIntMatrix.constZRowBegin(5) << m_PrimaryIntMatrix.getConstZIterator(5, 0);
-    QTest::newRow("{row begin iterator, random iterator}") << m_PrimaryIntMatrix.constZRowBegin(7) << m_PrimaryIntMatrix.getConstZIterator(7, 0);
-    QTest::newRow("{row begin iterator, random iterator}") << m_PrimaryIntMatrix.constZRowBegin(8) << m_PrimaryIntMatrix.getConstZIterator(8, 0);
-    QTest::newRow("{row end iterator, random iterator}") << m_PrimaryIntMatrix.constZRowEnd(0) << m_PrimaryIntMatrix.getConstZIterator(1, 0);
-    QTest::newRow("{row end iterator, random iterator}") << m_PrimaryIntMatrix.constZRowEnd(1) << m_PrimaryIntMatrix.getConstZIterator(2, 0);
-    QTest::newRow("{row end iterator, random iterator}") << m_PrimaryIntMatrix.constZRowEnd(5) << m_PrimaryIntMatrix.getConstZIterator(6, 0);
-    QTest::newRow("{row end iterator, random iterator}") << m_PrimaryIntMatrix.constZRowEnd(7) << m_PrimaryIntMatrix.getConstZIterator(8, 0);
-    QTest::newRow("{row end iterator, end iterator}") << m_PrimaryIntMatrix.constZRowEnd(8) << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("1: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 0);
+    QTest::newRow("2: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0) << m_PrimaryIntMatrix.getConstZIterator(0, 0);
+    QTest::newRow("3: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(1) << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("4: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(44) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("5: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(70) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("6: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(71) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("7: row begin iterator, random iterator") << m_PrimaryIntMatrix.constZRowBegin(0) << m_PrimaryIntMatrix.getConstZIterator(0, 0);
+    QTest::newRow("8: row begin iterator, random iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.getConstZIterator(1, 0);
+    QTest::newRow("9: row begin iterator, random iterator") << m_PrimaryIntMatrix.constZRowBegin(5) << m_PrimaryIntMatrix.getConstZIterator(5, 0);
+    QTest::newRow("10: row begin iterator, random iterator") << m_PrimaryIntMatrix.constZRowBegin(7) << m_PrimaryIntMatrix.getConstZIterator(7, 0);
+    QTest::newRow("11: row begin iterator, random iterator") << m_PrimaryIntMatrix.constZRowBegin(8) << m_PrimaryIntMatrix.getConstZIterator(8, 0);
+    QTest::newRow("12: row end iterator, random iterator") << m_PrimaryIntMatrix.constZRowEnd(0) << m_PrimaryIntMatrix.getConstZIterator(1, 0);
+    QTest::newRow("13: row end iterator, random iterator") << m_PrimaryIntMatrix.constZRowEnd(1) << m_PrimaryIntMatrix.getConstZIterator(2, 0);
+    QTest::newRow("14: row end iterator, random iterator") << m_PrimaryIntMatrix.constZRowEnd(5) << m_PrimaryIntMatrix.getConstZIterator(6, 0);
+    QTest::newRow("15: row end iterator, random iterator") << m_PrimaryIntMatrix.constZRowEnd(7) << m_PrimaryIntMatrix.getConstZIterator(8, 0);
+    QTest::newRow("16: row end iterator, end iterator") << m_PrimaryIntMatrix.constZRowEnd(8) << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("17: begin iterator, end iterator") << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.constZEnd();
 }
 
 void ConstZIteratorTests::testIteratorEqualToItself_data()
@@ -648,13 +648,13 @@ void ConstZIteratorTests::testIteratorEqualToItself_data()
 
     QTest::addColumn<IntMatrixConstZIterator>("iterator");
 
-    QTest::newRow("{begin iterator}")  << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 0);
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4);
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{end iterator}")  << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("1: begin iterator")  << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("2: random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 0);
+    QTest::newRow("3: random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("4: random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("5: random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("6: random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("7: end iterator")  << m_PrimaryIntMatrix.constZEnd();
 }
 
 void ConstZIteratorTests::testIteratorsAreNotEqual_data()
@@ -731,51 +731,51 @@ void ConstZIteratorTests::testDifferenceOperator_data()
     QTest::addColumn<IntMatrixConstZIterator>("secondIterator");
     QTest::addColumn<IntMatrixDiffType>("expectedDifference");
 
-    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.constZEnd() << 0;
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZEnd() << 1;
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.constZEnd() << 2;
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.constZEnd() << 28;
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.constZEnd() << 71;
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << 72;
-    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -1;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 0;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 1;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 27;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 70;
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 71;
-    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -2;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -1;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 0;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 26;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 69;
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 70;
-    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -28;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -27;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -26;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 0;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 43;
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 44;
-    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -71;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -70;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -69;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -43;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 0;
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 1;
-    QTest::newRow("{end iterator, begin iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.constZBegin() << -72;
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZBegin() << -71;
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.constZBegin() << -70;
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.constZBegin() << -44;
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.constZBegin() << -1;
-    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZBegin() << 0;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(7, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -14;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(7, 2) << 14;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 2;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(5, 2) << -2;
-    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.constZEnd() << 0;
-    QTest::newRow("{end iterator, begin iterator}") << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.constZBegin() << 0;
-    QTest::newRow("{begin iterator, begin iterator}") << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.constZBegin() << 0;
-    QTest::newRow("{end iterator, end iterator}") << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.constZEnd() << 0;
-    QTest::newRow("{empty iterator, empty iterator}") << IntMatrixConstZIterator{} << IntMatrixConstZIterator{} << 0;
+    QTest::newRow("1: end iterator, end iterator") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.constZEnd() << 0;
+    QTest::newRow("2: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZEnd() << 1;
+    QTest::newRow("3: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.constZEnd() << 2;
+    QTest::newRow("4: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.constZEnd() << 28;
+    QTest::newRow("5: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.constZEnd() << 71;
+    QTest::newRow("6: begin iterator, end iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << 72;
+    QTest::newRow("7: end iterator, random iterator") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -1;
+    QTest::newRow("8: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 0;
+    QTest::newRow("9: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 1;
+    QTest::newRow("10: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 27;
+    QTest::newRow("11: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 70;
+    QTest::newRow("12: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 71;
+    QTest::newRow("13: end iterator, random iterator") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -2;
+    QTest::newRow("14: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -1;
+    QTest::newRow("15: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 0;
+    QTest::newRow("16: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 26;
+    QTest::newRow("17: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 69;
+    QTest::newRow("18: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 70;
+    QTest::newRow("19: end iterator, random iterator") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -28;
+    QTest::newRow("20: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -27;
+    QTest::newRow("21: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -26;
+    QTest::newRow("22: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 0;
+    QTest::newRow("23: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 43;
+    QTest::newRow("24: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 44;
+    QTest::newRow("25: end iterator, random iterator") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -71;
+    QTest::newRow("26: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -70;
+    QTest::newRow("27: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -69;
+    QTest::newRow("28: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -43;
+    QTest::newRow("29: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 0;
+    QTest::newRow("30: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 1;
+    QTest::newRow("31: end iterator, begin iterator") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.constZBegin() << -72;
+    QTest::newRow("32: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZBegin() << -71;
+    QTest::newRow("33: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.constZBegin() << -70;
+    QTest::newRow("34: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.constZBegin() << -44;
+    QTest::newRow("35: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.constZBegin() << -1;
+    QTest::newRow("36: begin iterator, begin iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZBegin() << 0;
+    QTest::newRow("37: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(7, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -14;
+    QTest::newRow("38: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(7, 2) << 14;
+    QTest::newRow("39: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 2;
+    QTest::newRow("40: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(5, 2) << -2;
+    QTest::newRow("41: begin iterator, end iterator") << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.constZEnd() << 0;
+    QTest::newRow("42: end iterator, begin iterator") << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.constZBegin() << 0;
+    QTest::newRow("43: begin iterator, begin iterator") << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.constZBegin() << 0;
+    QTest::newRow("44: end iterator, end iterator") << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.constZEnd() << 0;
+    QTest::newRow("45: empty iterator, empty iterator") << IntMatrixConstZIterator{} << IntMatrixConstZIterator{} << 0;
 }
 
 void ConstZIteratorTests::testAsteriskOperator_data()
@@ -785,21 +785,21 @@ void ConstZIteratorTests::testAsteriskOperator_data()
     QTest::addColumn<IntMatrixConstZIterator>("iterator");
     QTest::addColumn<int>("expectedValue");
 
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 1;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -2;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << -6;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 11;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -12;
+    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.constZBegin() << 1;
+    QTest::newRow("2: random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -2;
+    QTest::newRow("3: random iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << -6;
+    QTest::newRow("4: random iterator") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 11;
+    QTest::newRow("5: random iterator") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -12;
 
     // test with row/column capacity offset
     m_SecondaryIntMatrix = m_PrimaryIntMatrix;
     m_SecondaryIntMatrix.resize(4, 3, 6, 5);
 
-    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.constZBegin() << 1;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << -2;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(1, 2) << -6;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(3, 1) << 11;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(3, 2) << -12;
+    QTest::newRow("6: begin iterator") << m_SecondaryIntMatrix.constZBegin() << 1;
+    QTest::newRow("7: random iterator") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << -2;
+    QTest::newRow("8: random iterator") << m_SecondaryIntMatrix.getConstZIterator(1, 2) << -6;
+    QTest::newRow("9: random iterator") << m_SecondaryIntMatrix.getConstZIterator(3, 1) << 11;
+    QTest::newRow("10: random iterator") << m_SecondaryIntMatrix.getConstZIterator(3, 2) << -12;
 }
 
 void ConstZIteratorTests::testArrowOperator_data()
@@ -809,21 +809,21 @@ void ConstZIteratorTests::testArrowOperator_data()
     QTest::addColumn<StringMatrixConstZIterator>("iterator");
     QTest::addColumn<int>("expectedValue");
 
-    QTest::newRow("{begin iterator}") << m_PrimaryStringMatrix.constZBegin() << 3;
-    QTest::newRow("{random iterator}") << m_PrimaryStringMatrix.getConstZIterator(0, 1) << 2;
-    QTest::newRow("{random iterator}") << m_PrimaryStringMatrix.getConstZIterator(1, 2) << 7;
-    QTest::newRow("{random iterator}") << m_PrimaryStringMatrix.getConstZIterator(3, 1) << 11;
-    QTest::newRow("{random iterator}") << m_PrimaryStringMatrix.getConstZIterator(3, 2) << 6;
+    QTest::newRow("1: begin iterator") << m_PrimaryStringMatrix.constZBegin() << 3;
+    QTest::newRow("2: random iterator") << m_PrimaryStringMatrix.getConstZIterator(0, 1) << 2;
+    QTest::newRow("3: random iterator") << m_PrimaryStringMatrix.getConstZIterator(1, 2) << 7;
+    QTest::newRow("4: random iterator") << m_PrimaryStringMatrix.getConstZIterator(3, 1) << 11;
+    QTest::newRow("5: random iterator") << m_PrimaryStringMatrix.getConstZIterator(3, 2) << 6;
 
     // test with row capacity offset
     m_SecondaryStringMatrix = m_PrimaryStringMatrix;
     m_SecondaryStringMatrix.resize(4, 3, 6, 3);
 
-    QTest::newRow("{begin iterator}") << m_SecondaryStringMatrix.constZBegin() << 3;
-    QTest::newRow("{random iterator}") << m_SecondaryStringMatrix.getConstZIterator(0, 1) << 2;
-    QTest::newRow("{random iterator}") << m_SecondaryStringMatrix.getConstZIterator(1, 2) << 7;
-    QTest::newRow("{random iterator}") << m_SecondaryStringMatrix.getConstZIterator(3, 1) << 11;
-    QTest::newRow("{random iterator}") << m_SecondaryStringMatrix.getConstZIterator(3, 2) << 6;
+    QTest::newRow("6: begin iterator") << m_SecondaryStringMatrix.constZBegin() << 3;
+    QTest::newRow("7: random iterator") << m_SecondaryStringMatrix.getConstZIterator(0, 1) << 2;
+    QTest::newRow("8: random iterator") << m_SecondaryStringMatrix.getConstZIterator(1, 2) << 7;
+    QTest::newRow("9: random iterator") << m_SecondaryStringMatrix.getConstZIterator(3, 1) << 11;
+    QTest::newRow("10: random iterator") << m_SecondaryStringMatrix.getConstZIterator(3, 2) << 6;
 }
 
 void ConstZIteratorTests::testSquareBracketsOperator_data()
@@ -834,61 +834,61 @@ void ConstZIteratorTests::testSquareBracketsOperator_data()
     QTest::addColumn<IntMatrixDiffType>("index");
     QTest::addColumn<int>("expectedValue");
 
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 0 << 1;
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 1 << -2;
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 5 << -6;
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 10 << 11;
-    QTest::newRow("{begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 11 << -12;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -1 << 1;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 0 << -2;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 4 << -6;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 9 << 11;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 10 << -12;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << -5 << 1;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << -4 << -2;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << 0 << -6;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << 5 << 11;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << 6 << -12;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -10 << 1;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -9 << -2;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -5 << -6;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 0 << 11;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 1 << -12;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -11 << 1;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -10 << -2;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -6 << -6;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -1 << 11;
-    QTest::newRow("{random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << 0 << -12;
+    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.constZBegin() << 0 << 1;
+    QTest::newRow("2: begin iterator") << m_PrimaryIntMatrix.constZBegin() << 1 << -2;
+    QTest::newRow("3: begin iterator") << m_PrimaryIntMatrix.constZBegin() << 5 << -6;
+    QTest::newRow("4: begin iterator") << m_PrimaryIntMatrix.constZBegin() << 10 << 11;
+    QTest::newRow("5: begin iterator") << m_PrimaryIntMatrix.constZBegin() << 11 << -12;
+    QTest::newRow("6: random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -1 << 1;
+    QTest::newRow("7: random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 0 << -2;
+    QTest::newRow("8: random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 4 << -6;
+    QTest::newRow("9: random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 9 << 11;
+    QTest::newRow("10: random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 10 << -12;
+    QTest::newRow("11: random iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << -5 << 1;
+    QTest::newRow("12: random iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << -4 << -2;
+    QTest::newRow("13: random iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << 0 << -6;
+    QTest::newRow("14: random iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << 5 << 11;
+    QTest::newRow("15: random iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 2) << 6 << -12;
+    QTest::newRow("16: random iterator") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -10 << 1;
+    QTest::newRow("17: random iterator") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -9 << -2;
+    QTest::newRow("18: random iterator") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -5 << -6;
+    QTest::newRow("19: random iterator") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 0 << 11;
+    QTest::newRow("20: random iterator") << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 1 << -12;
+    QTest::newRow("21: random iterator") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -11 << 1;
+    QTest::newRow("22: random iterator") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -10 << -2;
+    QTest::newRow("23: random iterator") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -6 << -6;
+    QTest::newRow("24: random iterator") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << -1 << 11;
+    QTest::newRow("25: random iterator") << m_PrimaryIntMatrix.getConstZIterator(3, 2) << 0 << -12;
 
     // test with column capacity offset
     m_SecondaryIntMatrix = m_PrimaryIntMatrix;
     m_SecondaryIntMatrix.resize(4, 3, 4, 5);
 
-    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.constZBegin() << 0 << 1;
-    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.constZBegin() << 1 << -2;
-    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.constZBegin() << 5 << -6;
-    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.constZBegin() << 10 << 11;
-    QTest::newRow("{begin iterator}") << m_SecondaryIntMatrix.constZBegin() << 11 << -12;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << -1 << 1;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << 0 << -2;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << 4 << -6;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << 9 << 11;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << 10 << -12;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(1, 2) << -5 << 1;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(1, 2) << -4 << -2;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(1, 2) << 0 << -6;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(1, 2) << 5 << 11;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(1, 2) << 6 << -12;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(3, 1) << -10 << 1;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(3, 1) << -9 << -2;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(3, 1) << -5 << -6;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(3, 1) << 0 << 11;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(3, 1) << 1 << -12;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(3, 2) << -11 << 1;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(3, 2) << -10 << -2;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(3, 2) << -6 << -6;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(3, 2) << -1 << 11;
-    QTest::newRow("{random iterator}") << m_SecondaryIntMatrix.getConstZIterator(3, 2) << 0 << -12;
+    QTest::newRow("26: begin iterator") << m_SecondaryIntMatrix.constZBegin() << 0 << 1;
+    QTest::newRow("27: begin iterator") << m_SecondaryIntMatrix.constZBegin() << 1 << -2;
+    QTest::newRow("28: begin iterator") << m_SecondaryIntMatrix.constZBegin() << 5 << -6;
+    QTest::newRow("29: begin iterator") << m_SecondaryIntMatrix.constZBegin() << 10 << 11;
+    QTest::newRow("30: begin iterator") << m_SecondaryIntMatrix.constZBegin() << 11 << -12;
+    QTest::newRow("31: random iterator") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << -1 << 1;
+    QTest::newRow("32: random iterator") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << 0 << -2;
+    QTest::newRow("33: random iterator") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << 4 << -6;
+    QTest::newRow("34: random iterator") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << 9 << 11;
+    QTest::newRow("35: random iterator") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << 10 << -12;
+    QTest::newRow("36: random iterator") << m_SecondaryIntMatrix.getConstZIterator(1, 2) << -5 << 1;
+    QTest::newRow("37: random iterator") << m_SecondaryIntMatrix.getConstZIterator(1, 2) << -4 << -2;
+    QTest::newRow("38: random iterator") << m_SecondaryIntMatrix.getConstZIterator(1, 2) << 0 << -6;
+    QTest::newRow("39: random iterator") << m_SecondaryIntMatrix.getConstZIterator(1, 2) << 5 << 11;
+    QTest::newRow("40: random iterator") << m_SecondaryIntMatrix.getConstZIterator(1, 2) << 6 << -12;
+    QTest::newRow("41: random iterator") << m_SecondaryIntMatrix.getConstZIterator(3, 1) << -10 << 1;
+    QTest::newRow("42: random iterator") << m_SecondaryIntMatrix.getConstZIterator(3, 1) << -9 << -2;
+    QTest::newRow("43: random iterator") << m_SecondaryIntMatrix.getConstZIterator(3, 1) << -5 << -6;
+    QTest::newRow("44: random iterator") << m_SecondaryIntMatrix.getConstZIterator(3, 1) << 0 << 11;
+    QTest::newRow("45: random iterator") << m_SecondaryIntMatrix.getConstZIterator(3, 1) << 1 << -12;
+    QTest::newRow("46: random iterator") << m_SecondaryIntMatrix.getConstZIterator(3, 2) << -11 << 1;
+    QTest::newRow("47: random iterator") << m_SecondaryIntMatrix.getConstZIterator(3, 2) << -10 << -2;
+    QTest::newRow("48: random iterator") << m_SecondaryIntMatrix.getConstZIterator(3, 2) << -6 << -6;
+    QTest::newRow("49: random iterator") << m_SecondaryIntMatrix.getConstZIterator(3, 2) << -1 << 11;
+    QTest::newRow("50: random iterator") << m_SecondaryIntMatrix.getConstZIterator(3, 2) << 0 << -12;
 }
 
 void ConstZIteratorTests::testStdCount_data()
@@ -905,32 +905,32 @@ void ConstZIteratorTests::testStdCount_data()
     QTest::addColumn<int>("countedValue");
     QTest::addColumn<IntMatrixDiffType>("expectedCount");
 
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << 2 << 3;
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << -5 << 0;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(1, 4) << 1 << 1;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(2, 0) << 1 << 2;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 3) << m_PrimaryIntMatrix.getConstZIterator(1, 4) << 1 << 1;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 3) << m_PrimaryIntMatrix.getConstZIterator(2, 0) << 1 << 2;
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(2, 3) << 2 << 2;
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(2, 3) << m_PrimaryIntMatrix.constZEnd() << 2 << 1;
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(2, 2) << 2 << 1;
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(2, 2) << m_PrimaryIntMatrix.constZEnd() << 2 << 2;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(2) << m_PrimaryIntMatrix.getConstZIterator(9) << 1 << 1;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(2) << m_PrimaryIntMatrix.getConstZIterator(10) << 1 << 2;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3) << m_PrimaryIntMatrix.getConstZIterator(9) << 1 << 1;
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(3) << m_PrimaryIntMatrix.getConstZIterator(10) << 1 << 2;
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(13) << 2 << 2;
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(13) << m_PrimaryIntMatrix.constZEnd() << 2 << 1;
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(12) << 2 << 1;
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(12) << m_PrimaryIntMatrix.constZEnd() << 2 << 2;
-    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 1 << 1;
-    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(2) << 8 << 2;
-    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(2) << m_PrimaryIntMatrix.constZRowEnd(2) << 9 << 1;
-    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(2) << m_PrimaryIntMatrix.constZRowEnd(3) << 9 << 2;
-    QTest::newRow("{begin iterator, row begin iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowBegin(1) << 1 << 2;
-    QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 1 << 1;
-    QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 1 << 3;
-    QTest::newRow("{row end iterator, end iterator}") << m_PrimaryIntMatrix.constZRowEnd(1) << m_PrimaryIntMatrix.constZEnd() << 1 << 0;
+    QTest::newRow("1: begin iterator, end iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << 2 << 3;
+    QTest::newRow("2: begin iterator, end iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << -5 << 0;
+    QTest::newRow("3: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(1, 4) << 1 << 1;
+    QTest::newRow("4: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(2, 0) << 1 << 2;
+    QTest::newRow("5: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 3) << m_PrimaryIntMatrix.getConstZIterator(1, 4) << 1 << 1;
+    QTest::newRow("6: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 3) << m_PrimaryIntMatrix.getConstZIterator(2, 0) << 1 << 2;
+    QTest::newRow("7: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(2, 3) << 2 << 2;
+    QTest::newRow("8: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(2, 3) << m_PrimaryIntMatrix.constZEnd() << 2 << 1;
+    QTest::newRow("9: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(2, 2) << 2 << 1;
+    QTest::newRow("10: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(2, 2) << m_PrimaryIntMatrix.constZEnd() << 2 << 2;
+    QTest::newRow("11: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(2) << m_PrimaryIntMatrix.getConstZIterator(9) << 1 << 1;
+    QTest::newRow("12: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(2) << m_PrimaryIntMatrix.getConstZIterator(10) << 1 << 2;
+    QTest::newRow("13: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(3) << m_PrimaryIntMatrix.getConstZIterator(9) << 1 << 1;
+    QTest::newRow("14: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(3) << m_PrimaryIntMatrix.getConstZIterator(10) << 1 << 2;
+    QTest::newRow("15: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(13) << 2 << 2;
+    QTest::newRow("16: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(13) << m_PrimaryIntMatrix.constZEnd() << 2 << 1;
+    QTest::newRow("17: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(12) << 2 << 1;
+    QTest::newRow("18: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(12) << m_PrimaryIntMatrix.constZEnd() << 2 << 2;
+    QTest::newRow("19: row begin iterator, row end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 1 << 1;
+    QTest::newRow("20: row begin iterator, row end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(2) << 8 << 2;
+    QTest::newRow("21: row begin iterator, row end iterator") << m_PrimaryIntMatrix.constZRowBegin(2) << m_PrimaryIntMatrix.constZRowEnd(2) << 9 << 1;
+    QTest::newRow("22: row begin iterator, row end iterator") << m_PrimaryIntMatrix.constZRowBegin(2) << m_PrimaryIntMatrix.constZRowEnd(3) << 9 << 2;
+    QTest::newRow("23: begin iterator, row begin iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowBegin(1) << 1 << 2;
+    QTest::newRow("24: row begin iterator, end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 1 << 1;
+    QTest::newRow("25: begin iterator, row end iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 1 << 3;
+    QTest::newRow("26: row end iterator, end iterator") << m_PrimaryIntMatrix.constZRowEnd(1) << m_PrimaryIntMatrix.constZEnd() << 1 << 0;
 }
 
 void ConstZIteratorTests::testStdFind_data()
@@ -947,40 +947,40 @@ void ConstZIteratorTests::testStdFind_data()
     QTest::addColumn<int>("searchedValue");
     QTest::addColumn<IntMatrixConstZIterator>("expectedIterator");
 
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << 5 << m_PrimaryIntMatrix.constZRowBegin(1);
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << 10 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 5 << m_PrimaryIntMatrix.constZRowBegin(1);
-    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 6 << m_PrimaryIntMatrix.getConstZIterator(1, 4);
-    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 8 << m_PrimaryIntMatrix.getConstZIterator(1, 2);
-    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << -1 << m_PrimaryIntMatrix.constZRowEnd(1);
-    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << -2 << m_PrimaryIntMatrix.constZRowEnd(1);
-    QTest::newRow("{row begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 10 << m_PrimaryIntMatrix.constZRowEnd(1);
-    QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 5 << m_PrimaryIntMatrix.constZRowBegin(1);
-    QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 11 << m_PrimaryIntMatrix.getConstZIterator(19);
-    QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << -2 << m_PrimaryIntMatrix.getConstZIterator(2, 1);
-    QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << -1 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{row begin iterator, end iterator}") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 10 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << -1 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 6 << m_PrimaryIntMatrix.getConstZIterator(9);
-    QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 8 << m_PrimaryIntMatrix.getConstZIterator(1, 2);
-    QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << -2 << m_PrimaryIntMatrix.constZRowEnd(1);
-    QTest::newRow("{begin iterator, row end iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 10 << m_PrimaryIntMatrix.constZRowEnd(1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 0 << m_PrimaryIntMatrix.getConstZIterator(1, 3);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -7 << m_PrimaryIntMatrix.getConstZIterator(3, 0);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -2 << m_PrimaryIntMatrix.getConstZIterator(2, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -1 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 11 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 10 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << 0 << m_PrimaryIntMatrix.getConstZIterator(1, 3);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << 11 << m_PrimaryIntMatrix.getConstZIterator(19);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << -2 << m_PrimaryIntMatrix.getConstZIterator(2, 1);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << -1 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << 10 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -1 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -7 << m_PrimaryIntMatrix.getConstZIterator(3, 0);
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -2 << m_PrimaryIntMatrix.getConstZIterator(2, 1);
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 11 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 10 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
+    QTest::newRow("1: begin iterator, end iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << 5 << m_PrimaryIntMatrix.constZRowBegin(1);
+    QTest::newRow("2: begin iterator, end iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZEnd() << 10 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("3: row begin iterator, row end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 5 << m_PrimaryIntMatrix.constZRowBegin(1);
+    QTest::newRow("4: row begin iterator, row end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 6 << m_PrimaryIntMatrix.getConstZIterator(1, 4);
+    QTest::newRow("5: row begin iterator, row end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 8 << m_PrimaryIntMatrix.getConstZIterator(1, 2);
+    QTest::newRow("6: row begin iterator, row end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << -1 << m_PrimaryIntMatrix.constZRowEnd(1);
+    QTest::newRow("7: row begin iterator, row end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << -2 << m_PrimaryIntMatrix.constZRowEnd(1);
+    QTest::newRow("8: row begin iterator, row end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZRowEnd(1) << 10 << m_PrimaryIntMatrix.constZRowEnd(1);
+    QTest::newRow("9: row begin iterator, end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 5 << m_PrimaryIntMatrix.constZRowBegin(1);
+    QTest::newRow("10: row begin iterator, end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 11 << m_PrimaryIntMatrix.getConstZIterator(19);
+    QTest::newRow("11: row begin iterator, end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << -2 << m_PrimaryIntMatrix.getConstZIterator(2, 1);
+    QTest::newRow("12: row begin iterator, end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << -1 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("13: row begin iterator, end iterator") << m_PrimaryIntMatrix.constZRowBegin(1) << m_PrimaryIntMatrix.constZEnd() << 10 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("14: begin iterator, row end iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << -1 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("15: begin iterator, row end iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 6 << m_PrimaryIntMatrix.getConstZIterator(9);
+    QTest::newRow("16: begin iterator, row end iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 8 << m_PrimaryIntMatrix.getConstZIterator(1, 2);
+    QTest::newRow("17: begin iterator, row end iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << -2 << m_PrimaryIntMatrix.constZRowEnd(1);
+    QTest::newRow("18: begin iterator, row end iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZRowEnd(1) << 10 << m_PrimaryIntMatrix.constZRowEnd(1);
+    QTest::newRow("19: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 0 << m_PrimaryIntMatrix.getConstZIterator(1, 3);
+    QTest::newRow("20: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -7 << m_PrimaryIntMatrix.getConstZIterator(3, 0);
+    QTest::newRow("21: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -2 << m_PrimaryIntMatrix.getConstZIterator(2, 1);
+    QTest::newRow("22: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -1 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
+    QTest::newRow("23: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 11 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
+    QTest::newRow("24: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 10 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
+    QTest::newRow("25: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << 0 << m_PrimaryIntMatrix.getConstZIterator(1, 3);
+    QTest::newRow("26: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << 11 << m_PrimaryIntMatrix.getConstZIterator(19);
+    QTest::newRow("27: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << -2 << m_PrimaryIntMatrix.getConstZIterator(2, 1);
+    QTest::newRow("28: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << -1 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("29: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(1, 3) << m_PrimaryIntMatrix.constZEnd() << 10 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("30: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -1 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("31: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -7 << m_PrimaryIntMatrix.getConstZIterator(3, 0);
+    QTest::newRow("32: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << -2 << m_PrimaryIntMatrix.getConstZIterator(2, 1);
+    QTest::newRow("33: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 11 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
+    QTest::newRow("34: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(3, 1) << 10 << m_PrimaryIntMatrix.getConstZIterator(3, 1);
 }
 
 void ConstZIteratorTests::_buildLessThanOperatorTestingTable()
@@ -990,12 +990,12 @@ void ConstZIteratorTests::_buildLessThanOperatorTestingTable()
     QTest::addColumn<IntMatrixConstZIterator>("firstIterator");
     QTest::addColumn<IntMatrixConstZIterator>("secondIterator");
 
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 2);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("1: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("2: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 2);
+    QTest::newRow("3: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("4: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("5: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("6: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZEnd();
 }
 
 void ConstZIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
@@ -1006,21 +1006,21 @@ void ConstZIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
     QTest::addColumn<IntMatrixConstZIterator>("firstIterator");
     QTest::addColumn<IntMatrixConstZIterator>("secondIterator");
 
-    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 2);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(0, 2);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.constZEnd();
-    QTest::newRow("{end iterator, begin iterator}") << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.constZBegin();
+    QTest::newRow("1: begin iterator, begin iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("2: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("3: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("4: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 2);
+    QTest::newRow("5: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(0, 2);
+    QTest::newRow("6: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("7: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("8: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("9: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("10: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("11: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("12: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("13: end iterator, end iterator") << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("14: begin iterator, end iterator") << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("15: end iterator, begin iterator") << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.constZBegin();
 }
 
 void ConstZIteratorTests::_buildIncrementOperatorTestingTable()
@@ -1030,16 +1030,16 @@ void ConstZIteratorTests::_buildIncrementOperatorTestingTable()
     QTest::addColumn<IntMatrixConstZIterator>("inputIterator");
     QTest::addColumn<IntMatrixConstZIterator>("expectedIterator");
 
-    QTest::newRow("{begin iterator, random iterator}")  << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 2);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(4, 6) << m_PrimaryIntMatrix.getConstZIterator(4, 7);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(4, 7) << m_PrimaryIntMatrix.getConstZIterator(5, 0);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 0) << m_PrimaryIntMatrix.getConstZIterator(5, 1);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 1) << m_PrimaryIntMatrix.getConstZIterator(5, 2);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(5, 5);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{random iterator, end iterator}")  << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{end iterator, end iterator}")  << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("1: begin iterator, random iterator")  << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("2: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.getConstZIterator(0, 2);
+    QTest::newRow("3: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(4, 6) << m_PrimaryIntMatrix.getConstZIterator(4, 7);
+    QTest::newRow("4: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(4, 7) << m_PrimaryIntMatrix.getConstZIterator(5, 0);
+    QTest::newRow("5: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(5, 0) << m_PrimaryIntMatrix.getConstZIterator(5, 1);
+    QTest::newRow("6: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(5, 1) << m_PrimaryIntMatrix.getConstZIterator(5, 2);
+    QTest::newRow("7: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(5, 4) << m_PrimaryIntMatrix.getConstZIterator(5, 5);
+    QTest::newRow("8: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(8, 6) << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("9: random iterator, end iterator")  << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("10: end iterator, end iterator")  << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.constZEnd();
 }
 
 void ConstZIteratorTests::_buildDecrementOperatorTestingTable()
@@ -1049,16 +1049,16 @@ void ConstZIteratorTests::_buildDecrementOperatorTestingTable()
     QTest::addColumn<IntMatrixConstZIterator>("inputIterator");
     QTest::addColumn<IntMatrixConstZIterator>("expectedIterator");
 
-    QTest::newRow("{end iterator, random iterator}")  << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 5) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 1);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 1) << m_PrimaryIntMatrix.getConstZIterator(5, 0);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(5, 0) << m_PrimaryIntMatrix.getConstZIterator(4, 7);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(4, 7) << m_PrimaryIntMatrix.getConstZIterator(4, 6);
-    QTest::newRow("{random iterator, random iterator}")  << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{random iterator, begin iterator}")  << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{begin iterator, begin iterator}")  << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("1: end iterator, random iterator")  << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("2: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(8, 7) << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("3: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(5, 5) << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("4: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(5, 2) << m_PrimaryIntMatrix.getConstZIterator(5, 1);
+    QTest::newRow("5: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(5, 1) << m_PrimaryIntMatrix.getConstZIterator(5, 0);
+    QTest::newRow("6: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(5, 0) << m_PrimaryIntMatrix.getConstZIterator(4, 7);
+    QTest::newRow("7: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(4, 7) << m_PrimaryIntMatrix.getConstZIterator(4, 6);
+    QTest::newRow("8: random iterator, random iterator")  << m_PrimaryIntMatrix.getConstZIterator(0, 2) << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("9: random iterator, begin iterator")  << m_PrimaryIntMatrix.getConstZIterator(0, 1) << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("10: begin iterator, begin iterator")  << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.constZBegin();
 }
 
 void ConstZIteratorTests::_buildOperatorPlusTestingTable()
@@ -1070,82 +1070,82 @@ void ConstZIteratorTests::_buildOperatorPlusTestingTable()
     QTest::addColumn<IntMatrixDiffType>("scalarValue");
     QTest::addColumn<IntMatrixConstZIterator>("expectedIterator");
 
-    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constZBegin() << -3 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constZBegin() << -1 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{begin iterator, begin iterator}") << m_PrimaryIntMatrix.constZBegin() << 0 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << 1 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << 4 << m_PrimaryIntMatrix.getConstZIterator(0, 4);
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << 10 << m_PrimaryIntMatrix.getConstZIterator(1, 2);
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << 70 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{begin iterator, random iterator}") << m_PrimaryIntMatrix.constZBegin() << 71 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << 72 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << 73 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{begin iterator, end iterator}") << m_PrimaryIntMatrix.constZBegin() << 75 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -4 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -2 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -1 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 0 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 3 << m_PrimaryIntMatrix.getConstZIterator(0, 4);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 9 << m_PrimaryIntMatrix.getConstZIterator(1, 2);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 69 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 70 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 71 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 72 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 74 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -47 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -45 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -44 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -43 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -6 << m_PrimaryIntMatrix.getConstZIterator(4, 6);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -2 << m_PrimaryIntMatrix.getConstZIterator(5, 2);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) <<  0 << m_PrimaryIntMatrix.getConstZIterator(5, 4);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) <<  2 << m_PrimaryIntMatrix.getConstZIterator(5, 6);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 6 << m_PrimaryIntMatrix.getConstZIterator(6, 2);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 26 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 27 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 28 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 29 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 31 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -73 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -71 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -70 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -69 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -24 << m_PrimaryIntMatrix.getConstZIterator(5, 6);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -3 << m_PrimaryIntMatrix.getConstZIterator(8, 3);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 0 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 1 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 2 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 3 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 5 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -74 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -72 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator, begin iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -71 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -70 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -25 << m_PrimaryIntMatrix.getConstZIterator(5, 6);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -4 << m_PrimaryIntMatrix.getConstZIterator(8, 3);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -1 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{random iterator, random iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 0 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 1 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 2 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{random iterator, end iterator}") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 4 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{end iterator, begin iterator}") << m_PrimaryIntMatrix.constZEnd() << -75 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{end iterator, begin iterator}") << m_PrimaryIntMatrix.constZEnd() << -73 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{end iterator, begin iterator}") << m_PrimaryIntMatrix.constZEnd() << -72 << m_PrimaryIntMatrix.constZBegin();
-    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << -71 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
-    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << -26 << m_PrimaryIntMatrix.getConstZIterator(5, 6);
-    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << -5 << m_PrimaryIntMatrix.getConstZIterator(8, 3);
-    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << -2 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
-    QTest::newRow("{end iterator, random iterator}") << m_PrimaryIntMatrix.constZEnd() << -1 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
-    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constZEnd() << 0 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constZEnd() << 1 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{end iterator, end iterator}") << m_PrimaryIntMatrix.constZEnd() << 3 << m_PrimaryIntMatrix.constZEnd();
-    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZBegin() << -1 << m_SecondaryIntMatrix.constZEnd();
-    QTest::newRow("{begin iterator, end iterator}") << m_SecondaryIntMatrix.constZBegin() << 1 << m_SecondaryIntMatrix.constZEnd();
-    QTest::newRow("{end iterator, end iterator}") << m_SecondaryIntMatrix.constZEnd() << 0 << m_SecondaryIntMatrix.constZEnd();
-    QTest::newRow("{end iterator, end iterator}") << m_SecondaryIntMatrix.constZEnd() << 1 << m_SecondaryIntMatrix.constZEnd();
-    QTest::newRow("{end iterator, end iterator}") << m_SecondaryIntMatrix.constZEnd() << -1 << m_SecondaryIntMatrix.constZEnd();
-    QTest::newRow("{empty iterator, empty iterator}") << IntMatrixConstZIterator{} << -1 << IntMatrixConstZIterator{};
-    QTest::newRow("{empty iterator, empty iterator}") << IntMatrixConstZIterator{} << 1 << IntMatrixConstZIterator{};
+    QTest::newRow("1: begin iterator, begin iterator") << m_PrimaryIntMatrix.constZBegin() << -3 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("2: begin iterator, begin iterator") << m_PrimaryIntMatrix.constZBegin() << -1 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("3: begin iterator, begin iterator") << m_PrimaryIntMatrix.constZBegin() << 0 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("4: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << 1 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("5: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << 4 << m_PrimaryIntMatrix.getConstZIterator(0, 4);
+    QTest::newRow("6: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << 10 << m_PrimaryIntMatrix.getConstZIterator(1, 2);
+    QTest::newRow("7: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << 70 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("8: begin iterator, random iterator") << m_PrimaryIntMatrix.constZBegin() << 71 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("9: begin iterator, end iterator") << m_PrimaryIntMatrix.constZBegin() << 72 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("10: begin iterator, end iterator") << m_PrimaryIntMatrix.constZBegin() << 73 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("11: begin iterator, end iterator") << m_PrimaryIntMatrix.constZBegin() << 75 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("12: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -4 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("13: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -2 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("14: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << -1 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("15: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 0 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("16: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 3 << m_PrimaryIntMatrix.getConstZIterator(0, 4);
+    QTest::newRow("17: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 9 << m_PrimaryIntMatrix.getConstZIterator(1, 2);
+    QTest::newRow("18: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 69 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("19: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 70 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("20: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 71 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("21: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 72 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("22: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(0, 1) << 74 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("23: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -47 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("24: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -45 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("25: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -44 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("26: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -43 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("27: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -6 << m_PrimaryIntMatrix.getConstZIterator(4, 6);
+    QTest::newRow("28: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << -2 << m_PrimaryIntMatrix.getConstZIterator(5, 2);
+    QTest::newRow("29: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) <<  0 << m_PrimaryIntMatrix.getConstZIterator(5, 4);
+    QTest::newRow("30: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) <<  2 << m_PrimaryIntMatrix.getConstZIterator(5, 6);
+    QTest::newRow("31: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 6 << m_PrimaryIntMatrix.getConstZIterator(6, 2);
+    QTest::newRow("32: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 26 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("33: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 27 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("34: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 28 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("35: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 29 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("36: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(5, 4) << 31 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("37: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -73 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("38: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -71 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("39: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -70 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("40: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -69 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("41: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -24 << m_PrimaryIntMatrix.getConstZIterator(5, 6);
+    QTest::newRow("42: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << -3 << m_PrimaryIntMatrix.getConstZIterator(8, 3);
+    QTest::newRow("43: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 0 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("44: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 1 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("45: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 2 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("46: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 3 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("47: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 6) << 5 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("48: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -74 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("49: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -72 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("50: random iterator, begin iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -71 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("51: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -70 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("52: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -25 << m_PrimaryIntMatrix.getConstZIterator(5, 6);
+    QTest::newRow("53: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -4 << m_PrimaryIntMatrix.getConstZIterator(8, 3);
+    QTest::newRow("54: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << -1 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("55: random iterator, random iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 0 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("56: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 1 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("57: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 2 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("58: random iterator, end iterator") << m_PrimaryIntMatrix.getConstZIterator(8, 7) << 4 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("59: end iterator, begin iterator") << m_PrimaryIntMatrix.constZEnd() << -75 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("60: end iterator, begin iterator") << m_PrimaryIntMatrix.constZEnd() << -73 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("61: end iterator, begin iterator") << m_PrimaryIntMatrix.constZEnd() << -72 << m_PrimaryIntMatrix.constZBegin();
+    QTest::newRow("62: end iterator, random iterator") << m_PrimaryIntMatrix.constZEnd() << -71 << m_PrimaryIntMatrix.getConstZIterator(0, 1);
+    QTest::newRow("63: end iterator, random iterator") << m_PrimaryIntMatrix.constZEnd() << -26 << m_PrimaryIntMatrix.getConstZIterator(5, 6);
+    QTest::newRow("64: end iterator, random iterator") << m_PrimaryIntMatrix.constZEnd() << -5 << m_PrimaryIntMatrix.getConstZIterator(8, 3);
+    QTest::newRow("65: end iterator, random iterator") << m_PrimaryIntMatrix.constZEnd() << -2 << m_PrimaryIntMatrix.getConstZIterator(8, 6);
+    QTest::newRow("66: end iterator, random iterator") << m_PrimaryIntMatrix.constZEnd() << -1 << m_PrimaryIntMatrix.getConstZIterator(8, 7);
+    QTest::newRow("67: end iterator, end iterator") << m_PrimaryIntMatrix.constZEnd() << 0 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("68: end iterator, end iterator") << m_PrimaryIntMatrix.constZEnd() << 1 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("69: end iterator, end iterator") << m_PrimaryIntMatrix.constZEnd() << 3 << m_PrimaryIntMatrix.constZEnd();
+    QTest::newRow("70: begin iterator, end iterator") << m_SecondaryIntMatrix.constZBegin() << -1 << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("71: begin iterator, end iterator") << m_SecondaryIntMatrix.constZBegin() << 1 << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("72: end iterator, end iterator") << m_SecondaryIntMatrix.constZEnd() << 0 << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("73: end iterator, end iterator") << m_SecondaryIntMatrix.constZEnd() << 1 << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("74: end iterator, end iterator") << m_SecondaryIntMatrix.constZEnd() << -1 << m_SecondaryIntMatrix.constZEnd();
+    QTest::newRow("75: empty iterator, empty iterator") << IntMatrixConstZIterator{} << -1 << IntMatrixConstZIterator{};
+    QTest::newRow("76: empty iterator, empty iterator") << IntMatrixConstZIterator{} << 1 << IntMatrixConstZIterator{};
 }
 
 QTEST_APPLESS_MAIN(ConstZIteratorTests)
