@@ -11,7 +11,7 @@
                                    "Resizing failed, capacity offset of the matrix is not correct!")
 
 #define TEST_SHRINK_TO_FIT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredNrOfRows, requiredNrOfColumns, requiredNrOfRows == 0 ? -1 : 0, requiredNrOfColumns == 0 ? -1 : 0, \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredNrOfRows, requiredNrOfColumns, requiredNrOfRows == 0 ? std::nullopt : std::optional{0u}, requiredNrOfColumns == 0u ? std::nullopt : std::optional{0u}, \
                                    "Shrinking to fit failed, number of rows or columns of the matrix is not correct!", \
                                    "Shrinking to fit failed, capacity of the matrix is not correct!", \
                                    "Shrinking to fit failed, capacity offset of the matrix is not correct!")
@@ -45,7 +45,7 @@
                                    "Erase column failed, capacity offset of the matrix is not correct!")
 
 #define TEST_CLEAR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1, \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, std::nullopt, std::nullopt, \
                                    "Clear failed, number of rows or columns of the matrix is not correct!", \
                                    "Clear failed, capacity of the matrix is not correct!", \
                                    "Clear failed, capacity offset of the matrix is not correct!")
@@ -57,8 +57,8 @@
     QFETCH(matrixType, fillValue); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
     matrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, fillValue); \
@@ -74,8 +74,8 @@
     QFETCH(matrixType, fillValue); \
     QFETCH(Matrix<matrixType>::size_type, resizeRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, resizeColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
     matrix.resizeWithValue(matrix.getNrOfRows(), matrix.getNrOfColumns(), fillValue, resizeRowCapacity, resizeColumnCapacity); \
@@ -88,9 +88,9 @@
 #define TEST_MATRIX_RESIZE_CHECK_RETAINED_ELEMENT_VALUES(matrixType, matrix, expectedRetainedElementsMatrix) \
     bool areRetainedValuesCorrect{true}; \
 \
-    for(Matrix<matrixType>::size_type rowNr{0}; rowNr < expectedRetainedElementsMatrix.getNrOfRows(); ++rowNr) \
+    for(Matrix<matrixType>::size_type rowNr{0u}; rowNr < expectedRetainedElementsMatrix.getNrOfRows(); ++rowNr) \
     { \
-        for(Matrix<matrixType>::size_type columnNr{0}; columnNr < expectedRetainedElementsMatrix.getNrOfColumns(); ++columnNr) \
+        for(Matrix<matrixType>::size_type columnNr{0u}; columnNr < expectedRetainedElementsMatrix.getNrOfColumns(); ++columnNr) \
         { \
             areRetainedValuesCorrect = areRetainedValuesCorrect && (matrix.at(rowNr, columnNr) == expectedRetainedElementsMatrix.at(rowNr, columnNr)); \
         } \
@@ -114,8 +114,8 @@
     QFETCH(matrixType, insertedRowValue); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, referenceMatrix); \
  \
     matrix.insertRow(insertPosition, insertedRowValue); \
@@ -131,8 +131,8 @@
     QFETCH(matrixType, insertedColumnValue); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, referenceMatrix); \
  \
     matrix.insertColumn(insertPosition, insertedColumnValue); \
@@ -148,13 +148,13 @@
     QFETCH(matrixType, insertedRowValue); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, referenceMatrix); \
  \
     for (const auto insertPosition : insertPositions) \
     { \
-        if (insertPosition < 0 || insertPosition > matrix.getNrOfRows()) \
+        if (insertPosition > matrix.getNrOfRows()) \
         { \
             QFAIL("Insert row failed: invalid row insert position, cannot insert!"); \
         } \
@@ -173,13 +173,13 @@
     QFETCH(matrixType, insertedColumnValue); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, referenceMatrix); \
  \
     for (const auto insertPosition : insertPositions) \
     { \
-        if (insertPosition < 0 || insertPosition > matrix.getNrOfColumns()) \
+        if (insertPosition > matrix.getNrOfColumns()) \
         { \
             QFAIL("Insert column failed: invalid column insert position, cannot insert!"); \
         } \
@@ -197,8 +197,8 @@
     QFETCH(Matrix<matrixType>::size_type, erasePosition); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
     matrix.eraseRow(erasePosition); \
@@ -213,13 +213,13 @@
     QFETCH(std::vector<Matrix<matrixType>::size_type>, erasePositions); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
     for (const auto erasePosition : erasePositions) \
     { \
-        if (erasePosition < 0 || erasePosition >= matrix.getNrOfRows()) \
+        if (erasePosition >= matrix.getNrOfRows()) \
         { \
             QFAIL("Erase row failed: invalid row number, cannot erase!"); \
         } \
@@ -237,8 +237,8 @@
     QFETCH(Matrix<matrixType>::size_type, erasePosition); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
     matrix.eraseColumn(erasePosition); \
@@ -253,13 +253,13 @@
     QFETCH(std::vector<Matrix<matrixType>::size_type>, erasePositions); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
     for (const auto erasePosition : erasePositions) \
     { \
-        if (erasePosition < 0 || erasePosition >= matrix.getNrOfColumns()) \
+        if (erasePosition >= matrix.getNrOfColumns()) \
         { \
             QFAIL("Erase column failed: invalid column number, cannot erase!"); \
         } \

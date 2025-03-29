@@ -160,7 +160,7 @@ void OtherFunctionalityTests::testIntMatrixGetBaseArray()
 {
     mPrimaryIntMatrix = {};
 
-    int nrOfElements;
+    IntMatrixSizeType nrOfElements;
     int* baseArrayPtr{static_cast<int*>(mPrimaryIntMatrix.getBaseArray(nrOfElements))};
 
     if (baseArrayPtr || nrOfElements != 0)
@@ -334,7 +334,7 @@ void OtherFunctionalityTests::testStringMatrixGetBaseArray()
 {
     mPrimaryStringMatrix = {};
 
-    int nrOfElements;
+    StringMatrixSizeType nrOfElements;
     std::string* baseArrayPtr{static_cast<std::string*>(mPrimaryStringMatrix.getBaseArray(nrOfElements))};
 
     if (baseArrayPtr || nrOfElements != 0)

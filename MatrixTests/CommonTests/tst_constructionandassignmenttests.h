@@ -4,7 +4,7 @@
 #include "testutils.h"
 
 #define TEST_DEFAULT_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1, \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0u, 0u, 0u, 0u, std::nullopt, std::nullopt, \
                                    "Default constructor initialized matrix with wrong number of rows and columns!", \
                                    "Default constructor initialized matrix with wrong capacity!", \
                                    "Default constructor initialized matrix with wrong capacity offset!")
@@ -45,7 +45,7 @@
                                    "Move constructor initialized matrix with wrong capacity offset!")
 
 #define TEST_MOVE_CONSTRUCTOR_CHECK_SRC_MATRIX_SIZE_AND_CAPACITY(matrix) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1, \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0u, 0u, 0u, 0u, std::nullopt, std::nullopt, \
                                    "Move constructor set the wrong number of rows and columns to the source matrix!", \
                                    "Move constructor set the wrong capacity to the source matrix!", \
                                    "Move constructor set the wrong capacity offset to the source matrix!")
@@ -65,7 +65,7 @@
                                    "Move assignment failed, capacity offset of the destination matrix is not correct!")
 
 #define TEST_MOVE_ASSIGNMENT_CHECK_SRC_MATRIX_SIZE_AND_CAPACITY(matrix) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1, \
+    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0u, 0u, 0u, 0u, std::nullopt, std::nullopt, \
                                    "Move assignment failed, number of rows or columns of the source matrix is not correct!", \
                                    "Move assignment failed, capacity of the source matrix is not correct!", \
                                    "Move assignment failed, capacity offset of the source matrix is not correct!")

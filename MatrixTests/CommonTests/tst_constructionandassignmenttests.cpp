@@ -145,7 +145,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyConstructor()
         const IntMatrix srcMatrix{};
         IntMatrix destMatrix{srcMatrix};
 
-        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
+        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
     }
 }
 
@@ -237,7 +237,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
     }
 
     {
@@ -246,7 +246,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
     }
 
     {
@@ -319,7 +319,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
         matrix = matrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
     }
 
     {
@@ -434,7 +434,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
         TEST_MOVE_ASSIGNMENT_CHECK_SRC_MATRIX_SIZE_AND_CAPACITY(srcMatrix);
     }
 
@@ -444,7 +444,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
         TEST_MOVE_ASSIGNMENT_CHECK_SRC_MATRIX_SIZE_AND_CAPACITY(srcMatrix);
     }
 
@@ -498,7 +498,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
 
         matrix = std::move(matrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
     }
 
     // additional test
@@ -650,7 +650,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyConstructor()
         const StringMatrix srcMatrix{};
         StringMatrix destMatrix{srcMatrix};
 
-        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
+        TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
     }
 }
 
@@ -742,7 +742,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
     }
 
     {
@@ -751,7 +751,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         destMatrix = srcMatrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
     }
 
     {
@@ -824,7 +824,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
         matrix = matrix;
 
-        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1);
+        TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
     }
 
     {
@@ -940,7 +940,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
         TEST_MOVE_ASSIGNMENT_CHECK_SRC_MATRIX_SIZE_AND_CAPACITY(srcMatrix);
     }
 
@@ -950,7 +950,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
 
         destMatrix = std::move(srcMatrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, -1, -1);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(destMatrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
         TEST_MOVE_ASSIGNMENT_CHECK_SRC_MATRIX_SIZE_AND_CAPACITY(srcMatrix);
     }
 
@@ -1004,7 +1004,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
 
         matrix = std::move(matrix);
 
-        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, -1, -1);
+        TEST_MOVE_ASSIGNMENT_CHECK_DEST_MATRIX_SIZE_AND_CAPACITY(matrix, 0, 0, 0, 0, std::nullopt, std::nullopt);
     }
 
     // additional test

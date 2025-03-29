@@ -9,10 +9,10 @@
     QFETCH(Matrix<matrixType>::size_type, expectedSrcColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedDestRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedDestColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedSrcRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedSrcColumnCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedDestRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedDestColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSrcRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSrcColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedDestRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedDestColumnCapacityOffset); \
     QFETCH(bool, isTransposedToItself); \
  \
     primaryMatrix = initialSrcMatrix; \
@@ -53,8 +53,8 @@
     QFETCH(ConcatMode, mode); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedDestMatrix); \
 \
     switch(mode) \
@@ -97,8 +97,8 @@
     QFETCH(ConcatMode, mode); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedDestMatrix); \
 \
     switch(mode) \
@@ -144,10 +144,10 @@
     QFETCH(Matrix<matrixType>::size_type, expectedFirstDestColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedSecondDestRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedSecondDestColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedFirstDestRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedFirstDestColumnCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedSecondDestRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedSecondDestColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedFirstDestRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedFirstDestColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSecondDestRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSecondDestColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedFirstDestMatrix); \
     QFETCH(Matrix<matrixType>, expectedSecondDestMatrix); \
  \
@@ -201,10 +201,10 @@
     QFETCH(Matrix<matrixType>::size_type, expectedFirstDestColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedSecondDestRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedSecondDestColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedFirstDestRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedFirstDestColumnCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedSecondDestRowCapacityOffset); \
-    QFETCH(Matrix<matrixType>::size_type, expectedSecondDestColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedFirstDestRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedFirstDestColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSecondDestRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSecondDestColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedFirstDestMatrix); \
     QFETCH(Matrix<matrixType>, expectedSecondDestMatrix); \
  \

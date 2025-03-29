@@ -25,10 +25,13 @@ using IntMatrixConstMIterator = Matrix<int>::ConstMIterator;
 using IntMatrixReverseMIterator = Matrix<int>::ReverseMIterator;
 using IntMatrixConstReverseMIterator = Matrix<int>::ConstReverseMIterator;
 
+// TODO: create a unified MatrixSizeType alias (size type does not depend on the template type of the matrix); same for similar typedefs
 using IntMatrixSizeType = IntMatrix::size_type;
+using IntMatrixOptSizeType = std::optional<IntMatrixSizeType>;
 using IntMatrixDiffType = IntMatrix::diff_type;
-using FiveSizeTypesTuple = std::tuple<IntMatrixSizeType, IntMatrixSizeType, IntMatrixSizeType, IntMatrixSizeType, IntMatrixSizeType>; // can be any matrix size_type, does not depend on matrix data type
-using FiveSizeTypesTupleArray = std::vector<FiveSizeTypesTuple>;
+
+using SizeTypeTuple = std::tuple<IntMatrixSizeType, IntMatrixSizeType, IntMatrixSizeType, IntMatrixOptSizeType, IntMatrixOptSizeType>; // can be any matrix size_type, does not depend on matrix data type
+using SizeTypeTupleArray = std::vector<SizeTypeTuple>;
 
 using StringMatrix = Matrix<std::string>;
 
@@ -50,6 +53,7 @@ using StringMatrixReverseMIterator = Matrix<std::string>::ReverseMIterator;
 using StringMatrixConstReverseMIterator = Matrix<std::string>::ConstReverseMIterator;
 
 using StringMatrixSizeType = StringMatrix::size_type;
+using StringMatrixOptSizeType = std::optional<StringMatrixSizeType>;
 using StringMatrixDiffType = StringMatrix::diff_type;
 
 using DecMatrix = Matrix<double>;
@@ -97,9 +101,9 @@ enum class SplitMode : unsigned short
     }
 
 #define CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(matrix, elementValue, errorMessage) \
-    for (int rowNr{0}; rowNr < matrix.getNrOfRows(); ++rowNr) \
+    for (int rowNr{0u}; rowNr < matrix.getNrOfRows(); ++rowNr) \
     { \
-        for (int columnNr{0}; columnNr < matrix.getNrOfColumns(); ++columnNr) \
+        for (int columnNr{0u}; columnNr < matrix.getNrOfColumns(); ++columnNr) \
         { \
             if (matrix.at(rowNr, columnNr) != elementValue) \
             { \
@@ -110,9 +114,9 @@ enum class SplitMode : unsigned short
     }
 
 #define CHECK_MATRIX_IS_DIAGONAL_WITH_CORRECT_ELEMENT_VALUES(matrix, nonDiagElementValue, diagElementValue, errorMessage) \
-    for (StringMatrix::size_type rowNr{0}; rowNr < matrix.getNrOfRows(); ++rowNr) \
+    for (StringMatrix::size_type rowNr{0u}; rowNr < matrix.getNrOfRows(); ++rowNr) \
     { \
-        for (StringMatrix::size_type columnNr{0}; columnNr < matrix.getNrOfColumns(); ++columnNr) \
+        for (StringMatrix::size_type columnNr{0u}; columnNr < matrix.getNrOfColumns(); ++columnNr) \
         { \
             if ((rowNr != columnNr && matrix.at(rowNr, columnNr) != nonDiagElementValue) || (rowNr == columnNr && matrix.at(rowNr, columnNr) != diagElementValue)) \
             { \

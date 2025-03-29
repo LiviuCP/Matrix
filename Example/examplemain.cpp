@@ -75,7 +75,17 @@ int main()
 
     for (IntMatrix::ZIterator it{matrix.zRowBegin(rowPositionToInsert)}; it != matrix.zRowEnd(rowPositionToInsert); ++it)
     {
-        *it = columnSubtotalsMatrix.at(0, static_cast<size_t>(it.getColumnNr()));
+        const auto columnNr = it.getColumnNr();
+
+        if (columnNr.has_value())
+        {
+            *it = columnSubtotalsMatrix.at(0, *columnNr);
+        }
+        else
+        {
+            assert(false);
+            break;
+        }
     }
 
     cout << "After inserting the subtotals on row " << rowPositionToInsert + 1 << " the final matrix is: " << endl;
