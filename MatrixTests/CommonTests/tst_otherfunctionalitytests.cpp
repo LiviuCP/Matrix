@@ -159,8 +159,8 @@ void OtherFunctionalityTests::testIntMatrixSquareBracketsOperator()
 void OtherFunctionalityTests::testIntMatrixGetBaseArray()
 {
     mPrimaryIntMatrix = {};
-
-    IntMatrixSizeType nrOfElements;
+    
+    matrix_size_t nrOfElements;
     int* baseArrayPtr{static_cast<int*>(mPrimaryIntMatrix.getBaseArray(nrOfElements))};
 
     if (baseArrayPtr || nrOfElements != 0)
@@ -334,7 +334,7 @@ void OtherFunctionalityTests::testStringMatrixGetBaseArray()
 {
     mPrimaryStringMatrix = {};
 
-    StringMatrixSizeType nrOfElements;
+    matrix_size_t nrOfElements;
     std::string* baseArrayPtr{static_cast<std::string*>(mPrimaryStringMatrix.getBaseArray(nrOfElements))};
 
     if (baseArrayPtr || nrOfElements != 0)

@@ -81,8 +81,8 @@ void CommonExceptionTests::testInitListConstructorExceptions()
 
 void CommonExceptionTests::testIdenticalMatrixConstructorExceptions()
 {
-    QFETCH(IntMatrixSizeType, rowsCount);
-    QFETCH(IntMatrixSizeType, columnsCount);
+    QFETCH(matrix_size_t, rowsCount);
+    QFETCH(matrix_size_t, columnsCount);
     QFETCH(int, elementValue);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(rowsCount, columnsCount, elementValue);});
@@ -96,8 +96,8 @@ void CommonExceptionTests::testDiagMatrixConstructorExceptions()
 void CommonExceptionTests::testFunctionAtExceptions()
 {
     QFETCH(IntMatrix, srcMatrix);
-    QFETCH(IntMatrixSizeType, rowNr);
-    QFETCH(IntMatrixSizeType, columnNr);
+    QFETCH(matrix_size_t, rowNr);
+    QFETCH(matrix_size_t, columnNr);
     QFETCH(int, value);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix{srcMatrix}; matrix.at(rowNr, columnNr) = value;});
@@ -110,7 +110,7 @@ void CommonExceptionTests::testFunctionAtExceptions()
 void CommonExceptionTests::testSquareBracketsOperatorExceptions()
 {
     QFETCH(IntMatrix, srcMatrix);
-    QFETCH(IntMatrixSizeType, index);
+    QFETCH(matrix_size_t, index);
     QFETCH(int, value);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix{srcMatrix}; matrix[index] = value;});
@@ -122,8 +122,8 @@ void CommonExceptionTests::testSquareBracketsOperatorExceptions()
 void CommonExceptionTests::testResizeWithoutFillingInNewValuesExceptions()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, resizeRowsCount);
-    QFETCH(IntMatrixSizeType, resizeColumnsCount);
+    QFETCH(matrix_size_t, resizeRowsCount);
+    QFETCH(matrix_size_t, resizeColumnsCount);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.resize(resizeRowsCount, resizeColumnsCount);});
 }
@@ -131,8 +131,8 @@ void CommonExceptionTests::testResizeWithoutFillingInNewValuesExceptions()
 void CommonExceptionTests::testResizeAndFillInNewValuesExceptions()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, resizeRowsCount);
-    QFETCH(IntMatrixSizeType, resizeColumnsCount);
+    QFETCH(matrix_size_t, resizeRowsCount);
+    QFETCH(matrix_size_t, resizeColumnsCount);
     QFETCH(int, resizeElementValue);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue);});
@@ -141,7 +141,7 @@ void CommonExceptionTests::testResizeAndFillInNewValuesExceptions()
 void CommonExceptionTests::testInsertRowNoSetValueExceptions()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, insertPosition);
+    QFETCH(matrix_size_t, insertPosition);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.insertRow(insertPosition);});
 }
@@ -149,7 +149,7 @@ void CommonExceptionTests::testInsertRowNoSetValueExceptions()
 void CommonExceptionTests::testInsertRowSetValueExceptions()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, insertPosition);
+    QFETCH(matrix_size_t, insertPosition);
     QFETCH(int, insertedRowValue);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.insertRow(insertPosition, insertedRowValue);});
@@ -158,7 +158,7 @@ void CommonExceptionTests::testInsertRowSetValueExceptions()
 void CommonExceptionTests::testInsertColumnNoSetValueExceptions()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, insertPosition);
+    QFETCH(matrix_size_t, insertPosition);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.insertColumn(insertPosition);});
 }
@@ -166,7 +166,7 @@ void CommonExceptionTests::testInsertColumnNoSetValueExceptions()
 void CommonExceptionTests::testInsertColumnSetValueExceptions()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, insertPosition);
+    QFETCH(matrix_size_t, insertPosition);
     QFETCH(int, insertedColumnValue);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.insertColumn(insertPosition, insertedColumnValue);});
@@ -175,7 +175,7 @@ void CommonExceptionTests::testInsertColumnSetValueExceptions()
 void CommonExceptionTests::testEraseRowExceptions()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, erasePosition);
+    QFETCH(matrix_size_t, erasePosition);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.eraseRow(erasePosition);});
 }
@@ -183,7 +183,7 @@ void CommonExceptionTests::testEraseRowExceptions()
 void CommonExceptionTests::testEraseColumnExceptions()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, erasePosition);
+    QFETCH(matrix_size_t, erasePosition);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.eraseColumn(erasePosition);});
 }
@@ -257,7 +257,7 @@ void CommonExceptionTests::testSplitByRowExceptions()
     QFETCH(IntMatrix, srcMatrix);
     QFETCH(IntMatrix, firstDestMatrix);
     QFETCH(IntMatrix, secondDestMatrix);
-    QFETCH(IntMatrixSizeType, splitPosition);
+    QFETCH(matrix_size_t, splitPosition);
     QFETCH(SplitMode, mode);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error,
@@ -290,7 +290,7 @@ void CommonExceptionTests::testSplitByColumnExceptions()
     QFETCH(IntMatrix, srcMatrix);
     QFETCH(IntMatrix, firstDestMatrix);
     QFETCH(IntMatrix, secondDestMatrix);
-    QFETCH(IntMatrixSizeType, splitPosition);
+    QFETCH(matrix_size_t, splitPosition);
     QFETCH(SplitMode, mode);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error,
@@ -321,8 +321,8 @@ void CommonExceptionTests::testSplitByColumnExceptions()
 void CommonExceptionTests::testSwapRowsOrColumnsExceptions()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(IntMatrixSizeType, firstRowColumnNr);
-    QFETCH(IntMatrixSizeType, secondRowColumnNr);
+    QFETCH(matrix_size_t, firstRowColumnNr);
+    QFETCH(matrix_size_t, secondRowColumnNr);
 
     IntMatrix transposedMatrix;
     matrix.transpose(transposedMatrix);
@@ -333,8 +333,8 @@ void CommonExceptionTests::testSwapRowsOrColumnsExceptions()
 
 void CommonExceptionTests::testIdenticalMatrixConstructorExceptions_data()
 {
-    QTest::addColumn<IntMatrixSizeType>("rowsCount");
-    QTest::addColumn<IntMatrixSizeType>("columnsCount");
+    QTest::addColumn<matrix_size_t>("rowsCount");
+    QTest::addColumn<matrix_size_t>("columnsCount");
     QTest::addColumn<int>("elementValue");
 
     QTest::newRow("1: null rows and columns count") << 0u << 0u << 5;
@@ -345,8 +345,8 @@ void CommonExceptionTests::testIdenticalMatrixConstructorExceptions_data()
 void CommonExceptionTests::testFunctionAtExceptions_data()
 {
     QTest::addColumn<IntMatrix>("srcMatrix");
-    QTest::addColumn<IntMatrixSizeType>("rowNr");
-    QTest::addColumn<IntMatrixSizeType>("columnNr");
+    QTest::addColumn<matrix_size_t>("rowNr");
+    QTest::addColumn<matrix_size_t>("columnNr");
     QTest::addColumn<int>("value");
 
     QTest::newRow("1: column number out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 1u << 3u << 0;
@@ -358,7 +358,7 @@ void CommonExceptionTests::testFunctionAtExceptions_data()
 void CommonExceptionTests::testSquareBracketsOperatorExceptions_data()
 {
     QTest::addColumn<IntMatrix>("srcMatrix");
-    QTest::addColumn<IntMatrixSizeType>("index");
+    QTest::addColumn<matrix_size_t>("index");
     QTest::addColumn<int>("value");
 
     QTest::newRow("1: index out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 6u << 0;
@@ -398,7 +398,7 @@ void CommonExceptionTests::testInsertColumnSetValueExceptions_data()
 void CommonExceptionTests::testEraseRowExceptions_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<IntMatrixSizeType>("erasePosition");
+    QTest::addColumn<matrix_size_t>("erasePosition");
 
     QTest::newRow("1: erase position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 2u;
     QTest::newRow("2: empty matrix") << IntMatrix{} << 0u;
@@ -407,7 +407,7 @@ void CommonExceptionTests::testEraseRowExceptions_data()
 void CommonExceptionTests::testEraseColumnExceptions_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<IntMatrixSizeType>("erasePosition");
+    QTest::addColumn<matrix_size_t>("erasePosition");
 
     QTest::newRow("1: erase position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3u;
     QTest::newRow("2: empty matrix") << IntMatrix{} << 0u;
@@ -446,7 +446,7 @@ void CommonExceptionTests::testSplitByRowExceptions_data()
     QTest::addColumn<IntMatrix>("srcMatrix");
     QTest::addColumn<IntMatrix>("firstDestMatrix");
     QTest::addColumn<IntMatrix>("secondDestMatrix");
-    QTest::addColumn<IntMatrixSizeType>("splitPosition");
+    QTest::addColumn<matrix_size_t>("splitPosition");
     QTest::addColumn<SplitMode>("mode");
 
     QTest::newRow("1: destination both") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 1u << SplitMode::DESTINATION_BOTH;
@@ -463,7 +463,7 @@ void CommonExceptionTests::testSplitByColumnExceptions_data()
     QTest::addColumn<IntMatrix>("srcMatrix");
     QTest::addColumn<IntMatrix>("firstDestMatrix");
     QTest::addColumn<IntMatrix>("secondDestMatrix");
-    QTest::addColumn<IntMatrixSizeType>("splitPosition");
+    QTest::addColumn<matrix_size_t>("splitPosition");
     QTest::addColumn<SplitMode>("mode");
 
     QTest::newRow("1: destination both") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << 1u << SplitMode::DESTINATION_BOTH;
@@ -478,8 +478,8 @@ void CommonExceptionTests::testSplitByColumnExceptions_data()
 void CommonExceptionTests::testSwapRowsOrColumnsExceptions_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<IntMatrixSizeType>("firstRowColumnNr");
-    QTest::addColumn<IntMatrixSizeType>("secondRowColumnNr");
+    QTest::addColumn<matrix_size_t>("firstRowColumnNr");
+    QTest::addColumn<matrix_size_t>("secondRowColumnNr");
 
     QTest::newRow("1: second out of range") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 1u << 4u;
     QTest::newRow("2: first out of range") << IntMatrix{4, 2, {7, 8, 9, 10, 11, 12, 13, 14}} << 4u << 1u;
@@ -492,8 +492,8 @@ void CommonExceptionTests::testSwapRowsOrColumnsExceptions_data()
 void CommonExceptionTests::_buildResizeExceptionsTestingTable()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<IntMatrixSizeType>("resizeRowsCount");
-    QTest::addColumn<IntMatrixSizeType>("resizeColumnsCount");
+    QTest::addColumn<matrix_size_t>("resizeRowsCount");
+    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
     QTest::addColumn<int>("resizeElementValue");
 
     QTest::newRow("1: null rows and columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 0u << 0u << 5;
@@ -507,7 +507,7 @@ void CommonExceptionTests::_buildResizeExceptionsTestingTable()
 void CommonExceptionTests::_buildInsertRowExceptionsTestingTable()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<IntMatrixSizeType>("insertPosition");
+    QTest::addColumn<matrix_size_t>("insertPosition");
     QTest::addColumn<int>("insertedRowValue");
 
     QTest::newRow("1: insert position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 3u << 5;
@@ -517,7 +517,7 @@ void CommonExceptionTests::_buildInsertRowExceptionsTestingTable()
 void CommonExceptionTests::_buildInsertColumnExceptionsTestingTable()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<IntMatrixSizeType>("insertPosition");
+    QTest::addColumn<matrix_size_t>("insertPosition");
     QTest::addColumn<int>("insertedColumnValue");
 
     QTest::newRow("1: insert position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << 4u << 5;

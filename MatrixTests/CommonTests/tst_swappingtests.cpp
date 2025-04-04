@@ -86,8 +86,8 @@ void SwappingTests::testSwapIntMatrixes_data()
 void SwappingTests::testIntMatrixSwapRows_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<IntMatrixSizeType>("firstRowNr");
-    QTest::addColumn<IntMatrixSizeType>("secondRowNr");
+    QTest::addColumn<matrix_size_t>("firstRowNr");
+    QTest::addColumn<matrix_size_t>("secondRowNr");
     QTest::addColumn<IntMatrix>("expectedMatrix");
 
     QTest::newRow("1: different rows") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0u << 2u << IntMatrix{4, 3, {7, 8, 9, 4, 5, 6, 1, 2, 3, 10, 11, 12}};
@@ -101,8 +101,8 @@ void SwappingTests::testIntMatrixSwapRows_data()
 void SwappingTests::testIntMatrixSwapColumns_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<IntMatrixSizeType>("firstColumnNr");
-    QTest::addColumn<IntMatrixSizeType>("secondColumnNr");
+    QTest::addColumn<matrix_size_t>("firstColumnNr");
+    QTest::addColumn<matrix_size_t>("secondColumnNr");
     QTest::addColumn<IntMatrix>("expectedMatrix");
 
     QTest::newRow("1: different columns") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << 0u << 2u << IntMatrix{3, 4, {3, 2, 1, 4, 7, 6, 5, 8, 11, 10, 9, 12}};
@@ -132,8 +132,8 @@ void SwappingTests::testSwapStringMatrixes_data()
 void SwappingTests::testStringMatrixSwapRows_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<StringMatrixSizeType>("firstRowNr");
-    QTest::addColumn<StringMatrixSizeType>("secondRowNr");
+    QTest::addColumn<matrix_size_t>("firstRowNr");
+    QTest::addColumn<matrix_size_t>("secondRowNr");
     QTest::addColumn<StringMatrix>("expectedMatrix");
 
     QTest::newRow("1: different rows") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 0u << 2u << StringMatrix{4, 3, {"Seventh", "Eighth", "Ninth", "Fourth", "Fifth", "Sixth", "First", "Second", "Third", "Tenth", "Eleventh", "Twelfth"}};
@@ -147,8 +147,8 @@ void SwappingTests::testStringMatrixSwapRows_data()
 void SwappingTests::testStringMatrixSwapColumns_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<StringMatrixSizeType>("firstColumnNr");
-    QTest::addColumn<StringMatrixSizeType>("secondColumnNr");
+    QTest::addColumn<matrix_size_t>("firstColumnNr");
+    QTest::addColumn<matrix_size_t>("secondColumnNr");
     QTest::addColumn<StringMatrix>("expectedMatrix");
 
     QTest::newRow("1: different columns") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << 0u << 2u << StringMatrix{3, 4, {"Third", "Second", "First", "Fourth", "Seventh", "Sixth", "Fifth", "Eighth", "Eleventh", "Tenth", "Ninth", "Twelfth"}};

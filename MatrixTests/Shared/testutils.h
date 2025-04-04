@@ -6,58 +6,51 @@
 
 #include "matrix.h"
 
+// these size typedefs are actually type independent so they can be used for any matrix type
+using matrix_size_t = Matrix<int>::size_type;
+using matrix_diff_t = Matrix<int>::diff_type;
+using matrix_opt_size_t = std::optional<matrix_size_t>;
+using size_tuple_t = std::tuple<matrix_size_t, matrix_size_t, matrix_size_t, matrix_opt_size_t, matrix_opt_size_t>;
+using size_tuple_array_t = std::vector<size_tuple_t>;
+
 using IntMatrix = Matrix<int>;
-
-using IntMatrixZIterator = Matrix<int>::ZIterator;
-using IntMatrixConstZIterator = Matrix<int>::ConstZIterator;
-using IntMatrixReverseZIterator = Matrix<int>::ReverseZIterator;
-using IntMatrixConstReverseZIterator = Matrix<int>::ConstReverseZIterator;
-using IntMatrixNIterator = Matrix<int>::NIterator;
-using IntMatrixConstNIterator = Matrix<int>::ConstNIterator;
-using IntMatrixReverseNIterator = Matrix<int>::ReverseNIterator;
-using IntMatrixConstReverseNIterator = Matrix<int>::ConstReverseNIterator;
-using IntMatrixDIterator = Matrix<int>::DIterator;
-using IntMatrixConstDIterator = Matrix<int>::ConstDIterator;
-using IntMatrixReverseDIterator = Matrix<int>::ReverseDIterator;
-using IntMatrixConstReverseDIterator = Matrix<int>::ConstReverseDIterator;
-using IntMatrixMIterator = Matrix<int>::MIterator;
-using IntMatrixConstMIterator = Matrix<int>::ConstMIterator;
-using IntMatrixReverseMIterator = Matrix<int>::ReverseMIterator;
-using IntMatrixConstReverseMIterator = Matrix<int>::ConstReverseMIterator;
-
-// TODO: create a unified MatrixSizeType alias (size type does not depend on the template type of the matrix); same for similar typedefs
-using IntMatrixSizeType = IntMatrix::size_type;
-using IntMatrixOptSizeType = std::optional<IntMatrixSizeType>;
-using IntMatrixDiffType = IntMatrix::diff_type;
-
-using SizeTypeTuple = std::tuple<IntMatrixSizeType, IntMatrixSizeType, IntMatrixSizeType, IntMatrixOptSizeType, IntMatrixOptSizeType>; // can be any matrix size_type, does not depend on matrix data type
-using SizeTypeTupleArray = std::vector<SizeTypeTuple>;
-
 using StringMatrix = Matrix<std::string>;
-
-using StringMatrixZIterator = Matrix<std::string>::ZIterator;
-using StringMatrixConstZIterator = Matrix<std::string>::ConstZIterator;
-using StringMatrixReverseZIterator = Matrix<std::string>::ReverseZIterator;
-using StringMatrixConstReverseZIterator = Matrix<std::string>::ConstReverseZIterator;
-using StringMatrixNIterator = Matrix<std::string>::NIterator;
-using StringMatrixConstNIterator = Matrix<std::string>::ConstNIterator;
-using StringMatrixReverseNIterator = Matrix<std::string>::ReverseNIterator;
-using StringMatrixConstReverseNIterator = Matrix<std::string>::ConstReverseNIterator;
-using StringMatrixDIterator = Matrix<std::string>::DIterator;
-using StringMatrixConstDIterator = Matrix<std::string>::ConstDIterator;
-using StringMatrixReverseDIterator = Matrix<std::string>::ReverseDIterator;
-using StringMatrixConstReverseDIterator = Matrix<std::string>::ConstReverseDIterator;
-using StringMatrixMIterator = Matrix<std::string>::MIterator;
-using StringMatrixConstMIterator = Matrix<std::string>::ConstMIterator;
-using StringMatrixReverseMIterator = Matrix<std::string>::ReverseMIterator;
-using StringMatrixConstReverseMIterator = Matrix<std::string>::ConstReverseMIterator;
-
-using StringMatrixSizeType = StringMatrix::size_type;
-using StringMatrixOptSizeType = std::optional<StringMatrixSizeType>;
-using StringMatrixDiffType = StringMatrix::diff_type;
-
 using DecMatrix = Matrix<double>;
 using QPointFMatrix = Matrix<QPointF>;
+
+using IntZIter = Matrix<int>::ZIterator;
+using IntConstZIter = Matrix<int>::ConstZIterator;
+using IntReverseZIter = Matrix<int>::ReverseZIterator;
+using IntConstReverseZIter = Matrix<int>::ConstReverseZIterator;
+using IntNIter = Matrix<int>::NIterator;
+using IntConstNIter = Matrix<int>::ConstNIterator;
+using IntReverseNIter = Matrix<int>::ReverseNIterator;
+using IntConstReverseNIter = Matrix<int>::ConstReverseNIterator;
+using IntDIter = Matrix<int>::DIterator;
+using IntConstDIter = Matrix<int>::ConstDIterator;
+using IntReverseDIter = Matrix<int>::ReverseDIterator;
+using IntConstReverseDIter = Matrix<int>::ConstReverseDIterator;
+using IntMIter = Matrix<int>::MIterator;
+using IntConstMIter = Matrix<int>::ConstMIterator;
+using IntReverseMIter = Matrix<int>::ReverseMIterator;
+using IntConstReverseMIter = Matrix<int>::ConstReverseMIterator;
+
+using StringZIter = Matrix<std::string>::ZIterator;
+using StringConstZIter = Matrix<std::string>::ConstZIterator;
+using StringReverseZIter = Matrix<std::string>::ReverseZIterator;
+using StringConstReverseZIter = Matrix<std::string>::ConstReverseZIterator;
+using StringNIter = Matrix<std::string>::NIterator;
+using StringConstNIter = Matrix<std::string>::ConstNIterator;
+using StringReverseNIter = Matrix<std::string>::ReverseNIterator;
+using StringConstReverseNIter = Matrix<std::string>::ConstReverseNIterator;
+using StringDIter = Matrix<std::string>::DIterator;
+using StringConstDIter = Matrix<std::string>::ConstDIterator;
+using StringReverseDIter = Matrix<std::string>::ReverseDIterator;
+using StringConstReverseDIter = Matrix<std::string>::ConstReverseDIterator;
+using StringMIter = Matrix<std::string>::MIterator;
+using StringConstMIter = Matrix<std::string>::ConstMIterator;
+using StringReverseMIter = Matrix<std::string>::ReverseMIterator;
+using StringConstReverseMIter = Matrix<std::string>::ConstReverseMIterator;
 
 // matrix concatenation
 enum class ConcatMode : unsigned short
