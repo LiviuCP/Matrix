@@ -1,7 +1,6 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <initializer_list>
 #include <utility>
 #include <memory>
 #include <algorithm>
