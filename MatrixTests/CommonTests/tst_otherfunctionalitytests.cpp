@@ -52,7 +52,7 @@ void OtherFunctionalityTests::testIntMatrixesAreNotEqual()
 */
 void OtherFunctionalityTests::testIntMatrixFunctionAt()
 {
-    mPrimaryIntMatrix = {2, 3, 5};
+    mPrimaryIntMatrix = {5, 2, 3};
 
     mPrimaryIntMatrix.at(0, 0) = 10;
     mPrimaryIntMatrix.at(0, 1) = 20;
@@ -63,7 +63,7 @@ void OtherFunctionalityTests::testIntMatrixFunctionAt()
 
     QVERIFY2(mPrimaryIntMatrix == IntMatrix(2, 3, {10, 20, 30, 40, 50, 60}), "The write at() method does not work properly, values are not correctly written!");
 
-    mPrimaryIntMatrix = {10, 10, 2};
+    mPrimaryIntMatrix = {2, 10, 10};
 
     for (IntMatrix::size_type rowColumnNr{0}; rowColumnNr < mPrimaryIntMatrix.getNrOfRows(); ++rowColumnNr)
     {
@@ -104,7 +104,7 @@ void OtherFunctionalityTests::testIntMatrixSquareBracketsOperator()
              mPrimaryIntMatrix[11] == 12, "The square brackets operator did not return the right values!");
 
 
-    mPrimaryIntMatrix = {2, 3, 5};
+    mPrimaryIntMatrix = {5, 2, 3};
 
     mPrimaryIntMatrix[0] = 70;
     mPrimaryIntMatrix[1] = 80;
@@ -115,7 +115,7 @@ void OtherFunctionalityTests::testIntMatrixSquareBracketsOperator()
 
     QVERIFY2(mPrimaryIntMatrix == IntMatrix(2, 3, {70, 80, 90, 100, 110, 120}), "The square brackets operator did not write the right values!");
 
-    mPrimaryIntMatrix = {10, 10, 2};
+    mPrimaryIntMatrix = {2, 10, 10};
     const IntMatrix::size_type nrOfRowsOrColumns{mPrimaryIntMatrix.getNrOfRows()};
 
     for (IntMatrix::size_type rowColumnNr{0}; rowColumnNr < nrOfRowsOrColumns; ++rowColumnNr)
@@ -226,7 +226,7 @@ void OtherFunctionalityTests::testStringMatrixesAreNotEqual()
 
 void OtherFunctionalityTests::testStringMatrixFunctionAt()
 {
-    mPrimaryStringMatrix = {2, 3, "Five"};
+    mPrimaryStringMatrix = {"Five", 2, 3};
 
     mPrimaryStringMatrix.at(0, 0) = "Ten";
     mPrimaryStringMatrix.at(0, 1) = "Twenty";
@@ -237,7 +237,7 @@ void OtherFunctionalityTests::testStringMatrixFunctionAt()
 
     QVERIFY2(mPrimaryStringMatrix == StringMatrix(2, 3, {"Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty"}), "The write at() method does not work properly, values are not correctly written!");
 
-    mPrimaryStringMatrix = {10, 10, "Two"};
+    mPrimaryStringMatrix = {"Two", 10, 10};
 
     for (StringMatrix::size_type rowColumnNr{0}; rowColumnNr < mPrimaryStringMatrix.getNrOfRows(); ++rowColumnNr)
     {
@@ -278,7 +278,7 @@ void OtherFunctionalityTests::testStringMatrixSquareBracketsOperator()
              mPrimaryStringMatrix[11] == "Twelfth", "The square brackets operator did not return the right values!");
 
 
-    mPrimaryStringMatrix = {2, 3, "Five"};
+    mPrimaryStringMatrix = {"Five", 2, 3};
 
     mPrimaryStringMatrix[0] = "Seventy";
     mPrimaryStringMatrix[1] = "Eighty";
@@ -289,7 +289,7 @@ void OtherFunctionalityTests::testStringMatrixSquareBracketsOperator()
 
     QVERIFY2(mPrimaryStringMatrix == StringMatrix(2, 3, {"Seventy", "Eighty", "Ninety", "OneHundred", "OneHundredAndTen", "OneHundredAndTwenty"}), "The square brackets operator did not write the right values!");
 
-    mPrimaryStringMatrix = {10, 10, "Two"};
+    mPrimaryStringMatrix = {"Two", 10, 10};
     const StringMatrix::size_type nrOfRowsOrColumns{mPrimaryStringMatrix.getNrOfRows()};
 
     for (StringMatrix::size_type rowColumnNr{0}; rowColumnNr < nrOfRowsOrColumns; ++rowColumnNr)
@@ -398,8 +398,8 @@ void OtherFunctionalityTests::testIntMatrixesAreEqual_data()
 
     QTest::newRow("1: distinct matrixes equality") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << false;
     QTest::newRow("2: equality to itself") << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << IntMatrix{2, 3, {5, 75, -5, 15, 833, -8333}} << true;
-    QTest::newRow("3: distinct matrixes equality") << IntMatrix{8, 10, -2} << IntMatrix{8, 10, -2} << false;
-    QTest::newRow("4: equality to itself") << IntMatrix{8, 10, -2} << IntMatrix{8, 10, -2} << true;
+    QTest::newRow("3: distinct matrixes equality") << IntMatrix{-2, 8, 10} << IntMatrix{-2, 8, 10} << false;
+    QTest::newRow("4: equality to itself") << IntMatrix{-2, 8, 10} << IntMatrix{-2, 8, 10} << true;
     QTest::newRow("5: distinct matrixes equality") << IntMatrix{10, {-4, 8}} << IntMatrix{10, {-4, 8}} << false;
     QTest::newRow("6: equality to itself") << IntMatrix{10, {-4, 8}} << IntMatrix{10, {-4, 8}} << true;
     QTest::newRow("7: distinct matrixes equality") << IntMatrix{} << IntMatrix{} << false;
@@ -427,8 +427,8 @@ void OtherFunctionalityTests::testStringMatrixesAreEqual_data()
 
     QTest::newRow("1: distinct matrixes equality") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << false;
     QTest::newRow("2: equality to itself") << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << StringMatrix{2, 3, {"abc", "abdc", "-abc", "Abc", "1abc", "-0.8333"}} << true;
-    QTest::newRow("3: distinct matrixes equality") << StringMatrix{8, 10, "_abc"} << StringMatrix{8, 10, "_abc"} << false;
-    QTest::newRow("4: equality to itself") << StringMatrix{8, 10, "_abc"} << StringMatrix{8, 10, "_abc"} << true;
+    QTest::newRow("3: distinct matrixes equality") << StringMatrix{"_abc", 8, 10} << StringMatrix{"_abc", 8, 10} << false;
+    QTest::newRow("4: equality to itself") << StringMatrix{"_abc", 8, 10} << StringMatrix{"_abc", 8, 10} << true;
     QTest::newRow("5: distinct matrixes equality") << StringMatrix(10, {"_abc", "Abc"}) << StringMatrix(10, {"_abc", "Abc"}) << false;
     QTest::newRow("6: equality to itself") << StringMatrix(10, {"_abc", "Abc"}) << StringMatrix(10, {"_abc", "Abc"}) << true;
     QTest::newRow("7: distinct matrixes equality") << StringMatrix{} << StringMatrix{} << false;

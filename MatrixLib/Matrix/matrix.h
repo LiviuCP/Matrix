@@ -229,7 +229,7 @@ public:
 
     Matrix();
     Matrix(size_type nrOfRows, size_type nrOfColumns, const std::vector<DataType>& vec);
-    Matrix(size_type nrOfRows, size_type nrOfColumns, const DataType& value);
+    Matrix(const DataType& value, size_type nrOfRows, size_type nrOfColumns);
     Matrix(size_type nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues);
     Matrix(const Matrix& matrix);
     Matrix(Matrix&& matrix);
@@ -2761,9 +2761,9 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
 }
 
 template <typename DataType>
-Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
-                         Matrix<DataType>::size_type nrOfColumns,
-                         const DataType& value)
+Matrix<DataType>::Matrix(const DataType& value,
+                         Matrix<DataType>::size_type nrOfRows,
+                         Matrix<DataType>::size_type nrOfColumns)
 {
     CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
 

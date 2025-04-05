@@ -111,7 +111,7 @@ void ConstReverseNIteratorTests::testIteratorCreationFromNonConstIterator()
 
 void ConstReverseNIteratorTests::testEmptyIterator()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
     m_SecondaryIntMatrix.clear();
     IntConstReverseNIter emptyIt;
 
@@ -207,7 +207,7 @@ void ConstReverseNIteratorTests::testPostIncrementOperator()
 
 void ConstReverseNIteratorTests::testCombinedIncrementOperators()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstReverseNIterator(6, 5);
     m_SecondaryIntIterator = ++(++m_PrimaryIntIterator);
@@ -256,7 +256,7 @@ void ConstReverseNIteratorTests::testPostDecrementOperator()
 
 void ConstReverseNIteratorTests::testCombinedDecrementOperators()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstReverseNIterator(4, 5);
     m_SecondaryIntIterator = --(--m_PrimaryIntIterator);
@@ -474,7 +474,7 @@ void ConstReverseNIteratorTests::testStdFindWithIncrement()
 
 void ConstReverseNIteratorTests::testIteratorCreation_data()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntConstReverseNIter>("iterator");
@@ -509,7 +509,7 @@ void ConstReverseNIteratorTests::testIteratorCreation_data()
 
 void ConstReverseNIteratorTests::testIteratorCreationFromNonConstIterator_data()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntReverseNIter>("iterator");
@@ -544,7 +544,7 @@ void ConstReverseNIteratorTests::testIteratorCreationFromNonConstIterator_data()
 
 void ConstReverseNIteratorTests::testIteratorsAreEqual_data()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntConstReverseNIter>("firstIterator");
@@ -571,7 +571,7 @@ void ConstReverseNIteratorTests::testIteratorsAreEqual_data()
 
 void ConstReverseNIteratorTests::testIteratorEqualToItself_data()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
     
     QTest::addColumn<IntConstReverseNIter>("iterator");
 
@@ -651,7 +651,7 @@ void ConstReverseNIteratorTests::testOperatorMinusEqual_data()
 
 void ConstReverseNIteratorTests::testDifferenceOperator_data()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntConstReverseNIter>("firstIterator");
@@ -914,7 +914,7 @@ void ConstReverseNIteratorTests::testStdFind_data()
 
 void ConstReverseNIteratorTests::_buildLessThanOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
     
     QTest::addColumn<IntConstReverseNIter>("firstIterator");
     QTest::addColumn<IntConstReverseNIter>("secondIterator");
@@ -929,7 +929,7 @@ void ConstReverseNIteratorTests::_buildLessThanOperatorTestingTable()
 
 void ConstReverseNIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntConstReverseNIter>("firstIterator");
@@ -954,7 +954,7 @@ void ConstReverseNIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
 
 void ConstReverseNIteratorTests::_buildIncrementOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
     
     QTest::addColumn<IntConstReverseNIter>("inputIterator");
     QTest::addColumn<IntConstReverseNIter>("expectedIterator");
@@ -973,7 +973,7 @@ void ConstReverseNIteratorTests::_buildIncrementOperatorTestingTable()
 
 void ConstReverseNIteratorTests::_buildDecrementOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
     
     QTest::addColumn<IntConstReverseNIter>("inputIterator");
     QTest::addColumn<IntConstReverseNIter>("expectedIterator");
@@ -992,7 +992,7 @@ void ConstReverseNIteratorTests::_buildDecrementOperatorTestingTable()
 
 void ConstReverseNIteratorTests::_buildOperatorPlusTestingTable()
 {
-    m_PrimaryIntMatrix = {8, 9, -5};
+    m_PrimaryIntMatrix = {-5, 8, 9};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntConstReverseNIter>("iterator");

@@ -85,7 +85,7 @@ void CommonExceptionTests::testIdenticalMatrixConstructorExceptions()
     QFETCH(matrix_size_t, columnsCount);
     QFETCH(int, elementValue);
 
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(rowsCount, columnsCount, elementValue);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(elementValue, rowsCount, columnsCount);});
 }
 
 void CommonExceptionTests::testDiagMatrixConstructorExceptions()

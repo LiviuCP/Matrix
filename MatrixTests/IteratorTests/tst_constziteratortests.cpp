@@ -125,7 +125,7 @@ void ConstZIteratorTests::testIteratorCreationFromNonConstIterator()
 
 void ConstZIteratorTests::testEmptyIterator()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
     m_SecondaryIntMatrix.clear();
     IntConstZIter emptyIt;
 
@@ -221,7 +221,7 @@ void ConstZIteratorTests::testPostIncrementOperator()
 
 void ConstZIteratorTests::testCombinedIncrementOperators()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstZIterator(5, 4);
     m_SecondaryIntIterator = ++(++m_PrimaryIntIterator);
@@ -270,7 +270,7 @@ void ConstZIteratorTests::testPostDecrementOperator()
 
 void ConstZIteratorTests::testCombinedDecrementOperators()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getConstZIterator(5, 6);
     m_SecondaryIntIterator = --(--m_PrimaryIntIterator);
@@ -547,7 +547,7 @@ void ConstZIteratorTests::testStdFindWithIncrement()
 
 void ConstZIteratorTests::testIteratorCreation_data()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntConstZIter>("iterator");
@@ -584,7 +584,7 @@ void ConstZIteratorTests::testIteratorCreation_data()
 
 void ConstZIteratorTests::testIteratorCreationFromNonConstIterator_data()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntZIter>("iterator");
@@ -621,7 +621,7 @@ void ConstZIteratorTests::testIteratorCreationFromNonConstIterator_data()
 
 void ConstZIteratorTests::testIteratorsAreEqual_data()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntConstZIter>("firstIterator");
@@ -648,7 +648,7 @@ void ConstZIteratorTests::testIteratorsAreEqual_data()
 
 void ConstZIteratorTests::testIteratorEqualToItself_data()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
     
     QTest::addColumn<IntConstZIter>("iterator");
 
@@ -728,7 +728,7 @@ void ConstZIteratorTests::testOperatorMinusEqual_data()
 
 void ConstZIteratorTests::testDifferenceOperator_data()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntConstZIter>("firstIterator");
@@ -989,7 +989,7 @@ void ConstZIteratorTests::testStdFind_data()
 
 void ConstZIteratorTests::_buildLessThanOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
     
     QTest::addColumn<IntConstZIter>("firstIterator");
     QTest::addColumn<IntConstZIter>("secondIterator");
@@ -1004,7 +1004,7 @@ void ConstZIteratorTests::_buildLessThanOperatorTestingTable()
 
 void ConstZIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntConstZIter>("firstIterator");
@@ -1029,7 +1029,7 @@ void ConstZIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
 
 void ConstZIteratorTests::_buildIncrementOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
     
     QTest::addColumn<IntConstZIter>("inputIterator");
     QTest::addColumn<IntConstZIter>("expectedIterator");
@@ -1048,7 +1048,7 @@ void ConstZIteratorTests::_buildIncrementOperatorTestingTable()
 
 void ConstZIteratorTests::_buildDecrementOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
     
     QTest::addColumn<IntConstZIter>("inputIterator");
     QTest::addColumn<IntConstZIter>("expectedIterator");
@@ -1067,7 +1067,7 @@ void ConstZIteratorTests::_buildDecrementOperatorTestingTable()
 
 void ConstZIteratorTests::_buildOperatorPlusTestingTable()
 {
-    m_PrimaryIntMatrix = {9, 8, -5};
+    m_PrimaryIntMatrix = {-5, 9, 8};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntConstZIter>("iterator");

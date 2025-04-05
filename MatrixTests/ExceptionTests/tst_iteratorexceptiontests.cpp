@@ -609,9 +609,9 @@ void IteratorExceptionTests::testZIteratorTwoOperandsExceptions_data()
     QTest::addColumn<IntConstReverseZIter>("firstConstReverseZIterator");
     QTest::addColumn<IntConstReverseZIter>("secondConstReverseZIterator");
 
-    m_PrimaryIntMatrix = {2, 3, 4};
-    m_SecondaryIntMatrix = {2, 3, -5};
-    m_ThirdIntMatrix = {2, 3, 4};
+    m_PrimaryIntMatrix = {4, 2, 3};
+    m_SecondaryIntMatrix = {-5, 2, 3};
+    m_ThirdIntMatrix = {4, 2, 3};
     m_FourthIntMatrix = m_PrimaryIntMatrix;
     m_FifthIntMatrix = std::move(m_ThirdIntMatrix);
 
@@ -631,9 +631,9 @@ void IteratorExceptionTests::testNIteratorTwoOperandsExceptions_data()
     QTest::addColumn<IntConstReverseNIter>("firstConstReverseNIterator");
     QTest::addColumn<IntConstReverseNIter>("secondConstReverseNIterator");
 
-    m_PrimaryIntMatrix = {3, 2, 4};
-    m_SecondaryIntMatrix = {3, 2, -5};
-    m_ThirdIntMatrix = {3, 2, 4};
+    m_PrimaryIntMatrix = {4, 3, 2};
+    m_SecondaryIntMatrix = {-5, 3, 2};
+    m_ThirdIntMatrix = {4, 3, 2};
     m_FourthIntMatrix = m_PrimaryIntMatrix;
     m_FifthIntMatrix = std::move(m_ThirdIntMatrix);
 
