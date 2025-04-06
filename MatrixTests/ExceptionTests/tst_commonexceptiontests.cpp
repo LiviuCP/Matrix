@@ -24,7 +24,7 @@ class CommonExceptionTests : public QObject
 
 private slots:
     // test functions
-    void testInitListConstructorExceptions();
+    void testCopiedVectorConstructorExceptions();
     void testIdenticalMatrixConstructorExceptions();
     void testDiagMatrixConstructorExceptions();
     void testFunctionAtExceptions();
@@ -68,7 +68,7 @@ private:
     void _buildInsertColumnExceptionsTestingTable();
 };
 
-void CommonExceptionTests::testInitListConstructorExceptions()
+void CommonExceptionTests::testCopiedVectorConstructorExceptions()
 {
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(0, 0, {1, 2, 3, 4});});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(0, 2, {1, 2, 3, 4});});
@@ -85,7 +85,7 @@ void CommonExceptionTests::testIdenticalMatrixConstructorExceptions()
     QFETCH(matrix_size_t, columnsCount);
     QFETCH(int, elementValue);
 
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(rowsCount, columnsCount, elementValue);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(elementValue, rowsCount, columnsCount);});
 }
 
 void CommonExceptionTests::testDiagMatrixConstructorExceptions()

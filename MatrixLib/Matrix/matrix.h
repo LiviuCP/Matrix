@@ -1,11 +1,11 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <initializer_list>
 #include <utility>
 #include <memory>
 #include <algorithm>
 #include <optional>
+#include <vector>
 
 #include "../Utils/iteratorutils.h"
 #include "../Utils/errorhandling.h"
@@ -227,8 +227,8 @@ public:
     };
 
     Matrix();
-    Matrix(size_type nrOfRows, size_type nrOfColumns, std::initializer_list<DataType> dataTypeInitList);
-    Matrix(size_type nrOfRows, size_type nrOfColumns, const DataType& value);
+    Matrix(size_type nrOfRows, size_type nrOfColumns, const std::vector<DataType>& vec);
+    Matrix(const DataType& value, size_type nrOfRows, size_type nrOfColumns);
     Matrix(size_type nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues);
     Matrix(const Matrix& matrix);
     Matrix(Matrix&& matrix);
@@ -2737,32 +2737,32 @@ Matrix<DataType>::Matrix()
 template<typename DataType>
 Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
                          Matrix<DataType>::size_type nrOfColumns,
-                         std::initializer_list<DataType> dataTypeInitList)
+                         const std::vector<DataType>& vec)
 {
     CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
-    CHECK_ERROR_CONDITION(nrOfRows * nrOfColumns > dataTypeInitList.size(), Matr::errorMessages[Matr::Errors::INSUFFICIENT_ELEMENTS_FOR_INIT]);
+    CHECK_ERROR_CONDITION(nrOfRows * nrOfColumns > vec.size(), Matr::errorMessages[Matr::Errors::INSUFFICIENT_ELEMENTS_FOR_INIT]);
 
     const size_type c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
     const size_type c_ColumnCapacityToAlloc{nrOfColumns + nrOfColumns / 4};
 
     _allocMemory(nrOfRows, nrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
 
-    typename std::initializer_list<DataType>::iterator initListIterator{dataTypeInitList.begin()};
+    typename std::vector<DataType>::const_iterator vecIterator{vec.cbegin()};
 
-    /*absRowNr = absolute row number, i.e. number of the row within "physical" matrix (that includes free row/column capacity)
-      When the "abs" keyword is missing (i.e. rowNr), then the row number within "logical" (actually used) matrix (excluding free capacity) is meant (see other methods too)
+    /* absRowNr = absolute row number, i.e. number of the row within "physical" matrix (that includes free row/column capacity)
+       When the "abs" keyword is missing (i.e. rowNr), then the row number within "logical" (actually used) matrix (excluding free capacity) is meant (see other methods too)
     */
     for (size_type absRowNr{*m_RowCapacityOffset}; absRowNr != *m_RowCapacityOffset + m_NrOfRows; ++absRowNr)
     {
-        std::uninitialized_copy_n(initListIterator, m_NrOfColumns, m_pBaseArrayPtr[absRowNr]);
-        initListIterator += m_NrOfColumns;
+        std::uninitialized_copy_n(vecIterator, m_NrOfColumns, m_pBaseArrayPtr[absRowNr]);
+        vecIterator += m_NrOfColumns;
     }
 }
 
 template <typename DataType>
-Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
-                         Matrix<DataType>::size_type nrOfColumns,
-                         const DataType& value)
+Matrix<DataType>::Matrix(const DataType& value,
+                         Matrix<DataType>::size_type nrOfRows,
+                         Matrix<DataType>::size_type nrOfColumns)
 {
     CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
 

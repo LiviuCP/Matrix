@@ -9,12 +9,12 @@
                                    "Default constructor initialized matrix with wrong capacity!", \
                                    "Default constructor initialized matrix with wrong capacity offset!")
 
-#define TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
+#define TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
                                                                   requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset) \
     CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset, \
-                                   "Init list constructor initialized matrix with wrong number of rows and columns!", \
-                                   "Init list constructor initialized matrix with wrong capacity!", \
-                                   "Init list constructor initialized matrix with wrong capacity offset!")
+                                   "Copied vector constructor initialized matrix with wrong number of rows and columns!", \
+                                   "Copied vector constructor initialized matrix with wrong capacity!", \
+                                   "Copied vector constructor initialized matrix with wrong capacity offset!")
 
 #define TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
                                                                          requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset) \

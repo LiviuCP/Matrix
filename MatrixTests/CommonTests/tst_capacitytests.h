@@ -1,11 +1,11 @@
 #ifndef TST_CAPACITYTESTS_H
 #define TST_CAPACITYTESTS_H
 
-#define TEST_INIT_LIST_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset) \
+#define TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset) \
     QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
              matrix.getColumnCapacity() == expectedColumnCapacity && \
              matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
-             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Init list constructor initialized matrix with wrong capacity (offset)");
+             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Copied vector constructor initialized matrix with wrong capacity (offset)");
 
 #define TEST_CAPACITY_WITH_IDENTICAL_MATRIX_CONSTRUCTOR(matrixType) \
     QFETCH(Matrix<matrixType>::size_type, rowsCount); \
@@ -16,7 +16,7 @@
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
-    Matrix<matrixType> matrix{rowsCount, columnsCount, elementValue}; \
+    Matrix<matrixType> matrix{elementValue, rowsCount, columnsCount}; \
 \
     QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
              matrix.getColumnCapacity() == expectedColumnCapacity && \
@@ -46,7 +46,7 @@
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
-    Matrix<matrixType> srcMatrix{rowsCount, columnsCount, elementValue}; \
+    Matrix<matrixType> srcMatrix{elementValue, rowsCount, columnsCount}; \
     Matrix<matrixType> destMatrix{srcMatrix}; \
 \
     QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity && \
@@ -63,7 +63,7 @@
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
-    Matrix<matrixType> srcMatrix{rowsCount, columnsCount, elementValue}; \
+    Matrix<matrixType> srcMatrix{elementValue, rowsCount, columnsCount}; \
     Matrix<matrixType> destMatrix{std::move(srcMatrix)}; \
 \
     QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity && \
@@ -83,11 +83,11 @@
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
-    Matrix<matrixType> srcMatrix{srcMatrixRowsCount, srcMatrixColumnsCount, srcMatrixElementValue}; \
+    Matrix<matrixType> srcMatrix{srcMatrixElementValue, srcMatrixRowsCount, srcMatrixColumnsCount}; \
 \
     if (destMatrixRowsCount > 0u && destMatrixColumnsCount > 0u) \
     { \
-        Matrix<matrixType> destMatrix{destMatrixRowsCount, destMatrixColumnsCount, destMatrixElementValue}; \
+        Matrix<matrixType> destMatrix{destMatrixElementValue, destMatrixRowsCount, destMatrixColumnsCount}; \
         destMatrix = srcMatrix; \
 \
         QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity && \
@@ -118,11 +118,11 @@
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
-    Matrix<matrixType> srcMatrix{srcMatrixRowsCount, srcMatrixColumnsCount, srcMatrixElementValue}; \
+    Matrix<matrixType> srcMatrix{srcMatrixElementValue, srcMatrixRowsCount, srcMatrixColumnsCount}; \
 \
     if (destMatrixRowsCount > 0u && destMatrixColumnsCount > 0u) \
     { \
-        Matrix<matrixType> destMatrix{destMatrixRowsCount, destMatrixColumnsCount, destMatrixElementValue}; \
+        Matrix<matrixType> destMatrix{destMatrixElementValue, destMatrixRowsCount, destMatrixColumnsCount}; \
         destMatrix = std::move(srcMatrix); \
 \
         QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity && \
