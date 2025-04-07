@@ -30,7 +30,7 @@ int main()
     }};
 
     IntMatrix matrixCopy{matrix}; // matrix copy not really needed, it's just for demonstrating the usage of the copy constructor
-    IntMatrix columnSubtotalsMatrix{1, matrix.getNrOfColumns(), 0};
+    IntMatrix columnSubtotalsMatrix{{{1, matrix.getNrOfColumns()}, 0}};
 
     for (int columnNumber{0}; columnNumber < matrix.getNrOfColumns(); ++columnNumber)
     {

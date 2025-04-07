@@ -16,6 +16,7 @@ class Matrix
 public:
     using size_type = uint32_t;
     using diff_type = int32_t;
+    using dimensions_t = std::pair<size_type, size_type>;
 
     class ZIterator
     {
@@ -228,7 +229,7 @@ public:
 
     Matrix();
     Matrix(size_type nrOfRows, size_type nrOfColumns, const std::vector<DataType>& vec);
-    Matrix(const DataType& value, size_type nrOfRows, size_type nrOfColumns);
+    Matrix(std::pair<dimensions_t, DataType> dimensionsAndValue);
     Matrix(size_type nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues);
     Matrix(const Matrix& matrix);
     Matrix(Matrix&& matrix);
@@ -2760,10 +2761,11 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
 }
 
 template <typename DataType>
-Matrix<DataType>::Matrix(const DataType& value,
-                         Matrix<DataType>::size_type nrOfRows,
-                         Matrix<DataType>::size_type nrOfColumns)
+Matrix<DataType>::Matrix(std::pair<Matrix<DataType>::dimensions_t, DataType> dimensionsAndValue)
 {
+    const auto&[nrOfRows, nrOfColumns] = dimensionsAndValue.first;
+    const auto& value = dimensionsAndValue.second;
+
     CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
 
     const size_type c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
