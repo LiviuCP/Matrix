@@ -404,7 +404,7 @@ void ZIteratorTests::testArrowOperatorRead()
 void ZIteratorTests::testArrowOperatorWrite()
 {
     m_PrimaryStringMatrix = {{4, 3}, "zzz"};
-    m_SecondaryStringMatrix = {4, 3, {"abc", "ba","zzz","zzz","zzz","gfedcba","zzz","zzz","zzz","zzz","abcdefghijk","fedcba"}};
+    m_SecondaryStringMatrix = {4, 3, {"abc", "ba", "zzz", "zzz", "zzz", "gfedcba", "zzz", "zzz", "zzz", "zzz", "abcdefghijk", "fedcba"}};
     m_PrimaryStringMatrix.zBegin()->assign("abc");
     m_PrimaryStringMatrix.getZIterator(0, 1)->assign("ba");
     m_PrimaryStringMatrix.getZIterator(1, 2)->assign("gfedcba");

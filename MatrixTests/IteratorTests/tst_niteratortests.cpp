@@ -398,7 +398,7 @@ void NIteratorTests::testArrowOperatorRead()
 void NIteratorTests::testArrowOperatorWrite()
 {
     m_PrimaryStringMatrix = {{3, 4}, "zzz"};
-    m_SecondaryStringMatrix = {3, 4, {"abc", "zzz","zzz","zzz","ba","zzz","zzz","abcdefghijk","zzz","gfedcba","zzz","fedcba"}};
+    m_SecondaryStringMatrix = {3, 4, {"abc", "zzz", "zzz", "zzz", "ba", "zzz", "zzz", "abcdefghijk", "zzz", "gfedcba", "zzz", "fedcba"}};
     m_PrimaryStringMatrix.nBegin()->assign("abc");
     m_PrimaryStringMatrix.getNIterator(1, 0)->assign("ba");
     m_PrimaryStringMatrix.getNIterator(2, 1)->assign("gfedcba");
