@@ -99,7 +99,7 @@ void ReverseZIteratorTests::testIteratorCreation()
 
 void ReverseZIteratorTests::testEmptyIterator()
 {
-    m_PrimaryIntMatrix = {-5, 9, 8};
+    m_PrimaryIntMatrix = {{9, 8}, -5};
     m_SecondaryIntMatrix.clear();
     IntReverseZIter emptyIt;
 
@@ -195,7 +195,7 @@ void ReverseZIteratorTests::testPostIncrementOperator()
 
 void ReverseZIteratorTests::testCombinedIncrementOperators()
 {
-    m_PrimaryIntMatrix = {-5, 9, 8};
+    m_PrimaryIntMatrix = {{9, 8}, -5};
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getReverseZIterator(5, 6);
     m_SecondaryIntIterator = ++(++m_PrimaryIntIterator);
@@ -244,7 +244,7 @@ void ReverseZIteratorTests::testPostDecrementOperator()
 
 void ReverseZIteratorTests::testCombinedDecrementOperators()
 {
-    m_PrimaryIntMatrix = {-5, 9, 8};
+    m_PrimaryIntMatrix = {{9, 8}, -5};
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getReverseZIterator(5, 4);
     m_SecondaryIntIterator = --(--m_PrimaryIntIterator);
@@ -330,7 +330,7 @@ void ReverseZIteratorTests::testAsteriskOperatorRead()
 
 void ReverseZIteratorTests::testAsteriskOperatorWrite()
 {
-    m_PrimaryIntMatrix = {-20, 4, 3};
+    m_PrimaryIntMatrix = {{4, 3}, -20};
     m_SecondaryIntMatrix = {4, 3, {1, -2, -20, -20, -20, -6, -20, -20, -20, -20, 11, -12}};
     *m_PrimaryIntMatrix.getReverseZIterator(0, 0) = 1;
     *m_PrimaryIntMatrix.getReverseZIterator(0, 1) = -2;
@@ -341,7 +341,7 @@ void ReverseZIteratorTests::testAsteriskOperatorWrite()
     QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix, "The asterisk operator does not work correctly when writing the value!");
 
     // test with row capacity offset
-    m_PrimaryIntMatrix = {-20, 4, 3};
+    m_PrimaryIntMatrix = {{4, 3}, -20};
     m_PrimaryIntMatrix.resize(4, 3, 6, 3);
     *m_PrimaryIntMatrix.getReverseZIterator(0, 0) = 1;
     *m_PrimaryIntMatrix.getReverseZIterator(0, 1) = -2;
@@ -397,7 +397,7 @@ void ReverseZIteratorTests::testArrowOperatorRead()
 
 void ReverseZIteratorTests::testArrowOperatorWrite()
 {
-    m_PrimaryStringMatrix = {"zzz", 4, 3};
+    m_PrimaryStringMatrix = {{4, 3}, "zzz"};
     m_SecondaryStringMatrix = {4, 3, {"abc", "ba", "zzz", "zzz", "zzz", "gfedcba", "zzz", "zzz", "zzz", "zzz", "abcdefghijk", "fedcba"}};
     m_PrimaryStringMatrix.getReverseZIterator(0, 0)->assign("abc");
     m_PrimaryStringMatrix.getReverseZIterator(0, 1)->assign("ba");
@@ -408,7 +408,7 @@ void ReverseZIteratorTests::testArrowOperatorWrite()
     QVERIFY2(m_PrimaryStringMatrix == m_SecondaryStringMatrix, "The arrow operator does not work correctly when writing the value!");
 
     // test with column capacity offset
-    m_PrimaryStringMatrix = {"zzz", 4, 3};
+    m_PrimaryStringMatrix = {{4, 3}, "zzz"};
     m_PrimaryStringMatrix.resize(4, 3, 4, 5);
     m_SecondaryStringMatrix = {4, 3, {"abc", "ba", "zzz", "zzz", "zzz", "gfedcba", "zzz", "zzz", "zzz", "zzz", "abcdefghijk", "fedcba"}};
     m_PrimaryStringMatrix.getReverseZIterator(0, 0)->assign("abc");
@@ -469,7 +469,7 @@ void ReverseZIteratorTests::testSquareBracketsOperatorWrite()
 {
     m_SecondaryIntMatrix = {4, 3, {1, -2, -20, -20, -20, -6, -20, -20, -20, -20, 11, -12}};
 
-    m_PrimaryIntMatrix = {-20, 4, 3};
+    m_PrimaryIntMatrix = {{4, 3}, -20};
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getReverseZIterator(0, 0);
     m_PrimaryIntIterator[0] = 1;
     m_PrimaryIntIterator[-1] = -2;
@@ -480,7 +480,7 @@ void ReverseZIteratorTests::testSquareBracketsOperatorWrite()
     QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
-    m_PrimaryIntMatrix = {-20, 4, 3};
+    m_PrimaryIntMatrix = {{4, 3}, -20};
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getReverseZIterator(0, 1);
     m_PrimaryIntIterator[1] = 1;
     m_PrimaryIntIterator[0] = -2;
@@ -491,7 +491,7 @@ void ReverseZIteratorTests::testSquareBracketsOperatorWrite()
     QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
-    m_PrimaryIntMatrix = {-20, 4, 3};
+    m_PrimaryIntMatrix = {{4, 3}, -20};
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getReverseZIterator(1, 2);
     m_PrimaryIntIterator[5] = 1;
     m_PrimaryIntIterator[4] = -2;
@@ -502,7 +502,7 @@ void ReverseZIteratorTests::testSquareBracketsOperatorWrite()
     QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
-    m_PrimaryIntMatrix = {-20, 4, 3};
+    m_PrimaryIntMatrix = {{4, 3}, -20};
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getReverseZIterator(3, 1);
     m_PrimaryIntIterator[10] = 1;
     m_PrimaryIntIterator[9] = -2;
@@ -513,7 +513,7 @@ void ReverseZIteratorTests::testSquareBracketsOperatorWrite()
     QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
-    m_PrimaryIntMatrix = {-20, 4, 3};
+    m_PrimaryIntMatrix = {{4, 3}, -20};
     m_PrimaryIntIterator = m_PrimaryIntMatrix.reverseZBegin();
     m_PrimaryIntIterator[11] = 1;
     m_PrimaryIntIterator[10] = -2;
@@ -525,7 +525,7 @@ void ReverseZIteratorTests::testSquareBracketsOperatorWrite()
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
     // test with row/column capacity offset
-    m_PrimaryIntMatrix = {-20, 4, 3};
+    m_PrimaryIntMatrix = {{4, 3}, -20};
     m_PrimaryIntMatrix.resize(4, 3, 6, 5);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getReverseZIterator(0, 0);
     m_PrimaryIntIterator[0] = 1;
@@ -538,7 +538,7 @@ void ReverseZIteratorTests::testSquareBracketsOperatorWrite()
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
     // test with row capacity offset
-    m_PrimaryIntMatrix = {-20, 4, 3};
+    m_PrimaryIntMatrix = {{4, 3}, -20};
     m_PrimaryIntMatrix.resize(4, 3, 6, 3);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getReverseZIterator(1, 2);
     m_PrimaryIntIterator[5] = 1;
@@ -551,7 +551,7 @@ void ReverseZIteratorTests::testSquareBracketsOperatorWrite()
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
     // test with column capacity offset
-    m_PrimaryIntMatrix = {-20, 4, 3};
+    m_PrimaryIntMatrix = {{4, 3}, -20};
     m_PrimaryIntMatrix.resize(4, 3, 4, 5);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.reverseZBegin();
     m_PrimaryIntIterator[11] = 1;
@@ -716,7 +716,7 @@ void ReverseZIteratorTests::testStdSort()
 
 void ReverseZIteratorTests::testIteratorCreation_data()
 {
-    m_PrimaryIntMatrix = {-5, 9, 8};
+    m_PrimaryIntMatrix = {{9, 8}, -5};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntReverseZIter>("iterator");
@@ -753,7 +753,7 @@ void ReverseZIteratorTests::testIteratorCreation_data()
 
 void ReverseZIteratorTests::testIteratorsAreEqual_data()
 {
-    m_PrimaryIntMatrix = {-5, 9, 8};
+    m_PrimaryIntMatrix = {{9, 8}, -5};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntReverseZIter>("firstIterator");
@@ -780,7 +780,7 @@ void ReverseZIteratorTests::testIteratorsAreEqual_data()
 
 void ReverseZIteratorTests::testIteratorEqualToItself_data()
 {
-    m_PrimaryIntMatrix = {-5, 9, 8};
+    m_PrimaryIntMatrix = {{9, 8}, -5};
     
     QTest::addColumn<IntReverseZIter>("iterator");
 
@@ -860,7 +860,7 @@ void ReverseZIteratorTests::testOperatorMinusEqual_data()
 
 void ReverseZIteratorTests::testDifferenceOperator_data()
 {
-    m_PrimaryIntMatrix = {-5, 9, 8};
+    m_PrimaryIntMatrix = {{9, 8}, -5};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntReverseZIter>("firstIterator");
@@ -1121,7 +1121,7 @@ void ReverseZIteratorTests::testStdFind_data()
 
 void ReverseZIteratorTests::_buildLessThanOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {-5, 9, 8};
+    m_PrimaryIntMatrix = {{9, 8}, -5};
     
     QTest::addColumn<IntReverseZIter>("firstIterator");
     QTest::addColumn<IntReverseZIter>("secondIterator");
@@ -1136,7 +1136,7 @@ void ReverseZIteratorTests::_buildLessThanOperatorTestingTable()
 
 void ReverseZIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {-5, 9, 8};
+    m_PrimaryIntMatrix = {{9, 8}, -5};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntReverseZIter>("firstIterator");
@@ -1161,7 +1161,7 @@ void ReverseZIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
 
 void ReverseZIteratorTests::_buildIncrementOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {-5, 9, 8};
+    m_PrimaryIntMatrix = {{9, 8}, -5};
     
     QTest::addColumn<IntReverseZIter>("inputIterator");
     QTest::addColumn<IntReverseZIter>("expectedIterator");
@@ -1180,7 +1180,7 @@ void ReverseZIteratorTests::_buildIncrementOperatorTestingTable()
 
 void ReverseZIteratorTests::_buildDecrementOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {-5, 9, 8};
+    m_PrimaryIntMatrix = {{9, 8}, -5};
     
     QTest::addColumn<IntReverseZIter>("inputIterator");
     QTest::addColumn<IntReverseZIter>("expectedIterator");
@@ -1199,7 +1199,7 @@ void ReverseZIteratorTests::_buildDecrementOperatorTestingTable()
 
 void ReverseZIteratorTests::_buildOperatorPlusTestingTable()
 {
-    m_PrimaryIntMatrix = {-5, 9, 8};
+    m_PrimaryIntMatrix = {{9, 8}, -5};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntReverseZIter>("iterator");
