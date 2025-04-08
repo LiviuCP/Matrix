@@ -6,5 +6,5 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 add_subdirectory(CommonTests)
 add_subdirectory(ExceptionTests)
-# add_subdirectory(IteratorTests)
+add_subdirectory(IteratorTests)
 add_subdirectory(OtherMatrixTypesTests)
