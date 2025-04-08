@@ -74,12 +74,12 @@ void ConstructionAndAssignmentTests::testIntMatrixCopiedVectorConstructor()
 
 void ConstructionAndAssignmentTests::testIntMatrixIdenticalMatrixConstructor()
 {
-    IntMatrix smallMatrix{4, 3, 2};
+    IntMatrix smallMatrix{{3, 2}, 4};
 
     TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 3, 2, 3, 2, 0, 0);
     CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(smallMatrix, 4, "Matrix elements have not been correctly initialized by the identical matrix constructor");
 
-    IntMatrix largeMatrix{-5, 10, 8};
+    IntMatrix largeMatrix{{10, 8}, -5};
 
     TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 10, 8, 12, 10, 1, 1);
     CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(largeMatrix, -5, "Matrix elements have not been correctly initialized by the identical matrix constructor");
@@ -250,8 +250,8 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
     }
 
     {
-        const IntMatrix srcMatrix{7, 3, 4};
-        IntMatrix destMatrix{8, 2, 3};
+        const IntMatrix srcMatrix{{3, 4}, 7};
+        IntMatrix destMatrix{{2, 3}, 8};
 
         destMatrix = srcMatrix;
 
@@ -260,8 +260,8 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
     }
 
     {
-        const IntMatrix srcMatrix{9, 4, 3};
-        IntMatrix destMatrix{8, 2, 3};
+        const IntMatrix srcMatrix{{4, 3}, 9};
+        IntMatrix destMatrix{{2, 3}, 8};
 
         destMatrix = srcMatrix;
 
@@ -270,8 +270,8 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
     }
 
     {
-        const IntMatrix srcMatrix{9, 4, 3};
-        IntMatrix destMatrix{8, 4, 2};
+        const IntMatrix srcMatrix{{4, 3}, 9};
+        IntMatrix destMatrix{{4, 2}, 8};
 
         destMatrix = srcMatrix;
 
@@ -280,8 +280,8 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
     }
 
     {
-        const IntMatrix srcMatrix{11, 20, 20};
-        IntMatrix destMatrix{8, 2, 3};
+        const IntMatrix srcMatrix{{20, 20}, 11};
+        IntMatrix destMatrix{{2, 3}, 8};
 
         destMatrix = srcMatrix;
 
@@ -290,8 +290,8 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
     }
 
     {
-        const IntMatrix srcMatrix{12, 22, 22};
-        IntMatrix destMatrix{8, 2, 3};
+        const IntMatrix srcMatrix{{22, 22}, 12};
+        IntMatrix destMatrix{{2, 3}, 8};
 
         destMatrix = srcMatrix;
 
@@ -339,8 +339,8 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
 
     // test cases when destination matrix already has the required capacity
     {
-        const IntMatrix srcMatrix{-2, 3, 5};
-        IntMatrix destMatrix{7, 3, 5};
+        const IntMatrix srcMatrix{{3, 5}, -2};
+        IntMatrix destMatrix{{3, 5}, 7};
 
         destMatrix = srcMatrix;
 
@@ -349,8 +349,8 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
     }
 
     {
-        const IntMatrix srcMatrix{-2, 9, 3};
-        IntMatrix destMatrix{7, 4, 2};
+        const IntMatrix srcMatrix{{9, 3}, -2};
+        IntMatrix destMatrix{{4, 2}, 7};
 
         destMatrix.resize(4, 2, 11, 3);
         destMatrix = srcMatrix;
@@ -371,7 +371,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyAssignmentOperator()
                                           -71, 72, -73, 74, -75, 76, -77, 78, -79, 80
                                   }};
 
-        IntMatrix destMatrix{7, 3, 5};
+        IntMatrix destMatrix{{3, 5}, 7};
 
         destMatrix = srcMatrix;
 
@@ -513,7 +513,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator()
                                     -71, 72, -73, 74, -75, 76, -77, 78, -79, 80
                             }};
 
-        IntMatrix destMatrix{7, 3, 5};
+        IntMatrix destMatrix{{3, 5}, 7};
 
         destMatrix = std::move(srcMatrix);
 
@@ -579,12 +579,12 @@ void ConstructionAndAssignmentTests::testStringMatrixCopiedVectorConstructor()
 
 void ConstructionAndAssignmentTests::testStringMatrixIdenticalMatrixConstructor()
 {
-    StringMatrix smallMatrix{"Fourth", 3, 2};
+    StringMatrix smallMatrix{{3, 2}, "Fourth"};
 
     TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 3, 2, 3, 2, 0, 0);
     CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(smallMatrix, "Fourth", "Matrix elements have not been correctly initialized by the identical matrix constructor");
 
-    StringMatrix largeMatrix{"_Fifth", 10, 8};
+    StringMatrix largeMatrix{{10, 8}, "_Fifth"};
 
     TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 10, 8, 12, 10, 1, 1);
     CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(largeMatrix, "_Fifth", "Matrix elements have not been correctly initialized by the identical matrix constructor");
@@ -755,8 +755,8 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
     }
 
     {
-        const StringMatrix srcMatrix{"Seventh", 3, 4};
-        StringMatrix destMatrix{"Eighth", 2, 3};
+        const StringMatrix srcMatrix{{3, 4}, "Seventh"};
+        StringMatrix destMatrix{{2, 3}, "Eighth"};
 
         destMatrix = srcMatrix;
 
@@ -765,8 +765,8 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
     }
 
     {
-        const StringMatrix srcMatrix{"Ninth", 4, 3};
-        StringMatrix destMatrix{"Eighth", 2, 3};
+        const StringMatrix srcMatrix{{4, 3}, "Ninth"};
+        StringMatrix destMatrix{{2, 3}, "Eighth"};
 
         destMatrix = srcMatrix;
 
@@ -775,8 +775,8 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
     }
 
     {
-        const StringMatrix srcMatrix{"Ninth", 4, 3};
-        StringMatrix destMatrix{"Eighth", 4, 2};
+        const StringMatrix srcMatrix{{4, 3}, "Ninth"};
+        StringMatrix destMatrix{{4, 2}, "Eighth"};
 
         destMatrix = srcMatrix;
 
@@ -785,8 +785,8 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
     }
 
     {
-        const StringMatrix srcMatrix{"Eleventh", 20, 20};
-        StringMatrix destMatrix{"Eighth", 2, 3};
+        const StringMatrix srcMatrix{{20, 20}, "Eleventh"};
+        StringMatrix destMatrix{{2, 3}, "Eighth"};
 
         destMatrix = srcMatrix;
 
@@ -795,8 +795,8 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
     }
 
     {
-        const StringMatrix srcMatrix{"Twelfth", 22, 22};
-        StringMatrix destMatrix{"Eighth", 2, 3};
+        const StringMatrix srcMatrix{{22, 22}, "Twelfth"};
+        StringMatrix destMatrix{{2, 3}, "Eighth"};
 
         destMatrix = srcMatrix;
 
@@ -844,8 +844,8 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
 
     // test cases when destination matrix already has the required capacity
     {
-        const StringMatrix srcMatrix{"/second", 3, 5};
-        StringMatrix destMatrix{"seventh", 3, 5};
+        const StringMatrix srcMatrix{{3, 5}, "/second"};
+        StringMatrix destMatrix{{3, 5}, "seventh"};
 
         destMatrix = srcMatrix;
 
@@ -854,8 +854,8 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
     }
 
     {
-        const StringMatrix srcMatrix{"/second", 9, 3};
-        StringMatrix destMatrix{"seventh", 4, 2};
+        const StringMatrix srcMatrix{{9, 3}, "/second"};
+        StringMatrix destMatrix{{4, 2}, "seventh"};
 
         destMatrix.resize(4, 2, 11, 3);
         destMatrix = srcMatrix;
@@ -876,7 +876,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator()
                                              "-71a", "72B", "-73c", "74D", "-75e", "76F", "-77g", "78H", "-79i", "80J"
                                      }};
 
-        StringMatrix destMatrix{"seventh", 3, 5};
+        StringMatrix destMatrix{{3, 5}, "seventh"};
 
         destMatrix = srcMatrix;
 
@@ -1019,7 +1019,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator()
                                         "-71a", "72B", "-73c", "74D", "-75e", "76F", "-77g", "78H", "-79i", "80J"
                                }};
 
-        StringMatrix destMatrix{"seventh", 3, 5};
+        StringMatrix destMatrix{{3, 5}, "seventh"};
 
         destMatrix = std::move(srcMatrix);
 

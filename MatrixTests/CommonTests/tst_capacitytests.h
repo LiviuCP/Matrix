@@ -16,7 +16,7 @@
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
-    Matrix<matrixType> matrix{elementValue, rowsCount, columnsCount}; \
+    Matrix<matrixType> matrix{{rowsCount, columnsCount}, elementValue}; \
 \
     QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
              matrix.getColumnCapacity() == expectedColumnCapacity && \
@@ -46,7 +46,7 @@
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
-    Matrix<matrixType> srcMatrix{elementValue, rowsCount, columnsCount}; \
+    Matrix<matrixType> srcMatrix{{rowsCount, columnsCount}, elementValue}; \
     Matrix<matrixType> destMatrix{srcMatrix}; \
 \
     QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity && \
@@ -63,7 +63,7 @@
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
-    Matrix<matrixType> srcMatrix{elementValue, rowsCount, columnsCount}; \
+    Matrix<matrixType> srcMatrix{{rowsCount, columnsCount}, elementValue}; \
     Matrix<matrixType> destMatrix{std::move(srcMatrix)}; \
 \
     QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity && \
@@ -83,11 +83,11 @@
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
-    Matrix<matrixType> srcMatrix{srcMatrixElementValue, srcMatrixRowsCount, srcMatrixColumnsCount}; \
+    Matrix<matrixType> srcMatrix{{srcMatrixRowsCount, srcMatrixColumnsCount}, srcMatrixElementValue}; \
 \
     if (destMatrixRowsCount > 0u && destMatrixColumnsCount > 0u) \
     { \
-        Matrix<matrixType> destMatrix{destMatrixElementValue, destMatrixRowsCount, destMatrixColumnsCount}; \
+        Matrix<matrixType> destMatrix{{destMatrixRowsCount, destMatrixColumnsCount}, destMatrixElementValue}; \
         destMatrix = srcMatrix; \
 \
         QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity && \
@@ -118,11 +118,11 @@
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
-    Matrix<matrixType> srcMatrix{srcMatrixElementValue, srcMatrixRowsCount, srcMatrixColumnsCount}; \
+    Matrix<matrixType> srcMatrix{{srcMatrixRowsCount, srcMatrixColumnsCount}, srcMatrixElementValue}; \
 \
     if (destMatrixRowsCount > 0u && destMatrixColumnsCount > 0u) \
     { \
-        Matrix<matrixType> destMatrix{destMatrixElementValue, destMatrixRowsCount, destMatrixColumnsCount}; \
+        Matrix<matrixType> destMatrix{{destMatrixRowsCount, destMatrixColumnsCount}, destMatrixElementValue}; \
         destMatrix = std::move(srcMatrix); \
 \
         QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity && \

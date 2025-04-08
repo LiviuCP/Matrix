@@ -99,7 +99,7 @@ void NIteratorTests::testIteratorCreation()
 
 void NIteratorTests::testEmptyIterator()
 {
-    m_PrimaryIntMatrix = {-5, 8, 9};
+    m_PrimaryIntMatrix = {{8, 9}, -5};
     m_SecondaryIntMatrix.clear();
     IntNIter emptyIt;
 
@@ -195,7 +195,7 @@ void NIteratorTests::testPostIncrementOperator()
 
 void NIteratorTests::testCombinedIncrementOperators()
 {
-    m_PrimaryIntMatrix = {-5, 8, 9};
+    m_PrimaryIntMatrix = {{8, 9}, -5};
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(4, 5);
     m_SecondaryIntIterator = ++(++m_PrimaryIntIterator);
@@ -244,7 +244,7 @@ void NIteratorTests::testPostDecrementOperator()
 
 void NIteratorTests::testCombinedDecrementOperators()
 {
-    m_PrimaryIntMatrix = {-5, 8, 9};
+    m_PrimaryIntMatrix = {{8, 9}, -5};
 
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(6, 5);
     m_SecondaryIntIterator = --(--m_PrimaryIntIterator);
@@ -330,7 +330,7 @@ void NIteratorTests::testAsteriskOperatorRead()
 
 void NIteratorTests::testAsteriskOperatorWrite()
 {
-    m_PrimaryIntMatrix = {-20, 3, 4};
+    m_PrimaryIntMatrix = {{3, 4}, -20};
     m_SecondaryIntMatrix = {3, 4, {1, -20, -20, -20, -2, -20, -20, 11, -20, -6, -20, -12}};
     *m_PrimaryIntMatrix.nBegin() = 1;
     *m_PrimaryIntMatrix.getNIterator(1, 0) = -2;
@@ -341,7 +341,7 @@ void NIteratorTests::testAsteriskOperatorWrite()
     QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix, "The asterisk operator does not work correctly when writing the value!");
 
     // test with row capacity offset
-    m_PrimaryIntMatrix = {-20, 3, 4};
+    m_PrimaryIntMatrix = {{3, 4}, -20};
     m_PrimaryIntMatrix.resize(3, 4, 5, 4);
     *m_PrimaryIntMatrix.nBegin() = 1;
     *m_PrimaryIntMatrix.getNIterator(1, 0) = -2;
@@ -397,8 +397,8 @@ void NIteratorTests::testArrowOperatorRead()
 
 void NIteratorTests::testArrowOperatorWrite()
 {
-    m_PrimaryStringMatrix = {"zzz", 3, 4};
-    m_SecondaryStringMatrix = {3, 4, {"abc", "zzz","zzz","zzz","ba","zzz","zzz","abcdefghijk","zzz","gfedcba","zzz","fedcba"}};
+    m_PrimaryStringMatrix = {{3, 4}, "zzz"};
+    m_SecondaryStringMatrix = {3, 4, {"abc", "zzz", "zzz", "zzz", "ba", "zzz", "zzz", "abcdefghijk", "zzz", "gfedcba", "zzz", "fedcba"}};
     m_PrimaryStringMatrix.nBegin()->assign("abc");
     m_PrimaryStringMatrix.getNIterator(1, 0)->assign("ba");
     m_PrimaryStringMatrix.getNIterator(2, 1)->assign("gfedcba");
@@ -408,7 +408,7 @@ void NIteratorTests::testArrowOperatorWrite()
     QVERIFY2(m_PrimaryStringMatrix == m_SecondaryStringMatrix, "The arrow operator does not work correctly when writing the value!");
 
     // test with column capacity offset
-    m_PrimaryStringMatrix = {"zzz", 3, 4};
+    m_PrimaryStringMatrix = {{3, 4}, "zzz"};
     m_PrimaryStringMatrix.resize(3, 4, 3, 6);
     m_PrimaryStringMatrix.nBegin()->assign("abc");
     m_PrimaryStringMatrix.getNIterator(1, 0)->assign("ba");
@@ -468,7 +468,7 @@ void NIteratorTests::testSquareBracketsOperatorWrite()
 {
     m_SecondaryIntMatrix = {3, 4, {1, -20, -20, -20, -2, -20, -20, 11, -20, -6, -20, -12}};
 
-    m_PrimaryIntMatrix = {-20, 3, 4};
+    m_PrimaryIntMatrix = {{3, 4}, -20};
     m_PrimaryIntIterator = m_PrimaryIntMatrix.nBegin();
     m_PrimaryIntIterator[0] = 1;
     m_PrimaryIntIterator[1] = -2;
@@ -479,7 +479,7 @@ void NIteratorTests::testSquareBracketsOperatorWrite()
     QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
-    m_PrimaryIntMatrix = {-20, 3, 4};
+    m_PrimaryIntMatrix = {{3, 4}, -20};
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(1, 0);
     m_PrimaryIntIterator[-1] = 1;
     m_PrimaryIntIterator[0] = -2;
@@ -490,7 +490,7 @@ void NIteratorTests::testSquareBracketsOperatorWrite()
     QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
-    m_PrimaryIntMatrix = {-20, 3, 4};
+    m_PrimaryIntMatrix = {{3, 4}, -20};
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(2, 1);
     m_PrimaryIntIterator[-5] = 1;
     m_PrimaryIntIterator[-4] = -2;
@@ -501,7 +501,7 @@ void NIteratorTests::testSquareBracketsOperatorWrite()
     QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
-    m_PrimaryIntMatrix = {-20, 3, 4};
+    m_PrimaryIntMatrix = {{3, 4}, -20};
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(1, 3);
     m_PrimaryIntIterator[-10] = 1;
     m_PrimaryIntIterator[-9] = -2;
@@ -512,7 +512,7 @@ void NIteratorTests::testSquareBracketsOperatorWrite()
     QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
-    m_PrimaryIntMatrix = {-20, 3, 4};
+    m_PrimaryIntMatrix = {{3, 4}, -20};
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(2, 3);
     m_PrimaryIntIterator[-11] = 1;
     m_PrimaryIntIterator[-10] = -2;
@@ -524,7 +524,7 @@ void NIteratorTests::testSquareBracketsOperatorWrite()
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
     // test with row/column capacity offset
-    m_PrimaryIntMatrix = {-20, 3, 4};
+    m_PrimaryIntMatrix = {{3, 4}, -20};
     m_PrimaryIntMatrix.resize(3, 4, 5, 6);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.nBegin();
     m_PrimaryIntIterator[0] = 1;
@@ -537,7 +537,7 @@ void NIteratorTests::testSquareBracketsOperatorWrite()
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
     // test with row capacity offset
-    m_PrimaryIntMatrix = {-20, 3, 4};
+    m_PrimaryIntMatrix = {{3, 4}, -20};
     m_PrimaryIntMatrix.resize(3, 4, 5, 4);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(2, 1);
     m_PrimaryIntIterator[-5] = 1;
@@ -550,7 +550,7 @@ void NIteratorTests::testSquareBracketsOperatorWrite()
              "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
 
     // test with column capacity offset
-    m_PrimaryIntMatrix = {-20, 3, 4};
+    m_PrimaryIntMatrix = {{3, 4}, -20};
     m_PrimaryIntMatrix.resize(3, 4, 3, 6);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getNIterator(2, 3);
     m_PrimaryIntIterator[-11] = 1;
@@ -726,7 +726,7 @@ void NIteratorTests::testStdSort()
 
 void NIteratorTests::testIteratorCreation_data()
 {
-    m_PrimaryIntMatrix = {-5, 8, 9};
+    m_PrimaryIntMatrix = {{8, 9}, -5};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntNIter>("iterator");
@@ -761,7 +761,7 @@ void NIteratorTests::testIteratorCreation_data()
 
 void NIteratorTests::testIteratorsAreEqual_data()
 {
-    m_PrimaryIntMatrix = {-5, 8, 9};
+    m_PrimaryIntMatrix = {{8, 9}, -5};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntNIter>("firstIterator");
@@ -788,7 +788,7 @@ void NIteratorTests::testIteratorsAreEqual_data()
 
 void NIteratorTests::testIteratorEqualToItself_data()
 {
-    m_PrimaryIntMatrix = {-5, 8, 9};
+    m_PrimaryIntMatrix = {{8, 9}, -5};
     
     QTest::addColumn<IntNIter>("iterator");
 
@@ -868,7 +868,7 @@ void NIteratorTests::testOperatorMinusEqual_data()
 
 void NIteratorTests::testDifferenceOperator_data()
 {
-    m_PrimaryIntMatrix = {-5, 8, 9};
+    m_PrimaryIntMatrix = {{8, 9}, -5};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntNIter>("firstIterator");
@@ -1131,7 +1131,7 @@ void NIteratorTests::testStdFind_data()
 
 void NIteratorTests::_buildLessThanOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {-5, 8, 9};
+    m_PrimaryIntMatrix = {{8, 9}, -5};
     
     QTest::addColumn<IntNIter>("firstIterator");
     QTest::addColumn<IntNIter>("secondIterator");
@@ -1146,7 +1146,7 @@ void NIteratorTests::_buildLessThanOperatorTestingTable()
 
 void NIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {-5, 8, 9};
+    m_PrimaryIntMatrix = {{8, 9}, -5};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntNIter>("firstIterator");
@@ -1171,7 +1171,7 @@ void NIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
 
 void NIteratorTests::_buildIncrementOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {-5, 8, 9};
+    m_PrimaryIntMatrix = {{8, 9}, -5};
     
     QTest::addColumn<IntNIter>("inputIterator");
     QTest::addColumn<IntNIter>("expectedIterator");
@@ -1190,7 +1190,7 @@ void NIteratorTests::_buildIncrementOperatorTestingTable()
 
 void NIteratorTests::_buildDecrementOperatorTestingTable()
 {
-    m_PrimaryIntMatrix = {-5, 8, 9};
+    m_PrimaryIntMatrix = {{8, 9}, -5};
     
     QTest::addColumn<IntNIter>("inputIterator");
     QTest::addColumn<IntNIter>("expectedIterator");
@@ -1209,7 +1209,7 @@ void NIteratorTests::_buildDecrementOperatorTestingTable()
 
 void NIteratorTests::_buildOperatorPlusTestingTable()
 {
-    m_PrimaryIntMatrix = {-5, 8, 9};
+    m_PrimaryIntMatrix = {{8, 9}, -5};
     m_SecondaryIntMatrix.clear();
     
     QTest::addColumn<IntNIter>("iterator");
