@@ -85,7 +85,7 @@ void CommonExceptionTests::testIdenticalMatrixConstructorExceptions()
     QFETCH(matrix_size_t, columnsCount);
     QFETCH(int, elementValue);
 
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(elementValue, rowsCount, columnsCount);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix({rowsCount, columnsCount}, elementValue);});
 }
 
 void CommonExceptionTests::testDiagMatrixConstructorExceptions()
@@ -421,7 +421,7 @@ void CommonExceptionTests::testCatByRowExceptions_data()
     QTest::addColumn<ConcatMode>("mode");
 
     QTest::newRow("1: all different") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("2: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 1, 9} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("2: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{{1, 9}, 1} << ConcatMode::ALL_DIFFERENT;
     QTest::newRow("3: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 2, {7, 8}} << ConcatMode::DESTINATION_FIRST;
     QTest::newRow("4: all different") << IntMatrix{} << IntMatrix{2, 1, {1, 2}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
     QTest::newRow("5: destination second") << IntMatrix{} << IntMatrix{2, 2, {3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
@@ -435,7 +435,7 @@ void CommonExceptionTests::testCatByColumnExceptions_data()
     QTest::addColumn<ConcatMode>("mode");
 
     QTest::newRow("1: all different") << IntMatrix{} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 2, {7, 8, 9, 10}} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("2: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 1, 9} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("2: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{{1, 9}, 1} << ConcatMode::ALL_DIFFERENT;
     QTest::newRow("3: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{2, 1, {7, 8}} << ConcatMode::DESTINATION_FIRST;
     QTest::newRow("4: all different") << IntMatrix{} << IntMatrix{1, 2, {1, 2}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
     QTest::newRow("5: destination second") << IntMatrix{} << IntMatrix{2, 2, {3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
