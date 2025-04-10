@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <optional>
 #include <vector>
+#include <cmath>
 
 #include "../Utils/iteratorutils.h"
 #include "../Utils/errorhandling.h"
@@ -414,6 +415,8 @@ public:
     ConstZIterator end() const;
 
 private:
+    static consteval size_type _getMaxAllowedDimension();
+
     // resize matrix, returns number of preserved elements (rows * columns), new elements should be initialized by caller
     std::pair<size_type, size_type> _resizeWithUninitializedNewElements(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity, size_type columnCapacity);
 
@@ -2742,6 +2745,7 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
                          const std::vector<DataType>& vec)
 {
     CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
+    CHECK_ERROR_CONDITION(nrOfRows > _getMaxAllowedDimension() || nrOfRows > _getMaxAllowedDimension(), Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
     CHECK_ERROR_CONDITION(nrOfRows * nrOfColumns > vec.size(), Matr::errorMessages[Matr::Errors::INSUFFICIENT_ELEMENTS_FOR_INIT]);
 
     const size_type c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
@@ -4053,6 +4057,14 @@ template<typename DataType>
 typename Matrix<DataType>::ConstZIterator Matrix<DataType>::end() const
 {
     return constZEnd();
+}
+
+template <typename DataType>
+consteval Matrix<DataType>::size_type Matrix<DataType>::_getMaxAllowedDimension()
+{
+    constexpr size_type c_MaxSize{~size_type{0}};
+    constexpr size_type c_MaxAllowedPositiveSize{c_MaxSize >> 1}; // calculate max value that prevents overflow when converting size_type to diff_type (same number of bits but signed)
+    return static_cast<size_type>(std::sqrt(c_MaxAllowedPositiveSize));
 }
 
 template <typename DataType>
