@@ -18,6 +18,7 @@ class CapacityTests : public QObject
 private slots:
     // test functions
     void testIntMatrixCapacityWithCopiedVectorConstructor();
+    void testIntMatrixCapacityWithMovedVectorConstructor();
     void testIntMatrixCapacityWithIdenticalMatrixConstructor();
     void testIntMatrixCapacityWithDiagonalMatrixConstructor();
     void testIntMatrixCapacityWithCopyConstructor();
@@ -38,6 +39,7 @@ private slots:
     void testIntMatrixCapacityWithResizeAndEraseRowAndOrColumn(); // combined IntMatrix test (resize + erase row/column)
 
     void testStringMatrixCapacityWithCopiedVectorConstructor();
+    void testStringMatrixCapacityWithMovedVectorConstructor();
     void testStringMatrixCapacityWithIdenticalMatrixConstructor();
     void testStringMatrixCapacityWithDiagonalMatrixConstructor();
     void testStringMatrixCapacityWithCopyConstructor();
@@ -155,6 +157,59 @@ void CapacityTests::testIntMatrixCapacityWithCopiedVectorConstructor()
                                 }};
 
         TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 12, 10, 1, 1);
+    }
+}
+
+void CapacityTests::testIntMatrixCapacityWithMovedVectorConstructor()
+{
+    {
+        std::vector<int> vec{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        IntMatrix matrix{3, 4, std::move(vec)};
+
+        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 3, 5, 0, 0);
+    }
+
+    {
+        std::vector<int> vec{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        IntMatrix matrix{4, 3, std::move(vec)};
+
+        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 5, 3, 0, 0);
+    }
+
+    {
+        std::vector<int> vec{
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                            };
+
+        IntMatrix matrix{8, 10, std::move(vec)};
+
+        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 10, 12, 1, 1);
+    }
+
+    {
+        std::vector<int> vec{
+                                 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0, 0, 0
+                            };
+
+        IntMatrix matrix{10, 8, std::move(vec)};
+
+        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 12, 10, 1, 1);
     }
 }
 
@@ -328,6 +383,59 @@ void CapacityTests::testStringMatrixCapacityWithCopiedVectorConstructor()
                                    }};
 
         TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 12u, 10u, matrix_opt_size_t{1u}, matrix_opt_size_t{1u});
+    }
+}
+
+void CapacityTests::testStringMatrixCapacityWithMovedVectorConstructor()
+{
+    {
+        std::vector<std::string> vec{"Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"};
+        StringMatrix matrix{3, 4, std::move(vec)};
+
+        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 3u, 5u, matrix_opt_size_t{0u}, matrix_opt_size_t{0u});
+    }
+
+    {
+        std::vector<std::string> vec{"Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"};
+        StringMatrix matrix{4, 3, std::move(vec)};
+
+        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 5u, 3u, matrix_opt_size_t{0u}, matrix_opt_size_t{0u});
+    }
+
+    {
+        std::vector<std::string> vec{
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"
+                                    };
+
+        StringMatrix matrix{8, 10, std::move(vec)};
+
+        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 10u, 12u, matrix_opt_size_t{1u}, matrix_opt_size_t{1u});
+    }
+
+    {
+        std::vector<std::string> vec{
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
+                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"
+                                    };
+
+        StringMatrix matrix{10, 8, std::move(vec)};
+
+        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 12u, 10u, matrix_opt_size_t{1u}, matrix_opt_size_t{1u});
     }
 }
 

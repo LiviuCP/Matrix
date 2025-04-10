@@ -12,6 +12,7 @@ class ConstructionAndAssignmentTests : public QObject
 private slots:
     void testIntMatrixDefaultConstructor();
     void testIntMatrixCopiedVectorConstructor();
+    void testIntMatrixMovedVectorConstructor();
     void testIntMatrixIdenticalMatrixConstructor();
     void testIntMatrixDiagonalMatrixConstructor();
     void testIntMatrixCopyConstructor();
@@ -21,6 +22,7 @@ private slots:
 
     void testStringMatrixDefaultConstructor();
     void testStringMatrixCopiedVectorConstructor();
+    void testStringMatrixMovedVectorConstructor();
     void testStringMatrixIdenticalMatrixConstructor();
     void testStringMatrixDiagonalMatrixConstructor();
     void testStringMatrixCopyConstructor();
@@ -70,6 +72,52 @@ void ConstructionAndAssignmentTests::testIntMatrixCopiedVectorConstructor()
             lm.at(5, 0) == -51 && lm.at(5, 1) == 52 && lm.at(5, 2) == -53 && lm.at(5, 3) == 54 && lm.at(5, 4) == -55 && lm.at(5, 5) == 56 && lm.at(5, 6) == -57 && lm.at(5, 7) == 58 && lm.at(5, 8) == -59 && lm.at(5, 9) == 60 &&
             lm.at(6, 0) == -61 && lm.at(6, 1) == 62 && lm.at(6, 2) == -63 && lm.at(6, 3) == 64 && lm.at(6, 4) == -65 && lm.at(6, 5) == 66 && lm.at(6, 6) == -67 && lm.at(6, 7) == 68 && lm.at(6, 8) == -69 && lm.at(6, 9) == 70 &&
             lm.at(7, 0) == -71 && lm.at(7, 1) == 72 && lm.at(7, 2) == -73 && lm.at(7, 3) == 74 && lm.at(7, 4) == -75 && lm.at(7, 5) == 76 && lm.at(7, 6) == -77 && lm.at(7, 7) == 78 && lm.at(7, 8) == -79 && lm.at(7, 9) == 80);
+}
+
+// actually a copy operation here
+void ConstructionAndAssignmentTests::testIntMatrixMovedVectorConstructor()
+{
+    std::vector<int> smallVector{1, 2, 3, 4, 5, 6};
+    IntMatrix smallMatrix{2, 3, std::move(smallVector)};
+
+    TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 2, 3, 2, 3, 0, 0);
+
+    QVERIFY2(smallMatrix.at(0, 0) == 1 &&
+             smallMatrix.at(0, 1) == 2 &&
+             smallMatrix.at(0, 2) == 3 &&
+             smallMatrix.at(1, 0) == 4 &&
+             smallMatrix.at(1, 1) == 5 &&
+             smallMatrix.at(1, 2) == 6, "Matrix elements have not been correctly initialized by the moved vector constructor");
+
+    std::vector<int> largeVector{ -1,  2,  -3,  4,  -5,  6,  -7,  8,  -9, 10,
+                                 -11, 12, -13, 14, -15, 16, -17, 18, -19, 20,
+                                 -21, 22, -23, 24, -25, 26, -27, 28, -29, 30,
+                                 -31, 32, -33, 34, -35, 36, -37, 38, -39, 40,
+                                 -41, 42, -43, 44, -45, 46, -47, 48, -49, 50,
+                                 -51, 52, -53, 54, -55, 56, -57, 58, -59, 60,
+                                 -61, 62, -63, 64, -65, 66, -67, 68, -69, 70,
+                                 -71, 72, -73, 74, -75, 76, -77, 78, -79, 80
+                                };
+
+    const std::vector<int> c_LargeVectorRef{largeVector};
+
+    IntMatrix largeMatrix{8, 10, std::move(largeVector)};
+
+    TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 8, 10, 10, 12, 1, 1);
+
+    const IntMatrix& lm{largeMatrix};
+
+    QVERIFY(lm.at(0, 0) ==  -1 && lm.at(0, 1) ==  2 && lm.at(0, 2) ==  -3 && lm.at(0, 3) ==  4 && lm.at(0, 4) ==  -5 && lm.at(0, 5) ==  6 && lm.at(0, 6) ==  -7 && lm.at(0, 7) ==  8 && lm.at(0, 8) ==  -9 && lm.at(0, 9) == 10 &&
+            lm.at(1, 0) == -11 && lm.at(1, 1) == 12 && lm.at(1, 2) == -13 && lm.at(1, 3) == 14 && lm.at(1, 4) == -15 && lm.at(1, 5) == 16 && lm.at(1, 6) == -17 && lm.at(1, 7) == 18 && lm.at(1, 8) == -19 && lm.at(1, 9) == 20 &&
+            lm.at(2, 0) == -21 && lm.at(2, 1) == 22 && lm.at(2, 2) == -23 && lm.at(2, 3) == 24 && lm.at(2, 4) == -25 && lm.at(2, 5) == 26 && lm.at(2, 6) == -27 && lm.at(2, 7) == 28 && lm.at(2, 8) == -29 && lm.at(2, 9) == 30 &&
+            lm.at(3, 0) == -31 && lm.at(3, 1) == 32 && lm.at(3, 2) == -33 && lm.at(3, 3) == 34 && lm.at(3, 4) == -35 && lm.at(3, 5) == 36 && lm.at(3, 6) == -37 && lm.at(3, 7) == 38 && lm.at(3, 8) == -39 && lm.at(3, 9) == 40 &&
+            lm.at(4, 0) == -41 && lm.at(4, 1) == 42 && lm.at(4, 2) == -43 && lm.at(4, 3) == 44 && lm.at(4, 4) == -45 && lm.at(4, 5) == 46 && lm.at(4, 6) == -47 && lm.at(4, 7) == 48 && lm.at(4, 8) == -49 && lm.at(4, 9) == 50 &&
+            lm.at(5, 0) == -51 && lm.at(5, 1) == 52 && lm.at(5, 2) == -53 && lm.at(5, 3) == 54 && lm.at(5, 4) == -55 && lm.at(5, 5) == 56 && lm.at(5, 6) == -57 && lm.at(5, 7) == 58 && lm.at(5, 8) == -59 && lm.at(5, 9) == 60 &&
+            lm.at(6, 0) == -61 && lm.at(6, 1) == 62 && lm.at(6, 2) == -63 && lm.at(6, 3) == 64 && lm.at(6, 4) == -65 && lm.at(6, 5) == 66 && lm.at(6, 6) == -67 && lm.at(6, 7) == 68 && lm.at(6, 8) == -69 && lm.at(6, 9) == 70 &&
+            lm.at(7, 0) == -71 && lm.at(7, 1) == 72 && lm.at(7, 2) == -73 && lm.at(7, 3) == 74 && lm.at(7, 4) == -75 && lm.at(7, 5) == 76 && lm.at(7, 6) == -77 && lm.at(7, 7) == 78 && lm.at(7, 8) == -79 && lm.at(7, 9) == 80);
+
+    // check that the content of the vector is actually copied (int cannot be moved as it's a primitive)
+    QVERIFY(largeVector == c_LargeVectorRef);
 }
 
 void ConstructionAndAssignmentTests::testIntMatrixIdenticalMatrixConstructor()
@@ -575,6 +623,51 @@ void ConstructionAndAssignmentTests::testStringMatrixCopiedVectorConstructor()
             lm.at(5, 0) == "-51a" && lm.at(5, 1) == "52B" && lm.at(5, 2) == "-53c" && lm.at(5, 3) == "54D" && lm.at(5, 4) == "-55e" && lm.at(5, 5) == "56F" && lm.at(5, 6) == "-57g" && lm.at(5, 7) == "58H" && lm.at(5, 8) == "-59i" && lm.at(5, 9) == "60J" &&
             lm.at(6, 0) == "-61a" && lm.at(6, 1) == "62B" && lm.at(6, 2) == "-63c" && lm.at(6, 3) == "64D" && lm.at(6, 4) == "-65e" && lm.at(6, 5) == "66F" && lm.at(6, 6) == "-67g" && lm.at(6, 7) == "68H" && lm.at(6, 8) == "-69i" && lm.at(6, 9) == "70J" &&
             lm.at(7, 0) == "-71a" && lm.at(7, 1) == "72B" && lm.at(7, 2) == "-73c" && lm.at(7, 3) == "74D" && lm.at(7, 4) == "-75e" && lm.at(7, 5) == "76F" && lm.at(7, 6) == "-77g" && lm.at(7, 7) == "78H" && lm.at(7, 8) == "-79i" && lm.at(7, 9) == "80J");
+}
+
+void ConstructionAndAssignmentTests::testStringMatrixMovedVectorConstructor()
+{
+    std::vector<std::string> smallVector{"First", "Second", "Third", "Fourth", "Fifth", "Sixth"};
+    Matrix<std::string> smallMatrix{2, 3, std::move(smallVector)};
+
+    TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(smallMatrix, 2, 3, 2, 3, 0, 0);
+
+    QVERIFY2(smallMatrix.at(0, 0) == "First" &&
+             smallMatrix.at(0, 1) == "Second" &&
+             smallMatrix.at(0, 2) == "Third" &&
+             smallMatrix.at(1, 0) == "Fourth" &&
+             smallMatrix.at(1, 1) == "Fifth" &&
+             smallMatrix.at(1, 2) == "Sixth", "Matrix elements have not been correctly initialized by the moved vector constructor");
+
+    std::vector<std::string> largeVector{ "-1a",  "2B",  "-3c",  "4D",  "-5e",  "6F",  "-7g",  "8H",  "-9i", "10J",
+                                         "-11a", "12B", "-13c", "14D", "-15e", "16F", "-17g", "18H", "-19i", "20J",
+                                         "-21a", "22B", "-23c", "24D", "-25e", "26F", "-27g", "28H", "-29i", "30J",
+                                         "-31a", "32B", "-33c", "34D", "-35e", "36F", "-37g", "38H", "-39i", "40J",
+                                         "-41a", "42B", "-43c", "44D", "-45e", "46F", "-47g", "48H", "-49i", "50J",
+                                         "-51a", "52B", "-53c", "54D", "-55e", "56F", "-57g", "58H", "-59i", "60J",
+                                         "-61a", "62B", "-63c", "64D", "-65e", "66F", "-67g", "68H", "-69i", "70J",
+                                         "-71a", "72B", "-73c", "74D", "-75e", "76F", "-77g", "78H", "-79i", "80J"
+                                        };
+
+    const std::vector<std::string> c_LargeVectorRef{largeVector};
+
+    Matrix<std::string> largeMatrix{8, 10, std::move(largeVector)};
+
+    TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(largeMatrix, 8, 10, 10, 12, 1, 1);
+
+    const StringMatrix& lm{largeMatrix};
+
+    QVERIFY(lm.at(0, 0) ==  "-1a" && lm.at(0, 1) ==  "2B" && lm.at(0, 2) ==  "-3c" && lm.at(0, 3) ==  "4D" && lm.at(0, 4) ==  "-5e" && lm.at(0, 5) ==  "6F" && lm.at(0, 6) ==  "-7g" && lm.at(0, 7) ==  "8H" && lm.at(0, 8) ==  "-9i" && lm.at(0, 9) == "10J" &&
+            lm.at(1, 0) == "-11a" && lm.at(1, 1) == "12B" && lm.at(1, 2) == "-13c" && lm.at(1, 3) == "14D" && lm.at(1, 4) == "-15e" && lm.at(1, 5) == "16F" && lm.at(1, 6) == "-17g" && lm.at(1, 7) == "18H" && lm.at(1, 8) == "-19i" && lm.at(1, 9) == "20J" &&
+            lm.at(2, 0) == "-21a" && lm.at(2, 1) == "22B" && lm.at(2, 2) == "-23c" && lm.at(2, 3) == "24D" && lm.at(2, 4) == "-25e" && lm.at(2, 5) == "26F" && lm.at(2, 6) == "-27g" && lm.at(2, 7) == "28H" && lm.at(2, 8) == "-29i" && lm.at(2, 9) == "30J" &&
+            lm.at(3, 0) == "-31a" && lm.at(3, 1) == "32B" && lm.at(3, 2) == "-33c" && lm.at(3, 3) == "34D" && lm.at(3, 4) == "-35e" && lm.at(3, 5) == "36F" && lm.at(3, 6) == "-37g" && lm.at(3, 7) == "38H" && lm.at(3, 8) == "-39i" && lm.at(3, 9) == "40J" &&
+            lm.at(4, 0) == "-41a" && lm.at(4, 1) == "42B" && lm.at(4, 2) == "-43c" && lm.at(4, 3) == "44D" && lm.at(4, 4) == "-45e" && lm.at(4, 5) == "46F" && lm.at(4, 6) == "-47g" && lm.at(4, 7) == "48H" && lm.at(4, 8) == "-49i" && lm.at(4, 9) == "50J" &&
+            lm.at(5, 0) == "-51a" && lm.at(5, 1) == "52B" && lm.at(5, 2) == "-53c" && lm.at(5, 3) == "54D" && lm.at(5, 4) == "-55e" && lm.at(5, 5) == "56F" && lm.at(5, 6) == "-57g" && lm.at(5, 7) == "58H" && lm.at(5, 8) == "-59i" && lm.at(5, 9) == "60J" &&
+            lm.at(6, 0) == "-61a" && lm.at(6, 1) == "62B" && lm.at(6, 2) == "-63c" && lm.at(6, 3) == "64D" && lm.at(6, 4) == "-65e" && lm.at(6, 5) == "66F" && lm.at(6, 6) == "-67g" && lm.at(6, 7) == "68H" && lm.at(6, 8) == "-69i" && lm.at(6, 9) == "70J" &&
+            lm.at(7, 0) == "-71a" && lm.at(7, 1) == "72B" && lm.at(7, 2) == "-73c" && lm.at(7, 3) == "74D" && lm.at(7, 4) == "-75e" && lm.at(7, 5) == "76F" && lm.at(7, 6) == "-77g" && lm.at(7, 7) == "78H" && lm.at(7, 8) == "-79i" && lm.at(7, 9) == "80J");
+
+    // check that the content of the vector is actually moved
+    QVERIFY(largeVector != c_LargeVectorRef);
 }
 
 void ConstructionAndAssignmentTests::testStringMatrixIdenticalMatrixConstructor()

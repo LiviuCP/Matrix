@@ -25,6 +25,7 @@ class CommonExceptionTests : public QObject
 private slots:
     // test functions
     void testCopiedVectorConstructorExceptions();
+    void testMovedVectorConstructorExceptions();
     void testIdenticalMatrixConstructorExceptions();
     void testDiagMatrixConstructorExceptions();
     void testFunctionAtExceptions();
@@ -77,6 +78,17 @@ void CommonExceptionTests::testCopiedVectorConstructorExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(2, 3, {1, 2, 3, 4});});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(5, 0, {1, 2, 3, 4});});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(5, 5, {1, 2, 3, 4});});
+}
+
+void CommonExceptionTests::testMovedVectorConstructorExceptions()
+{
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {std::vector<int> vec{1, 2, 3, 4}; IntMatrix matrix(0, 0, std::move(vec));});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {std::vector<int> vec{1, 2, 3, 4}; IntMatrix matrix(0, 2, std::move(vec));});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {std::vector<int> vec{1, 2, 3, 4}; IntMatrix matrix(0, 5, std::move(vec));});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {std::vector<int> vec{1, 2, 3, 4}; IntMatrix matrix(2, 0, std::move(vec));});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {std::vector<int> vec{1, 2, 3, 4}; IntMatrix matrix(2, 3, std::move(vec));});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {std::vector<int> vec{1, 2, 3, 4}; IntMatrix matrix(5, 0, std::move(vec));});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {std::vector<int> vec{1, 2, 3, 4}; IntMatrix matrix(5, 5, std::move(vec));});
 }
 
 void CommonExceptionTests::testIdenticalMatrixConstructorExceptions()

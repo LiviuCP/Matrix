@@ -229,6 +229,7 @@ public:
 
     Matrix();
     Matrix(size_type nrOfRows, size_type nrOfColumns, const std::vector<DataType>& vec);
+    Matrix(size_type nrOfRows, size_type nrOfColumns, std::vector<DataType>&& vec);
     Matrix(dimensions_t dimensions, const DataType& value);
     Matrix(size_type nrOfRowsColumns, const std::pair<DataType, DataType>& diagMatrixValues);
     Matrix(const Matrix& matrix);
@@ -2756,6 +2757,31 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
     for (size_type absRowNr{*m_RowCapacityOffset}; absRowNr != *m_RowCapacityOffset + m_NrOfRows; ++absRowNr)
     {
         std::uninitialized_copy_n(vecIterator, m_NrOfColumns, m_pBaseArrayPtr[absRowNr]);
+        vecIterator += m_NrOfColumns;
+    }
+}
+
+template<typename DataType>
+Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
+                         Matrix<DataType>::size_type nrOfColumns,
+                         std::vector<DataType>&& vec)
+{
+    CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
+    CHECK_ERROR_CONDITION(nrOfRows * nrOfColumns > vec.size(), Matr::errorMessages[Matr::Errors::INSUFFICIENT_ELEMENTS_FOR_INIT]);
+
+    const size_type c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
+    const size_type c_ColumnCapacityToAlloc{nrOfColumns + nrOfColumns / 4};
+
+    _allocMemory(nrOfRows, nrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
+
+    typename std::vector<DataType>::iterator vecIterator{vec.begin()};
+
+    /* absRowNr = absolute row number, i.e. number of the row within "physical" matrix (that includes free row/column capacity)
+       When the "abs" keyword is missing (i.e. rowNr), then the row number within "logical" (actually used) matrix (excluding free capacity) is meant (see other methods too)
+    */
+    for (size_type absRowNr{*m_RowCapacityOffset}; absRowNr != *m_RowCapacityOffset + m_NrOfRows; ++absRowNr)
+    {
+        std::uninitialized_move_n(vecIterator, m_NrOfColumns, m_pBaseArrayPtr[absRowNr]);
         vecIterator += m_NrOfColumns;
     }
 }

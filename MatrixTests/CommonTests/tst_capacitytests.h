@@ -7,6 +7,12 @@
              matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
              matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Copied vector constructor initialized matrix with wrong capacity (offset)");
 
+#define TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset) \
+    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
+             matrix.getColumnCapacity() == expectedColumnCapacity && \
+             matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
+             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Moved vector constructor initialized matrix with wrong capacity (offset)");
+
 #define TEST_CAPACITY_WITH_IDENTICAL_MATRIX_CONSTRUCTOR(matrixType) \
     QFETCH(Matrix<matrixType>::size_type, rowsCount); \
     QFETCH(Matrix<matrixType>::size_type, columnsCount); \
