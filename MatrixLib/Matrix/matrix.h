@@ -2747,7 +2747,7 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
     const size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
 
     CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
-    CHECK_ERROR_CONDITION(nrOfRows > c_MaxAllowedDimension || nrOfRows > c_MaxAllowedDimension, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
+    CHECK_ERROR_CONDITION(nrOfRows > c_MaxAllowedDimension || nrOfColumns > c_MaxAllowedDimension, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
     CHECK_ERROR_CONDITION(nrOfRows * nrOfColumns > vec.size(), Matr::errorMessages[Matr::Errors::INSUFFICIENT_ELEMENTS_FOR_INIT]);
 
     const size_type c_RowCapacityToAlloc{std::min(nrOfRows + nrOfRows / 4, c_MaxAllowedDimension)};

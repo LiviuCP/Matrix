@@ -3,6 +3,7 @@
 
 #include <QPointF>
 #include <string>
+#include <cmath>
 
 #include "matrix.h"
 
@@ -51,6 +52,8 @@ using StringMIter = Matrix<std::string>::MIterator;
 using StringConstMIter = Matrix<std::string>::ConstMIterator;
 using StringReverseMIter = Matrix<std::string>::ReverseMIterator;
 using StringConstReverseMIter = Matrix<std::string>::ConstReverseMIterator;
+
+static const matrix_size_t c_MaxAllowedDimension{static_cast<matrix_size_t>(std::sqrt(~matrix_size_t{0} >> 1))};
 
 // matrix concatenation
 enum class ConcatMode : unsigned short

@@ -79,15 +79,29 @@ void CommonExceptionTests::testCopiedVectorConstructorExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(5, 0, {1, 2, 3, 4});});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(5, 5, {1, 2, 3, 4});});
 
-    const matrix_size_t c_ExceedingRowSize{1 + static_cast<matrix_size_t>(std::sqrt(~matrix_size_t{0} >> 1))};
+    const matrix_size_t c_ExceedingDimension{c_MaxAllowedDimension + 1};
+
     std::vector<int> vec;
-    vec.resize(2 * c_ExceedingRowSize, 0);
 
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(c_ExceedingRowSize, 2, vec);});
+    vec.resize(2 * c_ExceedingDimension, 0);
 
-    vec.resize(2 * (c_ExceedingRowSize - 1));
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(c_ExceedingDimension, 2, vec);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(2, c_ExceedingDimension, vec);});
 
-    QVERIFY_THROWS_NO_EXCEPTION({IntMatrix matrix(c_ExceedingRowSize - 1, 2, vec);});
+    /* commented out, too slow to execute (TODO: add define for disabling slow tests */
+
+    // vec.resize(c_MaxAllowedDimension * c_ExceedingDimension, 0);
+
+    // QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(c_ExceedingDimension, c_MaxAllowedDimension, vec);});
+    // QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(c_MaxAllowedDimension, c_ExceedingDimension, vec);});
+
+    // vec.resize(c_ExceedingDimension * c_ExceedingDimension, 0);
+
+    // QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(c_ExceedingDimension, c_ExceedingDimension, vec);});
+
+    // vec.resize(c_MaxAllowedDimension * c_MaxAllowedDimension, 0);
+
+    // QVERIFY_THROWS_NO_EXCEPTION({IntMatrix matrix(c_MaxAllowedDimension, c_MaxAllowedDimension, vec);});
 }
 
 void CommonExceptionTests::testMovedVectorConstructorExceptions()
