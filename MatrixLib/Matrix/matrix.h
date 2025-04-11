@@ -2744,12 +2744,14 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
                          Matrix<DataType>::size_type nrOfColumns,
                          const std::vector<DataType>& vec)
 {
+    constexpr size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
+
     CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
-    CHECK_ERROR_CONDITION(nrOfRows > _getMaxAllowedDimension() || nrOfRows > _getMaxAllowedDimension(), Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
+    CHECK_ERROR_CONDITION(nrOfRows > c_MaxAllowedDimension || nrOfRows > c_MaxAllowedDimension, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
     CHECK_ERROR_CONDITION(nrOfRows * nrOfColumns > vec.size(), Matr::errorMessages[Matr::Errors::INSUFFICIENT_ELEMENTS_FOR_INIT]);
 
-    const size_type c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
-    const size_type c_ColumnCapacityToAlloc{nrOfColumns + nrOfColumns / 4};
+    const size_type c_RowCapacityToAlloc{std::min(nrOfRows + nrOfRows / 4, c_MaxAllowedDimension)};
+    const size_type c_ColumnCapacityToAlloc{std::min(nrOfColumns + nrOfColumns / 4, c_MaxAllowedDimension)};
 
     _allocMemory(nrOfRows, nrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
 
@@ -2770,11 +2772,14 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
                          Matrix<DataType>::size_type nrOfColumns,
                          std::vector<DataType>&& vec)
 {
+    constexpr size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
+
     CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
+    CHECK_ERROR_CONDITION(nrOfRows > c_MaxAllowedDimension || nrOfRows > c_MaxAllowedDimension, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
     CHECK_ERROR_CONDITION(nrOfRows * nrOfColumns > vec.size(), Matr::errorMessages[Matr::Errors::INSUFFICIENT_ELEMENTS_FOR_INIT]);
 
-    const size_type c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
-    const size_type c_ColumnCapacityToAlloc{nrOfColumns + nrOfColumns / 4};
+    const size_type c_RowCapacityToAlloc{std::min(nrOfRows + nrOfRows / 4, c_MaxAllowedDimension)};
+    const size_type c_ColumnCapacityToAlloc{std::min(nrOfColumns + nrOfColumns / 4, c_MaxAllowedDimension)};
 
     _allocMemory(nrOfRows, nrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
 
@@ -2793,12 +2798,14 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
 template <typename DataType>
 Matrix<DataType>::Matrix(Matrix<DataType>::dimensions_t dimensions, const DataType& value)
 {
+    constexpr size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
     const auto&[nrOfRows, nrOfColumns] = dimensions;
 
     CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
+    CHECK_ERROR_CONDITION(nrOfRows > c_MaxAllowedDimension || nrOfRows > c_MaxAllowedDimension, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
 
-    const size_type c_RowCapacityToAlloc{nrOfRows + nrOfRows / 4};
-    const size_type c_ColumnCapacityToAlloc{nrOfColumns + nrOfColumns / 4};
+    const size_type c_RowCapacityToAlloc{std::min(nrOfRows + nrOfRows / 4, c_MaxAllowedDimension)};
+    const size_type c_ColumnCapacityToAlloc{std::min(nrOfColumns + nrOfColumns / 4, c_MaxAllowedDimension)};
 
     _allocMemory(nrOfRows, nrOfColumns, c_RowCapacityToAlloc, c_ColumnCapacityToAlloc);
     _fillInitItems(0, 0, nrOfRows, nrOfColumns, value);
@@ -2808,9 +2815,13 @@ template <typename DataType>
 Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRowsColumns,
                          const std::pair<DataType, DataType>& diagMatrixValues)
 {
-    CHECK_ERROR_CONDITION(0 == nrOfRowsColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
+    constexpr size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
 
-    const size_type c_RowColumnCapacityToAlloc{nrOfRowsColumns + nrOfRowsColumns / 4};
+    CHECK_ERROR_CONDITION(0 == nrOfRowsColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
+    CHECK_ERROR_CONDITION(nrOfRowsColumns > c_MaxAllowedDimension, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
+
+    const size_type c_RowColumnCapacityToAlloc{std::min(nrOfRowsColumns + nrOfRowsColumns / 4, c_MaxAllowedDimension)};
+
     _allocMemory(nrOfRowsColumns, nrOfRowsColumns, c_RowColumnCapacityToAlloc, c_RowColumnCapacityToAlloc);
 
     const auto& [allButMainDiagValue, mainDiagValue]{diagMatrixValues};
@@ -4430,8 +4441,10 @@ void Matrix<DataType>::_copyAllItemsFromMatrix(const Matrix<DataType>& matrix)
 {
     if (&matrix != this)
     {
-        const size_type c_RowCapacityToAlloc{matrix.m_NrOfRows + matrix.m_NrOfRows / 4};
-        const size_type c_ColumnCapacityToAlloc{matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4};
+        constexpr size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
+
+        const size_type c_RowCapacityToAlloc{std::min(matrix.m_NrOfRows + matrix.m_NrOfRows / 4, c_MaxAllowedDimension)};
+        const size_type c_ColumnCapacityToAlloc{std::min(matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4, c_MaxAllowedDimension)};
 
         if (matrix.isEmpty())
         {
