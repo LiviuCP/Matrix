@@ -415,7 +415,7 @@ public:
     ConstZIterator end() const;
 
 private:
-    static consteval size_type _getMaxAllowedDimension();
+    static size_type _getMaxAllowedDimension();
 
     // resize matrix, returns number of preserved elements (rows * columns), new elements should be initialized by caller
     std::pair<size_type, size_type> _resizeWithUninitializedNewElements(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity, size_type columnCapacity);
@@ -2744,7 +2744,7 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
                          Matrix<DataType>::size_type nrOfColumns,
                          const std::vector<DataType>& vec)
 {
-    constexpr size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
+    const size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
 
     CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
     CHECK_ERROR_CONDITION(nrOfRows > c_MaxAllowedDimension || nrOfRows > c_MaxAllowedDimension, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
@@ -2772,7 +2772,7 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
                          Matrix<DataType>::size_type nrOfColumns,
                          std::vector<DataType>&& vec)
 {
-    constexpr size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
+    const size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
 
     CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
     CHECK_ERROR_CONDITION(nrOfRows > c_MaxAllowedDimension || nrOfRows > c_MaxAllowedDimension, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
@@ -2798,7 +2798,7 @@ Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRows,
 template <typename DataType>
 Matrix<DataType>::Matrix(Matrix<DataType>::dimensions_t dimensions, const DataType& value)
 {
-    constexpr size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
+    const size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
     const auto&[nrOfRows, nrOfColumns] = dimensions;
 
     CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
@@ -2815,7 +2815,7 @@ template <typename DataType>
 Matrix<DataType>::Matrix(Matrix<DataType>::size_type nrOfRowsColumns,
                          const std::pair<DataType, DataType>& diagMatrixValues)
 {
-    constexpr size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
+    const size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
 
     CHECK_ERROR_CONDITION(0 == nrOfRowsColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
     CHECK_ERROR_CONDITION(nrOfRowsColumns > c_MaxAllowedDimension, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
@@ -4071,7 +4071,7 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::end() const
 }
 
 template <typename DataType>
-consteval Matrix<DataType>::size_type Matrix<DataType>::_getMaxAllowedDimension()
+typename Matrix<DataType>::size_type Matrix<DataType>::_getMaxAllowedDimension()
 {
     constexpr size_type c_MaxSize{~size_type{0}};
     constexpr size_type c_MaxAllowedPositiveSize{c_MaxSize >> 1}; // calculate max value that prevents overflow when converting size_type to diff_type (same number of bits but signed)
@@ -4441,7 +4441,7 @@ void Matrix<DataType>::_copyAllItemsFromMatrix(const Matrix<DataType>& matrix)
 {
     if (&matrix != this)
     {
-        constexpr size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
+        const size_type c_MaxAllowedDimension{_getMaxAllowedDimension()};
 
         const size_type c_RowCapacityToAlloc{std::min(matrix.m_NrOfRows + matrix.m_NrOfRows / 4, c_MaxAllowedDimension)};
         const size_type c_ColumnCapacityToAlloc{std::min(matrix.m_NrOfColumns + matrix.m_NrOfColumns / 4, c_MaxAllowedDimension)};
