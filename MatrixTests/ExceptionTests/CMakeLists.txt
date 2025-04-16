@@ -29,4 +29,3 @@ add_test(NAME IteratorExceptionTests COMMAND IteratorExceptionTests)
 
 target_link_libraries(CommonExceptionTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(IteratorExceptionTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
-
