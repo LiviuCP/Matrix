@@ -122,7 +122,7 @@ void CommonExceptionTests::testFunctionAtExceptions()
 void CommonExceptionTests::testSquareBracketsOperatorExceptions()
 {
     QFETCH(IntMatrix, srcMatrix);
-    QFETCH(matrix_size_t, index);
+    QFETCH(matrix_diff_t, index);
     QFETCH(int, value);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix{srcMatrix}; matrix[index] = value;});
@@ -370,11 +370,13 @@ void CommonExceptionTests::testFunctionAtExceptions_data()
 void CommonExceptionTests::testSquareBracketsOperatorExceptions_data()
 {
     QTest::addColumn<IntMatrix>("srcMatrix");
-    QTest::addColumn<matrix_size_t>("index");
+    QTest::addColumn<matrix_diff_t>("index");
     QTest::addColumn<int>("value");
 
-    QTest::newRow("1: index out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{6u} << 0;
-    QTest::newRow("2: empty matrix") << IntMatrix{} << matrix_size_t{0u} << 0;
+    QTest::newRow("1: negative index, non-empty matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_diff_t{-1} << 0;
+    QTest::newRow("2: index out of range, non-empty matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_diff_t{6} << 0;
+    QTest::newRow("3: negative index, empty matrix") << IntMatrix{} << matrix_diff_t{-1} << 0;
+    QTest::newRow("4: index out of range, empty matrix") << IntMatrix{} << matrix_diff_t{0} << 0;
 }
 
 void CommonExceptionTests::testResizeWithoutFillingInNewValuesExceptions_data()

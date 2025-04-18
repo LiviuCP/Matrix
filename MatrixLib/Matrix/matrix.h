@@ -239,8 +239,8 @@ public:
     DataType& at(size_type rowNr, size_type columnNr);
     const DataType& at(size_type rowNr, size_type columnNr) const;
 
-    DataType& operator[] (size_type index);
-    const DataType& operator[](size_type index) const;
+    DataType& operator[] (diff_type index);
+    const DataType& operator[](diff_type index) const;
 
     Matrix& operator=(const Matrix& matrix);
     Matrix& operator=(Matrix&& matrix);
@@ -300,56 +300,56 @@ public:
     ZIterator zRowBegin(size_type rowNr);
     ZIterator zRowEnd(size_type rowNr);
     ZIterator getZIterator(size_type rowNr, size_type columnNr);
-    ZIterator getZIterator(size_type index);
+    ZIterator getZIterator(diff_type index);
 
     ConstZIterator constZBegin() const;
     ConstZIterator constZEnd() const;
     ConstZIterator constZRowBegin(size_type rowNr) const;
     ConstZIterator constZRowEnd(size_type rowNr) const;
     ConstZIterator getConstZIterator(size_type rowNr, size_type columnNr) const;
-    ConstZIterator getConstZIterator(size_type index) const;
+    ConstZIterator getConstZIterator(diff_type index) const;
 
     ReverseZIterator reverseZBegin();
     ReverseZIterator reverseZEnd();
     ReverseZIterator reverseZRowBegin(size_type rowNr);
     ReverseZIterator reverseZRowEnd(size_type rowNr);
     ReverseZIterator getReverseZIterator(size_type rowNr, size_type columnNr);
-    ReverseZIterator getReverseZIterator(size_type index);
+    ReverseZIterator getReverseZIterator(diff_type index);
 
     ConstReverseZIterator constReverseZBegin() const;
     ConstReverseZIterator constReverseZEnd() const;
     ConstReverseZIterator constReverseZRowBegin(size_type rowNr) const;
     ConstReverseZIterator constReverseZRowEnd(size_type rowNr) const;
     ConstReverseZIterator getConstReverseZIterator(size_type rowNr, size_type columnNr) const;
-    ConstReverseZIterator getConstReverseZIterator(size_type index) const;
+    ConstReverseZIterator getConstReverseZIterator(diff_type index) const;
 
     NIterator nBegin();
     NIterator nEnd();
     NIterator nColumnBegin(size_type columnNr);
     NIterator nColumnEnd(size_type columnNr);
     NIterator getNIterator(size_type rowNr, size_type columnNr);
-    NIterator getNIterator(size_type index);
+    NIterator getNIterator(diff_type index);
 
     ConstNIterator constNBegin() const;
     ConstNIterator constNEnd() const;
     ConstNIterator constNColumnBegin(size_type columnNr) const;
     ConstNIterator constNColumnEnd(size_type columnNr) const;
     ConstNIterator getConstNIterator(size_type rowNr, size_type columnNr) const;
-    ConstNIterator getConstNIterator(size_type index) const;
+    ConstNIterator getConstNIterator(diff_type index) const;
 
     ReverseNIterator reverseNBegin();
     ReverseNIterator reverseNEnd();
     ReverseNIterator reverseNColumnBegin(size_type columnNr);
     ReverseNIterator reverseNColumnEnd(size_type columnNr);
     ReverseNIterator getReverseNIterator(size_type rowNr, size_type columnNr);
-    ReverseNIterator getReverseNIterator(size_type index);
+    ReverseNIterator getReverseNIterator(diff_type index);
 
     ConstReverseNIterator constReverseNBegin() const;
     ConstReverseNIterator constReverseNEnd() const;
     ConstReverseNIterator constReverseNColumnBegin(size_type columnNr) const;
     ConstReverseNIterator constReverseNColumnEnd(size_type columnNr) const;
     ConstReverseNIterator getConstReverseNIterator(size_type rowNr, size_type columnNr) const;
-    ConstReverseNIterator getConstReverseNIterator(size_type index) const;
+    ConstReverseNIterator getConstReverseNIterator(diff_type index) const;
 
     DIterator dBegin(diff_type diagonalNr);
     DIterator dBegin(size_type rowNr, size_type columnNr);
@@ -2854,7 +2854,6 @@ DataType& Matrix<DataType>::at(Matrix<DataType>::size_type rowNr,
                                Matrix<DataType>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows || columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
-
     return m_pBaseArrayPtr[*m_RowCapacityOffset + rowNr][columnNr];
 }
 
@@ -2863,23 +2862,20 @@ const DataType& Matrix<DataType>::at(Matrix<DataType>::size_type rowNr,
                                      Matrix<DataType>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows || columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
-
     return m_pBaseArrayPtr[*m_RowCapacityOffset + rowNr][columnNr];
 }
 
 template<typename DataType>
-DataType& Matrix<DataType>::operator[](Matrix<DataType>::size_type index)
+DataType& Matrix<DataType>::operator[](Matrix<DataType>::diff_type index)
 {
-    CHECK_ERROR_CONDITION(index >= m_NrOfRows * m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
-
+    CHECK_ERROR_CONDITION(index < 0 || index >= static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns), Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
     return m_pBaseArrayPtr[*m_RowCapacityOffset + index / m_NrOfColumns][index % m_NrOfColumns];
 }
 
 template<typename DataType>
-const DataType& Matrix<DataType>::operator[](Matrix<DataType>::size_type index) const
+const DataType& Matrix<DataType>::operator[](Matrix<DataType>::diff_type index) const
 {
-    CHECK_ERROR_CONDITION(index >= m_NrOfRows * m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
-
+    CHECK_ERROR_CONDITION(index < 0 || index >= static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns), Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
     return m_pBaseArrayPtr[*m_RowCapacityOffset + index / m_NrOfColumns][index % m_NrOfColumns];
 }
 
@@ -3480,7 +3476,7 @@ typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(Matrix<DataT
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(Matrix<DataType>::size_type index)
+typename Matrix<DataType>::ZIterator Matrix<DataType>::getZIterator(Matrix<DataType>::diff_type index)
 {
     GET_NON_DIAG_ITERATOR_BY_INDEX(ZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, m_NrOfRows, m_NrOfColumns, /, %, index);
 }
@@ -3516,7 +3512,7 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::getConstZIterator(Ma
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstZIterator Matrix<DataType>::getConstZIterator(Matrix<DataType>::size_type index) const
+typename Matrix<DataType>::ConstZIterator Matrix<DataType>::getConstZIterator(Matrix<DataType>::diff_type index) const
 {
     GET_NON_DIAG_ITERATOR_BY_INDEX(ConstZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, m_NrOfRows, m_NrOfColumns, /, %, index);
 }
@@ -3553,7 +3549,7 @@ typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::getReverseZIterato
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::getReverseZIterator(Matrix<DataType>::size_type index)
+typename Matrix<DataType>::ReverseZIterator Matrix<DataType>::getReverseZIterator(Matrix<DataType>::diff_type index)
 {
     GET_NON_DIAG_ITERATOR_BY_INDEX(ReverseZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, m_NrOfRows, m_NrOfColumns, /, %, index);
 }
@@ -3589,7 +3585,7 @@ typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstRever
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstReverseZIterator(Matrix<DataType>::size_type index) const
+typename Matrix<DataType>::ConstReverseZIterator Matrix<DataType>::getConstReverseZIterator(Matrix<DataType>::diff_type index) const
 {
     GET_NON_DIAG_ITERATOR_BY_INDEX(ConstReverseZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, m_NrOfRows, m_NrOfColumns, /, %, index);
 }
@@ -3625,7 +3621,7 @@ typename Matrix<DataType>::NIterator Matrix<DataType>::getNIterator(Matrix<DataT
 }
 
 template<typename DataType>
-typename Matrix<DataType>::NIterator Matrix<DataType>::getNIterator(Matrix<DataType>::size_type index)
+typename Matrix<DataType>::NIterator Matrix<DataType>::getNIterator(Matrix<DataType>::diff_type index)
 {
     GET_NON_DIAG_ITERATOR_BY_INDEX(NIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, m_NrOfColumns, m_NrOfRows, %, /, index);
 }
@@ -3661,7 +3657,7 @@ typename Matrix<DataType>::ConstNIterator Matrix<DataType>::getConstNIterator(Ma
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstNIterator Matrix<DataType>::getConstNIterator(Matrix<DataType>::size_type index) const
+typename Matrix<DataType>::ConstNIterator Matrix<DataType>::getConstNIterator(Matrix<DataType>::diff_type index) const
 {
     GET_NON_DIAG_ITERATOR_BY_INDEX(ConstNIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, m_NrOfColumns, m_NrOfRows, %, /, index);
 }
@@ -3697,7 +3693,7 @@ typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::getReverseNIterato
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::getReverseNIterator(Matrix<DataType>::size_type index)
+typename Matrix<DataType>::ReverseNIterator Matrix<DataType>::getReverseNIterator(Matrix<DataType>::diff_type index)
 {
     GET_NON_DIAG_ITERATOR_BY_INDEX(ReverseNIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, m_NrOfColumns, m_NrOfRows, %, /, index);
 }
@@ -3734,7 +3730,7 @@ typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::getConstRever
 }
 
 template<typename DataType>
-typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::getConstReverseNIterator(Matrix<DataType>::size_type index) const
+typename Matrix<DataType>::ConstReverseNIterator Matrix<DataType>::getConstReverseNIterator(Matrix<DataType>::diff_type index) const
 {
     GET_NON_DIAG_ITERATOR_BY_INDEX(ConstReverseNIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, m_NrOfColumns, m_NrOfRows, %, /, index);
 }

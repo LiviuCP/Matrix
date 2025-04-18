@@ -508,7 +508,9 @@
 
 #define GET_NON_DIAG_ITERATOR_BY_INDEX(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, \
                                        mMatrixPrimaryDimension, mMatrixSecondaryDimension, FirstOperator, SecondOperator, arrayIndex) \
-    CHECK_ERROR_CONDITION(arrayIndex >= mMatrixPrimaryDimension * mMatrixSecondaryDimension, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]); \
+    CHECK_ERROR_CONDITION(arrayIndex < 0 || arrayIndex >= static_cast<diff_type>(mMatrixPrimaryDimension) * static_cast<diff_type>(mMatrixSecondaryDimension), \
+                          Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]); \
+\
     return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, arrayIndex FirstOperator mMatrixSecondaryDimension, arrayIndex SecondOperator mMatrixSecondaryDimension};
 
 // common DIterator/MIterator macros

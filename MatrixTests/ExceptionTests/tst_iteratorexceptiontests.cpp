@@ -395,7 +395,7 @@ void IteratorExceptionTests::testNonDiagRandomIteratorRowColumnExceptions()
 void IteratorExceptionTests::testNonDiagRandomIteratorIndexExceptions()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(matrix_size_t, index);
+    QFETCH(matrix_diff_t, index);
     
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntZIter it{matrix.getZIterator(index)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstZIter it{matrix.getConstZIterator(index)}; Q_UNUSED(it)});
@@ -776,10 +776,12 @@ void IteratorExceptionTests::testNonDiagRandomIteratorRowColumnExceptions_data()
 void IteratorExceptionTests::testNonDiagRandomIteratorIndexExceptions_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("index");
+    QTest::addColumn<matrix_diff_t>("index");
 
-    QTest::newRow("1: index random iterator") << IntMatrix{} << matrix_size_t{0u};
-    QTest::newRow("2: index random iterator") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{6u};
+    QTest::newRow("1: negative index, non-empty matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_diff_t{-1};
+    QTest::newRow("2: index out of range, non-empty matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_diff_t{6};
+    QTest::newRow("3: negative index, empty matrix") << IntMatrix{} << matrix_diff_t{-1};
+    QTest::newRow("4: index out of range, empty matrix") << IntMatrix{} << matrix_diff_t{0};
 }
 
 void IteratorExceptionTests::testDiagRandomIteratorAbsoluteCoordinatesExceptions_data()
