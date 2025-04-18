@@ -4073,9 +4073,11 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::end() const
 template <typename DataType>
 typename Matrix<DataType>::size_type Matrix<DataType>::_getMaxAllowedDimension()
 {
+    // set first bit to 0 in order to obtain a maximum size_type value that when squared doesn't exceed the maximum diff_type value on the positive axis
     constexpr size_type c_MaxSize{static_cast<size_type>(~size_type{0})};
-    constexpr size_type c_MaxAllowedPositiveSize{c_MaxSize >> 1}; // calculate max value that prevents overflow when converting size_type to diff_type (same number of bits but signed)
-    return static_cast<size_type>(std::sqrt(c_MaxAllowedPositiveSize));
+    constexpr size_type c_MaxAllowedPositiveSize{c_MaxSize >> 1};
+
+    return c_MaxAllowedPositiveSize;
 }
 
 template <typename DataType>
