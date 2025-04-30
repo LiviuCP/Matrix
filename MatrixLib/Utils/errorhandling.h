@@ -52,7 +52,8 @@ namespace Matr
         DEREFERENCE_END_ITERATOR,
         INCOMPATIBLE_ITERATORS,
         DIAGONAL_INDEX_OUT_OF_BOUNDS,
-        ITERATOR_INDEX_OUT_OF_BOUNDS
+        ITERATOR_INDEX_OUT_OF_BOUNDS,
+        MAX_ALLOWED_DIMENSIONS_EXCEEDED
     };
 
     using namespace std;
@@ -76,7 +77,8 @@ namespace Matr
         {    Errors::DEREFERENCE_END_ITERATOR,                           string{"Attempt to dereference an end iterator"}                                                                                        },
         {    Errors::INCOMPATIBLE_ITERATORS,                             string{"The two iterators are incompatible, their matrix parameters differ"}                                                            },
         {    Errors::DIAGONAL_INDEX_OUT_OF_BOUNDS,                       string{"The diagonal index used for obtaining the iterator is out of bounds"}                                                           },
-        {    Errors::ITERATOR_INDEX_OUT_OF_BOUNDS,                       string{"The index used for dereferencing the iterator is out of bounds"}                                                                }
+        {    Errors::ITERATOR_INDEX_OUT_OF_BOUNDS,                       string{"The index used for dereferencing the iterator is out of bounds"}                                                                },
+        {    Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED,                    string{"The maximum allowed dimensions have been exceeded."}                                                                            }
     };
 }
 #endif

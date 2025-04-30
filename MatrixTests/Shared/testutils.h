@@ -6,9 +6,6 @@
 
 #include "matrix.h"
 
-// these size typedefs are actually type independent so they can be used for any matrix type
-using matrix_size_t = Matrix<int>::size_type;
-using matrix_diff_t = Matrix<int>::diff_type;
 using matrix_opt_size_t = std::optional<matrix_size_t>;
 using size_tuple_t = std::tuple<matrix_size_t, matrix_size_t, matrix_size_t, matrix_opt_size_t, matrix_opt_size_t>;
 using size_tuple_array_t = std::vector<size_tuple_t>;
@@ -91,6 +88,17 @@ enum class SplitMode : unsigned short
     if (matrix.getRowCapacityOffset() != requiredRowCapacityOffset || matrix.getColumnCapacityOffset() != requiredColumnCapacityOffset) \
     { \
         QFAIL(capacityOffsetFailMessage); \
+    }
+
+#define CHECK_MATRIX_HAS_THE_RIGHT_ELEMENT_VALUES(matrix, elementsList, errorMessage) \
+    for (size_t elementNr{0}; elementNr < elementsList.size(); ++elementNr) \
+    { \
+        const matrix_size_t c_ColumnsCount{matrix.getNrOfColumns()}; \
+\
+        if (elementsList[elementNr] != matrix.at(elementNr / c_ColumnsCount, elementNr % c_ColumnsCount)) \
+        { \
+            QFAIL(errorMessage); \
+        } \
     }
 
 #define CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(matrix, elementValue, errorMessage) \

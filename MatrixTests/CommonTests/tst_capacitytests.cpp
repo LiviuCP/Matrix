@@ -11,6 +11,10 @@ Q_DECLARE_METATYPE(StringMatrix)
 Q_DECLARE_METATYPE(ConcatMode)
 Q_DECLARE_METATYPE(SplitMode)
 
+static constexpr matrix_size_t c_MaxAllowedDimension{maxAllowedDimension()};
+static constexpr matrix_size_t c_LargeDimension1{c_MaxAllowedDimension - 2};
+static constexpr matrix_size_t c_LargeDimension2{c_MaxAllowedDimension - 1};
+
 class CapacityTests : public QObject
 {
     Q_OBJECT
@@ -60,6 +64,8 @@ private slots:
     void testStringMatrixCapacityWithResizeAndEraseRowAndOrColumn(); // combined StringMatrix test (resize + erase row/column)
 
     // test data
+    void testIntMatrixCapacityWithCopiedVectorConstructor_data();
+    void testIntMatrixCapacityWithMovedVectorConstructor_data();
     void testIntMatrixCapacityWithIdenticalMatrixConstructor_data();
     void testIntMatrixCapacityWithDiagonalMatrixConstructor_data();
     void testIntMatrixCapacityWithCopyConstructor_data();
@@ -79,6 +85,8 @@ private slots:
     void testIntMatrixCapacityWithSplitByColumn_data();
     void testIntMatrixCapacityWithResizeAndEraseRowAndOrColumn_data();
 
+    void testStringMatrixCapacityWithCopiedVectorConstructor_data();
+    void testStringMatrixCapacityWithMovedVectorConstructor_data();
     void testStringMatrixCapacityWithIdenticalMatrixConstructor_data();
     void testStringMatrixCapacityWithDiagonalMatrixConstructor_data();
     void testStringMatrixCapacityWithCopyConstructor_data();
@@ -100,10 +108,12 @@ private slots:
 
 private:
     // test data helper methods
+    void _buildIntMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable();
     void _buildIntMatrixCapacityWithMoveCopyConstructorsTestingTable();
     void _buildIntMatrixCapacityWithAssignmentOperatorsTestingTable();
     void _buildIntMatrixCapacityWithResizeTestingTable();
 
+    void _buildStringMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable();
     void _buildStringMatrixCapacityWithMoveCopyConstructorsTestingTable();
     void _buildStringMatrixCapacityWithAssignmentOperatorsTestingTable();
     void _buildStringMatrixCapacityWithResizeTestingTable();
@@ -117,100 +127,32 @@ private:
 
 void CapacityTests::testIntMatrixCapacityWithCopiedVectorConstructor()
 {
-    {
-        IntMatrix matrix{3, 4, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-        TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 3, 5, 0, 0);
-    }
+    QFETCH(matrix_size_t, rowsCount);
+    QFETCH(matrix_size_t, columnsCount);
+    QFETCH(std::vector<int>, initList);
+    QFETCH(matrix_size_t, expectedRowCapacity);
+    QFETCH(matrix_size_t, expectedColumnCapacity);
+    QFETCH(matrix_opt_size_t, expectedRowCapacityOffset);
+    QFETCH(matrix_opt_size_t, expectedColumnCapacityOffset);
 
-    {
-        IntMatrix matrix{4, 3, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-        TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 5, 3, 0, 0);
-    }
+    IntMatrix matrix{rowsCount, columnsCount, initList};
 
-    {
-        IntMatrix matrix{8, 10, {
-                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-                                }};
-
-        TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 10, 12, 1, 1);
-    }
-
-    {
-        IntMatrix matrix{10, 8, {
-                                     0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0
-                                }};
-
-        TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 12, 10, 1, 1);
-    }
+    TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
 }
 
 void CapacityTests::testIntMatrixCapacityWithMovedVectorConstructor()
 {
-    {
-        std::vector<int> vec{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        IntMatrix matrix{3, 4, std::move(vec)};
+    QFETCH(matrix_size_t, rowsCount);
+    QFETCH(matrix_size_t, columnsCount);
+    QFETCH(std::vector<int>, initList);
+    QFETCH(matrix_size_t, expectedRowCapacity);
+    QFETCH(matrix_size_t, expectedColumnCapacity);
+    QFETCH(matrix_opt_size_t, expectedRowCapacityOffset);
+    QFETCH(matrix_opt_size_t, expectedColumnCapacityOffset);
 
-        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 3, 5, 0, 0);
-    }
+    IntMatrix matrix{rowsCount, columnsCount, std::move(initList)};
 
-    {
-        std::vector<int> vec{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        IntMatrix matrix{4, 3, std::move(vec)};
-
-        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 5, 3, 0, 0);
-    }
-
-    {
-        std::vector<int> vec{
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-                            };
-
-        IntMatrix matrix{8, 10, std::move(vec)};
-
-        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 10, 12, 1, 1);
-    }
-
-    {
-        std::vector<int> vec{
-                                 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0, 0, 0
-                            };
-
-        IntMatrix matrix{10, 8, std::move(vec)};
-
-        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 12, 10, 1, 1);
-    }
+    TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
 }
 
 void CapacityTests::testIntMatrixCapacityWithIdenticalMatrixConstructor()
@@ -343,100 +285,32 @@ void CapacityTests::testIntMatrixCapacityWithResizeAndEraseRowAndOrColumn()
 
 void CapacityTests::testStringMatrixCapacityWithCopiedVectorConstructor()
 {
-    {
-        StringMatrix matrix{3, 4, {"Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"}};
-        TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 3u, 5u, matrix_opt_size_t{0u}, matrix_opt_size_t{0u});
-    }
+    QFETCH(matrix_size_t, rowsCount);
+    QFETCH(matrix_size_t, columnsCount);
+    QFETCH(std::vector<std::string>, initList);
+    QFETCH(matrix_size_t, expectedRowCapacity);
+    QFETCH(matrix_size_t, expectedColumnCapacity);
+    QFETCH(matrix_opt_size_t, expectedRowCapacityOffset);
+    QFETCH(matrix_opt_size_t, expectedColumnCapacityOffset);
 
-    {
-        StringMatrix matrix{4, 3, {"Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"}};
-        TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 5u, 3u, matrix_opt_size_t{0u}, matrix_opt_size_t{0u});
-    }
+    StringMatrix matrix{rowsCount, columnsCount, initList};
 
-    {
-        StringMatrix matrix{8, 10, {
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"
-                                   }};
-
-        TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 10u, 12u, matrix_opt_size_t{1u}, matrix_opt_size_t{1u});
-    }
-
-    {
-        StringMatrix matrix{10, 8, {
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                        "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"
-                                   }};
-
-        TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 12u, 10u, matrix_opt_size_t{1u}, matrix_opt_size_t{1u});
-    }
+    TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
 }
 
 void CapacityTests::testStringMatrixCapacityWithMovedVectorConstructor()
 {
-    {
-        std::vector<std::string> vec{"Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"};
-        StringMatrix matrix{3, 4, std::move(vec)};
+    QFETCH(matrix_size_t, rowsCount);
+    QFETCH(matrix_size_t, columnsCount);
+    QFETCH(std::vector<std::string>, initList);
+    QFETCH(matrix_size_t, expectedRowCapacity);
+    QFETCH(matrix_size_t, expectedColumnCapacity);
+    QFETCH(matrix_opt_size_t, expectedRowCapacityOffset);
+    QFETCH(matrix_opt_size_t, expectedColumnCapacityOffset);
 
-        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 3u, 5u, matrix_opt_size_t{0u}, matrix_opt_size_t{0u});
-    }
+    StringMatrix matrix{rowsCount, columnsCount, std::move(initList)};
 
-    {
-        std::vector<std::string> vec{"Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"};
-        StringMatrix matrix{4, 3, std::move(vec)};
-
-        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 5u, 3u, matrix_opt_size_t{0u}, matrix_opt_size_t{0u});
-    }
-
-    {
-        std::vector<std::string> vec{
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"
-                                    };
-
-        StringMatrix matrix{8, 10, std::move(vec)};
-
-        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 10u, 12u, matrix_opt_size_t{1u}, matrix_opt_size_t{1u});
-    }
-
-    {
-        std::vector<std::string> vec{
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value",
-                                         "Value", "Value", "Value", "Value", "Value", "Value", "Value", "Value"
-                                    };
-
-        StringMatrix matrix{10, 8, std::move(vec)};
-
-        TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, 12u, 10u, matrix_opt_size_t{1u}, matrix_opt_size_t{1u});
-    }
+    TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
 }
 
 void CapacityTests::testStringMatrixCapacityWithIdenticalMatrixConstructor()
@@ -551,6 +425,16 @@ void CapacityTests::testStringMatrixCapacityWithResizeAndEraseRowAndOrColumn()
     TEST_CAPACITY_WITH_REZIZE_AND_ERASE_ROW_AND_OR_COLUMN(std::string, mPrimaryStringMatrix, mSecondaryStringMatrix);
 }
 
+void CapacityTests::testIntMatrixCapacityWithCopiedVectorConstructor_data()
+{
+    _buildIntMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable();
+}
+
+void CapacityTests::testIntMatrixCapacityWithMovedVectorConstructor_data()
+{
+    _buildIntMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable();
+}
+
 void CapacityTests::testIntMatrixCapacityWithIdenticalMatrixConstructor_data()
 {
     QTest::addColumn<matrix_size_t>("rowsCount");
@@ -563,8 +447,27 @@ void CapacityTests::testIntMatrixCapacityWithIdenticalMatrixConstructor_data()
 
     QTest::newRow("1: small size matrix") << matrix_size_t{3u} << matrix_size_t{4u} << -5 << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
     QTest::newRow("2: small size matrix") << matrix_size_t{4u} << matrix_size_t{3u} << -5 << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("3: large size matrix") << matrix_size_t{25u} << matrix_size_t{20u} << -2 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
-    QTest::newRow("4: large size matrix") << matrix_size_t{20u} << matrix_size_t{25u} << -2 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("3: large size matrix") << matrix_size_t{25u} << matrix_size_t{20u} << 2 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("4: large size matrix") << matrix_size_t{20u} << matrix_size_t{25u} << 2 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("5: capped row and column capacity") << c_LargeDimension1 << c_LargeDimension1 << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("6: capped row and column capacity") << c_LargeDimension1 << c_MaxAllowedDimension << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("7: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension1 << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("8: capped row and column capacity") << c_LargeDimension2 << c_LargeDimension2 << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("9: capped row and column capacity") << c_LargeDimension2 << c_MaxAllowedDimension << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("10: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension2 << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: capped row and column capacity") << c_MaxAllowedDimension << c_MaxAllowedDimension << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: capped row capacity") << c_LargeDimension1 << matrix_size_t{3u} << 0 << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: capped row capacity") << c_LargeDimension2 << matrix_size_t{3u} << 0 << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{4u} << 0 << c_MaxAllowedDimension << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: capped row capacity") << c_LargeDimension1 << matrix_size_t{8u} << 0 << c_MaxAllowedDimension << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("16: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{10u} << 0 << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("17: capped row capacity") << c_LargeDimension2 << matrix_size_t{10u} << 0 << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("18: capped column capacity") << matrix_size_t{3u} << c_LargeDimension1 << 0 << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("19: capped column capacity") << matrix_size_t{3u} << c_LargeDimension2 << 0 << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("20: capped column capacity") << matrix_size_t{4u} << c_MaxAllowedDimension << 0 << matrix_size_t{5u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("21: capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << 0 << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("22: capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << 0 << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("23: capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << 0 << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
 }
 
 void CapacityTests::testIntMatrixCapacityWithDiagonalMatrixConstructor_data()
@@ -579,6 +482,9 @@ void CapacityTests::testIntMatrixCapacityWithDiagonalMatrixConstructor_data()
     QTest::newRow("2: small size matrix") << matrix_size_t{4u} << -2 << -3 << matrix_size_t{5u} << matrix_opt_size_t{0u};
     QTest::newRow("3: medium size matrix") << matrix_size_t{8u} << -2 << -3 << matrix_size_t{10u} << matrix_opt_size_t{1u};
     QTest::newRow("4: medium size matrix") << matrix_size_t{10u} << -2 << -3 << matrix_size_t{12u} << matrix_opt_size_t{1u};
+    QTest::newRow("5: capped capacity") << c_LargeDimension1 << -2 << -3 << c_MaxAllowedDimension << matrix_opt_size_t{1u};
+    QTest::newRow("6: capped capacity") << c_LargeDimension2 << -2 << -3 << c_MaxAllowedDimension << matrix_opt_size_t{0u};
+    QTest::newRow("7: capped capacity") << c_MaxAllowedDimension << -2 << -3 << c_MaxAllowedDimension << matrix_opt_size_t{0u};
 }
 
 void CapacityTests::testIntMatrixCapacityWithCopyConstructor_data()
@@ -1200,6 +1106,16 @@ void CapacityTests::testIntMatrixCapacityWithResizeAndEraseRowAndOrColumn_data()
     QTest::newRow("80: oversized row and column capacity, erase row then column") << IntMatrix{{5, 6}, -3} << matrix_size_t{6u} << matrix_size_t{7u} << 5 << matrix_size_t{14u} << matrix_size_t{18u} << matrix_opt_size_t{1u} << matrix_opt_size_t{2u} << false << matrix_size_t{14u} << matrix_size_t{18u} << matrix_opt_size_t{5u} << matrix_opt_size_t{6u};
 }
 
+void CapacityTests::testStringMatrixCapacityWithCopiedVectorConstructor_data()
+{
+    _buildStringMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithMovedVectorConstructor_data()
+{
+    _buildStringMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable();
+}
+
 void CapacityTests::testStringMatrixCapacityWithIdenticalMatrixConstructor_data()
 {
     QTest::addColumn<matrix_size_t>("rowsCount");
@@ -1214,6 +1130,25 @@ void CapacityTests::testStringMatrixCapacityWithIdenticalMatrixConstructor_data(
     QTest::newRow("2: small size matrix") << matrix_size_t{4u} << matrix_size_t{3u} << std::string{"Value1"} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
     QTest::newRow("3: large size matrix") << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
     QTest::newRow("4: large size matrix") << matrix_size_t{20u} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("5: capped row and column capacity") << c_LargeDimension1 << c_LargeDimension1 << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("6: capped row and column capacity") << c_LargeDimension1 << c_MaxAllowedDimension << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("7: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension1 << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("8: capped row and column capacity") << c_LargeDimension2 << c_LargeDimension2 << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("9: capped row and column capacity") << c_LargeDimension2 << c_MaxAllowedDimension << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("10: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension2 << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: capped row and column capacity") << c_MaxAllowedDimension << c_MaxAllowedDimension << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: capped row capacity") << c_LargeDimension1 << matrix_size_t{3u} << std::string{"Value"} << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: capped row capacity") << c_LargeDimension2 << matrix_size_t{3u} << std::string{"Value"} << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{4u} << std::string{"Value"} << c_MaxAllowedDimension << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: capped row capacity") << c_LargeDimension1 << matrix_size_t{8u} << std::string{"Value"} << c_MaxAllowedDimension << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("16: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{10u} << std::string{"Value"} << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("17: capped row capacity") << c_LargeDimension2 << matrix_size_t{10u} << std::string{"Value"} << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("18: capped column capacity") << matrix_size_t{3u} << c_LargeDimension1 << std::string{"Value"} << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("19: capped column capacity") << matrix_size_t{3u} << c_LargeDimension2 << std::string{"Value"} << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("20: capped column capacity") << matrix_size_t{4u} << c_MaxAllowedDimension << std::string{"Value"} << matrix_size_t{5u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("21: capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << std::string{"Value"} << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("22: capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << std::string{"Value"} << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("23: capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << std::string{"Value"} << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
 }
 
 void CapacityTests::testStringMatrixCapacityWithDiagonalMatrixConstructor_data()
@@ -1228,6 +1163,9 @@ void CapacityTests::testStringMatrixCapacityWithDiagonalMatrixConstructor_data()
     QTest::newRow("2: small size matrix") << matrix_size_t{4u} << std::string{"Value1"} << std::string{"Value2"} << matrix_size_t{5u} << matrix_opt_size_t{0u};
     QTest::newRow("3: medium size matrix") << matrix_size_t{8u} << std::string{"Value1"} << std::string{"Value2"} << matrix_size_t{10u} << matrix_opt_size_t{1u};
     QTest::newRow("4: medium size matrix") << matrix_size_t{10u} << std::string{"Value1"} << std::string{"Value2"} << matrix_size_t{12u} << matrix_opt_size_t{1u};
+    QTest::newRow("5: capped capacity") << c_LargeDimension1 << std::string{"Value1"} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_opt_size_t{1u};
+    QTest::newRow("6: capped capacity") << c_LargeDimension2 << std::string{"Value1"} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_opt_size_t{0u};
+    QTest::newRow("7: capped capacity") << c_MaxAllowedDimension << std::string{"Value1"} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_opt_size_t{0u};
 }
 
 void CapacityTests::testStringMatrixCapacityWithCopyConstructor_data()
@@ -1849,6 +1787,41 @@ void CapacityTests::testStringMatrixCapacityWithResizeAndEraseRowAndOrColumn_dat
     QTest::newRow("80: oversized row and column capacity, erase row then column") << StringMatrix{{5, 6}, "Value1"} << matrix_size_t{6u} << matrix_size_t{7u} << std::string{"Value2"} << matrix_size_t{14u} << matrix_size_t{18u} << matrix_opt_size_t{1u} << matrix_opt_size_t{2u} << false << matrix_size_t{14u} << matrix_size_t{18u} << matrix_opt_size_t{5u} << matrix_opt_size_t{6u};
 }
 
+void CapacityTests::_buildIntMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable()
+{
+    QTest::addColumn<matrix_size_t>("rowsCount");
+    QTest::addColumn<matrix_size_t>("columnsCount");
+    QTest::addColumn<std::vector<int>>("initList");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small size matrix") << matrix_size_t{3u} << matrix_size_t{4u} << std::vector<int>(12, 0) << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: small size matrix") << matrix_size_t{4u} << matrix_size_t{3u} << std::vector<int>(12, 0) << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: large size matrix") << matrix_size_t{8u} << matrix_size_t{10u} << std::vector<int>(80, 0) << matrix_size_t{10u} << matrix_size_t{12u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("4: large size matrix") << matrix_size_t{10u} << matrix_size_t{8u} << std::vector<int>(80, 0) << matrix_size_t{12u} << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("5: capped row and column capacity") << c_LargeDimension1 << c_LargeDimension1 << std::vector<int>(c_LargeDimension1 * c_LargeDimension1, 0) << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("6: capped row and column capacity") << c_LargeDimension1 << c_MaxAllowedDimension << std::vector<int>(c_LargeDimension1 * c_MaxAllowedDimension, 0) << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("7: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension1 << std::vector<int>(c_MaxAllowedDimension * c_LargeDimension1, 0) << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("8: capped row and column capacity") << c_LargeDimension2 << c_LargeDimension2 << std::vector<int>(c_LargeDimension2 * c_LargeDimension2, 0) << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("9: capped row and column capacity") << c_LargeDimension2 << c_MaxAllowedDimension << std::vector<int>(c_LargeDimension2 * c_MaxAllowedDimension, 0) << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("10: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension2 << std::vector<int>(c_MaxAllowedDimension * c_LargeDimension2, 0) << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: capped row and column capacity") << c_MaxAllowedDimension << c_MaxAllowedDimension << std::vector<int>(c_MaxAllowedDimension * c_MaxAllowedDimension, 0) << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: capped row capacity") << c_LargeDimension1 << matrix_size_t{3u} << std::vector<int>(c_LargeDimension1 * 3, 0) << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: capped row capacity") << c_LargeDimension2 << matrix_size_t{3u} << std::vector<int>(c_LargeDimension2 * 3, 0) << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{4u} << std::vector<int>(c_MaxAllowedDimension * 4, 0) << c_MaxAllowedDimension << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: capped row capacity") << c_LargeDimension1 << matrix_size_t{8u} << std::vector<int>(c_LargeDimension1 * 8, 0) << c_MaxAllowedDimension << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("16: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{10u} << std::vector<int>(c_MaxAllowedDimension * 10, 0) << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("17: capped row capacity") << c_LargeDimension2 << matrix_size_t{10u} << std::vector<int>(c_LargeDimension2 * 10, 0) << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("18: capped column capacity") << matrix_size_t{3u} << c_LargeDimension1 << std::vector<int>(3 * c_LargeDimension1, 0) << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("19: capped column capacity") << matrix_size_t{3u} << c_LargeDimension2 << std::vector<int>(3 * c_LargeDimension2, 0) << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("20: capped column capacity") << matrix_size_t{4u} << c_MaxAllowedDimension << std::vector<int>(4 * c_MaxAllowedDimension, 0) << matrix_size_t{5u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("21: capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << std::vector<int>(8 * c_LargeDimension1, 0) << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("22: capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << std::vector<int>(10 * c_MaxAllowedDimension, 0) << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("23: capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << std::vector<int>(10 * c_LargeDimension2, 0) << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+}
+
 void CapacityTests::_buildIntMatrixCapacityWithMoveCopyConstructorsTestingTable()
 {
     QTest::addColumn<matrix_size_t>("rowsCount");
@@ -1859,12 +1832,31 @@ void CapacityTests::_buildIntMatrixCapacityWithMoveCopyConstructorsTestingTable(
     QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
     QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
 
-    QTest::newRow("1: small size matrix") << matrix_size_t{3u} << matrix_size_t{4u} << -1 << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("2: small size matrix") << matrix_size_t{4u} << matrix_size_t{3u} << -1 << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("3: medium size matrix") << matrix_size_t{7u} << matrix_size_t{8u} << -1 << matrix_size_t{8u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
-    QTest::newRow("4: medium size matrix") << matrix_size_t{8u} << matrix_size_t{7u} << -1 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
-    QTest::newRow("5: large size matrix") << matrix_size_t{20u} << matrix_size_t{25u} << -1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
-    QTest::newRow("6: large size matrix") << matrix_size_t{25u} << matrix_size_t{20u} << -1 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("1: small size matrix") << matrix_size_t{3u} << matrix_size_t{4u} << 0 << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: small size matrix") << matrix_size_t{4u} << matrix_size_t{3u} << 0 << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: medium size matrix") << matrix_size_t{7u} << matrix_size_t{8u} << 0 << matrix_size_t{8u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("4: medium size matrix") << matrix_size_t{8u} << matrix_size_t{7u} << 0 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("5: large size matrix") << matrix_size_t{20u} << matrix_size_t{25u} << 0 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("6: large size matrix") << matrix_size_t{25u} << matrix_size_t{20u} << 0 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("7: capped row and column capacity") << c_LargeDimension1 << c_LargeDimension1 << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("8: capped row and column capacity") << c_LargeDimension1 << c_MaxAllowedDimension << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("9: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension1 << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("10: capped row and column capacity") << c_LargeDimension2 << c_LargeDimension2 << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: capped row and column capacity") << c_LargeDimension2 << c_MaxAllowedDimension << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension2 << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: capped row and column capacity") << c_MaxAllowedDimension << c_MaxAllowedDimension << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: capped row capacity") << c_LargeDimension1 << matrix_size_t{3u} << 0 << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: capped row capacity") << c_LargeDimension2 << matrix_size_t{3u} << 0 << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("16: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{4u} << 0 << c_MaxAllowedDimension << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("17: capped row capacity") << c_LargeDimension1 << matrix_size_t{8u} << 0 << c_MaxAllowedDimension << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("18: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{10u} << 0 << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("19: capped row capacity") << c_LargeDimension2 << matrix_size_t{10u} << 0 << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("20: capped column capacity") << matrix_size_t{3u} << c_LargeDimension1 << 0 << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("21: capped column capacity") << matrix_size_t{3u} << c_LargeDimension2 << 0 << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("22: capped column capacity") << matrix_size_t{4u} << c_MaxAllowedDimension << 0 << matrix_size_t{5u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("23: capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << 0 << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("24: capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << 0 << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("25: capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << 0 << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
 }
 
 void CapacityTests::_buildIntMatrixCapacityWithAssignmentOperatorsTestingTable()
@@ -1886,16 +1878,54 @@ void CapacityTests::_buildIntMatrixCapacityWithAssignmentOperatorsTestingTable()
     QTest::newRow("4: destination matrix initially empty") << matrix_size_t{8u} << matrix_size_t{7u} << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
     QTest::newRow("5: destination matrix initially empty") << matrix_size_t{20u} << matrix_size_t{25u} << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
     QTest::newRow("6: destination matrix initially empty") << matrix_size_t{25u} << matrix_size_t{20u} << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
-    QTest::newRow("7: destination matrix initially NOT empty") << matrix_size_t{3u} << matrix_size_t{4u} << -1 << matrix_size_t{2u} << matrix_size_t{3u} << -5 << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("8: destination matrix initially NOT empty") << matrix_size_t{4u} << matrix_size_t{3u} << -1 << matrix_size_t{2u} << matrix_size_t{3u} << -5 << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("9: destination matrix initially NOT empty") << matrix_size_t{7u} << matrix_size_t{8u} << -1 << matrix_size_t{3u} << matrix_size_t{4u} << -5 << matrix_size_t{8u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
-    QTest::newRow("10: destination matrix initially NOT empty") << matrix_size_t{8u} << matrix_size_t{7u} << -1 << matrix_size_t{3u} << matrix_size_t{4u} << -5 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
-    QTest::newRow("11: destination matrix initially NOT empty") << matrix_size_t{20u} << matrix_size_t{25u} << -1 << matrix_size_t{15u} << matrix_size_t{20u} << -5 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
-    QTest::newRow("12: destination matrix initially NOT empty") << matrix_size_t{25u} << matrix_size_t{20u} << -1 << matrix_size_t{15u} << matrix_size_t{20u} << -5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
-    QTest::newRow("13: destination matrix initially NOT empty") << matrix_size_t{20u} << matrix_size_t{25u} << -1 << matrix_size_t{25u} << matrix_size_t{20u} << -5 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
-    QTest::newRow("14: destination matrix initially NOT empty") << matrix_size_t{25u} << matrix_size_t{20u} << -1 << matrix_size_t{20u} << matrix_size_t{25u} << -5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
-    QTest::newRow("15: destination matrix initially NOT empty") << matrix_size_t{25u} << matrix_size_t{20u} << -1 << matrix_size_t{25u} << matrix_size_t{20u} << -5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
-    QTest::newRow("16: destination matrix initially NOT empty") << matrix_size_t{15u} << matrix_size_t{20u} << -1 << matrix_size_t{20u} << matrix_size_t{25u} << -5 << matrix_size_t{18u} << matrix_size_t{25u} << matrix_opt_size_t{1u} << matrix_opt_size_t{2u};
+    QTest::newRow("7: destination matrix initially empty, capped row and column capacity") << c_LargeDimension1 << c_LargeDimension1 << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("8: destination matrix initially empty, capped row and column capacity") << c_LargeDimension1 << c_MaxAllowedDimension << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("9: destination matrix initially empty, capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension1 << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("10: destination matrix initially empty, capped row and column capacity") << c_LargeDimension2 << c_LargeDimension2 << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: destination matrix initially empty, capped row and column capacity") << c_LargeDimension2 << c_MaxAllowedDimension << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: destination matrix initially empty, capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension2 << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: destination matrix initially empty, capped row and column capacity") << c_MaxAllowedDimension << c_MaxAllowedDimension << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: destination matrix initially empty, capped row capacity") << c_LargeDimension1 << matrix_size_t{3u} << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: destination matrix initially empty, capped row capacity") << c_LargeDimension2 << matrix_size_t{3u} << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("16: destination matrix initially empty, capped row capacity") << c_MaxAllowedDimension << matrix_size_t{4u} << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("17: destination matrix initially empty, capped row capacity") << c_LargeDimension1 << matrix_size_t{8u} << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("18: destination matrix initially empty, capped row capacity") << c_MaxAllowedDimension << matrix_size_t{10u} << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("19: destination matrix initially empty, capped row capacity") << c_LargeDimension2 << matrix_size_t{10u} << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("20: destination matrix initially empty, capped column capacity") << matrix_size_t{3u} << c_LargeDimension1 << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("21: destination matrix initially empty, capped column capacity") << matrix_size_t{3u} << c_LargeDimension2 << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("22: destination matrix initially empty, capped column capacity") << matrix_size_t{4u} << c_MaxAllowedDimension << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << matrix_size_t{5u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("23: destination matrix initially empty, capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("24: destination matrix initially empty, capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("25: destination matrix initially empty, capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << -1 << matrix_size_t{0u} << matrix_size_t{0u} << 0 << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("26: destination matrix initially NOT empty") << matrix_size_t{3u} << matrix_size_t{4u} << -1 << matrix_size_t{2u} << matrix_size_t{3u} << -5 << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("27: destination matrix initially NOT empty") << matrix_size_t{4u} << matrix_size_t{3u} << -1 << matrix_size_t{2u} << matrix_size_t{3u} << -5 << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("28: destination matrix initially NOT empty") << matrix_size_t{7u} << matrix_size_t{8u} << -1 << matrix_size_t{3u} << matrix_size_t{4u} << -5 << matrix_size_t{8u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("29: destination matrix initially NOT empty") << matrix_size_t{8u} << matrix_size_t{7u} << -1 << matrix_size_t{3u} << matrix_size_t{4u} << -5 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("30: destination matrix initially NOT empty") << matrix_size_t{20u} << matrix_size_t{25u} << -1 << matrix_size_t{15u} << matrix_size_t{20u} << -5 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("31: destination matrix initially NOT empty") << matrix_size_t{25u} << matrix_size_t{20u} << -1 << matrix_size_t{15u} << matrix_size_t{20u} << -5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("32: destination matrix initially NOT empty") << matrix_size_t{20u} << matrix_size_t{25u} << -1 << matrix_size_t{25u} << matrix_size_t{20u} << -5 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("33: destination matrix initially NOT empty") << matrix_size_t{25u} << matrix_size_t{20u} << -1 << matrix_size_t{20u} << matrix_size_t{25u} << -5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("34: destination matrix initially NOT empty") << matrix_size_t{25u} << matrix_size_t{20u} << -1 << matrix_size_t{25u} << matrix_size_t{20u} << -5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("35: destination matrix initially NOT empty") << matrix_size_t{15u} << matrix_size_t{20u} << -1 << matrix_size_t{20u} << matrix_size_t{25u} << -5 << matrix_size_t{18u} << matrix_size_t{25u} << matrix_opt_size_t{1u} << matrix_opt_size_t{2u};
+    QTest::newRow("36: destination matrix initially NOT empty, capped row and column capacity") << c_LargeDimension1 << c_LargeDimension1 << -1 << c_LargeDimension2 << c_LargeDimension2 << -5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("37: destination matrix initially NOT empty, capped row and column capacity") << c_LargeDimension1 << c_MaxAllowedDimension << -1 << c_MaxAllowedDimension << c_LargeDimension1 << -5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("38: destination matrix initially NOT empty, capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension1 << -1 << matrix_size_t{8u} << matrix_size_t{10u} << -5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("39: destination matrix initially NOT empty, capped row and column capacity") << c_LargeDimension2 << c_LargeDimension2 << -1 << c_LargeDimension1 << c_LargeDimension1 << -5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("40: destination matrix initially NOT empty, capped row and column capacity") << c_LargeDimension2 << c_MaxAllowedDimension << -1 << matrix_size_t{8u} << c_MaxAllowedDimension << -5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("41: destination matrix initially NOT empty, capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension2 << -1 << c_MaxAllowedDimension << matrix_size_t{10u} << -5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("42: destination matrix initially NOT empty, capped row and column capacity") << c_MaxAllowedDimension << c_MaxAllowedDimension << -1 << c_MaxAllowedDimension << c_MaxAllowedDimension << -5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("43: destination matrix initially NOT empty, capped row capacity") << c_LargeDimension1 << matrix_size_t{3u} << -1 << matrix_size_t{3u} << c_LargeDimension2 << -5 << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("44: destination matrix initially NOT empty, capped row capacity") << c_LargeDimension2 << matrix_size_t{3u} << -1 << c_MaxAllowedDimension << matrix_size_t{3u} << -5 << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("45: destination matrix initially NOT empty, capped row capacity") << c_MaxAllowedDimension << matrix_size_t{4u} << -1 << c_LargeDimension2 << matrix_size_t{3u} << -5 << c_MaxAllowedDimension << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("46: destination matrix initially NOT empty, capped row capacity") << c_LargeDimension1 << matrix_size_t{8u} << -1 << c_LargeDimension2 << matrix_size_t{10u} << -5 << c_MaxAllowedDimension << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("47: destination matrix initially NOT empty, capped row capacity") << c_MaxAllowedDimension << matrix_size_t{10u} << -1 << matrix_size_t{10u} << c_LargeDimension2 << -5 << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("48: destination matrix initially NOT empty, capped row capacity") << c_LargeDimension2 << matrix_size_t{10u} << -1 << c_LargeDimension1 << matrix_size_t{10u} << -5 << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("49: destination matrix initially NOT empty, capped column capacity") << matrix_size_t{3u} << c_LargeDimension1 << -1 << c_LargeDimension2 << matrix_size_t{3u} << -5 << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("50: destination matrix initially NOT empty, capped column capacity") << matrix_size_t{3u} << c_LargeDimension2 << -1 << matrix_size_t{3u} << c_MaxAllowedDimension << -5 << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("51: destination matrix initially NOT empty, capped column capacity") << matrix_size_t{4u} << c_MaxAllowedDimension << -1 << matrix_size_t{3u} << c_LargeDimension2 << -5 << matrix_size_t{5u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("52: destination matrix initially NOT empty, capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << -1 << matrix_size_t{10u} << c_LargeDimension2 << -5 << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("53: destination matrix initially NOT empty, capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << -1 << c_LargeDimension2 << matrix_size_t{10u} << -5 << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("54: destination matrix initially NOT empty, capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << -1 << matrix_size_t{10u} << c_LargeDimension1 << -5 << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
 }
 
 void CapacityTests::_buildIntMatrixCapacityWithResizeTestingTable()
@@ -2244,6 +2274,41 @@ void CapacityTests::_buildIntMatrixCapacityWithResizeTestingTable()
     QTest::newRow("329: more rows, more columns") << IntMatrix{} << matrix_size_t{1u} << matrix_size_t{1u} << -5 << matrix_size_t{3u} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
 }
 
+void CapacityTests::_buildStringMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable()
+{
+    QTest::addColumn<matrix_size_t>("rowsCount");
+    QTest::addColumn<matrix_size_t>("columnsCount");
+    QTest::addColumn<std::vector<std::string>>("initList");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small size matrix") << matrix_size_t{3u} << matrix_size_t{4u} << std::vector<std::string>(12, "Value") << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: small size matrix") << matrix_size_t{4u} << matrix_size_t{3u} << std::vector<std::string>(12, "Value") << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: large size matrix") << matrix_size_t{8u} << matrix_size_t{10u} << std::vector<std::string>(80, "Value") << matrix_size_t{10u} << matrix_size_t{12u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("4: large size matrix") << matrix_size_t{10u} << matrix_size_t{8u} << std::vector<std::string>(80, "Value") << matrix_size_t{12u} << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("5: capped row and column capacity") << c_LargeDimension1 << c_LargeDimension1 << std::vector<std::string>(c_LargeDimension1 * c_LargeDimension1, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("6: capped row and column capacity") << c_LargeDimension1 << c_MaxAllowedDimension << std::vector<std::string>(c_LargeDimension1 * c_MaxAllowedDimension, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("7: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension1 << std::vector<std::string>(c_MaxAllowedDimension * c_LargeDimension1, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("8: capped row and column capacity") << c_LargeDimension2 << c_LargeDimension2 << std::vector<std::string>(c_LargeDimension2 * c_LargeDimension2, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("9: capped row and column capacity") << c_LargeDimension2 << c_MaxAllowedDimension << std::vector<std::string>(c_LargeDimension2 * c_MaxAllowedDimension, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("10: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension2 << std::vector<std::string>(c_MaxAllowedDimension * c_LargeDimension2, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: capped row and column capacity") << c_MaxAllowedDimension << c_MaxAllowedDimension << std::vector<std::string>(c_MaxAllowedDimension * c_MaxAllowedDimension, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: capped row capacity") << c_LargeDimension1 << matrix_size_t{3u} << std::vector<std::string>(c_LargeDimension1 * 3, "Value") << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: capped row capacity") << c_LargeDimension2 << matrix_size_t{3u} << std::vector<std::string>(c_LargeDimension2 * 3, "Value") << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{4u} << std::vector<std::string>(c_MaxAllowedDimension * 4, "Value") << c_MaxAllowedDimension << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: capped row capacity") << c_LargeDimension1 << matrix_size_t{8u} << std::vector<std::string>(c_LargeDimension1 * 8, "Value") << c_MaxAllowedDimension << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("16: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{10u} << std::vector<std::string>(c_MaxAllowedDimension * 10, "Value") << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("17: capped row capacity") << c_LargeDimension2 << matrix_size_t{10u} << std::vector<std::string>(c_LargeDimension2 * 10, "Value") << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("18: capped column capacity") << matrix_size_t{3u} << c_LargeDimension1 << std::vector<std::string>(3 * c_LargeDimension1, "Value") << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("19: capped column capacity") << matrix_size_t{3u} << c_LargeDimension2 << std::vector<std::string>(3 * c_LargeDimension2, "Value") << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("20: capped column capacity") << matrix_size_t{4u} << c_MaxAllowedDimension << std::vector<std::string>(4 * c_MaxAllowedDimension, "Value") << matrix_size_t{5u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("21: capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << std::vector<std::string>(8 * c_LargeDimension1, "Value") << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("22: capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << std::vector<std::string>(10 * c_MaxAllowedDimension, "Value") << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("23: capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << std::vector<std::string>(10 * c_LargeDimension2, "Value") << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+}
+
 void CapacityTests::_buildStringMatrixCapacityWithMoveCopyConstructorsTestingTable()
 {
     QTest::addColumn<matrix_size_t>("rowsCount");
@@ -2260,6 +2325,25 @@ void CapacityTests::_buildStringMatrixCapacityWithMoveCopyConstructorsTestingTab
     QTest::newRow("4: medium size matrix") << matrix_size_t{8u} << matrix_size_t{7u} << std::string{"Value"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
     QTest::newRow("5: large size matrix") << matrix_size_t{20u} << matrix_size_t{25u} << std::string{"Value"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
     QTest::newRow("6: large size matrix") << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("7: capped row and column capacity") << c_LargeDimension1 << c_LargeDimension1 << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("8: capped row and column capacity") << c_LargeDimension1 << c_MaxAllowedDimension << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("9: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension1 << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("10: capped row and column capacity") << c_LargeDimension2 << c_LargeDimension2 << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: capped row and column capacity") << c_LargeDimension2 << c_MaxAllowedDimension << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension2 << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: capped row and column capacity") << c_MaxAllowedDimension << c_MaxAllowedDimension << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: capped row capacity") << c_LargeDimension1 << matrix_size_t{3u} << std::string{"Value"} << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: capped row capacity") << c_LargeDimension2 << matrix_size_t{3u} << std::string{"Value"} << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("16: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{4u} << std::string{"Value"} << c_MaxAllowedDimension << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("17: capped row capacity") << c_LargeDimension1 << matrix_size_t{8u} << std::string{"Value"} << c_MaxAllowedDimension << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("18: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{10u} << std::string{"Value"} << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("19: capped row capacity") << c_LargeDimension2 << matrix_size_t{10u} << std::string{"Value"} << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("20: capped column capacity") << matrix_size_t{3u} << c_LargeDimension1 << std::string{"Value"} << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("21: capped column capacity") << matrix_size_t{3u} << c_LargeDimension2 << std::string{"Value"} << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("22: capped column capacity") << matrix_size_t{4u} << c_MaxAllowedDimension << std::string{"Value"} << matrix_size_t{5u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("23: capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << std::string{"Value"} << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("24: capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << std::string{"Value"} << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("25: capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << std::string{"Value"} << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
 }
 
 void CapacityTests::_buildStringMatrixCapacityWithAssignmentOperatorsTestingTable()
@@ -2281,16 +2365,54 @@ void CapacityTests::_buildStringMatrixCapacityWithAssignmentOperatorsTestingTabl
     QTest::newRow("4: destination matrix initially empty") << matrix_size_t{8u} << matrix_size_t{7u} << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
     QTest::newRow("5: destination matrix initially empty") << matrix_size_t{20u} << matrix_size_t{25u} << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
     QTest::newRow("6: destination matrix initially empty") << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
-    QTest::newRow("7: destination matrix initially NOT empty") << matrix_size_t{3u} << matrix_size_t{4u} << std::string{"Value1"} << matrix_size_t{2u} << matrix_size_t{3u} << std::string{"Value3"} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("8: destination matrix initially NOT empty") << matrix_size_t{4u} << matrix_size_t{3u} << std::string{"Value1"} << matrix_size_t{2u} << matrix_size_t{3u} << std::string{"Value3"} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("9: destination matrix initially NOT empty") << matrix_size_t{7u} << matrix_size_t{8u} << std::string{"Value1"} << matrix_size_t{3u} << matrix_size_t{4u} << std::string{"Value3"} << matrix_size_t{8u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
-    QTest::newRow("10: destination matrix initially NOT empty") << matrix_size_t{8u} << matrix_size_t{7u} << std::string{"Value1"} << matrix_size_t{3u} << matrix_size_t{4u} << std::string{"Value3"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
-    QTest::newRow("11: destination matrix initially NOT empty") << matrix_size_t{20u} << matrix_size_t{25u} << std::string{"Value1"} << matrix_size_t{15u} << matrix_size_t{20u} << std::string{"Value3"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
-    QTest::newRow("12: destination matrix initially NOT empty") << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value1"} << matrix_size_t{15u} << matrix_size_t{20u} << std::string{"Value3"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
-    QTest::newRow("13: destination matrix initially NOT empty") << matrix_size_t{20u} << matrix_size_t{25u} << std::string{"Value1"} << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value3"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
-    QTest::newRow("14: destination matrix initially NOT empty") << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value1"} << matrix_size_t{20u} << matrix_size_t{25u} << std::string{"Value3"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
-    QTest::newRow("15: destination matrix initially NOT empty") << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value1"} << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value3"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
-    QTest::newRow("16: destination matrix initially NOT empty") << matrix_size_t{15u} << matrix_size_t{20u} << std::string{"Value1"} << matrix_size_t{20u} << matrix_size_t{25u} << std::string{"Value3"} << matrix_size_t{18u} << matrix_size_t{25u} << matrix_opt_size_t{1u} << matrix_opt_size_t{2u};
+    QTest::newRow("7: destination matrix initially empty, capped row and column capacity") << c_LargeDimension1 << c_LargeDimension1 << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("8: destination matrix initially empty, capped row and column capacity") << c_LargeDimension1 << c_MaxAllowedDimension << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("9: destination matrix initially empty, capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension1 << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("10: destination matrix initially empty, capped row and column capacity") << c_LargeDimension2 << c_LargeDimension2 << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: destination matrix initially empty, capped row and column capacity") << c_LargeDimension2 << c_MaxAllowedDimension << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: destination matrix initially empty, capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension2 << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: destination matrix initially empty, capped row and column capacity") << c_MaxAllowedDimension << c_MaxAllowedDimension << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: destination matrix initially empty, capped row capacity") << c_LargeDimension1 << matrix_size_t{3u} << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: destination matrix initially empty, capped row capacity") << c_LargeDimension2 << matrix_size_t{3u} << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("16: destination matrix initially empty, capped row capacity") << c_MaxAllowedDimension << matrix_size_t{4u} << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("17: destination matrix initially empty, capped row capacity") << c_LargeDimension1 << matrix_size_t{8u} << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("18: destination matrix initially empty, capped row capacity") << c_MaxAllowedDimension << matrix_size_t{10u} << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("19: destination matrix initially empty, capped row capacity") << c_LargeDimension2 << matrix_size_t{10u} << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("20: destination matrix initially empty, capped column capacity") << matrix_size_t{3u} << c_LargeDimension1 << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("21: destination matrix initially empty, capped column capacity") << matrix_size_t{3u} << c_LargeDimension2 << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("22: destination matrix initially empty, capped column capacity") << matrix_size_t{4u} << c_MaxAllowedDimension << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{5u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("23: destination matrix initially empty, capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("24: destination matrix initially empty, capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("25: destination matrix initially empty, capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << std::string{"Value1"} << matrix_size_t{0u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("26: destination matrix initially NOT empty") << matrix_size_t{3u} << matrix_size_t{4u} << std::string{"Value1"} << matrix_size_t{2u} << matrix_size_t{3u} << std::string{"Value3"} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("27: destination matrix initially NOT empty") << matrix_size_t{4u} << matrix_size_t{3u} << std::string{"Value1"} << matrix_size_t{2u} << matrix_size_t{3u} << std::string{"Value3"} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("28: destination matrix initially NOT empty") << matrix_size_t{7u} << matrix_size_t{8u} << std::string{"Value1"} << matrix_size_t{3u} << matrix_size_t{4u} << std::string{"Value3"} << matrix_size_t{8u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("29: destination matrix initially NOT empty") << matrix_size_t{8u} << matrix_size_t{7u} << std::string{"Value1"} << matrix_size_t{3u} << matrix_size_t{4u} << std::string{"Value3"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("30: destination matrix initially NOT empty") << matrix_size_t{20u} << matrix_size_t{25u} << std::string{"Value1"} << matrix_size_t{15u} << matrix_size_t{20u} << std::string{"Value3"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("31: destination matrix initially NOT empty") << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value1"} << matrix_size_t{15u} << matrix_size_t{20u} << std::string{"Value3"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("32: destination matrix initially NOT empty") << matrix_size_t{20u} << matrix_size_t{25u} << std::string{"Value1"} << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value3"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("33: destination matrix initially NOT empty") << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value1"} << matrix_size_t{20u} << matrix_size_t{25u} << std::string{"Value3"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("34: destination matrix initially NOT empty") << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value1"} << matrix_size_t{25u} << matrix_size_t{20u} << std::string{"Value3"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("35: destination matrix initially NOT empty") << matrix_size_t{15u} << matrix_size_t{20u} << std::string{"Value1"} << matrix_size_t{20u} << matrix_size_t{25u} << std::string{"Value3"} << matrix_size_t{18u} << matrix_size_t{25u} << matrix_opt_size_t{1u} << matrix_opt_size_t{2u};
+    QTest::newRow("36: destination matrix initially NOT empty, capped row and column capacity") << c_LargeDimension1 << c_LargeDimension1 << std::string{"Value1"} << c_LargeDimension2 << c_LargeDimension2 << std::string{"Value3"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("37: destination matrix initially NOT empty, capped row and column capacity") << c_LargeDimension1 << c_MaxAllowedDimension << std::string{"Value1"} << c_MaxAllowedDimension << c_LargeDimension1 << std::string{"Value3"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("38: destination matrix initially NOT empty, capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension1 << std::string{"Value1"} << matrix_size_t{8u} << matrix_size_t{10u} << std::string{"Value3"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("39: destination matrix initially NOT empty, capped row and column capacity") << c_LargeDimension2 << c_LargeDimension2 << std::string{"Value1"} << c_LargeDimension1 << c_LargeDimension1 << std::string{"Value3"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("40: destination matrix initially NOT empty, capped row and column capacity") << c_LargeDimension2 << c_MaxAllowedDimension << std::string{"Value1"} << matrix_size_t{8u} << c_MaxAllowedDimension << std::string{"Value3"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("41: destination matrix initially NOT empty, capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension2 << std::string{"Value1"} << c_MaxAllowedDimension << matrix_size_t{10u} << std::string{"Value3"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("42: destination matrix initially NOT empty, capped row and column capacity") << c_MaxAllowedDimension << c_MaxAllowedDimension << std::string{"Value1"} << c_MaxAllowedDimension << c_MaxAllowedDimension << std::string{"Value3"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("43: destination matrix initially NOT empty, capped row capacity") << c_LargeDimension1 << matrix_size_t{3u} << std::string{"Value1"} << matrix_size_t{3u} << c_LargeDimension2 << std::string{"Value3"} << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("44: destination matrix initially NOT empty, capped row capacity") << c_LargeDimension2 << matrix_size_t{3u} << std::string{"Value1"} << c_MaxAllowedDimension << matrix_size_t{3u} << std::string{"Value3"} << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("45: destination matrix initially NOT empty, capped row capacity") << c_MaxAllowedDimension << matrix_size_t{4u} << std::string{"Value1"} << c_LargeDimension2 << matrix_size_t{3u} << std::string{"Value3"} << c_MaxAllowedDimension << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("46: destination matrix initially NOT empty, capped row capacity") << c_LargeDimension1 << matrix_size_t{8u} << std::string{"Value1"} << c_LargeDimension2 << matrix_size_t{10u} << std::string{"Value3"} << c_MaxAllowedDimension << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("47: destination matrix initially NOT empty, capped row capacity") << c_MaxAllowedDimension << matrix_size_t{10u} << std::string{"Value1"} << matrix_size_t{10u} << c_LargeDimension2 << std::string{"Value3"} << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("48: destination matrix initially NOT empty, capped row capacity") << c_LargeDimension2 << matrix_size_t{10u} << std::string{"Value1"} << c_LargeDimension1 << matrix_size_t{10u} << std::string{"Value3"} << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("49: destination matrix initially NOT empty, capped column capacity") << matrix_size_t{3u} << c_LargeDimension1 << std::string{"Value1"} << c_LargeDimension2 << matrix_size_t{3u} << std::string{"Value3"} << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("50: destination matrix initially NOT empty, capped column capacity") << matrix_size_t{3u} << c_LargeDimension2 << std::string{"Value1"} << matrix_size_t{3u} << c_MaxAllowedDimension << std::string{"Value3"} << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("51: destination matrix initially NOT empty, capped column capacity") << matrix_size_t{4u} << c_MaxAllowedDimension << std::string{"Value1"} << matrix_size_t{3u} << c_LargeDimension2 << std::string{"Value3"} << matrix_size_t{5u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("52: destination matrix initially NOT empty, capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << std::string{"Value1"} << matrix_size_t{10u} << c_LargeDimension2 << std::string{"Value3"} << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("53: destination matrix initially NOT empty, capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << std::string{"Value1"} << c_LargeDimension2 << matrix_size_t{10u} << std::string{"Value3"} << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("54: destination matrix initially NOT empty, capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << std::string{"Value1"} << matrix_size_t{10u} << c_LargeDimension1 << std::string{"Value3"} << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
 }
 
 void CapacityTests::_buildStringMatrixCapacityWithResizeTestingTable()

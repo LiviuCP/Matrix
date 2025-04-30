@@ -20,6 +20,7 @@ include_directories(../Shared)
 include_directories(../../MatrixLib/Matrix)
 
 add_compile_definitions(USE_CAPACITY_OFFSET)
+add_compile_definitions(USE_SMALL_DIMENSIONS)
 
 add_executable(ConstructionAndAssignmentTests tst_constructionandassignmenttests.cpp)
 add_test(NAME ConstructionAndAssignmentTests COMMAND ConstructionAndAssignmentTests)
