@@ -348,7 +348,7 @@ void ZIteratorTests::testAsteriskOperatorWrite()
 
     // test with row capacity offset
     m_PrimaryIntMatrix = {{4, 3}, -20};
-    m_PrimaryIntMatrix.resize(4, 3, 6, 3);
+    m_PrimaryIntMatrix.reserve(6, 3);
     *m_PrimaryIntMatrix.zBegin() = 1;
     *m_PrimaryIntMatrix.getZIterator(0, 1) = -2;
     *m_PrimaryIntMatrix.getZIterator(1, 2) = -6;
@@ -377,7 +377,7 @@ void ZIteratorTests::testAsteriskOperatorReadWrite()
     // test with column capacity offset
 
     m_PrimaryIntMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    m_PrimaryIntMatrix.resize(2, 3, 2, 5);
+    m_PrimaryIntMatrix.reserve(2, 5);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.zBegin();
     m_PrimaryIntMatrix.at(0, 2) = 10;
     m_PrimaryIntIterator += 2;
@@ -385,7 +385,7 @@ void ZIteratorTests::testAsteriskOperatorReadWrite()
     QVERIFY(*m_PrimaryIntIterator == 10);
 
     m_PrimaryIntMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    m_PrimaryIntMatrix.resize(2, 3, 2, 5);
+    m_PrimaryIntMatrix.reserve(2, 5);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.zBegin();
     m_PrimaryIntIterator += 2;
     *m_PrimaryIntIterator = 10;
@@ -415,7 +415,7 @@ void ZIteratorTests::testArrowOperatorWrite()
 
     // test with column capacity offset
     m_PrimaryStringMatrix = {{4, 3}, "zzz"};
-    m_PrimaryStringMatrix.resize(4, 3, 4, 5);
+    m_PrimaryStringMatrix.reserve(4, 5);
     m_PrimaryStringMatrix.zBegin()->assign("abc");
     m_PrimaryStringMatrix.getZIterator(0, 1)->assign("ba");
     m_PrimaryStringMatrix.getZIterator(1, 2)->assign("gfedcba");
@@ -444,7 +444,7 @@ void ZIteratorTests::testArrowOperatorReadWrite()
     // test with row/column capacity offset
 
     m_PrimaryStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-    m_PrimaryStringMatrix.resize(2, 3, 4, 5);
+    m_PrimaryStringMatrix.reserve(4, 5);
     m_StringIterator = m_PrimaryStringMatrix.zBegin();
     m_PrimaryStringMatrix.at(0, 2) = "abcdefghi";
     m_StringIterator += 2;
@@ -452,7 +452,7 @@ void ZIteratorTests::testArrowOperatorReadWrite()
     QVERIFY(m_StringIterator->size() == 9);
 
     m_PrimaryStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-    m_PrimaryStringMatrix.resize(2, 3, 4, 5);
+    m_PrimaryStringMatrix.reserve(4, 5);
     m_StringIterator = m_PrimaryStringMatrix.zBegin();
     m_StringIterator += 2;
     m_StringIterator->assign("abcdefghi");
@@ -531,7 +531,7 @@ void ZIteratorTests::testSquareBracketsOperatorWrite()
 
     // test with row/column capacity offset
     m_PrimaryIntMatrix = {{4, 3}, -20};
-    m_PrimaryIntMatrix.resize(4, 3, 6, 5);
+    m_PrimaryIntMatrix.reserve(6, 5);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.zBegin();
     m_PrimaryIntIterator[0] = 1;
     m_PrimaryIntIterator[1] = -2;
@@ -544,7 +544,7 @@ void ZIteratorTests::testSquareBracketsOperatorWrite()
 
     // test with row capacity offset
     m_PrimaryIntMatrix = {{4, 3}, -20};
-    m_PrimaryIntMatrix.resize(4, 3, 6, 3);
+    m_PrimaryIntMatrix.reserve(6, 3);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getZIterator(1, 2);
     m_PrimaryIntIterator[-5] = 1;
     m_PrimaryIntIterator[-4] = -2;
@@ -557,7 +557,7 @@ void ZIteratorTests::testSquareBracketsOperatorWrite()
 
     // test with column capacity offset
     m_PrimaryIntMatrix = {{4, 3}, -20};
-    m_PrimaryIntMatrix.resize(4, 3, 4, 5);
+    m_PrimaryIntMatrix.reserve(4, 5);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getZIterator(3, 2);
     m_PrimaryIntIterator[-11] = 1;
     m_PrimaryIntIterator[-10] = -2;
@@ -1067,7 +1067,7 @@ void ZIteratorTests::testAsteriskOperatorRead_data()
 
     // test with row/column capacity offset
     m_SecondaryIntMatrix = m_PrimaryIntMatrix;
-    m_SecondaryIntMatrix.resize(4, 3, 6, 5);
+    m_SecondaryIntMatrix.reserve(6, 5);
 
     QTest::newRow("6: begin iterator") << m_SecondaryIntMatrix.zBegin() << 1;
     QTest::newRow("7: random iterator") << m_SecondaryIntMatrix.getZIterator(0, 1) << -2;
@@ -1091,7 +1091,7 @@ void ZIteratorTests::testArrowOperatorRead_data()
 
     // test with row capacity offset
     m_SecondaryStringMatrix = m_PrimaryStringMatrix;
-    m_SecondaryStringMatrix.resize(4, 3, 6, 3);
+    m_SecondaryStringMatrix.reserve(6, 3);
 
     QTest::newRow("6: begin iterator") << m_SecondaryStringMatrix.zBegin() << 3;
     QTest::newRow("7: random iterator") << m_SecondaryStringMatrix.getZIterator(0, 1) << 2;
@@ -1136,7 +1136,7 @@ void ZIteratorTests::testSquareBracketsOperatorRead_data()
 
     // test with column capacity offset
     m_SecondaryIntMatrix = m_PrimaryIntMatrix;
-    m_SecondaryIntMatrix.resize(4, 3, 4, 5);
+    m_SecondaryIntMatrix.reserve(4, 5);
 
     QTest::newRow("26: begin iterator") << m_SecondaryIntMatrix.zBegin() << matrix_diff_t{0} << 1;
     QTest::newRow("27: begin iterator") << m_SecondaryIntMatrix.zBegin() << matrix_diff_t{1} << -2;

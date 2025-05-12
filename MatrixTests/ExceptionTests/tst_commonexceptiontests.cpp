@@ -154,7 +154,7 @@ void CommonExceptionTests::testResizeAndFillInNewValuesExceptions()
     QFETCH(matrix_size_t, resizeColumnsCount);
     QFETCH(int, resizeElementValue);
 
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.resize(resizeRowsCount, resizeColumnsCount, resizeElementValue);});
 }
 
 void CommonExceptionTests::testInsertRowNoSetValueExceptions()
@@ -576,6 +576,20 @@ void CommonExceptionTests::_buildResizeExceptionsTestingTable()
     QTest::newRow("4: null rows count") << IntMatrix{} << matrix_size_t{0u} << matrix_size_t{4u} << 5;
     QTest::newRow("5: null columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{3u} << matrix_size_t{0u} << 5;
     QTest::newRow("6: null columns count") << IntMatrix{} << matrix_size_t{3u} << matrix_size_t{0u} << 5;
+    QTest::newRow("7: exceeding rows count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_ExceedingDimension << matrix_size_t{4u} << 5;
+    QTest::newRow("8: exceeding rows count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_ExceedingDimension << c_MaxAllowedDimension << 5;
+    QTest::newRow("9: exceeding rows count") << IntMatrix{} << c_ExceedingDimension << matrix_size_t{4u} << 5;
+    QTest::newRow("10: exceeding rows count") << IntMatrix{} << c_ExceedingDimension << c_MaxAllowedDimension << 5;
+    QTest::newRow("11: exceeding columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{3u} << c_ExceedingDimension << 5;
+    QTest::newRow("12: exceeding columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_MaxAllowedDimension << c_ExceedingDimension << 5;
+    QTest::newRow("13: exceeding columns count") << IntMatrix{} << matrix_size_t{3u} << c_ExceedingDimension << 5;
+    QTest::newRow("14: exceeding columns count") << IntMatrix{} << c_MaxAllowedDimension << c_ExceedingDimension << 5;
+    QTest::newRow("15: null rows count, exceeding columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{0u} << c_ExceedingDimension << 5;
+    QTest::newRow("16: null rows count, exceeding columns count") << IntMatrix{} << matrix_size_t{0u} << c_ExceedingDimension << 5;
+    QTest::newRow("17: exceeding rows count, null columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_ExceedingDimension << matrix_size_t{0u} << 5;
+    QTest::newRow("18: exceeding rows count, null columns count") << IntMatrix{} << c_ExceedingDimension << matrix_size_t{0u} << 5;
+    QTest::newRow("19: exceeding rows and columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_ExceedingDimension << c_ExceedingDimension << 5;
+    QTest::newRow("20: exceeding rows and columns count") << IntMatrix{} << c_ExceedingDimension << c_ExceedingDimension << 5;
 }
 
 void CommonExceptionTests::_buildInsertRowExceptionsTestingTable()

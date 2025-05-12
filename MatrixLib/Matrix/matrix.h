@@ -282,10 +282,13 @@ public:
     void clear();
 
     // resize and don't init new elements (user has the responsibility to init them), existing elements retain their old values
-    void resize(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity = 0, size_type columnCapacity = 0);
+    void resize(size_type nrOfRows, size_type nrOfColumns);
 
     // resize and fill new elements with value of dataType, existing elements retain their old values
-    void resizeWithValue(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType, size_type rowCapacity = 0, size_type columnCapacity = 0);
+    void resize(size_type nrOfRows, size_type nrOfColumns, const DataType& dataType);
+
+    // reserve capacity without changing dimensions and element values
+    void reserve(size_type rowCapacity, size_type columnCapacity);
 
     void shrinkToFit();
 
@@ -434,7 +437,7 @@ public:
 
 private:
     // resize matrix, returns number of preserved elements (rows * columns), new elements should be initialized by caller
-    std::pair<size_type, size_type> _resizeWithUninitializedNewElements(size_type nrOfRows, size_type nrOfColumns, size_type rowCapacity, size_type columnCapacity);
+    std::pair<size_type, size_type> _resizeWithUninitializedNewElements(size_type nrOfRows, size_type nrOfColumns);
 
     // inserts the uninitialized row into the required position, initialialization is left to the caller
     void _insertUninitializedRow(size_type rowNr);
@@ -3069,14 +3072,14 @@ void Matrix<DataType>::clear()
 }
 
 template<typename DataType>
-void Matrix<DataType>::resize(Matrix<DataType>::size_type nrOfRows,
-                              Matrix<DataType>::size_type nrOfColumns,
-                              Matrix<DataType>::size_type rowCapacity,
-                              Matrix<DataType>::size_type columnCapacity)
+void Matrix<DataType>::resize(Matrix<DataType>::size_type nrOfRows, Matrix<DataType>::size_type nrOfColumns)
 {
-    CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
+    constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
 
-    const auto[c_NrOfRemainingRows, c_NrOfRemainingColumns]{_resizeWithUninitializedNewElements(nrOfRows, nrOfColumns, rowCapacity, columnCapacity)};
+    CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
+    CHECK_ERROR_CONDITION(nrOfRows > c_MaxAllowedDimension || nrOfColumns > c_MaxAllowedDimension, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
+
+    const auto[c_NrOfRemainingRows, c_NrOfRemainingColumns]{_resizeWithUninitializedNewElements(nrOfRows, nrOfColumns)};
 
     // initialize new elements to the right side of the retained ones
     if (m_NrOfColumns > c_NrOfRemainingColumns)
@@ -3094,15 +3097,16 @@ void Matrix<DataType>::resize(Matrix<DataType>::size_type nrOfRows,
 }
 
 template <typename DataType>
-void Matrix<DataType>::resizeWithValue(Matrix<DataType>::size_type nrOfRows,
-                                       Matrix<DataType>::size_type nrOfColumns,
-                                       const DataType& value,
-                                       Matrix<DataType>::size_type rowCapacity,
-                                       Matrix<DataType>::size_type columnCapacity)
+void Matrix<DataType>::resize(Matrix<DataType>::size_type nrOfRows,
+                              Matrix<DataType>::size_type nrOfColumns,
+                              const DataType& value)
 {
-    CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
+    constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
 
-    const auto[c_NrOfRemainingRows, c_NrOfRemainingColumns]{_resizeWithUninitializedNewElements(nrOfRows, nrOfColumns, rowCapacity, columnCapacity)};
+    CHECK_ERROR_CONDITION(0 == nrOfRows || 0 == nrOfColumns, Matr::errorMessages[Matr::Errors::NULL_DIMENSION]);
+    CHECK_ERROR_CONDITION(nrOfRows > c_MaxAllowedDimension || nrOfColumns > c_MaxAllowedDimension, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
+
+    const auto[c_NrOfRemainingRows, c_NrOfRemainingColumns]{_resizeWithUninitializedNewElements(nrOfRows, nrOfColumns)};
 
     // initialize new elements to the right side of the retained ones
     if (m_NrOfColumns > c_NrOfRemainingColumns)
@@ -3117,6 +3121,29 @@ void Matrix<DataType>::resizeWithValue(Matrix<DataType>::size_type nrOfRows,
     }
 
     _normalizeRowCapacity();
+}
+
+template<typename DataType>
+void Matrix<DataType>::reserve(Matrix<DataType>::size_type rowCapacity, Matrix<DataType>::size_type columnCapacity)
+{
+    if (!isEmpty())
+    {
+        constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
+
+        const size_type c_NewRowCapacity{std::clamp<size_type>(rowCapacity, m_NrOfRows, c_MaxAllowedDimension)};
+        const size_type c_NewColumnCapacity{std::clamp<size_type>(columnCapacity, m_NrOfColumns, c_MaxAllowedDimension)};
+
+        if (m_RowCapacity != c_NewRowCapacity || m_ColumnCapacity != c_NewColumnCapacity)
+        {
+            Matrix matrix{std::move(*this)};
+
+            _deallocMemory(); // actually not required, just for safety purposes
+            _allocMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
+
+            // move the retained items back
+            _moveInitItems(matrix, 0, 0, 0, 0, matrix.m_NrOfRows, matrix.m_NrOfColumns);
+        }
+    }
 }
 
 template<typename DataType>
@@ -4089,22 +4116,21 @@ typename Matrix<DataType>::ConstZIterator Matrix<DataType>::end() const
 template <typename DataType>
 std::pair<typename Matrix<DataType>::size_type,
           typename Matrix<DataType>::size_type> Matrix<DataType>::_resizeWithUninitializedNewElements(Matrix<DataType>::size_type nrOfRows,
-                                                                                                      Matrix<DataType>::size_type nrOfColumns,
-                                                                                                      Matrix<DataType>::size_type rowCapacity,
-                                                                                                      Matrix<DataType>::size_type columnCapacity)
+                                                                                                      Matrix<DataType>::size_type nrOfColumns)
 {
+    assert(nrOfRows <= maxAllowedDimension() && nrOfColumns <= maxAllowedDimension());
+
     const size_type c_NewNrOfRows{(nrOfRows > size_type{0} && nrOfColumns > size_type{0}) ? nrOfRows : size_type{0}};
     const size_type c_NewNrOfColumns{c_NewNrOfRows > size_type{0} ? nrOfColumns : size_type{0}};
-    const size_type c_NewRowCapacity{std::max(rowCapacity, c_NewNrOfRows)};
-    const size_type c_NewColumnCapacity{std::max(columnCapacity, c_NewNrOfColumns)};
+    const size_type c_NewRowCapacity{std::max(m_RowCapacity, c_NewNrOfRows)};
+    const size_type c_NewColumnCapacity{std::max(m_ColumnCapacity, c_NewNrOfColumns)};
     const size_type c_NrOfRowsToKeep{std::min(m_NrOfRows, c_NewNrOfRows)};
     const size_type c_NrOfColumnsToKeep{std::min(m_NrOfColumns, c_NewNrOfColumns)};
     const std::optional<size_type> c_NewRowCapacityOffset{c_NewNrOfRows > 0 ? std::optional((c_NewRowCapacity - c_NewNrOfRows) / 2) : std::nullopt};
     const std::optional<size_type> c_NewColumnCapacityOffset{c_NewNrOfColumns > 0 ? std::optional((c_NewColumnCapacity - c_NewNrOfColumns) / 2) : std::nullopt};
 
-    if (!m_RowCapacityOffset.has_value() || !c_NewRowCapacityOffset.has_value() || c_NewRowCapacity != m_RowCapacity || c_NewColumnCapacity != m_ColumnCapacity || c_NewColumnCapacityOffset != m_ColumnCapacityOffset)
+    if (!m_RowCapacityOffset.has_value() || !c_NewRowCapacityOffset.has_value() || c_NewRowCapacity != m_RowCapacity || c_NewColumnCapacity != m_ColumnCapacity || c_NewNrOfColumns > (m_ColumnCapacity - *m_ColumnCapacityOffset))
     {
-
         Matrix matrix{std::move(*this)};
         _deallocMemory(); // actually not required, just for safety purposes
         _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);

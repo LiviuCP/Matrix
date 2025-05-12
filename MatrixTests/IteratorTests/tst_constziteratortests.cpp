@@ -365,7 +365,7 @@ void ConstZIteratorTests::testAsteriskOperatorPlusEqual()
 
     // test with row/column capacity offset
     m_PrimaryIntMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    m_PrimaryIntMatrix.resize(2, 3, 4, 5);
+    m_PrimaryIntMatrix.reserve(4, 5);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.constZBegin();
     m_PrimaryIntMatrix.at(0, 2) = 10;
     m_PrimaryIntIterator += 2;
@@ -374,7 +374,7 @@ void ConstZIteratorTests::testAsteriskOperatorPlusEqual()
 
     // test with row capacity offset
     m_PrimaryIntMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    m_PrimaryIntMatrix.resize(2, 3, 4, 3);
+    m_PrimaryIntMatrix.reserve(4, 3);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.constZBegin();
     m_PrimaryIntMatrix.at(0, 2) = 10;
     m_PrimaryIntIterator += 2;
@@ -383,7 +383,7 @@ void ConstZIteratorTests::testAsteriskOperatorPlusEqual()
 
     // test with column capacity offset
     m_PrimaryIntMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
-    m_PrimaryIntMatrix.resize(2, 3, 2, 5);
+    m_PrimaryIntMatrix.reserve(2, 5);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.constZBegin();
     m_PrimaryIntMatrix.at(0, 2) = 10;
     m_PrimaryIntIterator += 2;
@@ -410,7 +410,7 @@ void ConstZIteratorTests::testArrowOperatorPlusEqual()
 
     // test with row/column capacity offset
     m_PrimaryStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-    m_PrimaryStringMatrix.resize(2, 3, 4, 5);
+    m_PrimaryStringMatrix.reserve(4, 5);
     m_StringIterator = m_PrimaryStringMatrix.constZBegin();
     m_PrimaryStringMatrix.at(0, 2) = "abcdefghi";
     m_StringIterator += 2;
@@ -419,7 +419,7 @@ void ConstZIteratorTests::testArrowOperatorPlusEqual()
 
     // test with row capacity offset
     m_PrimaryStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-    m_PrimaryStringMatrix.resize(2, 3, 4, 3);
+    m_PrimaryStringMatrix.reserve(4, 3);
     m_StringIterator = m_PrimaryStringMatrix.constZBegin();
     m_PrimaryStringMatrix.at(0, 2) = "abcdefghi";
     m_StringIterator += 2;
@@ -428,7 +428,7 @@ void ConstZIteratorTests::testArrowOperatorPlusEqual()
 
     // test with column capacity offset
     m_PrimaryStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-    m_PrimaryStringMatrix.resize(2, 3, 2, 5);
+    m_PrimaryStringMatrix.reserve(2, 5);
     m_StringIterator = m_PrimaryStringMatrix.constZBegin();
     m_PrimaryStringMatrix.at(0, 2) = "abcdefghi";
     m_StringIterator += 2;
@@ -797,7 +797,7 @@ void ConstZIteratorTests::testAsteriskOperator_data()
 
     // test with row/column capacity offset
     m_SecondaryIntMatrix = m_PrimaryIntMatrix;
-    m_SecondaryIntMatrix.resize(4, 3, 6, 5);
+    m_SecondaryIntMatrix.reserve(6, 5);
 
     QTest::newRow("6: begin iterator") << m_SecondaryIntMatrix.constZBegin() << 1;
     QTest::newRow("7: random iterator") << m_SecondaryIntMatrix.getConstZIterator(0, 1) << -2;
@@ -821,7 +821,7 @@ void ConstZIteratorTests::testArrowOperator_data()
 
     // test with row capacity offset
     m_SecondaryStringMatrix = m_PrimaryStringMatrix;
-    m_SecondaryStringMatrix.resize(4, 3, 6, 3);
+    m_SecondaryStringMatrix.reserve(6, 3);
 
     QTest::newRow("6: begin iterator") << m_SecondaryStringMatrix.constZBegin() << 3;
     QTest::newRow("7: random iterator") << m_SecondaryStringMatrix.getConstZIterator(0, 1) << 2;
@@ -866,7 +866,7 @@ void ConstZIteratorTests::testSquareBracketsOperator_data()
 
     // test with column capacity offset
     m_SecondaryIntMatrix = m_PrimaryIntMatrix;
-    m_SecondaryIntMatrix.resize(4, 3, 4, 5);
+    m_SecondaryIntMatrix.reserve(4, 5);
 
     QTest::newRow("26: begin iterator") << m_SecondaryIntMatrix.constZBegin() << matrix_diff_t{0} << 1;
     QTest::newRow("27: begin iterator") << m_SecondaryIntMatrix.constZBegin() << matrix_diff_t{1} << -2;

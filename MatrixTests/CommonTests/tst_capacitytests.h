@@ -178,7 +178,97 @@
                  secondaryMatrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Calculating transposed matrix failed, capacity (offset) of the destination (transposed) matrix is not correct!"); \
     }
 
-#define TEST_CAPACITY_WITH_RESIZE_AND_FILL_IN_NEW_VALUES(matrixType, primaryMatrix, secondaryMatrix) \
+#define TEST_CAPACITY_WITH_RESERVE(matrixType, primaryMatrix) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>::size_type, requestedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, requestedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
+\
+    primaryMatrix = matrix; \
+\
+    primaryMatrix.reserve(requestedRowCapacity, requestedColumnCapacity); \
+\
+    if (primaryMatrix.getRowCapacity() != expectedRowCapacity || \
+        primaryMatrix.getColumnCapacity() != expectedColumnCapacity || \
+        primaryMatrix.getRowCapacityOffset() != expectedRowCapacityOffset || \
+        primaryMatrix.getColumnCapacityOffset() != expectedColumnCapacityOffset) \
+    { \
+        QFAIL("Reserving/resizing failed, capacity (offset) of the matrix is not correct!"); \
+    } \
+\
+    QVERIFY2(primaryMatrix == matrix, "Reserving/resizing failed, the matrix does not have the correct size and/or values!");
+
+#define TEST_CAPACITY_WITH_RESIZE_AND_DEFAULT_NEW_VALUES(matrixType, primaryMatrix) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
+    QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
+\
+    primaryMatrix = matrix; \
+\
+    primaryMatrix.resize(resizeRowsCount, resizeColumnsCount); \
+\
+    if (primaryMatrix.getRowCapacity() != expectedRowCapacity || \
+        primaryMatrix.getColumnCapacity() != expectedColumnCapacity || \
+        primaryMatrix.getRowCapacityOffset() != expectedRowCapacityOffset || \
+        primaryMatrix.getColumnCapacityOffset() != expectedColumnCapacityOffset) \
+    { \
+        QFAIL("Reserving/resizing failed, capacity (offset) of the matrix is not correct!"); \
+    } \
+
+#define TEST_CAPACITY_WITH_RESIZE_AND_FILL_IN_NEW_VALUES(matrixType, primaryMatrix) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
+    QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
+    QFETCH(matrixType, resizeElementValue); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
+\
+    primaryMatrix = matrix; \
+\
+    primaryMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeElementValue); \
+\
+    if (primaryMatrix.getRowCapacity() != expectedRowCapacity || \
+        primaryMatrix.getColumnCapacity() != expectedColumnCapacity || \
+        primaryMatrix.getRowCapacityOffset() != expectedRowCapacityOffset || \
+        primaryMatrix.getColumnCapacityOffset() != expectedColumnCapacityOffset) \
+    { \
+        QFAIL("Reserving/resizing failed, capacity (offset) of the matrix is not correct!"); \
+    } \
+
+#define TEST_CAPACITY_WITH_RESERVE_AND_RESIZE_AND_DEFAULT_NEW_VALUES(matrixType, primaryMatrix) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
+    QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
+    QFETCH(Matrix<matrixType>::size_type, requestedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, requestedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
+\
+    primaryMatrix = matrix; \
+\
+    primaryMatrix.reserve(requestedRowCapacity, requestedColumnCapacity); \
+    primaryMatrix.resize(resizeRowsCount, resizeColumnsCount); \
+\
+    if (primaryMatrix.getRowCapacity() != expectedRowCapacity || \
+        primaryMatrix.getColumnCapacity() != expectedColumnCapacity || \
+        primaryMatrix.getRowCapacityOffset() != expectedRowCapacityOffset || \
+        primaryMatrix.getColumnCapacityOffset() != expectedColumnCapacityOffset) \
+    { \
+        QFAIL("Reserving/resizing failed, capacity (offset) of the matrix is not correct!"); \
+    } \
+
+#define TEST_CAPACITY_WITH_RESERVE_AND_RESIZE_AND_FILL_IN_NEW_VALUES(matrixType, primaryMatrix) \
     QFETCH(Matrix<matrixType>, matrix); \
     QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
     QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
@@ -191,20 +281,17 @@
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
     primaryMatrix = matrix; \
-    secondaryMatrix = primaryMatrix; \
 \
-    primaryMatrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue); \
-    secondaryMatrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue, requestedRowCapacity, requestedColumnCapacity); \
+    primaryMatrix.reserve(requestedRowCapacity, requestedColumnCapacity); \
+    primaryMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeElementValue); \
 \
-    if (secondaryMatrix.getRowCapacity() != expectedRowCapacity || \
-        secondaryMatrix.getColumnCapacity() != expectedColumnCapacity || \
-        secondaryMatrix.getRowCapacityOffset() != expectedRowCapacityOffset || \
-        secondaryMatrix.getColumnCapacityOffset() != expectedColumnCapacityOffset) \
+    if (primaryMatrix.getRowCapacity() != expectedRowCapacity || \
+        primaryMatrix.getColumnCapacity() != expectedColumnCapacity || \
+        primaryMatrix.getRowCapacityOffset() != expectedRowCapacityOffset || \
+        primaryMatrix.getColumnCapacityOffset() != expectedColumnCapacityOffset) \
     { \
-        QFAIL("Resizing failed, capacity (offset) of the matrix is not correct!"); \
+        QFAIL("Reserving/resizing failed, capacity (offset) of the matrix is not correct!"); \
     } \
-\
-    QVERIFY2(secondaryMatrix == primaryMatrix, "Resizing failed, the matrix does not have the correct size and/or values!");
 
 #define TEST_CAPACITY_WITH_INSERT_ROW(matrixType) \
     QFETCH(Matrix<matrixType>, matrix); \
@@ -304,7 +391,8 @@
 \
     if (resizeRowsCount > 0u && resizeColumnsCount > 0u) \
     { \
-        destMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity); \
+        destMatrix.reserve(resizeRowCapacity, resizeColumnCapacity); \
+        destMatrix.resize(resizeRowsCount, resizeColumnsCount); \
     } \
 \
     switch(mode) \
@@ -349,7 +437,8 @@
 \
     if (resizeRowsCount > 0u && resizeColumnsCount > 0u) \
     { \
-        destMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity); \
+        destMatrix.reserve(resizeRowCapacity, resizeColumnCapacity); \
+        destMatrix.resize(resizeRowsCount, resizeColumnsCount); \
     } \
 \
     switch(mode) \
@@ -388,7 +477,7 @@
     QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
     QFETCH(Matrix<matrixType>::size_type, resizeRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, resizeColumnCapacity); \
-    QFETCH(bool, isFirstDestResized); \
+    QFETCH(bool, shouldResizeFirstDestMatrix); \
     QFETCH(Matrix<matrixType>::size_type, expectedFirstDestRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedFirstDestColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedSecondDestRowCapacity); \
@@ -400,13 +489,15 @@
 \
     if (resizeRowsCount > 0u && resizeColumnsCount > 0u) \
     { \
-        if (isFirstDestResized) \
+        if (shouldResizeFirstDestMatrix) \
         { \
-            firstDestMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity); \
+            firstDestMatrix.reserve(resizeRowCapacity, resizeColumnCapacity); \
+            firstDestMatrix.resize(resizeRowsCount, resizeColumnsCount); \
         } \
         else \
         { \
-            secondDestMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity); \
+            secondDestMatrix.reserve(resizeRowCapacity, resizeColumnCapacity); \
+            secondDestMatrix.resize(resizeRowsCount, resizeColumnsCount); \
         } \
     } \
 \
@@ -446,7 +537,7 @@
     QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
     QFETCH(Matrix<matrixType>::size_type, resizeRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, resizeColumnCapacity); \
-    QFETCH(bool, isFirstDestResized); \
+    QFETCH(bool, shouldResizeFirstDestMatrix); \
     QFETCH(Matrix<matrixType>::size_type, expectedFirstDestRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedFirstDestColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedSecondDestRowCapacity); \
@@ -458,13 +549,15 @@
 \
     if (resizeRowsCount > 0u && resizeColumnsCount > 0u) \
     { \
-        if (isFirstDestResized) \
+        if (shouldResizeFirstDestMatrix) \
         { \
-            firstDestMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity); \
+            firstDestMatrix.reserve(resizeRowCapacity, resizeColumnCapacity); \
+            firstDestMatrix.resize(resizeRowsCount, resizeColumnsCount); \
         } \
         else \
         { \
-            secondDestMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity); \
+            secondDestMatrix.reserve(resizeRowCapacity, resizeColumnCapacity); \
+            secondDestMatrix.resize(resizeRowsCount, resizeColumnsCount); \
         } \
     } \
 \
@@ -494,7 +587,7 @@
              secondDestMatrix.getRowCapacityOffset() == expectedSecondDestRowCapacityOffset && \
              secondDestMatrix.getColumnCapacityOffset() == expectedSecondDestColumnCapacityOffset, "Horizontal split failed, capacity (offset) of the second destination matrix is not correct!");
 
-#define TEST_CAPACITY_WITH_REZIZE_AND_ERASE_ROW_AND_OR_COLUMN(matrixType, primaryMatrix, secondaryMatrix) \
+#define TEST_CAPACITY_WITH_RESIZE_AND_ERASE_ROW_AND_OR_COLUMN(matrixType, primaryMatrix) \
     QFETCH(Matrix<matrixType>, matrix); \
     QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
     QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
@@ -509,11 +602,10 @@
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
-    primaryMatrix = matrix; /* used for consistency check (similarly to resizing tests) */ \
-    secondaryMatrix = primaryMatrix; /* tested matrix */ \
+    primaryMatrix = matrix; \
 \
-    primaryMatrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue); \
-    secondaryMatrix.resizeWithValue(resizeRowsCount, resizeColumnsCount, resizeElementValue, requestedRowCapacity, requestedColumnCapacity); \
+    primaryMatrix.reserve(requestedRowCapacity, requestedColumnCapacity); \
+    primaryMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeElementValue); \
 \
     const bool c_ShouldEraseRow{erasedRowNr.has_value() && erasedRowNr < matrix.getNrOfRows()}; \
     const bool c_ShouldEraseColumn{erasedColumnNr.has_value() && erasedColumnNr < matrix.getNrOfColumns()}; \
@@ -523,33 +615,25 @@
     if (c_ShouldEraseBothInReverse) \
     { \
         primaryMatrix.eraseColumn(*erasedColumnNr); \
-        secondaryMatrix.eraseColumn(*erasedColumnNr); \
         primaryMatrix.eraseRow(*erasedRowNr); \
-        secondaryMatrix.eraseRow(*erasedRowNr); \
     } \
     else if (c_ShouldEraseBoth) \
     { \
         primaryMatrix.eraseRow(*erasedRowNr); \
-        secondaryMatrix.eraseRow(*erasedRowNr); \
         primaryMatrix.eraseColumn(*erasedColumnNr); \
-        secondaryMatrix.eraseColumn(*erasedColumnNr); \
     } \
     else if (c_ShouldEraseRow) \
     { \
         primaryMatrix.eraseRow(*erasedRowNr); \
-        secondaryMatrix.eraseRow(*erasedRowNr); \
     } \
     else if (c_ShouldEraseColumn) \
     { \
         primaryMatrix.eraseColumn(*erasedColumnNr); \
-        secondaryMatrix.eraseColumn(*erasedColumnNr); \
     } \
 \
-    QVERIFY(expectedRowCapacity == secondaryMatrix.getRowCapacity() && \
-            expectedColumnCapacity == secondaryMatrix.getColumnCapacity() && \
-            expectedRowCapacityOffset == secondaryMatrix.getRowCapacityOffset() && \
-            expectedColumnCapacityOffset == secondaryMatrix.getColumnCapacityOffset()); \
-\
-    QVERIFY(secondaryMatrix == primaryMatrix);
+    QVERIFY(expectedRowCapacity == primaryMatrix.getRowCapacity() && \
+            expectedColumnCapacity == primaryMatrix.getColumnCapacity() && \
+            expectedRowCapacityOffset == primaryMatrix.getRowCapacityOffset() && \
+            expectedColumnCapacityOffset == primaryMatrix.getColumnCapacityOffset()); \
 
 #endif // TST_CAPACITYTESTS_H

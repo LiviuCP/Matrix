@@ -366,7 +366,7 @@ void MIteratorTests::testAsteriskOperator()
 
     // test with row capacity offset
     m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-    m_PrimaryIntMatrix.resize(4, 3, 6, 3);
+    m_PrimaryIntMatrix.reserve(6, 3);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getMIterator(2, 1);
 
     QVERIFY2(*m_PrimaryIntIterator == -8, "The asterisk operator does not work correctly when reading the value!");
@@ -378,7 +378,7 @@ void MIteratorTests::testAsteriskOperator()
 
     // test with column capacity offset
     m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-    m_PrimaryIntMatrix.resize(4, 3, 4, 5);
+    m_PrimaryIntMatrix.reserve(4, 5);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getMIterator(2, 1);
 
     QVERIFY2(*m_PrimaryIntIterator == -8, "The asterisk operator does not work correctly when reading the value!");
@@ -404,7 +404,7 @@ void MIteratorTests::testArrowOperator()
 
     // test with row/column capacity offset
     m_StringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
-    m_StringMatrix.resize(2, 3, 4, 5);
+    m_StringMatrix.reserve(4, 5);
     m_StringIterator = m_StringMatrix.mBegin(0, 1);
 
     QVERIFY2(m_StringIterator->size() == 5, "The arrow operator does not work correctly when reading the value!");
@@ -435,7 +435,7 @@ void MIteratorTests::testSquareBracketsOperatorWrite()
 
     // test with row capacity offset
     m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-    m_PrimaryIntMatrix.resize(4, 3, 6, 3);
+    m_PrimaryIntMatrix.reserve(6, 3);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getMIterator(0, 1);
     m_PrimaryIntIterator[1] = 14;
 
@@ -443,7 +443,7 @@ void MIteratorTests::testSquareBracketsOperatorWrite()
 
     // test with column capacity offset
     m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-    m_PrimaryIntMatrix.resize(4, 3, 4, 5);
+    m_PrimaryIntMatrix.reserve(4, 5);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getMIterator(0, 1);
     m_PrimaryIntIterator[1] = 14;
 
@@ -729,7 +729,7 @@ void MIteratorTests::testSquareBracketsOperatorRead_data()
 
     // test with row/column capacity offset
     m_SecondaryIntMatrix = m_PrimaryIntMatrix;
-    m_SecondaryIntMatrix.resize(4, 3, 6, 5);
+    m_SecondaryIntMatrix.reserve(6, 5);
 
     QTest::newRow("9: begin iterator") << m_SecondaryIntMatrix.mBegin(0, 1) << matrix_diff_t{0} << 2;
     QTest::newRow("10: begin iterator") << m_SecondaryIntMatrix.mBegin(0, 1) << matrix_diff_t{1} << 4;

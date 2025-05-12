@@ -12,10 +12,11 @@ class ResizingTests : public QObject
 
 private slots:
     // test functions
-    void testIntMatrixResizeWithDefaultCapacityAndDefaultNewValues();
-    void testIntMatrixResizeWithDefaultCapacityAndSetNewValues();
-    void testIntMatrixResizeWithFixedCapacityAndDefaultNewValues();
-    void testIntMatrixResizeWithFixedCapacityAndSetNewValues();
+    void testIntMatrixReserve();
+    void testIntMatrixResizeWithDefaultNewValues();
+    void testIntMatrixResizeAndSetNewValues();
+    void testIntMatrixReserveAndResizeWithDefaultNewValues();
+    void testIntMatrixReserveAndResizeWithSetNewValues();
     void testIntMatrixShrinkToFit();
     void testIntMatrixInsertRowNoSetValue();
     void testIntMatrixInsertRowSetValue();
@@ -29,10 +30,11 @@ private slots:
     void testIntMatrixEraseMultipleColumns();
     void testIntMatrixClear();
 
-    void testStringMatrixResizeWithDefaultCapacityAndDefaultNewValues();
-    void testStringMatrixResizeWithDefaultCapacityAndSetNewValues();
-    void testStringMatrixResizeWithFixedCapacityAndDefaultNewValues();
-    void testStringMatrixResizeWithFixedCapacityAndSetNewValues();
+    void testStringMatrixReserve();
+    void testStringMatrixResizeWithDefaultNewValues();
+    void testStringMatrixResizeAndSetNewValues();
+    void testStringMatrixReserveAndResizeWithDefaultNewValues();
+    void testStringMatrixReserveAndResizeWithSetNewValues();
     void testStringMatrixShrinkToFit();
     void testStringMatrixInsertRowNoSetValue();
     void testStringMatrixInsertRowSetValue();
@@ -47,10 +49,11 @@ private slots:
     void testStringMatrixClear();
 
     // test data
-    void testIntMatrixResizeWithDefaultCapacityAndDefaultNewValues_data();
-    void testIntMatrixResizeWithDefaultCapacityAndSetNewValues_data();
-    void testIntMatrixResizeWithFixedCapacityAndDefaultNewValues_data();
-    void testIntMatrixResizeWithFixedCapacityAndSetNewValues_data();
+    void testIntMatrixReserve_data();
+    void testIntMatrixResizeWithDefaultNewValues_data();
+    void testIntMatrixResizeAndSetNewValues_data();
+    void testIntMatrixReserveAndResizeWithDefaultNewValues_data();
+    void testIntMatrixReserveAndResizeWithSetNewValues_data();
     void testIntMatrixShrinkToFit_data();
     void testIntMatrixInsertRowNoSetValue_data();
     void testIntMatrixInsertRowSetValue_data();
@@ -64,10 +67,11 @@ private slots:
     void testIntMatrixEraseMultipleColumns_data();
     void testIntMatrixClear_data();
 
-    void testStringMatrixResizeWithDefaultCapacityAndDefaultNewValues_data();
-    void testStringMatrixResizeWithDefaultCapacityAndSetNewValues_data();
-    void testStringMatrixResizeWithFixedCapacityAndDefaultNewValues_data();
-    void testStringMatrixResizeWithFixedCapacityAndSetNewValues_data();
+    void testStringMatrixReserve_data();
+    void testStringMatrixResizeWithDefaultNewValues_data();
+    void testStringMatrixResizeAndSetNewValues_data();
+    void testStringMatrixReserveAndResizeWithDefaultNewValues_data();
+    void testStringMatrixReserveAndResizeWithSetNewValues_data();
     void testStringMatrixShrinkToFit_data();
     void testStringMatrixInsertRowNoSetValue_data();
     void testStringMatrixInsertRowSetValue_data();
@@ -90,7 +94,12 @@ private:
     StringMatrix mPrimaryStringMatrix;
 };
 
-void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndDefaultNewValues()
+void ResizingTests::testIntMatrixReserve()
+{
+    TEST_MATRIX_RESERVE(int, mPrimaryIntMatrix);
+}
+
+void ResizingTests::testIntMatrixResizeWithDefaultNewValues()
 {
     QFETCH(IntMatrix, matrix);
     QFETCH(matrix_size_t, resizeRowsCount);
@@ -103,16 +112,16 @@ void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndDefaultNewValues()
 
     matrix.resize(resizeRowsCount, resizeColumnsCount);
 
-    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
-    TEST_MATRIX_RESIZE_CHECK_RETAINED_ELEMENT_VALUES(int, matrix, expectedRetainedElementsMatrix);
+    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    TEST_MATRIX_RESERVE_AND_RESIZE_CHECK_RETAINED_ELEMENT_VALUES(int, matrix, expectedRetainedElementsMatrix);
 }
 
-void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndSetNewValues()
+void ResizingTests::testIntMatrixResizeAndSetNewValues()
 {
     TEST_MATRIX_RESIZE_WITH_DEFAULT_CAPACITY_AND_SET_NEW_VALUES(int);
 }
 
-void ResizingTests::testIntMatrixResizeWithFixedCapacityAndDefaultNewValues()
+void ResizingTests::testIntMatrixReserveAndResizeWithDefaultNewValues()
 {
     QFETCH(IntMatrix, matrix);
     QFETCH(matrix_size_t, resizeRowsCount);
@@ -123,16 +132,16 @@ void ResizingTests::testIntMatrixResizeWithFixedCapacityAndDefaultNewValues()
     QFETCH(matrix_opt_size_t, expectedColumnCapacityOffset);
     QFETCH(IntMatrix, expectedRetainedElementsMatrix);
 
-    matrix.resize(matrix.getNrOfRows(), matrix.getNrOfColumns(), resizeRowCapacity, resizeColumnCapacity);
-    matrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
+    matrix.reserve(resizeRowCapacity, resizeColumnCapacity);
+    matrix.resize(resizeRowsCount, resizeColumnsCount);
 
-    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
-    TEST_MATRIX_RESIZE_CHECK_RETAINED_ELEMENT_VALUES(int, matrix, expectedRetainedElementsMatrix);
+    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    TEST_MATRIX_RESERVE_AND_RESIZE_CHECK_RETAINED_ELEMENT_VALUES(int, matrix, expectedRetainedElementsMatrix);
 }
 
-void ResizingTests::testIntMatrixResizeWithFixedCapacityAndSetNewValues()
+void ResizingTests::testIntMatrixReserveAndResizeWithSetNewValues()
 {
-    TEST_MATRIX_RESIZE_WITH_FIXED_CAPACITY_AND_SET_NEW_VALUES(int);
+    TEST_MATRIX_RESERVE_AND_RESIZE_WITH_SET_NEW_VALUES(int);
 }
 
 void ResizingTests::testIntMatrixShrinkToFit()
@@ -253,7 +262,7 @@ void ResizingTests::testIntMatrixClear()
     TEST_MATRIX_CLEAR(int, mPrimaryIntMatrix);
 }
 
-void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndDefaultNewValues()
+void ResizingTests::testStringMatrixResizeWithDefaultNewValues()
 {
     QFETCH(StringMatrix, matrix);
     QFETCH(matrix_size_t, resizeRowsCount);
@@ -266,17 +275,22 @@ void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndDefaultNewValues
 
     matrix.resize(resizeRowsCount, resizeColumnsCount);
 
-    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
 
-    QVERIFY2(matrix == expectedMatrix, "Resizing failed, the matrix does not have the correct values!");
+    QVERIFY2(matrix == expectedMatrix, "Reserving/resizing failed, the matrix does not have the correct values!");
 }
 
-void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndSetNewValues()
+void ResizingTests::testStringMatrixReserve()
+{
+    TEST_MATRIX_RESERVE(std::string, mPrimaryStringMatrix);
+}
+
+void ResizingTests::testStringMatrixResizeAndSetNewValues()
 {
     TEST_MATRIX_RESIZE_WITH_DEFAULT_CAPACITY_AND_SET_NEW_VALUES(std::string);
 }
 
-void ResizingTests::testStringMatrixResizeWithFixedCapacityAndDefaultNewValues()
+void ResizingTests::testStringMatrixReserveAndResizeWithDefaultNewValues()
 {
     QFETCH(StringMatrix, matrix);
     QFETCH(matrix_size_t, resizeRowsCount);
@@ -287,17 +301,17 @@ void ResizingTests::testStringMatrixResizeWithFixedCapacityAndDefaultNewValues()
     QFETCH(matrix_opt_size_t, expectedColumnCapacityOffset);
     QFETCH(StringMatrix, expectedMatrix);
 
-    matrix.resize(matrix.getNrOfRows(), matrix.getNrOfColumns(), resizeRowCapacity, resizeColumnCapacity);
-    matrix.resize(resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity);
+    matrix.reserve(resizeRowCapacity, resizeColumnCapacity);
+    matrix.resize(resizeRowsCount, resizeColumnsCount);
 
-    TEST_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
 
-    QVERIFY2(matrix == expectedMatrix, "Resizing failed, the matrix does not have the correct values!");
+    QVERIFY2(matrix == expectedMatrix, "Reserving/resizing failed, the matrix does not have the correct values!");
 }
 
-void ResizingTests::testStringMatrixResizeWithFixedCapacityAndSetNewValues()
+void ResizingTests::testStringMatrixReserveAndResizeWithSetNewValues()
 {
-    TEST_MATRIX_RESIZE_WITH_FIXED_CAPACITY_AND_SET_NEW_VALUES(std::string);
+    TEST_MATRIX_RESERVE_AND_RESIZE_WITH_SET_NEW_VALUES(std::string);
 }
 
 void ResizingTests::testStringMatrixShrinkToFit()
@@ -384,7 +398,35 @@ void ResizingTests::testStringMatrixClear()
     TEST_MATRIX_CLEAR(std::string, mPrimaryStringMatrix);
 }
 
-void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndDefaultNewValues_data()
+void ResizingTests::testIntMatrixReserve_data()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("requestedRowCapacity");
+    QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: row capacity < rows count, column capacity < columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: row capacity < rows count, column capacity == columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: row capacity < rows count, column capacity > columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{4u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: row capacity < rows count, column capacity > columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("5: row capacity == rows count, column capacity < columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("6: row capacity == rows count, column capacity == columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("7: row capacity == rows count, column capacity > columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{4u} << matrix_size_t{4u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("8: row capacity == rows count, column capacity > columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("9: row capacity > rows count, column capacity < columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("10: row capacity > rows count, column capacity < columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{6u} << matrix_size_t{2u} << matrix_size_t{6u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: row capacity > rows count, column capacity == columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: row capacity > rows count, column capacity == columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{6u} << matrix_size_t{3u} << matrix_size_t{6u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: row capacity > rows count, column capacity > columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: row capacity > rows count, column capacity > columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("15: row capacity > rows count, column capacity > columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{6u} << matrix_size_t{4u} << matrix_size_t{6u} << matrix_size_t{4u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("16: row capacity > rows count, column capacity > columns count") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{6u} << matrix_size_t{5u} << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+}
+
+void ResizingTests::testIntMatrixResizeWithDefaultNewValues_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<matrix_size_t>("resizeRowsCount");
@@ -395,31 +437,31 @@ void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndDefaultNewValues_da
     QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
     QTest::addColumn<IntMatrix>("expectedRetainedElementsMatrix");
 
-    QTest::newRow("1: equal rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
-    QTest::newRow("2: less rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-    QTest::newRow("3: less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
-    QTest::newRow("4: equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("1: equal rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+    QTest::newRow("2: less rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("3: less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
+    QTest::newRow("4: equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("5: more rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}}; // capacity stays unchanged
     QTest::newRow("6: more rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("7: more rows, more columns") << IntMatrix{} << matrix_size_t{1u} << matrix_size_t{1u} << matrix_size_t{1u} << matrix_size_t{1u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{};
-    QTest::newRow("8: equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-    QTest::newRow("9: less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
-    QTest::newRow("10: more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
-    QTest::newRow("11: equal rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{7u} << matrix_size_t{10u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_10x7;
-    QTest::newRow("12: equal rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_10x8;
-    QTest::newRow("13: less rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{9u} << matrix_size_t{7u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_7x9;
-    QTest::newRow("14: less rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{9u} << matrix_size_t{8u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_8x9;
-    QTest::newRow("15: less rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{7u} << matrix_size_t{7u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_7x7;
-    QTest::newRow("16: less rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{8u} << matrix_size_t{8u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_8x8;
-    QTest::newRow("17: equal rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_10x9;
-    QTest::newRow("18: more rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{9u} << matrix_size_t{12u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_10x9;
+    QTest::newRow("8: equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("9: less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    QTest::newRow("10: more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+    QTest::newRow("11: equal rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{7u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u} << c_IntMatrix1_10x7;
+    QTest::newRow("12: equal rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u} << c_IntMatrix1_10x8;
+    QTest::newRow("13: less rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{9u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_IntMatrix1_7x9;
+    QTest::newRow("14: less rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{9u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_IntMatrix1_8x9;
+    QTest::newRow("15: less rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{7u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_IntMatrix1_7x7;
+    QTest::newRow("16: less rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{8u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_IntMatrix1_8x8;
+    QTest::newRow("17: equal rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{11u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << c_IntMatrix1_10x9;
+    QTest::newRow("18: more rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{9u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << c_IntMatrix1_10x9;
     QTest::newRow("19: more rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_10x9;
     QTest::newRow("20: more rows, more columns") << IntMatrix{} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{};
-    QTest::newRow("21: equal rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{9u} << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_10x9;
-    QTest::newRow("22: less rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{11u} << matrix_size_t{7u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_7x9;
-    QTest::newRow("23: less rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{11u} << matrix_size_t{8u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_8x9;
-    QTest::newRow("24: more rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{7u} << matrix_size_t{12u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_10x7;
-    QTest::newRow("25: more rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{8u} << matrix_size_t{12u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_10x8;
+    QTest::newRow("21: equal rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{9u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u} << c_IntMatrix1_10x9;
+    QTest::newRow("22: less rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{11u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u} << c_IntMatrix1_7x9;
+    QTest::newRow("23: less rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{11u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u} << c_IntMatrix1_8x9;
+    QTest::newRow("24: more rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{7u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << c_IntMatrix1_10x7;
+    QTest::newRow("25: more rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{8u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << c_IntMatrix1_10x8;
 
     // additional tests for unchanged capacity
     QTest::newRow("26: equal rows, more columns") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
@@ -427,7 +469,7 @@ void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndDefaultNewValues_da
     QTest::newRow("28: equal rows, equal columns") << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
 }
 
-void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndSetNewValues_data()
+void ResizingTests::testIntMatrixResizeAndSetNewValues_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<matrix_size_t>("resizeRowsCount");
@@ -439,31 +481,31 @@ void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndSetNewValues_data()
     QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
     QTest::addColumn<IntMatrix>("expectedMatrix");
 
-    QTest::newRow("1: equal rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{2u} << -1 << matrix_size_t{4u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
-    QTest::newRow("2: less rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{2u} << matrix_size_t{3u} << -1 << matrix_size_t{2u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-    QTest::newRow("3: less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{2u} << -1 << matrix_size_t{3u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
-    QTest::newRow("4: equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{5u} << -1 << matrix_size_t{4u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 5, {1, 2, 3, -1, -1, 4, 5, 6, -1, -1, 7, 8, 9, -1, -1, 10, 11, 12, -1, -1}};
+    QTest::newRow("1: equal rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{2u} << -1 << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+    QTest::newRow("2: less rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{2u} << matrix_size_t{3u} << -1 << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("3: less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{2u} << -1 << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
+    QTest::newRow("4: equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{5u} << -1 << matrix_size_t{5u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 5, {1, 2, 3, -1, -1, 4, 5, 6, -1, -1, 7, 8, 9, -1, -1, 10, 11, 12, -1, -1}};
     QTest::newRow("5: more rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{3u} << -1 << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{5, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, -1, -1}};  // capacity stays unchanged
     QTest::newRow("6: more rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{4u} << -1 << matrix_size_t{5u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{5, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1, 10, 11, 12, -1, -1, -1, -1, -1}};
     QTest::newRow("7: more rows, more columns") << IntMatrix{} << matrix_size_t{1u} << matrix_size_t{1u} << -1 << matrix_size_t{1u} << matrix_size_t{1u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{{1, 1}, -1};
-    QTest::newRow("8: equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{3u} << -1 << matrix_size_t{4u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-    QTest::newRow("9: less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{4u} << -1 << matrix_size_t{3u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{3, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1}};
-    QTest::newRow("10: more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{2u} << -1 << matrix_size_t{5u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{5, 2, {1, 2, 4, 5, 7, 8, 10, 11, -1, -1}};
-    QTest::newRow("11: equal rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{7u} << 5 << matrix_size_t{10u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_10x7;
-    QTest::newRow("12: equal rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{8u} << 5 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_10x8;
-    QTest::newRow("13: less rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{9u} << 5 << matrix_size_t{7u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_7x9;
-    QTest::newRow("14: less rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{9u} << 5 << matrix_size_t{8u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_8x9;
-    QTest::newRow("15: less rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{7u} << 5 << matrix_size_t{7u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_7x7;
-    QTest::newRow("16: less rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{8u} << 5 << matrix_size_t{8u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_8x8;
-    QTest::newRow("17: equal rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{11u} << 5 << matrix_size_t{10u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix2_10x11;
-    QTest::newRow("18: more rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{9u} << 5 << matrix_size_t{12u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix2_12x9;
+    QTest::newRow("8: equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{3u} << -1 << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("9: less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{4u} << -1 << matrix_size_t{5u} << matrix_size_t{4u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << IntMatrix{3, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1}};
+    QTest::newRow("10: more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{2u} << -1 << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{5, 2, {1, 2, 4, 5, 7, 8, 10, 11, -1, -1}};
+    QTest::newRow("11: equal rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{7u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u} << c_IntMatrix1_10x7;
+    QTest::newRow("12: equal rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{8u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u} << c_IntMatrix1_10x8;
+    QTest::newRow("13: less rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{9u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_IntMatrix1_7x9;
+    QTest::newRow("14: less rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{9u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_IntMatrix1_8x9;
+    QTest::newRow("15: less rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{7u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_IntMatrix1_7x7;
+    QTest::newRow("16: less rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{8u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_IntMatrix1_8x8;
+    QTest::newRow("17: equal rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{11u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << c_IntMatrix2_10x11;
+    QTest::newRow("18: more rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{9u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << c_IntMatrix2_12x9;
     QTest::newRow("19: more rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{11u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix2_12x11;
     QTest::newRow("20: more rows, more columns") << IntMatrix{} << matrix_size_t{12u} << matrix_size_t{11u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{{12, 11}, 5};
-    QTest::newRow("21: equal rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{9u} << 5 << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix1_10x9;
-    QTest::newRow("22: less rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{11u} << 5 << matrix_size_t{7u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix2_7x11;
-    QTest::newRow("23: less rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{11u} << 5 << matrix_size_t{8u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix2_8x11;
-    QTest::newRow("24: more rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{7u} << 5 << matrix_size_t{12u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix2_12x7;
-    QTest::newRow("25: more rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{8u} << 5 << matrix_size_t{12u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_IntMatrix2_12x8;
+    QTest::newRow("21: equal rows, equal columns") << c_IntMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{9u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u} << c_IntMatrix1_10x9;
+    QTest::newRow("22: less rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{11u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u} << c_IntMatrix2_7x11;
+    QTest::newRow("23: less rows, more columns") << c_IntMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{11u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u} << c_IntMatrix2_8x11;
+    QTest::newRow("24: more rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{7u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << c_IntMatrix2_12x7;
+    QTest::newRow("25: more rows, less columns") << c_IntMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{8u} << 5 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << c_IntMatrix2_12x8;
 
     // additional tests for unchanged capacity
     QTest::newRow("26: equal rows, more columns") << IntMatrix{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{5u} << -1 << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{3, 5, {1, 2, 3, 4, -1, 5, 6, 7, 8, -1, 9, 10, 11, 12, -1}};
@@ -471,7 +513,7 @@ void ResizingTests::testIntMatrixResizeWithDefaultCapacityAndSetNewValues_data()
     QTest::newRow("28: equal rows, equal columns") << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}} << matrix_size_t{3u} << matrix_size_t{3u} << -1 << matrix_size_t{3u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
 }
 
-void ResizingTests::testIntMatrixResizeWithFixedCapacityAndDefaultNewValues_data()
+void ResizingTests::testIntMatrixReserveAndResizeWithDefaultNewValues_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<matrix_size_t>("resizeRowsCount");
@@ -482,18 +524,18 @@ void ResizingTests::testIntMatrixResizeWithFixedCapacityAndDefaultNewValues_data
     QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
     QTest::addColumn<IntMatrix>("expectedRetainedElementsMatrix");
 
-    QTest::newRow("1: equal rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+    QTest::newRow("1: equal rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
     QTest::newRow("2: less rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{4u} << matrix_opt_size_t{2u} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-    QTest::newRow("3: less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{4u} << matrix_opt_size_t{4u} << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
-    QTest::newRow("4: equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("3: less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{4u} << matrix_opt_size_t{3u} << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
+    QTest::newRow("4: equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("5: more rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-    QTest::newRow("6: more rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+    QTest::newRow("6: more rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
     QTest::newRow("7: equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-    QTest::newRow("8: less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{11u} << matrix_size_t{9u} << matrix_opt_size_t{4u} << matrix_opt_size_t{2u} << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
-    QTest::newRow("9: more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+    QTest::newRow("8: less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{11u} << matrix_size_t{9u} << matrix_opt_size_t{4u} << matrix_opt_size_t{3u} << IntMatrix{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
+    QTest::newRow("9: more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
 }
 
-void ResizingTests::testIntMatrixResizeWithFixedCapacityAndSetNewValues_data()
+void ResizingTests::testIntMatrixReserveAndResizeWithSetNewValues_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<matrix_size_t>("resizeRowsCount");
@@ -505,15 +547,15 @@ void ResizingTests::testIntMatrixResizeWithFixedCapacityAndSetNewValues_data()
     QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
     QTest::addColumn<IntMatrix>("expectedMatrix");
 
-    QTest::newRow("1: equal rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{2u} << -1 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
+    QTest::newRow("1: equal rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{2u} << -1 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << IntMatrix{4, 2, {1, 2, 4, 5, 7, 8, 10, 11}};
     QTest::newRow("2: less rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{2u} << matrix_size_t{3u} << -1 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{4u} << matrix_opt_size_t{2u} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}};
-    QTest::newRow("3: less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{2u} << -1 << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{4u} << matrix_opt_size_t{4u} << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
-    QTest::newRow("4: equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{5u} << -1 << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << IntMatrix{4, 5, {1, 2, 3, -1, -1, 4, 5, 6, -1, -1, 7, 8, 9, -1, -1, 10, 11, 12, -1, -1}};
+    QTest::newRow("3: less rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{2u} << -1 << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{4u} << matrix_opt_size_t{3u} << IntMatrix{3, 2, {1, 2, 4, 5, 7, 8}};
+    QTest::newRow("4: equal rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{5u} << -1 << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << IntMatrix{4, 5, {1, 2, 3, -1, -1, 4, 5, 6, -1, -1, 7, 8, 9, -1, -1, 10, 11, 12, -1, -1}};
     QTest::newRow("5: more rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{3u} << -1 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << IntMatrix{5, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, -1, -1}};
-    QTest::newRow("6: more rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{4u} << -1 << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << IntMatrix{5, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1, 10, 11, 12, -1, -1, -1, -1, -1}};
+    QTest::newRow("6: more rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{4u} << -1 << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << IntMatrix{5, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1, 10, 11, 12, -1, -1, -1, -1, -1}};
     QTest::newRow("7: equal rows, equal columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{4u} << matrix_size_t{3u} << -1 << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-    QTest::newRow("8: less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{4u} << -1 << matrix_size_t{11u} << matrix_size_t{9u} << matrix_opt_size_t{4u} << matrix_opt_size_t{2u} << IntMatrix{3, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1}};
-    QTest::newRow("9: more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{2u} << -1 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << IntMatrix{5, 2, {1, 2, 4, 5, 7, 8, 10, 11, -1, -1}};
+    QTest::newRow("8: less rows, more columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{3u} << matrix_size_t{4u} << -1 << matrix_size_t{11u} << matrix_size_t{9u} << matrix_opt_size_t{4u} << matrix_opt_size_t{3u} << IntMatrix{3, 4, {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 9, -1}};
+    QTest::newRow("9: more rows, less columns") << IntMatrix{4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}} << matrix_size_t{5u} << matrix_size_t{2u} << -1 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << IntMatrix{5, 2, {1, 2, 4, 5, 7, 8, 10, 11, -1, -1}};
 }
 
 void ResizingTests::testIntMatrixShrinkToFit_data()
@@ -799,7 +841,35 @@ void ResizingTests::testIntMatrixClear_data()
     QTest::newRow("3: empty matrix") << IntMatrix{};
 }
 
-void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndDefaultNewValues_data()
+void ResizingTests::testStringMatrixReserve_data()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("requestedRowCapacity");
+    QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: row capacity < rows count, column capacity < columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: row capacity < rows count, column capacity == columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: row capacity < rows count, column capacity > columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{4u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: row capacity < rows count, column capacity > columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("5: row capacity == rows count, column capacity < columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("6: row capacity == rows count, column capacity == columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("7: row capacity == rows count, column capacity > columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{4u} << matrix_size_t{4u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("8: row capacity == rows count, column capacity > columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("9: row capacity > rows count, column capacity < columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("10: row capacity > rows count, column capacity < columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{6u} << matrix_size_t{2u} << matrix_size_t{6u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: row capacity > rows count, column capacity == columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: row capacity > rows count, column capacity == columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{6u} << matrix_size_t{3u} << matrix_size_t{6u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: row capacity > rows count, column capacity > columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: row capacity > rows count, column capacity > columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("15: row capacity > rows count, column capacity > columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{6u} << matrix_size_t{4u} << matrix_size_t{6u} << matrix_size_t{4u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("16: row capacity > rows count, column capacity > columns count") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{6u} << matrix_size_t{5u} << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+}
+
+void ResizingTests::testStringMatrixResizeWithDefaultNewValues_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
     QTest::addColumn<matrix_size_t>("resizeRowsCount");
@@ -810,31 +880,31 @@ void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndDefaultNewValues
     QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
     QTest::addColumn<StringMatrix>("expectedMatrix");
 
-    QTest::newRow("1: equal rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{4, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh"}};
-    QTest::newRow("2: less rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
-    QTest::newRow("3: less rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{3, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth"}};
-    QTest::newRow("4: equal rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{4, 5, {"First", "Second", "Third", "", "", "Fourth", "Fifth", "Sixth", "", "", "Seventh", "Eighth", "Ninth", "", "", "Tenth", "Eleventh", "Twelfth", "", ""}};
+    QTest::newRow("1: equal rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{4, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh"}};
+    QTest::newRow("2: less rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
+    QTest::newRow("3: less rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << StringMatrix{3, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth"}};
+    QTest::newRow("4: equal rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{4, 5, {"First", "Second", "Third", "", "", "Fourth", "Fifth", "Sixth", "", "", "Seventh", "Eighth", "Ninth", "", "", "Tenth", "Eleventh", "Twelfth", "", ""}};
     QTest::newRow("5: more rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{5, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "", "", ""}}; // capacity stays unchanged
     QTest::newRow("6: more rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{5, 4, {"First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", "", "Tenth", "Eleventh", "Twelfth", "", "", "", "", ""}};
     QTest::newRow("7: more rows, more columns") << StringMatrix{} << matrix_size_t{1u} << matrix_size_t{1u} << matrix_size_t{1u} << matrix_size_t{1u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{{1, 1}, ""};
-    QTest::newRow("8: equal rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
-    QTest::newRow("9: less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{3, 4, {"First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", ""}};
-    QTest::newRow("10: more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "", ""}};
-    QTest::newRow("11: equal rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{7u} << matrix_size_t{10u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_10x7;
-    QTest::newRow("12: equal rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_10x8;
-    QTest::newRow("13: less rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{9u} << matrix_size_t{7u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_7x9;
-    QTest::newRow("14: less rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{9u} << matrix_size_t{8u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_8x9;
-    QTest::newRow("15: less rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{7u} << matrix_size_t{7u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_7x7;
-    QTest::newRow("16: less rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{8u} << matrix_size_t{8u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_8x8;
-    QTest::newRow("17: equal rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_10x11;
-    QTest::newRow("18: more rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{9u} << matrix_size_t{12u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_12x9;
+    QTest::newRow("8: equal rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
+    QTest::newRow("9: less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << StringMatrix{3, 4, {"First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", ""}};
+    QTest::newRow("10: more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "", ""}};
+    QTest::newRow("11: equal rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{7u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u} << c_StringMatrix1_10x7;
+    QTest::newRow("12: equal rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{8u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u} << c_StringMatrix1_10x8;
+    QTest::newRow("13: less rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{9u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_StringMatrix1_7x9;
+    QTest::newRow("14: less rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{9u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_StringMatrix1_8x9;
+    QTest::newRow("15: less rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{7u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_StringMatrix1_7x7;
+    QTest::newRow("16: less rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{8u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_StringMatrix1_8x8;
+    QTest::newRow("17: equal rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{11u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << c_StringMatrix1_10x11;
+    QTest::newRow("18: more rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{9u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << c_StringMatrix1_12x9;
     QTest::newRow("19: more rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{11u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_12x11;
     QTest::newRow("20: more rows, more columns") << StringMatrix{} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{{12, 11}, ""};
-    QTest::newRow("21: equal rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{9u} << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_10x9;
-    QTest::newRow("22: less rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{11u} << matrix_size_t{7u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_7x11;
-    QTest::newRow("23: less rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{11u} << matrix_size_t{8u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_8x11;
-    QTest::newRow("24: more rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{7u} << matrix_size_t{12u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_12x7;
-    QTest::newRow("25: more rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{8u} << matrix_size_t{12u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_12x8;
+    QTest::newRow("21: equal rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{9u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u} << c_StringMatrix1_10x9;
+    QTest::newRow("22: less rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{11u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u} << c_StringMatrix1_7x11;
+    QTest::newRow("23: less rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{11u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u} << c_StringMatrix1_8x11;
+    QTest::newRow("24: more rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{7u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << c_StringMatrix1_12x7;
+    QTest::newRow("25: more rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{8u} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << c_StringMatrix1_12x8;
 
     // additional tests for unchanged capacity
     QTest::newRow("26: equal rows, more columns") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{3, 5, {"First", "Second", "Third", "Fourth", "", "Fifth", "Sixth", "Seventh", "Eighth", "", "Ninth", "Tenth", "Eleventh", "Twelfth", ""}};
@@ -842,7 +912,7 @@ void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndDefaultNewValues
     QTest::newRow("28: equal rows, equal columns") << StringMatrix{3, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth"}} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{3, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth"}};
 }
 
-void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndSetNewValues_data()
+void ResizingTests::testStringMatrixResizeAndSetNewValues_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
     QTest::addColumn<matrix_size_t>("resizeRowsCount");
@@ -854,31 +924,31 @@ void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndSetNewValues_dat
     QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
     QTest::addColumn<StringMatrix>("expectedMatrix");
 
-    QTest::newRow("1: equal rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{2u} << std::string{"/NEW_VALUE/"} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{4, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh"}};
-    QTest::newRow("2: less rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{2u} << matrix_size_t{3u} << std::string{"/NEW_VALUE/"} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
-    QTest::newRow("3: less rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{2u} << std::string{"/NEW_VALUE/"} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{3, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth"}};
-    QTest::newRow("4: equal rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{5u} << std::string{"/NEW_VALUE/"} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{4, 5, {"First", "Second", "Third", "/NEW_VALUE/", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/", "/NEW_VALUE/", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/"}};
+    QTest::newRow("1: equal rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{2u} << std::string{"/NEW_VALUE/"} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{4, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh"}};
+    QTest::newRow("2: less rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{2u} << matrix_size_t{3u} << std::string{"/NEW_VALUE/"} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
+    QTest::newRow("3: less rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{2u} << std::string{"/NEW_VALUE/"} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << StringMatrix{3, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth"}};
+    QTest::newRow("4: equal rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{5u} << std::string{"/NEW_VALUE/"} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{4, 5, {"First", "Second", "Third", "/NEW_VALUE/", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/", "/NEW_VALUE/", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/"}};
     QTest::newRow("5: more rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{3u} << std::string{"/NEW_VALUE/"} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{5, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/"}}; // capacity stays unchanged
     QTest::newRow("6: more rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{4u} << std::string{"/NEW_VALUE/"} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{5, 4, {"First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/"}};
     QTest::newRow("7: more rows, more columns") << StringMatrix{} << matrix_size_t{1u} << matrix_size_t{1u} << std::string{"/NEW_VALUE/"} << matrix_size_t{1u} << matrix_size_t{1u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{{1, 1}, "/NEW_VALUE/"};
-    QTest::newRow("8: equal rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{3u} << std::string{"/NEW_VALUE/"} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
-    QTest::newRow("9: less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{4u} << std::string{"/NEW_VALUE/"} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{3, 4, {"First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/"}};
-    QTest::newRow("10: more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{2u} << std::string{"/NEW_VALUE/"} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "/NEW_VALUE/", "/NEW_VALUE/"}};
-    QTest::newRow("11: equal rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{7u} << std::string{"5Z"} << matrix_size_t{10u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_10x7;
-    QTest::newRow("12: equal rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{8u} << std::string{"5Z"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_10x8;
-    QTest::newRow("13: less rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{9u} << std::string{"5Z"} << matrix_size_t{7u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_7x9;
-    QTest::newRow("14: less rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{9u} << std::string{"5Z"} << matrix_size_t{8u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_8x9;
-    QTest::newRow("15: less rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{7u} << std::string{"5Z"} << matrix_size_t{7u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_7x7;
-    QTest::newRow("16: less rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{8u} << std::string{"5Z"} << matrix_size_t{8u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_8x8;
-    QTest::newRow("17: equal rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{11u} << std::string{"5Z"} << matrix_size_t{10u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix2_10x11;
-    QTest::newRow("18: more rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{9u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix2_12x9;
+    QTest::newRow("8: equal rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{3u} << std::string{"/NEW_VALUE/"} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
+    QTest::newRow("9: less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{4u} << std::string{"/NEW_VALUE/"} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << StringMatrix{3, 4, {"First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/"}};
+    QTest::newRow("10: more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{2u} << std::string{"/NEW_VALUE/"} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "/NEW_VALUE/", "/NEW_VALUE/"}};
+    QTest::newRow("11: equal rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{7u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u} << c_StringMatrix1_10x7;
+    QTest::newRow("12: equal rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{8u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u} << c_StringMatrix1_10x8;
+    QTest::newRow("13: less rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{9u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_StringMatrix1_7x9;
+    QTest::newRow("14: less rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{9u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_StringMatrix1_8x9;
+    QTest::newRow("15: less rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{7u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_StringMatrix1_7x7;
+    QTest::newRow("16: less rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{8u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{1u} << c_StringMatrix1_8x8;
+    QTest::newRow("17: equal rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{11u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << c_StringMatrix2_10x11;
+    QTest::newRow("18: more rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{9u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << c_StringMatrix2_12x9;
     QTest::newRow("19: more rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{11u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix2_12x11;
     QTest::newRow("20: more rows, more columns") << StringMatrix{} << matrix_size_t{12u} << matrix_size_t{11u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{{12, 11}, "5Z"};
-    QTest::newRow("21: equal rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{9u} << std::string{"5Z"} << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix1_10x9;
-    QTest::newRow("22: less rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{11u} << std::string{"5Z"} << matrix_size_t{7u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix2_7x11;
-    QTest::newRow("23: less rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{11u} << std::string{"5Z"} << matrix_size_t{8u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix2_8x11;
-    QTest::newRow("24: more rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{7u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix2_12x7;
-    QTest::newRow("25: more rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{8u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << c_StringMatrix2_12x8;
+    QTest::newRow("21: equal rows, equal columns") << c_StringMatrix1_10x9 << matrix_size_t{10u} << matrix_size_t{9u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u} << c_StringMatrix1_10x9;
+    QTest::newRow("22: less rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{7u} << matrix_size_t{11u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u} << c_StringMatrix2_7x11;
+    QTest::newRow("23: less rows, more columns") << c_StringMatrix1_10x9 << matrix_size_t{8u} << matrix_size_t{11u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u} << c_StringMatrix2_8x11;
+    QTest::newRow("24: more rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{7u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << c_StringMatrix2_12x7;
+    QTest::newRow("25: more rows, less columns") << c_StringMatrix1_10x9 << matrix_size_t{12u} << matrix_size_t{8u} << std::string{"5Z"} << matrix_size_t{12u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << c_StringMatrix2_12x8;
 
     // additional tests for unchanged capacity
     QTest::newRow("26: equal rows, more columns") << StringMatrix{3, 4, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{5u} << std::string{"/NEW_VALUE/"} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{3, 5, {"First", "Second", "Third", "Fourth", "/NEW_VALUE/", "Fifth", "Sixth", "Seventh", "Eighth", "/NEW_VALUE/", "Ninth", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/"}};
@@ -886,7 +956,7 @@ void ResizingTests::testStringMatrixResizeWithDefaultCapacityAndSetNewValues_dat
     QTest::newRow("28: equal rows, equal columns") << StringMatrix{3, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth"}} << matrix_size_t{3u} << matrix_size_t{3u} << std::string{"/NEW_VALUE/"} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << StringMatrix{3, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth"}};
 }
 
-void ResizingTests::testStringMatrixResizeWithFixedCapacityAndDefaultNewValues_data()
+void ResizingTests::testStringMatrixReserveAndResizeWithDefaultNewValues_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
     QTest::addColumn<matrix_size_t>("resizeRowsCount");
@@ -897,18 +967,18 @@ void ResizingTests::testStringMatrixResizeWithFixedCapacityAndDefaultNewValues_d
     QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
     QTest::addColumn<StringMatrix>("expectedMatrix");
 
-    QTest::newRow("1: equal rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << StringMatrix{4, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh"}};
+    QTest::newRow("1: equal rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{2u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << StringMatrix{4, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh"}};
     QTest::newRow("2: less rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{4u} << matrix_opt_size_t{2u} << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
-    QTest::newRow("3: less rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{4u} << matrix_opt_size_t{4u} << StringMatrix{3, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth"}};
-    QTest::newRow("4: equal rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << StringMatrix{4, 5, {"First", "Second", "Third", "", "", "Fourth", "Fifth", "Sixth", "", "", "Seventh", "Eighth", "Ninth", "", "", "Tenth", "Eleventh", "Twelfth", "", ""}};
+    QTest::newRow("3: less rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{2u} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{4u} << matrix_opt_size_t{3u} << StringMatrix{3, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth"}};
+    QTest::newRow("4: equal rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{5u} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << StringMatrix{4, 5, {"First", "Second", "Third", "", "", "Fourth", "Fifth", "Sixth", "", "", "Seventh", "Eighth", "Ninth", "", "", "Tenth", "Eleventh", "Twelfth", "", ""}};
     QTest::newRow("5: more rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << StringMatrix{5, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "", "", ""}};
-    QTest::newRow("6: more rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << StringMatrix{5, 4, {"First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", "", "Tenth", "Eleventh", "Twelfth", "", "", "", "", ""}};
+    QTest::newRow("6: more rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{4u} << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << StringMatrix{5, 4, {"First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", "", "Tenth", "Eleventh", "Twelfth", "", "", "", "", ""}};
     QTest::newRow("7: equal rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{3u} << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
-    QTest::newRow("8: less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{11u} << matrix_size_t{9u} << matrix_opt_size_t{4u} << matrix_opt_size_t{2u} << StringMatrix{3, 4, {"First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", ""}};
-    QTest::newRow("9: more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "", ""}};
+    QTest::newRow("8: less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{4u} << matrix_size_t{11u} << matrix_size_t{9u} << matrix_opt_size_t{4u} << matrix_opt_size_t{3u} << StringMatrix{3, 4, {"First", "Second", "Third", "", "Fourth", "Fifth", "Sixth", "", "Seventh", "Eighth", "Ninth", ""}};
+    QTest::newRow("9: more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{2u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "", ""}};
 }
 
-void ResizingTests::testStringMatrixResizeWithFixedCapacityAndSetNewValues_data()
+void ResizingTests::testStringMatrixReserveAndResizeWithSetNewValues_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
     QTest::addColumn<matrix_size_t>("resizeRowsCount");
@@ -920,15 +990,15 @@ void ResizingTests::testStringMatrixResizeWithFixedCapacityAndSetNewValues_data(
     QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
     QTest::addColumn<StringMatrix>("expectedMatrix");
 
-    QTest::newRow("1: equal rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{2u} << std::string{"/NEW_VALUE/"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << StringMatrix{4, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh"}};
+    QTest::newRow("1: equal rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{2u} << std::string{"/NEW_VALUE/"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << StringMatrix{4, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh"}};
     QTest::newRow("2: less rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{2u} << matrix_size_t{3u} << std::string{"/NEW_VALUE/"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{4u} << matrix_opt_size_t{2u} << StringMatrix{2, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth"}};
-    QTest::newRow("3: less rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{2u} << std::string{"/NEW_VALUE/"} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{4u} << matrix_opt_size_t{4u} << StringMatrix{3, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth"}};
-    QTest::newRow("4: equal rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{5u} << std::string{"/NEW_VALUE/"} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << StringMatrix{4, 5, {"First", "Second", "Third", "/NEW_VALUE/", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/", "/NEW_VALUE/", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/"}};
+    QTest::newRow("3: less rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{2u} << std::string{"/NEW_VALUE/"} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{4u} << matrix_opt_size_t{3u} << StringMatrix{3, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth"}};
+    QTest::newRow("4: equal rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{5u} << std::string{"/NEW_VALUE/"} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << StringMatrix{4, 5, {"First", "Second", "Third", "/NEW_VALUE/", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/", "/NEW_VALUE/", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/"}};
     QTest::newRow("5: more rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{3u} << std::string{"/NEW_VALUE/"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << StringMatrix{5, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/"}};
-    QTest::newRow("6: more rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{4u} << std::string{"/NEW_VALUE/"} << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << StringMatrix{5, 4, {"First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/"}};
+    QTest::newRow("6: more rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{4u} << std::string{"/NEW_VALUE/"} << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << StringMatrix{5, 4, {"First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/", "Tenth", "Eleventh", "Twelfth", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/", "/NEW_VALUE/"}};
     QTest::newRow("7: equal rows, equal columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{4u} << matrix_size_t{3u} << std::string{"/NEW_VALUE/"} << matrix_size_t{10u} << matrix_size_t{9u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
-    QTest::newRow("8: less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{4u} << std::string{"/NEW_VALUE/"} << matrix_size_t{11u} << matrix_size_t{9u} << matrix_opt_size_t{4u} << matrix_opt_size_t{2u} << StringMatrix{3, 4, {"First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/"}};
-    QTest::newRow("9: more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{2u} << std::string{"/NEW_VALUE/"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "/NEW_VALUE/", "/NEW_VALUE/"}};
+    QTest::newRow("8: less rows, more columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{3u} << matrix_size_t{4u} << std::string{"/NEW_VALUE/"} << matrix_size_t{11u} << matrix_size_t{9u} << matrix_opt_size_t{4u} << matrix_opt_size_t{3u} << StringMatrix{3, 4, {"First", "Second", "Third", "/NEW_VALUE/", "Fourth", "Fifth", "Sixth", "/NEW_VALUE/", "Seventh", "Eighth", "Ninth", "/NEW_VALUE/"}};
+    QTest::newRow("9: more rows, less columns") << StringMatrix{4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}} << matrix_size_t{5u} << matrix_size_t{2u} << std::string{"/NEW_VALUE/"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << StringMatrix{5, 2, {"First", "Second", "Fourth", "Fifth", "Seventh", "Eighth", "Tenth", "Eleventh", "/NEW_VALUE/", "/NEW_VALUE/"}};
 }
 
 void ResizingTests::testStringMatrixShrinkToFit_data()

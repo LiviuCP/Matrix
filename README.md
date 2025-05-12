@@ -70,15 +70,14 @@ Important functionality contained within Matrix class is:
 
 It's similar to the capacity of std::vector, however it's a bidimentional capacity (rows/columns). It is essential for minimizing performance costs when a matrix needs to be redimensioned, either by resize() or by another size-changing operation like adding a row, column etc.
 
-To be noted: unlike std::vector there is currently no reserve() method for growing capacity without affecting the actual size of the container. This job is instead fulfilled by the resize() method which comes in two flavors:
-- resize(): additional elements added when size grows are initialized with a default constructed value
-- resizeWithValue(): additional elements are initialized with a specified value
+In order to modify the capacity of a matrix without affecting its size, the reserve() function can be used by providing the row and column capacity as arguments.
 
-If only the capacity of the matrix needs to be modified, then any resize method should take as arguments:
-- the same number of rows and columns as before
-- the newly requested row/column capacities
-
-If either capacity is lower than the corresponding size, then the size is taken as (minimal) capacity. For example if the matrix has 3 rows and 5 columns and the requested row/column capacities are 1 and 2, then the matrix will finally have row capacity 3 and column capacity 5. Otherwise the requested capacity is allocated.
+To be noted:
+- if either capacity is lower or equal to the corresponding dimension then a capacity equal to that dimension is being set. For example if the matrix has 3 rows and 4 columns and a row capacity of 2 and a column capacity of 3 are provided, then the resulting row and column capacity are 3 respectively 4 no matter which the initial capacities of the matrix were
+- if on the other hand one of the capacities is lower and the other is higher than the corresponding dimension, then the higher capacity is being set while the lower one is set to corresponding dimension size. For example, for the same matrix mentioned above if a row capacity of 2 and a column capacity of 5 are being requested via reserve(), then the resulting capacities will be 3 and 5.
+- if either capacity is higher than its dimension, then the capacities are being set precisely as requested
+- row and column capacity are considered independent variables, i.e. they are handled separately none having any influence on the other
+- the resize() method is only responsible for setting the dimensions of the matrix. The capacities are being adjusted only if they are lower than the requested new sizes. They are being adjusted to a minimum that ensures fitting within capacity space. For the above example if the row capacity is 5 and the column capacity is 6 and the matrix is resized to 4 rows and 8 columns, then the resulting capacities are 5 and 8. Again the two capacities work independently of each other.
 
 2.2. Iterators
 

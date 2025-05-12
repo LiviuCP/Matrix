@@ -246,7 +246,8 @@ void ConstructionAndAssignmentTests::testIntMatrixAdditionalAssignmentOperatorTe
         const IntMatrix srcMatrix{{9, 3}, -2};
         IntMatrix destMatrix{{4, 2}, 7};
 
-        destMatrix.resize(4, 2, 11, 3);
+        destMatrix.reserve(11, 3);
+        destMatrix.resize(4, 2);
         destMatrix = srcMatrix;
 
         TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 9, 3, 11, 3, 1, 0);
@@ -468,7 +469,8 @@ void ConstructionAndAssignmentTests::testStringMatrixAdditionalAssignmentOperato
         const StringMatrix srcMatrix{{9, 3}, "/second"};
         StringMatrix destMatrix{{4, 2}, "seventh"};
 
-        destMatrix.resize(4, 2, 11, 3);
+        destMatrix.reserve(11, 3);
+        destMatrix.resize(4, 2);
         destMatrix = srcMatrix;
 
         TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 9, 3, 11, 3, 1, 0);

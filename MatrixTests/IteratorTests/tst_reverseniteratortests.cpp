@@ -342,7 +342,7 @@ void ReverseNIteratorTests::testAsteriskOperatorWrite()
 
     // test with row capacity offset
     m_PrimaryIntMatrix = {{3, 4}, -20};
-    m_PrimaryIntMatrix.resize(3, 4, 5, 4);
+    m_PrimaryIntMatrix.reserve(5, 4);
     *m_PrimaryIntMatrix.getReverseNIterator(0, 0) = 1;
     *m_PrimaryIntMatrix.getReverseNIterator(1, 0) = -2;
     *m_PrimaryIntMatrix.getReverseNIterator(2, 1) = -6;
@@ -371,7 +371,7 @@ void ReverseNIteratorTests::testAsteriskOperatorReadWrite()
     // test with column capacity offset
 
     m_PrimaryIntMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
-    m_PrimaryIntMatrix.resize(3, 2, 3, 4);
+    m_PrimaryIntMatrix.reserve(3, 4);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.reverseNBegin();
     m_PrimaryIntMatrix.at(0, 1) = 10;
     m_PrimaryIntIterator += 2;
@@ -379,7 +379,7 @@ void ReverseNIteratorTests::testAsteriskOperatorReadWrite()
     QVERIFY(*m_PrimaryIntIterator == 10);
 
     m_PrimaryIntMatrix = {3, 2, {1, 4, 2, -5, -3, 6}};
-    m_PrimaryIntMatrix.resize(3, 2, 3, 4);
+    m_PrimaryIntMatrix.reserve(3, 4);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.reverseNBegin();
     m_PrimaryIntIterator += 2;
     *m_PrimaryIntIterator = 10;
@@ -409,7 +409,7 @@ void ReverseNIteratorTests::testArrowOperatorWrite()
 
     // test with column capacity offset
     m_PrimaryStringMatrix = {{3, 4}, "zzz"};
-    m_PrimaryStringMatrix.resize(3, 4, 3, 6);
+    m_PrimaryStringMatrix.reserve(3, 6);
     m_PrimaryStringMatrix.getReverseNIterator(0, 0)->assign("abc");
     m_PrimaryStringMatrix.getReverseNIterator(1, 0)->assign("ba");
     m_PrimaryStringMatrix.getReverseNIterator(2, 1)->assign("gfedcba");
@@ -438,7 +438,7 @@ void ReverseNIteratorTests::testArrowOperatorReadWrite()
     // test with row/column capacity offset
 
     m_PrimaryStringMatrix = {3, 2, {"abc", "jkl", "defed", "mnop", "ghi", "qr"}};
-    m_PrimaryStringMatrix.resize(3, 2, 5, 4);
+    m_PrimaryStringMatrix.reserve(5, 4);
     m_StringIterator = m_PrimaryStringMatrix.reverseNBegin();
     m_PrimaryStringMatrix.at(0, 1) = "abcdefghi";
     m_StringIterator += 2;
@@ -446,7 +446,7 @@ void ReverseNIteratorTests::testArrowOperatorReadWrite()
     QVERIFY(m_StringIterator->size() == 9);
 
     m_PrimaryStringMatrix = {3, 2, {"abc", "jkl", "defed", "mnop", "ghi", "qr"}};
-    m_PrimaryStringMatrix.resize(3, 2, 5, 4);
+    m_PrimaryStringMatrix.reserve(5, 4);
     m_StringIterator = m_PrimaryStringMatrix.reverseNBegin();
     m_StringIterator += 2;
     m_StringIterator->assign("abcdefghi");
@@ -525,7 +525,7 @@ void ReverseNIteratorTests::testSquareBracketsOperatorWrite()
 
     // test with row/column capacity offset
     m_PrimaryIntMatrix = {{3, 4}, -20};
-    m_PrimaryIntMatrix.resize(3, 4, 5, 6);
+    m_PrimaryIntMatrix.reserve(5, 6);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getReverseNIterator(0, 0);
     m_PrimaryIntIterator[0] = 1;
     m_PrimaryIntIterator[-1] = -2;
@@ -538,7 +538,7 @@ void ReverseNIteratorTests::testSquareBracketsOperatorWrite()
 
     // test with row capacity offset
     m_PrimaryIntMatrix = {{3, 4}, -20};
-    m_PrimaryIntMatrix.resize(3, 4, 5, 4);
+    m_PrimaryIntMatrix.reserve(5, 4);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.getReverseNIterator(2, 1);
     m_PrimaryIntIterator[5] = 1;
     m_PrimaryIntIterator[4] = -2;
@@ -551,7 +551,7 @@ void ReverseNIteratorTests::testSquareBracketsOperatorWrite()
 
     // test with column capacity offset
     m_PrimaryIntMatrix = {{3, 4}, -20};
-    m_PrimaryIntMatrix.resize(3, 4, 3, 6);
+    m_PrimaryIntMatrix.reserve(3, 6);
     m_PrimaryIntIterator = m_PrimaryIntMatrix.reverseNBegin();
     m_PrimaryIntIterator[11] = 1;
     m_PrimaryIntIterator[10] = -2;
@@ -937,7 +937,7 @@ void ReverseNIteratorTests::testAsteriskOperatorRead_data()
 
     // test with row/column capacity offset
     m_SecondaryIntMatrix = m_PrimaryIntMatrix;
-    m_SecondaryIntMatrix.resize(3, 4, 5, 6);
+    m_SecondaryIntMatrix.reserve(5, 6);
 
     QTest::newRow("6: random iterator") << m_SecondaryIntMatrix.getReverseNIterator(0, 0) << 1;
     QTest::newRow("7: random iterator") << m_SecondaryIntMatrix.getReverseNIterator(1, 0) << -2;
@@ -961,7 +961,7 @@ void ReverseNIteratorTests::testArrowOperatorRead_data()
 
     // test with row capacity offset
     m_SecondaryStringMatrix = m_PrimaryStringMatrix;
-    m_SecondaryStringMatrix.resize(3, 4, 5, 4);
+    m_SecondaryStringMatrix.reserve(5, 4);
 
     QTest::newRow("6: random iterator") << m_SecondaryStringMatrix.getReverseNIterator(0, 0) << 3;
     QTest::newRow("7: random iterator") << m_SecondaryStringMatrix.getReverseNIterator(1, 0) << 2;
@@ -1006,7 +1006,7 @@ void ReverseNIteratorTests::testSquareBracketsOperatorRead_data()
 
     // test with column capacity offset
     m_SecondaryIntMatrix = m_PrimaryIntMatrix;
-    m_SecondaryIntMatrix.resize(3, 4, 3, 6);
+    m_SecondaryIntMatrix.reserve(3, 6);
 
     QTest::newRow("26: begin iterator") << m_SecondaryIntMatrix.reverseNBegin() << matrix_diff_t{11} << 1;
     QTest::newRow("27: begin iterator") << m_SecondaryIntMatrix.reverseNBegin() << matrix_diff_t{10} << -2;
