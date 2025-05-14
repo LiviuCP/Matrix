@@ -56,7 +56,9 @@ Notes:
 
 Important notice! Each object used as matrix template type should satisfy following requirements:
 - it should be default constructible
-- it should be move/copy constructible/assignable and swappable
+- it should be move and copy constructible
+- it should be move and copy assignable
+- it should be swappable
 - it should support the comparison operators == and !=
 
 
