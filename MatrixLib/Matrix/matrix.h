@@ -3170,7 +3170,10 @@ void Matrix<T>::shrinkToFit()
 template <MatrixElementType T>
 void Matrix<T>::insertRow(Matrix<T>::size_type rowNr)
 {
+    constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
+
     CHECK_ERROR_CONDITION(0 == m_NrOfRows, Matr::errorMessages[Matr::Errors::EMPTY_MATRIX]);
+    CHECK_ERROR_CONDITION(c_MaxAllowedDimension == m_NrOfRows, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
     CHECK_ERROR_CONDITION(rowNr > m_NrOfRows, Matr::errorMessages[Matr::Errors::INSERT_ROW_NONCONTIGUOUS]);
 
     _insertUninitializedRow(rowNr);
@@ -3181,7 +3184,10 @@ void Matrix<T>::insertRow(Matrix<T>::size_type rowNr)
 template<MatrixElementType T>
 void Matrix<T>::insertRow(Matrix<T>::size_type rowNr, const T& value)
 {
+    constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
+
     CHECK_ERROR_CONDITION(0 == m_NrOfRows, Matr::errorMessages[Matr::Errors::EMPTY_MATRIX]);
+    CHECK_ERROR_CONDITION(c_MaxAllowedDimension == m_NrOfRows, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
     CHECK_ERROR_CONDITION(rowNr > m_NrOfRows, Matr::errorMessages[Matr::Errors::INSERT_ROW_NONCONTIGUOUS]);
 
     _insertUninitializedRow(rowNr);
@@ -3192,7 +3198,10 @@ void Matrix<T>::insertRow(Matrix<T>::size_type rowNr, const T& value)
 template <MatrixElementType T>
 void Matrix<T>::insertColumn(Matrix<T>::size_type columnNr)
 {
+    constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
+
     CHECK_ERROR_CONDITION(!m_NrOfRows, Matr::errorMessages[Matr::Errors::EMPTY_MATRIX]);
+    CHECK_ERROR_CONDITION(c_MaxAllowedDimension == m_NrOfColumns, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
     CHECK_ERROR_CONDITION(columnNr > m_NrOfColumns, Matr::errorMessages[Matr::Errors::INSERT_COLUMN_NONCONTIGUOUS]);
 
     const size_type c_UninitializedColumnNr{_insertUninitializedColumn(columnNr)};
@@ -3224,7 +3233,10 @@ template<MatrixElementType T>
 void Matrix<T>::insertColumn(Matrix<T>::size_type columnNr,
                                     const T& value)
 {
+    constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
+
     CHECK_ERROR_CONDITION(!m_NrOfRows, Matr::errorMessages[Matr::Errors::EMPTY_MATRIX]);
+    CHECK_ERROR_CONDITION(c_MaxAllowedDimension == m_NrOfColumns, Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
     CHECK_ERROR_CONDITION(columnNr > m_NrOfColumns, Matr::errorMessages[Matr::Errors::INSERT_COLUMN_NONCONTIGUOUS]);
 
     const size_type c_UninitializedColumnNr{_insertUninitializedColumn(columnNr)};
