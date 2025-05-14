@@ -19,7 +19,7 @@ Q_DECLARE_METATYPE(SplitMode)
 // static_assert(!std::ranges::borrowed_range<IntMatrix>);
 
 static constexpr matrix_size_t c_MaxAllowedDimension{maxAllowedDimension()};
-static constexpr matrix_size_t c_ExceedingDimension{static_cast<matrix_size_t>(c_MaxAllowedDimension + 1)};
+static constexpr matrix_size_t c_ExceedingDimension{c_MaxAllowedDimension + 1};
 
 class CommonExceptionTests : public QObject
 {
