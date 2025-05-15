@@ -4191,12 +4191,14 @@ void Matrix<T>::_insertUninitializedRow(Matrix<T>::size_type rowNr)
 {
     const size_type c_RowNr{std::clamp<size_type>(rowNr, 0u, m_NrOfRows)};
 
-    // double row capacity if no spare capacity left (to defer any re-size when inserting further rows)
+    // double the row capacity (without exceeding the maximum allowed capacity) if no spare capacity left (to defer any resize when inserting further rows)
     if (m_NrOfRows == m_RowCapacity)
     {
         Matrix helperMatrix{std::move(*this)};
+        const size_type c_NewRowCapacity{std::min(static_cast<size_type>(2 * helperMatrix.m_NrOfRows), maxAllowedDimension())};
+
         _deallocMemory(); // not quite necessary, just for safety/consistency purposes
-        _allocMemory(helperMatrix.m_NrOfRows + 1, helperMatrix.m_NrOfColumns, 2 * helperMatrix.m_NrOfRows, helperMatrix.m_ColumnCapacity);
+        _allocMemory(helperMatrix.m_NrOfRows + 1, helperMatrix.m_NrOfColumns, c_NewRowCapacity, helperMatrix.m_ColumnCapacity);
 
         // move everything back to the top/bottom of the inserted row (this one stays uninitialized - will be initialized in a separate step)
         _moveInitItems(helperMatrix, 0, 0, 0, 0, c_RowNr, m_NrOfColumns);
@@ -4228,12 +4230,14 @@ typename Matrix<T>::size_type Matrix<T>::_insertUninitializedColumn(Matrix<T>::s
 {
     size_type resultingColumnNr{std::clamp<size_type>(columnNr, 0u, m_NrOfColumns)};
 
+    // double the column capacity (without exceeding the maximum allowed capacity) if no spare capacity left (to defer any resize when inserting further columns)
     if (m_NrOfColumns == m_ColumnCapacity)
     {
         Matrix helperMatrix{std::move(*this)};
+        const size_type c_NewColumnCapacity{std::min(static_cast<size_type>(2 * helperMatrix.m_NrOfColumns), maxAllowedDimension())};
 
         _deallocMemory(); // not quite necessary, just for safety/consistency purposes
-        _allocMemory(helperMatrix.m_NrOfRows, helperMatrix.m_NrOfColumns + 1, helperMatrix.m_RowCapacity, 2 * helperMatrix.m_NrOfColumns);
+        _allocMemory(helperMatrix.m_NrOfRows, helperMatrix.m_NrOfColumns + 1, helperMatrix.m_RowCapacity, c_NewColumnCapacity);
 
         // move everything back to the left/right of the inserted column (this one stays uninitialized - will be initialized in a separate step)
         _moveInitItems(helperMatrix, 0, 0, 0, 0, m_NrOfRows, resultingColumnNr);
