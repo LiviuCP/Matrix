@@ -36,8 +36,10 @@ private slots:
     void testIntMatrixCapacityWithResizeAndSetNewValues();
     void testIntMatrixCapacityWithReserveAndResizeWithDefaultNewValues();
     void testIntMatrixCapacityWithReserveAndResizeAndSetNewValues();
-    void testIntMatrixCapacityWithInsertRow();
-    void testIntMatrixCapacityWithInsertColumn();
+    void testIntMatrixCapacityWithInsertRowAndDefaultNewValues();
+    void testIntMatrixCapacityWithInsertRowAndSetNewValues();
+    void testIntMatrixCapacityWithInsertColumnAndDefaultNewValues();
+    void testIntMatrixCapacityWithInsertColumnAndSetNewValues();
     void testIntMatrixCapacityWithEraseRow();
     void testIntMatrixCapacityWithEraseColumn();
     void testIntMatrixCapacityWithCatByRow();
@@ -60,8 +62,10 @@ private slots:
     void testStringMatrixCapacityWithResizeAndSetNewValues();
     void testStringMatrixCapacityWithReserveAndResizeWithDefaultNewValues();
     void testStringMatrixCapacityWithReserveAndResizeAndSetNewValues();
-    void testStringMatrixCapacityWithInsertRow();
-    void testStringMatrixCapacityWithInsertColumn();
+    void testStringMatrixCapacityWithInsertRowAndDefaultNewValues();
+    void testStringMatrixCapacityWithInsertRowAndSetNewValues();
+    void testStringMatrixCapacityWithInsertColumnAndDefaultNewValues();
+    void testStringMatrixCapacityWithInsertColumnAndSetNewValues();
     void testStringMatrixCapacityWithEraseRow();
     void testStringMatrixCapacityWithEraseColumn();
     void testStringMatrixCapacityWithCatByRow();
@@ -85,8 +89,10 @@ private slots:
     void testIntMatrixCapacityWithResizeAndSetNewValues_data();
     void testIntMatrixCapacityWithReserveAndResizeWithDefaultNewValues_data();
     void testIntMatrixCapacityWithReserveAndResizeAndSetNewValues_data();
-    void testIntMatrixCapacityWithInsertRow_data();
-    void testIntMatrixCapacityWithInsertColumn_data();
+    void testIntMatrixCapacityWithInsertRowAndDefaultNewValues_data();
+    void testIntMatrixCapacityWithInsertRowAndSetNewValues_data();
+    void testIntMatrixCapacityWithInsertColumnAndDefaultNewValues_data();
+    void testIntMatrixCapacityWithInsertColumnAndSetNewValues_data();
     void testIntMatrixCapacityWithEraseRow_data();
     void testIntMatrixCapacityWithEraseColumn_data();
     void testIntMatrixCapacityWithCatByRow_data();
@@ -109,8 +115,10 @@ private slots:
     void testStringMatrixCapacityWithResizeAndSetNewValues_data();
     void testStringMatrixCapacityWithReserveAndResizeWithDefaultNewValues_data();
     void testStringMatrixCapacityWithReserveAndResizeAndSetNewValues_data();
-    void testStringMatrixCapacityWithInsertRow_data();
-    void testStringMatrixCapacityWithInsertColumn_data();
+    void testStringMatrixCapacityWithInsertRowAndDefaultNewValues_data();
+    void testStringMatrixCapacityWithInsertRowAndSetNewValues_data();
+    void testStringMatrixCapacityWithInsertColumnAndDefaultNewValues_data();
+    void testStringMatrixCapacityWithInsertColumnAndSetNewValues_data();
     void testStringMatrixCapacityWithEraseRow_data();
     void testStringMatrixCapacityWithEraseColumn_data();
     void testStringMatrixCapacityWithCatByRow_data();
@@ -126,12 +134,16 @@ private:
     void _buildIntMatrixCapacityWithAssignmentOperatorsTestingTable();
     void _buildIntMatrixCapacityWithReserveAndResizeTestingTable();
     void _buildIntMatrixCapacityWithResizeTestingTable();
+    void _buildIntMatrixCapacityWithInsertRowTestingTable();
+    void _buildIntMatrixCapacityWithInsertColumnTestingTable();
 
     void _buildStringMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable();
     void _buildStringMatrixCapacityWithMoveCopyConstructorsTestingTable();
     void _buildStringMatrixCapacityWithAssignmentOperatorsTestingTable();
     void _buildStringMatrixCapacityWithReserveAndResizeTestingTable();
     void _buildStringMatrixCapacityWithResizeTestingTable();
+    void _buildStringMatrixCapacityWithInsertRowTestingTable();
+    void _buildStringMatrixCapacityWithInsertColumnTestingTable();
 
     IntMatrix mPrimaryIntMatrix;
     IntMatrix mSecondaryIntMatrix;
@@ -236,14 +248,24 @@ void CapacityTests::testIntMatrixCapacityWithReserveAndResizeAndSetNewValues()
     TEST_CAPACITY_WITH_RESERVE_AND_RESIZE_AND_FILL_IN_NEW_VALUES(int, mPrimaryIntMatrix);
 }
 
-void CapacityTests::testIntMatrixCapacityWithInsertRow()
+void CapacityTests::testIntMatrixCapacityWithInsertRowAndDefaultNewValues()
 {
-    TEST_CAPACITY_WITH_INSERT_ROW(int);
+    TEST_CAPACITY_WITH_INSERT_ROW_AND_DEFAULT_NEW_VALUES(int);
 }
 
-void CapacityTests::testIntMatrixCapacityWithInsertColumn()
+void CapacityTests::testIntMatrixCapacityWithInsertRowAndSetNewValues()
 {
-    TEST_CAPACITY_WITH_INSERT_COLUMN(int);
+    TEST_CAPACITY_WITH_INSERT_ROW_AND_FILL_IN_NEW_VALUES(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithInsertColumnAndDefaultNewValues()
+{
+    TEST_CAPACITY_WITH_INSERT_COLUMN_AND_DEFAULT_NEW_VALUES(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithInsertColumnAndSetNewValues()
+{
+    TEST_CAPACITY_WITH_INSERT_COLUMN_AND_FILL_IN_NEW_VALUES(int);
 }
 
 void CapacityTests::testIntMatrixCapacityWithEraseRow()
@@ -374,14 +396,24 @@ void CapacityTests::testStringMatrixCapacityWithReserveAndResizeAndSetNewValues(
     TEST_CAPACITY_WITH_RESERVE_AND_RESIZE_AND_FILL_IN_NEW_VALUES(std::string, mPrimaryStringMatrix);
 }
 
-void CapacityTests::testStringMatrixCapacityWithInsertRow()
+void CapacityTests::testStringMatrixCapacityWithInsertRowAndDefaultNewValues()
 {
-    TEST_CAPACITY_WITH_INSERT_ROW(std::string);
+    TEST_CAPACITY_WITH_INSERT_ROW_AND_DEFAULT_NEW_VALUES(std::string);
 }
 
-void CapacityTests::testStringMatrixCapacityWithInsertColumn()
+void CapacityTests::testStringMatrixCapacityWithInsertRowAndSetNewValues()
 {
-    TEST_CAPACITY_WITH_INSERT_COLUMN(std::string);
+    TEST_CAPACITY_WITH_INSERT_ROW_AND_FILL_IN_NEW_VALUES(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithInsertColumnAndDefaultNewValues()
+{
+    TEST_CAPACITY_WITH_INSERT_COLUMN_AND_DEFAULT_NEW_VALUES(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithInsertColumnAndSetNewValues()
+{
+    TEST_CAPACITY_WITH_INSERT_COLUMN_AND_FILL_IN_NEW_VALUES(std::string);
 }
 
 void CapacityTests::testStringMatrixCapacityWithEraseRow()
@@ -680,54 +712,24 @@ void CapacityTests::testIntMatrixCapacityWithReserveAndResizeAndSetNewValues_dat
     _buildIntMatrixCapacityWithReserveAndResizeTestingTable();
 }
 
-void CapacityTests::testIntMatrixCapacityWithInsertRow_data()
+void CapacityTests::testIntMatrixCapacityWithInsertRowAndDefaultNewValues_data()
 {
-    QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("insertPosition");
-    QTest::addColumn<int>("insertedRowValue");
-    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
-    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
-    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
-    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-    QTest::addColumn<bool>("isInsertedRowValueSet");
-
-    QTest::newRow("1: inserted row value NOT set") << IntMatrix{{3, 4}, -2} << matrix_size_t{1u} << 5 << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("2: inserted row value set") << IntMatrix{{3, 4}, -2} << matrix_size_t{1u} << 5 << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("3: inserted row value NOT set") << IntMatrix{{6, 5}, -2} << matrix_size_t{3u} << 5 << matrix_size_t{7u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("4: inserted row value set") << IntMatrix{{6, 5}, -2} << matrix_size_t{3u} << 5 << matrix_size_t{7u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("5: inserted row value NOT set") << IntMatrix{{8, 2}, -2} << matrix_size_t{5u} << 5 << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("6: inserted row value set") << IntMatrix{{8, 2}, -2} << matrix_size_t{5u} << 5 << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("7: inserted row value NOT set") << IntMatrix{{25, 20}, -2} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("8: inserted row value set") << IntMatrix{{25, 20}, -2} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << true;
-    QTest::newRow("9: inserted row value NOT set") << IntMatrix{{25, 20}, -2} << matrix_size_t{11u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("10: inserted row value set") << IntMatrix{{25, 20}, -2} << matrix_size_t{11u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << true;
-    QTest::newRow("11: inserted row value NOT set") << IntMatrix{{25, 20}, -2} << matrix_size_t{25u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("12: inserted row value set") << IntMatrix{{25, 20}, -2} << matrix_size_t{25u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << true;
+    _buildIntMatrixCapacityWithInsertRowTestingTable();
 }
 
-void CapacityTests::testIntMatrixCapacityWithInsertColumn_data()
+void CapacityTests::testIntMatrixCapacityWithInsertRowAndSetNewValues_data()
 {
-    QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("insertPosition");
-    QTest::addColumn<int>("insertedColumnValue");
-    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
-    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
-    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
-    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-    QTest::addColumn<bool>("isInsertedColumnValueSet");
+    _buildIntMatrixCapacityWithInsertRowTestingTable();
+}
 
-    QTest::newRow("1: inserted column value NOT set") << IntMatrix{{5, 3}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << false;
-    QTest::newRow("2: inserted column value set") << IntMatrix{{5, 3}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << true;
-    QTest::newRow("3: inserted column value NOT set") << IntMatrix{{5, 7}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("4: inserted column value set") << IntMatrix{{5, 7}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("5: inserted column value NOT set") << IntMatrix{{5, 14}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{17u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("6: inserted column value set") << IntMatrix{{5, 14}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{17u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("7: inserted column value NOT set") << IntMatrix{{20, 25}, 4} << matrix_size_t{0u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("8: inserted column value set") << IntMatrix{{20, 25}, 4} << matrix_size_t{0u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << true;
-    QTest::newRow("9: inserted column value NOT set") << IntMatrix{{20, 25}, 4} << matrix_size_t{14u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("10: inserted column value set") << IntMatrix{{20, 25}, 4} << matrix_size_t{14u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << true;
-    QTest::newRow("11: inserted column value NOT set") << IntMatrix{{20, 25}, 4} << matrix_size_t{25u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("12: inserted column value set") << IntMatrix{{20, 25}, 4} << matrix_size_t{25u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << true;
+void CapacityTests::testIntMatrixCapacityWithInsertColumnAndDefaultNewValues_data()
+{
+    _buildIntMatrixCapacityWithInsertColumnTestingTable();
+}
+
+void CapacityTests::testIntMatrixCapacityWithInsertColumnAndSetNewValues_data()
+{
+    _buildIntMatrixCapacityWithInsertColumnTestingTable();
 }
 
 void CapacityTests::testIntMatrixCapacityWithEraseRow_data()
@@ -1487,54 +1489,24 @@ void CapacityTests::testStringMatrixCapacityWithReserveAndResizeAndSetNewValues_
     _buildStringMatrixCapacityWithReserveAndResizeTestingTable();
 }
 
-void CapacityTests::testStringMatrixCapacityWithInsertRow_data()
+void CapacityTests::testStringMatrixCapacityWithInsertRowAndDefaultNewValues_data()
 {
-    QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("insertPosition");
-    QTest::addColumn<std::string>("insertedRowValue");
-    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
-    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
-    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
-    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-    QTest::addColumn<bool>("isInsertedRowValueSet");
-
-    QTest::newRow("1: inserted row value NOT set") << StringMatrix{{3, 4}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("2: inserted row value set") << StringMatrix{{3, 4}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("3: inserted row value NOT set") << StringMatrix{{6, 5}, "Value1"} << matrix_size_t{3u} << std::string{"Value2"} << matrix_size_t{7u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("4: inserted row value set") << StringMatrix{{6, 5}, "Value1"} << matrix_size_t{3u} << std::string{"Value2"} << matrix_size_t{7u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("5: inserted row value NOT set") << StringMatrix{{8, 2}, "Value1"} << matrix_size_t{5u} << std::string{"Value2"} << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("6: inserted row value set") << StringMatrix{{8, 2}, "Value1"} << matrix_size_t{5u} << std::string{"Value2"} << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("7: inserted row value NOT set") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("8: inserted row value set") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << true;
-    QTest::newRow("9: inserted row value NOT set") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("10: inserted row value set") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << true;
-    QTest::newRow("11: inserted row value NOT set") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("12: inserted row value set") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << true;
+    _buildStringMatrixCapacityWithInsertRowTestingTable();
 }
 
-void CapacityTests::testStringMatrixCapacityWithInsertColumn_data()
+void CapacityTests::testStringMatrixCapacityWithInsertRowAndSetNewValues_data()
 {
-    QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("insertPosition");
-    QTest::addColumn<std::string>("insertedColumnValue");
-    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
-    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
-    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
-    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-    QTest::addColumn<bool>("isInsertedColumnValueSet");
+    _buildStringMatrixCapacityWithInsertRowTestingTable();
+}
 
-    QTest::newRow("1: inserted column value NOT set") << StringMatrix{{5, 3}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << false;
-    QTest::newRow("2: inserted column value set") << StringMatrix{{5, 3}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << true;
-    QTest::newRow("3: inserted column value NOT set") << StringMatrix{{5, 7}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("4: inserted column value set") << StringMatrix{{5, 7}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("5: inserted column value NOT set") << StringMatrix{{5, 14}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{17u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("6: inserted column value set") << StringMatrix{{5, 14}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{17u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("7: inserted column value NOT set") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("8: inserted column value set") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << true;
-    QTest::newRow("9: inserted column value NOT set") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{14u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("10: inserted column value set") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{14u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << true;
-    QTest::newRow("11: inserted column value NOT set") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("12: inserted column value set") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << true;
+void CapacityTests::testStringMatrixCapacityWithInsertColumnAndDefaultNewValues_data()
+{
+    _buildStringMatrixCapacityWithInsertColumnTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithInsertColumnAndSetNewValues_data()
+{
+    _buildStringMatrixCapacityWithInsertColumnTestingTable();
 }
 
 void CapacityTests::testStringMatrixCapacityWithEraseRow_data()
@@ -2606,6 +2578,42 @@ void CapacityTests::_buildIntMatrixCapacityWithResizeTestingTable()
     QTest::newRow("69: more rows, more columns") << IntMatrix{{c_LargeDimension2, c_LargeDimension1}, -2} << c_MaxAllowedDimension << c_MaxAllowedDimension << -5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
 }
 
+void CapacityTests::_buildIntMatrixCapacityWithInsertRowTestingTable()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<int>("insertedRowValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small matrix") << IntMatrix{{3, 4}, -2} << matrix_size_t{1u} << 5 << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: small matrix") << IntMatrix{{6, 5}, -2} << matrix_size_t{3u} << 5 << matrix_size_t{7u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: small matrix") << IntMatrix{{8, 2}, -2} << matrix_size_t{5u} << 5 << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("5: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{11u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("6: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{25u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+}
+
+void CapacityTests::_buildIntMatrixCapacityWithInsertColumnTestingTable()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<int>("insertedColumnValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small matrix") << IntMatrix{{5, 3}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("2: small matrix") << IntMatrix{{5, 7}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: small matrix") << IntMatrix{{5, 14}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{17u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: large matrix") << IntMatrix{{20, 25}, 4} << matrix_size_t{0u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("5: large matrix") << IntMatrix{{20, 25}, 4} << matrix_size_t{14u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("6: large matrix") << IntMatrix{{20, 25}, 4} << matrix_size_t{25u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+}
+
 void CapacityTests::_buildStringMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable()
 {
     QTest::addColumn<matrix_size_t>("rowsCount");
@@ -3177,6 +3185,42 @@ void CapacityTests::_buildStringMatrixCapacityWithResizeTestingTable()
     QTest::newRow("67: more rows, equal columns") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << c_MaxAllowedDimension << c_LargeDimension1 << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
     QTest::newRow("68: more rows, more columns") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << c_MaxAllowedDimension << c_LargeDimension2 << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
     QTest::newRow("69: more rows, more columns") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << c_MaxAllowedDimension << c_MaxAllowedDimension << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+}
+
+void CapacityTests::_buildStringMatrixCapacityWithInsertRowTestingTable()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<std::string>("insertedRowValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small matrix") << StringMatrix{{3, 4}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: small matrix") << StringMatrix{{6, 5}, "Value1"} << matrix_size_t{3u} << std::string{"Value2"} << matrix_size_t{7u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: small matrix") << StringMatrix{{8, 2}, "Value1"} << matrix_size_t{5u} << std::string{"Value2"} << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("5: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("6: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+}
+
+void CapacityTests::_buildStringMatrixCapacityWithInsertColumnTestingTable()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<std::string>("insertedColumnValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small matrix") << StringMatrix{{5, 3}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("2: small matrix") << StringMatrix{{5, 7}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: small matrix") << StringMatrix{{5, 14}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{17u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("5: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{14u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("6: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
 }
 
 QTEST_APPLESS_MAIN(CapacityTests)
