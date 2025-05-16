@@ -40,6 +40,10 @@ private slots:
     void testIntMatrixCapacityWithInsertRowAndSetNewValues();
     void testIntMatrixCapacityWithInsertColumnAndDefaultNewValues();
     void testIntMatrixCapacityWithInsertColumnAndSetNewValues();
+    void testIntMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues();
+    void testIntMatrixCapacityWithReserveAndInsertRowAndSetNewValues();
+    void testIntMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues();
+    void testIntMatrixCapacityWithReserveAndInsertColumnAndSetNewValues();
     void testIntMatrixCapacityWithEraseRow();
     void testIntMatrixCapacityWithEraseColumn();
     void testIntMatrixCapacityWithCatByRow();
@@ -66,6 +70,10 @@ private slots:
     void testStringMatrixCapacityWithInsertRowAndSetNewValues();
     void testStringMatrixCapacityWithInsertColumnAndDefaultNewValues();
     void testStringMatrixCapacityWithInsertColumnAndSetNewValues();
+    void testStringMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues();
+    void testStringMatrixCapacityWithReserveAndInsertRowAndSetNewValues();
+    void testStringMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues();
+    void testStringMatrixCapacityWithReserveAndInsertColumnAndSetNewValues();
     void testStringMatrixCapacityWithEraseRow();
     void testStringMatrixCapacityWithEraseColumn();
     void testStringMatrixCapacityWithCatByRow();
@@ -93,6 +101,10 @@ private slots:
     void testIntMatrixCapacityWithInsertRowAndSetNewValues_data();
     void testIntMatrixCapacityWithInsertColumnAndDefaultNewValues_data();
     void testIntMatrixCapacityWithInsertColumnAndSetNewValues_data();
+    void testIntMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues_data();
+    void testIntMatrixCapacityWithReserveAndInsertRowAndSetNewValues_data();
+    void testIntMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues_data();
+    void testIntMatrixCapacityWithReserveAndInsertColumnAndSetNewValues_data();
     void testIntMatrixCapacityWithEraseRow_data();
     void testIntMatrixCapacityWithEraseColumn_data();
     void testIntMatrixCapacityWithCatByRow_data();
@@ -119,6 +131,10 @@ private slots:
     void testStringMatrixCapacityWithInsertRowAndSetNewValues_data();
     void testStringMatrixCapacityWithInsertColumnAndDefaultNewValues_data();
     void testStringMatrixCapacityWithInsertColumnAndSetNewValues_data();
+    void testStringMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues_data();
+    void testStringMatrixCapacityWithReserveAndInsertRowAndSetNewValues_data();
+    void testStringMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues_data();
+    void testStringMatrixCapacityWithReserveAndInsertColumnAndSetNewValues_data();
     void testStringMatrixCapacityWithEraseRow_data();
     void testStringMatrixCapacityWithEraseColumn_data();
     void testStringMatrixCapacityWithCatByRow_data();
@@ -136,6 +152,8 @@ private:
     void _buildIntMatrixCapacityWithResizeTestingTable();
     void _buildIntMatrixCapacityWithInsertRowTestingTable();
     void _buildIntMatrixCapacityWithInsertColumnTestingTable();
+    void _buildIntMatrixCapacityWithReserveAndInsertRowTestingTable();
+    void _buildIntMatrixCapacityWithReserveAndInsertColumnTestingTable();
 
     void _buildStringMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable();
     void _buildStringMatrixCapacityWithMoveCopyConstructorsTestingTable();
@@ -144,6 +162,8 @@ private:
     void _buildStringMatrixCapacityWithResizeTestingTable();
     void _buildStringMatrixCapacityWithInsertRowTestingTable();
     void _buildStringMatrixCapacityWithInsertColumnTestingTable();
+    void _buildStringMatrixCapacityWithReserveAndInsertRowTestingTable();
+    void _buildStringMatrixCapacityWithReserveAndInsertColumnTestingTable();
 
     IntMatrix mPrimaryIntMatrix;
     IntMatrix mSecondaryIntMatrix;
@@ -266,6 +286,26 @@ void CapacityTests::testIntMatrixCapacityWithInsertColumnAndDefaultNewValues()
 void CapacityTests::testIntMatrixCapacityWithInsertColumnAndSetNewValues()
 {
     TEST_CAPACITY_WITH_INSERT_COLUMN_AND_FILL_IN_NEW_VALUES(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_ROW_AND_DEFAULT_NEW_VALUES(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertRowAndSetNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_ROW_AND_FILL_IN_NEW_VALUES(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_COLUMN_AND_DEFAULT_NEW_VALUES(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertColumnAndSetNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_COLUMN_AND_FILL_IN_NEW_VALUES(int);
 }
 
 void CapacityTests::testIntMatrixCapacityWithEraseRow()
@@ -414,6 +454,26 @@ void CapacityTests::testStringMatrixCapacityWithInsertColumnAndDefaultNewValues(
 void CapacityTests::testStringMatrixCapacityWithInsertColumnAndSetNewValues()
 {
     TEST_CAPACITY_WITH_INSERT_COLUMN_AND_FILL_IN_NEW_VALUES(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_ROW_AND_DEFAULT_NEW_VALUES(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertRowAndSetNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_ROW_AND_FILL_IN_NEW_VALUES(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_COLUMN_AND_DEFAULT_NEW_VALUES(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertColumnAndSetNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_COLUMN_AND_FILL_IN_NEW_VALUES(std::string);
 }
 
 void CapacityTests::testStringMatrixCapacityWithEraseRow()
@@ -730,6 +790,26 @@ void CapacityTests::testIntMatrixCapacityWithInsertColumnAndDefaultNewValues_dat
 void CapacityTests::testIntMatrixCapacityWithInsertColumnAndSetNewValues_data()
 {
     _buildIntMatrixCapacityWithInsertColumnTestingTable();
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues_data()
+{
+    _buildIntMatrixCapacityWithReserveAndInsertRowTestingTable();
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertRowAndSetNewValues_data()
+{
+    _buildIntMatrixCapacityWithReserveAndInsertRowTestingTable();
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues_data()
+{
+    _buildIntMatrixCapacityWithReserveAndInsertColumnTestingTable();
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertColumnAndSetNewValues_data()
+{
+    _buildIntMatrixCapacityWithReserveAndInsertColumnTestingTable();
 }
 
 void CapacityTests::testIntMatrixCapacityWithEraseRow_data()
@@ -1507,6 +1587,26 @@ void CapacityTests::testStringMatrixCapacityWithInsertColumnAndDefaultNewValues_
 void CapacityTests::testStringMatrixCapacityWithInsertColumnAndSetNewValues_data()
 {
     _buildStringMatrixCapacityWithInsertColumnTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues_data()
+{
+    _buildStringMatrixCapacityWithReserveAndInsertRowTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertRowAndSetNewValues_data()
+{
+    _buildStringMatrixCapacityWithReserveAndInsertRowTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues_data()
+{
+    _buildStringMatrixCapacityWithReserveAndInsertColumnTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertColumnAndSetNewValues_data()
+{
+    _buildStringMatrixCapacityWithReserveAndInsertColumnTestingTable();
 }
 
 void CapacityTests::testStringMatrixCapacityWithEraseRow_data()
@@ -2636,6 +2736,34 @@ void CapacityTests::_buildIntMatrixCapacityWithInsertColumnTestingTable()
     QTest::newRow("17: extra large matrix") << IntMatrix{{c_LargeDimension1, c_LargeDimension2}, -2} << matrix_size_t{c_LargeDimension2} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
 }
 
+void CapacityTests::_buildIntMatrixCapacityWithReserveAndInsertRowTestingTable()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("requestedRowCapacity");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<int>("insertedRowValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{20u} << matrix_size_t{0u} << 5 << matrix_size_t{40u} << matrix_size_t{31u} << matrix_opt_size_t{9u} << matrix_opt_size_t{3u};
+}
+
+void CapacityTests::_buildIntMatrixCapacityWithReserveAndInsertColumnTestingTable()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<int>("insertedColumnValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{20u} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{40u} << matrix_opt_size_t{3u} << matrix_opt_size_t{9u};
+}
+
 void CapacityTests::_buildStringMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable()
 {
     QTest::addColumn<matrix_size_t>("rowsCount");
@@ -3265,6 +3393,34 @@ void CapacityTests::_buildStringMatrixCapacityWithInsertColumnTestingTable()
     QTest::newRow("15: extra large matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension2}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
     QTest::newRow("16: extra large matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension2}, "Value1"} << matrix_size_t{c_LargeDimension2 / 2} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
     QTest::newRow("17: extra large matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension2}, "Value1"} << matrix_size_t{c_LargeDimension2} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+}
+
+void CapacityTests::_buildStringMatrixCapacityWithReserveAndInsertRowTestingTable()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("requestedRowCapacity");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<std::string>("insertedRowValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{20u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{40u} << matrix_size_t{31u} << matrix_opt_size_t{9u} << matrix_opt_size_t{3u};
+}
+
+void CapacityTests::_buildStringMatrixCapacityWithReserveAndInsertColumnTestingTable()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<std::string>("insertedColumnValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{20u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{40u} << matrix_opt_size_t{3u} << matrix_opt_size_t{9u};
 }
 
 QTEST_APPLESS_MAIN(CapacityTests)
