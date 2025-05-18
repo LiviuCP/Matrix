@@ -293,7 +293,22 @@
         QFAIL("Reserving/resizing failed, capacity (offset) of the matrix is not correct!"); \
     } \
 
-#define TEST_CAPACITY_WITH_INSERT_ROW(matrixType) \
+#define TEST_CAPACITY_WITH_INSERT_ROW_AND_DEFAULT_NEW_VALUES(matrixType) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>::size_type, insertPosition); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
+\
+    matrix.insertRow(insertPosition); \
+\
+    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
+             matrix.getColumnCapacity() == expectedColumnCapacity && \
+             matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
+             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Insert row failed, capacity (offset) of the matrix is not correct!");
+
+#define TEST_CAPACITY_WITH_INSERT_ROW_AND_FILL_IN_NEW_VALUES(matrixType) \
     QFETCH(Matrix<matrixType>, matrix); \
     QFETCH(Matrix<matrixType>::size_type, insertPosition); \
     QFETCH(matrixType, insertedRowValue); \
@@ -301,23 +316,30 @@
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
-    QFETCH(bool, isInsertedRowValueSet); \
 \
-    if (isInsertedRowValueSet) \
-    { \
-        matrix.insertRow(insertPosition, insertedRowValue); \
-    } \
-    else \
-    { \
-        matrix.insertRow(insertPosition); \
-    } \
+    matrix.insertRow(insertPosition, insertedRowValue); \
 \
     QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
              matrix.getColumnCapacity() == expectedColumnCapacity && \
              matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
              matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Insert row failed, capacity (offset) of the matrix is not correct!");
 
-#define TEST_CAPACITY_WITH_INSERT_COLUMN(matrixType) \
+#define TEST_CAPACITY_WITH_INSERT_COLUMN_AND_DEFAULT_NEW_VALUES(matrixType) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>::size_type, insertPosition); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
+\
+    matrix.insertColumn(insertPosition); \
+\
+    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
+             matrix.getColumnCapacity() == expectedColumnCapacity && \
+             matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
+             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Insert column failed, capacity (offset) of the matrix is not correct!");
+
+#define TEST_CAPACITY_WITH_INSERT_COLUMN_AND_FILL_IN_NEW_VALUES(matrixType) \
     QFETCH(Matrix<matrixType>, matrix); \
     QFETCH(Matrix<matrixType>::size_type, insertPosition); \
     QFETCH(matrixType, insertedColumnValue); \
@@ -325,16 +347,78 @@
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
-    QFETCH(bool, isInsertedColumnValueSet); \
 \
-    if (isInsertedColumnValueSet) \
-    { \
-        matrix.insertColumn(insertPosition, insertedColumnValue); \
-    } \
-    else \
-    { \
-        matrix.insertColumn(insertPosition); \
-    } \
+    matrix.insertColumn(insertPosition, insertedColumnValue); \
+\
+    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
+             matrix.getColumnCapacity() == expectedColumnCapacity && \
+             matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
+             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Insert column failed, capacity (offset) of the matrix is not correct!");
+
+#define TEST_CAPACITY_WITH_RESERVE_AND_INSERT_ROW_AND_DEFAULT_NEW_VALUES(matrixType) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>::size_type, requestedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, insertPosition); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
+\
+    matrix.reserve(requestedRowCapacity, matrix.getColumnCapacity()); \
+    matrix.insertRow(insertPosition); \
+\
+    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
+             matrix.getColumnCapacity() == expectedColumnCapacity && \
+             matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
+             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Insert row failed, capacity (offset) of the matrix is not correct!");
+
+#define TEST_CAPACITY_WITH_RESERVE_AND_INSERT_ROW_AND_FILL_IN_NEW_VALUES(matrixType) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>::size_type, requestedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, insertPosition); \
+    QFETCH(matrixType, insertedRowValue); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
+\
+    matrix.reserve(requestedRowCapacity, matrix.getColumnCapacity()); \
+    matrix.insertRow(insertPosition, insertedRowValue); \
+\
+    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
+             matrix.getColumnCapacity() == expectedColumnCapacity && \
+             matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
+             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Insert row failed, capacity (offset) of the matrix is not correct!");
+
+#define TEST_CAPACITY_WITH_RESERVE_AND_INSERT_COLUMN_AND_DEFAULT_NEW_VALUES(matrixType) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>::size_type, requestedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, insertPosition); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
+\
+    matrix.reserve(matrix.getRowCapacity(), requestedColumnCapacity); \
+    matrix.insertColumn(insertPosition); \
+\
+    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
+             matrix.getColumnCapacity() == expectedColumnCapacity && \
+             matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
+             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Insert column failed, capacity (offset) of the matrix is not correct!");
+
+#define TEST_CAPACITY_WITH_RESERVE_AND_INSERT_COLUMN_AND_FILL_IN_NEW_VALUES(matrixType) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>::size_type, requestedColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, insertPosition); \
+    QFETCH(matrixType, insertedColumnValue); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
+\
+    matrix.reserve(matrix.getRowCapacity(), requestedColumnCapacity); \
+    matrix.insertColumn(insertPosition, insertedColumnValue); \
 \
     QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
              matrix.getColumnCapacity() == expectedColumnCapacity && \

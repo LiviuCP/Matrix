@@ -19,7 +19,7 @@ Q_DECLARE_METATYPE(SplitMode)
 // static_assert(!std::ranges::borrowed_range<IntMatrix>);
 
 static constexpr matrix_size_t c_MaxAllowedDimension{maxAllowedDimension()};
-static constexpr matrix_size_t c_ExceedingDimension{static_cast<matrix_size_t>(c_MaxAllowedDimension + 1)};
+static constexpr matrix_size_t c_ExceedingDimension{c_MaxAllowedDimension + 1};
 
 class CommonExceptionTests : public QObject
 {
@@ -600,6 +600,7 @@ void CommonExceptionTests::_buildInsertRowExceptionsTestingTable()
 
     QTest::newRow("1: insert position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{3u} << 5;
     QTest::newRow("2: empty matrix") << IntMatrix{} << matrix_size_t{0u} << 1;
+    QTest::newRow("3: maximum rows count reached") << IntMatrix{{c_MaxAllowedDimension, 2}, -5} << matrix_size_t{2u} << 3;
 }
 
 void CommonExceptionTests::_buildInsertColumnExceptionsTestingTable()
@@ -610,6 +611,7 @@ void CommonExceptionTests::_buildInsertColumnExceptionsTestingTable()
 
     QTest::newRow("1: insert position out of range") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{4u} << 5;
     QTest::newRow("2: empty matrix") << IntMatrix{} << matrix_size_t{0u} << 2;
+    QTest::newRow("3: maximum columns count reached") << IntMatrix{{2, c_MaxAllowedDimension}, -5} << matrix_size_t{2u} << 3;
 }
 
 QTEST_APPLESS_MAIN(CommonExceptionTests)

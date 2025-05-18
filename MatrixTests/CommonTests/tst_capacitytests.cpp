@@ -15,6 +15,11 @@ static constexpr matrix_size_t c_LargeDimension0{c_MaxAllowedDimension - 3};
 static constexpr matrix_size_t c_LargeDimension1{c_MaxAllowedDimension - 2};
 static constexpr matrix_size_t c_LargeDimension2{c_MaxAllowedDimension - 1};
 static constexpr matrix_size_t c_ExceedingDimension{c_MaxAllowedDimension + 1};
+static constexpr matrix_size_t c_HalfMaxAllowedDimension{c_MaxAllowedDimension / 2};
+static constexpr matrix_size_t c_DecrHalfMaxAllowedDimension{c_MaxAllowedDimension / 2 - 1};
+static constexpr matrix_size_t c_IncrHalfMaxAllowedDimension{c_MaxAllowedDimension / 2 + 1};
+static constexpr matrix_size_t c_ThreeQuartersMaxAllowedDimension{c_HalfMaxAllowedDimension + c_HalfMaxAllowedDimension / 2};
+static constexpr bool c_IsEvenMaxAllowedDimension{0 == c_MaxAllowedDimension % 2};
 
 class CapacityTests : public QObject
 {
@@ -36,8 +41,14 @@ private slots:
     void testIntMatrixCapacityWithResizeAndSetNewValues();
     void testIntMatrixCapacityWithReserveAndResizeWithDefaultNewValues();
     void testIntMatrixCapacityWithReserveAndResizeAndSetNewValues();
-    void testIntMatrixCapacityWithInsertRow();
-    void testIntMatrixCapacityWithInsertColumn();
+    void testIntMatrixCapacityWithInsertRowAndDefaultNewValues();
+    void testIntMatrixCapacityWithInsertRowAndSetNewValues();
+    void testIntMatrixCapacityWithInsertColumnAndDefaultNewValues();
+    void testIntMatrixCapacityWithInsertColumnAndSetNewValues();
+    void testIntMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues();
+    void testIntMatrixCapacityWithReserveAndInsertRowAndSetNewValues();
+    void testIntMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues();
+    void testIntMatrixCapacityWithReserveAndInsertColumnAndSetNewValues();
     void testIntMatrixCapacityWithEraseRow();
     void testIntMatrixCapacityWithEraseColumn();
     void testIntMatrixCapacityWithCatByRow();
@@ -60,8 +71,14 @@ private slots:
     void testStringMatrixCapacityWithResizeAndSetNewValues();
     void testStringMatrixCapacityWithReserveAndResizeWithDefaultNewValues();
     void testStringMatrixCapacityWithReserveAndResizeAndSetNewValues();
-    void testStringMatrixCapacityWithInsertRow();
-    void testStringMatrixCapacityWithInsertColumn();
+    void testStringMatrixCapacityWithInsertRowAndDefaultNewValues();
+    void testStringMatrixCapacityWithInsertRowAndSetNewValues();
+    void testStringMatrixCapacityWithInsertColumnAndDefaultNewValues();
+    void testStringMatrixCapacityWithInsertColumnAndSetNewValues();
+    void testStringMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues();
+    void testStringMatrixCapacityWithReserveAndInsertRowAndSetNewValues();
+    void testStringMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues();
+    void testStringMatrixCapacityWithReserveAndInsertColumnAndSetNewValues();
     void testStringMatrixCapacityWithEraseRow();
     void testStringMatrixCapacityWithEraseColumn();
     void testStringMatrixCapacityWithCatByRow();
@@ -85,8 +102,14 @@ private slots:
     void testIntMatrixCapacityWithResizeAndSetNewValues_data();
     void testIntMatrixCapacityWithReserveAndResizeWithDefaultNewValues_data();
     void testIntMatrixCapacityWithReserveAndResizeAndSetNewValues_data();
-    void testIntMatrixCapacityWithInsertRow_data();
-    void testIntMatrixCapacityWithInsertColumn_data();
+    void testIntMatrixCapacityWithInsertRowAndDefaultNewValues_data();
+    void testIntMatrixCapacityWithInsertRowAndSetNewValues_data();
+    void testIntMatrixCapacityWithInsertColumnAndDefaultNewValues_data();
+    void testIntMatrixCapacityWithInsertColumnAndSetNewValues_data();
+    void testIntMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues_data();
+    void testIntMatrixCapacityWithReserveAndInsertRowAndSetNewValues_data();
+    void testIntMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues_data();
+    void testIntMatrixCapacityWithReserveAndInsertColumnAndSetNewValues_data();
     void testIntMatrixCapacityWithEraseRow_data();
     void testIntMatrixCapacityWithEraseColumn_data();
     void testIntMatrixCapacityWithCatByRow_data();
@@ -109,8 +132,14 @@ private slots:
     void testStringMatrixCapacityWithResizeAndSetNewValues_data();
     void testStringMatrixCapacityWithReserveAndResizeWithDefaultNewValues_data();
     void testStringMatrixCapacityWithReserveAndResizeAndSetNewValues_data();
-    void testStringMatrixCapacityWithInsertRow_data();
-    void testStringMatrixCapacityWithInsertColumn_data();
+    void testStringMatrixCapacityWithInsertRowAndDefaultNewValues_data();
+    void testStringMatrixCapacityWithInsertRowAndSetNewValues_data();
+    void testStringMatrixCapacityWithInsertColumnAndDefaultNewValues_data();
+    void testStringMatrixCapacityWithInsertColumnAndSetNewValues_data();
+    void testStringMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues_data();
+    void testStringMatrixCapacityWithReserveAndInsertRowAndSetNewValues_data();
+    void testStringMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues_data();
+    void testStringMatrixCapacityWithReserveAndInsertColumnAndSetNewValues_data();
     void testStringMatrixCapacityWithEraseRow_data();
     void testStringMatrixCapacityWithEraseColumn_data();
     void testStringMatrixCapacityWithCatByRow_data();
@@ -126,12 +155,20 @@ private:
     void _buildIntMatrixCapacityWithAssignmentOperatorsTestingTable();
     void _buildIntMatrixCapacityWithReserveAndResizeTestingTable();
     void _buildIntMatrixCapacityWithResizeTestingTable();
+    void _buildIntMatrixCapacityWithInsertRowTestingTable();
+    void _buildIntMatrixCapacityWithInsertColumnTestingTable();
+    void _buildIntMatrixCapacityWithReserveAndInsertRowTestingTable();
+    void _buildIntMatrixCapacityWithReserveAndInsertColumnTestingTable();
 
     void _buildStringMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable();
     void _buildStringMatrixCapacityWithMoveCopyConstructorsTestingTable();
     void _buildStringMatrixCapacityWithAssignmentOperatorsTestingTable();
     void _buildStringMatrixCapacityWithReserveAndResizeTestingTable();
     void _buildStringMatrixCapacityWithResizeTestingTable();
+    void _buildStringMatrixCapacityWithInsertRowTestingTable();
+    void _buildStringMatrixCapacityWithInsertColumnTestingTable();
+    void _buildStringMatrixCapacityWithReserveAndInsertRowTestingTable();
+    void _buildStringMatrixCapacityWithReserveAndInsertColumnTestingTable();
 
     IntMatrix mPrimaryIntMatrix;
     IntMatrix mSecondaryIntMatrix;
@@ -236,14 +273,44 @@ void CapacityTests::testIntMatrixCapacityWithReserveAndResizeAndSetNewValues()
     TEST_CAPACITY_WITH_RESERVE_AND_RESIZE_AND_FILL_IN_NEW_VALUES(int, mPrimaryIntMatrix);
 }
 
-void CapacityTests::testIntMatrixCapacityWithInsertRow()
+void CapacityTests::testIntMatrixCapacityWithInsertRowAndDefaultNewValues()
 {
-    TEST_CAPACITY_WITH_INSERT_ROW(int);
+    TEST_CAPACITY_WITH_INSERT_ROW_AND_DEFAULT_NEW_VALUES(int);
 }
 
-void CapacityTests::testIntMatrixCapacityWithInsertColumn()
+void CapacityTests::testIntMatrixCapacityWithInsertRowAndSetNewValues()
 {
-    TEST_CAPACITY_WITH_INSERT_COLUMN(int);
+    TEST_CAPACITY_WITH_INSERT_ROW_AND_FILL_IN_NEW_VALUES(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithInsertColumnAndDefaultNewValues()
+{
+    TEST_CAPACITY_WITH_INSERT_COLUMN_AND_DEFAULT_NEW_VALUES(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithInsertColumnAndSetNewValues()
+{
+    TEST_CAPACITY_WITH_INSERT_COLUMN_AND_FILL_IN_NEW_VALUES(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_ROW_AND_DEFAULT_NEW_VALUES(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertRowAndSetNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_ROW_AND_FILL_IN_NEW_VALUES(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_COLUMN_AND_DEFAULT_NEW_VALUES(int);
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertColumnAndSetNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_COLUMN_AND_FILL_IN_NEW_VALUES(int);
 }
 
 void CapacityTests::testIntMatrixCapacityWithEraseRow()
@@ -374,14 +441,44 @@ void CapacityTests::testStringMatrixCapacityWithReserveAndResizeAndSetNewValues(
     TEST_CAPACITY_WITH_RESERVE_AND_RESIZE_AND_FILL_IN_NEW_VALUES(std::string, mPrimaryStringMatrix);
 }
 
-void CapacityTests::testStringMatrixCapacityWithInsertRow()
+void CapacityTests::testStringMatrixCapacityWithInsertRowAndDefaultNewValues()
 {
-    TEST_CAPACITY_WITH_INSERT_ROW(std::string);
+    TEST_CAPACITY_WITH_INSERT_ROW_AND_DEFAULT_NEW_VALUES(std::string);
 }
 
-void CapacityTests::testStringMatrixCapacityWithInsertColumn()
+void CapacityTests::testStringMatrixCapacityWithInsertRowAndSetNewValues()
 {
-    TEST_CAPACITY_WITH_INSERT_COLUMN(std::string);
+    TEST_CAPACITY_WITH_INSERT_ROW_AND_FILL_IN_NEW_VALUES(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithInsertColumnAndDefaultNewValues()
+{
+    TEST_CAPACITY_WITH_INSERT_COLUMN_AND_DEFAULT_NEW_VALUES(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithInsertColumnAndSetNewValues()
+{
+    TEST_CAPACITY_WITH_INSERT_COLUMN_AND_FILL_IN_NEW_VALUES(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_ROW_AND_DEFAULT_NEW_VALUES(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertRowAndSetNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_ROW_AND_FILL_IN_NEW_VALUES(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_COLUMN_AND_DEFAULT_NEW_VALUES(std::string);
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertColumnAndSetNewValues()
+{
+    TEST_CAPACITY_WITH_RESERVE_AND_INSERT_COLUMN_AND_FILL_IN_NEW_VALUES(std::string);
 }
 
 void CapacityTests::testStringMatrixCapacityWithEraseRow()
@@ -572,7 +669,7 @@ void CapacityTests::testIntMatrixCapacityWithReserve_data()
     QTest::newRow("8: row capacity < rows count, column capacity > columns count") << IntMatrix{{10, 8}, -2} << matrix_size_t{9u} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
     QTest::newRow("9: row capacity < rows count, column capacity > columns count") << IntMatrix{{10, 8}, -2} << matrix_size_t{9u} << c_LargeDimension2 << matrix_size_t{10u} << c_LargeDimension2 << matrix_opt_size_t{0u} << c_LargeDimensionColumnCapacityOffset;
     QTest::newRow("10: row capacity < rows count, column capacity > columns count") << IntMatrix{{10, 8}, -2} << matrix_size_t{9u} << c_MaxAllowedDimension << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << c_MaxDimensionColumnCapacityOffset;
-    QTest::newRow("11: row capacity < rows count, column capacity > columns count") << IntMatrix{{10, 8}, -2} << matrix_size_t{9u} << c_ExceedingDimension << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << c_LargeDimensionColumnCapacityOffset;
+    QTest::newRow("11: row capacity < rows count, column capacity > columns count") << IntMatrix{{10, 8}, -2} << matrix_size_t{9u} << c_ExceedingDimension << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << c_MaxDimensionColumnCapacityOffset;
     QTest::newRow("12: row capacity == rows count, column capacity < columns count") << IntMatrix{{10, 8}, -2} << matrix_size_t{10u} << matrix_size_t{0u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
     QTest::newRow("13: row capacity == rows count, column capacity < columns count") << IntMatrix{{10, 8}, -2} << matrix_size_t{10u} << matrix_size_t{7u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
     QTest::newRow("14: row capacity == rows count, column capacity == columns count") << IntMatrix{{10, 8}, -2} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
@@ -680,54 +777,44 @@ void CapacityTests::testIntMatrixCapacityWithReserveAndResizeAndSetNewValues_dat
     _buildIntMatrixCapacityWithReserveAndResizeTestingTable();
 }
 
-void CapacityTests::testIntMatrixCapacityWithInsertRow_data()
+void CapacityTests::testIntMatrixCapacityWithInsertRowAndDefaultNewValues_data()
 {
-    QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("insertPosition");
-    QTest::addColumn<int>("insertedRowValue");
-    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
-    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
-    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
-    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-    QTest::addColumn<bool>("isInsertedRowValueSet");
-
-    QTest::newRow("1: inserted row value NOT set") << IntMatrix{{3, 4}, -2} << matrix_size_t{1u} << 5 << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("2: inserted row value set") << IntMatrix{{3, 4}, -2} << matrix_size_t{1u} << 5 << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("3: inserted row value NOT set") << IntMatrix{{6, 5}, -2} << matrix_size_t{3u} << 5 << matrix_size_t{7u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("4: inserted row value set") << IntMatrix{{6, 5}, -2} << matrix_size_t{3u} << 5 << matrix_size_t{7u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("5: inserted row value NOT set") << IntMatrix{{8, 2}, -2} << matrix_size_t{5u} << 5 << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("6: inserted row value set") << IntMatrix{{8, 2}, -2} << matrix_size_t{5u} << 5 << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("7: inserted row value NOT set") << IntMatrix{{25, 20}, -2} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("8: inserted row value set") << IntMatrix{{25, 20}, -2} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << true;
-    QTest::newRow("9: inserted row value NOT set") << IntMatrix{{25, 20}, -2} << matrix_size_t{11u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("10: inserted row value set") << IntMatrix{{25, 20}, -2} << matrix_size_t{11u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << true;
-    QTest::newRow("11: inserted row value NOT set") << IntMatrix{{25, 20}, -2} << matrix_size_t{25u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("12: inserted row value set") << IntMatrix{{25, 20}, -2} << matrix_size_t{25u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << true;
+    _buildIntMatrixCapacityWithInsertRowTestingTable();
 }
 
-void CapacityTests::testIntMatrixCapacityWithInsertColumn_data()
+void CapacityTests::testIntMatrixCapacityWithInsertRowAndSetNewValues_data()
 {
-    QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("insertPosition");
-    QTest::addColumn<int>("insertedColumnValue");
-    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
-    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
-    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
-    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-    QTest::addColumn<bool>("isInsertedColumnValueSet");
+    _buildIntMatrixCapacityWithInsertRowTestingTable();
+}
 
-    QTest::newRow("1: inserted column value NOT set") << IntMatrix{{5, 3}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << false;
-    QTest::newRow("2: inserted column value set") << IntMatrix{{5, 3}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << true;
-    QTest::newRow("3: inserted column value NOT set") << IntMatrix{{5, 7}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("4: inserted column value set") << IntMatrix{{5, 7}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("5: inserted column value NOT set") << IntMatrix{{5, 14}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{17u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("6: inserted column value set") << IntMatrix{{5, 14}, 4} << matrix_size_t{1u} << 1 << matrix_size_t{6u} << matrix_size_t{17u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("7: inserted column value NOT set") << IntMatrix{{20, 25}, 4} << matrix_size_t{0u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("8: inserted column value set") << IntMatrix{{20, 25}, 4} << matrix_size_t{0u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << true;
-    QTest::newRow("9: inserted column value NOT set") << IntMatrix{{20, 25}, 4} << matrix_size_t{14u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("10: inserted column value set") << IntMatrix{{20, 25}, 4} << matrix_size_t{14u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << true;
-    QTest::newRow("11: inserted column value NOT set") << IntMatrix{{20, 25}, 4} << matrix_size_t{25u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("12: inserted column value set") << IntMatrix{{20, 25}, 4} << matrix_size_t{25u} << 1 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << true;
+void CapacityTests::testIntMatrixCapacityWithInsertColumnAndDefaultNewValues_data()
+{
+    _buildIntMatrixCapacityWithInsertColumnTestingTable();
+}
+
+void CapacityTests::testIntMatrixCapacityWithInsertColumnAndSetNewValues_data()
+{
+    _buildIntMatrixCapacityWithInsertColumnTestingTable();
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues_data()
+{
+    _buildIntMatrixCapacityWithReserveAndInsertRowTestingTable();
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertRowAndSetNewValues_data()
+{
+    _buildIntMatrixCapacityWithReserveAndInsertRowTestingTable();
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues_data()
+{
+    _buildIntMatrixCapacityWithReserveAndInsertColumnTestingTable();
+}
+
+void CapacityTests::testIntMatrixCapacityWithReserveAndInsertColumnAndSetNewValues_data()
+{
+    _buildIntMatrixCapacityWithReserveAndInsertColumnTestingTable();
 }
 
 void CapacityTests::testIntMatrixCapacityWithEraseRow_data()
@@ -1379,7 +1466,7 @@ void CapacityTests::testStringMatrixCapacityWithReserve_data()
     QTest::newRow("8: row capacity < rows count, column capacity > columns count") << StringMatrix{{10, 8}, "Value1"} << matrix_size_t{9u} << matrix_size_t{11u} << matrix_size_t{10u} << matrix_size_t{11u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
     QTest::newRow("9: row capacity < rows count, column capacity > columns count") << StringMatrix{{10, 8}, "Value1"} << matrix_size_t{9u} << c_LargeDimension2 << matrix_size_t{10u} << c_LargeDimension2 << matrix_opt_size_t{0u} << c_LargeDimensionColumnCapacityOffset;
     QTest::newRow("10: row capacity < rows count, column capacity > columns count") << StringMatrix{{10, 8}, "Value1"} << matrix_size_t{9u} << c_MaxAllowedDimension << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << c_MaxDimensionColumnCapacityOffset;
-    QTest::newRow("11: row capacity < rows count, column capacity > columns count") << StringMatrix{{10, 8}, "Value1"} << matrix_size_t{9u} << c_ExceedingDimension << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << c_LargeDimensionColumnCapacityOffset;
+    QTest::newRow("11: row capacity < rows count, column capacity > columns count") << StringMatrix{{10, 8}, "Value1"} << matrix_size_t{9u} << c_ExceedingDimension << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << c_MaxDimensionColumnCapacityOffset;
     QTest::newRow("12: row capacity == rows count, column capacity < columns count") << StringMatrix{{10, 8}, "Value1"} << matrix_size_t{10u} << matrix_size_t{0u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
     QTest::newRow("13: row capacity == rows count, column capacity < columns count") << StringMatrix{{10, 8}, "Value1"} << matrix_size_t{10u} << matrix_size_t{7u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
     QTest::newRow("14: row capacity == rows count, column capacity == columns count") << StringMatrix{{10, 8}, "Value1"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
@@ -1487,54 +1574,44 @@ void CapacityTests::testStringMatrixCapacityWithReserveAndResizeAndSetNewValues_
     _buildStringMatrixCapacityWithReserveAndResizeTestingTable();
 }
 
-void CapacityTests::testStringMatrixCapacityWithInsertRow_data()
+void CapacityTests::testStringMatrixCapacityWithInsertRowAndDefaultNewValues_data()
 {
-    QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("insertPosition");
-    QTest::addColumn<std::string>("insertedRowValue");
-    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
-    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
-    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
-    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-    QTest::addColumn<bool>("isInsertedRowValueSet");
-
-    QTest::newRow("1: inserted row value NOT set") << StringMatrix{{3, 4}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("2: inserted row value set") << StringMatrix{{3, 4}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("3: inserted row value NOT set") << StringMatrix{{6, 5}, "Value1"} << matrix_size_t{3u} << std::string{"Value2"} << matrix_size_t{7u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("4: inserted row value set") << StringMatrix{{6, 5}, "Value1"} << matrix_size_t{3u} << std::string{"Value2"} << matrix_size_t{7u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("5: inserted row value NOT set") << StringMatrix{{8, 2}, "Value1"} << matrix_size_t{5u} << std::string{"Value2"} << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("6: inserted row value set") << StringMatrix{{8, 2}, "Value1"} << matrix_size_t{5u} << std::string{"Value2"} << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("7: inserted row value NOT set") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("8: inserted row value set") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << true;
-    QTest::newRow("9: inserted row value NOT set") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("10: inserted row value set") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << true;
-    QTest::newRow("11: inserted row value NOT set") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("12: inserted row value set") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << true;
+    _buildStringMatrixCapacityWithInsertRowTestingTable();
 }
 
-void CapacityTests::testStringMatrixCapacityWithInsertColumn_data()
+void CapacityTests::testStringMatrixCapacityWithInsertRowAndSetNewValues_data()
 {
-    QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("insertPosition");
-    QTest::addColumn<std::string>("insertedColumnValue");
-    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
-    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
-    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
-    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-    QTest::addColumn<bool>("isInsertedColumnValueSet");
+    _buildStringMatrixCapacityWithInsertRowTestingTable();
+}
 
-    QTest::newRow("1: inserted column value NOT set") << StringMatrix{{5, 3}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << false;
-    QTest::newRow("2: inserted column value set") << StringMatrix{{5, 3}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << true;
-    QTest::newRow("3: inserted column value NOT set") << StringMatrix{{5, 7}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("4: inserted column value set") << StringMatrix{{5, 7}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("5: inserted column value NOT set") << StringMatrix{{5, 14}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{17u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("6: inserted column value set") << StringMatrix{{5, 14}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{17u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("7: inserted column value NOT set") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("8: inserted column value set") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u} << true;
-    QTest::newRow("9: inserted column value NOT set") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{14u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("10: inserted column value set") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{14u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << true;
-    QTest::newRow("11: inserted column value NOT set") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("12: inserted column value set") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << true;
+void CapacityTests::testStringMatrixCapacityWithInsertColumnAndDefaultNewValues_data()
+{
+    _buildStringMatrixCapacityWithInsertColumnTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithInsertColumnAndSetNewValues_data()
+{
+    _buildStringMatrixCapacityWithInsertColumnTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertRowAndDefaultNewValues_data()
+{
+    _buildStringMatrixCapacityWithReserveAndInsertRowTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertRowAndSetNewValues_data()
+{
+    _buildStringMatrixCapacityWithReserveAndInsertRowTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertColumnAndDefaultNewValues_data()
+{
+    _buildStringMatrixCapacityWithReserveAndInsertColumnTestingTable();
+}
+
+void CapacityTests::testStringMatrixCapacityWithReserveAndInsertColumnAndSetNewValues_data()
+{
+    _buildStringMatrixCapacityWithReserveAndInsertColumnTestingTable();
 }
 
 void CapacityTests::testStringMatrixCapacityWithEraseRow_data()
@@ -2606,6 +2683,246 @@ void CapacityTests::_buildIntMatrixCapacityWithResizeTestingTable()
     QTest::newRow("69: more rows, more columns") << IntMatrix{{c_LargeDimension2, c_LargeDimension1}, -2} << c_MaxAllowedDimension << c_MaxAllowedDimension << -5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
 }
 
+void CapacityTests::_buildIntMatrixCapacityWithInsertRowTestingTable()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<int>("insertedRowValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small matrix") << IntMatrix{{3, 4}, -2} << matrix_size_t{1u} << 5 << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: small matrix") << IntMatrix{{6, 5}, -2} << matrix_size_t{3u} << 5 << matrix_size_t{7u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: small matrix") << IntMatrix{{8, 2}, -2} << matrix_size_t{1u} << 5 << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: small matrix") << IntMatrix{{8, 2}, -2} << matrix_size_t{5u} << 5 << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("5: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("6: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{11u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("7: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{12u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("8: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{13u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("9: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{25u} << 5 << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("10: extra large matrix") << IntMatrix{{c_LargeDimension1, c_LargeDimension2}, -2} << matrix_size_t{0u} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: extra large matrix") << IntMatrix{{c_LargeDimension1, c_LargeDimension2}, -2} << matrix_size_t{c_LargeDimension1 / 2 - 1} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: extra large matrix") << IntMatrix{{c_LargeDimension1, c_LargeDimension2}, -2} << matrix_size_t{c_LargeDimension1 / 2} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: extra large matrix") << IntMatrix{{c_LargeDimension1, c_LargeDimension2}, -2} << matrix_size_t{c_LargeDimension1 / 2 + 1} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: extra large matrix") << IntMatrix{{c_LargeDimension1, c_LargeDimension2}, -2} << matrix_size_t{c_LargeDimension1} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: extra large matrix") << IntMatrix{{c_LargeDimension2, c_LargeDimension1}, -2} << matrix_size_t{0u} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("16: extra large matrix") << IntMatrix{{c_LargeDimension2, c_LargeDimension1}, -2} << matrix_size_t{c_LargeDimension2 / 2} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("17: extra large matrix") << IntMatrix{{c_LargeDimension2, c_LargeDimension1}, -2} << matrix_size_t{c_LargeDimension2} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+}
+
+void CapacityTests::_buildIntMatrixCapacityWithInsertColumnTestingTable()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<int>("insertedColumnValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small matrix") << IntMatrix{{4, 3}, -2} << matrix_size_t{1u} << 5 << matrix_size_t{5u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("2: small matrix") << IntMatrix{{5, 6}, -2} << matrix_size_t{3u} << 5 << matrix_size_t{6u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: small matrix") << IntMatrix{{2, 8}, -2} << matrix_size_t{1u} << 5 << matrix_size_t{2u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: small matrix") << IntMatrix{{2, 8}, -2} << matrix_size_t{5u} << 5 << matrix_size_t{2u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("5: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{0u} << 5 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("6: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{11u} << 5 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("7: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{12u} << 5 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("8: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{13u} << 5 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("9: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{25u} << 5 << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("10: extra large matrix") << IntMatrix{{c_LargeDimension2, c_LargeDimension1}, -2} << matrix_size_t{0u} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: extra large matrix") << IntMatrix{{c_LargeDimension2, c_LargeDimension1}, -2} << matrix_size_t{c_LargeDimension1 / 2 - 1} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: extra large matrix") << IntMatrix{{c_LargeDimension2, c_LargeDimension1}, -2} << matrix_size_t{c_LargeDimension1 / 2} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: extra large matrix") << IntMatrix{{c_LargeDimension2, c_LargeDimension1}, -2} << matrix_size_t{c_LargeDimension1 / 2 + 1} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("14: extra large matrix") << IntMatrix{{c_LargeDimension2, c_LargeDimension1}, -2} << matrix_size_t{c_LargeDimension1} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("15: extra large matrix") << IntMatrix{{c_LargeDimension1, c_LargeDimension2}, -2} << matrix_size_t{0u} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("16: extra large matrix") << IntMatrix{{c_LargeDimension1, c_LargeDimension2}, -2} << matrix_size_t{c_LargeDimension2 / 2} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("17: extra large matrix") << IntMatrix{{c_LargeDimension1, c_LargeDimension2}, -2} << matrix_size_t{c_LargeDimension2} << 5 << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+}
+
+void CapacityTests::_buildIntMatrixCapacityWithReserveAndInsertRowTestingTable()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("requestedRowCapacity");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<int>("insertedRowValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small matrix") << IntMatrix{{5, 4}, -2} << matrix_size_t{5u} << matrix_size_t{0u} << 5 << matrix_size_t{10u} << matrix_size_t{5u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: small matrix") << IntMatrix{{5, 4}, -2} << matrix_size_t{5u} << matrix_size_t{2u} << 5 << matrix_size_t{10u} << matrix_size_t{5u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: small matrix") << IntMatrix{{5, 4}, -2} << matrix_size_t{5u} << matrix_size_t{5u} << 5 << matrix_size_t{10u} << matrix_size_t{5u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: small matrix") << IntMatrix{{6, 4}, -2} << matrix_size_t{6u} << matrix_size_t{0u} << 5 << matrix_size_t{12u} << matrix_size_t{5u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u};
+    QTest::newRow("5: small matrix") << IntMatrix{{6, 4}, -2} << matrix_size_t{6u} << matrix_size_t{3u} << 5 << matrix_size_t{12u} << matrix_size_t{5u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u};
+    QTest::newRow("6: small matrix") << IntMatrix{{6, 4}, -2} << matrix_size_t{6u} << matrix_size_t{6u} << 5 << matrix_size_t{12u} << matrix_size_t{5u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u};
+    QTest::newRow("7: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{20u} << matrix_size_t{0u} << 5 << matrix_size_t{40u} << matrix_size_t{31u} << matrix_opt_size_t{9u} << matrix_opt_size_t{3u};
+    QTest::newRow("8: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{20u} << matrix_size_t{10u} << 5 << matrix_size_t{40u} << matrix_size_t{31u} << matrix_opt_size_t{9u} << matrix_opt_size_t{3u};
+    QTest::newRow("9: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{20u} << matrix_size_t{20u} << 5 << matrix_size_t{40u} << matrix_size_t{31u} << matrix_opt_size_t{9u} << matrix_opt_size_t{3u};
+    QTest::newRow("10: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{21u} << matrix_size_t{0u} << 5 << matrix_size_t{21u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("11: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{21u} << matrix_size_t{10u} << 5 << matrix_size_t{21u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("12: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{21u} << matrix_size_t{20u} << 5 << matrix_size_t{21u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("13: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{22u} << matrix_size_t{0u} << 5 << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("14: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{22u} << matrix_size_t{9u} << 5 << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("15: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{22u} << matrix_size_t{10u} << 5 << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("16: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{22u} << matrix_size_t{11u} << 5 << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("17: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{22u} << matrix_size_t{20u} << 5 << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("18: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{23u} << matrix_size_t{0u} << 5 << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("19: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{23u} << matrix_size_t{9u} << 5 << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("20: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{23u} << matrix_size_t{10u} << 5 << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("21: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{23u} << matrix_size_t{11u} << 5 << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("22: large matrix") << IntMatrix{{20, 25}, -2} << matrix_size_t{23u} << matrix_size_t{20u} << 5 << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("23: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{21u} << matrix_size_t{0u} << 5 << matrix_size_t{42u} << matrix_size_t{31u} << matrix_opt_size_t{10u} << matrix_opt_size_t{3u};
+    QTest::newRow("24: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{21u} << matrix_size_t{10u} << 5 << matrix_size_t{42u} << matrix_size_t{31u} << matrix_opt_size_t{10u} << matrix_opt_size_t{3u};
+    QTest::newRow("25: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{21u} << matrix_size_t{21u} << 5 << matrix_size_t{42u} << matrix_size_t{31u} << matrix_opt_size_t{10u} << matrix_opt_size_t{3u};
+    QTest::newRow("26: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{22u} << matrix_size_t{0u} << 5 << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("27: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{22u} << matrix_size_t{10u} << 5 << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("28: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{22u} << matrix_size_t{21u} << 5 << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("29: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{23u} << matrix_size_t{0u} << 5 << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("30: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{23u} << matrix_size_t{9u} << 5 << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("31: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{23u} << matrix_size_t{10u} << 5 << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("32: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{23u} << matrix_size_t{11u} << 5 << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("33: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{23u} << matrix_size_t{21u} << 5 << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("34: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{24u} << matrix_size_t{0u} << 5 << matrix_size_t{24u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("35: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{24u} << matrix_size_t{9u} << 5 << matrix_size_t{24u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("36: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{24u} << matrix_size_t{10u} << 5 << matrix_size_t{24u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("37: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{24u} << matrix_size_t{11u} << 5 << matrix_size_t{24u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("38: large matrix") << IntMatrix{{21, 25}, -2} << matrix_size_t{24u} << matrix_size_t{21u} << 5 << matrix_size_t{24u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+
+    if constexpr (c_IsEvenMaxAllowedDimension)
+    {
+        QTest::newRow("39a: extra large matrix") << IntMatrix{{c_DecrHalfMaxAllowedDimension, 25}, -2} << c_DecrHalfMaxAllowedDimension << matrix_size_t{0u} << 5 << c_LargeDimension1 << matrix_size_t{31u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("40a: extra large matrix") << IntMatrix{{c_DecrHalfMaxAllowedDimension, 25}, -2} << c_DecrHalfMaxAllowedDimension << matrix_size_t{c_DecrHalfMaxAllowedDimension / 2} << 5 << c_LargeDimension1 << matrix_size_t{31u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("41a: extra large matrix") << IntMatrix{{c_DecrHalfMaxAllowedDimension, 25}, -2} << c_DecrHalfMaxAllowedDimension << c_DecrHalfMaxAllowedDimension << 5 << c_LargeDimension1 << matrix_size_t{31u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("42a: extra large matrix") << IntMatrix{{c_HalfMaxAllowedDimension, 25}, -2} << c_HalfMaxAllowedDimension << matrix_size_t{0u} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("43a: extra large matrix") << IntMatrix{{c_HalfMaxAllowedDimension, 25}, -2} << c_HalfMaxAllowedDimension << matrix_size_t{c_HalfMaxAllowedDimension / 2} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("44a: extra large matrix") << IntMatrix{{c_HalfMaxAllowedDimension, 25}, -2} << c_HalfMaxAllowedDimension << c_HalfMaxAllowedDimension << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("45a: extra large matrix") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 25}, -2} << c_IncrHalfMaxAllowedDimension << matrix_size_t{0u} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_HalfMaxAllowedDimension / 2 - 1} << matrix_opt_size_t{3u};
+        QTest::newRow("46a: extra large matrix") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 25}, -2} << c_IncrHalfMaxAllowedDimension << matrix_size_t{c_IncrHalfMaxAllowedDimension / 2} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_HalfMaxAllowedDimension / 2 - 1} << matrix_opt_size_t{3u};
+        QTest::newRow("47a: extra large matrix") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 25}, -2} << c_IncrHalfMaxAllowedDimension << c_IncrHalfMaxAllowedDimension << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_HalfMaxAllowedDimension / 2 - 1} << matrix_opt_size_t{3u};
+    }
+    else
+    {
+        QTest::newRow("39b: extra large matrix") << IntMatrix{{c_DecrHalfMaxAllowedDimension, 25}, -2} << c_DecrHalfMaxAllowedDimension << matrix_size_t{0u} << 5 << c_LargeDimension0 << matrix_size_t{31u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("40b: extra large matrix") << IntMatrix{{c_DecrHalfMaxAllowedDimension, 25}, -2} << c_DecrHalfMaxAllowedDimension << matrix_size_t{c_DecrHalfMaxAllowedDimension / 2} << 5 << c_LargeDimension0 << matrix_size_t{31u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("41b: extra large matrix") << IntMatrix{{c_DecrHalfMaxAllowedDimension, 25}, -2} << c_DecrHalfMaxAllowedDimension << c_DecrHalfMaxAllowedDimension << 5 << c_LargeDimension0 << matrix_size_t{31u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("42b: extra large matrix") << IntMatrix{{c_HalfMaxAllowedDimension, 25}, -2} << c_HalfMaxAllowedDimension << matrix_size_t{0u} << 5 << c_LargeDimension2 << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("43b: extra large matrix") << IntMatrix{{c_HalfMaxAllowedDimension, 25}, -2} << c_HalfMaxAllowedDimension << matrix_size_t{c_HalfMaxAllowedDimension / 2} << 5 << c_LargeDimension2 << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("44b: extra large matrix") << IntMatrix{{c_HalfMaxAllowedDimension, 25}, -2} << c_HalfMaxAllowedDimension << c_HalfMaxAllowedDimension << 5 << c_LargeDimension2 << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("45b: extra large matrix") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 25}, -2} << c_IncrHalfMaxAllowedDimension << matrix_size_t{0u} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("46b: extra large matrix") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 25}, -2} << c_IncrHalfMaxAllowedDimension << matrix_size_t{c_IncrHalfMaxAllowedDimension / 2} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("47b: extra large matrix") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 25}, -2} << c_IncrHalfMaxAllowedDimension << c_IncrHalfMaxAllowedDimension << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+    }
+
+    constexpr matrix_opt_size_t c_ThreeQuartersCapacityOffset{(c_MaxAllowedDimension - c_ThreeQuartersMaxAllowedDimension - 1) / 2};
+
+    QTest::newRow("48: extra large matrix") << IntMatrix{{c_ThreeQuartersMaxAllowedDimension, 25}, -2} << c_ThreeQuartersMaxAllowedDimension << matrix_size_t{0u} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << c_ThreeQuartersCapacityOffset << matrix_opt_size_t{3u};
+    QTest::newRow("49: extra large matrix") << IntMatrix{{c_ThreeQuartersMaxAllowedDimension, 25}, -2} << c_ThreeQuartersMaxAllowedDimension << matrix_size_t{c_ThreeQuartersMaxAllowedDimension / 2} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << c_ThreeQuartersCapacityOffset << matrix_opt_size_t{3u};
+    QTest::newRow("50: extra large matrix") << IntMatrix{{c_ThreeQuartersMaxAllowedDimension, 25}, -2} << c_ThreeQuartersMaxAllowedDimension << matrix_size_t{c_ThreeQuartersMaxAllowedDimension} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << c_ThreeQuartersCapacityOffset << matrix_opt_size_t{3u};
+    QTest::newRow("51: extra large matrix") << IntMatrix{{c_LargeDimension0, 25}, -2} << c_LargeDimension0 << matrix_size_t{0u} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("52: extra large matrix") << IntMatrix{{c_LargeDimension0, 25}, -2} << c_LargeDimension0 << matrix_size_t{c_LargeDimension0 / 2} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("53: extra large matrix") << IntMatrix{{c_LargeDimension0, 25}, -2} << c_LargeDimension0 << c_LargeDimension0 << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("54: extra large matrix") << IntMatrix{{c_LargeDimension1, 25}, -2} << c_LargeDimension1 << matrix_size_t{0u} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("55: extra large matrix") << IntMatrix{{c_LargeDimension1, 25}, -2} << c_LargeDimension1 << matrix_size_t{c_LargeDimension1 / 2} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("56: extra large matrix") << IntMatrix{{c_LargeDimension1, 25}, -2} << c_LargeDimension1 << c_LargeDimension1 << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("57: extra large matrix") << IntMatrix{{c_LargeDimension2, 25}, -2} << c_LargeDimension2 << matrix_size_t{0u} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("58: extra large matrix") << IntMatrix{{c_LargeDimension2, 25}, -2} << c_LargeDimension2 << matrix_size_t{c_LargeDimension2 / 2} << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("59: extra large matrix") << IntMatrix{{c_LargeDimension2, 25}, -2} << c_LargeDimension2 << c_LargeDimension2 << 5 << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+}
+
+void CapacityTests::_buildIntMatrixCapacityWithReserveAndInsertColumnTestingTable()
+{
+    QTest::addColumn<IntMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<int>("insertedColumnValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small matrix") << IntMatrix{{4, 5}, -2} << matrix_size_t{5u} << matrix_size_t{0u} << 5 << matrix_size_t{5u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
+    QTest::newRow("2: small matrix") << IntMatrix{{4, 5}, -2} << matrix_size_t{5u} << matrix_size_t{2u} << 5 << matrix_size_t{5u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
+    QTest::newRow("3: small matrix") << IntMatrix{{4, 5}, -2} << matrix_size_t{5u} << matrix_size_t{5u} << 5 << matrix_size_t{5u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
+    QTest::newRow("4: small matrix") << IntMatrix{{4, 6}, -2} << matrix_size_t{6u} << matrix_size_t{0u} << 5 << matrix_size_t{5u} << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
+    QTest::newRow("5: small matrix") << IntMatrix{{4, 6}, -2} << matrix_size_t{6u} << matrix_size_t{3u} << 5 << matrix_size_t{5u} << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
+    QTest::newRow("6: small matrix") << IntMatrix{{4, 6}, -2} << matrix_size_t{6u} << matrix_size_t{6u} << 5 << matrix_size_t{5u} << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
+    QTest::newRow("7: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{20u} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{40u} << matrix_opt_size_t{3u} << matrix_opt_size_t{9u};
+    QTest::newRow("8: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{20u} << matrix_size_t{10u} << 5 << matrix_size_t{31u} << matrix_size_t{40u} << matrix_opt_size_t{3u} << matrix_opt_size_t{9u};
+    QTest::newRow("9: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{20u} << matrix_size_t{20u} << 5 << matrix_size_t{31u} << matrix_size_t{40u} << matrix_opt_size_t{3u} << matrix_opt_size_t{9u};
+    QTest::newRow("10: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{21u} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{21u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{21u} << matrix_size_t{10u} << 5 << matrix_size_t{31u} << matrix_size_t{21u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{21u} << matrix_size_t{20u} << 5 << matrix_size_t{31u} << matrix_size_t{21u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{22u} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{22u} << matrix_size_t{9u} << 5 << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{22u} << matrix_size_t{10u} << 5 << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("16: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{22u} << matrix_size_t{11u} << 5 << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("17: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{22u} << matrix_size_t{20u} << 5 << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("18: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{23u} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("19: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{23u} << matrix_size_t{9u} << 5 << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("20: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{23u} << matrix_size_t{10u} << 5 << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("21: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{23u} << matrix_size_t{11u} << 5 << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("22: large matrix") << IntMatrix{{25, 20}, -2} << matrix_size_t{23u} << matrix_size_t{20u} << 5 << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("23: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{21u} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{42u} << matrix_opt_size_t{3u} << matrix_opt_size_t{10u};
+    QTest::newRow("24: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{21u} << matrix_size_t{10u} << 5 << matrix_size_t{31u} << matrix_size_t{42u} << matrix_opt_size_t{3u} << matrix_opt_size_t{10u};
+    QTest::newRow("25: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{21u} << matrix_size_t{21u} << 5 << matrix_size_t{31u} << matrix_size_t{42u} << matrix_opt_size_t{3u} << matrix_opt_size_t{10u};
+    QTest::newRow("26: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{22u} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("27: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{22u} << matrix_size_t{10u} << 5 << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("28: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{22u} << matrix_size_t{21u} << 5 << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("29: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{23u} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("30: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{23u} << matrix_size_t{9u} << 5 << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("31: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{23u} << matrix_size_t{10u} << 5 << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("32: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{23u} << matrix_size_t{11u} << 5 << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("33: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{23u} << matrix_size_t{21u} << 5 << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("34: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{24u} << matrix_size_t{0u} << 5 << matrix_size_t{31u} << matrix_size_t{24u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("35: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{24u} << matrix_size_t{9u} << 5 << matrix_size_t{31u} << matrix_size_t{24u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("36: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{24u} << matrix_size_t{10u} << 5 << matrix_size_t{31u} << matrix_size_t{24u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("37: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{24u} << matrix_size_t{11u} << 5 << matrix_size_t{31u} << matrix_size_t{24u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("38: large matrix") << IntMatrix{{25, 21}, -2} << matrix_size_t{24u} << matrix_size_t{21u} << 5 << matrix_size_t{31u} << matrix_size_t{24u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+
+    if constexpr (c_IsEvenMaxAllowedDimension)
+    {
+        QTest::newRow("39a: extra large matrix") << IntMatrix{{25, c_DecrHalfMaxAllowedDimension}, -2} << c_DecrHalfMaxAllowedDimension << matrix_size_t{0u} << 5 << matrix_size_t{31u} << c_LargeDimension1 << matrix_opt_size_t{3u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2};
+        QTest::newRow("40a: extra large matrix") << IntMatrix{{25, c_DecrHalfMaxAllowedDimension}, -2} << c_DecrHalfMaxAllowedDimension << matrix_size_t{c_DecrHalfMaxAllowedDimension / 2} << 5 << matrix_size_t{31u} << c_LargeDimension1 << matrix_opt_size_t{3u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2};
+        QTest::newRow("41a: extra large matrix") << IntMatrix{{25, c_DecrHalfMaxAllowedDimension}, -2} << c_DecrHalfMaxAllowedDimension << c_DecrHalfMaxAllowedDimension << 5 << matrix_size_t{31u} << c_LargeDimension1 << matrix_opt_size_t{3u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2};
+        QTest::newRow("42a: extra large matrix") << IntMatrix{{25, c_HalfMaxAllowedDimension}, -2} << c_HalfMaxAllowedDimension << matrix_size_t{0u} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("43a: extra large matrix") << IntMatrix{{25, c_HalfMaxAllowedDimension}, -2} << c_HalfMaxAllowedDimension << matrix_size_t{c_HalfMaxAllowedDimension / 2} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("44a: extra large matrix") << IntMatrix{{25, c_HalfMaxAllowedDimension}, -2} << c_HalfMaxAllowedDimension << c_HalfMaxAllowedDimension << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("45a: extra large matrix") << IntMatrix{{25, c_IncrHalfMaxAllowedDimension}, -2} << c_IncrHalfMaxAllowedDimension << matrix_size_t{0u} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_HalfMaxAllowedDimension / 2 - 1};
+        QTest::newRow("46a: extra large matrix") << IntMatrix{{25, c_IncrHalfMaxAllowedDimension}, -2} << c_IncrHalfMaxAllowedDimension << matrix_size_t{c_IncrHalfMaxAllowedDimension / 2} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_HalfMaxAllowedDimension / 2 - 1};
+        QTest::newRow("47a: extra large matrix") << IntMatrix{{25, c_IncrHalfMaxAllowedDimension}, -2} << c_IncrHalfMaxAllowedDimension << c_IncrHalfMaxAllowedDimension << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_HalfMaxAllowedDimension / 2 - 1};
+    }
+    else
+    {
+        QTest::newRow("39b: extra large matrix") << IntMatrix{{25, c_DecrHalfMaxAllowedDimension}, -2} << c_DecrHalfMaxAllowedDimension << matrix_size_t{0u} << 5 << matrix_size_t{31u} << c_LargeDimension0 << matrix_opt_size_t{3u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2};
+        QTest::newRow("40b: extra large matrix") << IntMatrix{{25, c_DecrHalfMaxAllowedDimension}, -2} << c_DecrHalfMaxAllowedDimension << matrix_size_t{c_DecrHalfMaxAllowedDimension / 2} << 5 << matrix_size_t{31u} << c_LargeDimension0 << matrix_opt_size_t{3u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2};
+        QTest::newRow("41b: extra large matrix") << IntMatrix{{25, c_DecrHalfMaxAllowedDimension}, -2} << c_DecrHalfMaxAllowedDimension << c_DecrHalfMaxAllowedDimension << 5 << matrix_size_t{31u} << c_LargeDimension0 << matrix_opt_size_t{3u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2};
+        QTest::newRow("42b: extra large matrix") << IntMatrix{{25, c_HalfMaxAllowedDimension}, -2} << c_HalfMaxAllowedDimension << matrix_size_t{0u} << 5 << matrix_size_t{31u} << c_LargeDimension2 << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("43b: extra large matrix") << IntMatrix{{25, c_HalfMaxAllowedDimension}, -2} << c_HalfMaxAllowedDimension << matrix_size_t{c_HalfMaxAllowedDimension / 2} << 5 << matrix_size_t{31u} << c_LargeDimension2 << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("44b: extra large matrix") << IntMatrix{{25, c_HalfMaxAllowedDimension}, -2} << c_HalfMaxAllowedDimension << c_HalfMaxAllowedDimension << 5 << matrix_size_t{31u} << c_LargeDimension2 << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("45b: extra large matrix") << IntMatrix{{25, c_IncrHalfMaxAllowedDimension}, -2} << c_IncrHalfMaxAllowedDimension << matrix_size_t{0u} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("46b: extra large matrix") << IntMatrix{{25, c_IncrHalfMaxAllowedDimension}, -2} << c_IncrHalfMaxAllowedDimension << matrix_size_t{c_IncrHalfMaxAllowedDimension / 2} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("47b: extra large matrix") << IntMatrix{{25, c_IncrHalfMaxAllowedDimension}, -2} << c_IncrHalfMaxAllowedDimension << c_IncrHalfMaxAllowedDimension << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+    }
+
+    constexpr matrix_opt_size_t c_ThreeQuartersCapacityOffset{(c_MaxAllowedDimension - c_ThreeQuartersMaxAllowedDimension - 1) / 2};
+
+    QTest::newRow("48: extra large matrix") << IntMatrix{{25, c_ThreeQuartersMaxAllowedDimension}, -2} << c_ThreeQuartersMaxAllowedDimension << matrix_size_t{0u} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << c_ThreeQuartersCapacityOffset;
+    QTest::newRow("49: extra large matrix") << IntMatrix{{25, c_ThreeQuartersMaxAllowedDimension}, -2} << c_ThreeQuartersMaxAllowedDimension << matrix_size_t{c_ThreeQuartersMaxAllowedDimension / 2} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << c_ThreeQuartersCapacityOffset;
+    QTest::newRow("50: extra large matrix") << IntMatrix{{25, c_ThreeQuartersMaxAllowedDimension}, -2} << c_ThreeQuartersMaxAllowedDimension << matrix_size_t{c_ThreeQuartersMaxAllowedDimension} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << c_ThreeQuartersCapacityOffset;
+    QTest::newRow("51: extra large matrix") << IntMatrix{{25, c_LargeDimension0}, -2} << c_LargeDimension0 << matrix_size_t{0u} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("52: extra large matrix") << IntMatrix{{25, c_LargeDimension0}, -2} << c_LargeDimension0 << matrix_size_t{c_LargeDimension0 / 2} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("53: extra large matrix") << IntMatrix{{25, c_LargeDimension0}, -2} << c_LargeDimension0 << c_LargeDimension0 << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("54: extra large matrix") << IntMatrix{{25, c_LargeDimension1}, -2} << c_LargeDimension1 << matrix_size_t{0u} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("55: extra large matrix") << IntMatrix{{25, c_LargeDimension1}, -2} << c_LargeDimension1 << matrix_size_t{c_LargeDimension1 / 2} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("56: extra large matrix") << IntMatrix{{25, c_LargeDimension1}, -2} << c_LargeDimension1 << c_LargeDimension1 << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("57: extra large matrix") << IntMatrix{{25, c_LargeDimension2}, -2} << c_LargeDimension2 << matrix_size_t{0u} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("58: extra large matrix") << IntMatrix{{25, c_LargeDimension2}, -2} << c_LargeDimension2 << matrix_size_t{c_LargeDimension2 / 2} << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("59: extra large matrix") << IntMatrix{{25, c_LargeDimension2}, -2} << c_LargeDimension2 << c_LargeDimension2 << 5 << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+}
+
 void CapacityTests::_buildStringMatrixCapacityWithMovedCopiedVectorConstructorsTestingTable()
 {
     QTest::addColumn<matrix_size_t>("rowsCount");
@@ -3177,6 +3494,246 @@ void CapacityTests::_buildStringMatrixCapacityWithResizeTestingTable()
     QTest::newRow("67: more rows, equal columns") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << c_MaxAllowedDimension << c_LargeDimension1 << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
     QTest::newRow("68: more rows, more columns") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << c_MaxAllowedDimension << c_LargeDimension2 << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
     QTest::newRow("69: more rows, more columns") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << c_MaxAllowedDimension << c_MaxAllowedDimension << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+}
+
+void CapacityTests::_buildStringMatrixCapacityWithInsertRowTestingTable()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<std::string>("insertedRowValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small matrix") << StringMatrix{{3, 4}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: small matrix") << StringMatrix{{6, 5}, "Value1"} << matrix_size_t{3u} << std::string{"Value2"} << matrix_size_t{7u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: small matrix") << StringMatrix{{8, 2}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: small matrix") << StringMatrix{{8, 2}, "Value1"} << matrix_size_t{5u} << std::string{"Value2"} << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("5: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("6: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("7: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{12u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("8: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{13u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("9: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u};
+    QTest::newRow("10: extra large matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension2}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: extra large matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension2}, "Value1"} << matrix_size_t{c_LargeDimension1 / 2 - 1} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: extra large matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension2}, "Value1"} << matrix_size_t{c_LargeDimension1 / 2} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: extra large matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension2}, "Value1"} << matrix_size_t{c_LargeDimension1 / 2 + 1} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: extra large matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension2}, "Value1"} << matrix_size_t{c_LargeDimension1} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: extra large matrix") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("16: extra large matrix") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << matrix_size_t{c_LargeDimension2 / 2} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("17: extra large matrix") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << matrix_size_t{c_LargeDimension2} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+}
+
+void CapacityTests::_buildStringMatrixCapacityWithInsertColumnTestingTable()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<std::string>("insertedColumnValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small matrix") << StringMatrix{{4, 3}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{5u} << matrix_size_t{6u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("2: small matrix") << StringMatrix{{5, 6}, "Value1"} << matrix_size_t{3u} << std::string{"Value2"} << matrix_size_t{6u} << matrix_size_t{7u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: small matrix") << StringMatrix{{2, 8}, "Value1"} << matrix_size_t{1u} << std::string{"Value2"} << matrix_size_t{2u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: small matrix") << StringMatrix{{2, 8}, "Value1"} << matrix_size_t{5u} << std::string{"Value2"} << matrix_size_t{2u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("5: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("6: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("7: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{12u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{2u};
+    QTest::newRow("8: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{13u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("9: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{25u} << std::string{"Value2"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u};
+    QTest::newRow("10: extra large matrix") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: extra large matrix") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << matrix_size_t{c_LargeDimension1 / 2 - 1} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: extra large matrix") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << matrix_size_t{c_LargeDimension1 / 2} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: extra large matrix") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << matrix_size_t{c_LargeDimension1 / 2 + 1} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("14: extra large matrix") << StringMatrix{{c_LargeDimension2, c_LargeDimension1}, "Value1"} << matrix_size_t{c_LargeDimension1} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("15: extra large matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension2}, "Value1"} << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("16: extra large matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension2}, "Value1"} << matrix_size_t{c_LargeDimension2 / 2} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("17: extra large matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension2}, "Value1"} << matrix_size_t{c_LargeDimension2} << std::string{"Value2"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+}
+
+void CapacityTests::_buildStringMatrixCapacityWithReserveAndInsertRowTestingTable()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("requestedRowCapacity");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<std::string>("insertedRowValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small matrix") << StringMatrix{{5, 4}, "Value1"} << matrix_size_t{5u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{10u} << matrix_size_t{5u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: small matrix") << StringMatrix{{5, 4}, "Value1"} << matrix_size_t{5u} << matrix_size_t{2u} << std::string{"Value2"} << matrix_size_t{10u} << matrix_size_t{5u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: small matrix") << StringMatrix{{5, 4}, "Value1"} << matrix_size_t{5u} << matrix_size_t{5u} << std::string{"Value2"} << matrix_size_t{10u} << matrix_size_t{5u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: small matrix") << StringMatrix{{6, 4}, "Value1"} << matrix_size_t{6u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{12u} << matrix_size_t{5u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u};
+    QTest::newRow("5: small matrix") << StringMatrix{{6, 4}, "Value1"} << matrix_size_t{6u} << matrix_size_t{3u} << std::string{"Value2"} << matrix_size_t{12u} << matrix_size_t{5u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u};
+    QTest::newRow("6: small matrix") << StringMatrix{{6, 4}, "Value1"} << matrix_size_t{6u} << matrix_size_t{6u} << std::string{"Value2"} << matrix_size_t{12u} << matrix_size_t{5u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u};
+    QTest::newRow("7: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{20u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{40u} << matrix_size_t{31u} << matrix_opt_size_t{9u} << matrix_opt_size_t{3u};
+    QTest::newRow("8: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{20u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{40u} << matrix_size_t{31u} << matrix_opt_size_t{9u} << matrix_opt_size_t{3u};
+    QTest::newRow("9: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{20u} << matrix_size_t{20u} << std::string{"Value2"} << matrix_size_t{40u} << matrix_size_t{31u} << matrix_opt_size_t{9u} << matrix_opt_size_t{3u};
+    QTest::newRow("10: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{21u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{21u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("11: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{21u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{21u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("12: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{21u} << matrix_size_t{20u} << std::string{"Value2"} << matrix_size_t{21u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("13: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{22u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("14: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{22u} << matrix_size_t{9u} << std::string{"Value2"} << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("15: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{22u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("16: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{22u} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("17: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{22u} << matrix_size_t{20u} << std::string{"Value2"} << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("18: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{23u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("19: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{23u} << matrix_size_t{9u} << std::string{"Value2"} << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("20: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{23u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("21: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{23u} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("22: large matrix") << StringMatrix{{20, 25}, "Value1"} << matrix_size_t{23u} << matrix_size_t{20u} << std::string{"Value2"} << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("23: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{21u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{42u} << matrix_size_t{31u} << matrix_opt_size_t{10u} << matrix_opt_size_t{3u};
+    QTest::newRow("24: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{21u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{42u} << matrix_size_t{31u} << matrix_opt_size_t{10u} << matrix_opt_size_t{3u};
+    QTest::newRow("25: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{21u} << matrix_size_t{21u} << std::string{"Value2"} << matrix_size_t{42u} << matrix_size_t{31u} << matrix_opt_size_t{10u} << matrix_opt_size_t{3u};
+    QTest::newRow("26: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{22u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("27: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{22u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("28: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{22u} << matrix_size_t{21u} << std::string{"Value2"} << matrix_size_t{22u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("29: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{23u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("30: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{23u} << matrix_size_t{9u} << std::string{"Value2"} << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("31: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{23u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("32: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{23u} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("33: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{23u} << matrix_size_t{21u} << std::string{"Value2"} << matrix_size_t{23u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("34: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{24u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{24u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("35: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{24u} << matrix_size_t{9u} << std::string{"Value2"} << matrix_size_t{24u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("36: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{24u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{24u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("37: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{24u} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{24u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("38: large matrix") << StringMatrix{{21, 25}, "Value1"} << matrix_size_t{24u} << matrix_size_t{21u} << std::string{"Value2"} << matrix_size_t{24u} << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+
+    if constexpr (c_IsEvenMaxAllowedDimension)
+    {
+        QTest::newRow("39a: extra large matrix") << StringMatrix{{c_DecrHalfMaxAllowedDimension, 25}, "Value1"} << c_DecrHalfMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << c_LargeDimension1 << matrix_size_t{31u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("40a: extra large matrix") << StringMatrix{{c_DecrHalfMaxAllowedDimension, 25}, "Value1"} << c_DecrHalfMaxAllowedDimension << matrix_size_t{c_DecrHalfMaxAllowedDimension / 2} << std::string{"Value2"} << c_LargeDimension1 << matrix_size_t{31u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("41a: extra large matrix") << StringMatrix{{c_DecrHalfMaxAllowedDimension, 25}, "Value1"} << c_DecrHalfMaxAllowedDimension << c_DecrHalfMaxAllowedDimension << std::string{"Value2"} << c_LargeDimension1 << matrix_size_t{31u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("42a: extra large matrix") << StringMatrix{{c_HalfMaxAllowedDimension, 25}, "Value1"} << c_HalfMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("43a: extra large matrix") << StringMatrix{{c_HalfMaxAllowedDimension, 25}, "Value1"} << c_HalfMaxAllowedDimension << matrix_size_t{c_HalfMaxAllowedDimension / 2} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("44a: extra large matrix") << StringMatrix{{c_HalfMaxAllowedDimension, 25}, "Value1"} << c_HalfMaxAllowedDimension << c_HalfMaxAllowedDimension << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("45a: extra large matrix") << StringMatrix{{c_IncrHalfMaxAllowedDimension, 25}, "Value1"} << c_IncrHalfMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_HalfMaxAllowedDimension / 2 - 1} << matrix_opt_size_t{3u};
+        QTest::newRow("46a: extra large matrix") << StringMatrix{{c_IncrHalfMaxAllowedDimension, 25}, "Value1"} << c_IncrHalfMaxAllowedDimension << matrix_size_t{c_IncrHalfMaxAllowedDimension / 2} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_HalfMaxAllowedDimension / 2 - 1} << matrix_opt_size_t{3u};
+        QTest::newRow("47a: extra large matrix") << StringMatrix{{c_IncrHalfMaxAllowedDimension, 25}, "Value1"} << c_IncrHalfMaxAllowedDimension << c_IncrHalfMaxAllowedDimension << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_HalfMaxAllowedDimension / 2 - 1} << matrix_opt_size_t{3u};
+    }
+    else
+    {
+        QTest::newRow("39b: extra large matrix") << StringMatrix{{c_DecrHalfMaxAllowedDimension, 25}, "Value1"} << c_DecrHalfMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << c_LargeDimension0 << matrix_size_t{31u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("40b: extra large matrix") << StringMatrix{{c_DecrHalfMaxAllowedDimension, 25}, "Value1"} << c_DecrHalfMaxAllowedDimension << matrix_size_t{c_DecrHalfMaxAllowedDimension / 2} << std::string{"Value2"} << c_LargeDimension0 << matrix_size_t{31u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("41b: extra large matrix") << StringMatrix{{c_DecrHalfMaxAllowedDimension, 25}, "Value1"} << c_DecrHalfMaxAllowedDimension << c_DecrHalfMaxAllowedDimension << std::string{"Value2"} << c_LargeDimension0 << matrix_size_t{31u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("42b: extra large matrix") << StringMatrix{{c_HalfMaxAllowedDimension, 25}, "Value1"} << c_HalfMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << c_LargeDimension2 << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("43b: extra large matrix") << StringMatrix{{c_HalfMaxAllowedDimension, 25}, "Value1"} << c_HalfMaxAllowedDimension << matrix_size_t{c_HalfMaxAllowedDimension / 2} << std::string{"Value2"} << c_LargeDimension2 << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("44b: extra large matrix") << StringMatrix{{c_HalfMaxAllowedDimension, 25}, "Value1"} << c_HalfMaxAllowedDimension << c_HalfMaxAllowedDimension << std::string{"Value2"} << c_LargeDimension2 << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("45b: extra large matrix") << StringMatrix{{c_IncrHalfMaxAllowedDimension, 25}, "Value1"} << c_IncrHalfMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("46b: extra large matrix") << StringMatrix{{c_IncrHalfMaxAllowedDimension, 25}, "Value1"} << c_IncrHalfMaxAllowedDimension << matrix_size_t{c_IncrHalfMaxAllowedDimension / 2} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+        QTest::newRow("47b: extra large matrix") << StringMatrix{{c_IncrHalfMaxAllowedDimension, 25}, "Value1"} << c_IncrHalfMaxAllowedDimension << c_IncrHalfMaxAllowedDimension << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2} << matrix_opt_size_t{3u};
+    }
+
+    constexpr matrix_opt_size_t c_ThreeQuartersCapacityOffset{(c_MaxAllowedDimension - c_ThreeQuartersMaxAllowedDimension - 1) / 2};
+
+    QTest::newRow("48: extra large matrix") << StringMatrix{{c_ThreeQuartersMaxAllowedDimension, 25}, "Value1"} << c_ThreeQuartersMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << c_ThreeQuartersCapacityOffset << matrix_opt_size_t{3u};
+    QTest::newRow("49: extra large matrix") << StringMatrix{{c_ThreeQuartersMaxAllowedDimension, 25}, "Value1"} << c_ThreeQuartersMaxAllowedDimension << matrix_size_t{c_ThreeQuartersMaxAllowedDimension / 2} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << c_ThreeQuartersCapacityOffset << matrix_opt_size_t{3u};
+    QTest::newRow("50: extra large matrix") << StringMatrix{{c_ThreeQuartersMaxAllowedDimension, 25}, "Value1"} << c_ThreeQuartersMaxAllowedDimension << matrix_size_t{c_ThreeQuartersMaxAllowedDimension} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << c_ThreeQuartersCapacityOffset << matrix_opt_size_t{3u};
+    QTest::newRow("51: extra large matrix") << StringMatrix{{c_LargeDimension0, 25}, "Value1"} << c_LargeDimension0 << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("52: extra large matrix") << StringMatrix{{c_LargeDimension0, 25}, "Value1"} << c_LargeDimension0 << matrix_size_t{c_LargeDimension0 / 2} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("53: extra large matrix") << StringMatrix{{c_LargeDimension0, 25}, "Value1"} << c_LargeDimension0 << c_LargeDimension0 << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{1u} << matrix_opt_size_t{3u};
+    QTest::newRow("54: extra large matrix") << StringMatrix{{c_LargeDimension1, 25}, "Value1"} << c_LargeDimension1 << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("55: extra large matrix") << StringMatrix{{c_LargeDimension1, 25}, "Value1"} << c_LargeDimension1 << matrix_size_t{c_LargeDimension1 / 2} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("56: extra large matrix") << StringMatrix{{c_LargeDimension1, 25}, "Value1"} << c_LargeDimension1 << c_LargeDimension1 << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("57: extra large matrix") << StringMatrix{{c_LargeDimension2, 25}, "Value1"} << c_LargeDimension2 << matrix_size_t{0u} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("58: extra large matrix") << StringMatrix{{c_LargeDimension2, 25}, "Value1"} << c_LargeDimension2 << matrix_size_t{c_LargeDimension2 / 2} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+    QTest::newRow("59: extra large matrix") << StringMatrix{{c_LargeDimension2, 25}, "Value1"} << c_LargeDimension2 << c_LargeDimension2 << std::string{"Value2"} << c_MaxAllowedDimension << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u};
+}
+
+void CapacityTests::_buildStringMatrixCapacityWithReserveAndInsertColumnTestingTable()
+{
+    QTest::addColumn<StringMatrix>("matrix");
+    QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
+    QTest::addColumn<matrix_size_t>("insertPosition");
+    QTest::addColumn<std::string>("insertedColumnValue");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+
+    QTest::newRow("1: small matrix") << StringMatrix{{4, 5}, "Value1"} << matrix_size_t{5u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{5u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
+    QTest::newRow("2: small matrix") << StringMatrix{{4, 5}, "Value1"} << matrix_size_t{5u} << matrix_size_t{2u} << std::string{"Value2"} << matrix_size_t{5u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
+    QTest::newRow("3: small matrix") << StringMatrix{{4, 5}, "Value1"} << matrix_size_t{5u} << matrix_size_t{5u} << std::string{"Value2"} << matrix_size_t{5u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
+    QTest::newRow("4: small matrix") << StringMatrix{{4, 6}, "Value1"} << matrix_size_t{6u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{5u} << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
+    QTest::newRow("5: small matrix") << StringMatrix{{4, 6}, "Value1"} << matrix_size_t{6u} << matrix_size_t{3u} << std::string{"Value2"} << matrix_size_t{5u} << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
+    QTest::newRow("6: small matrix") << StringMatrix{{4, 6}, "Value1"} << matrix_size_t{6u} << matrix_size_t{6u} << std::string{"Value2"} << matrix_size_t{5u} << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
+    QTest::newRow("7: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{20u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{40u} << matrix_opt_size_t{3u} << matrix_opt_size_t{9u};
+    QTest::newRow("8: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{20u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{40u} << matrix_opt_size_t{3u} << matrix_opt_size_t{9u};
+    QTest::newRow("9: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{20u} << matrix_size_t{20u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{40u} << matrix_opt_size_t{3u} << matrix_opt_size_t{9u};
+    QTest::newRow("10: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{21u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{21u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{21u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{21u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{21u} << matrix_size_t{20u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{21u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{22u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{22u} << matrix_size_t{9u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{22u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("16: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{22u} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("17: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{22u} << matrix_size_t{20u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("18: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{23u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("19: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{23u} << matrix_size_t{9u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("20: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{23u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("21: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{23u} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("22: large matrix") << StringMatrix{{25, 20}, "Value1"} << matrix_size_t{23u} << matrix_size_t{20u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("23: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{21u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{42u} << matrix_opt_size_t{3u} << matrix_opt_size_t{10u};
+    QTest::newRow("24: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{21u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{42u} << matrix_opt_size_t{3u} << matrix_opt_size_t{10u};
+    QTest::newRow("25: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{21u} << matrix_size_t{21u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{42u} << matrix_opt_size_t{3u} << matrix_opt_size_t{10u};
+    QTest::newRow("26: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{22u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("27: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{22u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("28: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{22u} << matrix_size_t{21u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{22u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("29: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{23u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("30: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{23u} << matrix_size_t{9u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("31: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{23u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("32: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{23u} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("33: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{23u} << matrix_size_t{21u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{23u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("34: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{24u} << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{24u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("35: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{24u} << matrix_size_t{9u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{24u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("36: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{24u} << matrix_size_t{10u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{24u} << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("37: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{24u} << matrix_size_t{11u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{24u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("38: large matrix") << StringMatrix{{25, 21}, "Value1"} << matrix_size_t{24u} << matrix_size_t{21u} << std::string{"Value2"} << matrix_size_t{31u} << matrix_size_t{24u} << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+
+    if constexpr (c_IsEvenMaxAllowedDimension)
+    {
+        QTest::newRow("39a: extra large matrix") << StringMatrix{{25, c_DecrHalfMaxAllowedDimension}, "Value1"} << c_DecrHalfMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << c_LargeDimension1 << matrix_opt_size_t{3u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2};
+        QTest::newRow("40a: extra large matrix") << StringMatrix{{25, c_DecrHalfMaxAllowedDimension}, "Value1"} << c_DecrHalfMaxAllowedDimension << matrix_size_t{c_DecrHalfMaxAllowedDimension / 2} << std::string{"Value2"} << matrix_size_t{31u} << c_LargeDimension1 << matrix_opt_size_t{3u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2};
+        QTest::newRow("41a: extra large matrix") << StringMatrix{{25, c_DecrHalfMaxAllowedDimension}, "Value1"} << c_DecrHalfMaxAllowedDimension << c_DecrHalfMaxAllowedDimension << std::string{"Value2"} << matrix_size_t{31u} << c_LargeDimension1 << matrix_opt_size_t{3u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2};
+        QTest::newRow("42a: extra large matrix") << StringMatrix{{25, c_HalfMaxAllowedDimension}, "Value1"} << c_HalfMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("43a: extra large matrix") << StringMatrix{{25, c_HalfMaxAllowedDimension}, "Value1"} << c_HalfMaxAllowedDimension << matrix_size_t{c_HalfMaxAllowedDimension / 2} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("44a: extra large matrix") << StringMatrix{{25, c_HalfMaxAllowedDimension}, "Value1"} << c_HalfMaxAllowedDimension << c_HalfMaxAllowedDimension << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("45a: extra large matrix") << StringMatrix{{25, c_IncrHalfMaxAllowedDimension}, "Value1"} << c_IncrHalfMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_HalfMaxAllowedDimension / 2 - 1};
+        QTest::newRow("46a: extra large matrix") << StringMatrix{{25, c_IncrHalfMaxAllowedDimension}, "Value1"} << c_IncrHalfMaxAllowedDimension << matrix_size_t{c_IncrHalfMaxAllowedDimension / 2} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_HalfMaxAllowedDimension / 2 - 1};
+        QTest::newRow("47a: extra large matrix") << StringMatrix{{25, c_IncrHalfMaxAllowedDimension}, "Value1"} << c_IncrHalfMaxAllowedDimension << c_IncrHalfMaxAllowedDimension << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_HalfMaxAllowedDimension / 2 - 1};
+    }
+    else
+    {
+        QTest::newRow("39b: extra large matrix") << StringMatrix{{25, c_DecrHalfMaxAllowedDimension}, "Value1"} << c_DecrHalfMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << c_LargeDimension0 << matrix_opt_size_t{3u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2};
+        QTest::newRow("40b: extra large matrix") << StringMatrix{{25, c_DecrHalfMaxAllowedDimension}, "Value1"} << c_DecrHalfMaxAllowedDimension << matrix_size_t{c_DecrHalfMaxAllowedDimension / 2} << std::string{"Value2"} << matrix_size_t{31u} << c_LargeDimension0 << matrix_opt_size_t{3u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2};
+        QTest::newRow("41b: extra large matrix") << StringMatrix{{25, c_DecrHalfMaxAllowedDimension}, "Value1"} << c_DecrHalfMaxAllowedDimension << c_DecrHalfMaxAllowedDimension << std::string{"Value2"} << matrix_size_t{31u} << c_LargeDimension0 << matrix_opt_size_t{3u} << matrix_opt_size_t{(c_DecrHalfMaxAllowedDimension - 1) / 2};
+        QTest::newRow("42b: extra large matrix") << StringMatrix{{25, c_HalfMaxAllowedDimension}, "Value1"} << c_HalfMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << c_LargeDimension2 << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("43b: extra large matrix") << StringMatrix{{25, c_HalfMaxAllowedDimension}, "Value1"} << c_HalfMaxAllowedDimension << matrix_size_t{c_HalfMaxAllowedDimension / 2} << std::string{"Value2"} << matrix_size_t{31u} << c_LargeDimension2 << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("44b: extra large matrix") << StringMatrix{{25, c_HalfMaxAllowedDimension}, "Value1"} << c_HalfMaxAllowedDimension << c_HalfMaxAllowedDimension << std::string{"Value2"} << matrix_size_t{31u} << c_LargeDimension2 << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("45b: extra large matrix") << StringMatrix{{25, c_IncrHalfMaxAllowedDimension}, "Value1"} << c_IncrHalfMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("46b: extra large matrix") << StringMatrix{{25, c_IncrHalfMaxAllowedDimension}, "Value1"} << c_IncrHalfMaxAllowedDimension << matrix_size_t{c_IncrHalfMaxAllowedDimension / 2} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+        QTest::newRow("47b: extra large matrix") << StringMatrix{{25, c_IncrHalfMaxAllowedDimension}, "Value1"} << c_IncrHalfMaxAllowedDimension << c_IncrHalfMaxAllowedDimension << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{c_DecrHalfMaxAllowedDimension / 2};
+    }
+
+    constexpr matrix_opt_size_t c_ThreeQuartersCapacityOffset{(c_MaxAllowedDimension - c_ThreeQuartersMaxAllowedDimension - 1) / 2};
+
+    QTest::newRow("48: extra large matrix") << StringMatrix{{25, c_ThreeQuartersMaxAllowedDimension}, "Value1"} << c_ThreeQuartersMaxAllowedDimension << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << c_ThreeQuartersCapacityOffset;
+    QTest::newRow("49: extra large matrix") << StringMatrix{{25, c_ThreeQuartersMaxAllowedDimension}, "Value1"} << c_ThreeQuartersMaxAllowedDimension << matrix_size_t{c_ThreeQuartersMaxAllowedDimension / 2} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << c_ThreeQuartersCapacityOffset;
+    QTest::newRow("50: extra large matrix") << StringMatrix{{25, c_ThreeQuartersMaxAllowedDimension}, "Value1"} << c_ThreeQuartersMaxAllowedDimension << matrix_size_t{c_ThreeQuartersMaxAllowedDimension} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << c_ThreeQuartersCapacityOffset;
+    QTest::newRow("51: extra large matrix") << StringMatrix{{25, c_LargeDimension0}, "Value1"} << c_LargeDimension0 << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("52: extra large matrix") << StringMatrix{{25, c_LargeDimension0}, "Value1"} << c_LargeDimension0 << matrix_size_t{c_LargeDimension0 / 2} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("53: extra large matrix") << StringMatrix{{25, c_LargeDimension0}, "Value1"} << c_LargeDimension0 << c_LargeDimension0 << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{1u};
+    QTest::newRow("54: extra large matrix") << StringMatrix{{25, c_LargeDimension1}, "Value1"} << c_LargeDimension1 << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("55: extra large matrix") << StringMatrix{{25, c_LargeDimension1}, "Value1"} << c_LargeDimension1 << matrix_size_t{c_LargeDimension1 / 2} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("56: extra large matrix") << StringMatrix{{25, c_LargeDimension1}, "Value1"} << c_LargeDimension1 << c_LargeDimension1 << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("57: extra large matrix") << StringMatrix{{25, c_LargeDimension2}, "Value1"} << c_LargeDimension2 << matrix_size_t{0u} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("58: extra large matrix") << StringMatrix{{25, c_LargeDimension2}, "Value1"} << c_LargeDimension2 << matrix_size_t{c_LargeDimension2 / 2} << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
+    QTest::newRow("59: extra large matrix") << StringMatrix{{25, c_LargeDimension2}, "Value1"} << c_LargeDimension2 << c_LargeDimension2 << std::string{"Value2"} << matrix_size_t{31u} << c_MaxAllowedDimension << matrix_opt_size_t{3u} << matrix_opt_size_t{0u};
 }
 
 QTEST_APPLESS_MAIN(CapacityTests)
