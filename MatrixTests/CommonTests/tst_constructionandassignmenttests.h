@@ -23,7 +23,7 @@
                                    "Moved vector constructor initialized matrix with wrong capacity!", \
                                    "Moved vector constructor initialized matrix with wrong capacity offset!")
 
-#define TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
+#define TEST_IDENTICAL_ELEMENTS_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
                                                                          requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset) \
     CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset, \
                                    "Identical matrix constructor initialized matrix with wrong number of rows and columns!", \

@@ -37,13 +37,10 @@ add_test(NAME SwappingTests COMMAND SwappingTests)
 add_executable(OtherFunctionalityTests tst_otherfunctionalitytests.cpp)
 add_test(NAME OtherFunctionalityTests COMMAND OtherFunctionalityTests)
 
-add_executable(CapacityTests tst_capacitytests.cpp)
-add_test(NAME CapacityTests COMMAND CapacityTests)
-
 target_link_libraries(ConstructionAndAssignmentTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(ResizingTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(TransformationTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(SwappingTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(OtherFunctionalityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
-target_link_libraries(CapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 
+add_subdirectory(CapacityTests)

@@ -18,9 +18,6 @@ Q_DECLARE_METATYPE(SplitMode)
 // static_assert(!std::ranges::contiguous_range<IntMatrix>);
 // static_assert(!std::ranges::borrowed_range<IntMatrix>);
 
-static constexpr matrix_size_t c_MaxAllowedDimension{maxAllowedDimension()};
-static constexpr matrix_size_t c_ExceedingDimension{c_MaxAllowedDimension + 1};
-
 class CommonExceptionTests : public QObject
 {
     Q_OBJECT
@@ -29,7 +26,7 @@ private slots:
     // test functions
     void testCopiedVectorConstructorExceptions();
     void testMovedVectorConstructorExceptions();
-    void testIdenticalMatrixConstructorExceptions();
+    void testIdenticalElementsConstructorExceptions();
     void testDiagonalMatrixConstructorExceptions();
     void testFunctionAtExceptions();
     void testSquareBracketsOperatorExceptions();
@@ -50,7 +47,7 @@ private slots:
     // test data
     void testCopiedVectorConstructorExceptions_data();
     void testMovedVectorConstructorExceptions_data();
-    void testIdenticalMatrixConstructorExceptions_data();
+    void testIdenticalElementsConstructorExceptions_data();
     void testDiagonalMatrixConstructorExceptions_data();
     void testFunctionAtExceptions_data();
     void testSquareBracketsOperatorExceptions_data();
@@ -94,7 +91,7 @@ void CommonExceptionTests::testMovedVectorConstructorExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(rowsCount, columnsCount, std::move(initList));});
 }
 
-void CommonExceptionTests::testIdenticalMatrixConstructorExceptions()
+void CommonExceptionTests::testIdenticalElementsConstructorExceptions()
 {
     QFETCH(matrix_size_t, rowsCount);
     QFETCH(matrix_size_t, columnsCount);
@@ -360,7 +357,7 @@ void CommonExceptionTests::testMovedVectorConstructorExceptions_data()
     _buildVectorConstructorExceptionsTestingTable();
 }
 
-void CommonExceptionTests::testIdenticalMatrixConstructorExceptions_data()
+void CommonExceptionTests::testIdenticalElementsConstructorExceptions_data()
 {
     QTest::addColumn<matrix_size_t>("rowsCount");
     QTest::addColumn<matrix_size_t>("columnsCount");

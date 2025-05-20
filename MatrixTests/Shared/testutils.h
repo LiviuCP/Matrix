@@ -49,6 +49,18 @@ using StringConstMIter = Matrix<std::string>::ConstMIterator;
 using StringReverseMIter = Matrix<std::string>::ReverseMIterator;
 using StringConstReverseMIter = Matrix<std::string>::ConstReverseMIterator;
 
+// various constants related to the maximum allowed matrix dimensions
+static constexpr matrix_size_t c_MaxAllowedDimension{maxAllowedDimension()};
+static constexpr matrix_size_t c_LargeDimension0{c_MaxAllowedDimension - 3};
+static constexpr matrix_size_t c_LargeDimension1{c_MaxAllowedDimension - 2};
+static constexpr matrix_size_t c_LargeDimension2{c_MaxAllowedDimension - 1};
+static constexpr matrix_size_t c_ExceedingDimension{c_MaxAllowedDimension + 1};
+static constexpr matrix_size_t c_HalfMaxAllowedDimension{c_MaxAllowedDimension / 2};
+static constexpr matrix_size_t c_DecrHalfMaxAllowedDimension{c_MaxAllowedDimension / 2 - 1};
+static constexpr matrix_size_t c_IncrHalfMaxAllowedDimension{c_MaxAllowedDimension / 2 + 1};
+static constexpr matrix_size_t c_ThreeQuartersMaxAllowedDimension{c_HalfMaxAllowedDimension + c_HalfMaxAllowedDimension / 2};
+static constexpr bool c_IsEvenMaxAllowedDimension{0 == c_MaxAllowedDimension % 2};
+
 // matrix concatenation
 enum class ConcatMode : unsigned short
 {
@@ -101,7 +113,7 @@ enum class SplitMode : unsigned short
         } \
     }
 
-#define CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(matrix, elementValue, errorMessage) \
+#define CHECK_ELEMENTS_ARE_IDENTICAL_AND_HAVE_CORRECT_VALUE(matrix, elementValue, errorMessage) \
     for (int rowNr{0u}; rowNr < matrix.getNrOfRows(); ++rowNr) \
     { \
         for (int columnNr{0u}; columnNr < matrix.getNrOfColumns(); ++columnNr) \

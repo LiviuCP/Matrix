@@ -13,7 +13,7 @@ private slots:
     void testIntMatrixDefaultConstructor();
     void testIntMatrixCopiedVectorConstructor();
     void testIntMatrixMovedVectorConstructor();
-    void testIntMatrixIdenticalMatrixConstructor();
+    void testIntMatrixIdenticalElementsConstructor();
     void testIntMatrixDiagonalMatrixConstructor();
     void testIntMatrixCopyConstructor();
     void testIntMatrixMoveConstructor();
@@ -24,7 +24,7 @@ private slots:
     void testStringMatrixDefaultConstructor();
     void testStringMatrixCopiedVectorConstructor();
     void testStringMatrixMovedVectorConstructor();
-    void testStringMatrixIdenticalMatrixConstructor();
+    void testStringMatrixIdenticalElementsConstructor();
     void testStringMatrixDiagonalMatrixConstructor();
     void testStringMatrixCopyConstructor();
     void testStringMatrixMoveConstructor();
@@ -34,7 +34,7 @@ private slots:
 
     void testIntMatrixCopiedVectorConstructor_data();
     void testIntMatrixMovedVectorConstructor_data();
-    void testIntMatrixIdenticalMatrixConstructor_data();
+    void testIntMatrixIdenticalElementsConstructor_data();
     void testIntMatrixDiagonalMatrixConstructor_data();
     void testIntMatrixCopyConstructor_data();
     void testIntMatrixMoveConstructor_data();
@@ -43,7 +43,7 @@ private slots:
 
     void testStringMatrixCopiedVectorConstructor_data();
     void testStringMatrixMovedVectorConstructor_data();
-    void testStringMatrixIdenticalMatrixConstructor_data();
+    void testStringMatrixIdenticalElementsConstructor_data();
     void testStringMatrixDiagonalMatrixConstructor_data();
     void testStringMatrixCopyConstructor_data();
     void testStringMatrixMoveConstructor_data();
@@ -105,7 +105,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMovedVectorConstructor()
     QVERIFY(initList == c_InitListRef);
 }
 
-void ConstructionAndAssignmentTests::testIntMatrixIdenticalMatrixConstructor()
+void ConstructionAndAssignmentTests::testIntMatrixIdenticalElementsConstructor()
 {
     QFETCH(matrix_size_t, rowsCount);
     QFETCH(matrix_size_t, columnsCount);
@@ -117,8 +117,8 @@ void ConstructionAndAssignmentTests::testIntMatrixIdenticalMatrixConstructor()
 
     IntMatrix matrix{{rowsCount, columnsCount}, elementValue};
 
-    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
-    CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(matrix, elementValue, "Matrix elements have not been correctly initialized by the identical matrix constructor");
+    TEST_IDENTICAL_ELEMENTS_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    CHECK_ELEMENTS_ARE_IDENTICAL_AND_HAVE_CORRECT_VALUE(matrix, elementValue, "Matrix elements have not been correctly initialized by the identical elements constructor");
 }
 
 void ConstructionAndAssignmentTests::testIntMatrixDiagonalMatrixConstructor()
@@ -251,7 +251,7 @@ void ConstructionAndAssignmentTests::testIntMatrixAdditionalAssignmentOperatorTe
         destMatrix = srcMatrix;
 
         TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 9, 3, 11, 3, 1, 0);
-        CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, -2, "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
+        CHECK_ELEMENTS_ARE_IDENTICAL_AND_HAVE_CORRECT_VALUE(destMatrix, -2, "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
     {
@@ -328,7 +328,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMovedVectorConstructor()
     QVERIFY(initList != c_InitListRef);
 }
 
-void ConstructionAndAssignmentTests::testStringMatrixIdenticalMatrixConstructor()
+void ConstructionAndAssignmentTests::testStringMatrixIdenticalElementsConstructor()
 {
     QFETCH(matrix_size_t, rowsCount);
     QFETCH(matrix_size_t, columnsCount);
@@ -340,8 +340,8 @@ void ConstructionAndAssignmentTests::testStringMatrixIdenticalMatrixConstructor(
 
     StringMatrix matrix{{rowsCount, columnsCount}, elementValue};
 
-    TEST_IDENTICAL_MATRIX_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
-    CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(matrix, elementValue, "Matrix elements have not been correctly initialized by the identical matrix constructor");
+    TEST_IDENTICAL_ELEMENTS_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    CHECK_ELEMENTS_ARE_IDENTICAL_AND_HAVE_CORRECT_VALUE(matrix, elementValue, "Matrix elements have not been correctly initialized by the identical elements constructor");
 }
 
 void ConstructionAndAssignmentTests::testStringMatrixDiagonalMatrixConstructor()
@@ -474,7 +474,7 @@ void ConstructionAndAssignmentTests::testStringMatrixAdditionalAssignmentOperato
         destMatrix = srcMatrix;
 
         TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, 9, 3, 11, 3, 1, 0);
-        CHECK_MATRIX_IS_IDENTICAL_WITH_CORRECT_ELEMENT_VALUE(destMatrix, "/second", "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
+        CHECK_ELEMENTS_ARE_IDENTICAL_AND_HAVE_CORRECT_VALUE(destMatrix, "/second", "Copy assignment failed, the destination matrix is not identical or doesn't have the right values!");
     }
 
     {
@@ -518,7 +518,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMovedVectorConstructor_data()
     _buildIntMatrixMovedCopiedVectorConstructorsTestingTable();
 }
 
-void ConstructionAndAssignmentTests::testIntMatrixIdenticalMatrixConstructor_data()
+void ConstructionAndAssignmentTests::testIntMatrixIdenticalElementsConstructor_data()
 {
     QTest::addColumn<matrix_size_t>("rowsCount");
     QTest::addColumn<matrix_size_t>("columnsCount");
@@ -574,7 +574,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMovedVectorConstructor_data
     _buildStringMatrixMovedCopiedVectorConstructorsTestingTable();
 }
 
-void ConstructionAndAssignmentTests::testStringMatrixIdenticalMatrixConstructor_data()
+void ConstructionAndAssignmentTests::testStringMatrixIdenticalElementsConstructor_data()
 {
     QTest::addColumn<matrix_size_t>("rowsCount");
     QTest::addColumn<matrix_size_t>("columnsCount");
