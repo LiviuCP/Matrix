@@ -309,6 +309,7 @@ public:
 
     // vertical concatenation (cumulated rows)
     void catByRow(Matrix& firstMatrix, Matrix& secondMatrix);
+    void catByRow(Matrix& matrix);
 
     // horizontal concatenation (cumulated columns)
     void catByColumn(Matrix& firstMatrix, Matrix& secondMatrix);
@@ -467,6 +468,9 @@ private:
 
     // places the last column into the new position by performing a rotation
     void _rotateLastColumn(size_type newColumnNr);
+
+    // moves the matrix rows to top (row capacity offset set to 0) as preparation for performing specific operations (capacity can the be re-distributed by calling _normalizeRowCapacity())
+    void _alignToTop();
 
     // normalize row capacity to have equal top/bottom unused capacity
     void _normalizeRowCapacity();
@@ -3341,6 +3345,72 @@ void Matrix<T>::catByRow(Matrix<T>& firstMatrix,
 }
 
 template<MatrixElementType T>
+void Matrix<T>::catByRow(Matrix<T>& matrix)
+{
+    if (&matrix != this)
+    {
+        CHECK_ERROR_CONDITION(m_NrOfColumns != matrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_ROW_LENGTH]);
+    }
+
+    const size_type c_NewNrOfRows{static_cast<size_type>(m_NrOfRows + matrix.m_NrOfRows)};
+
+    CHECK_ERROR_CONDITION(c_NewNrOfRows <= maxAllowedDimension(), Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
+
+    if (&matrix != this)
+    {
+        if (c_NewNrOfRows <= m_RowCapacity)
+        {
+            _alignToTop();
+            _moveInitItems(matrix, 0, 0, m_NrOfRows, 0, matrix.m_NrOfRows, m_NrOfColumns);
+            _normalizeRowCapacity();
+        }
+        else
+        {
+            const matrix_size_t c_OldColumnCapacity{m_ColumnCapacity};
+            Matrix helperMatrix{std::move(*this)};
+            _deallocMemory(); // actually not required, just for safety purposes
+            _allocMemory(c_NewNrOfRows, helperMatrix.m_NrOfColumns, c_NewNrOfRows, c_OldColumnCapacity);
+
+            // no need to call _alignToTop(), there is nothing initialized for the moment
+            if (m_RowCapacityOffset.has_value() && *m_RowCapacityOffset > 0)
+            {
+                m_RowCapacityOffset = 0;
+            }
+
+            _moveInitItems(helperMatrix, 0, 0, 0, 0, helperMatrix.m_NrOfRows, helperMatrix.m_NrOfColumns);
+            _moveInitItems(matrix, 0, 0, m_NrOfRows, 0, matrix.m_NrOfRows, m_NrOfColumns);
+            _normalizeRowCapacity();
+        }
+    }
+    else
+    {
+        if (c_NewNrOfRows <= m_RowCapacity)
+        {
+            _alignToTop();
+            _copyInitItems(*this, 0, 0, m_NrOfRows, 0, m_NrOfRows, m_NrOfColumns);
+            _normalizeRowCapacity();
+        }
+        else
+        {
+            const matrix_size_t c_OldColumnCapacity{m_ColumnCapacity};
+            Matrix helperMatrix{std::move(*this)};
+            _deallocMemory(); // actually not required, just for safety purposes
+            _allocMemory(c_NewNrOfRows, helperMatrix.m_NrOfColumns, c_NewNrOfRows, c_OldColumnCapacity);
+
+            // no need to call _alignToTop(), there is nothing initialized for the moment
+            if (m_RowCapacityOffset.has_value() && *m_RowCapacityOffset > 0)
+            {
+                m_RowCapacityOffset = 0;
+            }
+
+            _moveInitItems(helperMatrix, 0, 0, 0, 0, helperMatrix.m_NrOfRows, helperMatrix.m_NrOfColumns);
+            _copyInitItems(*this, 0, 0, m_NrOfRows, 0, m_NrOfRows, m_NrOfColumns);
+            _normalizeRowCapacity();
+        }
+    }
+}
+
+template<MatrixElementType T>
 void Matrix<T>::catByColumn(Matrix<T>& firstMatrix,
                                    Matrix<T>& secondMatrix)
 {
@@ -4161,11 +4231,7 @@ std::pair<typename Matrix<T>::size_type,
     else
     {
         // move unused top capacity to the bottom to avoid alignment issues (should be re-distributed once resize is complete)
-        if (m_RowCapacityOffset.has_value() && m_RowCapacityOffset > 0)
-        {
-            std::rotate(m_pBaseArrayPtr, m_pBaseArrayPtr + *m_RowCapacityOffset, m_pBaseArrayPtr + *m_RowCapacityOffset + m_NrOfRows);
-            m_RowCapacityOffset = 0;
-        }
+        _alignToTop();
 
         // ensure the items from the right side of the retained items get properly destroyed
         if (c_NewNrOfColumns < m_NrOfColumns)
@@ -4392,6 +4458,16 @@ void Matrix<T>::_rotateLastColumn(Matrix<T>::size_type newColumnNr)
 }
 
 template<MatrixElementType T>
+void Matrix<T>::_alignToTop()
+{
+    if (m_RowCapacityOffset.has_value() && m_RowCapacityOffset > 0)
+    {
+        std::rotate(m_pBaseArrayPtr, m_pBaseArrayPtr + *m_RowCapacityOffset, m_pBaseArrayPtr + *m_RowCapacityOffset + m_NrOfRows);
+        m_RowCapacityOffset = 0;
+    }
+}
+
+template<MatrixElementType T>
 void Matrix<T>::_normalizeRowCapacity()
 {
     const std::optional<size_type> c_NormalizedRowCapacityOffset{m_NrOfRows > 0 ? std::optional((m_RowCapacity - m_NrOfRows) / 2) : std::nullopt};
@@ -4570,12 +4646,12 @@ void Matrix<T>::_copyInitItems(const Matrix<T>& matrix,
 
 template<MatrixElementType T>
 void Matrix<T>::_moveInitItems(Matrix<T>& matrix,
-                                      Matrix<T>::size_type matrixStartingRowNr,
-                                      Matrix<T>::size_type matrixColumnOffset,
-                                      Matrix<T>::size_type startingRowNr,
-                                      Matrix<T>::size_type columnOffset,
-                                      Matrix<T>::size_type nrOfRows,
-                                      Matrix<T>::size_type nrOfColumns)
+                               Matrix<T>::size_type matrixStartingRowNr,
+                               Matrix<T>::size_type matrixColumnOffset,
+                               Matrix<T>::size_type startingRowNr,
+                               Matrix<T>::size_type columnOffset,
+                               Matrix<T>::size_type nrOfRows,
+                               Matrix<T>::size_type nrOfColumns)
 {
     // emptiness check required due to capacity offset optionals (see below)
     if (!isEmpty() && !matrix.isEmpty())
