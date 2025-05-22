@@ -39,6 +39,7 @@ private slots:
     void testEraseRowExceptions();
     void testEraseColumnExceptions();
     void testCatByRowExceptions();
+    void testNewCatByRowExceptions();
     void testCatByColumnExceptions();
     void testSplitByRowExceptions();
     void testSplitByColumnExceptions();
@@ -60,6 +61,7 @@ private slots:
     void testEraseRowExceptions_data();
     void testEraseColumnExceptions_data();
     void testCatByRowExceptions_data();
+    void testNewCatByRowExceptions_data();
     void testCatByColumnExceptions_data();
     void testSplitByRowExceptions_data();
     void testSplitByColumnExceptions_data();
@@ -231,6 +233,29 @@ void CommonExceptionTests::testCatByRowExceptions()
                                      destMatrix.catByRow(firstSrcMatrix, firstSrcMatrix);
                                      break;
                                  default:
+                                     break;
+                                 }
+                             });
+}
+
+void CommonExceptionTests::testNewCatByRowExceptions()
+{
+    QFETCH(IntMatrix, destMatrix);
+    QFETCH(IntMatrix, srcMatrix);
+    QFETCH(ConcatMode, mode);
+
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+                             {
+                                 switch(mode)
+                                 {
+                                 case ConcatMode::ALL_DIFFERENT:
+                                     destMatrix.catByRow(srcMatrix);
+                                     break;
+                                 case ConcatMode::DESTINATION_ALL:
+                                     destMatrix.catByRow(destMatrix);
+                                     break;
+                                 default:
+                                     throw std::runtime_error{"Invalid scenario!"};
                                      break;
                                  }
                              });
@@ -470,6 +495,16 @@ void CommonExceptionTests::testCatByRowExceptions_data()
     QTest::newRow("3: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{1, 2, {7, 8}} << ConcatMode::DESTINATION_FIRST;
     QTest::newRow("4: all different") << IntMatrix{} << IntMatrix{2, 1, {1, 2}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
     QTest::newRow("5: destination second") << IntMatrix{} << IntMatrix{2, 2, {3, 4, 5, 6}} << IntMatrix{} << ConcatMode::DESTINATION_SECOND;
+}
+
+void CommonExceptionTests::testNewCatByRowExceptions_data()
+{
+    QTest::addColumn<IntMatrix>("destMatrix");
+    QTest::addColumn<IntMatrix>("srcMatrix");
+    QTest::addColumn<ConcatMode>("mode");
+
+    QTest::newRow("1: all different") << IntMatrix{2, 1, {1, 2}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("2: all different") << IntMatrix{} << IntMatrix{2, 1, {1, 2}} << ConcatMode::ALL_DIFFERENT;
 }
 
 void CommonExceptionTests::testCatByColumnExceptions_data()

@@ -3354,7 +3354,7 @@ void Matrix<T>::catByRow(Matrix<T>& matrix)
 
     const size_type c_NewNrOfRows{static_cast<size_type>(m_NrOfRows + matrix.m_NrOfRows)};
 
-    CHECK_ERROR_CONDITION(c_NewNrOfRows <= maxAllowedDimension(), Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
+    CHECK_ERROR_CONDITION(c_NewNrOfRows > maxAllowedDimension(), Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
 
     if (&matrix != this)
     {
