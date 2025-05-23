@@ -3352,6 +3352,7 @@ void Matrix<T>::catByRow(Matrix<T>& matrix)
         CHECK_ERROR_CONDITION(m_NrOfColumns != matrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_ROW_LENGTH]);
     }
 
+    const size_type c_OldNrOfRows{m_NrOfRows};
     const size_type c_NewNrOfRows{static_cast<size_type>(m_NrOfRows + matrix.m_NrOfRows)};
 
     CHECK_ERROR_CONDITION(c_NewNrOfRows > maxAllowedDimension(), Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
@@ -3362,6 +3363,7 @@ void Matrix<T>::catByRow(Matrix<T>& matrix)
         {
             _alignToTop();
             _moveInitItems(matrix, 0, 0, m_NrOfRows, 0, matrix.m_NrOfRows, m_NrOfColumns);
+            m_NrOfRows = c_NewNrOfRows;
             _normalizeRowCapacity();
         }
         else
@@ -3378,7 +3380,7 @@ void Matrix<T>::catByRow(Matrix<T>& matrix)
             }
 
             _moveInitItems(helperMatrix, 0, 0, 0, 0, helperMatrix.m_NrOfRows, helperMatrix.m_NrOfColumns);
-            _moveInitItems(matrix, 0, 0, m_NrOfRows, 0, matrix.m_NrOfRows, m_NrOfColumns);
+            _moveInitItems(matrix, 0, 0, c_OldNrOfRows, 0, matrix.m_NrOfRows, matrix.m_NrOfColumns);
             _normalizeRowCapacity();
         }
     }
@@ -3388,6 +3390,7 @@ void Matrix<T>::catByRow(Matrix<T>& matrix)
         {
             _alignToTop();
             _copyInitItems(*this, 0, 0, m_NrOfRows, 0, m_NrOfRows, m_NrOfColumns);
+            m_NrOfRows = c_NewNrOfRows;
             _normalizeRowCapacity();
         }
         else
@@ -3404,7 +3407,7 @@ void Matrix<T>::catByRow(Matrix<T>& matrix)
             }
 
             _moveInitItems(helperMatrix, 0, 0, 0, 0, helperMatrix.m_NrOfRows, helperMatrix.m_NrOfColumns);
-            _copyInitItems(*this, 0, 0, m_NrOfRows, 0, m_NrOfRows, m_NrOfColumns);
+            _copyInitItems(*this, 0, 0, c_OldNrOfRows, 0, c_OldNrOfRows, m_NrOfColumns);
             _normalizeRowCapacity();
         }
     }

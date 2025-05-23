@@ -90,6 +90,41 @@
         QVERIFY2(destMatrix == expectedDestMatrix, "Vertical concatenation failed, destination matrix has incorrect values!"); \
     }
 
+#define TEST_MATRIX_NEW_CAT_BY_ROW(matrixType) \
+    QFETCH(Matrix<matrixType>, destMatrix); \
+    QFETCH(Matrix<matrixType>, srcMatrix); \
+    QFETCH(ConcatMode, mode); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
+    QFETCH(Matrix<matrixType>, expectedDestMatrix); \
+\
+    switch(mode) \
+    { \
+    case ConcatMode::ALL_DIFFERENT: \
+        destMatrix.catByRow(srcMatrix); \
+        break; \
+    case ConcatMode::DESTINATION_ALL: \
+        destMatrix.catByRow(destMatrix); \
+        break; \
+    default: \
+        assert(false); \
+        break; \
+    } \
+\
+    if (destMatrix.getRowCapacity() != expectedRowCapacity || \
+        destMatrix.getColumnCapacity() != expectedColumnCapacity || \
+        destMatrix.getRowCapacityOffset() != expectedRowCapacityOffset || \
+        destMatrix.getColumnCapacityOffset() != expectedColumnCapacityOffset) \
+    { \
+        QFAIL("Vertical concatenation failed, capacity (offset) of the destination matrix is not correct!"); \
+    } \
+\
+    QVERIFY2(destMatrix == expectedDestMatrix, "Vertical concatenation failed, destination matrix has incorrect values!"); \
+
+
+
 #define TEST_MATRIX_CAT_BY_COLUMN(matrixType) \
     QFETCH(Matrix<matrixType>, destMatrix); \
     QFETCH(Matrix<matrixType>, firstSrcMatrix); \

@@ -17,6 +17,7 @@ private slots:
     // test functions
     void testIntMatrixTranspose();
     void testIntMatrixCatByRow();
+    void testIntMatrixNewCatByRow();
     void testIntMatrixCatByColumn();
     void testIntMatrixSplitByRow();
     void testIntMatrixSplitByColumn();
@@ -30,6 +31,7 @@ private slots:
     // test data
     void testIntMatrixTranspose_data();
     void testIntMatrixCatByRow_data();
+    void testIntMatrixNewCatByRow_data();
     void testIntMatrixCatByColumn_data();
     void testIntMatrixSplitByRow_data();
     void testIntMatrixSplitByColumn_data();
@@ -55,6 +57,11 @@ void TransformationTests::testIntMatrixTranspose()
 void TransformationTests::testIntMatrixCatByRow()
 {
     TEST_MATRIX_CAT_BY_ROW(int);
+}
+
+void TransformationTests::testIntMatrixNewCatByRow()
+{
+    TEST_MATRIX_NEW_CAT_BY_ROW(int);
 }
 
 void TransformationTests::testIntMatrixCatByColumn()
@@ -187,6 +194,21 @@ void TransformationTests::testIntMatrixCatByRow_data()
     QTest::newRow("46: source both") << IntMatrix{{3, 15}, 5} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << ConcatMode::SOURCE_BOTH << matrix_size_t{20u} << matrix_size_t{2u} << matrix_opt_size_t{2} << matrix_opt_size_t{0} << IntMatrix{16, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}};
     QTest::newRow("47: source both") << IntMatrix{{17, 1}, 5} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << ConcatMode::SOURCE_BOTH << matrix_size_t{20u} << matrix_size_t{2u} << matrix_opt_size_t{2} << matrix_opt_size_t{0} << IntMatrix{16, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}};
     QTest::newRow("48: source both") << IntMatrix{{16, 2}, 5} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << ConcatMode::SOURCE_BOTH << matrix_size_t{20u} << matrix_size_t{2u} << matrix_opt_size_t{2} << matrix_opt_size_t{0} << IntMatrix{16, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}};
+}
+
+void TransformationTests::testIntMatrixNewCatByRow_data()
+{
+    QTest::addColumn<IntMatrix>("destMatrix");
+    QTest::addColumn<IntMatrix>("srcMatrix");
+    QTest::addColumn<ConcatMode>("mode");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
+    QTest::addColumn<IntMatrix>("expectedDestMatrix");
+
+    QTest::newRow("1: all different") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{3u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
+    QTest::newRow("2: all different") << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << matrix_size_t{0u} << matrix_size_t{0u} << matrix_opt_size_t{} << matrix_opt_size_t{} << IntMatrix{};
 }
 
 void TransformationTests::testIntMatrixCatByColumn_data()
