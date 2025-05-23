@@ -503,8 +503,34 @@ void CommonExceptionTests::testNewCatByRowExceptions_data()
     QTest::addColumn<IntMatrix>("srcMatrix");
     QTest::addColumn<ConcatMode>("mode");
 
-    QTest::newRow("1: all different") << IntMatrix{2, 1, {1, 2}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << ConcatMode::ALL_DIFFERENT;
-    QTest::newRow("2: all different") << IntMatrix{} << IntMatrix{2, 1, {1, 2}} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("1: different matrixes, different columns count") << IntMatrix{} << IntMatrix{2, 1, {1, 2}} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("2: different matrixes, different columns count") << IntMatrix{2, 1, {1, 2}} << IntMatrix{} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("3: different matrixes, different columns count") << IntMatrix{2, 1, {1, 2}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("4: different matrixes, different columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 1, {1, 2}} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("5: different matrixes, different columns count") << IntMatrix{{4, 7}, 6} << IntMatrix{{10, 8}, -2} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("6: different matrixes, different columns count") << IntMatrix{{6, 8}, 12} << IntMatrix{{6, 9}, -3} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("7: different matrixes, different columns count") << IntMatrix{{6, 9}, -3} << IntMatrix{{6, 8}, 12} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("8: different matrixes, different columns count") << IntMatrix{{10, 8}, -2} << IntMatrix{{4, 7}, 6} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("9: different matrixes, different columns count") << IntMatrix{{c_HalfMaxAllowedDimension, 2}, -3} << IntMatrix{{c_HalfMaxAllowedDimension, 3}, 2} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("10: different matrixes, different columns count") << IntMatrix{{c_HalfMaxAllowedDimension, 3}, -3} << IntMatrix{{c_HalfMaxAllowedDimension, 2}, 2} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("11: different matrixes, different columns count") << IntMatrix{{c_HalfMaxAllowedDimension, 2}, -3} << IntMatrix{{c_IncrHalfMaxAllowedDimension, 3}, 2} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("12: different matrixes, different columns count") << IntMatrix{{c_HalfMaxAllowedDimension, 3}, -3} << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, 2} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("13: different matrixes, different columns count") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, -3} << IntMatrix{{c_HalfMaxAllowedDimension, 3}, 2} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("14: different matrixes, different columns count") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 3}, -3} << IntMatrix{{c_HalfMaxAllowedDimension, 2}, 2} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("15: different matrixes, same columns count") << IntMatrix{{1, 2}, 2} << IntMatrix{{c_MaxAllowedDimension, 2}, -3} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("16: different matrixes, same columns count") << IntMatrix{{2, 2}, 2} << IntMatrix{{c_LargeDimension2, 2}, -3} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("17: different matrixes, same columns count") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, -3} << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, 2} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("18: different matrixes, same columns count") << IntMatrix{{c_LargeDimension2, 2}, -3} << IntMatrix{{2, 2}, 2} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("19: different matrixes, same columns count") << IntMatrix{{c_MaxAllowedDimension, 2}, -3} << IntMatrix{{1, 2}, 2} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("20: different matrixes, same columns count") << IntMatrix{{c_MaxAllowedDimension, 2}, -3} << IntMatrix{{c_MaxAllowedDimension, 2}, 2} << ConcatMode::ALL_DIFFERENT;
+    QTest::newRow("21: same matrix") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, -3} << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, 2} << ConcatMode::DESTINATION_ALL;
+    QTest::newRow("22: same matrix") << IntMatrix{{c_MaxAllowedDimension, 2}, -3} << IntMatrix{{c_MaxAllowedDimension, 2}, 2} << ConcatMode::DESTINATION_ALL;
+
+    if constexpr (c_IsEvenMaxAllowedDimension)
+    {
+        QTest::newRow("23: different matrixes, same columns count") << IntMatrix{{c_HalfMaxAllowedDimension, 2}, -3} << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, 2} << ConcatMode::ALL_DIFFERENT;
+        QTest::newRow("24: different matrixes, same columns count") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, -3} << IntMatrix{{c_HalfMaxAllowedDimension, 2}, 2} << ConcatMode::ALL_DIFFERENT;
+    }
 }
 
 void CommonExceptionTests::testCatByColumnExceptions_data()
