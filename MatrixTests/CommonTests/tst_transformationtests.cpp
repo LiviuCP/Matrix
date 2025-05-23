@@ -209,6 +209,9 @@ void TransformationTests::testIntMatrixNewCatByRow_data()
 
     QTest::newRow("1: all different") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{3u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
     QTest::newRow("2: all different") << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << matrix_size_t{0u} << matrix_size_t{0u} << matrix_opt_size_t{} << matrix_opt_size_t{} << IntMatrix{};
+    QTest::newRow("3: all different") << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{4, 2, {11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{9u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
+    QTest::newRow("4: all different") << IntMatrix{1, 2, {-1, 2}} << IntMatrix{8, 2, {-3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{9u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
+    QTest::newRow("5: all different") << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{1, 2, {17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{10u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
 }
 
 void TransformationTests::testIntMatrixCatByColumn_data()

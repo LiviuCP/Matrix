@@ -3362,8 +3362,8 @@ void Matrix<T>::catByRow(Matrix<T>& matrix)
         if (c_NewNrOfRows <= m_RowCapacity)
         {
             _alignToTop();
-            _moveInitItems(matrix, 0, 0, m_NrOfRows, 0, matrix.m_NrOfRows, m_NrOfColumns);
             m_NrOfRows = c_NewNrOfRows;
+            _moveInitItems(matrix, 0, 0, c_OldNrOfRows, 0, matrix.m_NrOfRows, matrix.m_NrOfColumns);
             _normalizeRowCapacity();
         }
         else
@@ -3389,8 +3389,8 @@ void Matrix<T>::catByRow(Matrix<T>& matrix)
         if (c_NewNrOfRows <= m_RowCapacity)
         {
             _alignToTop();
-            _copyInitItems(*this, 0, 0, m_NrOfRows, 0, m_NrOfRows, m_NrOfColumns);
             m_NrOfRows = c_NewNrOfRows;
+            _copyInitItems(*this, 0, 0, c_OldNrOfRows, 0, c_OldNrOfRows, m_NrOfColumns);
             _normalizeRowCapacity();
         }
         else
