@@ -17,7 +17,6 @@ private slots:
     // test functions
     void testIntMatrixTranspose();
     void testIntMatrixCatByRow();
-    void testIntMatrixNewCatByRow();
     void testIntMatrixCatByColumn();
     void testIntMatrixSplitByRow();
     void testIntMatrixSplitByColumn();
@@ -31,7 +30,6 @@ private slots:
     // test data
     void testIntMatrixTranspose_data();
     void testIntMatrixCatByRow_data();
-    void testIntMatrixNewCatByRow_data();
     void testIntMatrixCatByColumn_data();
     void testIntMatrixSplitByRow_data();
     void testIntMatrixSplitByColumn_data();
@@ -55,11 +53,6 @@ void TransformationTests::testIntMatrixTranspose()
 }
 
 void TransformationTests::testIntMatrixCatByRow()
-{
-    TEST_MATRIX_CAT_BY_ROW(int);
-}
-
-void TransformationTests::testIntMatrixNewCatByRow()
 {
     TEST_MATRIX_NEW_CAT_BY_ROW(int);
 }
@@ -135,68 +128,6 @@ void TransformationTests::testIntMatrixTranspose_data()
 }
 
 void TransformationTests::testIntMatrixCatByRow_data()
-{
-    QTest::addColumn<IntMatrix>("destMatrix");
-    QTest::addColumn<IntMatrix>("firstSrcMatrix");
-    QTest::addColumn<IntMatrix>("secondSrcMatrix");
-    QTest::addColumn<ConcatMode>("mode");
-    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
-    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
-    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
-    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-    QTest::addColumn<IntMatrix>("expectedDestMatrix");
-
-    QTest::newRow("1: all different") << IntMatrix{} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{3u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-    QTest::newRow("2: all different") << IntMatrix{2, 3, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{3u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-    QTest::newRow("3: all different") << IntMatrix{4, 1, {7, 8, 9, 10}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{3u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-    QTest::newRow("4: all different") << IntMatrix{3, 2, {7, 8, 9, 10, 11, 12}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{3u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-    QTest::newRow("5: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::ALL_DIFFERENT << matrix_size_t{0u} << matrix_size_t{0u} << matrix_opt_size_t{} << matrix_opt_size_t{} << IntMatrix{};
-    QTest::newRow("6: destination first") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::DESTINATION_FIRST << matrix_size_t{3u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-    QTest::newRow("7: destination first") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::DESTINATION_FIRST << matrix_size_t{0u} << matrix_size_t{0u} << matrix_opt_size_t{} << matrix_opt_size_t{} << IntMatrix{};
-    QTest::newRow("8: destination second") << IntMatrix{1, 2, {5, 6}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{1, 2, {5, 6}} << ConcatMode::DESTINATION_SECOND << matrix_size_t{3u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}};
-    QTest::newRow("9: destination second") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::DESTINATION_SECOND << matrix_size_t{0u} << matrix_size_t{0u} << matrix_opt_size_t{} << matrix_opt_size_t{} << IntMatrix{};
-    QTest::newRow("10: destination all") << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << ConcatMode::DESTINATION_ALL << matrix_size_t{5u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{4, 2, {1, 2, 3, 4, 1, 2, 3, 4}};
-    QTest::newRow("11: destination all") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::DESTINATION_ALL << matrix_size_t{0u} << matrix_size_t{0u} << matrix_opt_size_t{} << matrix_opt_size_t{} << IntMatrix{};
-    QTest::newRow("12: source both") << IntMatrix{} << IntMatrix{2, 2, {1, 2, 3, 4}} << IntMatrix{2, 2, {1, 2, 3, 4}} << ConcatMode::SOURCE_BOTH << matrix_size_t{5u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{4, 2, {1, 2, 3, 4, 1, 2, 3, 4}};
-    QTest::newRow("13: source both") << IntMatrix{} << IntMatrix{} << IntMatrix{} << ConcatMode::SOURCE_BOTH << matrix_size_t{0u} << matrix_size_t{0u} << matrix_opt_size_t{} << matrix_opt_size_t{} << IntMatrix{};
-    QTest::newRow("14: all different") << IntMatrix{} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{4, 2, {11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("15: all different") << IntMatrix{{3, 8}, 5} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{4, 2, {11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("16: all different") << IntMatrix{{10, 1}, 5} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{4, 2, {11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("17: all different") << IntMatrix{{9, 2}, 5} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{4, 2, {11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("18: destination first") << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{4, 2, {11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::DESTINATION_FIRST << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("19: destination second") << IntMatrix{4, 2, {11, -12, 13, -14, 15, -16, 17, -18}} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{4, 2, {11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::DESTINATION_SECOND << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("20: destination all") << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << ConcatMode::DESTINATION_ALL << matrix_size_t{12u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{10, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10}};
-    QTest::newRow("21: source both") << IntMatrix{} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << ConcatMode::SOURCE_BOTH << matrix_size_t{12u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{10, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10}};
-    QTest::newRow("22: source both") << IntMatrix{{3, 9}, 5} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << ConcatMode::SOURCE_BOTH << matrix_size_t{12u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{10, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10}};
-    QTest::newRow("23: source both") << IntMatrix{{11, 1}, 5} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << ConcatMode::SOURCE_BOTH << matrix_size_t{12u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{10, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10}};
-    QTest::newRow("24: source both") << IntMatrix{{10, 2}, 5} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << IntMatrix{5, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10}} << ConcatMode::SOURCE_BOTH << matrix_size_t{12u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{10, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10}};
-    QTest::newRow("25: all different") << IntMatrix{} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{8, 2, {-3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("26: all different") << IntMatrix{{3, 8}, 5} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{8, 2, {-3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("27: all different") << IntMatrix{{10, 1}, 5} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{8, 2, {-3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("28: all different") << IntMatrix{{9, 2}, 5} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{8, 2, {-3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("29: destination first") << IntMatrix{1, 2, {-1, 2}} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{8, 2, {-3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::DESTINATION_FIRST << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("30: destination second") << IntMatrix{8, 2, {-3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{8, 2, {-3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}} << ConcatMode::DESTINATION_SECOND << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("31: destination all") << IntMatrix{1, 2, {-1, 2}} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{1, 2, {-1, 2}} << ConcatMode::DESTINATION_ALL << matrix_size_t{2u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{2, 2, {-1, 2, -1, 2}};
-    QTest::newRow("32: source both") << IntMatrix{} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{1, 2, {-1, 2}} << ConcatMode::SOURCE_BOTH << matrix_size_t{2u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{2, 2, {-1, 2, -1, 2}};
-    QTest::newRow("33: source both") << IntMatrix{{1, 3}, 5} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{1, 2, {-1, 2}} << ConcatMode::SOURCE_BOTH << matrix_size_t{2u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{2, 2, {-1, 2, -1, 2}};
-    QTest::newRow("34: source both") << IntMatrix{{3, 1}, 5} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{1, 2, {-1, 2}} << ConcatMode::SOURCE_BOTH << matrix_size_t{2u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{2, 2, {-1, 2, -1, 2}};
-    QTest::newRow("35: source both") << IntMatrix{{2, 2}, 5} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{1, 2, {-1, 2}} << ConcatMode::SOURCE_BOTH << matrix_size_t{2u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{2, 2, {-1, 2, -1, 2}};
-    QTest::newRow("36: source both") << IntMatrix{{1, 1}, 5} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{1, 2, {-1, 2}} << ConcatMode::SOURCE_BOTH << matrix_size_t{2u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{2, 2, {-1, 2, -1, 2}};
-    QTest::newRow("37: source both") << IntMatrix{{16, 16}, 5} << IntMatrix{1, 2, {-1, 2}} << IntMatrix{1, 2, {-1, 2}} << ConcatMode::SOURCE_BOTH << matrix_size_t{2u} << matrix_size_t{2u} << matrix_opt_size_t{0} << matrix_opt_size_t{0} << IntMatrix{2, 2, {-1, 2, -1, 2}};
-    QTest::newRow("38: all different") << IntMatrix{} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{1, 2, {17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("39: all different") << IntMatrix{{3, 8}, 5} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{1, 2, {17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("40: all different") << IntMatrix{{10, 1}, 5} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{1, 2, {17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("41: all different") << IntMatrix{{9, 2}, 5} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{1, 2, {17, -18}} << ConcatMode::ALL_DIFFERENT << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("42: destination first") << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{1, 2, {17, -18}} << ConcatMode::DESTINATION_FIRST << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("43: destination second") << IntMatrix{1, 2, {17, -18}} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{1, 2, {17, -18}} << ConcatMode::DESTINATION_SECOND << matrix_size_t{11u} << matrix_size_t{2u} << matrix_opt_size_t{1} << matrix_opt_size_t{0} << IntMatrix{9, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, 17, -18}};
-    QTest::newRow("44: destination all") << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << ConcatMode::DESTINATION_ALL << matrix_size_t{20u} << matrix_size_t{2u} << matrix_opt_size_t{2} << matrix_opt_size_t{0} << IntMatrix{16, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}};
-    QTest::newRow("45: source both") << IntMatrix{} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << ConcatMode::SOURCE_BOTH << matrix_size_t{20u} << matrix_size_t{2u} << matrix_opt_size_t{2} << matrix_opt_size_t{0} << IntMatrix{16, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}};
-    QTest::newRow("46: source both") << IntMatrix{{3, 15}, 5} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << ConcatMode::SOURCE_BOTH << matrix_size_t{20u} << matrix_size_t{2u} << matrix_opt_size_t{2} << matrix_opt_size_t{0} << IntMatrix{16, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}};
-    QTest::newRow("47: source both") << IntMatrix{{17, 1}, 5} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << ConcatMode::SOURCE_BOTH << matrix_size_t{20u} << matrix_size_t{2u} << matrix_opt_size_t{2} << matrix_opt_size_t{0} << IntMatrix{16, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}};
-    QTest::newRow("48: source both") << IntMatrix{{16, 2}, 5} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << IntMatrix{8, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}} << ConcatMode::SOURCE_BOTH << matrix_size_t{20u} << matrix_size_t{2u} << matrix_opt_size_t{2} << matrix_opt_size_t{0} << IntMatrix{16, 2, {-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16, -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, 11, -12, 13, -14, 15, -16}};
-}
-
-void TransformationTests::testIntMatrixNewCatByRow_data()
 {
     QTest::addColumn<IntMatrix>("destMatrix");
     QTest::addColumn<IntMatrix>("srcMatrix");
