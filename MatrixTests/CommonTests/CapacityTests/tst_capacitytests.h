@@ -461,42 +461,30 @@
 
 #define TEST_CAPACITY_WITH_CAT_BY_ROW(matrixType) \
     QFETCH(Matrix<matrixType>, destMatrix); \
-    QFETCH(Matrix<matrixType>, firstSrcMatrix); \
-    QFETCH(Matrix<matrixType>, secondSrcMatrix); \
+    QFETCH(Matrix<matrixType>, srcMatrix); \
     QFETCH(ConcatMode, mode); \
-    QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
-    QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
-    QFETCH(Matrix<matrixType>::size_type, resizeRowCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, resizeColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, requestedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, requestedColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
 \
-    if (resizeRowsCount > 0u && resizeColumnsCount > 0u) \
+    if (requestedRowCapacity > 0u && requestedColumnCapacity > 0u) \
     { \
-        destMatrix.reserve(resizeRowCapacity, resizeColumnCapacity); \
-        destMatrix.resize(resizeRowsCount, resizeColumnsCount); \
+        destMatrix.reserve(requestedRowCapacity, requestedColumnCapacity); \
     } \
 \
     switch(mode) \
     { \
     case ConcatMode::ALL_DIFFERENT: \
-        destMatrix.catByRow(firstSrcMatrix, secondSrcMatrix); \
-        break; \
-    case ConcatMode::DESTINATION_FIRST: \
-        destMatrix.catByRow(destMatrix, secondSrcMatrix); \
-        break; \
-    case ConcatMode::DESTINATION_SECOND: \
-        destMatrix.catByRow(firstSrcMatrix, destMatrix); \
+        destMatrix.catByRow(srcMatrix); \
         break; \
     case ConcatMode::DESTINATION_ALL: \
-        destMatrix.catByRow(destMatrix, destMatrix); \
-        break; \
-    case ConcatMode::SOURCE_BOTH: \
-        destMatrix.catByRow(firstSrcMatrix, firstSrcMatrix); \
+        destMatrix.catByRow(destMatrix); \
         break; \
     default: \
+        assert(false); \
         break; \
     } \
 \
