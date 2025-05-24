@@ -308,7 +308,6 @@ public:
     void eraseColumn(size_type columnNr);
 
     // vertical concatenation (cumulated rows)
-    void catByRow(Matrix& firstMatrix, Matrix& secondMatrix);
     void catByRow(Matrix& matrix);
 
     // horizontal concatenation (cumulated columns)
@@ -3300,47 +3299,6 @@ void Matrix<T>::eraseColumn(Matrix<T>::size_type columnNr)
     else
     {
         _shiftEraseColumn(columnNr);
-    }
-}
-
-template<MatrixElementType T>
-void Matrix<T>::catByRow(Matrix<T>& firstMatrix,
-                                Matrix<T>& secondMatrix)
-{
-    CHECK_ERROR_CONDITION(firstMatrix.m_NrOfColumns != secondMatrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_ROW_LENGTH]);
-
-    const size_type c_NewNrOfRows{static_cast<size_type>(firstMatrix.m_NrOfRows + secondMatrix.m_NrOfRows)};
-    const size_type c_NewNrOfColumns{firstMatrix.m_NrOfColumns};
-    const size_type c_NewRowCapacity{static_cast<size_type>(c_NewNrOfRows + c_NewNrOfRows / 4)};
-    const size_type c_NewColumnCapacity{static_cast<size_type>(c_NewNrOfColumns + c_NewNrOfColumns / 4)};
-
-    Matrix helperMatrix{};
-
-    if (&firstMatrix == this || &secondMatrix == this)
-    {
-        helperMatrix = std::move(*this);
-    }
-
-    _deallocMemory();
-    _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
-
-    Matrix& firstConcatenatedMatrix{&firstMatrix == this ? helperMatrix : firstMatrix};
-    Matrix& secondConcatenatedMatrix{&secondMatrix == this ? helperMatrix : secondMatrix};
-
-    if (&secondConcatenatedMatrix == &helperMatrix) // 2 cases, same behavior: a) both matrixes to concatenate are current matrix (this) b) only second matrix is current matrix
-    {
-        _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
-        _moveInitItems(secondConcatenatedMatrix, 0, 0, firstConcatenatedMatrix.m_NrOfRows, 0, m_NrOfRows - firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
-    }
-    else if (&firstConcatenatedMatrix == &helperMatrix) // only first matrix to concatenate is current matrix
-    {
-        _moveInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
-        _copyInitItems(secondConcatenatedMatrix, 0, 0, firstConcatenatedMatrix.m_NrOfRows, 0, m_NrOfRows - firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
-    }
-    else // both matrixes to concatenate are different from current matrix
-    {
-        _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
-        _copyInitItems(secondConcatenatedMatrix, 0, 0, firstConcatenatedMatrix.m_NrOfRows, 0, m_NrOfRows - firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
     }
 }
 
