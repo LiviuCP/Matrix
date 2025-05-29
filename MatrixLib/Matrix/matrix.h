@@ -2775,8 +2775,8 @@ Matrix<T>::Matrix()
 
 template<MatrixElementType T>
 Matrix<T>::Matrix(Matrix<T>::size_type nrOfRows,
-                         Matrix<T>::size_type nrOfColumns,
-                         const std::vector<T>& vec)
+                  Matrix<T>::size_type nrOfColumns,
+                  const std::vector<T>& vec)
 {
     constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
 
@@ -2803,8 +2803,8 @@ Matrix<T>::Matrix(Matrix<T>::size_type nrOfRows,
 
 template<MatrixElementType T>
 Matrix<T>::Matrix(Matrix<T>::size_type nrOfRows,
-                         Matrix<T>::size_type nrOfColumns,
-                         std::vector<T>&& vec)
+                  Matrix<T>::size_type nrOfColumns,
+                  std::vector<T>&& vec)
 {
     constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
 
@@ -2830,7 +2830,8 @@ Matrix<T>::Matrix(Matrix<T>::size_type nrOfRows,
 }
 
 template <MatrixElementType T>
-Matrix<T>::Matrix(Matrix<T>::dimensions_t dimensions, const T& value)
+Matrix<T>::Matrix(Matrix<T>::dimensions_t dimensions,
+                  const T& value)
 {
     constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
     const auto&[nrOfRows, nrOfColumns] = dimensions;
@@ -2847,7 +2848,7 @@ Matrix<T>::Matrix(Matrix<T>::dimensions_t dimensions, const T& value)
 
 template <MatrixElementType T>
 Matrix<T>::Matrix(Matrix<T>::size_type nrOfRowsColumns,
-                         const std::pair<T, T>& diagMatrixValues)
+                  const std::pair<T, T>& diagMatrixValues)
 {
     constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
 
@@ -2896,7 +2897,7 @@ Matrix<T>::~Matrix()
 
 template<MatrixElementType T>
 T& Matrix<T>::at(Matrix<T>::size_type rowNr,
-                               Matrix<T>::size_type columnNr)
+                 Matrix<T>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows || columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
     return m_pBaseArrayPtr[*m_RowCapacityOffset + rowNr][columnNr];
@@ -2904,7 +2905,7 @@ T& Matrix<T>::at(Matrix<T>::size_type rowNr,
 
 template<MatrixElementType T>
 const T& Matrix<T>::at(Matrix<T>::size_type rowNr,
-                                     Matrix<T>::size_type columnNr) const
+                       Matrix<T>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows || columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
     return m_pBaseArrayPtr[*m_RowCapacityOffset + rowNr][columnNr];
@@ -3083,7 +3084,8 @@ void Matrix<T>::clear()
 }
 
 template<MatrixElementType T>
-void Matrix<T>::resize(Matrix<T>::size_type nrOfRows, Matrix<T>::size_type nrOfColumns)
+void Matrix<T>::resize(Matrix<T>::size_type nrOfRows,
+                       Matrix<T>::size_type nrOfColumns)
 {
     constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
 
@@ -3109,8 +3111,8 @@ void Matrix<T>::resize(Matrix<T>::size_type nrOfRows, Matrix<T>::size_type nrOfC
 
 template <MatrixElementType T>
 void Matrix<T>::resize(Matrix<T>::size_type nrOfRows,
-                              Matrix<T>::size_type nrOfColumns,
-                              const T& value)
+                       Matrix<T>::size_type nrOfColumns,
+                       const T& value)
 {
     constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
 
@@ -3135,7 +3137,8 @@ void Matrix<T>::resize(Matrix<T>::size_type nrOfRows,
 }
 
 template<MatrixElementType T>
-void Matrix<T>::reserve(Matrix<T>::size_type rowCapacity, Matrix<T>::size_type columnCapacity)
+void Matrix<T>::reserve(Matrix<T>::size_type rowCapacity,
+                        Matrix<T>::size_type columnCapacity)
 {
     if (!isEmpty())
     {
@@ -3185,7 +3188,8 @@ void Matrix<T>::insertRow(Matrix<T>::size_type rowNr)
 }
 
 template<MatrixElementType T>
-void Matrix<T>::insertRow(Matrix<T>::size_type rowNr, const T& value)
+void Matrix<T>::insertRow(Matrix<T>::size_type rowNr,
+                          const T& value)
 {
     constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
 
@@ -3234,7 +3238,7 @@ void Matrix<T>::insertColumn(Matrix<T>::size_type columnNr)
 
 template<MatrixElementType T>
 void Matrix<T>::insertColumn(Matrix<T>::size_type columnNr,
-                                    const T& value)
+                             const T& value)
 {
     constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
 
@@ -3417,8 +3421,8 @@ void Matrix<T>::catByColumn(Matrix& matrix)
 
 template<MatrixElementType T>
 void Matrix<T>::splitByRow(Matrix<T>& firstMatrix,
-                                  Matrix<T>& secondMatrix,
-                                  Matrix<T>::size_type splitRowNr)
+                           Matrix<T>& secondMatrix,
+                           Matrix<T>::size_type splitRowNr)
 {
     CHECK_ERROR_CONDITION(&firstMatrix == &secondMatrix, Matr::errorMessages[Matr::Errors::SAME_VARIABLE_TWO_ARGS]);
     CHECK_ERROR_CONDITION(splitRowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -3453,8 +3457,8 @@ void Matrix<T>::splitByRow(Matrix<T>& firstMatrix,
 
 template<MatrixElementType T>
 void Matrix<T>::splitByColumn(Matrix<T>& firstMatrix,
-                                     Matrix<T>& secondMatrix,
-                                     Matrix<T>::size_type splitColumnNr)
+                              Matrix<T>& secondMatrix,
+                              Matrix<T>::size_type splitColumnNr)
 {
     CHECK_ERROR_CONDITION(&firstMatrix == &secondMatrix, Matr::errorMessages[Matr::Errors::SAME_VARIABLE_TWO_ARGS]);
     CHECK_ERROR_CONDITION(splitColumnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
@@ -3494,7 +3498,7 @@ void Matrix<T>::splitByColumn(Matrix<T>& firstMatrix,
 
 template <MatrixElementType T>
 void Matrix<T>::swapRows(Matrix<T>::size_type firstRowNr,
-                                Matrix<T>::size_type secondRowNr)
+                         Matrix<T>::size_type secondRowNr)
 {
     CHECK_ERROR_CONDITION(firstRowNr >= m_NrOfRows || secondRowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
 
@@ -3510,7 +3514,7 @@ void Matrix<T>::swapRows(Matrix<T>::size_type firstRowNr,
 
 template <MatrixElementType T>
 void Matrix<T>::swapColumns(Matrix<T>::size_type firstColumnNr,
-                                   Matrix<T>::size_type secondColumnNr)
+                            Matrix<T>::size_type secondColumnNr)
 {
     CHECK_ERROR_CONDITION(firstColumnNr >= m_NrOfColumns || secondColumnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
 
@@ -4299,7 +4303,8 @@ typename Matrix<T>::size_type Matrix<T>::_insertUninitializedColumn(Matrix<T>::s
 }
 
 template<MatrixElementType T>
-void Matrix<T>::_reallocEraseDimensionElement(Matrix<T>::size_type dimensionElementNr, bool isRow)
+void Matrix<T>::_reallocEraseDimensionElement(Matrix<T>::size_type dimensionElementNr,
+                                              bool isRow)
 {
     if (!isEmpty())
     {
@@ -4457,9 +4462,9 @@ void Matrix<T>::_normalizeRowCapacity()
 
 template<MatrixElementType T>
 void Matrix<T>::_allocMemory(Matrix<T>::size_type nrOfRows,
-                                    Matrix<T>::size_type nrOfColumns,
-                                    Matrix<T>::size_type rowCapacity,
-                                    Matrix<T>::size_type columnCapacity)
+                             Matrix<T>::size_type nrOfColumns,
+                             Matrix<T>::size_type rowCapacity,
+                             Matrix<T>::size_type columnCapacity)
 {
     if (nrOfRows > 0 && nrOfColumns > 0)
     {
@@ -4522,7 +4527,7 @@ void Matrix<T>::_deallocMemory()
 
 template<MatrixElementType T>
 void Matrix<T>::_adjustSizeAndCapacity(Matrix<T>::size_type nrOfRows,
-                                              Matrix<T>::size_type nrOfColumns)
+                                       Matrix<T>::size_type nrOfColumns)
 {
     const size_type c_NewRowCapacity{static_cast<size_type>(nrOfRows + nrOfRows / 4)};
     const size_type c_NewColumnCapacity{static_cast<size_type>(nrOfColumns + nrOfColumns / 4)};
@@ -4586,12 +4591,12 @@ void Matrix<T>::_moveAllItemsFromMatrix(Matrix<T>& matrix)
 
 template<MatrixElementType T>
 void Matrix<T>::_copyInitItems(const Matrix<T>& matrix,
-                                      Matrix<T>::size_type matrixStartingRowNr,
-                                      Matrix<T>::size_type matrixColumnOffset,
-                                      Matrix<T>::size_type startingRowNr,
-                                      Matrix<T>::size_type columnOffset,
-                                      Matrix<T>::size_type nrOfRows,
-                                      Matrix<T>::size_type nrOfColumns)
+                               Matrix<T>::size_type matrixStartingRowNr,
+                               Matrix<T>::size_type matrixColumnOffset,
+                               Matrix<T>::size_type startingRowNr,
+                               Matrix<T>::size_type columnOffset,
+                               Matrix<T>::size_type nrOfRows,
+                               Matrix<T>::size_type nrOfColumns)
 {
     // emptiness check required due to capacity offset optionals (see below)
     if (!isEmpty() && !matrix.isEmpty())
@@ -4632,10 +4637,10 @@ void Matrix<T>::_moveInitItems(Matrix<T>& matrix,
 
 template<MatrixElementType T>
 void Matrix<T>::_fillInitItems(Matrix<T>::size_type startingRowNr,
-                                      Matrix<T>::size_type columnOffset,
-                                      Matrix<T>::size_type nrOfRows,
-                                      Matrix<T>::size_type nrOfColumns,
-                                      const T& value)
+                               Matrix<T>::size_type columnOffset,
+                               Matrix<T>::size_type nrOfRows,
+                               Matrix<T>::size_type nrOfColumns,
+                               const T& value)
 {
     _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
 
@@ -4647,9 +4652,9 @@ void Matrix<T>::_fillInitItems(Matrix<T>::size_type startingRowNr,
 
 template<MatrixElementType T>
 void Matrix<T>::_defaultConstructInitItems(Matrix<T>::size_type startingRowNr,
-                                                  Matrix<T>::size_type columnOffset,
-                                                  Matrix<T>::size_type nrOfRows,
-                                                  Matrix<T>::size_type nrOfColumns)
+                                           Matrix<T>::size_type columnOffset,
+                                           Matrix<T>::size_type nrOfRows,
+                                           Matrix<T>::size_type nrOfColumns)
 {
     _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
 
@@ -4661,9 +4666,9 @@ void Matrix<T>::_defaultConstructInitItems(Matrix<T>::size_type startingRowNr,
 
 template<MatrixElementType T>
 void Matrix<T>::_destroyItems(Matrix<T>::size_type startingRowNr,
-                                     Matrix<T>::size_type columnOffset,
-                                     Matrix<T>::size_type nrOfRows,
-                                     Matrix<T>::size_type nrOfColumns)
+                              Matrix<T>::size_type columnOffset,
+                              Matrix<T>::size_type nrOfRows,
+                              Matrix<T>::size_type nrOfColumns)
 {
     _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
 
@@ -4675,9 +4680,9 @@ void Matrix<T>::_destroyItems(Matrix<T>::size_type startingRowNr,
 
 template<MatrixElementType T>
 void Matrix<T>::_clampSubMatrixSelectionParameters(Matrix<T>::size_type& startingRowNr,
-                                                          Matrix<T>::size_type& columnOffset,
-                                                          Matrix<T>::size_type& nrOfRows,
-                                                          Matrix<T>::size_type& nrOfColumns)
+                                                   Matrix<T>::size_type& columnOffset,
+                                                   Matrix<T>::size_type& nrOfRows,
+                                                   Matrix<T>::size_type& nrOfColumns)
 {
     startingRowNr = std::clamp<size_type>(startingRowNr, 0u, m_NrOfRows);
     columnOffset = std::clamp<size_type>(columnOffset, 0u, m_NrOfColumns);
@@ -4688,12 +4693,12 @@ void Matrix<T>::_clampSubMatrixSelectionParameters(Matrix<T>::size_type& startin
 
 template<MatrixElementType T>
 void Matrix<T>::_externalClampSubMatrixSelectionParameters(const Matrix<T>& srcMatrix,
-                                                                  Matrix<T>::size_type& srcStartingRowNr,
-                                                                  Matrix<T>::size_type& srcColumnOffset,
-                                                                  Matrix<T>::size_type& startingRowNr,
-                                                                  Matrix<T>::size_type& columnOffset,
-                                                                  Matrix<T>::size_type& nrOfRows,
-                                                                  Matrix<T>::size_type& nrOfColumns)
+                                                           Matrix<T>::size_type& srcStartingRowNr,
+                                                           Matrix<T>::size_type& srcColumnOffset,
+                                                           Matrix<T>::size_type& startingRowNr,
+                                                           Matrix<T>::size_type& columnOffset,
+                                                           Matrix<T>::size_type& nrOfRows,
+                                                           Matrix<T>::size_type& nrOfColumns)
 {
     srcStartingRowNr = std::clamp<size_type>(srcStartingRowNr, 0u, srcMatrix.m_NrOfRows);
     srcColumnOffset = std::clamp<size_type>(srcColumnOffset, 0u, srcMatrix.m_NrOfColumns);
