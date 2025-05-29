@@ -64,11 +64,8 @@ static constexpr bool c_IsEvenMaxAllowedDimension{0 == c_MaxAllowedDimension % 2
 // matrix concatenation
 enum class ConcatMode : unsigned short
 {
-    ALL_DIFFERENT,
-    DESTINATION_FIRST,
-    DESTINATION_SECOND,
-    SOURCE_BOTH,
-    DESTINATION_ALL
+    SOURCE_TO_DESTINATION,
+    TO_ITSELF
 };
 
 // matrix splitting

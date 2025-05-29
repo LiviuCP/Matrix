@@ -308,10 +308,10 @@ public:
     void eraseColumn(size_type columnNr);
 
     // vertical concatenation (cumulated rows)
-    void catByRow(Matrix& firstMatrix, Matrix& secondMatrix);
+    void catByRow(Matrix& matrix);
 
     // horizontal concatenation (cumulated columns)
-    void catByColumn(Matrix& firstMatrix, Matrix& secondMatrix);
+    void catByColumn(Matrix& matrix);
 
     // vertical splitting
     void splitByRow(Matrix& firstMatrix, Matrix& secondMatrix, size_type splitRowNr);
@@ -467,6 +467,9 @@ private:
 
     // places the last column into the new position by performing a rotation
     void _rotateLastColumn(size_type newColumnNr);
+
+    // moves the matrix rows to top (row capacity offset set to 0) as preparation for performing specific operations (capacity can the be re-distributed by calling _normalizeRowCapacity())
+    void _alignToTop();
 
     // normalize row capacity to have equal top/bottom unused capacity
     void _normalizeRowCapacity();
@@ -3300,84 +3303,115 @@ void Matrix<T>::eraseColumn(Matrix<T>::size_type columnNr)
 }
 
 template<MatrixElementType T>
-void Matrix<T>::catByRow(Matrix<T>& firstMatrix,
-                                Matrix<T>& secondMatrix)
+void Matrix<T>::catByRow(Matrix<T>& matrix)
 {
-    CHECK_ERROR_CONDITION(firstMatrix.m_NrOfColumns != secondMatrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_ROW_LENGTH]);
-
-    const size_type c_NewNrOfRows{static_cast<size_type>(firstMatrix.m_NrOfRows + secondMatrix.m_NrOfRows)};
-    const size_type c_NewNrOfColumns{firstMatrix.m_NrOfColumns};
-    const size_type c_NewRowCapacity{static_cast<size_type>(c_NewNrOfRows + c_NewNrOfRows / 4)};
-    const size_type c_NewColumnCapacity{static_cast<size_type>(c_NewNrOfColumns + c_NewNrOfColumns / 4)};
-
-    Matrix helperMatrix{};
-
-    if (&firstMatrix == this || &secondMatrix == this)
+    if (&matrix != this)
     {
-        helperMatrix = std::move(*this);
+        CHECK_ERROR_CONDITION(m_NrOfColumns != matrix.m_NrOfColumns, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_ROW_LENGTH]);
     }
 
-    _deallocMemory();
-    _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
+    const size_type c_OldNrOfRows{m_NrOfRows};
+    const size_type c_NewNrOfRows{static_cast<size_type>(m_NrOfRows + matrix.m_NrOfRows)};
 
-    Matrix& firstConcatenatedMatrix{&firstMatrix == this ? helperMatrix : firstMatrix};
-    Matrix& secondConcatenatedMatrix{&secondMatrix == this ? helperMatrix : secondMatrix};
+    CHECK_ERROR_CONDITION(c_NewNrOfRows > maxAllowedDimension(), Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
 
-    if (&secondConcatenatedMatrix == &helperMatrix) // 2 cases, same behavior: a) both matrixes to concatenate are current matrix (this) b) only second matrix is current matrix
+    if (c_NewNrOfRows <= m_RowCapacity)
     {
-        _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
-        _moveInitItems(secondConcatenatedMatrix, 0, 0, firstConcatenatedMatrix.m_NrOfRows, 0, m_NrOfRows - firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
+        _alignToTop();
+        m_NrOfRows = c_NewNrOfRows;
+
+        if (&matrix != this)
+        {
+            _moveInitItems(matrix, 0, 0, c_OldNrOfRows, 0, matrix.m_NrOfRows, matrix.m_NrOfColumns);
+        }
+        else
+        {
+            _copyInitItems(*this, 0, 0, c_OldNrOfRows, 0, c_OldNrOfRows, m_NrOfColumns);
+        }
+
+        _normalizeRowCapacity();
     }
-    else if (&firstConcatenatedMatrix == &helperMatrix) // only first matrix to concatenate is current matrix
+    else
     {
-        _moveInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
-        _copyInitItems(secondConcatenatedMatrix, 0, 0, firstConcatenatedMatrix.m_NrOfRows, 0, m_NrOfRows - firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
+        const size_type c_OldColumnCapacity{m_ColumnCapacity};
+        Matrix helperMatrix{std::move(*this)};
+
+        _deallocMemory(); // actually not required, just for safety purposes
+        _allocMemory(c_NewNrOfRows, helperMatrix.m_NrOfColumns, c_NewNrOfRows, c_OldColumnCapacity);
+        _moveInitItems(helperMatrix, 0, 0, 0, 0, helperMatrix.m_NrOfRows, helperMatrix.m_NrOfColumns);
+
+        if (&matrix != this)
+        {
+            _moveInitItems(matrix, 0, 0, c_OldNrOfRows, 0, matrix.m_NrOfRows, matrix.m_NrOfColumns);
+        }
+        else
+        {
+            _copyInitItems(*this, 0, 0, c_OldNrOfRows, 0, c_OldNrOfRows, m_NrOfColumns);
+        }
     }
-    else // both matrixes to concatenate are different from current matrix
+
+    // clear the source matrix as its content is no longer usable
+    if (&matrix != this)
     {
-        _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
-        _copyInitItems(secondConcatenatedMatrix, 0, 0, firstConcatenatedMatrix.m_NrOfRows, 0, m_NrOfRows - firstConcatenatedMatrix.m_NrOfRows, m_NrOfColumns);
+        matrix._deallocMemory();
     }
 }
 
 template<MatrixElementType T>
-void Matrix<T>::catByColumn(Matrix<T>& firstMatrix,
-                                   Matrix<T>& secondMatrix)
+void Matrix<T>::catByColumn(Matrix& matrix)
 {
-    CHECK_ERROR_CONDITION(firstMatrix.m_NrOfRows != secondMatrix.m_NrOfRows, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_COLUMN_LENGTH]);
-
-    const size_type c_NewNrOfRows{firstMatrix.m_NrOfRows};
-    const size_type c_NewNrOfColumns{static_cast<size_type>(firstMatrix.m_NrOfColumns + secondMatrix.m_NrOfColumns)};
-    const size_type c_NewRowCapacity{static_cast<size_type>(c_NewNrOfRows + c_NewNrOfRows / 4)};
-    const size_type c_NewColumnCapacity{static_cast<size_type>(c_NewNrOfColumns + c_NewNrOfColumns / 4)};
-
-    Matrix helperMatrix{};
-
-    if (&firstMatrix == this || &secondMatrix == this)
+    if (&matrix != this)
     {
-        helperMatrix = std::move(*this);
+        CHECK_ERROR_CONDITION(m_NrOfRows != matrix.m_NrOfRows, Matr::errorMessages[Matr::Errors::MATRIXES_UNEQUAL_COLUMN_LENGTH]);
     }
 
-    _deallocMemory();
-    _allocMemory(c_NewNrOfRows, c_NewNrOfColumns, c_NewRowCapacity, c_NewColumnCapacity);
+    const size_type c_OldNrOfColumns{m_NrOfColumns};
+    const size_type c_NewNrOfColumns{static_cast<size_type>(m_NrOfColumns + matrix.m_NrOfColumns)};
 
-    Matrix& firstConcatenatedMatrix{&firstMatrix == this ? helperMatrix : firstMatrix};
-    Matrix& secondConcatenatedMatrix{&secondMatrix == this ? helperMatrix : secondMatrix};
+    CHECK_ERROR_CONDITION(c_NewNrOfColumns > maxAllowedDimension(), Matr::errorMessages[Matr::Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED]);
 
-    if (&secondConcatenatedMatrix == &helperMatrix) // 2 cases, same behavior: a) both matrixes to concatenate are current matrix (this) b) only second matrix is current matrix
+    if (!matrix.isEmpty())
     {
-        _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, m_NrOfRows, firstConcatenatedMatrix.m_NrOfColumns);
-        _moveInitItems(secondConcatenatedMatrix, 0, 0, 0, firstConcatenatedMatrix.m_NrOfColumns, m_NrOfRows, secondConcatenatedMatrix.m_NrOfColumns);
-    }
-    else if (&firstConcatenatedMatrix == &helperMatrix) // only first matrix to concatenate is current matrix
-    {
-        _moveInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, m_NrOfRows, firstConcatenatedMatrix.m_NrOfColumns);
-        _copyInitItems(secondConcatenatedMatrix, 0, 0, 0, firstConcatenatedMatrix.m_NrOfColumns, m_NrOfRows, secondConcatenatedMatrix.m_NrOfColumns);
-    }
-    else // both matrixes to concatenate are different from current matrix
-    {
-        _copyInitItems(firstConcatenatedMatrix, 0, 0, 0, 0, m_NrOfRows, firstConcatenatedMatrix.m_NrOfColumns);
-        _copyInitItems(secondConcatenatedMatrix, 0, 0, 0, firstConcatenatedMatrix.m_NrOfColumns, m_NrOfRows, secondConcatenatedMatrix.m_NrOfColumns);
+        if (c_NewNrOfColumns <= (m_ColumnCapacity - *m_ColumnCapacityOffset))
+        {
+            m_NrOfColumns = c_NewNrOfColumns;
+
+            if (&matrix != this)
+            {
+                _moveInitItems(matrix, 0, 0, 0, c_OldNrOfColumns, matrix.m_NrOfRows, matrix.m_NrOfColumns);
+            }
+            else
+            {
+                _copyInitItems(*this, 0, 0, 0, c_OldNrOfColumns, m_NrOfRows, c_OldNrOfColumns);
+            }
+        }
+        else
+        {
+            const size_type c_OldRowCapacity{m_RowCapacity};
+            const size_type c_NewColumnCapacity{std::max(m_ColumnCapacity, c_NewNrOfColumns)};
+
+            Matrix helperMatrix{std::move(*this)};
+
+            _deallocMemory(); // actually not required, just for safety purposes
+            _allocMemory(helperMatrix.m_NrOfRows, c_NewNrOfColumns, c_OldRowCapacity, c_NewColumnCapacity);
+
+            _moveInitItems(helperMatrix, 0, 0, 0, 0, helperMatrix.m_NrOfRows, helperMatrix.m_NrOfColumns);
+
+            if (&matrix != this)
+            {
+                _moveInitItems(matrix, 0, 0, 0, c_OldNrOfColumns, matrix.m_NrOfRows, matrix.m_NrOfColumns);
+            }
+            else
+            {
+                _copyInitItems(*this, 0, 0, 0, c_OldNrOfColumns, m_NrOfRows, c_OldNrOfColumns);
+            }
+        }
+
+        // clear the source matrix as its content is no longer usable
+        if (&matrix != this)
+        {
+            matrix._deallocMemory();
+        }
     }
 }
 
@@ -4136,7 +4170,7 @@ typename Matrix<T>::ConstZIterator Matrix<T>::end() const
 template <MatrixElementType T>
 std::pair<typename Matrix<T>::size_type,
           typename Matrix<T>::size_type> Matrix<T>::_resizeWithUninitializedNewElements(Matrix<T>::size_type nrOfRows,
-                                                                                                      Matrix<T>::size_type nrOfColumns)
+                                                                                        Matrix<T>::size_type nrOfColumns)
 {
     assert(nrOfRows <= maxAllowedDimension() && nrOfColumns <= maxAllowedDimension());
 
@@ -4147,7 +4181,6 @@ std::pair<typename Matrix<T>::size_type,
     const size_type c_NrOfRowsToKeep{std::min(m_NrOfRows, c_NewNrOfRows)};
     const size_type c_NrOfColumnsToKeep{std::min(m_NrOfColumns, c_NewNrOfColumns)};
     const std::optional<size_type> c_NewRowCapacityOffset{c_NewNrOfRows > 0 ? std::optional((c_NewRowCapacity - c_NewNrOfRows) / 2) : std::nullopt};
-    const std::optional<size_type> c_NewColumnCapacityOffset{c_NewNrOfColumns > 0 ? std::optional((c_NewColumnCapacity - c_NewNrOfColumns) / 2) : std::nullopt};
 
     if (!m_RowCapacityOffset.has_value() || !c_NewRowCapacityOffset.has_value() || c_NewRowCapacity != m_RowCapacity || c_NewColumnCapacity != m_ColumnCapacity || c_NewNrOfColumns > (m_ColumnCapacity - *m_ColumnCapacityOffset))
     {
@@ -4161,11 +4194,7 @@ std::pair<typename Matrix<T>::size_type,
     else
     {
         // move unused top capacity to the bottom to avoid alignment issues (should be re-distributed once resize is complete)
-        if (m_RowCapacityOffset.has_value() && m_RowCapacityOffset > 0)
-        {
-            std::rotate(m_pBaseArrayPtr, m_pBaseArrayPtr + *m_RowCapacityOffset, m_pBaseArrayPtr + *m_RowCapacityOffset + m_NrOfRows);
-            m_RowCapacityOffset = 0;
-        }
+        _alignToTop();
 
         // ensure the items from the right side of the retained items get properly destroyed
         if (c_NewNrOfColumns < m_NrOfColumns)
@@ -4392,6 +4421,16 @@ void Matrix<T>::_rotateLastColumn(Matrix<T>::size_type newColumnNr)
 }
 
 template<MatrixElementType T>
+void Matrix<T>::_alignToTop()
+{
+    if (m_RowCapacityOffset.has_value() && m_RowCapacityOffset > 0)
+    {
+        std::rotate(m_pBaseArrayPtr, m_pBaseArrayPtr + *m_RowCapacityOffset, m_pBaseArrayPtr + *m_RowCapacityOffset + m_NrOfRows);
+        m_RowCapacityOffset = 0;
+    }
+}
+
+template<MatrixElementType T>
 void Matrix<T>::_normalizeRowCapacity()
 {
     const std::optional<size_type> c_NormalizedRowCapacityOffset{m_NrOfRows > 0 ? std::optional((m_RowCapacity - m_NrOfRows) / 2) : std::nullopt};
@@ -4570,12 +4609,12 @@ void Matrix<T>::_copyInitItems(const Matrix<T>& matrix,
 
 template<MatrixElementType T>
 void Matrix<T>::_moveInitItems(Matrix<T>& matrix,
-                                      Matrix<T>::size_type matrixStartingRowNr,
-                                      Matrix<T>::size_type matrixColumnOffset,
-                                      Matrix<T>::size_type startingRowNr,
-                                      Matrix<T>::size_type columnOffset,
-                                      Matrix<T>::size_type nrOfRows,
-                                      Matrix<T>::size_type nrOfColumns)
+                               Matrix<T>::size_type matrixStartingRowNr,
+                               Matrix<T>::size_type matrixColumnOffset,
+                               Matrix<T>::size_type startingRowNr,
+                               Matrix<T>::size_type columnOffset,
+                               Matrix<T>::size_type nrOfRows,
+                               Matrix<T>::size_type nrOfColumns)
 {
     // emptiness check required due to capacity offset optionals (see below)
     if (!isEmpty() && !matrix.isEmpty())
