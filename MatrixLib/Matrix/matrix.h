@@ -315,6 +315,7 @@ public:
 
     // vertical splitting
     void splitByRow(Matrix& firstMatrix, Matrix& secondMatrix, size_type splitRowNr);
+    void splitByRow(Matrix& matrix, Matrix<T>::size_type splitRowNr);
 
     // horizontal splitting
     void splitByColumn(Matrix& firstMatrix, Matrix& secondMatrix, size_type splitColumnNr);
@@ -3453,6 +3454,32 @@ void Matrix<T>::splitByRow(Matrix<T>& firstMatrix,
         secondMatrix._adjustSizeAndCapacity(m_NrOfRows - splitRowNr, m_NrOfColumns);
         secondMatrix._copyInitItems(*this, splitRowNr, 0, 0, 0, secondMatrix.m_NrOfRows, m_NrOfColumns);
     }
+}
+
+template<MatrixElementType T>
+void Matrix<T>::splitByRow(Matrix& matrix, size_type splitRowNr)
+{
+    CHECK_ERROR_CONDITION(&matrix == this, Matr::errorMessages[Matr::Errors::SAME_VARIABLE_TWO_ARGS]); // TODO: update this error
+    CHECK_ERROR_CONDITION(splitRowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+    CHECK_ERROR_CONDITION(splitRowNr == 0, Matr::errorMessages[Matr::Errors::RESULT_NO_ROWS]);
+
+    const size_type c_NewDestNrOfRows{m_NrOfRows - splitRowNr};
+    const size_type c_NewDestRowCapacity{std::max(matrix.m_RowCapacity, m_NrOfRows - splitRowNr)};
+    const size_type c_NewDestColumnCapacity{std::max(matrix.m_ColumnCapacity, m_NrOfColumns)};
+
+    if (c_NewDestRowCapacity > matrix.m_RowCapacity || c_NewDestColumnCapacity > matrix.m_ColumnCapacity)
+    {
+        matrix._deallocMemory();
+        matrix._allocMemory(c_NewDestNrOfRows, m_NrOfColumns, c_NewDestRowCapacity, c_NewDestColumnCapacity);
+    }
+
+    matrix._alignToTop();
+    matrix._moveInitItems(*this, splitRowNr, 0, 0, 0, c_NewDestNrOfRows, m_NrOfColumns);
+    matrix._normalizeRowCapacity();
+
+    _destroyItems(splitRowNr, 0, c_NewDestNrOfRows, m_NrOfColumns);
+    m_NrOfRows = splitRowNr;
+    _normalizeRowCapacity();
 }
 
 template<MatrixElementType T>
