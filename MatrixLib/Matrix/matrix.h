@@ -3464,8 +3464,8 @@ void Matrix<T>::splitByRow(Matrix& matrix, size_type splitRowNr)
     CHECK_ERROR_CONDITION(splitRowNr == 0, Matr::errorMessages[Matr::Errors::RESULT_NO_ROWS]);
 
     const size_type c_NewDestNrOfRows{m_NrOfRows - splitRowNr};
-    const size_type c_NewDestRowCapacity{std::max(matrix.m_RowCapacity, m_NrOfRows - splitRowNr)};
-    const size_type c_NewDestColumnCapacity{std::max(matrix.m_ColumnCapacity, m_NrOfColumns)};
+    const size_type c_NewDestRowCapacity{std::max<size_type>(matrix.m_RowCapacity, m_NrOfRows - splitRowNr)};
+    const size_type c_NewDestColumnCapacity{std::max<size_type>(matrix.m_ColumnCapacity, m_NrOfColumns)};
 
     if (c_NewDestRowCapacity > matrix.m_RowCapacity || c_NewDestColumnCapacity > matrix.m_ColumnCapacity)
     {
