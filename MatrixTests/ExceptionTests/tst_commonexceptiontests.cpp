@@ -277,8 +277,7 @@ void CommonExceptionTests::testSplitByRowExceptions()
 void CommonExceptionTests::testSplitByColumnExceptions()
 {
     QFETCH(IntMatrix, srcMatrix);
-    QFETCH(IntMatrix, firstDestMatrix);
-    QFETCH(IntMatrix, secondDestMatrix);
+    QFETCH(IntMatrix, destMatrix);
     QFETCH(matrix_size_t, splitPosition);
     QFETCH(SplitMode, mode);
 
@@ -287,10 +286,10 @@ void CommonExceptionTests::testSplitByColumnExceptions()
                                  switch(mode)
                                  {
                                  case SplitMode::SOURCE_TO_DESTINATION:
-                                     firstDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
+                                     srcMatrix.splitByColumn(destMatrix, splitPosition);
                                      break;
                                  case SplitMode::TO_ITSELF:
-                                     firstDestMatrix.splitByColumn(firstDestMatrix, firstDestMatrix, splitPosition);
+                                     destMatrix.splitByColumn(destMatrix, splitPosition);
                                      break;
                                  default:
                                      assert(false);
@@ -519,13 +518,22 @@ void CommonExceptionTests::testSplitByRowExceptions_data()
 void CommonExceptionTests::testSplitByColumnExceptions_data()
 {
     QTest::addColumn<IntMatrix>("srcMatrix");
-    QTest::addColumn<IntMatrix>("firstDestMatrix");
-    QTest::addColumn<IntMatrix>("secondDestMatrix");
+    QTest::addColumn<IntMatrix>("destMatrix");
     QTest::addColumn<matrix_size_t>("splitPosition");
     QTest::addColumn<SplitMode>("mode");
 
-    QTest::newRow("1: source split to itself") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << matrix_size_t{1u} << SplitMode::TO_ITSELF;
-    QTest::newRow("2: source split to itself") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{0u} << SplitMode::TO_ITSELF;
+    QTest::newRow("1: source split to destination") << IntMatrix{} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("2: source split to destination") << IntMatrix{} << IntMatrix{} << matrix_size_t{1u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("3: source split to destination") << IntMatrix{3, 1, {1, -2, 3}} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("4: source split to destination") << IntMatrix{3, 1, {1, -2, 3}} << IntMatrix{} << matrix_size_t{1u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("5: source split to destination") << IntMatrix{3, 1, {1, -2, 3}} << IntMatrix{} << matrix_size_t{2u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("6: source split to destination") << IntMatrix{3, 2, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("7: source split to destination") << IntMatrix{3, 2, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{2u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("8: source split to destination") << IntMatrix{3, 2, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{3u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("9: source split to destination") << IntMatrix{{3, c_MaxAllowedDimension}, -5} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("10: source split to destination") << IntMatrix{{3, c_MaxAllowedDimension}, -5} << IntMatrix{} << c_MaxAllowedDimension << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("11: source split to destination") << IntMatrix{{3, c_MaxAllowedDimension}, -5} << IntMatrix{} << c_ExceedingDimension << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("12: source split to itself") << IntMatrix{3, 2, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{1u} << SplitMode::TO_ITSELF;
 }
 
 void CommonExceptionTests::testSwapRowsOrColumnsExceptions_data()

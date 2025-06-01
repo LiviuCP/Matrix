@@ -319,6 +319,7 @@ public:
 
     // horizontal splitting
     void splitByColumn(Matrix& firstMatrix, Matrix& secondMatrix, size_type splitColumnNr);
+    void splitByColumn(Matrix& matrix, size_type splitColumnNr);
 
     void swapRows(size_type firstRowNr, size_type secondRowNr);
     void swapColumns(size_type firstColumnNr, size_type secondColumnNr);
@@ -3425,7 +3426,7 @@ void Matrix<T>::splitByRow(Matrix& matrix, size_type splitRowNr)
 {
     CHECK_ERROR_CONDITION(&matrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARGUMENT]);
     CHECK_ERROR_CONDITION(splitRowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
-    CHECK_ERROR_CONDITION(splitRowNr == 0, Matr::errorMessages[Matr::Errors::RESULT_NO_ROWS]);
+    CHECK_ERROR_CONDITION(0 == splitRowNr, Matr::errorMessages[Matr::Errors::RESULT_NO_ROWS]);
 
     const size_type c_NewDestNrOfRows{static_cast<size_type>(m_NrOfRows - splitRowNr)};
     const size_type c_NewDestRowCapacity{std::max<size_type>(matrix.m_RowCapacity, m_NrOfRows - splitRowNr)};
@@ -3492,6 +3493,16 @@ void Matrix<T>::splitByColumn(Matrix<T>& firstMatrix,
         secondMatrix._adjustSizeAndCapacity(m_NrOfRows, m_NrOfColumns - splitColumnNr);
         secondMatrix._copyInitItems(*this, 0, splitColumnNr, 0, 0, m_NrOfRows, secondMatrix.m_NrOfColumns);
     }
+}
+
+template<MatrixElementType T>
+void Matrix<T>::splitByColumn(Matrix& matrix, size_type splitColumnNr)
+{
+    CHECK_ERROR_CONDITION(&matrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARGUMENT]);
+    CHECK_ERROR_CONDITION(splitColumnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+    CHECK_ERROR_CONDITION(0 == splitColumnNr, Matr::errorMessages[Matr::Errors::RESULT_NO_ROWS]);
+
+    // TODO: create the functionality
 }
 
 template <MatrixElementType T>
