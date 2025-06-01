@@ -314,7 +314,6 @@ public:
     void catByColumn(Matrix& matrix);
 
     // vertical splitting
-    void splitByRow(Matrix& firstMatrix, Matrix& secondMatrix, size_type splitRowNr);
     void splitByRow(Matrix& matrix, Matrix<T>::size_type splitRowNr);
 
     // horizontal splitting
@@ -3417,42 +3416,6 @@ void Matrix<T>::catByColumn(Matrix& matrix)
         {
             matrix._deallocMemory();
         }
-    }
-}
-
-template<MatrixElementType T>
-void Matrix<T>::splitByRow(Matrix<T>& firstMatrix,
-                           Matrix<T>& secondMatrix,
-                           Matrix<T>::size_type splitRowNr)
-{
-    CHECK_ERROR_CONDITION(&firstMatrix == &secondMatrix, Matr::errorMessages[Matr::Errors::SAME_VARIABLE_TWO_ARGS]);
-    CHECK_ERROR_CONDITION(splitRowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
-    CHECK_ERROR_CONDITION(splitRowNr == 0, Matr::errorMessages[Matr::Errors::RESULT_NO_ROWS]);
-
-    if (&firstMatrix == this || &secondMatrix == this)
-    {
-        Matrix& currentMatrix{&firstMatrix == this ? firstMatrix : secondMatrix};
-        Matrix& otherMatrix{&firstMatrix == this ? secondMatrix : firstMatrix};
-
-        const size_type c_CurrentMatrixNewNrOfRows{&firstMatrix == this ? splitRowNr : static_cast<size_type>(currentMatrix.m_NrOfRows - splitRowNr)};
-        const size_type c_CurrentMatrixRemainingItemsStartingRowNr{&firstMatrix == this ? size_type{0} : splitRowNr};
-
-        // step 1: move items that should be removed from current matrix ("this") to the other destination matrix
-        otherMatrix._adjustSizeAndCapacity(currentMatrix.m_NrOfRows - c_CurrentMatrixNewNrOfRows, currentMatrix.m_NrOfColumns);
-        otherMatrix._moveInitItems(currentMatrix, splitRowNr - c_CurrentMatrixRemainingItemsStartingRowNr, 0, 0, 0, otherMatrix.m_NrOfRows, otherMatrix.m_NrOfColumns);
-
-        // step 2: update the current matrix: move kept elements into correct positions and remove/destroy elements that belong to the other destination matrix (their content already moved in previous step)
-        T** const pCurrentMatrixStartingRow{currentMatrix.m_pBaseArrayPtr + *currentMatrix.m_RowCapacityOffset};
-        std::rotate(pCurrentMatrixStartingRow, pCurrentMatrixStartingRow + c_CurrentMatrixRemainingItemsStartingRowNr, pCurrentMatrixStartingRow + currentMatrix.m_NrOfRows);
-        currentMatrix._destroyItems(splitRowNr, 0, currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns);
-        currentMatrix.m_NrOfRows = c_CurrentMatrixNewNrOfRows;
-    }
-    else
-    {
-        firstMatrix._adjustSizeAndCapacity(splitRowNr, m_NrOfColumns);
-        firstMatrix._copyInitItems(*this, 0, 0, 0, 0, firstMatrix.m_NrOfRows, m_NrOfColumns);
-        secondMatrix._adjustSizeAndCapacity(m_NrOfRows - splitRowNr, m_NrOfColumns);
-        secondMatrix._copyInitItems(*this, splitRowNr, 0, 0, 0, secondMatrix.m_NrOfRows, m_NrOfColumns);
     }
 }
 
