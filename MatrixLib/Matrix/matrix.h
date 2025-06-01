@@ -3422,7 +3422,7 @@ void Matrix<T>::catByColumn(Matrix& matrix)
 template<MatrixElementType T>
 void Matrix<T>::splitByRow(Matrix& matrix, size_type splitRowNr)
 {
-    CHECK_ERROR_CONDITION(&matrix == this, Matr::errorMessages[Matr::Errors::SAME_VARIABLE_TWO_ARGS]); // TODO: update this error
+    CHECK_ERROR_CONDITION(&matrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARGUMENT]);
     CHECK_ERROR_CONDITION(splitRowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
     CHECK_ERROR_CONDITION(splitRowNr == 0, Matr::errorMessages[Matr::Errors::RESULT_NO_ROWS]);
 
@@ -3457,7 +3457,7 @@ void Matrix<T>::splitByColumn(Matrix<T>& firstMatrix,
                               Matrix<T>& secondMatrix,
                               Matrix<T>::size_type splitColumnNr)
 {
-    CHECK_ERROR_CONDITION(&firstMatrix == &secondMatrix, Matr::errorMessages[Matr::Errors::SAME_VARIABLE_TWO_ARGS]);
+    CHECK_ERROR_CONDITION(&firstMatrix == &secondMatrix, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARGUMENT]);
     CHECK_ERROR_CONDITION(splitColumnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
     CHECK_ERROR_CONDITION(splitColumnNr == 0, Matr::errorMessages[Matr::Errors::RESULT_NO_COLUMNS]);
 
