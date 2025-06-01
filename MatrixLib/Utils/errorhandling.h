@@ -2,7 +2,6 @@
 #define ERROR_HANDLING_H
 
 #include <map>
-#include <cassert>
 #include <string>
 
 #ifndef ERROR_CHECKING_DISABLED

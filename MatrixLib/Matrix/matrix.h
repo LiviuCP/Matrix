@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <optional>
 #include <vector>
+#include <cassert>
 
 #include "../Utils/iteratorutils.h"
 #include "../Utils/errorhandling.h"
