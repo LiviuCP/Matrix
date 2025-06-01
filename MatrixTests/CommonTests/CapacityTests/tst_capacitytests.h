@@ -597,17 +597,11 @@
 \
     switch(mode) \
     { \
-    case SplitMode::ALL_DIFFERENT: \
-        srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition); \
-        break; \
     case SplitMode::SOURCE_FIRST: \
         firstDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition); \
         break; \
-    case SplitMode::SOURCE_SECOND: \
-        secondDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition); \
-        break; \
     default: \
-        QFAIL("exception scenario"); \
+        assert(false); \
         break; \
     } \
 \
