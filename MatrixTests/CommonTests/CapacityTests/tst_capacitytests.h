@@ -597,7 +597,7 @@
 \
     switch(mode) \
     { \
-    case SplitMode::SOURCE_FIRST: \
+    case SplitMode::SOURCE_TO_DESTINATION: \
         firstDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition); \
         break; \
     default: \
