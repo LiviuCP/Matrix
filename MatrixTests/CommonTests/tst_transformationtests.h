@@ -153,53 +153,39 @@
 
 #define TEST_MATRIX_SPLIT_BY_COLUMN(matrixType) \
     QFETCH(Matrix<matrixType>, srcMatrix); \
-    QFETCH(Matrix<matrixType>, firstDestMatrix); \
-    QFETCH(Matrix<matrixType>, secondDestMatrix); \
+    QFETCH(Matrix<matrixType>, destMatrix); \
     QFETCH(Matrix<matrixType>::size_type, splitPosition); \
-    QFETCH(SplitMode, mode); \
-    QFETCH(Matrix<matrixType>::size_type, expectedFirstDestRowCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedFirstDestColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedSecondDestRowCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedSecondDestColumnCapacity); \
-    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedFirstDestRowCapacityOffset); \
-    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedFirstDestColumnCapacityOffset); \
-    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSecondDestRowCapacityOffset); \
-    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSecondDestColumnCapacityOffset); \
-    QFETCH(Matrix<matrixType>, expectedFirstDestMatrix); \
-    QFETCH(Matrix<matrixType>, expectedSecondDestMatrix); \
- \
-    switch(mode) \
+    QFETCH(Matrix<matrixType>::size_type, expectedSrcRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedSrcColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedDestRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedDestColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSrcRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSrcColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedDestRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedDestColumnCapacityOffset); \
+    QFETCH(Matrix<matrixType>, expectedSrcMatrix); \
+    QFETCH(Matrix<matrixType>, expectedDestMatrix); \
+\
+    srcMatrix.splitByColumn(destMatrix, splitPosition); \
+\
+    if (srcMatrix.getRowCapacity() != expectedSrcRowCapacity || \
+        srcMatrix.getColumnCapacity() != expectedSrcColumnCapacity || \
+        srcMatrix.getRowCapacityOffset() != expectedSrcRowCapacityOffset || \
+        srcMatrix.getColumnCapacityOffset() != expectedSrcColumnCapacityOffset) \
     { \
-    case SplitMode::SOURCE_TO_DESTINATION: \
-        firstDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition); \
-        break; \
-    default: \
-        assert(false); \
-        break; \
+        QFAIL("Horizontal split failed, capacity (offset) of the source matrix is not correct!"); \
     } \
- \
-    if (firstDestMatrix.getRowCapacity() != expectedFirstDestRowCapacity || \
-        firstDestMatrix.getColumnCapacity() != expectedFirstDestColumnCapacity || \
-        firstDestMatrix.getRowCapacityOffset() != expectedFirstDestRowCapacityOffset || \
-        firstDestMatrix.getColumnCapacityOffset() != expectedFirstDestColumnCapacityOffset) \
+\
+    QVERIFY2(srcMatrix == expectedSrcMatrix, "Horizontal split failed, source matrix has incorrect values!"); \
+\
+    if (destMatrix.getRowCapacity() != expectedDestRowCapacity || \
+        destMatrix.getColumnCapacity() != expectedDestColumnCapacity || \
+        destMatrix.getRowCapacityOffset() != expectedDestRowCapacityOffset || \
+        destMatrix.getColumnCapacityOffset() != expectedDestColumnCapacityOffset) \
     { \
-        QFAIL("Horizontal split failed, capacity (offset) of the first destination matrix is not correct!"); \
+        QFAIL("Horizontal split failed, capacity (offset) of the destination matrix is not correct!"); \
     } \
-    else \
-    { \
-        QVERIFY2(firstDestMatrix == expectedFirstDestMatrix, "Horizontal split failed, first destination matrix has incorrect values!"); \
-    } \
- \
-    if (secondDestMatrix.getRowCapacity() != expectedSecondDestRowCapacity || \
-        secondDestMatrix.getColumnCapacity() != expectedSecondDestColumnCapacity || \
-        secondDestMatrix.getRowCapacityOffset() != expectedSecondDestRowCapacityOffset || \
-        secondDestMatrix.getColumnCapacityOffset() != expectedSecondDestColumnCapacityOffset) \
-    { \
-        QFAIL("Horizontal split failed, capacity (offset) of the second destination matrix is not correct!"); \
-    } \
-    else \
-    { \
-        QVERIFY2(secondDestMatrix == expectedSecondDestMatrix, "Horizontal split failed, second destination matrix has incorrect values!"); \
-    }
+\
+    QVERIFY2(destMatrix == expectedDestMatrix, "Horizontal split failed, destination matrix has incorrect values!"); \
 
 #endif // TST_TRANSFORMATIONTESTS_H

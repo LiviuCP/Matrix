@@ -3429,7 +3429,7 @@ void Matrix<T>::splitByRow(Matrix& matrix, size_type splitRowNr)
     CHECK_ERROR_CONDITION(0 == splitRowNr, Matr::errorMessages[Matr::Errors::RESULT_NO_ROWS]);
 
     const size_type c_NewDestNrOfRows{static_cast<size_type>(m_NrOfRows - splitRowNr)};
-    const size_type c_NewDestRowCapacity{std::max<size_type>(matrix.m_RowCapacity, m_NrOfRows - splitRowNr)};
+    const size_type c_NewDestRowCapacity{std::max<size_type>(matrix.m_RowCapacity, c_NewDestNrOfRows)};
     const size_type c_NewDestColumnCapacity{std::max<size_type>(matrix.m_ColumnCapacity, m_NrOfColumns)};
 
     if (c_NewDestRowCapacity > matrix.m_RowCapacity || c_NewDestColumnCapacity > matrix.m_ColumnCapacity)
@@ -3499,10 +3499,32 @@ template<MatrixElementType T>
 void Matrix<T>::splitByColumn(Matrix& matrix, size_type splitColumnNr)
 {
     CHECK_ERROR_CONDITION(&matrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARGUMENT]);
-    CHECK_ERROR_CONDITION(splitColumnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
-    CHECK_ERROR_CONDITION(0 == splitColumnNr, Matr::errorMessages[Matr::Errors::RESULT_NO_ROWS]);
+    CHECK_ERROR_CONDITION(splitColumnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+    CHECK_ERROR_CONDITION(0 == splitColumnNr, Matr::errorMessages[Matr::Errors::RESULT_NO_COLUMNS]);
 
-    // TODO: create the functionality
+    const size_type c_NewDestNrOfColumns{static_cast<size_type>(m_NrOfColumns - splitColumnNr)};
+    const size_type c_NewDestRowCapacity{std::max<size_type>(matrix.m_RowCapacity, m_NrOfRows)};
+    const size_type c_NewDestColumnCapacity{std::max<size_type>(matrix.m_ColumnCapacity, c_NewDestNrOfColumns)};
+
+    if (isEmpty() || c_NewDestRowCapacity > matrix.m_RowCapacity || c_NewDestColumnCapacity > (matrix.m_ColumnCapacity - *matrix.m_ColumnCapacityOffset))
+    {
+        matrix._deallocMemory();
+        matrix._allocMemory(m_NrOfRows, c_NewDestNrOfColumns, c_NewDestRowCapacity, c_NewDestColumnCapacity);
+    }
+
+    matrix._alignToTop();
+    matrix._moveInitItems(*this, 0, splitColumnNr, 0, 0, m_NrOfRows, c_NewDestNrOfColumns);
+
+    if (c_NewDestNrOfColumns < matrix.m_NrOfColumns)
+    {
+        matrix._destroyItems(0, c_NewDestNrOfColumns, matrix.m_NrOfRows, matrix.m_NrOfColumns - c_NewDestNrOfColumns);
+    }
+
+    matrix.m_NrOfColumns = c_NewDestNrOfColumns;
+    matrix._normalizeRowCapacity();
+
+    _destroyItems(0, splitColumnNr, m_NrOfRows, c_NewDestNrOfColumns);
+    m_NrOfColumns = splitColumnNr;
 }
 
 template <MatrixElementType T>
