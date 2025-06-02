@@ -3506,7 +3506,10 @@ void Matrix<T>::splitByColumn(Matrix& matrix, size_type splitColumnNr)
     const size_type c_NewDestRowCapacity{std::max<size_type>(matrix.m_RowCapacity, m_NrOfRows)};
     const size_type c_NewDestColumnCapacity{std::max<size_type>(matrix.m_ColumnCapacity, c_NewDestNrOfColumns)};
 
-    if (isEmpty() || c_NewDestRowCapacity > matrix.m_RowCapacity || c_NewDestColumnCapacity > (matrix.m_ColumnCapacity - *matrix.m_ColumnCapacityOffset))
+    if (isEmpty() ||
+        c_NewDestRowCapacity > matrix.m_RowCapacity ||
+        c_NewDestColumnCapacity > matrix.m_ColumnCapacity ||
+        c_NewDestNrOfColumns > (matrix.m_ColumnCapacity - *matrix.m_ColumnCapacityOffset))
     {
         matrix._deallocMemory();
         matrix._allocMemory(m_NrOfRows, c_NewDestNrOfColumns, c_NewDestRowCapacity, c_NewDestColumnCapacity);
