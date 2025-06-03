@@ -3444,6 +3444,7 @@ void Matrix<T>::splitByRow(Matrix& matrix, size_type splitRowNr)
             matrix._alignToTop();
             matrix._destroyItems(0, 0, matrix.m_NrOfRows, matrix.m_NrOfColumns);
             matrix.m_NrOfRows = c_NewDestNrOfRows;
+            matrix.m_NrOfColumns = m_NrOfColumns;
             matrix._normalizeRowCapacity();
         }
         else
@@ -3521,8 +3522,11 @@ void Matrix<T>::splitByColumn(Matrix& matrix, size_type splitColumnNr)
     }
     else
     {
+        matrix._alignToTop();
         matrix._destroyItems(0, 0, matrix.m_NrOfRows, matrix.m_NrOfColumns);
+        matrix.m_NrOfRows = m_NrOfRows;
         matrix.m_NrOfColumns = c_NewDestNrOfColumns;
+        matrix._normalizeRowCapacity();
     }
 
     matrix._moveInitItems(*this, 0, splitColumnNr, 0, 0, m_NrOfRows, c_NewDestNrOfColumns);
