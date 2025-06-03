@@ -3437,17 +3437,23 @@ void Matrix<T>::splitByRow(Matrix& matrix, size_type splitRowNr)
         matrix._deallocMemory();
         matrix._allocMemory(c_NewDestNrOfRows, m_NrOfColumns, c_NewDestRowCapacity, c_NewDestColumnCapacity);
     }
-
-    matrix._alignToTop();
-    matrix._moveInitItems(*this, splitRowNr, 0, 0, 0, c_NewDestNrOfRows, m_NrOfColumns);
-
-    if (c_NewDestNrOfRows < matrix.m_NrOfRows)
+    else
     {
-        matrix._destroyItems(c_NewDestNrOfRows, 0, matrix.m_NrOfRows - c_NewDestNrOfRows, matrix.m_NrOfColumns);
+        if (!matrix.isEmpty())
+        {
+            matrix._alignToTop();
+            matrix._destroyItems(0, 0, matrix.m_NrOfRows, matrix.m_NrOfColumns);
+            matrix.m_NrOfRows = c_NewDestNrOfRows;
+            matrix.m_NrOfColumns = m_NrOfColumns;
+            matrix._normalizeRowCapacity();
+        }
+        else
+        {
+            assert(false);
+        }
     }
 
-    matrix.m_NrOfRows = c_NewDestNrOfRows;
-    matrix._normalizeRowCapacity();
+    matrix._moveInitItems(*this, splitRowNr, 0, 0, 0, c_NewDestNrOfRows, m_NrOfColumns);
 
     _destroyItems(splitRowNr, 0, c_NewDestNrOfRows, m_NrOfColumns);
     m_NrOfRows = splitRowNr;
