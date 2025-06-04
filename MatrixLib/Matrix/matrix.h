@@ -3470,21 +3470,20 @@ void Matrix<T>::splitByColumn(Matrix& matrix, size_type splitColumnNr)
     const size_type c_NewDestRowCapacity{std::max<size_type>(matrix.m_RowCapacity, m_NrOfRows)};
     const size_type c_NewDestColumnCapacity{std::max<size_type>(matrix.m_ColumnCapacity, c_NewDestNrOfColumns)};
 
-    if (!matrix.m_ColumnCapacityOffset.has_value() /* empty matrix */ ||
+    if (matrix.isEmpty() ||
         c_NewDestRowCapacity > matrix.m_RowCapacity ||
-        c_NewDestColumnCapacity > matrix.m_ColumnCapacity ||
-        c_NewDestNrOfColumns > (matrix.m_ColumnCapacity - *matrix.m_ColumnCapacityOffset))
+        c_NewDestColumnCapacity > matrix.m_ColumnCapacity)
     {
         matrix._deallocMemory();
         matrix._allocMemory(m_NrOfRows, c_NewDestNrOfColumns, c_NewDestRowCapacity, c_NewDestColumnCapacity);
     }
     else
     {
-        matrix._alignToTop();
         matrix._destroyItems(0, 0, matrix.m_NrOfRows, matrix.m_NrOfColumns);
         matrix.m_NrOfRows = m_NrOfRows;
         matrix.m_NrOfColumns = c_NewDestNrOfColumns;
-        matrix._normalizeRowCapacity();
+        matrix.m_RowCapacityOffset = (matrix.m_RowCapacity - matrix.m_NrOfRows) / 2;
+        matrix.m_ColumnCapacityOffset = (matrix.m_ColumnCapacity - matrix.m_NrOfColumns) / 2;
     }
 
     matrix._moveInitItems(*this, 0, splitColumnNr, 0, 0, m_NrOfRows, c_NewDestNrOfColumns);
