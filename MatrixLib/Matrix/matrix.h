@@ -3445,6 +3445,12 @@ void Matrix<T>::splitByRow(Matrix& matrix, size_type splitRowNr)
         matrix.m_NrOfColumns = m_NrOfColumns;
         matrix.m_RowCapacityOffset = (matrix.m_RowCapacity - matrix.m_NrOfRows) / 2;
         matrix.m_ColumnCapacityOffset = (matrix.m_ColumnCapacity - matrix.m_NrOfColumns) / 2;
+
+        // re-map row pointers to allocated space, each pointer manages part of the memory array (no overlap allowed, left free column capacity excluded)
+        for (size_type rowNr{0}; rowNr < matrix.m_RowCapacity; ++rowNr)
+        {
+            matrix.m_pBaseArrayPtr[rowNr] = matrix.m_pAllocPtr + (rowNr * matrix.m_ColumnCapacity) + *matrix.m_ColumnCapacityOffset;
+        }
     }
 
     matrix._moveInitItems(*this, splitRowNr, 0, 0, 0, c_NewDestNrOfRows, m_NrOfColumns);
@@ -3479,6 +3485,12 @@ void Matrix<T>::splitByColumn(Matrix& matrix, size_type splitColumnNr)
         matrix.m_NrOfColumns = c_NewDestNrOfColumns;
         matrix.m_RowCapacityOffset = (matrix.m_RowCapacity - matrix.m_NrOfRows) / 2;
         matrix.m_ColumnCapacityOffset = (matrix.m_ColumnCapacity - matrix.m_NrOfColumns) / 2;
+
+        // re-map row pointers to allocated space, each pointer manages part of the memory array (no overlap allowed, left free column capacity excluded)
+        for (size_type rowNr{0}; rowNr < matrix.m_RowCapacity; ++rowNr)
+        {
+            matrix.m_pBaseArrayPtr[rowNr] = matrix.m_pAllocPtr + (rowNr * matrix.m_ColumnCapacity) + *matrix.m_ColumnCapacityOffset;
+        }
     }
 
     matrix._moveInitItems(*this, 0, splitColumnNr, 0, 0, m_NrOfRows, c_NewDestNrOfColumns);
