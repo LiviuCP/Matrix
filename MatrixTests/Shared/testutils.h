@@ -71,13 +71,10 @@ enum class ConcatMode : unsigned short
 // matrix splitting
 enum class SplitMode : unsigned short
 {
-    ALL_DIFFERENT,
-    SOURCE_FIRST,
-    SOURCE_SECOND,
+    SOURCE_TO_DESTINATION,
 
     // for exceptions testing only
-    DESTINATION_BOTH,
-    DESTINATION_ALL
+    TO_ITSELF
 };
 
 // useful macros shared between various test cases

@@ -2,7 +2,6 @@
 #define ERROR_HANDLING_H
 
 #include <map>
-#include <cassert>
 #include <string>
 
 #ifndef ERROR_CHECKING_DISABLED
@@ -47,7 +46,7 @@ namespace Matr
         INVALID_ELEMENT_INDEX,
         RESULT_NO_ROWS,
         RESULT_NO_COLUMNS,
-        SAME_VARIABLE_TWO_ARGS,
+        CURRENT_MATRIX_AS_ARGUMENT,
         EMPTY_MATRIX,
         DEREFERENCE_END_ITERATOR,
         INCOMPATIBLE_ITERATORS,
@@ -72,7 +71,7 @@ namespace Matr
         {    Errors::INVALID_ELEMENT_INDEX,                              string{"Attempt to reference a matrix element with invalid index"}                                                                      },
         {    Errors::RESULT_NO_ROWS,                                     string{"The resulting matrix has 0 rows"}                                                                                               },
         {    Errors::RESULT_NO_COLUMNS,                                  string{"The resulting matrix has 0 columns"}                                                                                            },
-        {    Errors::SAME_VARIABLE_TWO_ARGS,                             string{"Same variable passed as two arguments to the function. This is not allowed for this method."}                                   },
+        {    Errors::CURRENT_MATRIX_AS_ARGUMENT,                         string{"The current matrix has been provided as argument. This is not allowed for this method."}                                        },
         {    Errors::EMPTY_MATRIX,                                       string{"Illegal operation on empty matrix"}                                                                                             },
         {    Errors::DEREFERENCE_END_ITERATOR,                           string{"Attempt to dereference an end iterator"}                                                                                        },
         {    Errors::INCOMPATIBLE_ITERATORS,                             string{"The two iterators are incompatible, their matrix parameters differ"}                                                            },

@@ -253,8 +253,7 @@ void CommonExceptionTests::testCatByColumnExceptions()
 void CommonExceptionTests::testSplitByRowExceptions()
 {
     QFETCH(IntMatrix, srcMatrix);
-    QFETCH(IntMatrix, firstDestMatrix);
-    QFETCH(IntMatrix, secondDestMatrix);
+    QFETCH(IntMatrix, destMatrix);
     QFETCH(matrix_size_t, splitPosition);
     QFETCH(SplitMode, mode);
 
@@ -262,22 +261,14 @@ void CommonExceptionTests::testSplitByRowExceptions()
                              {
                                  switch(mode)
                                  {
-                                 case SplitMode::ALL_DIFFERENT:
-                                     srcMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
+                                 case SplitMode::SOURCE_TO_DESTINATION:
+                                     srcMatrix.splitByRow(destMatrix, splitPosition);
                                      break;
-                                 case SplitMode::SOURCE_FIRST:
-                                     firstDestMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
-                                     break;
-                                 case SplitMode::SOURCE_SECOND:
-                                     secondDestMatrix.splitByRow(firstDestMatrix, secondDestMatrix, splitPosition);
-                                     break;
-                                 case SplitMode::DESTINATION_BOTH:
-                                     srcMatrix.splitByRow(firstDestMatrix, firstDestMatrix, splitPosition);
-                                     break;
-                                 case SplitMode::DESTINATION_ALL:
-                                     firstDestMatrix.splitByRow(firstDestMatrix, firstDestMatrix, splitPosition);
+                                 case SplitMode::TO_ITSELF:
+                                     destMatrix.splitByRow(destMatrix, splitPosition);
                                      break;
                                  default:
+                                     assert(false);
                                      break;
                                  }
                              });
@@ -286,8 +277,7 @@ void CommonExceptionTests::testSplitByRowExceptions()
 void CommonExceptionTests::testSplitByColumnExceptions()
 {
     QFETCH(IntMatrix, srcMatrix);
-    QFETCH(IntMatrix, firstDestMatrix);
-    QFETCH(IntMatrix, secondDestMatrix);
+    QFETCH(IntMatrix, destMatrix);
     QFETCH(matrix_size_t, splitPosition);
     QFETCH(SplitMode, mode);
 
@@ -295,22 +285,14 @@ void CommonExceptionTests::testSplitByColumnExceptions()
                              {
                                  switch(mode)
                                  {
-                                 case SplitMode::ALL_DIFFERENT:
-                                     srcMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
+                                 case SplitMode::SOURCE_TO_DESTINATION:
+                                     srcMatrix.splitByColumn(destMatrix, splitPosition);
                                      break;
-                                 case SplitMode::SOURCE_FIRST:
-                                     firstDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
-                                     break;
-                                 case SplitMode::SOURCE_SECOND:
-                                     secondDestMatrix.splitByColumn(firstDestMatrix, secondDestMatrix, splitPosition);
-                                     break;
-                                 case SplitMode::DESTINATION_BOTH:
-                                     srcMatrix.splitByColumn(firstDestMatrix, firstDestMatrix, splitPosition);
-                                     break;
-                                 case SplitMode::DESTINATION_ALL:
-                                     firstDestMatrix.splitByColumn(firstDestMatrix, firstDestMatrix, splitPosition);
+                                 case SplitMode::TO_ITSELF:
+                                     destMatrix.splitByColumn(destMatrix, splitPosition);
                                      break;
                                  default:
+                                     assert(false);
                                      break;
                                  }
                              });
@@ -515,35 +497,43 @@ void CommonExceptionTests::testCatByColumnExceptions_data()
 void CommonExceptionTests::testSplitByRowExceptions_data()
 {
     QTest::addColumn<IntMatrix>("srcMatrix");
-    QTest::addColumn<IntMatrix>("firstDestMatrix");
-    QTest::addColumn<IntMatrix>("secondDestMatrix");
+    QTest::addColumn<IntMatrix>("destMatrix");
     QTest::addColumn<matrix_size_t>("splitPosition");
     QTest::addColumn<SplitMode>("mode");
 
-    QTest::newRow("1: destination both") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << matrix_size_t{1u} << SplitMode::DESTINATION_BOTH;
-    QTest::newRow("2: destination both") << IntMatrix{} << IntMatrix{} << IntMatrix{} << matrix_size_t{0u} << SplitMode::DESTINATION_BOTH;
-    QTest::newRow("3: destination all") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{1u} << SplitMode::DESTINATION_ALL;
-    QTest::newRow("4: destination all") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{0u} << SplitMode::DESTINATION_ALL;
-    QTest::newRow("5: all different") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << matrix_size_t{0u} << SplitMode::ALL_DIFFERENT;
-    QTest::newRow("6: all different") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << matrix_size_t{2u} << SplitMode::ALL_DIFFERENT;
-    QTest::newRow("7: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{} << matrix_size_t{0u} << SplitMode::ALL_DIFFERENT;
+    QTest::newRow("1: source split to destination") << IntMatrix{} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("2: source split to destination") << IntMatrix{} << IntMatrix{} << matrix_size_t{1u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("3: source split to destination") << IntMatrix{1, 3, {1, -2, 3}} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("4: source split to destination") << IntMatrix{1, 3, {1, -2, 3}} << IntMatrix{} << matrix_size_t{1u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("5: source split to destination") << IntMatrix{1, 3, {1, -2, 3}} << IntMatrix{} << matrix_size_t{2u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("6: source split to destination") << IntMatrix{2, 3, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("7: source split to destination") << IntMatrix{2, 3, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{2u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("8: source split to destination") << IntMatrix{2, 3, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{3u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("9: source split to destination") << IntMatrix{{c_MaxAllowedDimension, 3}, -5} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("10: source split to destination") << IntMatrix{{c_MaxAllowedDimension, 3}, -5} << IntMatrix{} << c_MaxAllowedDimension << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("11: source split to destination") << IntMatrix{{c_MaxAllowedDimension, 3}, -5} << IntMatrix{} << c_ExceedingDimension << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("12: source split to itself") << IntMatrix{2, 3, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{1u} << SplitMode::TO_ITSELF;
 }
 
 void CommonExceptionTests::testSplitByColumnExceptions_data()
 {
     QTest::addColumn<IntMatrix>("srcMatrix");
-    QTest::addColumn<IntMatrix>("firstDestMatrix");
-    QTest::addColumn<IntMatrix>("secondDestMatrix");
+    QTest::addColumn<IntMatrix>("destMatrix");
     QTest::addColumn<matrix_size_t>("splitPosition");
     QTest::addColumn<SplitMode>("mode");
 
-    QTest::newRow("1: destination both") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << matrix_size_t{1u} << SplitMode::DESTINATION_BOTH;
-    QTest::newRow("2: destination both") << IntMatrix{} << IntMatrix{} << IntMatrix{} << matrix_size_t{0u} << SplitMode::DESTINATION_BOTH;
-    QTest::newRow("3: destination all") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << matrix_size_t{1u} << SplitMode::DESTINATION_ALL;
-    QTest::newRow("4: destination all") << IntMatrix{} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{0u} << SplitMode::DESTINATION_ALL;
-    QTest::newRow("5: all different") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << matrix_size_t{0u} << SplitMode::ALL_DIFFERENT;
-    QTest::newRow("6: all different") << IntMatrix{3, 2, {1, 2, 3, 4, 5, 6}} << IntMatrix{} << IntMatrix{} << matrix_size_t{2u} << SplitMode::ALL_DIFFERENT;
-    QTest::newRow("7: all different") << IntMatrix{} << IntMatrix{} << IntMatrix{} << matrix_size_t{0u} << SplitMode::ALL_DIFFERENT;
+    QTest::newRow("1: source split to destination") << IntMatrix{} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("2: source split to destination") << IntMatrix{} << IntMatrix{} << matrix_size_t{1u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("3: source split to destination") << IntMatrix{3, 1, {1, -2, 3}} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("4: source split to destination") << IntMatrix{3, 1, {1, -2, 3}} << IntMatrix{} << matrix_size_t{1u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("5: source split to destination") << IntMatrix{3, 1, {1, -2, 3}} << IntMatrix{} << matrix_size_t{2u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("6: source split to destination") << IntMatrix{3, 2, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("7: source split to destination") << IntMatrix{3, 2, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{2u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("8: source split to destination") << IntMatrix{3, 2, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{3u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("9: source split to destination") << IntMatrix{{3, c_MaxAllowedDimension}, -5} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("10: source split to destination") << IntMatrix{{3, c_MaxAllowedDimension}, -5} << IntMatrix{} << c_MaxAllowedDimension << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("11: source split to destination") << IntMatrix{{3, c_MaxAllowedDimension}, -5} << IntMatrix{} << c_ExceedingDimension << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("12: source split to itself") << IntMatrix{3, 2, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{1u} << SplitMode::TO_ITSELF;
 }
 
 void CommonExceptionTests::testSwapRowsOrColumnsExceptions_data()

@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <optional>
 #include <vector>
+#include <cassert>
 
 #include "../Utils/iteratorutils.h"
 #include "../Utils/errorhandling.h"
@@ -314,10 +315,10 @@ public:
     void catByColumn(Matrix& matrix);
 
     // vertical splitting
-    void splitByRow(Matrix& firstMatrix, Matrix& secondMatrix, size_type splitRowNr);
+    void splitByRow(Matrix& matrix, Matrix<T>::size_type splitRowNr);
 
     // horizontal splitting
-    void splitByColumn(Matrix& firstMatrix, Matrix& secondMatrix, size_type splitColumnNr);
+    void splitByColumn(Matrix& matrix, size_type splitColumnNr);
 
     void swapRows(size_type firstRowNr, size_type secondRowNr);
     void swapColumns(size_type firstColumnNr, size_type secondColumnNr);
@@ -479,6 +480,9 @@ private:
 
     // ensure the current number of rows and columns is saved to local variables if still needed further
     void _deallocMemory();
+
+    // clears the initialized memory (without de-allocation - capacity stays constant) and remaps it for the requested number of rows and columns
+    void _remapMemory(size_type nrOfRows, size_type nrOfColumns);
 
     // resize the matrix (no elements initialization) by ensuring the new row/column capacity is not lower than the new number of rows/columns
     void _adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns);
@@ -3420,80 +3424,62 @@ void Matrix<T>::catByColumn(Matrix& matrix)
 }
 
 template<MatrixElementType T>
-void Matrix<T>::splitByRow(Matrix<T>& firstMatrix,
-                           Matrix<T>& secondMatrix,
-                           Matrix<T>::size_type splitRowNr)
+void Matrix<T>::splitByRow(Matrix& matrix, size_type splitRowNr)
 {
-    CHECK_ERROR_CONDITION(&firstMatrix == &secondMatrix, Matr::errorMessages[Matr::Errors::SAME_VARIABLE_TWO_ARGS]);
+    CHECK_ERROR_CONDITION(&matrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARGUMENT]);
     CHECK_ERROR_CONDITION(splitRowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
-    CHECK_ERROR_CONDITION(splitRowNr == 0, Matr::errorMessages[Matr::Errors::RESULT_NO_ROWS]);
+    CHECK_ERROR_CONDITION(0 == splitRowNr, Matr::errorMessages[Matr::Errors::RESULT_NO_ROWS]);
 
-    if (&firstMatrix == this || &secondMatrix == this)
+    const size_type c_NewDestNrOfRows{static_cast<size_type>(m_NrOfRows - splitRowNr)};
+    const size_type c_NewDestRowCapacity{std::max<size_type>(matrix.m_RowCapacity, c_NewDestNrOfRows)};
+    const size_type c_NewDestColumnCapacity{std::max<size_type>(matrix.m_ColumnCapacity, m_NrOfColumns)};
+
+    if (matrix.isEmpty() ||
+        c_NewDestRowCapacity > matrix.m_RowCapacity ||
+        c_NewDestColumnCapacity > matrix.m_ColumnCapacity)
     {
-        Matrix& currentMatrix{&firstMatrix == this ? firstMatrix : secondMatrix};
-        Matrix& otherMatrix{&firstMatrix == this ? secondMatrix : firstMatrix};
-
-        const size_type c_CurrentMatrixNewNrOfRows{&firstMatrix == this ? splitRowNr : static_cast<size_type>(currentMatrix.m_NrOfRows - splitRowNr)};
-        const size_type c_CurrentMatrixRemainingItemsStartingRowNr{&firstMatrix == this ? size_type{0} : splitRowNr};
-
-        // step 1: move items that should be removed from current matrix ("this") to the other destination matrix
-        otherMatrix._adjustSizeAndCapacity(currentMatrix.m_NrOfRows - c_CurrentMatrixNewNrOfRows, currentMatrix.m_NrOfColumns);
-        otherMatrix._moveInitItems(currentMatrix, splitRowNr - c_CurrentMatrixRemainingItemsStartingRowNr, 0, 0, 0, otherMatrix.m_NrOfRows, otherMatrix.m_NrOfColumns);
-
-        // step 2: update the current matrix: move kept elements into correct positions and remove/destroy elements that belong to the other destination matrix (their content already moved in previous step)
-        T** const pCurrentMatrixStartingRow{currentMatrix.m_pBaseArrayPtr + *currentMatrix.m_RowCapacityOffset};
-        std::rotate(pCurrentMatrixStartingRow, pCurrentMatrixStartingRow + c_CurrentMatrixRemainingItemsStartingRowNr, pCurrentMatrixStartingRow + currentMatrix.m_NrOfRows);
-        currentMatrix._destroyItems(splitRowNr, 0, currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns);
-        currentMatrix.m_NrOfRows = c_CurrentMatrixNewNrOfRows;
+        matrix._deallocMemory();
+        matrix._allocMemory(c_NewDestNrOfRows, m_NrOfColumns, c_NewDestRowCapacity, c_NewDestColumnCapacity);
     }
     else
     {
-        firstMatrix._adjustSizeAndCapacity(splitRowNr, m_NrOfColumns);
-        firstMatrix._copyInitItems(*this, 0, 0, 0, 0, firstMatrix.m_NrOfRows, m_NrOfColumns);
-        secondMatrix._adjustSizeAndCapacity(m_NrOfRows - splitRowNr, m_NrOfColumns);
-        secondMatrix._copyInitItems(*this, splitRowNr, 0, 0, 0, secondMatrix.m_NrOfRows, m_NrOfColumns);
+        matrix._remapMemory(c_NewDestNrOfRows, m_NrOfColumns);
     }
+
+    matrix._moveInitItems(*this, splitRowNr, 0, 0, 0, c_NewDestNrOfRows, m_NrOfColumns);
+
+    _destroyItems(splitRowNr, 0, c_NewDestNrOfRows, m_NrOfColumns);
+    m_NrOfRows = splitRowNr;
+    _normalizeRowCapacity();
 }
 
 template<MatrixElementType T>
-void Matrix<T>::splitByColumn(Matrix<T>& firstMatrix,
-                              Matrix<T>& secondMatrix,
-                              Matrix<T>::size_type splitColumnNr)
+void Matrix<T>::splitByColumn(Matrix& matrix, size_type splitColumnNr)
 {
-    CHECK_ERROR_CONDITION(&firstMatrix == &secondMatrix, Matr::errorMessages[Matr::Errors::SAME_VARIABLE_TWO_ARGS]);
+    CHECK_ERROR_CONDITION(&matrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARGUMENT]);
     CHECK_ERROR_CONDITION(splitColumnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
-    CHECK_ERROR_CONDITION(splitColumnNr == 0, Matr::errorMessages[Matr::Errors::RESULT_NO_COLUMNS]);
+    CHECK_ERROR_CONDITION(0 == splitColumnNr, Matr::errorMessages[Matr::Errors::RESULT_NO_COLUMNS]);
 
-    if (&firstMatrix == this || &secondMatrix == this)
+    const size_type c_NewDestNrOfColumns{static_cast<size_type>(m_NrOfColumns - splitColumnNr)};
+    const size_type c_NewDestRowCapacity{std::max<size_type>(matrix.m_RowCapacity, m_NrOfRows)};
+    const size_type c_NewDestColumnCapacity{std::max<size_type>(matrix.m_ColumnCapacity, c_NewDestNrOfColumns)};
+
+    if (matrix.isEmpty() ||
+        c_NewDestRowCapacity > matrix.m_RowCapacity ||
+        c_NewDestColumnCapacity > matrix.m_ColumnCapacity)
     {
-        Matrix& currentMatrix{&firstMatrix == this ? firstMatrix : secondMatrix};
-        Matrix& otherMatrix{&firstMatrix == this ? secondMatrix : firstMatrix};
-
-        const size_type c_CurrentMatrixNewNrOfColumns{&firstMatrix == this ? splitColumnNr : static_cast<size_type>(currentMatrix.m_NrOfColumns - splitColumnNr)};
-        const size_type c_CurrentMatrixRemainingItemsColumnOffset{&firstMatrix == this ? size_type{0} : splitColumnNr};
-
-        // step 1: move items that should be removed from current matrix ("this") to the other destination matrix
-        otherMatrix._adjustSizeAndCapacity(currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns - c_CurrentMatrixNewNrOfColumns);
-        otherMatrix._moveInitItems(currentMatrix, 0, splitColumnNr - c_CurrentMatrixRemainingItemsColumnOffset, 0, 0, otherMatrix.m_NrOfRows, otherMatrix.m_NrOfColumns);
-
-        // step 2: update the current matrix: move kept elements into correct positions and remove/destroy elements that belong to the other destination matrix (their content already moved in previous step)
-        for (size_type currentMatrixAbsRowNr{*currentMatrix.m_RowCapacityOffset}; currentMatrixAbsRowNr != currentMatrix.m_NrOfRows + *currentMatrix.m_RowCapacityOffset; ++currentMatrixAbsRowNr)
-        {
-            std::copy(currentMatrix.m_pBaseArrayPtr[currentMatrixAbsRowNr] + c_CurrentMatrixRemainingItemsColumnOffset,
-                      currentMatrix.m_pBaseArrayPtr[currentMatrixAbsRowNr] + currentMatrix.m_NrOfColumns,
-                      currentMatrix.m_pBaseArrayPtr[currentMatrixAbsRowNr]);
-        }
-
-        currentMatrix._destroyItems(0, c_CurrentMatrixNewNrOfColumns, currentMatrix.m_NrOfRows, currentMatrix.m_NrOfColumns - c_CurrentMatrixNewNrOfColumns);
-        currentMatrix.m_NrOfColumns = c_CurrentMatrixNewNrOfColumns;
+        matrix._deallocMemory();
+        matrix._allocMemory(m_NrOfRows, c_NewDestNrOfColumns, c_NewDestRowCapacity, c_NewDestColumnCapacity);
     }
     else
     {
-        firstMatrix._adjustSizeAndCapacity(m_NrOfRows, splitColumnNr);
-        firstMatrix._copyInitItems(*this, 0, 0, 0, 0, m_NrOfRows, splitColumnNr);
-        secondMatrix._adjustSizeAndCapacity(m_NrOfRows, m_NrOfColumns - splitColumnNr);
-        secondMatrix._copyInitItems(*this, 0, splitColumnNr, 0, 0, m_NrOfRows, secondMatrix.m_NrOfColumns);
+        matrix._remapMemory(m_NrOfRows, c_NewDestNrOfColumns);
     }
+
+    matrix._moveInitItems(*this, 0, splitColumnNr, 0, 0, m_NrOfRows, c_NewDestNrOfColumns);
+
+    _destroyItems(0, splitColumnNr, m_NrOfRows, c_NewDestNrOfColumns);
+    m_NrOfColumns = splitColumnNr;
 }
 
 template <MatrixElementType T>
@@ -4522,6 +4508,33 @@ void Matrix<T>::_deallocMemory()
         m_ColumnCapacity = 0;
         m_RowCapacityOffset.reset();
         m_ColumnCapacityOffset.reset();
+    }
+}
+
+// This method should be executed only for already initialized memory; the memory should be subsequently re-initialized by running another function
+template<MatrixElementType T>
+void Matrix<T>::_remapMemory(Matrix<T>::size_type nrOfRows,
+                             Matrix<T>::size_type nrOfColumns)
+{
+    if (!isEmpty())
+    {
+        nrOfRows = std::clamp<size_type>(nrOfRows, 1, m_RowCapacity);
+        nrOfColumns = std::clamp<size_type>(nrOfColumns, 1, m_ColumnCapacity);
+
+        _destroyItems(0, 0, m_NrOfRows, m_NrOfColumns);
+
+        m_NrOfRows = nrOfRows;
+        m_NrOfColumns = nrOfColumns;
+
+        // capacity gets distributed in an even manner as for new allocations (unused capacity equally distributed between left/right and top/bottom)
+        m_RowCapacityOffset = (m_RowCapacity - m_NrOfRows) / 2;
+        m_ColumnCapacityOffset = (m_ColumnCapacity - m_NrOfColumns) / 2;
+
+        // re-map row pointers to allocated space, each pointer manages part of the memory array (no overlap allowed, left free column capacity excluded)
+        for (size_type rowNr{0}; rowNr < m_RowCapacity; ++rowNr)
+        {
+            m_pBaseArrayPtr[rowNr] = m_pAllocPtr + (rowNr * m_ColumnCapacity) + *m_ColumnCapacityOffset;
+        }
     }
 }
 
