@@ -488,10 +488,10 @@ private:
     void _adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns);
 
     // used for matrix-to-matrix copy construction and assignment
-    void _copyAllItemsFromMatrix(const Matrix& matrix);
+    void _copyAssignMatrix(const Matrix& matrix);
 
     // used for the matrix-to-matrix move construction and assignment
-    void _moveAllItemsFromMatrix(Matrix& matrix);
+    void _moveAssignMatrix(Matrix& matrix);
 
     // initialize all or part of the elements by copying from source matrix
     void _copyInitItems(const Matrix& matrix, size_type matrixStartingRowNr, size_type matrixColumnOffset, size_type startingRowNr, size_type columnOffset, size_type nrOfRows, size_type nrOfColumns);
@@ -2881,16 +2881,14 @@ template <MatrixElementType T>
 Matrix<T>::Matrix(const Matrix<T>& matrix)
     : Matrix{}
 {
-    if (!matrix.isEmpty())
-    {
-        _copyAllItemsFromMatrix(matrix);
-    }
+    _copyAssignMatrix(matrix);
 }
 
 template<MatrixElementType T>
 Matrix<T>::Matrix(Matrix<T>&& matrix)
+    : Matrix{}
 {
-    _moveAllItemsFromMatrix(matrix);
+    _moveAssignMatrix(matrix);
 }
 
 template<MatrixElementType T>
@@ -2932,32 +2930,14 @@ const T& Matrix<T>::operator[](Matrix<T>::diff_type index) const
 template <MatrixElementType T>
 Matrix<T>& Matrix<T>::operator=(const Matrix<T>& matrix)
 {
-    if (&matrix != this)
-    {
-        // this de-allocation is required for performance reasons (free memory before the copy operation that follows) - would be performed anyway at move assignment
-        _deallocMemory();
-
-        // _copyAllItemsFromMatrix(matrix) would have been a more elegant solution, however a crash occurred in some tests (the root cause hasn't been found yet)
-        Matrix temp{matrix};
-        *this = std::move(temp);
-    }
-
+    _copyAssignMatrix(matrix);
     return *this;
 }
 
 template<MatrixElementType T>
 Matrix<T>& Matrix<T>::operator=(Matrix<T>&& matrix)
 {
-    if (&matrix != this)
-    {
-        if (m_pBaseArrayPtr)
-        {
-            _deallocMemory();
-        }
-
-        _moveAllItemsFromMatrix(matrix);
-    }
-
+    _moveAssignMatrix(matrix);
     return *this;
 }
 
@@ -4172,7 +4152,11 @@ std::pair<typename Matrix<T>::size_type,
     const size_type c_NrOfColumnsToKeep{std::min(m_NrOfColumns, c_NewNrOfColumns)};
     const std::optional<size_type> c_NewRowCapacityOffset{c_NewNrOfRows > 0 ? std::optional((c_NewRowCapacity - c_NewNrOfRows) / 2) : std::nullopt};
 
-    if (!m_RowCapacityOffset.has_value() || !c_NewRowCapacityOffset.has_value() || c_NewRowCapacity != m_RowCapacity || c_NewColumnCapacity != m_ColumnCapacity || c_NewNrOfColumns > (m_ColumnCapacity - *m_ColumnCapacityOffset))
+    if (!m_RowCapacityOffset.has_value() /* empty matrix, column capacity offset std::nullopt as well */ ||
+        !c_NewRowCapacityOffset.has_value() ||
+        c_NewRowCapacity != m_RowCapacity ||
+        c_NewColumnCapacity != m_ColumnCapacity ||
+        c_NewNrOfColumns > (m_ColumnCapacity - *m_ColumnCapacityOffset))
     {
         Matrix matrix{std::move(*this)};
         _deallocMemory(); // actually not required, just for safety purposes
@@ -4225,6 +4209,7 @@ void Matrix<T>::_insertUninitializedRow(Matrix<T>::size_type rowNr)
     }
     else
     {
+        // row capacity offset cannot be std::nullopt as the matrix is not empty (rows count doesn't equal row capacity)
         const bool c_ShouldAppendRow{c_RowNr <= m_NrOfRows / 2 ? (0 == *m_RowCapacityOffset) : (m_RowCapacity - *m_RowCapacityOffset > m_NrOfRows)};
         ++m_NrOfRows;
 
@@ -4264,6 +4249,7 @@ typename Matrix<T>::size_type Matrix<T>::_insertUninitializedColumn(Matrix<T>::s
     }
     else
     {
+        // row capacity offset cannot be std::nullopt as the matrix is not empty (columns count doesn't equal column capacity)
         const bool c_ShouldAppendColumn{resultingColumnNr <= m_NrOfColumns / 2 ? (0 == m_ColumnCapacityOffset) : (m_ColumnCapacity - *m_ColumnCapacityOffset > m_NrOfColumns)};
 
         if (c_ShouldAppendColumn)
@@ -4273,7 +4259,7 @@ typename Matrix<T>::size_type Matrix<T>::_insertUninitializedColumn(Matrix<T>::s
         else
         {
             resultingColumnNr = 0;
-            --*m_ColumnCapacityOffset;
+            m_ColumnCapacityOffset = *m_ColumnCapacityOffset - 1;
 
             // make the newly added column visible
             for (size_type rowNr{0}; rowNr < m_RowCapacity; ++rowNr)
@@ -4426,7 +4412,9 @@ void Matrix<T>::_normalizeRowCapacity()
 {
     const std::optional<size_type> c_NormalizedRowCapacityOffset{m_NrOfRows > 0 ? std::optional((m_RowCapacity - m_NrOfRows) / 2) : std::nullopt};
 
-    if (m_RowCapacityOffset.has_value() && (c_NormalizedRowCapacityOffset.has_value() && c_NormalizedRowCapacityOffset > 0) && m_RowCapacityOffset < c_NormalizedRowCapacityOffset)
+    if (m_RowCapacityOffset.has_value() &&
+        (c_NormalizedRowCapacityOffset.has_value() && c_NormalizedRowCapacityOffset > 0) &&
+        m_RowCapacityOffset < c_NormalizedRowCapacityOffset)
     {
         const size_type c_LastRowNr{static_cast<size_type>(m_NrOfRows - 1)};
         T** const pStartingRow{m_pBaseArrayPtr + *m_RowCapacityOffset};
@@ -4552,7 +4540,7 @@ void Matrix<T>::_adjustSizeAndCapacity(Matrix<T>::size_type nrOfRows,
 }
 
 template<MatrixElementType T>
-void Matrix<T>::_copyAllItemsFromMatrix(const Matrix<T>& matrix)
+void Matrix<T>::_copyAssignMatrix(const Matrix<T>& matrix)
 {
     if (&matrix != this)
     {
@@ -4572,15 +4560,7 @@ void Matrix<T>::_copyAllItemsFromMatrix(const Matrix<T>& matrix)
         }
         else
         {
-            /* ensure existing elements are destroyed correctly
-              (the number of rows/columns between the two matrixes might not coincide meaning some elements might be left "hanging" - outside bounds elements should be uninitialized)
-            */
-            _destroyItems(0, 0, m_NrOfRows, m_NrOfColumns);
-
-            m_NrOfRows = matrix.m_NrOfRows;
-            m_NrOfColumns = matrix.m_NrOfColumns;
-            m_RowCapacityOffset = (m_RowCapacity - m_NrOfRows) / 2;
-            m_ColumnCapacityOffset = (m_ColumnCapacity - m_NrOfColumns) / 2;
+            _remapMemory(matrix.m_NrOfRows, matrix.m_NrOfColumns);
         }
 
         _copyInitItems(matrix, 0, 0, 0, 0, m_NrOfRows, m_NrOfColumns);
@@ -4588,18 +4568,23 @@ void Matrix<T>::_copyAllItemsFromMatrix(const Matrix<T>& matrix)
 }
 
 template<MatrixElementType T>
-void Matrix<T>::_moveAllItemsFromMatrix(Matrix<T>& matrix)
+void Matrix<T>::_moveAssignMatrix(Matrix<T>& matrix)
 {
-    m_pAllocPtr = matrix.m_pAllocPtr;
-    m_pBaseArrayPtr = matrix.m_pBaseArrayPtr;
-    m_NrOfRows = matrix.m_NrOfRows;
-    m_NrOfColumns = matrix.m_NrOfColumns;
-    m_RowCapacity = matrix.m_RowCapacity;
-    m_ColumnCapacity = matrix.m_ColumnCapacity;
-    m_RowCapacityOffset = matrix.m_RowCapacityOffset;
-    m_ColumnCapacityOffset = matrix.m_ColumnCapacityOffset;
+    if (&matrix != this)
+    {
+        _deallocMemory();
 
-    matrix._allocMemory(0, 0);
+        m_pAllocPtr = matrix.m_pAllocPtr;
+        m_pBaseArrayPtr = matrix.m_pBaseArrayPtr;
+        m_NrOfRows = matrix.m_NrOfRows;
+        m_NrOfColumns = matrix.m_NrOfColumns;
+        m_RowCapacity = matrix.m_RowCapacity;
+        m_ColumnCapacity = matrix.m_ColumnCapacity;
+        m_RowCapacityOffset = matrix.m_RowCapacityOffset;
+        m_ColumnCapacityOffset = matrix.m_ColumnCapacityOffset;
+
+        matrix._allocMemory(0, 0);
+    }
 }
 
 template<MatrixElementType T>
@@ -4611,8 +4596,7 @@ void Matrix<T>::_copyInitItems(const Matrix<T>& matrix,
                                Matrix<T>::size_type nrOfRows,
                                Matrix<T>::size_type nrOfColumns)
 {
-    // emptiness check required due to capacity offset optionals (see below)
-    if (!isEmpty() && !matrix.isEmpty())
+    if (m_RowCapacityOffset.has_value() && matrix.m_RowCapacityOffset.has_value())
     {
         _externalClampSubMatrixSelectionParameters(matrix, matrixStartingRowNr, matrixColumnOffset, startingRowNr, columnOffset, nrOfRows, nrOfColumns);
 
@@ -4634,8 +4618,7 @@ void Matrix<T>::_moveInitItems(Matrix<T>& matrix,
                                Matrix<T>::size_type nrOfRows,
                                Matrix<T>::size_type nrOfColumns)
 {
-    // emptiness check required due to capacity offset optionals (see below)
-    if (!isEmpty() && !matrix.isEmpty())
+    if (m_RowCapacityOffset.has_value() && matrix.m_RowCapacityOffset.has_value())
     {
         _externalClampSubMatrixSelectionParameters(matrix, matrixStartingRowNr, matrixColumnOffset, startingRowNr, columnOffset, nrOfRows, nrOfColumns);
 
@@ -4655,11 +4638,14 @@ void Matrix<T>::_fillInitItems(Matrix<T>::size_type startingRowNr,
                                Matrix<T>::size_type nrOfColumns,
                                const T& value)
 {
-    _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
-
-    for (size_type absRowNr{static_cast<size_type>(*m_RowCapacityOffset + startingRowNr)}; absRowNr != *m_RowCapacityOffset + startingRowNr + nrOfRows; ++absRowNr)
+    if (m_RowCapacityOffset.has_value())
     {
-        std::uninitialized_fill_n(m_pBaseArrayPtr[absRowNr] + columnOffset, nrOfColumns, value);
+        _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
+
+        for (size_type absRowNr{static_cast<size_type>(*m_RowCapacityOffset + startingRowNr)}; absRowNr != *m_RowCapacityOffset + startingRowNr + nrOfRows; ++absRowNr)
+        {
+            std::uninitialized_fill_n(m_pBaseArrayPtr[absRowNr] + columnOffset, nrOfColumns, value);
+        }
     }
 }
 
@@ -4669,11 +4655,14 @@ void Matrix<T>::_defaultConstructInitItems(Matrix<T>::size_type startingRowNr,
                                            Matrix<T>::size_type nrOfRows,
                                            Matrix<T>::size_type nrOfColumns)
 {
-    _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
-
-    for (size_type absRowNr{static_cast<size_type>(*m_RowCapacityOffset + startingRowNr)}; absRowNr != *m_RowCapacityOffset + startingRowNr + nrOfRows; ++absRowNr)
+    if (m_RowCapacityOffset.has_value())
     {
-        std::uninitialized_default_construct_n(m_pBaseArrayPtr[absRowNr] + columnOffset, nrOfColumns);
+        _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
+
+        for (size_type absRowNr{static_cast<size_type>(*m_RowCapacityOffset + startingRowNr)}; absRowNr != *m_RowCapacityOffset + startingRowNr + nrOfRows; ++absRowNr)
+        {
+            std::uninitialized_default_construct_n(m_pBaseArrayPtr[absRowNr] + columnOffset, nrOfColumns);
+        }
     }
 }
 
@@ -4683,11 +4672,14 @@ void Matrix<T>::_destroyItems(Matrix<T>::size_type startingRowNr,
                               Matrix<T>::size_type nrOfRows,
                               Matrix<T>::size_type nrOfColumns)
 {
-    _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
-
-    for (size_type absRowNr{static_cast<size_type>(*m_RowCapacityOffset + startingRowNr)}; absRowNr != *m_RowCapacityOffset + startingRowNr + nrOfRows; ++absRowNr)
+    if (m_RowCapacityOffset.has_value())
     {
-        std::destroy_n(m_pBaseArrayPtr[absRowNr] + columnOffset, nrOfColumns);
+        _clampSubMatrixSelectionParameters(startingRowNr, columnOffset, nrOfRows, nrOfColumns);
+
+        for (size_type absRowNr{static_cast<size_type>(*m_RowCapacityOffset + startingRowNr)}; absRowNr != *m_RowCapacityOffset + startingRowNr + nrOfRows; ++absRowNr)
+        {
+            std::destroy_n(m_pBaseArrayPtr[absRowNr] + columnOffset, nrOfColumns);
+        }
     }
 }
 
