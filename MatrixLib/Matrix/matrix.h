@@ -472,6 +472,9 @@ private:
     // moves the matrix rows to top (row capacity offset set to 0) as preparation for performing specific operations (capacity can the be re-distributed by calling _normalizeRowCapacity())
     void _alignToTop();
 
+    // moves the matrix columns to left by the specified count of positions (which range between 0 and the current column capacity offset)
+    void _shiftColumnsLeft(size_type nrOfPositionsToShift);
+
     // normalize row capacity to have equal top/bottom unused capacity
     void _normalizeRowCapacity();
 
@@ -3360,8 +3363,17 @@ void Matrix<T>::catByColumn(Matrix& matrix)
 
     if (!matrix.isEmpty())
     {
-        if (c_NewNrOfColumns <= (m_ColumnCapacity - *m_ColumnCapacityOffset))
+        if (c_NewNrOfColumns <= m_ColumnCapacity)
         {
+            const size_type c_ColumnConcatenationSpace{static_cast<size_type>(m_ColumnCapacity - *m_ColumnCapacityOffset)};
+
+            // if not enough available capacity on the right side, then the columns should be shifted left by the minimal count of positions that ensure the concatenated content fits
+            if (c_NewNrOfColumns > c_ColumnConcatenationSpace)
+            {
+                const size_type c_NrOfColumnsToShiftLeft{static_cast<size_type>(c_NewNrOfColumns - c_ColumnConcatenationSpace)};
+                _shiftColumnsLeft(c_NrOfColumnsToShiftLeft);
+            }
+
             m_NrOfColumns = c_NewNrOfColumns;
 
             if (&matrix != this)
@@ -4404,6 +4416,50 @@ void Matrix<T>::_alignToTop()
     {
         std::rotate(m_pBaseArrayPtr, m_pBaseArrayPtr + *m_RowCapacityOffset, m_pBaseArrayPtr + *m_RowCapacityOffset + m_NrOfRows);
         m_RowCapacityOffset = 0;
+    }
+}
+
+template<MatrixElementType T>
+void Matrix<T>::_shiftColumnsLeft(Matrix<T>::size_type nrOfPositionsToShift)
+{
+    if (m_ColumnCapacityOffset.has_value())
+    {
+        nrOfPositionsToShift = std::clamp<size_type>(nrOfPositionsToShift, 0, *m_ColumnCapacityOffset);
+        m_ColumnCapacityOffset = *m_ColumnCapacityOffset - nrOfPositionsToShift;
+
+        const size_type c_OldNrOfColumns{m_NrOfColumns};
+
+        // Step 1: move row start to the left, get an additional count of uninitialized columns ("new" columns)
+        for (size_type rowNr{0}; rowNr < m_RowCapacity; ++rowNr)
+        {
+            m_pBaseArrayPtr[rowNr] = m_pAllocPtr + (rowNr * m_ColumnCapacity) + *m_ColumnCapacityOffset;
+        }
+
+        m_NrOfColumns += nrOfPositionsToShift;
+
+        const size_type c_FirstOldColumnNr = nrOfPositionsToShift;
+        const size_type c_NrOfColumnsToInitialize{std::min(nrOfPositionsToShift, c_OldNrOfColumns)};
+
+        // Step 2: initialize as many new columns as possible by moving the content of the existing ("old") ones
+        _moveInitItems(*this, 0, c_FirstOldColumnNr, 0, 0, m_NrOfRows, c_NrOfColumnsToInitialize);
+
+        // Step 3: any old columns that were not consumed for initializing the additional ones should be moved near the new columns to complete shifting; consumed columns should be destroyed
+        if (c_NrOfColumnsToInitialize < c_OldNrOfColumns)
+        {
+            for(size_type absRowNr{*m_RowCapacityOffset}; absRowNr != *m_RowCapacityOffset + m_NrOfRows; ++absRowNr)
+            {
+                std::rotate(m_pBaseArrayPtr[absRowNr] + nrOfPositionsToShift, m_pBaseArrayPtr[absRowNr] + static_cast<size_type>(nrOfPositionsToShift + c_NrOfColumnsToInitialize), m_pBaseArrayPtr[absRowNr] + nrOfPositionsToShift + c_OldNrOfColumns);
+            }
+
+            _destroyItems(0, c_OldNrOfColumns, m_NrOfRows, c_NrOfColumnsToInitialize);
+        }
+        else
+        {
+            _destroyItems(0, nrOfPositionsToShift, m_NrOfRows, c_OldNrOfColumns);
+        }
+
+        // at the end of the shifting operation the matrix should have the same number of columns as before
+        m_NrOfColumns = c_OldNrOfColumns;
     }
 }
 
