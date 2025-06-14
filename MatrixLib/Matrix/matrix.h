@@ -4178,9 +4178,6 @@ std::pair<typename Matrix<T>::size_type,
     }
     else
     {
-        // move unused top capacity to the bottom to avoid alignment issues (should be re-distributed once resize is complete)
-        _alignToTop();
-
         const size_type c_ColumnsResizingSpace{static_cast<size_type>(m_ColumnCapacity - *m_ColumnCapacityOffset)};
 
         // if not enough available capacity on the right side, then the columns should be shifted left by the minimal count of positions that ensure the resized content fits
@@ -4189,6 +4186,9 @@ std::pair<typename Matrix<T>::size_type,
             const size_type c_NrOfColumnsToShiftLeft{static_cast<size_type>(c_NewNrOfColumns - c_ColumnsResizingSpace)};
             _shiftColumnsLeft(c_NrOfColumnsToShiftLeft);
         }
+
+        // move unused top capacity to the bottom to avoid alignment issues (should be re-distributed once resize is complete)
+        _alignToTop();
 
         // ensure the items from the right side of the retained items get properly destroyed
         if (c_NewNrOfColumns < m_NrOfColumns)
@@ -4417,6 +4417,7 @@ void Matrix<T>::_rotateLastColumn(Matrix<T>::size_type newColumnNr)
     }
 }
 
+// if shifting of columns is involved, then this method should be called after the columns shifting function (e.g. _shiftColumnsLeft(), see below)
 template<MatrixElementType T>
 void Matrix<T>::_alignToTop()
 {
@@ -4427,6 +4428,7 @@ void Matrix<T>::_alignToTop()
     }
 }
 
+// columns shifting should be performed before aligning to top (see above)
 template<MatrixElementType T>
 void Matrix<T>::_shiftColumnsLeft(Matrix<T>::size_type nrOfPositionsToShift)
 {
