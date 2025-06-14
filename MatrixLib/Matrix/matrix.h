@@ -4167,8 +4167,7 @@ std::pair<typename Matrix<T>::size_type,
     if (!m_RowCapacityOffset.has_value() /* empty matrix, column capacity offset std::nullopt as well */ ||
         !c_NewRowCapacityOffset.has_value() ||
         c_NewRowCapacity != m_RowCapacity ||
-        c_NewColumnCapacity != m_ColumnCapacity ||
-        c_NewNrOfColumns > (m_ColumnCapacity - *m_ColumnCapacityOffset))
+        c_NewColumnCapacity != m_ColumnCapacity)
     {
         Matrix matrix{std::move(*this)};
         _deallocMemory(); // actually not required, just for safety purposes
@@ -4181,6 +4180,15 @@ std::pair<typename Matrix<T>::size_type,
     {
         // move unused top capacity to the bottom to avoid alignment issues (should be re-distributed once resize is complete)
         _alignToTop();
+
+        const size_type c_ColumnsResizingSpace{static_cast<size_type>(m_ColumnCapacity - *m_ColumnCapacityOffset)};
+
+        // if not enough available capacity on the right side, then the columns should be shifted left by the minimal count of positions that ensure the resized content fits
+        if (c_NewNrOfColumns > c_ColumnsResizingSpace)
+        {
+            const size_type c_NrOfColumnsToShiftLeft{static_cast<size_type>(c_NewNrOfColumns - c_ColumnsResizingSpace)};
+            _shiftColumnsLeft(c_NrOfColumnsToShiftLeft);
+        }
 
         // ensure the items from the right side of the retained items get properly destroyed
         if (c_NewNrOfColumns < m_NrOfColumns)
