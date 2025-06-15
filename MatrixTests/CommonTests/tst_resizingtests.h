@@ -89,16 +89,16 @@
     QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
     QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
     QFETCH(matrixType, fillValue); \
-    QFETCH(Matrix<matrixType>::size_type, resizeRowCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, resizeColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, requestedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, requestedColumnCapacity); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
     QFETCH(Matrix<matrixType>, expectedMatrix); \
  \
-    matrix.reserve(resizeRowCapacity, resizeColumnCapacity); \
+    matrix.reserve(requestedRowCapacity, requestedColumnCapacity); \
     matrix.resize(resizeRowsCount, resizeColumnsCount, fillValue); \
  \
-    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, resizeRowCapacity, resizeColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
+    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, requestedRowCapacity, requestedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
  \
     QVERIFY2(matrix == expectedMatrix, "Reserving/resizing failed, the matrix does not have the correct values!");
 
