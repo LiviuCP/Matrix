@@ -1,6 +1,6 @@
 #define ERROR_CHECKING
 
-#include <QtTest>
+#include <QTest>
 
 #include "matrix.h"
 #include "fraction.h"

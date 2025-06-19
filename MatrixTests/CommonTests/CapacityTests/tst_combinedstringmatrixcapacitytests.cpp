@@ -1,4 +1,4 @@
-#include <QtTest>
+#include <QTest>
 
 #include "testutils.h"
 #include "tst_capacitytests.h"
