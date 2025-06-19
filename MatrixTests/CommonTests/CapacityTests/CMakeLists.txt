@@ -1,8 +1,12 @@
-add_executable(IntMatrixCapacityTests tst_intmatrixcapacitytests.cpp)
-add_test(NAME IntMatrixCapacityTests COMMAND IntMatrixCapacityTests)
+add_executable(BasicIntMatrixCapacityTests tst_basicintmatrixcapacitytests.cpp)
+add_test(NAME BasicIntMatrixCapacityTests COMMAND BasicIntMatrixCapacityTests)
+
+add_executable(CombinedIntMatrixCapacityTests tst_combinedintmatrixcapacitytests.cpp)
+add_test(NAME CombinedIntMatrixCapacityTests COMMAND CombinedIntMatrixCapacityTests)
 
 add_executable(StringMatrixCapacityTests tst_stringmatrixcapacitytests.cpp)
 add_test(NAME StringMatrixCapacityTests COMMAND StringMatrixCapacityTests)
 
-target_link_libraries(IntMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(BasicIntMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(CombinedIntMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(StringMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
