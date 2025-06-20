@@ -105,7 +105,7 @@ void CombinedStringMatrixCapacityTests::testReserveAndSplitByRow()
 
 void CombinedStringMatrixCapacityTests::testReserveAndSplitByColumn()
 {
-    TEST_CAPACITY_WITH_SPLIT_BY_COLUMN(std::string);
+    TEST_CAPACITY_WITH_RESERVE_AND_SPLIT_BY_COLUMN(std::string);
 }
 
 void CombinedStringMatrixCapacityTests::testReserveAndResizeWithDefaultNewValues_data()

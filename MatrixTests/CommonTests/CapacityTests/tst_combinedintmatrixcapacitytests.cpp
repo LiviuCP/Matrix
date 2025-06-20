@@ -108,7 +108,7 @@ void CombinedIntMatrixCapacityTests::testReserveAndSplitByRow()
 
 void CombinedIntMatrixCapacityTests::testReserveAndSplitByColumn()
 {
-    TEST_CAPACITY_WITH_SPLIT_BY_COLUMN(int);
+    TEST_CAPACITY_WITH_RESERVE_AND_SPLIT_BY_COLUMN(int);
 }
 
 void CombinedIntMatrixCapacityTests::testReserveAndResizeWithDefaultNewValues_data()
