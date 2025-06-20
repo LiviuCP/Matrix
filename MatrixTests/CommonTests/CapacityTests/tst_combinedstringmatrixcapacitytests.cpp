@@ -90,7 +90,7 @@ void CombinedStringMatrixCapacityTests::testReserveResizeAndEraseRowAndOrColumn(
 
 void CombinedStringMatrixCapacityTests::testReserveAndCatByRow()
 {
-    TEST_CAPACITY_WITH_CAT_BY_ROW(std::string);
+    TEST_CAPACITY_WITH_RESERVE_AND_CAT_BY_ROW(std::string);
 }
 
 void CombinedStringMatrixCapacityTests::testReserveAndCatByColumn()

@@ -463,6 +463,34 @@
     QFETCH(Matrix<matrixType>, destMatrix); \
     QFETCH(Matrix<matrixType>, srcMatrix); \
     QFETCH(ConcatMode, mode); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
+\
+    switch(mode) \
+    { \
+    case ConcatMode::SOURCE_TO_DESTINATION: \
+        destMatrix.catByRow(srcMatrix); \
+        QVERIFY(srcMatrix.getRowCapacity() == 0 && srcMatrix.getColumnCapacity() == 0); \
+        break; \
+    case ConcatMode::TO_ITSELF: \
+        destMatrix.catByRow(destMatrix); \
+        break; \
+    default: \
+        assert(false); \
+        break; \
+    } \
+\
+    QVERIFY2(destMatrix.getRowCapacity() == expectedRowCapacity && \
+             destMatrix.getColumnCapacity() == expectedColumnCapacity && \
+             destMatrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
+             destMatrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Vertical concatenation failed, capacity (offset) of the destination matrix is not correct!");
+
+#define TEST_CAPACITY_WITH_RESERVE_AND_CAT_BY_ROW(matrixType) \
+    QFETCH(Matrix<matrixType>, destMatrix); \
+    QFETCH(Matrix<matrixType>, srcMatrix); \
+    QFETCH(ConcatMode, mode); \
     QFETCH(Matrix<matrixType>::size_type, requestedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, requestedColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
@@ -473,6 +501,10 @@
     if (requestedRowCapacity > 0u && requestedColumnCapacity > 0u) \
     { \
         destMatrix.reserve(requestedRowCapacity, requestedColumnCapacity); \
+    } \
+    else \
+    { \
+        assert(false); \
     } \
 \
     switch(mode) \

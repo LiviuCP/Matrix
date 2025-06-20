@@ -93,7 +93,7 @@ void CombinedIntMatrixCapacityTests::testReserveResizeAndEraseRowAndOrColumn()
 
 void CombinedIntMatrixCapacityTests::testReserveAndCatByRow()
 {
-    TEST_CAPACITY_WITH_CAT_BY_ROW(int);
+    TEST_CAPACITY_WITH_RESERVE_AND_CAT_BY_ROW(int);
 }
 
 void CombinedIntMatrixCapacityTests::testReserveAndCatByColumn()
