@@ -11,15 +11,11 @@ class CombinedTests : public QObject
 
 private slots:
     // test functions
-    void testIntMatrixLeftShiftColumns();
-    void testStringMatrixLeftShiftColumns();
-
-private:
-    IntMatrix mPrimaryIntMatrix;
-    StringMatrix mPrimaryStringMatrix;
+    void testIntMatrixCatByColumnWithModifiedColumnCapacityOffset();
+    void testStringMatrixCatByColumnWithModifiedColumnCapacityOffset();
 };
 
-void CombinedTests::testIntMatrixLeftShiftColumns()
+void CombinedTests::testIntMatrixCatByColumnWithModifiedColumnCapacityOffset()
 {
     // case 1a: number of shifted positions lower than the number of destination columns before concatenation, resulting column capacity offset is 0
     {
@@ -147,7 +143,7 @@ void CombinedTests::testIntMatrixLeftShiftColumns()
     }
 }
 
-void CombinedTests::testStringMatrixLeftShiftColumns()
+void CombinedTests::testStringMatrixCatByColumnWithModifiedColumnCapacityOffset()
 {
     // case 1a: number of shifted positions lower than the number of destination columns before concatenation, resulting column capacity offset is 0
     {
