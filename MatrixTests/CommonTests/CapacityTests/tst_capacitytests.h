@@ -597,6 +597,31 @@
     QFETCH(Matrix<matrixType>, srcMatrix); \
     QFETCH(Matrix<matrixType>, destMatrix); \
     QFETCH(Matrix<matrixType>::size_type, splitPosition); \
+    QFETCH(Matrix<matrixType>::size_type, expectedSrcRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedSrcColumnCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedDestRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedDestColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSrcRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSrcColumnCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedDestRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedDestColumnCapacityOffset); \
+\
+    srcMatrix.splitByRow(destMatrix, splitPosition); \
+\
+    QVERIFY2(srcMatrix.getRowCapacity() == expectedSrcRowCapacity && \
+             srcMatrix.getColumnCapacity() == expectedSrcColumnCapacity && \
+             srcMatrix.getRowCapacityOffset() == expectedSrcRowCapacityOffset && \
+             srcMatrix.getColumnCapacityOffset() == expectedSrcColumnCapacityOffset, "Vertical split failed, capacity (offset) of the source matrix is not correct!"); \
+\
+    QVERIFY2(destMatrix.getRowCapacity() == expectedDestRowCapacity && \
+             destMatrix.getColumnCapacity() == expectedDestColumnCapacity && \
+             destMatrix.getRowCapacityOffset() == expectedDestRowCapacityOffset && \
+             destMatrix.getColumnCapacityOffset() == expectedDestColumnCapacityOffset, "Vertical split failed, capacity (offset) of the destination matrix is not correct!");
+
+#define TEST_CAPACITY_WITH_RESERVE_AND_SPLIT_BY_ROW(matrixType) \
+    QFETCH(Matrix<matrixType>, srcMatrix); \
+    QFETCH(Matrix<matrixType>, destMatrix); \
+    QFETCH(Matrix<matrixType>::size_type, splitPosition); \
     QFETCH(Matrix<matrixType>::size_type, requestedDestRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, requestedDestColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedSrcRowCapacity); \
@@ -611,6 +636,10 @@
     if (requestedDestRowCapacity > 0u && requestedDestColumnCapacity > 0u) \
     { \
         destMatrix.reserve(requestedDestRowCapacity, requestedDestColumnCapacity); \
+    } \
+    else \
+    { \
+        assert(false); \
     } \
 \
     srcMatrix.splitByRow(destMatrix, splitPosition); \
