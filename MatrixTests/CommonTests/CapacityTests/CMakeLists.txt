@@ -1,8 +1,16 @@
-add_executable(IntMatrixCapacityTests tst_intmatrixcapacitytests.cpp)
-add_test(NAME IntMatrixCapacityTests COMMAND IntMatrixCapacityTests)
+add_executable(BasicIntMatrixCapacityTests tst_basicintmatrixcapacitytests.cpp)
+add_test(NAME BasicIntMatrixCapacityTests COMMAND BasicIntMatrixCapacityTests)
 
-add_executable(StringMatrixCapacityTests tst_stringmatrixcapacitytests.cpp)
-add_test(NAME StringMatrixCapacityTests COMMAND StringMatrixCapacityTests)
+add_executable(CombinedIntMatrixCapacityTests tst_combinedintmatrixcapacitytests.cpp)
+add_test(NAME CombinedIntMatrixCapacityTests COMMAND CombinedIntMatrixCapacityTests)
 
-target_link_libraries(IntMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
-target_link_libraries(StringMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+add_executable(BasicStringMatrixCapacityTests tst_basicstringmatrixcapacitytests.cpp)
+add_test(NAME BasicStringMatrixCapacityTests COMMAND BasicStringMatrixCapacityTests)
+
+add_executable(CombinedStringMatrixCapacityTests tst_combinedstringmatrixcapacitytests.cpp)
+add_test(NAME CombinedStringMatrixCapacityTests COMMAND CombinedStringMatrixCapacityTests)
+
+target_link_libraries(BasicIntMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(CombinedIntMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(BasicStringMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(CombinedStringMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)

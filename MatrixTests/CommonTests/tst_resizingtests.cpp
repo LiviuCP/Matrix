@@ -1,4 +1,4 @@
-#include <QtTest>
+#include <QTest>
 
 #include "tst_resizingtests.h"
 #include "tst_resizingtests_data.h"

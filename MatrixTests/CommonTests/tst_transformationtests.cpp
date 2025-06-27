@@ -1,4 +1,4 @@
-#include <QtTest>
+#include <QTest>
 
 #include "testutils.h"
 #include "tst_transformationtests.h"
@@ -7,7 +7,6 @@
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(StringMatrix)
 Q_DECLARE_METATYPE(ConcatMode)
-Q_DECLARE_METATYPE(SplitMode)
 
 class TransformationTests : public QObject
 {
