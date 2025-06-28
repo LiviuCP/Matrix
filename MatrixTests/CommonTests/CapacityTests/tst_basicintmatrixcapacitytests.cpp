@@ -502,6 +502,21 @@ void BasicIntMatrixCapacityTests::testEraseRow_data()
     QTest::newRow("20: square matrix") << IntMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, -2} << size_tuple_array_t{{c_HalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {0u}, {0u}}, {0u, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {c_LargeDimension0, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}};
     QTest::newRow("21: square matrix") << IntMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, -2} << size_tuple_array_t{{c_DecrHalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {c_LargeDimension1, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {0u, c_MaxAllowedDimension, c_MaxAllowedDimension, {2u}, {0u}}};
     QTest::newRow("22: square matrix") << IntMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, -2} << size_tuple_array_t{{c_DecrHalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {0u, c_MaxAllowedDimension, c_MaxAllowedDimension, {2u}, {0u}}, {c_LargeDimension0, c_MaxAllowedDimension, c_MaxAllowedDimension, {2u}, {0u}}};
+    QTest::newRow("23: square matrix") << IntMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, -2} << size_tuple_array_t{{c_IncrHalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {0u}, {0u}}, {0u, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {0u, c_MaxAllowedDimension, c_MaxAllowedDimension, {2u}, {0u}}};
+    QTest::newRow("24: square matrix") << IntMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, -2} << size_tuple_array_t{{c_IncrHalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {0u}, {0u}}, {c_LargeDimension1, c_MaxAllowedDimension, c_MaxAllowedDimension, {0u}, {0u}}, {c_LargeDimension0, c_MaxAllowedDimension, c_MaxAllowedDimension, {0u}, {0u}}};
+    QTest::newRow("25: square matrix") << IntMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, -2} << size_tuple_array_t{{0u, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {c_HalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {c_LargeDimension0, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}};
+    QTest::newRow("26: square matrix") << IntMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, -2} << size_tuple_array_t{{0u, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {c_IncrHalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {c_DecrHalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}};
+
+    if constexpr (c_IsEvenMaxAllowedDimension)
+    {
+        QTest::newRow("27a: square matrix") << IntMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, -2} << size_tuple_array_t{{0u, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {c_DecrHalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {c_LargeDimension0, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}};
+        QTest::newRow("28a: square matrix") << IntMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, -2} << size_tuple_array_t{{c_LargeDimension2, c_MaxAllowedDimension, c_MaxAllowedDimension, {0u}, {0u}}, {c_DecrHalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {0u}, {0u}}, {c_DecrHalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {0u}, {0u}}};
+    }
+    else
+    {
+        QTest::newRow("27b: square matrix") << IntMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, -2} << size_tuple_array_t{{0u, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {c_DecrHalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {2u}, {0u}}, {c_LargeDimension0, c_MaxAllowedDimension, c_MaxAllowedDimension, {2u}, {0u}}};
+        QTest::newRow("28b: square matrix") << IntMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, -2} << size_tuple_array_t{{c_LargeDimension2, c_MaxAllowedDimension, c_MaxAllowedDimension, {0u}, {0u}}, {c_DecrHalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}, {c_DecrHalfMaxAllowedDimension, c_MaxAllowedDimension, c_MaxAllowedDimension, {1u}, {0u}}};
+    }
 }
 
 void BasicIntMatrixCapacityTests::testEraseColumn_data()
