@@ -81,7 +81,7 @@ void CombinedStringMatrixCapacityTests::testReserveAndInsertColumnAndSetNewValue
 
 void CombinedStringMatrixCapacityTests::testReserveResizeAndEraseRowAndOrColumn()
 {
-    TEST_CAPACITY_WITH_RESIZE_AND_ERASE_ROW_AND_OR_COLUMN(std::string, mPrimaryStringMatrix);
+    TEST_CAPACITY_WITH_RESERVE_RESIZE_AND_ERASE_ROW_AND_OR_COLUMN(std::string, mPrimaryStringMatrix);
 }
 
 void CombinedStringMatrixCapacityTests::testReserveAndCatByRow()
@@ -137,8 +137,8 @@ void CombinedStringMatrixCapacityTests::testReserveAndInsertColumnAndSetNewValue
 void CombinedStringMatrixCapacityTests::testReserveResizeAndEraseRowAndOrColumn_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
     QTest::addColumn<std::string>("resizeElementValue");
     QTest::addColumn<matrix_size_t>("requestedRowCapacity");
     QTest::addColumn<matrix_size_t>("requestedColumnCapacity");

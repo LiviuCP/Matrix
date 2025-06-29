@@ -84,7 +84,7 @@ void CombinedIntMatrixCapacityTests::testReserveAndInsertColumnAndSetNewValues()
 
 void CombinedIntMatrixCapacityTests::testReserveResizeAndEraseRowAndOrColumn()
 {
-    TEST_CAPACITY_WITH_RESIZE_AND_ERASE_ROW_AND_OR_COLUMN(int, mPrimaryIntMatrix);
+    TEST_CAPACITY_WITH_RESERVE_RESIZE_AND_ERASE_ROW_AND_OR_COLUMN(int, mPrimaryIntMatrix);
 }
 
 void CombinedIntMatrixCapacityTests::testReserveAndCatByRow()
@@ -140,8 +140,8 @@ void CombinedIntMatrixCapacityTests::testReserveAndInsertColumnAndSetNewValues_d
 void CombinedIntMatrixCapacityTests::testReserveResizeAndEraseRowAndOrColumn_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
     QTest::addColumn<int>("resizeElementValue");
     QTest::addColumn<matrix_size_t>("requestedRowCapacity");
     QTest::addColumn<matrix_size_t>("requestedColumnCapacity");

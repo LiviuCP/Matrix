@@ -270,10 +270,10 @@
              destMatrix.getRowCapacityOffset() == expectedDestRowCapacityOffset && \
              destMatrix.getColumnCapacityOffset() == expectedDestColumnCapacityOffset, "Horizontal split failed, capacity (offset) of the destination matrix is not correct!");
 
-#define TEST_CAPACITY_WITH_RESIZE_AND_ERASE_ROW_AND_OR_COLUMN(matrixType, primaryMatrix) \
+#define TEST_CAPACITY_WITH_RESERVE_RESIZE_AND_ERASE_ROW_AND_OR_COLUMN(matrixType, primaryMatrix) \
     QFETCH(Matrix<matrixType>, matrix); \
-    QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
-    QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
+    QFETCH(Matrix<matrixType>::size_type, requestedRowsCount); \
+    QFETCH(Matrix<matrixType>::size_type, requestedColumnsCount); \
     QFETCH(matrixType, resizeElementValue); \
     QFETCH(Matrix<matrixType>::size_type, requestedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, requestedColumnCapacity); \
@@ -288,7 +288,7 @@
     primaryMatrix = matrix; \
 \
     primaryMatrix.reserve(requestedRowCapacity, requestedColumnCapacity); \
-    primaryMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeElementValue); \
+    primaryMatrix.resize(requestedRowsCount, requestedColumnsCount, resizeElementValue); \
 \
     const bool c_ShouldEraseRow{erasedRowNr.has_value() && erasedRowNr < matrix.getNrOfRows()}; \
     const bool c_ShouldEraseColumn{erasedColumnNr.has_value() && erasedColumnNr < matrix.getNrOfColumns()}; \
