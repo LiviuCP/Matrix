@@ -314,7 +314,7 @@ void IteratorExceptionTests::testNonDiagBeginEndIteratorExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstReverseZIter it{matrix.constReverseZRowBegin(rowColumnNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstReverseZIter it{matrix.constReverseZRowEnd(rowColumnNr)}; Q_UNUSED(it)});
 
-    matrix.transpose(matrix);
+    matrix.transpose();
     
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntNIter it{matrix.nColumnBegin(rowColumnNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntNIter it{matrix.nColumnEnd(rowColumnNr)}; Q_UNUSED(it)});
@@ -384,7 +384,7 @@ void IteratorExceptionTests::testNonDiagRandomIteratorRowColumnExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntReverseZIter it{matrix.getReverseZIterator(rowNr, columnNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstReverseZIter it{matrix.getConstReverseZIterator(rowNr, columnNr)}; Q_UNUSED(it)});
 
-    matrix.transpose(matrix);
+    matrix.transpose();
     
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntNIter it{matrix.getNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstNIter it{matrix.getConstNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
@@ -402,7 +402,7 @@ void IteratorExceptionTests::testNonDiagRandomIteratorIndexExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntReverseZIter it{matrix.getReverseZIterator(index)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstReverseZIter it{matrix.getConstReverseZIterator(index)}; Q_UNUSED(it)});
 
-    matrix.transpose(matrix);
+    matrix.transpose();
     
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntNIter it{matrix.getNIterator(index)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstNIter it{matrix.getConstNIterator(index)}; Q_UNUSED(it)});

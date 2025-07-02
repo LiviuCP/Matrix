@@ -304,11 +304,11 @@ void CommonExceptionTests::testSwapRowsOrColumnsExceptions()
     QFETCH(matrix_size_t, firstRowColumnNr);
     QFETCH(matrix_size_t, secondRowColumnNr);
 
-    IntMatrix transposedMatrix;
-    matrix.transpose(transposedMatrix);
+    IntMatrix auxMatrix{matrix};
+    auxMatrix.transpose();
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.swapRows(firstRowColumnNr, secondRowColumnNr);});
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {transposedMatrix.swapColumns(firstRowColumnNr, secondRowColumnNr);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {auxMatrix.swapColumns(firstRowColumnNr, secondRowColumnNr);});
 }
 
 void CommonExceptionTests::testCopiedVectorConstructorExceptions_data()

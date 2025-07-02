@@ -1,50 +1,21 @@
 #ifndef TST_TRANSFORMATIONTESTS_H
 #define TST_TRANSFORMATIONTESTS_H
 
-#define TEST_MATRIX_TRANSPOSE(matrixType, primaryMatrix, secondaryMatrix) \
-    QFETCH(Matrix<matrixType>, initialSrcMatrix); \
-    QFETCH(Matrix<matrixType>, initialDestMatrix); \
-    QFETCH(Matrix<matrixType>, expectedDestMatrix); \
-    QFETCH(Matrix<matrixType>::size_type, expectedSrcRowCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedSrcColumnCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedDestRowCapacity); \
-    QFETCH(Matrix<matrixType>::size_type, expectedDestColumnCapacity); \
-    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSrcRowCapacityOffset); \
-    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedSrcColumnCapacityOffset); \
-    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedDestRowCapacityOffset); \
-    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedDestColumnCapacityOffset); \
-    QFETCH(bool, isTransposedToItself); \
+#define TEST_MATRIX_TRANSPOSE(matrixType) \
+    QFETCH(Matrix<matrixType>, matrix); \
+    QFETCH(Matrix<matrixType>, expectedMatrix); \
+    QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
+    QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
+    QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
  \
-    primaryMatrix = initialSrcMatrix; \
+    matrix.transpose(); \
  \
-    if (isTransposedToItself) \
-    { \
-        primaryMatrix.transpose(primaryMatrix); \
- \
-        QVERIFY2(primaryMatrix == expectedDestMatrix && \
-                 primaryMatrix.getRowCapacity() == expectedDestRowCapacity && \
-                 primaryMatrix.getColumnCapacity() == expectedDestColumnCapacity && \
-                 primaryMatrix.getRowCapacityOffset() == expectedDestRowCapacityOffset && \
-                 primaryMatrix.getColumnCapacityOffset() == expectedDestColumnCapacityOffset, "Transposing failed, the resulting capacity (offset), dimensions and/or values are incorrect!"); \
-    } \
-    else \
-    { \
-        secondaryMatrix = initialDestMatrix; \
- \
-        primaryMatrix.transpose(secondaryMatrix); \
- \
-        QVERIFY2(primaryMatrix == initialSrcMatrix && \
-                 primaryMatrix.getRowCapacity() == expectedSrcRowCapacity && \
-                 primaryMatrix.getColumnCapacity() == expectedSrcColumnCapacity && \
-                 primaryMatrix.getRowCapacityOffset() == expectedSrcRowCapacityOffset && \
-                 primaryMatrix.getColumnCapacityOffset() == expectedSrcColumnCapacityOffset, "Transposing failed, the source matrix shouldn't change!"); \
- \
-        QVERIFY2(secondaryMatrix == expectedDestMatrix && \
-                 secondaryMatrix.getRowCapacity() == expectedDestRowCapacity && \
-                 secondaryMatrix.getColumnCapacity() == expectedDestColumnCapacity && \
-                 secondaryMatrix.getRowCapacityOffset() == expectedDestRowCapacityOffset && \
-                 secondaryMatrix.getColumnCapacityOffset() == expectedDestColumnCapacityOffset, "Transposing failed, the resulting capacity (offset), dimensions and/or values of the transposed matrix are incorrect!"); \
-    }
+    QVERIFY2(matrix == expectedMatrix && \
+             matrix.getRowCapacity() == expectedRowCapacity && \
+             matrix.getColumnCapacity() == expectedColumnCapacity && \
+             matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
+             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Transposing failed, the resulting capacity (offset), dimensions and/or values are incorrect!");
 
 #define TEST_MATRIX_CAT_BY_ROW(matrixType) \
     QFETCH(Matrix<matrixType>, destMatrix); \

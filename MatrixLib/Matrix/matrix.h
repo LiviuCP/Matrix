@@ -286,7 +286,7 @@ public:
 #endif
     bool isEmpty() const;
 
-    void transpose(Matrix& transposedMatrix);
+    void transpose();
 
     void clear();
 
@@ -486,9 +486,6 @@ private:
 
     // clears the initialized memory (without de-allocation - capacity stays constant) and remaps it for the requested number of rows and columns
     void _remapMemory(size_type nrOfRows, size_type nrOfColumns);
-
-    // resize the matrix (no elements initialization) by ensuring the new row/column capacity is not lower than the new number of rows/columns
-    void _adjustSizeAndCapacity(size_type nrOfRows, size_type nrOfColumns);
 
     // used for matrix-to-matrix copy construction and assignment
     void _copyAssignMatrix(const Matrix& matrix);
@@ -3015,52 +3012,30 @@ bool Matrix<T>::isEmpty() const
 }
 
 template <MatrixElementType T>
-void Matrix<T>::transpose(Matrix<T>& transposedMatrix)
+void Matrix<T>::transpose()
 {
     if (!isEmpty())
     {
-        const size_type c_ResultingNrOfRows{m_NrOfColumns};
-        const size_type c_ResultingNrOfColumns{m_NrOfRows};
+        constexpr size_type c_MaxAllowedDimension{maxAllowedDimension()};
 
-        Matrix helperMatrix;
-        const Matrix& srcMatrix{&transposedMatrix != this ? *this : helperMatrix};
+        const size_type c_NewNrOfRows{m_NrOfColumns};
+        const size_type c_NewNrOfColumns{m_NrOfRows};
+        const size_type c_NewRowCapacity{m_RowCapacity < m_NrOfColumns ? std::min(static_cast<size_type>(m_NrOfColumns +  m_NrOfColumns / 4), c_MaxAllowedDimension) : m_RowCapacity};
+        const size_type c_NewColumnCapacity{m_ColumnCapacity < m_NrOfRows ? std::min(static_cast<size_type>(m_NrOfRows + m_NrOfRows / 4), c_MaxAllowedDimension) : m_ColumnCapacity};
 
-        if (&transposedMatrix == this)
+        Matrix helperMatrix{std::move(*this)};
+
+        _deallocMemory(); // not actually required, just for "safety" and consistency purposes
+        _allocMemory(helperMatrix.m_NrOfColumns, helperMatrix.m_NrOfRows, c_NewRowCapacity, c_NewColumnCapacity);
+
+        // no use of _moveInitItems(), too much overhead
+        for (size_type absRowNr{*m_RowCapacityOffset}, rowNr{0}; rowNr < c_NewNrOfRows; ++rowNr, ++absRowNr)
         {
-            const size_type c_NewRowCapacity{m_RowCapacity < m_NrOfColumns ?  static_cast<size_type>(m_NrOfColumns +  m_NrOfColumns / 4) : m_RowCapacity};
-            const size_type c_NewColumnCapacity{m_ColumnCapacity < m_NrOfRows ? static_cast<size_type>(m_NrOfRows + m_NrOfRows / 4) : m_ColumnCapacity};
-
-            helperMatrix = std::move(*this);
-
-            _deallocMemory(); // not actually required, just for "safety" and consistency purposes
-            _allocMemory(helperMatrix.m_NrOfColumns, helperMatrix.m_NrOfRows, c_NewRowCapacity, c_NewColumnCapacity);
-
-            // no use of _moveInitItems(), too much overhead
-            for (size_type transposedMatrixAbsRowNr{*transposedMatrix.m_RowCapacityOffset}, rowNr{0}; rowNr < c_ResultingNrOfRows; ++rowNr, ++transposedMatrixAbsRowNr)
+            for (size_type helperMatrixAbsRowNr{*helperMatrix.m_RowCapacityOffset}, columnNr{0}; columnNr < c_NewNrOfColumns; ++columnNr, ++helperMatrixAbsRowNr)
             {
-                for (size_type srcMatrixAbsRowNr{*srcMatrix.m_RowCapacityOffset}, columnNr{0}; columnNr < c_ResultingNrOfColumns; ++columnNr, ++srcMatrixAbsRowNr)
-                {
-                    std::uninitialized_move_n(srcMatrix.m_pBaseArrayPtr[srcMatrixAbsRowNr] + rowNr, 1, transposedMatrix.m_pBaseArrayPtr[transposedMatrixAbsRowNr] + columnNr);
-                }
+                std::uninitialized_move_n(helperMatrix.m_pBaseArrayPtr[helperMatrixAbsRowNr] + rowNr, 1, m_pBaseArrayPtr[absRowNr] + columnNr);
             }
         }
-        else
-        {
-            transposedMatrix._adjustSizeAndCapacity(m_NrOfColumns, m_NrOfRows);
-
-            // no use of _copyInitItems(), too much overhead
-            for (size_type transposedMatrixAbsRowNr{*transposedMatrix.m_RowCapacityOffset}, rowNr{0}; rowNr < c_ResultingNrOfRows; ++rowNr, ++transposedMatrixAbsRowNr)
-            {
-                for (size_type srcMatrixAbsRowNr{*srcMatrix.m_RowCapacityOffset}, columnNr{0}; columnNr < c_ResultingNrOfColumns; ++columnNr, ++srcMatrixAbsRowNr)
-                {
-                    std::uninitialized_copy_n(srcMatrix.m_pBaseArrayPtr[srcMatrixAbsRowNr] + rowNr, 1, transposedMatrix.m_pBaseArrayPtr[transposedMatrixAbsRowNr] + columnNr);
-                }
-            }
-        }
-    }
-    else if (&transposedMatrix != this)
-    {
-        transposedMatrix._deallocMemory();
     }
 }
 
@@ -4590,19 +4565,6 @@ void Matrix<T>::_remapMemory(Matrix<T>::size_type nrOfRows,
             m_pBaseArrayPtr[rowNr] = m_pAllocPtr + (rowNr * m_ColumnCapacity) + *m_ColumnCapacityOffset;
         }
     }
-}
-
-template<MatrixElementType T>
-void Matrix<T>::_adjustSizeAndCapacity(Matrix<T>::size_type nrOfRows,
-                                       Matrix<T>::size_type nrOfColumns)
-{
-    const size_type c_NewRowCapacity{static_cast<size_type>(nrOfRows + nrOfRows / 4)};
-    const size_type c_NewColumnCapacity{static_cast<size_type>(nrOfColumns + nrOfColumns / 4)};
-    const size_type c_OldRowCapacity{m_RowCapacity};
-    const size_type c_OldColumnCapacity{m_ColumnCapacity};
-
-    _deallocMemory();
-    _allocMemory(nrOfRows, nrOfColumns, c_OldRowCapacity < nrOfRows ? c_NewRowCapacity : c_OldRowCapacity, c_OldColumnCapacity < nrOfColumns ? c_NewColumnCapacity : c_OldColumnCapacity);
 }
 
 template<MatrixElementType T>

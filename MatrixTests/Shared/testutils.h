@@ -60,6 +60,8 @@ static constexpr matrix_size_t c_DecrHalfMaxAllowedDimension{c_MaxAllowedDimensi
 static constexpr matrix_size_t c_IncrHalfMaxAllowedDimension{c_MaxAllowedDimension / 2 + 1};
 static constexpr matrix_size_t c_ThreeQuartersMaxAllowedDimension{c_HalfMaxAllowedDimension + c_HalfMaxAllowedDimension / 2};
 static constexpr matrix_size_t c_QuarterMaxAllowedDimension{static_cast<matrix_size_t>(c_MaxAllowedDimension / 4)};
+static constexpr matrix_size_t c_FiveEighthsMaxAllowedDimension{static_cast<matrix_size_t>(c_HalfMaxAllowedDimension + c_HalfMaxAllowedDimension / 4)};
+static constexpr matrix_size_t c_SevenEighthsMaxAllowedDimension{static_cast<matrix_size_t>(7 * (c_MaxAllowedDimension / 8))};
 static constexpr matrix_size_t c_DecrQuarterMaxAllowedDimension{static_cast<matrix_size_t>(c_QuarterMaxAllowedDimension - 1)};
 static constexpr matrix_size_t c_IncrQuarterMaxAllowedDimension{static_cast<matrix_size_t>(c_QuarterMaxAllowedDimension + 1)};
 static constexpr matrix_size_t c_TwiceIncrQuarterMaxAllowedDimension{static_cast<matrix_size_t>(c_IncrQuarterMaxAllowedDimension + 1)};

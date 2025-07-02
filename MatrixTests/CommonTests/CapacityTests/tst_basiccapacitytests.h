@@ -147,36 +147,19 @@
                  destMatrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Move assignment failed, capacity (offset) of the destination matrix is not correct!"); \
     }
 
-#define TEST_CAPACITY_WITH_TRANSPOSE(matrixType, primaryMatrix, secondaryMatrix) \
-    QFETCH(Matrix<matrixType>, srcMatrix); \
-    QFETCH(Matrix<matrixType>, destMatrix); \
+#define TEST_CAPACITY_WITH_TRANSPOSE(matrixType) \
+    QFETCH(Matrix<matrixType>, matrix); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedColumnCapacityOffset); \
-    QFETCH(bool, isTransposedToItself); \
 \
-    primaryMatrix = srcMatrix; \
+    matrix.transpose(); \
 \
-    if (isTransposedToItself) \
-    { \
-        primaryMatrix.transpose(primaryMatrix); \
-\
-        QVERIFY2(primaryMatrix.getRowCapacity() == expectedRowCapacity && \
-                 primaryMatrix.getColumnCapacity() == expectedColumnCapacity && \
-                 primaryMatrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
-                 primaryMatrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Calculating transposed matrix failed, capacity (offset) of the destination (transposed) matrix is not correct!"); \
-    } \
-    else \
-    { \
-        secondaryMatrix = destMatrix; \
-        primaryMatrix.transpose(secondaryMatrix); \
-\
-        QVERIFY2(secondaryMatrix.getRowCapacity() == expectedRowCapacity && \
-                 secondaryMatrix.getColumnCapacity() == expectedColumnCapacity && \
-                 secondaryMatrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
-                 secondaryMatrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Calculating transposed matrix failed, capacity (offset) of the destination (transposed) matrix is not correct!"); \
-    }
+    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
+             matrix.getColumnCapacity() == expectedColumnCapacity && \
+             matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
+             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Calculating transposed matrix failed, capacity (offset) of the destination (transposed) matrix is not correct!");
 
 #define TEST_CAPACITY_WITH_RESERVE(matrixType, primaryMatrix) \
     QFETCH(Matrix<matrixType>, matrix); \

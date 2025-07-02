@@ -71,7 +71,6 @@ private:
     void _buildInsertColumnTestingTable();
 
     StringMatrix mPrimaryStringMatrix;
-    StringMatrix mSecondaryStringMatrix;
 };
 
 void BasicStringMatrixCapacityTests::testCopiedVectorConstructor()
@@ -136,7 +135,7 @@ void BasicStringMatrixCapacityTests::testMoveAssignmentOperator()
 
 void BasicStringMatrixCapacityTests::testTranspose()
 {
-    TEST_CAPACITY_WITH_TRANSPOSE(std::string, mPrimaryStringMatrix, mSecondaryStringMatrix);
+    TEST_CAPACITY_WITH_TRANSPOSE(std::string);
 }
 
 void BasicStringMatrixCapacityTests::testReserve()
@@ -288,45 +287,36 @@ void BasicStringMatrixCapacityTests::testMoveAssignmentOperator_data()
 
 void BasicStringMatrixCapacityTests::testTranspose_data()
 {
-    QTest::addColumn<StringMatrix>("srcMatrix");
-    QTest::addColumn<StringMatrix>("destMatrix");
+    QTest::addColumn<StringMatrix>("matrix");
     QTest::addColumn<matrix_size_t>("expectedRowCapacity");
     QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
     QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
     QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-    QTest::addColumn<bool>("isTransposedToItself");
 
-    QTest::newRow("1: transposed matrix initially empty") << StringMatrix{{3, 4}, "Value"} << StringMatrix{} << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("2: transposed matrix initially empty") << StringMatrix{{4, 3}, "Value"} << StringMatrix{} << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("3: transposed matrix initially empty") << StringMatrix{{7, 8}, "Value"} << StringMatrix{} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("4: transposed matrix initially empty") << StringMatrix{{8, 7}, "Value"} << StringMatrix{} << matrix_size_t{8u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << false;
-    QTest::newRow("5: transposed matrix initially empty") << StringMatrix{{20, 25}, "Value"} << StringMatrix{} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{3u} << matrix_opt_size_t{2u} << false;
-    QTest::newRow("6: transposed matrix initially empty") << StringMatrix{{25, 20}, "Value"} << StringMatrix{} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("7: transposed matrix initially NOT empty") << StringMatrix{{8, 7}, "Value"} << StringMatrix{{5, 6}, "Value"} << matrix_size_t{8u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << false;
-    QTest::newRow("8: transposed matrix initially NOT empty") << StringMatrix{{8, 7}, "Value"} << StringMatrix{{6, 6}, "Value"} << matrix_size_t{7u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << false;
-    QTest::newRow("9: transposed matrix initially NOT empty") << StringMatrix{{8, 7}, "Value"} << StringMatrix{{5, 7}, "Value"} << matrix_size_t{8u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("10: transposed matrix initially NOT empty") << StringMatrix{{8, 7}, "Value"} << StringMatrix{{6, 7}, "Value"} << matrix_size_t{7u} << matrix_size_t{8u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("11: transposed matrix initially NOT empty") << StringMatrix{{8, 7}, "Value"} << StringMatrix{{7, 8}, "Value"} << matrix_size_t{8u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << false;
-    QTest::newRow("12: transposed matrix initially NOT empty") << StringMatrix{{25, 20}, "Value"} << StringMatrix{{15, 19}, "Value"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("13: transposed matrix initially NOT empty") << StringMatrix{{25, 20}, "Value"} << StringMatrix{{16, 19}, "Value"} << matrix_size_t{20u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("14: transposed matrix initially NOT empty") << StringMatrix{{25, 20}, "Value"} << StringMatrix{{15, 20}, "Value"} << matrix_size_t{25u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("15: transposed matrix initially NOT empty") << StringMatrix{{25, 20}, "Value"} << StringMatrix{{16, 20}, "Value"} << matrix_size_t{20u} << matrix_size_t{25u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("16: transposed matrix initially NOT empty") << StringMatrix{{25, 20}, "Value"} << StringMatrix{{20, 25}, "Value"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("17: transposed matrix initially NOT empty") << StringMatrix{{25, 20}, "Value"} << StringMatrix{{15, 25}, "Value"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("18: transposed matrix initially NOT empty") << StringMatrix{{25, 20}, "Value"} << StringMatrix{{16, 25}, "Value"} << matrix_size_t{20u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("19: transposed matrix initially NOT empty") << StringMatrix{{25, 20}, "Value"} << StringMatrix{{20, 19}, "Value"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{2u} << matrix_opt_size_t{3u} << false;
-    QTest::newRow("20: transposed matrix initially NOT empty") << StringMatrix{{25, 20}, "Value"} << StringMatrix{{20, 20}, "Value"} << matrix_size_t{25u} << matrix_size_t{25u} << matrix_opt_size_t{2u} << matrix_opt_size_t{0u} << false;
-    QTest::newRow("21: matrix transposed to itself") << StringMatrix{{3, 3}, "Value"} << StringMatrix{{3, 3}, "Value"} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("22: matrix transposed to itself") << StringMatrix{{3, 4}, "Value"} << StringMatrix{{3, 4}, "Value"} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << true;
-    QTest::newRow("23: matrix transposed to itself") << StringMatrix{{4, 3}, "Value"} << StringMatrix{{4, 3}, "Value"} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("24: matrix transposed to itself") << StringMatrix{{4, 4}, "Value"} << StringMatrix{{4, 4}, "Value"} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("25: matrix transposed to itself") << StringMatrix{{7, 8}, "Value"} << StringMatrix{{7, 8}, "Value"} << matrix_size_t{8u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << true;
-    QTest::newRow("26: matrix transposed to itself") << StringMatrix{{8, 7}, "Value"} << StringMatrix{{8, 7}, "Value"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("27: matrix transposed to itself") << StringMatrix{{20, 25}, "Value"} << StringMatrix{{20, 25}, "Value"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{5u} << true;
-    QTest::newRow("28: matrix transposed to itself") << StringMatrix{{25, 20}, "Value"} << StringMatrix{{25, 20}, "Value"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{5u} << matrix_opt_size_t{0u} << true;
-    QTest::newRow("29: matrix transposed to itself") << StringMatrix{{25, 25}, "Value"} << StringMatrix{{25, 25}, "Value"} << matrix_size_t{31u} << matrix_size_t{31u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u} << true;
-    QTest::newRow("30: matrix transposed to itself") << StringMatrix{{20, 26}, "Value"} << StringMatrix{{20, 26}, "Value"} << matrix_size_t{32u} << matrix_size_t{32u} << matrix_opt_size_t{3u} << matrix_opt_size_t{6u} << true;
-    QTest::newRow("31: matrix transposed to itself") << StringMatrix{{26, 20}, "Value"} << StringMatrix{{26, 20}, "Value"} << matrix_size_t{32u} << matrix_size_t{32u} << matrix_opt_size_t{6u} << matrix_opt_size_t{3u} << true;
+    QTest::newRow("1: small matrix") << StringMatrix{{3, 3}, "Value"} << matrix_size_t{3u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: small matrix") << StringMatrix{{3, 4}, "Value"} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("3: small matrix") << StringMatrix{{4, 3}, "Value"} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("4: small matrix") << StringMatrix{{4, 4}, "Value"} << matrix_size_t{5u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("5: medium matrix") << StringMatrix{{7, 8}, "Value"} << matrix_size_t{8u} << matrix_size_t{10u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("6: medium matrix") << StringMatrix{{8, 7}, "Value"} << matrix_size_t{10u} << matrix_size_t{8u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("7: large matrix") << StringMatrix{{20, 25}, "Value"} << matrix_size_t{25u} << matrix_size_t{31u} << matrix_opt_size_t{0u} << matrix_opt_size_t{5u};
+    QTest::newRow("8: large matrix") << StringMatrix{{25, 20}, "Value"} << matrix_size_t{31u} << matrix_size_t{25u} << matrix_opt_size_t{5u} << matrix_opt_size_t{0u};
+    QTest::newRow("9: large matrix") << StringMatrix{{25, 25}, "Value"} << matrix_size_t{31u} << matrix_size_t{31u} << matrix_opt_size_t{3u} << matrix_opt_size_t{3u};
+    QTest::newRow("10: large matrix") << StringMatrix{{20, 26}, "Value"} << matrix_size_t{32u} << matrix_size_t{32u} << matrix_opt_size_t{3u} << matrix_opt_size_t{6u};
+    QTest::newRow("11: large matrix") << StringMatrix{{26, 20}, "Value"} << matrix_size_t{32u} << matrix_size_t{32u} << matrix_opt_size_t{6u} << matrix_opt_size_t{3u};
+    QTest::newRow("12: extra large matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension1}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("13: extra large matrix") << StringMatrix{{c_LargeDimension1, c_MaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("14: extra large matrix") << StringMatrix{{c_MaxAllowedDimension, c_LargeDimension1}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: extra large matrix") << StringMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+
+    const matrix_size_t c_CustomCapacityOffset1{static_cast<matrix_size_t>((c_MaxAllowedDimension - c_SevenEighthsMaxAllowedDimension) / 2)};
+    const matrix_size_t c_CustomCapacityOffset2{static_cast<matrix_size_t>((c_FiveEighthsMaxAllowedDimension - c_HalfMaxAllowedDimension) / 2)};
+    const matrix_size_t c_CustomCapacityOffset3{static_cast<matrix_size_t>((c_MaxAllowedDimension - c_HalfMaxAllowedDimension) / 2)};
+
+    QTest::newRow("16: extra large matrix") << StringMatrix{{c_HalfMaxAllowedDimension, c_HalfMaxAllowedDimension}, "Value"} << c_FiveEighthsMaxAllowedDimension << c_FiveEighthsMaxAllowedDimension << matrix_opt_size_t{c_CustomCapacityOffset2} << matrix_opt_size_t{c_CustomCapacityOffset2};
+    QTest::newRow("17: extra large matrix") << StringMatrix{{c_HalfMaxAllowedDimension, c_SevenEighthsMaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_CustomCapacityOffset1} << matrix_opt_size_t{c_CustomCapacityOffset3};
+    QTest::newRow("18: extra large matrix") << StringMatrix{{c_SevenEighthsMaxAllowedDimension, c_HalfMaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_CustomCapacityOffset3} << matrix_opt_size_t{c_CustomCapacityOffset1};
+    QTest::newRow("19: extra large matrix") << StringMatrix{{c_SevenEighthsMaxAllowedDimension, c_SevenEighthsMaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_CustomCapacityOffset1} << matrix_opt_size_t{c_CustomCapacityOffset1};
 }
 
 void BasicStringMatrixCapacityTests::testReserve_data()
