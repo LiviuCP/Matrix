@@ -9,19 +9,12 @@
                                    "Default constructor initialized matrix with wrong capacity!", \
                                    "Default constructor initialized matrix with wrong capacity offset!")
 
-#define TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
-                                                                  requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset) \
+#define TEST_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
+                                                               requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset) \
     CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset, \
-                                   "Copied vector constructor initialized matrix with wrong number of rows and columns!", \
-                                   "Copied vector constructor initialized matrix with wrong capacity!", \
-                                   "Copied vector constructor initialized matrix with wrong capacity offset!")
-
-#define TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
-                                                                  requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset) \
-    CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset, \
-                                   "Moved vector constructor initialized matrix with wrong number of rows and columns!", \
-                                   "Moved vector constructor initialized matrix with wrong capacity!", \
-                                   "Moved vector constructor initialized matrix with wrong capacity offset!")
+                                   "Vector constructor initialized matrix with wrong number of rows and columns!", \
+                                   "Vector constructor initialized matrix with wrong capacity!", \
+                                   "Vector constructor initialized matrix with wrong capacity offset!")
 
 #define TEST_IDENTICAL_ELEMENTS_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
                                                                          requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset) \
@@ -73,7 +66,7 @@
     { \
         if (!isEmptyDestMatrix) \
         { \
-            Matrix<MatrixType> destMatrix{destRowsCount, destColumnsCount, destInitList}; \
+            Matrix<MatrixType> destMatrix{destRowsCount, destColumnsCount, std::move(std::vector{destInitList})}; \
             destMatrix = destMatrix; \
 \
             TEST_COPY_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, destRowsCount, destColumnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
@@ -89,8 +82,8 @@
     } \
     else if (!isEmptySrcMatrix && !isEmptyDestMatrix) \
     { \
-        const Matrix<MatrixType> srcMatrix{srcRowsCount, srcColumnsCount, srcInitList}; \
-        Matrix<MatrixType> destMatrix{destRowsCount, destColumnsCount, destInitList}; \
+        const Matrix<MatrixType> srcMatrix{srcRowsCount, srcColumnsCount, std::move(std::vector{srcInitList})}; \
+        Matrix<MatrixType> destMatrix{destRowsCount, destColumnsCount, std::move(std::vector{destInitList})}; \
 \
         destMatrix = srcMatrix; \
 \
@@ -99,7 +92,7 @@
     } \
     else if (!isEmptySrcMatrix && isEmptyDestMatrix) \
     { \
-        const Matrix<MatrixType> srcMatrix{srcRowsCount, srcColumnsCount, srcInitList}; \
+        const Matrix<MatrixType> srcMatrix{srcRowsCount, srcColumnsCount, std::move(std::vector{srcInitList})}; \
         Matrix<MatrixType> destMatrix; \
 \
         destMatrix = srcMatrix; \
@@ -110,7 +103,7 @@
     else if (isEmptySrcMatrix && !isEmptyDestMatrix) \
     { \
         const Matrix<MatrixType> srcMatrix; \
-        Matrix<MatrixType> destMatrix{destRowsCount, destColumnsCount, destInitList}; \
+        Matrix<MatrixType> destMatrix{destRowsCount, destColumnsCount, std::move(std::vector{destInitList})}; \
 \
         destMatrix = srcMatrix; \
 \
@@ -134,7 +127,7 @@
     { \
         if (!isEmptyDestMatrix) \
         { \
-            Matrix<MatrixType> destMatrix{destRowsCount, destColumnsCount, destInitList}; \
+            Matrix<MatrixType> destMatrix{destRowsCount, destColumnsCount, std::move(std::vector{destInitList})}; \
             destMatrix = std::move(destMatrix); \
 \
             TEST_MOVE_ASSIGNMENT_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, destRowsCount, destColumnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset); \
@@ -150,8 +143,8 @@
     } \
     else if (!isEmptySrcMatrix && !isEmptyDestMatrix) \
     { \
-        Matrix<MatrixType> srcMatrix{srcRowsCount, srcColumnsCount, srcInitList}; \
-        Matrix<MatrixType> destMatrix{destRowsCount, destColumnsCount, destInitList}; \
+        Matrix<MatrixType> srcMatrix{srcRowsCount, srcColumnsCount, std::move(std::vector{srcInitList})}; \
+        Matrix<MatrixType> destMatrix{destRowsCount, destColumnsCount, std::move(std::vector{destInitList})}; \
 \
         destMatrix = std::move(srcMatrix); \
 \
@@ -160,7 +153,7 @@
     } \
     else if (!isEmptySrcMatrix && isEmptyDestMatrix) \
     { \
-        Matrix<MatrixType> srcMatrix{srcRowsCount, srcColumnsCount, srcInitList}; \
+        Matrix<MatrixType> srcMatrix{srcRowsCount, srcColumnsCount, std::move(std::vector{srcInitList})}; \
         Matrix<MatrixType> destMatrix; \
 \
         destMatrix = std::move(srcMatrix); \
@@ -171,7 +164,7 @@
     else if (isEmptySrcMatrix && !isEmptyDestMatrix) \
     { \
         Matrix<MatrixType> srcMatrix; \
-        Matrix<MatrixType> destMatrix{destRowsCount, destColumnsCount, destInitList}; \
+        Matrix<MatrixType> destMatrix{destRowsCount, destColumnsCount, std::move(std::vector{destInitList})}; \
 \
         destMatrix = std::move(srcMatrix); \
 \

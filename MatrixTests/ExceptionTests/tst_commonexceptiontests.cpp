@@ -24,8 +24,7 @@ class CommonExceptionTests : public QObject
 
 private slots:
     // test functions
-    void testCopiedVectorConstructorExceptions();
-    void testMovedVectorConstructorExceptions();
+    void testVectorConstructorExceptions();
     void testIdenticalElementsConstructorExceptions();
     void testDiagonalMatrixConstructorExceptions();
     void testFunctionAtExceptions();
@@ -45,8 +44,7 @@ private slots:
     void testSwapRowsOrColumnsExceptions();
 
     // test data
-    void testCopiedVectorConstructorExceptions_data();
-    void testMovedVectorConstructorExceptions_data();
+    void testVectorConstructorExceptions_data();
     void testIdenticalElementsConstructorExceptions_data();
     void testDiagonalMatrixConstructorExceptions_data();
     void testFunctionAtExceptions_data();
@@ -67,22 +65,12 @@ private slots:
 
 private:
     // test data helper methods
-    void _buildVectorConstructorExceptionsTestingTable();
     void _buildResizeExceptionsTestingTable();
     void _buildInsertRowExceptionsTestingTable();
     void _buildInsertColumnExceptionsTestingTable();
 };
 
-void CommonExceptionTests::testCopiedVectorConstructorExceptions()
-{
-    QFETCH(matrix_size_t, rowsCount);
-    QFETCH(matrix_size_t, columnsCount);
-    QFETCH(std::vector<int>, initList);
-
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntMatrix matrix(rowsCount, columnsCount, initList);});
-}
-
-void CommonExceptionTests::testMovedVectorConstructorExceptions()
+void CommonExceptionTests::testVectorConstructorExceptions()
 {
     QFETCH(matrix_size_t, rowsCount);
     QFETCH(matrix_size_t, columnsCount);
@@ -311,14 +299,30 @@ void CommonExceptionTests::testSwapRowsOrColumnsExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {auxMatrix.swapColumns(firstRowColumnNr, secondRowColumnNr);});
 }
 
-void CommonExceptionTests::testCopiedVectorConstructorExceptions_data()
+void CommonExceptionTests::testVectorConstructorExceptions_data()
 {
-    _buildVectorConstructorExceptionsTestingTable();
-}
+    QTest::addColumn<matrix_size_t>("rowsCount");
+    QTest::addColumn<matrix_size_t>("columnsCount");
+    QTest::addColumn<std::vector<int>>("initList");
 
-void CommonExceptionTests::testMovedVectorConstructorExceptions_data()
-{
-    _buildVectorConstructorExceptionsTestingTable();
+    QTest::newRow("1: null rows and columns count") << matrix_size_t{0u} << matrix_size_t{0u} << std::vector<int>{1, 2, 3, 4};
+    QTest::newRow("2: null rows count") << matrix_size_t{0u} << matrix_size_t{2u} << std::vector<int>{1, 2, 3, 4};
+    QTest::newRow("3: null rows count") << matrix_size_t{0u} << c_MaxAllowedDimension << std::vector<int>{1, 2, 3, 4};
+    QTest::newRow("4: null columns count") << matrix_size_t{2u} << matrix_size_t{0u} << std::vector<int>{1, 2, 3, 4};
+    QTest::newRow("5: null columns count") << c_MaxAllowedDimension << matrix_size_t{0u} << std::vector<int>{1, 2, 3, 4};
+    QTest::newRow("6: exceeding rows count") << c_ExceedingDimension << matrix_size_t{2} << std::vector<int>(2 * c_ExceedingDimension, 0);
+    QTest::newRow("7: exceeding rows count") << c_ExceedingDimension << c_MaxAllowedDimension << std::vector<int>(c_ExceedingDimension * c_MaxAllowedDimension, 0);
+    QTest::newRow("8: exceeding columns count") << matrix_size_t{2} << c_ExceedingDimension << std::vector<int>(2 * c_ExceedingDimension, 0);
+    QTest::newRow("9: exceeding columns count") << c_MaxAllowedDimension << c_ExceedingDimension << std::vector<int>(c_MaxAllowedDimension * c_ExceedingDimension, 0);
+    QTest::newRow("10: null rows count, exceeding columns count") << matrix_size_t{0u} << c_ExceedingDimension << std::vector<int>{1, 2, 3, 4};
+    QTest::newRow("11: exceeding rows count, null columns count") << c_ExceedingDimension << matrix_size_t{0u} << std::vector<int>{1, 2, 3, 4};
+    QTest::newRow("12: exceeding rows and columns count") << c_ExceedingDimension << c_ExceedingDimension << std::vector<int>(c_ExceedingDimension * c_ExceedingDimension, 0);
+    QTest::newRow("13: less init elements than required") << matrix_size_t{2u} << matrix_size_t{3u} << std::vector<int>{1, 2, 3, 4, 5};
+    QTest::newRow("14: less init elements than required") << matrix_size_t{1u} << matrix_size_t{5u} << std::vector<int>{1, 2, 3, 4};
+    QTest::newRow("15: less init elements than required") << matrix_size_t{1u} << c_MaxAllowedDimension << std::vector<int>(c_MaxAllowedDimension - 1, 0);
+    QTest::newRow("16: less init elements than required") << matrix_size_t{5u} << matrix_size_t{1u} << std::vector<int>{1, 2, 3, 4};
+    QTest::newRow("17: less init elements than required") << c_MaxAllowedDimension << matrix_size_t{1u} << std::vector<int>(c_MaxAllowedDimension - 1, 0);
+    QTest::newRow("18: less init elements than required") << c_MaxAllowedDimension << c_MaxAllowedDimension << std::vector<int>(c_MaxAllowedDimension * c_MaxAllowedDimension - 1, 0);
 }
 
 void CommonExceptionTests::testIdenticalElementsConstructorExceptions_data()
@@ -548,32 +552,6 @@ void CommonExceptionTests::testSwapRowsOrColumnsExceptions_data()
 
     // empty matrixes involved
     QTest::newRow("4: empty matrix") << IntMatrix{} << matrix_size_t{0u} << matrix_size_t{0u};
-}
-
-void CommonExceptionTests::_buildVectorConstructorExceptionsTestingTable()
-{
-    QTest::addColumn<matrix_size_t>("rowsCount");
-    QTest::addColumn<matrix_size_t>("columnsCount");
-    QTest::addColumn<std::vector<int>>("initList");
-
-    QTest::newRow("1: null rows and columns count") << matrix_size_t{0u} << matrix_size_t{0u} << std::vector<int>{1, 2, 3, 4};
-    QTest::newRow("2: null rows count") << matrix_size_t{0u} << matrix_size_t{2u} << std::vector<int>{1, 2, 3, 4};
-    QTest::newRow("3: null rows count") << matrix_size_t{0u} << c_MaxAllowedDimension << std::vector<int>{1, 2, 3, 4};
-    QTest::newRow("4: null columns count") << matrix_size_t{2u} << matrix_size_t{0u} << std::vector<int>{1, 2, 3, 4};
-    QTest::newRow("5: null columns count") << c_MaxAllowedDimension << matrix_size_t{0u} << std::vector<int>{1, 2, 3, 4};
-    QTest::newRow("6: exceeding rows count") << c_ExceedingDimension << matrix_size_t{2} << std::vector<int>(2 * c_ExceedingDimension, 0);
-    QTest::newRow("7: exceeding rows count") << c_ExceedingDimension << c_MaxAllowedDimension << std::vector<int>(c_ExceedingDimension * c_MaxAllowedDimension, 0);
-    QTest::newRow("8: exceeding columns count") << matrix_size_t{2} << c_ExceedingDimension << std::vector<int>(2 * c_ExceedingDimension, 0);
-    QTest::newRow("9: exceeding columns count") << c_MaxAllowedDimension << c_ExceedingDimension << std::vector<int>(c_MaxAllowedDimension * c_ExceedingDimension, 0);
-    QTest::newRow("10: null rows count, exceeding columns count") << matrix_size_t{0u} << c_ExceedingDimension << std::vector<int>{1, 2, 3, 4};
-    QTest::newRow("11: exceeding rows count, null columns count") << c_ExceedingDimension << matrix_size_t{0u} << std::vector<int>{1, 2, 3, 4};
-    QTest::newRow("12: exceeding rows and columns count") << c_ExceedingDimension << c_ExceedingDimension << std::vector<int>(c_ExceedingDimension * c_ExceedingDimension, 0);
-    QTest::newRow("13: less init elements than required") << matrix_size_t{2u} << matrix_size_t{3u} << std::vector<int>{1, 2, 3, 4, 5};
-    QTest::newRow("14: less init elements than required") << matrix_size_t{1u} << matrix_size_t{5u} << std::vector<int>{1, 2, 3, 4};
-    QTest::newRow("15: less init elements than required") << matrix_size_t{1u} << c_MaxAllowedDimension << std::vector<int>(c_MaxAllowedDimension - 1, 0);
-    QTest::newRow("16: less init elements than required") << matrix_size_t{5u} << matrix_size_t{1u} << std::vector<int>{1, 2, 3, 4};
-    QTest::newRow("17: less init elements than required") << c_MaxAllowedDimension << matrix_size_t{1u} << std::vector<int>(c_MaxAllowedDimension - 1, 0);
-    QTest::newRow("18: less init elements than required") << c_MaxAllowedDimension << c_MaxAllowedDimension << std::vector<int>(c_MaxAllowedDimension * c_MaxAllowedDimension - 1, 0);
 }
 
 void CommonExceptionTests::_buildResizeExceptionsTestingTable()

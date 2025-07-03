@@ -11,8 +11,7 @@ class ConstructionAndAssignmentTests : public QObject
 
 private slots:
     void testIntMatrixDefaultConstructor();
-    void testIntMatrixCopiedVectorConstructor();
-    void testIntMatrixMovedVectorConstructor();
+    void testIntMatrixVectorConstructor();
     void testIntMatrixIdenticalElementsConstructor();
     void testIntMatrixDiagonalMatrixConstructor();
     void testIntMatrixCopyConstructor();
@@ -22,8 +21,7 @@ private slots:
     void testIntMatrixAdditionalAssignmentOperatorTests();
 
     void testStringMatrixDefaultConstructor();
-    void testStringMatrixCopiedVectorConstructor();
-    void testStringMatrixMovedVectorConstructor();
+    void testStringMatrixVectorConstructor();
     void testStringMatrixIdenticalElementsConstructor();
     void testStringMatrixDiagonalMatrixConstructor();
     void testStringMatrixCopyConstructor();
@@ -32,8 +30,7 @@ private slots:
     void testStringMatrixMoveAssignmentOperator();
     void testStringMatrixAdditionalAssignmentOperatorTests();
 
-    void testIntMatrixCopiedVectorConstructor_data();
-    void testIntMatrixMovedVectorConstructor_data();
+    void testIntMatrixVectorConstructor_data();
     void testIntMatrixIdenticalElementsConstructor_data();
     void testIntMatrixDiagonalMatrixConstructor_data();
     void testIntMatrixCopyConstructor_data();
@@ -41,8 +38,7 @@ private slots:
     void testIntMatrixCopyAssignmentOperator_data();
     void testIntMatrixMoveAssignmentOperator_data();
 
-    void testStringMatrixCopiedVectorConstructor_data();
-    void testStringMatrixMovedVectorConstructor_data();
+    void testStringMatrixVectorConstructor_data();
     void testStringMatrixIdenticalElementsConstructor_data();
     void testStringMatrixDiagonalMatrixConstructor_data();
     void testStringMatrixCopyConstructor_data();
@@ -53,10 +49,8 @@ private slots:
 
 private:
     // test data helper methods
-    void _buildIntMatrixMovedCopiedVectorConstructorsTestingTable();
     void _buildIntMatrixMoveCopyConstructorsTestingTable();
     void _buildIntMatrixMoveCopyAssignmentOperatorsTestingTable();
-    void _buildStringMatrixMovedCopiedVectorConstructorsTestingTable();
     void _buildStringMatrixMoveCopyConstructorsTestingTable();
     void _buildStringMatrixMoveCopyAssignmentOperatorsTestingTable();
 };
@@ -67,24 +61,8 @@ void ConstructionAndAssignmentTests::testIntMatrixDefaultConstructor()
     TEST_DEFAULT_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix);
 }
 
-void ConstructionAndAssignmentTests::testIntMatrixCopiedVectorConstructor()
-{
-    QFETCH(matrix_size_t, rowsCount);
-    QFETCH(matrix_size_t, columnsCount);
-    QFETCH(std::vector<int>, initList);
-    QFETCH(matrix_size_t, expectedRowCapacity);
-    QFETCH(matrix_size_t, expectedColumnCapacity);
-    QFETCH(matrix_opt_size_t, expectedRowCapacityOffset);
-    QFETCH(matrix_opt_size_t, expectedColumnCapacityOffset);
-
-    IntMatrix matrix{rowsCount, columnsCount, initList};
-
-    TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
-    CHECK_MATRIX_HAS_THE_RIGHT_ELEMENT_VALUES(matrix, initList, "Matrix elements have not been correctly initialized by the copied vector constructor");
-}
-
 // actually a copy operation here
-void ConstructionAndAssignmentTests::testIntMatrixMovedVectorConstructor()
+void ConstructionAndAssignmentTests::testIntMatrixVectorConstructor()
 {
     QFETCH(matrix_size_t, rowsCount);
     QFETCH(matrix_size_t, columnsCount);
@@ -98,7 +76,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMovedVectorConstructor()
 
     IntMatrix matrix{rowsCount, columnsCount, std::move(initList)};
 
-    TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    TEST_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
     CHECK_MATRIX_HAS_THE_RIGHT_ELEMENT_VALUES(matrix, c_InitListRef, "Matrix elements have not been correctly initialized by the moved vector constructor");
 
     // check that the content of the vector is actually copied (int cannot be moved as it's a primitive)
@@ -147,7 +125,7 @@ void ConstructionAndAssignmentTests::testIntMatrixCopyConstructor()
 
     if (!initList.empty())
     {
-        IntMatrix srcMatrix{rowsCount, columnsCount, initList};
+        IntMatrix srcMatrix{rowsCount, columnsCount, std::move(std::vector{initList})};
         IntMatrix destMatrix{srcMatrix};
 
         TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
@@ -174,7 +152,7 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveConstructor()
 
     if (!initList.empty())
     {
-        IntMatrix srcMatrix{rowsCount, columnsCount, initList};
+        IntMatrix srcMatrix{rowsCount, columnsCount, std::move(std::vector{initList})};
         IntMatrix destMatrix{std::move(srcMatrix)};
 
         TEST_MOVE_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
@@ -291,23 +269,7 @@ void ConstructionAndAssignmentTests::testStringMatrixDefaultConstructor()
     TEST_DEFAULT_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix);
 }
 
-void ConstructionAndAssignmentTests::testStringMatrixCopiedVectorConstructor()
-{
-    QFETCH(matrix_size_t, rowsCount);
-    QFETCH(matrix_size_t, columnsCount);
-    QFETCH(std::vector<std::string>, initList);
-    QFETCH(matrix_size_t, expectedRowCapacity);
-    QFETCH(matrix_size_t, expectedColumnCapacity);
-    QFETCH(matrix_opt_size_t, expectedRowCapacityOffset);
-    QFETCH(matrix_opt_size_t, expectedColumnCapacityOffset);
-
-    StringMatrix matrix{rowsCount, columnsCount, initList};
-
-    TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
-    CHECK_MATRIX_HAS_THE_RIGHT_ELEMENT_VALUES(matrix, initList, "Matrix elements have not been correctly initialized by the copied vector constructor");
-}
-
-void ConstructionAndAssignmentTests::testStringMatrixMovedVectorConstructor()
+void ConstructionAndAssignmentTests::testStringMatrixVectorConstructor()
 {
     QFETCH(matrix_size_t, rowsCount);
     QFETCH(matrix_size_t, columnsCount);
@@ -321,7 +283,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMovedVectorConstructor()
 
     StringMatrix matrix{rowsCount, columnsCount, std::move(initList)};
 
-    TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    TEST_VECTOR_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
     CHECK_MATRIX_HAS_THE_RIGHT_ELEMENT_VALUES(matrix, c_InitListRef, "Matrix elements have not been correctly initialized by the moved vector constructor");
 
     // check that the content of the vector is actually moved
@@ -370,7 +332,7 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyConstructor()
 
     if (!initList.empty())
     {
-        StringMatrix srcMatrix{rowsCount, columnsCount, initList};
+        StringMatrix srcMatrix{rowsCount, columnsCount, std::move(std::vector{initList})};
         StringMatrix destMatrix{srcMatrix};
 
         TEST_COPY_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
@@ -397,7 +359,7 @@ void ConstructionAndAssignmentTests::testStringMatrixMoveConstructor()
 
     if (!initList.empty())
     {
-        StringMatrix srcMatrix{rowsCount, columnsCount, initList};
+        StringMatrix srcMatrix{rowsCount, columnsCount, std::move(std::vector{initList})};
         StringMatrix destMatrix{std::move(srcMatrix)};
 
         TEST_MOVE_CONSTRUCTOR_CHECK_MATRIX_SIZE_AND_CAPACITY(destMatrix, rowsCount, columnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
@@ -508,14 +470,29 @@ void ConstructionAndAssignmentTests::testStringMatrixAdditionalAssignmentOperato
     }
 }
 
-void ConstructionAndAssignmentTests::testIntMatrixCopiedVectorConstructor_data()
+void ConstructionAndAssignmentTests::testIntMatrixVectorConstructor_data()
 {
-    _buildIntMatrixMovedCopiedVectorConstructorsTestingTable();
-}
+    QTest::addColumn<matrix_size_t>("rowsCount");
+    QTest::addColumn<matrix_size_t>("columnsCount");
+    QTest::addColumn<std::vector<int>>("initList");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
 
-void ConstructionAndAssignmentTests::testIntMatrixMovedVectorConstructor_data()
-{
-    _buildIntMatrixMovedCopiedVectorConstructorsTestingTable();
+    QTest::newRow("1: small size matrix") << matrix_size_t{2u} << matrix_size_t{3u} << std::vector<int>{1, 2, 3, 4, 5, 6} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+
+    const std::vector<int> c_LargeVector{ -1,  2,  -3,  4,  -5,  6,  -7,  8,  -9, 10,
+        -11, 12, -13, 14, -15, 16, -17, 18, -19, 20,
+        -21, 22, -23, 24, -25, 26, -27, 28, -29, 30,
+        -31, 32, -33, 34, -35, 36, -37, 38, -39, 40,
+        -41, 42, -43, 44, -45, 46, -47, 48, -49, 50,
+        -51, 52, -53, 54, -55, 56, -57, 58, -59, 60,
+        -61, 62, -63, 64, -65, 66, -67, 68, -69, 70,
+        -71, 72, -73, 74, -75, 76, -77, 78, -79, 80
+    };
+
+    QTest::newRow("2: large size matrix") << matrix_size_t{8u} << matrix_size_t{10u} << c_LargeVector << matrix_size_t{10u} << matrix_size_t{12u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
 }
 
 void ConstructionAndAssignmentTests::testIntMatrixIdenticalElementsConstructor_data()
@@ -564,14 +541,29 @@ void ConstructionAndAssignmentTests::testIntMatrixMoveAssignmentOperator_data()
     _buildIntMatrixMoveCopyAssignmentOperatorsTestingTable();
 }
 
-void ConstructionAndAssignmentTests::testStringMatrixCopiedVectorConstructor_data()
+void ConstructionAndAssignmentTests::testStringMatrixVectorConstructor_data()
 {
-    _buildStringMatrixMovedCopiedVectorConstructorsTestingTable();
-}
+    QTest::addColumn<matrix_size_t>("rowsCount");
+    QTest::addColumn<matrix_size_t>("columnsCount");
+    QTest::addColumn<std::vector<std::string>>("initList");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
 
-void ConstructionAndAssignmentTests::testStringMatrixMovedVectorConstructor_data()
-{
-    _buildStringMatrixMovedCopiedVectorConstructorsTestingTable();
+    QTest::newRow("1: small size matrix") << matrix_size_t{2u} << matrix_size_t{3u} << std::vector<std::string>{"First", "Second", "Third", "Fourth", "Fifth", "Sixth"} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+
+    const std::vector<std::string> c_LargeVector{ "-1a",  "2B",  "-3c",  "4D",  "-5e",  "6F",  "-7g",  "8H",  "-9i", "10J",
+        "-11a", "12B", "-13c", "14D", "-15e", "16F", "-17g", "18H", "-19i", "20J",
+        "-21a", "22B", "-23c", "24D", "-25e", "26F", "-27g", "28H", "-29i", "30J",
+        "-31a", "32B", "-33c", "34D", "-35e", "36F", "-37g", "38H", "-39i", "40J",
+        "-41a", "42B", "-43c", "44D", "-45e", "46F", "-47g", "48H", "-49i", "50J",
+        "-51a", "52B", "-53c", "54D", "-55e", "56F", "-57g", "58H", "-59i", "60J",
+        "-61a", "62B", "-63c", "64D", "-65e", "66F", "-67g", "68H", "-69i", "70J",
+        "-71a", "72B", "-73c", "74D", "-75e", "76F", "-77g", "78H", "-79i", "80J"
+    };
+
+    QTest::newRow("2: large size matrix") << matrix_size_t{8u} << matrix_size_t{10u} << c_LargeVector << matrix_size_t{10u} << matrix_size_t{12u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
 }
 
 void ConstructionAndAssignmentTests::testStringMatrixIdenticalElementsConstructor_data()
@@ -618,31 +610,6 @@ void ConstructionAndAssignmentTests::testStringMatrixCopyAssignmentOperator_data
 void ConstructionAndAssignmentTests::testStringMatrixMoveAssignmentOperator_data()
 {
     _buildStringMatrixMoveCopyAssignmentOperatorsTestingTable();
-}
-
-void ConstructionAndAssignmentTests::_buildIntMatrixMovedCopiedVectorConstructorsTestingTable()
-{
-    QTest::addColumn<matrix_size_t>("rowsCount");
-    QTest::addColumn<matrix_size_t>("columnsCount");
-    QTest::addColumn<std::vector<int>>("initList");
-    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
-    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
-    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
-    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-
-    QTest::newRow("1: small size matrix") << matrix_size_t{2u} << matrix_size_t{3u} << std::vector<int>{1, 2, 3, 4, 5, 6} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-
-    const std::vector<int> c_LargeVector{ -1,  2,  -3,  4,  -5,  6,  -7,  8,  -9, 10,
-                                         -11, 12, -13, 14, -15, 16, -17, 18, -19, 20,
-                                         -21, 22, -23, 24, -25, 26, -27, 28, -29, 30,
-                                         -31, 32, -33, 34, -35, 36, -37, 38, -39, 40,
-                                         -41, 42, -43, 44, -45, 46, -47, 48, -49, 50,
-                                         -51, 52, -53, 54, -55, 56, -57, 58, -59, 60,
-                                         -61, 62, -63, 64, -65, 66, -67, 68, -69, 70,
-                                         -71, 72, -73, 74, -75, 76, -77, 78, -79, 80
-                                        };
-
-    QTest::newRow("2: large size matrix") << matrix_size_t{8u} << matrix_size_t{10u} << c_LargeVector << matrix_size_t{10u} << matrix_size_t{12u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
 }
 
 void ConstructionAndAssignmentTests::_buildIntMatrixMoveCopyConstructorsTestingTable()
@@ -710,31 +677,6 @@ void ConstructionAndAssignmentTests::_buildIntMatrixMoveCopyAssignmentOperatorsT
     QTest::newRow("11: empty matrix") << matrix_size_t{0u} << matrix_size_t{0u} << std::vector<int>{} << matrix_size_t{0u} << matrix_size_t{0u} << std::vector<int>{} << matrix_size_t{0u} << matrix_size_t{0u} << matrix_opt_size_t{} << matrix_opt_size_t{} << false;
     QTest::newRow("12: non-empty self-assigned matrix") << matrix_size_t{2u} << matrix_size_t{3u} << std::vector<int>{1, 2, 3, 4, 5, 6} << matrix_size_t{2u} << matrix_size_t{3u} << std::vector<int>{1, 2, 3, 4, 5, 6} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << true;
     QTest::newRow("13: empty self-assigned matrix") << matrix_size_t{0u} << matrix_size_t{0u} << std::vector<int>{} << matrix_size_t{0u} << matrix_size_t{0u} << std::vector<int>{} << matrix_size_t{0u} << matrix_size_t{0u} << matrix_opt_size_t{} << matrix_opt_size_t{} << true;
-}
-
-void ConstructionAndAssignmentTests::_buildStringMatrixMovedCopiedVectorConstructorsTestingTable()
-{
-    QTest::addColumn<matrix_size_t>("rowsCount");
-    QTest::addColumn<matrix_size_t>("columnsCount");
-    QTest::addColumn<std::vector<std::string>>("initList");
-    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
-    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
-    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
-    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-
-    QTest::newRow("1: small size matrix") << matrix_size_t{2u} << matrix_size_t{3u} << std::vector<std::string>{"First", "Second", "Third", "Fourth", "Fifth", "Sixth"} << matrix_size_t{2u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-
-    const std::vector<std::string> c_LargeVector{ "-1a",  "2B",  "-3c",  "4D",  "-5e",  "6F",  "-7g",  "8H",  "-9i", "10J",
-                                                 "-11a", "12B", "-13c", "14D", "-15e", "16F", "-17g", "18H", "-19i", "20J",
-                                                 "-21a", "22B", "-23c", "24D", "-25e", "26F", "-27g", "28H", "-29i", "30J",
-                                                 "-31a", "32B", "-33c", "34D", "-35e", "36F", "-37g", "38H", "-39i", "40J",
-                                                 "-41a", "42B", "-43c", "44D", "-45e", "46F", "-47g", "48H", "-49i", "50J",
-                                                 "-51a", "52B", "-53c", "54D", "-55e", "56F", "-57g", "58H", "-59i", "60J",
-                                                 "-61a", "62B", "-63c", "64D", "-65e", "66F", "-67g", "68H", "-69i", "70J",
-                                                 "-71a", "72B", "-73c", "74D", "-75e", "76F", "-77g", "78H", "-79i", "80J"
-                                                };
-
-    QTest::newRow("2: large size matrix") << matrix_size_t{8u} << matrix_size_t{10u} << c_LargeVector << matrix_size_t{10u} << matrix_size_t{12u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
 }
 
 void ConstructionAndAssignmentTests::_buildStringMatrixMoveCopyConstructorsTestingTable()

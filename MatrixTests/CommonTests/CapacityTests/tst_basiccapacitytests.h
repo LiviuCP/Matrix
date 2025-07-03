@@ -1,17 +1,11 @@
 #ifndef TST_BASICCAPACITYTESTS_H
 #define TST_BASICCAPACITYTESTS_H
 
-#define TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset) \
+#define TEST_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset) \
     QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
              matrix.getColumnCapacity() == expectedColumnCapacity && \
              matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
-             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Copied vector constructor initialized matrix with wrong capacity (offset)");
-
-#define TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset) \
-    QVERIFY2(matrix.getRowCapacity() == expectedRowCapacity && \
-             matrix.getColumnCapacity() == expectedColumnCapacity && \
-             matrix.getRowCapacityOffset() == expectedRowCapacityOffset && \
-             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Moved vector constructor initialized matrix with wrong capacity (offset)");
+             matrix.getColumnCapacityOffset() == expectedColumnCapacityOffset, "Vector constructor initialized matrix with wrong capacity (offset)");
 
 #define TEST_CAPACITY_WITH_IDENTICAL_MATRIX_CONSTRUCTOR(matrixType) \
     QFETCH(Matrix<matrixType>::size_type, rowsCount); \

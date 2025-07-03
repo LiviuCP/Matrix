@@ -14,8 +14,7 @@ class BasicStringMatrixCapacityTests : public QObject
 
 private slots:
     // test functions
-    void testCopiedVectorConstructor();
-    void testMovedVectorConstructor();
+    void testVectorConstructor();
     void testIdenticalElementsConstructor();
     void testDiagonalMatrixConstructor();
     void testCopyConstructor();
@@ -38,8 +37,7 @@ private slots:
     void testSplitByColumn();
 
     // test data
-    void testCopiedVectorConstructor_data();
-    void testMovedVectorConstructor_data();
+    void testVectorConstructor_data();
     void testIdenticalElementsConstructor_data();
     void testDiagonalMatrixConstructor_data();
     void testCopyConstructor_data();
@@ -63,7 +61,6 @@ private slots:
     
 private:
     // test data helper methods
-    void _buildMovedCopiedVectorConstructorsTestingTable();
     void _buildMoveCopyConstructorsTestingTable();
     void _buildAssignmentOperatorsTestingTable();
     void _buildResizeTestingTable();
@@ -73,22 +70,7 @@ private:
     StringMatrix mPrimaryStringMatrix;
 };
 
-void BasicStringMatrixCapacityTests::testCopiedVectorConstructor()
-{
-    QFETCH(matrix_size_t, rowsCount);
-    QFETCH(matrix_size_t, columnsCount);
-    QFETCH(std::vector<std::string>, initList);
-    QFETCH(matrix_size_t, expectedRowCapacity);
-    QFETCH(matrix_size_t, expectedColumnCapacity);
-    QFETCH(matrix_opt_size_t, expectedRowCapacityOffset);
-    QFETCH(matrix_opt_size_t, expectedColumnCapacityOffset);
-
-    StringMatrix matrix{rowsCount, columnsCount, initList};
-
-    TEST_COPIED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
-}
-
-void BasicStringMatrixCapacityTests::testMovedVectorConstructor()
+void BasicStringMatrixCapacityTests::testVectorConstructor()
 {
     QFETCH(matrix_size_t, rowsCount);
     QFETCH(matrix_size_t, columnsCount);
@@ -100,7 +82,7 @@ void BasicStringMatrixCapacityTests::testMovedVectorConstructor()
 
     StringMatrix matrix{rowsCount, columnsCount, std::move(initList)};
 
-    TEST_MOVED_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    TEST_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
 }
 
 void BasicStringMatrixCapacityTests::testIdenticalElementsConstructor()
@@ -203,14 +185,45 @@ void BasicStringMatrixCapacityTests::testSplitByColumn()
     TEST_CAPACITY_WITH_SPLIT_BY_COLUMN(std::string);
 }
 
-void BasicStringMatrixCapacityTests::testCopiedVectorConstructor_data()
+void BasicStringMatrixCapacityTests::testVectorConstructor_data()
 {
-    _buildMovedCopiedVectorConstructorsTestingTable();
-}
+    QTest::addColumn<matrix_size_t>("rowsCount");
+    QTest::addColumn<matrix_size_t>("columnsCount");
+    QTest::addColumn<std::vector<std::string>>("initList");
+    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
+    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
 
-void BasicStringMatrixCapacityTests::testMovedVectorConstructor_data()
-{
-    _buildMovedCopiedVectorConstructorsTestingTable();
+    QTest::newRow("1: small size matrix") << matrix_size_t{3u} << matrix_size_t{4u} << std::vector<std::string>(12, "Value") << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("2: small size matrix") << matrix_size_t{4u} << matrix_size_t{3u} << std::vector<std::string>(12, "Value") << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("3: large size matrix") << matrix_size_t{8u} << matrix_size_t{10u} << std::vector<std::string>(80, "Value") << matrix_size_t{10u} << matrix_size_t{12u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("4: large size matrix") << matrix_size_t{10u} << matrix_size_t{8u} << std::vector<std::string>(80, "Value") << matrix_size_t{12u} << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("5: capped row and column capacity") << c_LargeDimension1 << c_LargeDimension1 << std::vector<std::string>(c_LargeDimension1 * c_LargeDimension1, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("6: capped row and column capacity") << c_LargeDimension1 << c_MaxAllowedDimension << std::vector<std::string>(c_LargeDimension1 * c_MaxAllowedDimension, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("7: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension1 << std::vector<std::string>(c_MaxAllowedDimension * c_LargeDimension1, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("8: capped row and column capacity") << c_LargeDimension2 << c_LargeDimension2 << std::vector<std::string>(c_LargeDimension2 * c_LargeDimension2, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("9: capped row and column capacity") << c_LargeDimension2 << c_MaxAllowedDimension << std::vector<std::string>(c_LargeDimension2 * c_MaxAllowedDimension, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("10: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension2 << std::vector<std::string>(c_MaxAllowedDimension * c_LargeDimension2, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("11: capped row and column capacity") << c_MaxAllowedDimension << c_MaxAllowedDimension << std::vector<std::string>(c_MaxAllowedDimension * c_MaxAllowedDimension, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("12: capped row capacity") << c_LargeDimension1 << matrix_size_t{3u} << std::vector<std::string>(c_LargeDimension1 * 3, "Value") << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("13: capped row capacity") << c_LargeDimension2 << matrix_size_t{3u} << std::vector<std::string>(c_LargeDimension2 * 3, "Value") << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("14: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{4u} << std::vector<std::string>(c_MaxAllowedDimension * 4, "Value") << c_MaxAllowedDimension << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("15: capped row capacity") << c_LargeDimension1 << matrix_size_t{8u} << std::vector<std::string>(c_LargeDimension1 * 8, "Value") << c_MaxAllowedDimension << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("16: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{10u} << std::vector<std::string>(c_MaxAllowedDimension * 10, "Value") << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("17: capped row capacity") << c_LargeDimension2 << matrix_size_t{10u} << std::vector<std::string>(c_LargeDimension2 * 10, "Value") << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("18: capped column capacity") << matrix_size_t{3u} << c_LargeDimension1 << std::vector<std::string>(3 * c_LargeDimension1, "Value") << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
+    QTest::newRow("19: capped column capacity") << matrix_size_t{3u} << c_LargeDimension2 << std::vector<std::string>(3 * c_LargeDimension2, "Value") << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("20: capped column capacity") << matrix_size_t{4u} << c_MaxAllowedDimension << std::vector<std::string>(4 * c_MaxAllowedDimension, "Value") << matrix_size_t{5u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
+    QTest::newRow("21: capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << std::vector<std::string>(8 * c_LargeDimension1, "Value") << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
+    QTest::newRow("22: capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << std::vector<std::string>(10 * c_MaxAllowedDimension, "Value") << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+    QTest::newRow("23: capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << std::vector<std::string>(10 * c_LargeDimension2, "Value") << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+
+    // additional tests with high/max capacities
+    QTest::newRow("24: extra large matrix, no capped capacity") << c_HalfMaxAllowedDimension << c_HalfMaxAllowedDimension << std::vector<std::string>(c_HalfMaxAllowedDimension * c_HalfMaxAllowedDimension, "Value") << c_FiveEighthsMaxAllowedDimension << c_FiveEighthsMaxAllowedDimension << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset} << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset};
+    QTest::newRow("25: capped column capacity") << c_HalfMaxAllowedDimension << c_SevenEighthsMaxAllowedDimension << std::vector<std::string>(c_HalfMaxAllowedDimension * c_SevenEighthsMaxAllowedDimension, "Value") << c_FiveEighthsMaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset} << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset};
+    QTest::newRow("26: capped row capacity") << c_SevenEighthsMaxAllowedDimension << c_HalfMaxAllowedDimension << std::vector<std::string>(c_SevenEighthsMaxAllowedDimension * c_HalfMaxAllowedDimension, "Value") << c_MaxAllowedDimension << c_FiveEighthsMaxAllowedDimension << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset} << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset};
+    QTest::newRow("27: capped row and column capacity") << c_SevenEighthsMaxAllowedDimension << c_SevenEighthsMaxAllowedDimension << std::vector<std::string>(c_SevenEighthsMaxAllowedDimension * c_SevenEighthsMaxAllowedDimension, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset} << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset};
 }
 
 void BasicStringMatrixCapacityTests::testIdenticalElementsConstructor_data()
@@ -246,6 +259,12 @@ void BasicStringMatrixCapacityTests::testIdenticalElementsConstructor_data()
     QTest::newRow("21: capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << std::string{"Value"} << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
     QTest::newRow("22: capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << std::string{"Value"} << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
     QTest::newRow("23: capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << std::string{"Value"} << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+
+    // additional tests with high/max capacities
+    QTest::newRow("24: extra large matrix, no capped capacity") << c_HalfMaxAllowedDimension << c_HalfMaxAllowedDimension << std::string{"Value"} << c_FiveEighthsMaxAllowedDimension << c_FiveEighthsMaxAllowedDimension << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset} << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset};
+    QTest::newRow("25: capped column capacity") << c_HalfMaxAllowedDimension << c_SevenEighthsMaxAllowedDimension << std::string{"Value"} << c_FiveEighthsMaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset} << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset};
+    QTest::newRow("26: capped row capacity") << c_SevenEighthsMaxAllowedDimension << c_HalfMaxAllowedDimension << std::string{"Value"} << c_MaxAllowedDimension << c_FiveEighthsMaxAllowedDimension << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset} << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset};
+    QTest::newRow("27: capped row and column capacity") << c_SevenEighthsMaxAllowedDimension << c_SevenEighthsMaxAllowedDimension << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset} << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset};
 }
 
 void BasicStringMatrixCapacityTests::testDiagonalMatrixConstructor_data()
@@ -263,6 +282,10 @@ void BasicStringMatrixCapacityTests::testDiagonalMatrixConstructor_data()
     QTest::newRow("5: capped capacity") << c_LargeDimension1 << std::string{"Value1"} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_opt_size_t{1u};
     QTest::newRow("6: capped capacity") << c_LargeDimension2 << std::string{"Value1"} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_opt_size_t{0u};
     QTest::newRow("7: capped capacity") << c_MaxAllowedDimension << std::string{"Value1"} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_opt_size_t{0u};
+
+    // additional tests with high/max capacities
+    QTest::newRow("8: extra large matrix, no capped capacity") << c_HalfMaxAllowedDimension << std::string{"Value1"} << std::string{"Value2"} << c_FiveEighthsMaxAllowedDimension << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset};
+    QTest::newRow("9: capped capacity") << c_SevenEighthsMaxAllowedDimension << std::string{"Value1"} << std::string{"Value2"} << c_MaxAllowedDimension << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset};
 }
 
 void BasicStringMatrixCapacityTests::testCopyConstructor_data()
@@ -308,15 +331,10 @@ void BasicStringMatrixCapacityTests::testTranspose_data()
     QTest::newRow("13: extra large matrix") << StringMatrix{{c_LargeDimension1, c_MaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
     QTest::newRow("14: extra large matrix") << StringMatrix{{c_MaxAllowedDimension, c_LargeDimension1}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
     QTest::newRow("15: extra large matrix") << StringMatrix{{c_MaxAllowedDimension, c_MaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-
-    const matrix_size_t c_CustomCapacityOffset1{static_cast<matrix_size_t>((c_MaxAllowedDimension - c_SevenEighthsMaxAllowedDimension) / 2)};
-    const matrix_size_t c_CustomCapacityOffset2{static_cast<matrix_size_t>((c_FiveEighthsMaxAllowedDimension - c_HalfMaxAllowedDimension) / 2)};
-    const matrix_size_t c_CustomCapacityOffset3{static_cast<matrix_size_t>((c_MaxAllowedDimension - c_HalfMaxAllowedDimension) / 2)};
-
-    QTest::newRow("16: extra large matrix") << StringMatrix{{c_HalfMaxAllowedDimension, c_HalfMaxAllowedDimension}, "Value"} << c_FiveEighthsMaxAllowedDimension << c_FiveEighthsMaxAllowedDimension << matrix_opt_size_t{c_CustomCapacityOffset2} << matrix_opt_size_t{c_CustomCapacityOffset2};
-    QTest::newRow("17: extra large matrix") << StringMatrix{{c_HalfMaxAllowedDimension, c_SevenEighthsMaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_CustomCapacityOffset1} << matrix_opt_size_t{c_CustomCapacityOffset3};
-    QTest::newRow("18: extra large matrix") << StringMatrix{{c_SevenEighthsMaxAllowedDimension, c_HalfMaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_CustomCapacityOffset3} << matrix_opt_size_t{c_CustomCapacityOffset1};
-    QTest::newRow("19: extra large matrix") << StringMatrix{{c_SevenEighthsMaxAllowedDimension, c_SevenEighthsMaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_CustomCapacityOffset1} << matrix_opt_size_t{c_CustomCapacityOffset1};
+    QTest::newRow("16: extra large matrix") << StringMatrix{{c_HalfMaxAllowedDimension, c_HalfMaxAllowedDimension}, "Value"} << c_FiveEighthsMaxAllowedDimension << c_FiveEighthsMaxAllowedDimension << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset} << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset};
+    QTest::newRow("17: extra large matrix") << StringMatrix{{c_HalfMaxAllowedDimension, c_SevenEighthsMaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset} << matrix_opt_size_t{c_HalfToMaxCapacityOffset};
+    QTest::newRow("18: extra large matrix") << StringMatrix{{c_SevenEighthsMaxAllowedDimension, c_HalfMaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_HalfToMaxCapacityOffset} << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset};
+    QTest::newRow("19: extra large matrix") << StringMatrix{{c_SevenEighthsMaxAllowedDimension, c_SevenEighthsMaxAllowedDimension}, "Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset} << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset};
 }
 
 void BasicStringMatrixCapacityTests::testReserve_data()
@@ -857,41 +875,6 @@ void BasicStringMatrixCapacityTests::testSplitByColumn_data()
     QTest::newRow("37: NO capacity reserve for destination matrix") << StringMatrix{{c_LargeDimension1, c_LargeDimension2}, "Value1"} << StringMatrix{} << matrix_size_t{1u} << c_MaxAllowedDimension << c_MaxAllowedDimension << c_LargeDimension1 << c_LargeDimension1 << matrix_opt_size_t{1u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
 }
 
-void BasicStringMatrixCapacityTests::_buildMovedCopiedVectorConstructorsTestingTable()
-{
-    QTest::addColumn<matrix_size_t>("rowsCount");
-    QTest::addColumn<matrix_size_t>("columnsCount");
-    QTest::addColumn<std::vector<std::string>>("initList");
-    QTest::addColumn<matrix_size_t>("expectedRowCapacity");
-    QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
-    QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
-    QTest::addColumn<matrix_opt_size_t>("expectedColumnCapacityOffset");
-
-    QTest::newRow("1: small size matrix") << matrix_size_t{3u} << matrix_size_t{4u} << std::vector<std::string>(12, "Value") << matrix_size_t{3u} << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("2: small size matrix") << matrix_size_t{4u} << matrix_size_t{3u} << std::vector<std::string>(12, "Value") << matrix_size_t{5u} << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("3: large size matrix") << matrix_size_t{8u} << matrix_size_t{10u} << std::vector<std::string>(80, "Value") << matrix_size_t{10u} << matrix_size_t{12u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
-    QTest::newRow("4: large size matrix") << matrix_size_t{10u} << matrix_size_t{8u} << std::vector<std::string>(80, "Value") << matrix_size_t{12u} << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
-    QTest::newRow("5: capped row and column capacity") << c_LargeDimension1 << c_LargeDimension1 << std::vector<std::string>(c_LargeDimension1 * c_LargeDimension1, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
-    QTest::newRow("6: capped row and column capacity") << c_LargeDimension1 << c_MaxAllowedDimension << std::vector<std::string>(c_LargeDimension1 * c_MaxAllowedDimension, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
-    QTest::newRow("7: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension1 << std::vector<std::string>(c_MaxAllowedDimension * c_LargeDimension1, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
-    QTest::newRow("8: capped row and column capacity") << c_LargeDimension2 << c_LargeDimension2 << std::vector<std::string>(c_LargeDimension2 * c_LargeDimension2, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("9: capped row and column capacity") << c_LargeDimension2 << c_MaxAllowedDimension << std::vector<std::string>(c_LargeDimension2 * c_MaxAllowedDimension, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("10: capped row and column capacity") << c_MaxAllowedDimension << c_LargeDimension2 << std::vector<std::string>(c_MaxAllowedDimension * c_LargeDimension2, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("11: capped row and column capacity") << c_MaxAllowedDimension << c_MaxAllowedDimension << std::vector<std::string>(c_MaxAllowedDimension * c_MaxAllowedDimension, "Value") << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("12: capped row capacity") << c_LargeDimension1 << matrix_size_t{3u} << std::vector<std::string>(c_LargeDimension1 * 3, "Value") << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
-    QTest::newRow("13: capped row capacity") << c_LargeDimension2 << matrix_size_t{3u} << std::vector<std::string>(c_LargeDimension2 * 3, "Value") << c_MaxAllowedDimension << matrix_size_t{3u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("14: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{4u} << std::vector<std::string>(c_MaxAllowedDimension * 4, "Value") << c_MaxAllowedDimension << matrix_size_t{5u} << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("15: capped row capacity") << c_LargeDimension1 << matrix_size_t{8u} << std::vector<std::string>(c_LargeDimension1 * 8, "Value") << c_MaxAllowedDimension << matrix_size_t{10u} << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
-    QTest::newRow("16: capped row capacity") << c_MaxAllowedDimension << matrix_size_t{10u} << std::vector<std::string>(c_MaxAllowedDimension * 10, "Value") << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
-    QTest::newRow("17: capped row capacity") << c_LargeDimension2 << matrix_size_t{10u} << std::vector<std::string>(c_LargeDimension2 * 10, "Value") << c_MaxAllowedDimension << matrix_size_t{12u} << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
-    QTest::newRow("18: capped column capacity") << matrix_size_t{3u} << c_LargeDimension1 << std::vector<std::string>(3 * c_LargeDimension1, "Value") << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
-    QTest::newRow("19: capped column capacity") << matrix_size_t{3u} << c_LargeDimension2 << std::vector<std::string>(3 * c_LargeDimension2, "Value") << matrix_size_t{3u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("20: capped column capacity") << matrix_size_t{4u} << c_MaxAllowedDimension << std::vector<std::string>(4 * c_MaxAllowedDimension, "Value") << matrix_size_t{5u} << c_MaxAllowedDimension << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("21: capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << std::vector<std::string>(8 * c_LargeDimension1, "Value") << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
-    QTest::newRow("22: capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << std::vector<std::string>(10 * c_MaxAllowedDimension, "Value") << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
-    QTest::newRow("23: capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << std::vector<std::string>(10 * c_LargeDimension2, "Value") << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
-}
-
 void BasicStringMatrixCapacityTests::_buildMoveCopyConstructorsTestingTable()
 {
     QTest::addColumn<matrix_size_t>("rowsCount");
@@ -927,6 +910,12 @@ void BasicStringMatrixCapacityTests::_buildMoveCopyConstructorsTestingTable()
     QTest::newRow("23: capped column capacity") << matrix_size_t{8u} << c_LargeDimension1 << std::string{"Value"} << matrix_size_t{10u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{1u};
     QTest::newRow("24: capped column capacity") << matrix_size_t{10u} << c_MaxAllowedDimension << std::string{"Value"} << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
     QTest::newRow("25: capped column capacity") << matrix_size_t{10u} << c_LargeDimension2 << std::string{"Value"} << matrix_size_t{12u} << c_MaxAllowedDimension << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
+
+    // additional tests with high/max capacities
+    QTest::newRow("26: extra large matrix, no capped capacity") << c_HalfMaxAllowedDimension << c_HalfMaxAllowedDimension << std::string{"Value"} << c_FiveEighthsMaxAllowedDimension << c_FiveEighthsMaxAllowedDimension << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset} << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset};
+    QTest::newRow("27: capped column capacity") << c_HalfMaxAllowedDimension << c_SevenEighthsMaxAllowedDimension << std::string{"Value"} << c_FiveEighthsMaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset} << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset};
+    QTest::newRow("28: capped row capacity") << c_SevenEighthsMaxAllowedDimension << c_HalfMaxAllowedDimension << std::string{"Value"} << c_MaxAllowedDimension << c_FiveEighthsMaxAllowedDimension << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset} << matrix_opt_size_t{c_HalfToFiveEighthsCapacityOffset};
+    QTest::newRow("29: capped row and column capacity") << c_SevenEighthsMaxAllowedDimension << c_SevenEighthsMaxAllowedDimension << std::string{"Value"} << c_MaxAllowedDimension << c_MaxAllowedDimension << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset} << matrix_opt_size_t{c_SevenEighthsToMaxCapacityOffset};
 }
 
 void BasicStringMatrixCapacityTests::_buildAssignmentOperatorsTestingTable()

@@ -71,6 +71,11 @@ static constexpr matrix_size_t c_HalfQuarterMaxAllowedDimension{static_cast<matr
 static constexpr matrix_size_t c_HalfDecrQuarterMaxAllowedDimension{static_cast<matrix_size_t>(c_DecrQuarterMaxAllowedDimension / 2)};
 static constexpr matrix_size_t c_HalfThreeQuartersMaxAllowedDimension{static_cast<matrix_size_t>((c_MaxAllowedDimension - c_QuarterMaxAllowedDimension) / 2)};
 
+static constexpr matrix_size_t c_HalfToFiveEighthsCapacityOffset{static_cast<matrix_size_t>((c_FiveEighthsMaxAllowedDimension - c_HalfMaxAllowedDimension) / 2)};
+static constexpr matrix_size_t c_HalfToMaxCapacityOffset{static_cast<matrix_size_t>((c_MaxAllowedDimension - c_HalfMaxAllowedDimension) / 2)};
+static constexpr matrix_size_t c_SevenEighthsToMaxCapacityOffset{static_cast<matrix_size_t>((c_MaxAllowedDimension - c_SevenEighthsMaxAllowedDimension) / 2)};
+
+
 static constexpr bool c_IsEvenMaxAllowedDimension{0 == c_MaxAllowedDimension % 2};
 
 // matrix concatenation
