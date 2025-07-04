@@ -310,13 +310,13 @@ void CommonExceptionTests::testVectorConstructorExceptions_data()
     QTest::newRow("3: null rows count") << matrix_size_t{0u} << c_MaxAllowedDimension << std::vector<int>{1, 2, 3, 4};
     QTest::newRow("4: null columns count") << matrix_size_t{2u} << matrix_size_t{0u} << std::vector<int>{1, 2, 3, 4};
     QTest::newRow("5: null columns count") << c_MaxAllowedDimension << matrix_size_t{0u} << std::vector<int>{1, 2, 3, 4};
-    QTest::newRow("6: exceeding rows count") << c_ExceedingDimension << matrix_size_t{2} << std::vector<int>(2 * c_ExceedingDimension, 0);
-    QTest::newRow("7: exceeding rows count") << c_ExceedingDimension << c_MaxAllowedDimension << std::vector<int>(c_ExceedingDimension * c_MaxAllowedDimension, 0);
-    QTest::newRow("8: exceeding columns count") << matrix_size_t{2} << c_ExceedingDimension << std::vector<int>(2 * c_ExceedingDimension, 0);
-    QTest::newRow("9: exceeding columns count") << c_MaxAllowedDimension << c_ExceedingDimension << std::vector<int>(c_MaxAllowedDimension * c_ExceedingDimension, 0);
-    QTest::newRow("10: null rows count, exceeding columns count") << matrix_size_t{0u} << c_ExceedingDimension << std::vector<int>{1, 2, 3, 4};
-    QTest::newRow("11: exceeding rows count, null columns count") << c_ExceedingDimension << matrix_size_t{0u} << std::vector<int>{1, 2, 3, 4};
-    QTest::newRow("12: exceeding rows and columns count") << c_ExceedingDimension << c_ExceedingDimension << std::vector<int>(c_ExceedingDimension * c_ExceedingDimension, 0);
+    QTest::newRow("6: exceeding rows count") << c_IncrMaxAllowedDimension << matrix_size_t{2} << std::vector<int>(2 * c_IncrMaxAllowedDimension, 0);
+    QTest::newRow("7: exceeding rows count") << c_IncrMaxAllowedDimension << c_MaxAllowedDimension << std::vector<int>(c_IncrMaxAllowedDimension * c_MaxAllowedDimension, 0);
+    QTest::newRow("8: exceeding columns count") << matrix_size_t{2} << c_IncrMaxAllowedDimension << std::vector<int>(2 * c_IncrMaxAllowedDimension, 0);
+    QTest::newRow("9: exceeding columns count") << c_MaxAllowedDimension << c_IncrMaxAllowedDimension << std::vector<int>(c_MaxAllowedDimension * c_IncrMaxAllowedDimension, 0);
+    QTest::newRow("10: null rows count, exceeding columns count") << matrix_size_t{0u} << c_IncrMaxAllowedDimension << std::vector<int>{1, 2, 3, 4};
+    QTest::newRow("11: exceeding rows count, null columns count") << c_IncrMaxAllowedDimension << matrix_size_t{0u} << std::vector<int>{1, 2, 3, 4};
+    QTest::newRow("12: exceeding rows and columns count") << c_IncrMaxAllowedDimension << c_IncrMaxAllowedDimension << std::vector<int>(c_IncrMaxAllowedDimension * c_IncrMaxAllowedDimension, 0);
     QTest::newRow("13: less init elements than required") << matrix_size_t{2u} << matrix_size_t{3u} << std::vector<int>{1, 2, 3, 4, 5};
     QTest::newRow("14: less init elements than required") << matrix_size_t{1u} << matrix_size_t{5u} << std::vector<int>{1, 2, 3, 4};
     QTest::newRow("15: less init elements than required") << matrix_size_t{1u} << c_MaxAllowedDimension << std::vector<int>(c_MaxAllowedDimension - 1, 0);
@@ -334,13 +334,13 @@ void CommonExceptionTests::testIdenticalElementsConstructorExceptions_data()
     QTest::newRow("1: null rows and columns count") << matrix_size_t{0u} << matrix_size_t{0u} << 5;
     QTest::newRow("2: null rows count") << matrix_size_t{0u} << matrix_size_t{2u} << 5;
     QTest::newRow("3: null columns count") << matrix_size_t{2u} << matrix_size_t{0u} << 5;
-    QTest::newRow("4: exceeding rows and columns count") << c_ExceedingDimension << c_ExceedingDimension << 5;
-    QTest::newRow("5: exceeding rows count") << c_ExceedingDimension << matrix_size_t{2u} << 5;
-    QTest::newRow("6: exceeding rows count") << c_ExceedingDimension << c_MaxAllowedDimension << 5;
-    QTest::newRow("7: exceeding columns count") << matrix_size_t{2u} << c_ExceedingDimension << 5;
-    QTest::newRow("8: exceeding columns count") << c_MaxAllowedDimension << c_ExceedingDimension << 5;
-    QTest::newRow("9: exceeding rows count, null columns count") << c_ExceedingDimension << matrix_size_t{0u} << 5;
-    QTest::newRow("10: null rows count, exceeding columns count") << matrix_size_t{0u} << c_ExceedingDimension << 5;
+    QTest::newRow("4: exceeding rows and columns count") << c_IncrMaxAllowedDimension << c_IncrMaxAllowedDimension << 5;
+    QTest::newRow("5: exceeding rows count") << c_IncrMaxAllowedDimension << matrix_size_t{2u} << 5;
+    QTest::newRow("6: exceeding rows count") << c_IncrMaxAllowedDimension << c_MaxAllowedDimension << 5;
+    QTest::newRow("7: exceeding columns count") << matrix_size_t{2u} << c_IncrMaxAllowedDimension << 5;
+    QTest::newRow("8: exceeding columns count") << c_MaxAllowedDimension << c_IncrMaxAllowedDimension << 5;
+    QTest::newRow("9: exceeding rows count, null columns count") << c_IncrMaxAllowedDimension << matrix_size_t{0u} << 5;
+    QTest::newRow("10: null rows count, exceeding columns count") << matrix_size_t{0u} << c_IncrMaxAllowedDimension << 5;
 }
 
 void CommonExceptionTests::testDiagonalMatrixConstructorExceptions_data()
@@ -350,7 +350,7 @@ void CommonExceptionTests::testDiagonalMatrixConstructorExceptions_data()
     QTest::addColumn<int>("diagonalElementValue");
 
     QTest::newRow("1: null rows and columns count") << matrix_size_t{0u} << 2 << 5;
-    QTest::newRow("2: exceeding rows and columns count") << c_ExceedingDimension << 2 << 5;
+    QTest::newRow("2: exceeding rows and columns count") << c_IncrMaxAllowedDimension << 2 << 5;
 }
 
 void CommonExceptionTests::testFunctionAtExceptions_data()
@@ -447,9 +447,9 @@ void CommonExceptionTests::testCatByRowExceptions_data()
     QTest::newRow("13: different matrixes, different columns count") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, -3} << IntMatrix{{c_HalfMaxAllowedDimension, 3}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
     QTest::newRow("14: different matrixes, different columns count") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 3}, -3} << IntMatrix{{c_HalfMaxAllowedDimension, 2}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
     QTest::newRow("15: different matrixes, same columns count") << IntMatrix{{1, 2}, 2} << IntMatrix{{c_MaxAllowedDimension, 2}, -3} << ConcatMode::SOURCE_TO_DESTINATION;
-    QTest::newRow("16: different matrixes, same columns count") << IntMatrix{{2, 2}, 2} << IntMatrix{{c_LargeDimension2, 2}, -3} << ConcatMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("16: different matrixes, same columns count") << IntMatrix{{2, 2}, 2} << IntMatrix{{c_DecrMaxAllowedDimension, 2}, -3} << ConcatMode::SOURCE_TO_DESTINATION;
     QTest::newRow("17: different matrixes, same columns count") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, -3} << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
-    QTest::newRow("18: different matrixes, same columns count") << IntMatrix{{c_LargeDimension2, 2}, -3} << IntMatrix{{2, 2}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("18: different matrixes, same columns count") << IntMatrix{{c_DecrMaxAllowedDimension, 2}, -3} << IntMatrix{{2, 2}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
     QTest::newRow("19: different matrixes, same columns count") << IntMatrix{{c_MaxAllowedDimension, 2}, -3} << IntMatrix{{1, 2}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
     QTest::newRow("20: different matrixes, same columns count") << IntMatrix{{c_MaxAllowedDimension, 2}, -3} << IntMatrix{{c_MaxAllowedDimension, 2}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
     QTest::newRow("21: same matrix") << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, -3} << IntMatrix{{c_IncrHalfMaxAllowedDimension, 2}, 2} << ConcatMode::TO_ITSELF;
@@ -483,9 +483,9 @@ void CommonExceptionTests::testCatByColumnExceptions_data()
     QTest::newRow("13: different matrixes, different rows count") << IntMatrix{{2, c_IncrHalfMaxAllowedDimension}, -3} << IntMatrix{{3, c_HalfMaxAllowedDimension}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
     QTest::newRow("14: different matrixes, different rows count") << IntMatrix{{3, c_IncrHalfMaxAllowedDimension}, -3} << IntMatrix{{2, c_HalfMaxAllowedDimension}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
     QTest::newRow("15: different matrixes, same rows count") << IntMatrix{{2, 1}, 2} << IntMatrix{{2, c_MaxAllowedDimension}, -3} << ConcatMode::SOURCE_TO_DESTINATION;
-    QTest::newRow("16: different matrixes, same rows count") << IntMatrix{{2, 2}, 2} << IntMatrix{{2, c_LargeDimension2}, -3} << ConcatMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("16: different matrixes, same rows count") << IntMatrix{{2, 2}, 2} << IntMatrix{{2, c_DecrMaxAllowedDimension}, -3} << ConcatMode::SOURCE_TO_DESTINATION;
     QTest::newRow("17: different matrixes, same rows count") << IntMatrix{{2, c_IncrHalfMaxAllowedDimension}, -3} << IntMatrix{{2, c_IncrHalfMaxAllowedDimension}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
-    QTest::newRow("18: different matrixes, same rows count") << IntMatrix{{2, c_LargeDimension2}, -3} << IntMatrix{{2, 2}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("18: different matrixes, same rows count") << IntMatrix{{2, c_DecrMaxAllowedDimension}, -3} << IntMatrix{{2, 2}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
     QTest::newRow("19: different matrixes, same rows count") << IntMatrix{{2, c_MaxAllowedDimension}, -3} << IntMatrix{{2, 1}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
     QTest::newRow("20: different matrixes, same rows count") << IntMatrix{{2, c_MaxAllowedDimension}, -3} << IntMatrix{{2, c_MaxAllowedDimension}, 2} << ConcatMode::SOURCE_TO_DESTINATION;
     QTest::newRow("21: same matrix") << IntMatrix{{2, c_IncrHalfMaxAllowedDimension}, -3} << IntMatrix{{2, c_IncrHalfMaxAllowedDimension}, 2} << ConcatMode::TO_ITSELF;
@@ -515,7 +515,7 @@ void CommonExceptionTests::testSplitByRowExceptions_data()
     QTest::newRow("8: source split to destination") << IntMatrix{2, 3, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{3u} << SplitMode::SOURCE_TO_DESTINATION;
     QTest::newRow("9: source split to destination") << IntMatrix{{c_MaxAllowedDimension, 3}, -5} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
     QTest::newRow("10: source split to destination") << IntMatrix{{c_MaxAllowedDimension, 3}, -5} << IntMatrix{} << c_MaxAllowedDimension << SplitMode::SOURCE_TO_DESTINATION;
-    QTest::newRow("11: source split to destination") << IntMatrix{{c_MaxAllowedDimension, 3}, -5} << IntMatrix{} << c_ExceedingDimension << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("11: source split to destination") << IntMatrix{{c_MaxAllowedDimension, 3}, -5} << IntMatrix{} << c_IncrMaxAllowedDimension << SplitMode::SOURCE_TO_DESTINATION;
     QTest::newRow("12: source split to itself") << IntMatrix{2, 3, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{1u} << SplitMode::TO_ITSELF;
 }
 
@@ -536,7 +536,7 @@ void CommonExceptionTests::testSplitByColumnExceptions_data()
     QTest::newRow("8: source split to destination") << IntMatrix{3, 2, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{3u} << SplitMode::SOURCE_TO_DESTINATION;
     QTest::newRow("9: source split to destination") << IntMatrix{{3, c_MaxAllowedDimension}, -5} << IntMatrix{} << matrix_size_t{0u} << SplitMode::SOURCE_TO_DESTINATION;
     QTest::newRow("10: source split to destination") << IntMatrix{{3, c_MaxAllowedDimension}, -5} << IntMatrix{} << c_MaxAllowedDimension << SplitMode::SOURCE_TO_DESTINATION;
-    QTest::newRow("11: source split to destination") << IntMatrix{{3, c_MaxAllowedDimension}, -5} << IntMatrix{} << c_ExceedingDimension << SplitMode::SOURCE_TO_DESTINATION;
+    QTest::newRow("11: source split to destination") << IntMatrix{{3, c_MaxAllowedDimension}, -5} << IntMatrix{} << c_IncrMaxAllowedDimension << SplitMode::SOURCE_TO_DESTINATION;
     QTest::newRow("12: source split to itself") << IntMatrix{3, 2, {1, -2, 3, -4, 5, -6}} << IntMatrix{} << matrix_size_t{1u} << SplitMode::TO_ITSELF;
 }
 
@@ -567,20 +567,20 @@ void CommonExceptionTests::_buildResizeExceptionsTestingTable()
     QTest::newRow("4: null rows count") << IntMatrix{} << matrix_size_t{0u} << matrix_size_t{4u} << 5;
     QTest::newRow("5: null columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{3u} << matrix_size_t{0u} << 5;
     QTest::newRow("6: null columns count") << IntMatrix{} << matrix_size_t{3u} << matrix_size_t{0u} << 5;
-    QTest::newRow("7: exceeding rows count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_ExceedingDimension << matrix_size_t{4u} << 5;
-    QTest::newRow("8: exceeding rows count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_ExceedingDimension << c_MaxAllowedDimension << 5;
-    QTest::newRow("9: exceeding rows count") << IntMatrix{} << c_ExceedingDimension << matrix_size_t{4u} << 5;
-    QTest::newRow("10: exceeding rows count") << IntMatrix{} << c_ExceedingDimension << c_MaxAllowedDimension << 5;
-    QTest::newRow("11: exceeding columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{3u} << c_ExceedingDimension << 5;
-    QTest::newRow("12: exceeding columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_MaxAllowedDimension << c_ExceedingDimension << 5;
-    QTest::newRow("13: exceeding columns count") << IntMatrix{} << matrix_size_t{3u} << c_ExceedingDimension << 5;
-    QTest::newRow("14: exceeding columns count") << IntMatrix{} << c_MaxAllowedDimension << c_ExceedingDimension << 5;
-    QTest::newRow("15: null rows count, exceeding columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{0u} << c_ExceedingDimension << 5;
-    QTest::newRow("16: null rows count, exceeding columns count") << IntMatrix{} << matrix_size_t{0u} << c_ExceedingDimension << 5;
-    QTest::newRow("17: exceeding rows count, null columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_ExceedingDimension << matrix_size_t{0u} << 5;
-    QTest::newRow("18: exceeding rows count, null columns count") << IntMatrix{} << c_ExceedingDimension << matrix_size_t{0u} << 5;
-    QTest::newRow("19: exceeding rows and columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_ExceedingDimension << c_ExceedingDimension << 5;
-    QTest::newRow("20: exceeding rows and columns count") << IntMatrix{} << c_ExceedingDimension << c_ExceedingDimension << 5;
+    QTest::newRow("7: exceeding rows count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_IncrMaxAllowedDimension << matrix_size_t{4u} << 5;
+    QTest::newRow("8: exceeding rows count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_IncrMaxAllowedDimension << c_MaxAllowedDimension << 5;
+    QTest::newRow("9: exceeding rows count") << IntMatrix{} << c_IncrMaxAllowedDimension << matrix_size_t{4u} << 5;
+    QTest::newRow("10: exceeding rows count") << IntMatrix{} << c_IncrMaxAllowedDimension << c_MaxAllowedDimension << 5;
+    QTest::newRow("11: exceeding columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{3u} << c_IncrMaxAllowedDimension << 5;
+    QTest::newRow("12: exceeding columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_MaxAllowedDimension << c_IncrMaxAllowedDimension << 5;
+    QTest::newRow("13: exceeding columns count") << IntMatrix{} << matrix_size_t{3u} << c_IncrMaxAllowedDimension << 5;
+    QTest::newRow("14: exceeding columns count") << IntMatrix{} << c_MaxAllowedDimension << c_IncrMaxAllowedDimension << 5;
+    QTest::newRow("15: null rows count, exceeding columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{0u} << c_IncrMaxAllowedDimension << 5;
+    QTest::newRow("16: null rows count, exceeding columns count") << IntMatrix{} << matrix_size_t{0u} << c_IncrMaxAllowedDimension << 5;
+    QTest::newRow("17: exceeding rows count, null columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_IncrMaxAllowedDimension << matrix_size_t{0u} << 5;
+    QTest::newRow("18: exceeding rows count, null columns count") << IntMatrix{} << c_IncrMaxAllowedDimension << matrix_size_t{0u} << 5;
+    QTest::newRow("19: exceeding rows and columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << c_IncrMaxAllowedDimension << c_IncrMaxAllowedDimension << 5;
+    QTest::newRow("20: exceeding rows and columns count") << IntMatrix{} << c_IncrMaxAllowedDimension << c_IncrMaxAllowedDimension << 5;
 }
 
 void CommonExceptionTests::_buildInsertRowExceptionsTestingTable()
