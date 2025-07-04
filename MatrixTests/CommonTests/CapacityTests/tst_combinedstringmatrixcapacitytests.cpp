@@ -139,7 +139,7 @@ void CombinedStringMatrixCapacityTests::testReserveResizeAndEraseRowAndOrColumn_
     QTest::addColumn<StringMatrix>("matrix");
     QTest::addColumn<matrix_size_t>("requestedRowsCount");
     QTest::addColumn<matrix_size_t>("requestedColumnsCount");
-    QTest::addColumn<std::string>("resizeElementValue");
+    QTest::addColumn<std::string>("fillValue");
     QTest::addColumn<matrix_size_t>("requestedRowCapacity");
     QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
     QTest::addColumn<matrix_opt_size_t>("erasedRowNr");
@@ -564,9 +564,9 @@ void CombinedStringMatrixCapacityTests::testReserveAndSplitByColumn_data()
 void CombinedStringMatrixCapacityTests::_buildReserveAndResizeTestingTable()
 {
     QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
-    QTest::addColumn<std::string>("resizeElementValue");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
+    QTest::addColumn<std::string>("fillValue");
     QTest::addColumn<matrix_size_t>("requestedRowCapacity");
     QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
     QTest::addColumn<matrix_size_t>("expectedRowCapacity");

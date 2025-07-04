@@ -990,9 +990,9 @@ void BasicIntMatrixCapacityTests::_buildAssignmentOperatorsTestingTable()
 void BasicIntMatrixCapacityTests::_buildResizeTestingTable()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
-    QTest::addColumn<int>("resizeElementValue");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
+    QTest::addColumn<int>("fillValue");
     QTest::addColumn<matrix_size_t>("expectedRowCapacity");
     QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
     QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");

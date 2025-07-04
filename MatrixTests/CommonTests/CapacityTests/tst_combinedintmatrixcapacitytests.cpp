@@ -142,7 +142,7 @@ void CombinedIntMatrixCapacityTests::testReserveResizeAndEraseRowAndOrColumn_dat
     QTest::addColumn<IntMatrix>("matrix");
     QTest::addColumn<matrix_size_t>("requestedRowsCount");
     QTest::addColumn<matrix_size_t>("requestedColumnsCount");
-    QTest::addColumn<int>("resizeElementValue");
+    QTest::addColumn<int>("fillValue");
     QTest::addColumn<matrix_size_t>("requestedRowCapacity");
     QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
     QTest::addColumn<matrix_opt_size_t>("erasedRowNr");
@@ -567,9 +567,9 @@ void CombinedIntMatrixCapacityTests::testReserveAndSplitByColumn_data()
 void CombinedIntMatrixCapacityTests::_buildReserveAndResizeTestingTable()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
-    QTest::addColumn<int>("resizeElementValue");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
+    QTest::addColumn<int>("fillValue");
     QTest::addColumn<matrix_size_t>("requestedRowCapacity");
     QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
     QTest::addColumn<matrix_size_t>("expectedRowCapacity");

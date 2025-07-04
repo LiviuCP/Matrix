@@ -180,8 +180,8 @@
 
 #define TEST_CAPACITY_WITH_RESIZE_AND_DEFAULT_NEW_VALUES(matrixType, primaryMatrix) \
     QFETCH(Matrix<matrixType>, matrix); \
-    QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
-    QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
+    QFETCH(Matrix<matrixType>::size_type, requestedRowsCount); \
+    QFETCH(Matrix<matrixType>::size_type, requestedColumnsCount); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
@@ -189,7 +189,7 @@
 \
     primaryMatrix = matrix; \
 \
-    primaryMatrix.resize(resizeRowsCount, resizeColumnsCount); \
+    primaryMatrix.resize(requestedRowsCount, requestedColumnsCount); \
 \
     if (primaryMatrix.getRowCapacity() != expectedRowCapacity || \
         primaryMatrix.getColumnCapacity() != expectedColumnCapacity || \
@@ -201,9 +201,9 @@
 
 #define TEST_CAPACITY_WITH_RESIZE_AND_FILL_IN_NEW_VALUES(matrixType, primaryMatrix) \
     QFETCH(Matrix<matrixType>, matrix); \
-    QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
-    QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
-    QFETCH(matrixType, resizeElementValue); \
+    QFETCH(Matrix<matrixType>::size_type, requestedRowsCount); \
+    QFETCH(Matrix<matrixType>::size_type, requestedColumnsCount); \
+    QFETCH(matrixType, fillValue); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedColumnCapacity); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, expectedRowCapacityOffset); \
@@ -211,7 +211,7 @@
 \
     primaryMatrix = matrix; \
 \
-    primaryMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeElementValue); \
+    primaryMatrix.resize(requestedRowsCount, requestedColumnsCount, fillValue); \
 \
     if (primaryMatrix.getRowCapacity() != expectedRowCapacity || \
         primaryMatrix.getColumnCapacity() != expectedColumnCapacity || \

@@ -126,20 +126,20 @@ void CommonExceptionTests::testSquareBracketsOperatorExceptions()
 void CommonExceptionTests::testResizeWithoutFillingInNewValuesExceptions()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(matrix_size_t, resizeRowsCount);
-    QFETCH(matrix_size_t, resizeColumnsCount);
+    QFETCH(matrix_size_t, requestedRowsCount);
+    QFETCH(matrix_size_t, requestedColumnsCount);
 
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.resize(resizeRowsCount, resizeColumnsCount);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.resize(requestedRowsCount, requestedColumnsCount);});
 }
 
 void CommonExceptionTests::testResizeAndFillInNewValuesExceptions()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(matrix_size_t, resizeRowsCount);
-    QFETCH(matrix_size_t, resizeColumnsCount);
-    QFETCH(int, resizeElementValue);
+    QFETCH(matrix_size_t, requestedRowsCount);
+    QFETCH(matrix_size_t, requestedColumnsCount);
+    QFETCH(int, fillValue);
 
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.resize(resizeRowsCount, resizeColumnsCount, resizeElementValue);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix.resize(requestedRowsCount, requestedColumnsCount, fillValue);});
 }
 
 void CommonExceptionTests::testInsertRowNoSetValueExceptions()
@@ -557,9 +557,9 @@ void CommonExceptionTests::testSwapRowsOrColumnsExceptions_data()
 void CommonExceptionTests::_buildResizeExceptionsTestingTable()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
-    QTest::addColumn<int>("resizeElementValue");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
+    QTest::addColumn<int>("fillValue");
 
     QTest::newRow("1: null rows and columns count") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{0u} << matrix_size_t{0u} << 5;
     QTest::newRow("2: null rows and columns count") << IntMatrix{} << matrix_size_t{0u} << matrix_size_t{0u} << 5;

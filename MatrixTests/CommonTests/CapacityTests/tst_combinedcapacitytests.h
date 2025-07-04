@@ -3,8 +3,8 @@
 
 #define TEST_CAPACITY_WITH_RESERVE_AND_RESIZE_AND_DEFAULT_NEW_VALUES(matrixType, primaryMatrix) \
     QFETCH(Matrix<matrixType>, matrix); \
-    QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
-    QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
+    QFETCH(Matrix<matrixType>::size_type, requestedRowsCount); \
+    QFETCH(Matrix<matrixType>::size_type, requestedColumnsCount); \
     QFETCH(Matrix<matrixType>::size_type, requestedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, requestedColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
@@ -15,7 +15,7 @@
     primaryMatrix = matrix; \
 \
     primaryMatrix.reserve(requestedRowCapacity, requestedColumnCapacity); \
-    primaryMatrix.resize(resizeRowsCount, resizeColumnsCount); \
+    primaryMatrix.resize(requestedRowsCount, requestedColumnsCount); \
 \
     if (primaryMatrix.getRowCapacity() != expectedRowCapacity || \
         primaryMatrix.getColumnCapacity() != expectedColumnCapacity || \
@@ -27,9 +27,9 @@
 
 #define TEST_CAPACITY_WITH_RESERVE_AND_RESIZE_AND_FILL_IN_NEW_VALUES(matrixType, primaryMatrix) \
     QFETCH(Matrix<matrixType>, matrix); \
-    QFETCH(Matrix<matrixType>::size_type, resizeRowsCount); \
-    QFETCH(Matrix<matrixType>::size_type, resizeColumnsCount); \
-    QFETCH(matrixType, resizeElementValue); \
+    QFETCH(Matrix<matrixType>::size_type, requestedRowsCount); \
+    QFETCH(Matrix<matrixType>::size_type, requestedColumnsCount); \
+    QFETCH(matrixType, fillValue); \
     QFETCH(Matrix<matrixType>::size_type, requestedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, requestedColumnCapacity); \
     QFETCH(Matrix<matrixType>::size_type, expectedRowCapacity); \
@@ -40,7 +40,7 @@
     primaryMatrix = matrix; \
 \
     primaryMatrix.reserve(requestedRowCapacity, requestedColumnCapacity); \
-    primaryMatrix.resize(resizeRowsCount, resizeColumnsCount, resizeElementValue); \
+    primaryMatrix.resize(requestedRowsCount, requestedColumnsCount, fillValue); \
 \
     if (primaryMatrix.getRowCapacity() != expectedRowCapacity || \
         primaryMatrix.getColumnCapacity() != expectedColumnCapacity || \
@@ -274,7 +274,7 @@
     QFETCH(Matrix<matrixType>, matrix); \
     QFETCH(Matrix<matrixType>::size_type, requestedRowsCount); \
     QFETCH(Matrix<matrixType>::size_type, requestedColumnsCount); \
-    QFETCH(matrixType, resizeElementValue); \
+    QFETCH(matrixType, fillValue); \
     QFETCH(Matrix<matrixType>::size_type, requestedRowCapacity); \
     QFETCH(Matrix<matrixType>::size_type, requestedColumnCapacity); \
     QFETCH(std::optional<Matrix<matrixType>::size_type>, erasedRowNr); \
@@ -288,7 +288,7 @@
     primaryMatrix = matrix; \
 \
     primaryMatrix.reserve(requestedRowCapacity, requestedColumnCapacity); \
-    primaryMatrix.resize(requestedRowsCount, requestedColumnsCount, resizeElementValue); \
+    primaryMatrix.resize(requestedRowsCount, requestedColumnsCount, fillValue); \
 \
     const bool c_ShouldEraseRow{erasedRowNr.has_value() && erasedRowNr < matrix.getNrOfRows()}; \
     const bool c_ShouldEraseColumn{erasedColumnNr.has_value() && erasedColumnNr < matrix.getNrOfColumns()}; \

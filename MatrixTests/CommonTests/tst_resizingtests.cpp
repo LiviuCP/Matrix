@@ -102,17 +102,17 @@ void ResizingTests::testIntMatrixReserve()
 void ResizingTests::testIntMatrixResizeWithDefaultNewValues()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(matrix_size_t, resizeRowsCount);
-    QFETCH(matrix_size_t, resizeColumnsCount);
+    QFETCH(matrix_size_t, requestedRowsCount);
+    QFETCH(matrix_size_t, requestedColumnsCount);
     QFETCH(matrix_size_t, expectedRowCapacity);
     QFETCH(matrix_size_t, expectedColumnCapacity);
     QFETCH(matrix_opt_size_t, expectedRowCapacityOffset);
     QFETCH(matrix_opt_size_t, expectedColumnCapacityOffset);
     QFETCH(IntMatrix, expectedRetainedElementsMatrix);
 
-    matrix.resize(resizeRowsCount, resizeColumnsCount);
+    matrix.resize(requestedRowsCount, requestedColumnsCount);
 
-    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requestedRowsCount, requestedColumnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
     TEST_MATRIX_RESERVE_AND_RESIZE_CHECK_RETAINED_ELEMENT_VALUES(int, matrix, expectedRetainedElementsMatrix);
 }
 
@@ -124,8 +124,8 @@ void ResizingTests::testIntMatrixResizeAndSetNewValues()
 void ResizingTests::testIntMatrixReserveAndResizeWithDefaultNewValues()
 {
     QFETCH(IntMatrix, matrix);
-    QFETCH(matrix_size_t, resizeRowsCount);
-    QFETCH(matrix_size_t, resizeColumnsCount);
+    QFETCH(matrix_size_t, requestedRowsCount);
+    QFETCH(matrix_size_t, requestedColumnsCount);
     QFETCH(matrix_size_t, requestedRowCapacity);
     QFETCH(matrix_size_t, requestedColumnCapacity);
     QFETCH(matrix_opt_size_t, expectedRowCapacityOffset);
@@ -133,9 +133,9 @@ void ResizingTests::testIntMatrixReserveAndResizeWithDefaultNewValues()
     QFETCH(IntMatrix, expectedRetainedElementsMatrix);
 
     matrix.reserve(requestedRowCapacity, requestedColumnCapacity);
-    matrix.resize(resizeRowsCount, resizeColumnsCount);
+    matrix.resize(requestedRowsCount, requestedColumnsCount);
 
-    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, requestedRowCapacity, requestedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requestedRowsCount, requestedColumnsCount, requestedRowCapacity, requestedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
     TEST_MATRIX_RESERVE_AND_RESIZE_CHECK_RETAINED_ELEMENT_VALUES(int, matrix, expectedRetainedElementsMatrix);
 }
 
@@ -265,17 +265,17 @@ void ResizingTests::testIntMatrixClear()
 void ResizingTests::testStringMatrixResizeWithDefaultNewValues()
 {
     QFETCH(StringMatrix, matrix);
-    QFETCH(matrix_size_t, resizeRowsCount);
-    QFETCH(matrix_size_t, resizeColumnsCount);
+    QFETCH(matrix_size_t, requestedRowsCount);
+    QFETCH(matrix_size_t, requestedColumnsCount);
     QFETCH(matrix_size_t, expectedRowCapacity);
     QFETCH(matrix_size_t, expectedColumnCapacity);
     QFETCH(matrix_opt_size_t, expectedRowCapacityOffset);
     QFETCH(matrix_opt_size_t, expectedColumnCapacityOffset);
     QFETCH(StringMatrix, expectedMatrix);
 
-    matrix.resize(resizeRowsCount, resizeColumnsCount);
+    matrix.resize(requestedRowsCount, requestedColumnsCount);
 
-    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requestedRowsCount, requestedColumnsCount, expectedRowCapacity, expectedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
 
     QVERIFY2(matrix == expectedMatrix, "Reserving/resizing failed, the matrix does not have the correct values!");
 }
@@ -293,8 +293,8 @@ void ResizingTests::testStringMatrixResizeAndSetNewValues()
 void ResizingTests::testStringMatrixReserveAndResizeWithDefaultNewValues()
 {
     QFETCH(StringMatrix, matrix);
-    QFETCH(matrix_size_t, resizeRowsCount);
-    QFETCH(matrix_size_t, resizeColumnsCount);
+    QFETCH(matrix_size_t, requestedRowsCount);
+    QFETCH(matrix_size_t, requestedColumnsCount);
     QFETCH(matrix_size_t, requestedRowCapacity);
     QFETCH(matrix_size_t, requestedColumnCapacity);
     QFETCH(matrix_opt_size_t, expectedRowCapacityOffset);
@@ -302,9 +302,9 @@ void ResizingTests::testStringMatrixReserveAndResizeWithDefaultNewValues()
     QFETCH(StringMatrix, expectedMatrix);
 
     matrix.reserve(requestedRowCapacity, requestedColumnCapacity);
-    matrix.resize(resizeRowsCount, resizeColumnsCount);
+    matrix.resize(requestedRowsCount, requestedColumnsCount);
 
-    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, resizeRowsCount, resizeColumnsCount, requestedRowCapacity, requestedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
+    TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requestedRowsCount, requestedColumnsCount, requestedRowCapacity, requestedColumnCapacity, expectedRowCapacityOffset, expectedColumnCapacityOffset);
 
     QVERIFY2(matrix == expectedMatrix, "Reserving/resizing failed, the matrix does not have the correct values!");
 }
@@ -429,8 +429,8 @@ void ResizingTests::testIntMatrixReserve_data()
 void ResizingTests::testIntMatrixResizeWithDefaultNewValues_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
     QTest::addColumn<matrix_size_t>("expectedRowCapacity");
     QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
     QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
@@ -472,8 +472,8 @@ void ResizingTests::testIntMatrixResizeWithDefaultNewValues_data()
 void ResizingTests::testIntMatrixResizeAndSetNewValues_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
     QTest::addColumn<int>("fillValue");
     QTest::addColumn<matrix_size_t>("expectedRowCapacity");
     QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
@@ -516,8 +516,8 @@ void ResizingTests::testIntMatrixResizeAndSetNewValues_data()
 void ResizingTests::testIntMatrixReserveAndResizeWithDefaultNewValues_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
     QTest::addColumn<matrix_size_t>("requestedRowCapacity");
     QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
     QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
@@ -538,8 +538,8 @@ void ResizingTests::testIntMatrixReserveAndResizeWithDefaultNewValues_data()
 void ResizingTests::testIntMatrixReserveAndResizeWithSetNewValues_data()
 {
     QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
     QTest::addColumn<int>("fillValue");
     QTest::addColumn<matrix_size_t>("requestedRowCapacity");
     QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
@@ -872,8 +872,8 @@ void ResizingTests::testStringMatrixReserve_data()
 void ResizingTests::testStringMatrixResizeWithDefaultNewValues_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
     QTest::addColumn<matrix_size_t>("expectedRowCapacity");
     QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
     QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
@@ -915,8 +915,8 @@ void ResizingTests::testStringMatrixResizeWithDefaultNewValues_data()
 void ResizingTests::testStringMatrixResizeAndSetNewValues_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
     QTest::addColumn<std::string>("fillValue");
     QTest::addColumn<matrix_size_t>("expectedRowCapacity");
     QTest::addColumn<matrix_size_t>("expectedColumnCapacity");
@@ -959,8 +959,8 @@ void ResizingTests::testStringMatrixResizeAndSetNewValues_data()
 void ResizingTests::testStringMatrixReserveAndResizeWithDefaultNewValues_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
     QTest::addColumn<matrix_size_t>("requestedRowCapacity");
     QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
     QTest::addColumn<matrix_opt_size_t>("expectedRowCapacityOffset");
@@ -981,8 +981,8 @@ void ResizingTests::testStringMatrixReserveAndResizeWithDefaultNewValues_data()
 void ResizingTests::testStringMatrixReserveAndResizeWithSetNewValues_data()
 {
     QTest::addColumn<StringMatrix>("matrix");
-    QTest::addColumn<matrix_size_t>("resizeRowsCount");
-    QTest::addColumn<matrix_size_t>("resizeColumnsCount");
+    QTest::addColumn<matrix_size_t>("requestedRowsCount");
+    QTest::addColumn<matrix_size_t>("requestedColumnsCount");
     QTest::addColumn<std::string>("fillValue");
     QTest::addColumn<matrix_size_t>("requestedRowCapacity");
     QTest::addColumn<matrix_size_t>("requestedColumnCapacity");
