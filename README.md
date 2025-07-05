@@ -1,5 +1,6 @@
 Matrix is template library class implementing bidimensional arrays (matrixes) that are dynamically allocatable.
 
+
 0. DISCLAIMER:
 
 Thanks for using this library!
@@ -70,16 +71,16 @@ Important functionality contained within Matrix class is:
 
 2.1. Matrix capacity
 
-It's similar to the capacity of std::vector, however it's a bidimentional capacity (rows/columns). It is essential for minimizing performance costs when a matrix needs to be redimensioned, either by resize() or by another size-changing operation like adding a row, column etc.
+It's similar to the capacity of std::vector, however it's a bidimentional capacity (rows/columns). It is essential for minimizing performance costs when a matrix needs to be re-dimensioned, either by resize() or by another size-changing operation like adding a row, column etc.
 
 In order to modify the capacity of a matrix without affecting its size, the reserve() function can be used by providing the row and column capacity as arguments.
 
 To be noted:
-- if either capacity is lower or equal to the corresponding dimension then a capacity equal to that dimension is being set. For example if the matrix has 3 rows and 4 columns and a row capacity of 2 and a column capacity of 3 are provided, then the resulting row and column capacity are 3 respectively 4 no matter which the initial capacities of the matrix were
-- if on the other hand one of the capacities is lower and the other is higher than the corresponding dimension, then the higher capacity is being set while the lower one is set to corresponding dimension size. For example, for the same matrix mentioned above if a row capacity of 2 and a column capacity of 5 are being requested via reserve(), then the resulting capacities will be 3 and 5.
-- if either capacity is higher than its dimension, then the capacities are being set precisely as requested
-- row and column capacity are considered independent variables, i.e. they are handled separately none having any influence on the other
-- the resize() method is only responsible for setting the dimensions of the matrix. The capacities are being adjusted only if they are lower than the requested new sizes. They are being adjusted to a minimum that ensures fitting within capacity space. For the above example if the row capacity is 5 and the column capacity is 6 and the matrix is resized to 4 rows and 8 columns, then the resulting capacities are 5 and 8. Again the two capacities work independently of each other.
+- if either requested capacity is lower or equal to the corresponding dimension, then a capacity equal to that dimension is being set. For example if the matrix has 3 rows and 4 columns and a row capacity of 2 and a column capacity of 3 are being provided as arguments, then the resulting row and column capacity are 3 respectively 4 no matter which the initial capacities of the matrix were
+- if on the other hand one of the requested capacities is lower and the other is higher than the corresponding dimension, then the higher capacity is being set while the lower one is set to the corresponding dimension size. For example, for the same matrix mentioned above, if a row capacity of 2 and a column capacity of 5 are being requested via reserve(), then the resulting capacities will be 3 and 5.
+- if either requested capacity is higher than the corresponding dimension, then both capacities will be set precisely as demanded
+- row and column capacity are considered independent variables, i.e. they are handled separately, none having any influence on the other
+- the resize() method is only responsible for setting the dimensions of the matrix. The capacities are being adjusted only if they are lower than the requested new sizes. They are being adjusted to a minimum that ensures fitting within capacity space. For the above example, if the row capacity is 5 and the column capacity is 6 and the matrix is resized to 4 rows and 8 columns, then the resulting capacities are 5 and 8. Again, the two capacities work independently of each other.
 
 2.2. Iterators
 
@@ -159,8 +160,8 @@ Final iterator notes:
 
 3. ERROR HANDLING
 
-The Matrix library contains error handling functionality that deals with various situations like: index out of bounds, incompatible iterators (e.g. belonging to different matrixes), etc. This functionality is by default enabled as a safety measure especially when newly using the class. It can be disabled by adding #define ERROR_CHECKING_DISABLED before the matrix.h include statement. It is obviously recommended to do this only when the code implementation has been finished and all bugs and crashes have been corrected. For the list of possible errors please consult errorhandling.h.
+The Matrix library contains error handling functionality that deals with various situations like: index out of bounds, incompatible iterators (e.g. belonging to different matrixes), etc. This functionality is by default enabled to ensure safe usage of the class. It can be disabled by adding #define ERROR_CHECKING_DISABLED before the matrix.h include statement. It is obviously recommended to do this only when the code implementation (using matrix.h) has been finished and all bugs and crashes have been corrected. For the list of possible errors please consult errorhandling.h.
 
-There are two ways of triggering the errors: by assertion or by exception. By default assertions are made so each error will terminate the code immediately. They can be turned into exceptions by adding #define CONVERT_TO_EXCEPTIONS right after the previously mentioned define statement (and obviously before the matrix.h include). Exceptions should only be used when you necessarily need to capture an error with a try-catch block. I only enabled them in tst_exceptionstests.cpp where I tested that all necessary errors are triggered by the library code. In real application scenarios you would normally not require them but instead use asserts for debugging.
+There are two ways of triggering the errors: by assertion or by exception. By default, assertions are made so each error will terminate the code immediately. They can be turned into exceptions by adding #define CONVERT_TO_EXCEPTIONS right after the previously mentioned #define statement (and obviously before the matrix.h #include). Exceptions should only be used when you necessarily need to capture an error within a try-catch block. They have been enabled in tst_commonexceptiontests.cpp and tst_iteratorexceptiontests.cpp, in order to easily and effectively test that all necessary errors are triggered by the matrix.h library code when needed.
 
 For any questions please feel free to comment on my repo.
