@@ -7,6 +7,7 @@
 #include <optional>
 #include <vector>
 #include <cassert>
+#include <cmath>
 
 #include "../Utils/iteratorutils.h"
 #include "../Utils/errorhandling.h"
@@ -28,6 +29,205 @@ constexpr matrix_size_t maxAllowedDimension()
     constexpr matrix_size_t c_MaxAllowedDimension{c_MaxDimension >> 1};
 
     return c_MaxAllowedDimension;
+}
+
+using matrix_opt_size_t = std::optional<matrix_size_t>;
+using MatrixPoint = std::pair<matrix_opt_size_t, matrix_opt_size_t>;
+
+/* Retrieves the row and column number of the matrix based on given diagonal index:
+   - the diagonal index is included in the result as it might be clamped in case it exceeds the given bounds (0 and
+   maximum number of elements)
+   - the mapping is matrix element type independent, instead of a matrix only its dimensions are required
+   - null result for "empty matrix" (at least one provided matrix dimension is 0), no exceptions triggered
+
+   Diagonal indexes are counted starting with the top left corner (element (0, 0)) and ending with bottom right corner
+   (e.g. (4, 5) for a 5 x 6 matrix) as given in the example:
+
+    0  2  5  9 14 19
+    1  4  8 13 18 23
+    3  7 12 17 22 26
+    6 11 16 21 25 28
+   10 15 20 24 27 29
+
+   Diagonal numbers are counted starting with the top-left corner (diagonal 0) and ending with the bottom-right corner
+   (diagonal nr_of_rows + nr_of_columns - 2). For the above example:
+    - diagonal 0: index 0
+    - diagonal 1: indexes 1, 2
+    ...
+    - diagonal 4: indexes 10-14 (max size diagonal)
+    - diagonal 5: indexes 15-19 (max size diagonal)
+    ...
+    - diagonal 8: indexes 27-28
+    - diagonal 9: index 29
+
+   There are three scenarios/cases that would be taken into account:
+    - case 1: the diagonal index is on a diagonal that precedes the first maximum size diagonal (top-left area)
+      - a second order equation is being used for retrieving the diagonal number: diag_nr^2 + diag_nr - 2 * diag_index =
+   0
+      - the higher root is extracted as decimal value (the lower root would be negative and thus meaningless): diag_nr =
+   (-1 + sqrt(1 + 8 * diag_index)) / 2
+      - the equation result is (usually) decimal so it should be approximated with an integer that would either be the
+   floor or the ceiling of the equation root (usually the floor)
+        - if the int ceiling value solved the equation precisely and was different from the floor then this would be the
+   required result
+        - otherwise the floor yields the requested diagonal number
+      - the equation has been elaborated based on the fact that the starting index of a diagonal from the top-left part
+   equals the total number of elements located on the previous diagonals
+        - the total number of elements preceding the diagonal number diag_nr is diag_nr * (diag_nr + 1) / 2, e.g. for
+   diagonal number 3 (indexes 6, 7, 8, 9): 3 * 4 / 2 = 6 preceding elements
+        - the index number of the first diagonal element equals the total number of elements from previous diagonals:
+   first index on diagonal 3 is 6
+        - this results in the above mentioned equation
+        - the equation can be generalized and used for the other indexes of the diagonal too, but in that case a decimal
+   number is obtained (which by using the above mentioned floor/ceiling approximations yields the required diagonal
+   number)
+    - case 2: the diagonal index is on a maximum size diagonal (center area)
+        - use the fact that the maximum size diagonals have equal size
+          - there can be one or more maximum diagonals
+          - there can be only maximum diagonals for line, column or element matrixes
+        - also use the total elements count of the preceding top-left diagonals
+    - case 3: the diagonal index is on a diagonal following the maximum size diagonals (bottom-right area)
+        - use symmetry to the top-left part, namely determine which is the symmetric top-left diagonal index
+        - obtain the symmetric top-left coordinates and then by applying symmetry again (this time on coordinates) the
+   required bottom-right row and column number would be obtained
+*/
+static std::pair<MatrixPoint, std::optional<matrix_diff_t>> mapDiagonalIndexToRowAndColumnNr(matrix_size_t nrOfMatrixRows,
+                                                                                      matrix_size_t nrOfMatrixColumns,
+                                                                                      matrix_diff_t diagonalIndex)
+{
+    std::pair<MatrixPoint, std::optional<matrix_diff_t>> result;
+
+    if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0)
+    {
+        auto& [coordinates, diagonalIndexToConvert]{result};
+        auto& [rowNr, columnNr]{coordinates};
+
+        const matrix_size_t c_NrOfRows{nrOfMatrixRows};
+        const matrix_size_t c_NrOfColumns{nrOfMatrixColumns};
+        const matrix_diff_t c_TotalElementsCount{static_cast<matrix_diff_t>(static_cast<matrix_diff_t>(c_NrOfRows) * static_cast<matrix_diff_t>(c_NrOfColumns))};
+        const matrix_size_t c_MaxDiagonalSize{std::min(c_NrOfRows, c_NrOfColumns)};
+
+        const matrix_diff_t c_FirstMaxDiagonalNr{static_cast<matrix_diff_t>(c_MaxDiagonalSize - 1)};
+        const matrix_diff_t c_ElementsCountBeforeFirstMaxDiagonal{static_cast<matrix_diff_t>(c_FirstMaxDiagonalNr * (c_FirstMaxDiagonalNr + 1) / 2)};
+
+        // for this calculation symmetry is used: diagonals following max size diagonals are symmetric to diagonals
+        // before max size diagonals
+        const matrix_diff_t c_ElementsCountIncludingMaxDiagonals{static_cast<matrix_diff_t>(c_TotalElementsCount - c_ElementsCountBeforeFirstMaxDiagonal)};
+
+        diagonalIndexToConvert = std::clamp<matrix_diff_t>(diagonalIndex, 0, c_TotalElementsCount - 1);
+
+        if (diagonalIndexToConvert < c_ElementsCountBeforeFirstMaxDiagonal)
+        {
+            // case 1: index is in the top-left diagonals (before max diagonals)
+            const double c_DecimalDiagonalNr{
+                (std::sqrt(1.0 + 8.0 * static_cast<double>(*diagonalIndexToConvert)) - 1.0) / 2.0};
+            const matrix_diff_t c_DiagonalNumberFloor{static_cast<matrix_diff_t>(std::floor(c_DecimalDiagonalNr))};
+            const matrix_diff_t c_DiagonalNumberCeiling{static_cast<matrix_diff_t>(std::ceil(c_DecimalDiagonalNr))};
+
+            /* Proving of the above mentioned equation for integer roots:
+               - this verification is required in order to account for any rounding errors resulting in the calculation
+               of c_DecimalDiagonalNr
+               - more specifically a correction is required for the case when c_DecimalDiagonalNr should be precisely an
+               integer according to the equation (e.g. 3), however due to a rounding error a decimal number slightly
+               less then the required one (e.g. 2.999998) is obtained (which would yield 2 when using floor)
+            */
+            const matrix_diff_t c_DoubledCeilingIncremented{static_cast<matrix_diff_t>(2 * c_DiagonalNumberCeiling + 1)};
+            const bool c_ShouldUseCeiling{c_DoubledCeilingIncremented * c_DoubledCeilingIncremented ==
+                                          (8 * *diagonalIndexToConvert + 1)};
+
+            const matrix_diff_t c_DiagonalNr{c_ShouldUseCeiling ? c_DiagonalNumberCeiling : c_DiagonalNumberFloor};
+            const matrix_size_t c_DiagonalSize{static_cast<matrix_size_t>(c_DiagonalNr + 1)};
+            const matrix_diff_t c_ElementsCountBeforeDiagonal{static_cast<matrix_diff_t>(c_DiagonalNr > 0 ? (c_DiagonalNr * (c_DiagonalNr + 1) / 2) : 0)};
+            const matrix_size_t c_RelativeDiagonalIndex{
+                static_cast<matrix_size_t>(*diagonalIndexToConvert - c_ElementsCountBeforeDiagonal)};
+            rowNr = c_DiagonalSize - 1 - c_RelativeDiagonalIndex; // relative index should be between 0 and diagonal
+                                                                  // size - 1, so no overflow risk
+            columnNr = c_RelativeDiagonalIndex;
+        }
+        else if (diagonalIndexToConvert < c_ElementsCountIncludingMaxDiagonals)
+        {
+            // case 2: index is in the max size diagonals
+            const matrix_diff_t c_DiagonalNr{static_cast<matrix_diff_t>(c_FirstMaxDiagonalNr + (*diagonalIndexToConvert - c_ElementsCountBeforeFirstMaxDiagonal) /
+                                                 static_cast<matrix_diff_t>(c_MaxDiagonalSize))};
+            const matrix_size_t c_RelativeDiagonalIndex{
+                static_cast<matrix_size_t>(static_cast<matrix_size_t>(*diagonalIndexToConvert - c_ElementsCountBeforeFirstMaxDiagonal) % c_MaxDiagonalSize)}; // index relative to containing diagonal
+            const matrix_size_t c_RelativeMaxDiagonalNr{static_cast<matrix_size_t>(
+                c_DiagonalNr - c_FirstMaxDiagonalNr)}; // max diagonal number relative to the number of max diagonals
+            rowNr = c_NrOfRows <= c_NrOfColumns ? c_NrOfRows - 1 - c_RelativeDiagonalIndex
+                                                : c_NrOfColumns + c_RelativeMaxDiagonalNr - 1 - c_RelativeDiagonalIndex;
+            columnNr = c_NrOfRows <= c_NrOfColumns ? c_RelativeMaxDiagonalNr + c_RelativeDiagonalIndex
+                                                   : c_RelativeDiagonalIndex;
+        }
+        else
+        {
+            // case 3: index is in the bottom-right diagonals (after the max diagonals)
+            const matrix_diff_t c_SymmetricalDiagonalIndex{static_cast<matrix_diff_t>(c_TotalElementsCount - 1 - *diagonalIndexToConvert)};
+            const auto c_SymmetricalResult{mapDiagonalIndexToRowAndColumnNr(nrOfMatrixRows, nrOfMatrixColumns, c_SymmetricalDiagonalIndex)};
+            const auto& [symmetricalCoordinates, _]{c_SymmetricalResult};
+            const auto& [symmetricalRowNr, symmetricalColumnNr]{symmetricalCoordinates};
+            rowNr = c_NrOfRows - 1 - *symmetricalRowNr;
+            columnNr = c_NrOfColumns - 1 - *symmetricalColumnNr;
+        }
+    }
+
+    return result;
+}
+
+/* This function retrieves the diagonal index based on the provided coordinates (row and column number)
+   - same considerations as for previous function regarding type-independent relationship between
+   diagonal index and coordinates
+   - similar to the previous function, for "empty matrixes" a null value is returned
+*/
+static std::pair<std::optional<matrix_diff_t>, MatrixPoint> mapRowAndColumnNrToDiagonalIndex(matrix_size_t nrOfMatrixRows,
+                                                                                      matrix_size_t nrOfMatrixColumns,
+                                                                                      MatrixPoint rowAndColumnNr)
+{
+    std::pair<std::optional<matrix_diff_t>, MatrixPoint> result;
+
+    if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0 && rowAndColumnNr.first.has_value() && rowAndColumnNr.second.has_value())
+    {
+        auto& [diagonalIndex, rowAndColumnNrToConvert]{result};
+        auto& [rowNr, columnNr]{rowAndColumnNrToConvert};
+
+        const matrix_size_t c_NrOfRows{nrOfMatrixRows};
+        const matrix_size_t c_NrOfColumns{nrOfMatrixColumns};
+        const matrix_diff_t c_TotalElementsCount{static_cast<matrix_diff_t>(static_cast<matrix_diff_t>(c_NrOfRows) * static_cast<matrix_diff_t>(c_NrOfColumns))};
+        const matrix_diff_t c_NrOfDiagonals{static_cast<matrix_diff_t>(static_cast<matrix_diff_t>(c_NrOfRows) + static_cast<matrix_diff_t>(c_NrOfColumns) - 1)};
+        const matrix_size_t c_MaxDiagonalSize{std::min(c_NrOfRows, c_NrOfColumns)};
+
+        rowNr = std::clamp<matrix_size_t>(*rowAndColumnNr.first, 0, c_NrOfRows - 1);
+        columnNr = std::clamp<matrix_size_t>(*rowAndColumnNr.second, 0, c_NrOfColumns - 1);
+
+        const matrix_diff_t c_DiagonalNr{static_cast<matrix_diff_t>(static_cast<matrix_diff_t>(*rowNr) + static_cast<matrix_diff_t>(*columnNr))};
+        const matrix_size_t c_RelativeDiagonalIndex{std::min<matrix_size_t>(c_NrOfRows - 1 - *rowNr, *columnNr)};
+        const matrix_diff_t c_FirstMaxDiagonalNr{static_cast<matrix_diff_t>(c_MaxDiagonalSize - 1)};
+        const matrix_diff_t c_NrOfMaxSizeDiagonals{static_cast<matrix_diff_t>(c_NrOfDiagonals - 2 * c_FirstMaxDiagonalNr)};
+        const matrix_diff_t c_LastMaxDiagonalNr{static_cast<matrix_diff_t>(c_FirstMaxDiagonalNr + c_NrOfMaxSizeDiagonals - 1)};
+
+        if (c_DiagonalNr < c_FirstMaxDiagonalNr)
+        {
+            const matrix_diff_t c_ElementsCountBeforeDiagonal{static_cast<matrix_diff_t>(c_DiagonalNr * (c_DiagonalNr + 1) / 2)};
+            diagonalIndex = c_ElementsCountBeforeDiagonal + static_cast<matrix_diff_t>(c_RelativeDiagonalIndex);
+        }
+        else if (c_DiagonalNr <= c_LastMaxDiagonalNr)
+        {
+            const matrix_diff_t c_ElementsCountBeforeFirstMaxDiagonal{static_cast<matrix_diff_t>(c_FirstMaxDiagonalNr * (c_FirstMaxDiagonalNr + 1) / 2)};
+            const matrix_diff_t c_ElementsCountOnPrecedingMaxDiagonals{static_cast<matrix_diff_t>((c_DiagonalNr - c_FirstMaxDiagonalNr) * static_cast<matrix_diff_t>(c_MaxDiagonalSize))};
+            diagonalIndex = c_ElementsCountBeforeFirstMaxDiagonal + c_ElementsCountOnPrecedingMaxDiagonals +
+                            static_cast<matrix_diff_t>(c_RelativeDiagonalIndex);
+        }
+        else
+        {
+            const matrix_size_t c_SymmetricalRowNr{static_cast<matrix_size_t>(c_NrOfRows - 1 - *rowNr)};
+            const matrix_size_t c_SymmetricalColumnNr{static_cast<matrix_size_t>(c_NrOfColumns - 1 - *columnNr)};
+            const auto c_SymmetricalResult{
+                mapRowAndColumnNrToDiagonalIndex(nrOfMatrixRows, nrOfMatrixColumns, {c_SymmetricalRowNr, c_SymmetricalColumnNr})};
+            const auto& [symmetricalDiagonalIndex, _]{c_SymmetricalResult};
+            diagonalIndex = c_TotalElementsCount - 1 - *symmetricalDiagonalIndex;
+        }
+    }
+
+    return result;
 }
 
 template<typename T>
@@ -253,6 +453,22 @@ public:
         COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseMIterator, T, diff_type, size_type);
 
         size_type m_NrOfMatrixColumns;      // number of matrix columns is required for mirrored iterators because the origin (diagonal 0) does no longer pass through element (0, 0)
+    };
+
+    class WrappingDiagonalIterator
+    {
+    public:
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(WrappingDiagonalIterator, T, diff_type, size_type);
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(T, diff_type);
+
+    private:
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
+
+        WrappingDiagonalIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns, std::optional<diff_type> index);
+
+        std::optional<diff_type> m_Index;
+        size_type m_NrOfMatrixRows;
+        size_type m_NrOfMatrixColumns;
     };
 
     Matrix();
@@ -2766,6 +2982,226 @@ template<MatrixElementType T>
 bool Matrix<T>::ConstReverseMIterator::_isEmpty() const
 {
     CHECK_MITERATOR_IS_EMPTY(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
+}
+
+// POC: WrappingDiagonalIterator - starts from [0][0] and iterates diagonal after diagonal until reaching the opposite corner
+template<MatrixElementType T>
+typename Matrix<T>::WrappingDiagonalIterator& Matrix<T>::WrappingDiagonalIterator::operator++()
+{
+    ITERATOR_PRE_INCREMENT();
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WrappingDiagonalIterator Matrix<T>::WrappingDiagonalIterator::operator++(int unused)
+{
+    ITERATOR_POST_INCREMENT(WrappingDiagonalIterator, unused);
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WrappingDiagonalIterator& Matrix<T>::WrappingDiagonalIterator::operator--()
+{
+    ITERATOR_PRE_DECREMENT();
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WrappingDiagonalIterator Matrix<T>::WrappingDiagonalIterator::operator--(int unused)
+{
+    ITERATOR_POST_DECREMENT(WrappingDiagonalIterator, unused);
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WrappingDiagonalIterator& Matrix<T>::WrappingDiagonalIterator::operator+=(Matrix<T>::WrappingDiagonalIterator::difference_type offset)
+{
+    if (!_isEmpty())
+    {
+        const diff_type c_ResultingIndex{*m_Index + offset};
+        const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+        m_Index = std::clamp<diff_type>(c_ResultingIndex, 0, c_UpperBound);
+    }
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WrappingDiagonalIterator& Matrix<T>::WrappingDiagonalIterator::operator-=(Matrix<T>::WrappingDiagonalIterator::difference_type offset)
+{
+    if (!_isEmpty())
+    {
+        const diff_type c_ResultingIndex{*m_Index - offset};
+        const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+        m_Index = std::clamp<diff_type>(c_ResultingIndex, 0, c_UpperBound);
+    }
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WrappingDiagonalIterator::difference_type Matrix<T>::WrappingDiagonalIterator::operator-(const Matrix<T>::WrappingDiagonalIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr ||
+                          m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
+                          m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return !_isEmpty() ? *m_Index - *(it.m_Index) : 0;
+}
+
+template<MatrixElementType T>
+auto Matrix<T>::WrappingDiagonalIterator::operator<=>(const Matrix<T>::WrappingDiagonalIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr ||
+                          m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
+                          m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return !_isEmpty() ? *m_Index <=> *it.m_Index : std::strong_ordering::equal;
+}
+
+template<MatrixElementType T>
+bool Matrix<T>::WrappingDiagonalIterator::operator==(const Matrix<T>::WrappingDiagonalIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr ||
+                          m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
+                          m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return m_Index == it.m_Index;
+}
+
+template<MatrixElementType T>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::WrappingDiagonalIterator::getRowNr() const
+{
+    std::optional<size_type> rowNr;
+
+    if (!_isEmpty())
+    {
+        const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
+        rowNr = result.first.first;
+    }
+
+    return rowNr;
+}
+
+template<MatrixElementType T>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::WrappingDiagonalIterator::getColumnNr() const
+{
+    std::optional<size_type> columnNr;
+
+    if (!_isEmpty())
+    {
+        const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
+        columnNr = result.first.second;
+    }
+
+    return columnNr;
+}
+
+template<MatrixElementType T>
+T& Matrix<T>::WrappingDiagonalIterator::operator*() const
+{
+    CHECK_ERROR_CONDITION(_isEmpty() || m_Index == static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns), Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+
+    const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
+    const auto&[rowNr, columnNr]{result.first};
+
+    return m_pMatrixPtr[*rowNr][*columnNr];
+}
+
+template<MatrixElementType T>
+T* Matrix<T>::WrappingDiagonalIterator::operator->() const
+{
+    CHECK_ERROR_CONDITION(_isEmpty() || m_Index == static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns), Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+
+    const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
+    const auto&[rowNr, columnNr]{result.first};
+
+    return (m_pMatrixPtr[*rowNr] + *columnNr);
+}
+
+template<MatrixElementType T>
+T& Matrix<T>::WrappingDiagonalIterator::operator[](Matrix<T>::WrappingDiagonalIterator::difference_type index) const
+{
+    CHECK_ERROR_CONDITION(_isEmpty(), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    const diff_type c_ResultingIndex{static_cast<diff_type>(*m_Index + index)};
+    const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+    (void) c_UpperBound;
+
+    CHECK_ERROR_CONDITION(c_ResultingIndex >= c_UpperBound, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, c_ResultingIndex)};
+    const auto&[rowNr, columnNr]{result.first};
+
+    return m_pMatrixPtr[rowNr][columnNr];
+}
+
+template<MatrixElementType T>
+Matrix<T>::WrappingDiagonalIterator::WrappingDiagonalIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
+}
+
+template<MatrixElementType T>
+Matrix<T>::WrappingDiagonalIterator::WrappingDiagonalIterator(T** pMatrixPtr,
+                                       Matrix<T>::size_type nrOfMatrixRows,
+                                       Matrix<T>::size_type nrOfMatrixColumns,
+                                       std::optional<Matrix<T>::diff_type> index)
+{
+    bool nonEmptyIteratorContructed{false};
+
+    if (pMatrixPtr)
+    {
+        if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0 && index.has_value() && index >= 0 && index <= nrOfMatrixRows * nrOfMatrixColumns)
+        {
+            m_pMatrixPtr = pMatrixPtr;
+            m_NrOfMatrixRows = nrOfMatrixRows;
+            m_NrOfMatrixColumns = nrOfMatrixColumns;
+            m_Index = index;
+            nonEmptyIteratorContructed = true;
+        }
+        else
+        {
+            assert(false);
+        }
+    }
+
+    if (!nonEmptyIteratorContructed)
+    {
+        m_pMatrixPtr = nullptr;
+        m_NrOfMatrixRows = 0;
+        m_NrOfMatrixColumns = 0;
+    }
+}
+
+template<MatrixElementType T>
+void Matrix<T>::WrappingDiagonalIterator::_increment()
+{
+    if (!_isEmpty() && m_Index != m_NrOfMatrixRows * m_NrOfMatrixColumns)
+    {
+        m_Index = *m_Index + 1;
+    }
+}
+
+template<MatrixElementType T>
+void Matrix<T>::WrappingDiagonalIterator::_decrement()
+{
+    if (!_isEmpty() && m_Index > 0)
+    {
+        m_Index = *m_Index - 1;
+    }
+}
+
+template<MatrixElementType T>
+bool Matrix<T>::WrappingDiagonalIterator::_isEmpty() const
+{
+    if (m_pMatrixPtr)
+    {
+        assert(m_NrOfMatrixRows > 0 && m_NrOfMatrixColumns > 0 && m_Index.has_value());
+    }
+    else
+    {
+        assert(0 == m_NrOfMatrixRows && 0 == m_NrOfMatrixColumns && !m_Index.has_value());
+    }
+
+    return !m_pMatrixPtr;
 }
 
 // matrix methods
