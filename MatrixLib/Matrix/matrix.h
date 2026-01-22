@@ -653,6 +653,10 @@ public:
     ConstReverseMIterator getConstReverseMIterator(size_type rowNr, size_type columnNr) const;
     ConstReverseMIterator getConstReverseMIterator(const std::pair<diff_type, size_type>& diagonalNrAndIndex) const;
 
+    WrappingDiagonalIterator wdBegin();
+    WrappingDiagonalIterator wdEnd();
+    WrappingDiagonalIterator getWDIterator(size_type rowNr, size_type columnNr);
+
     // required for being able to use the (const) auto (&) syntax for iterating through the matrix elements
     ZIterator begin();
     ZIterator end();
@@ -4505,6 +4509,31 @@ typename Matrix<T>::ConstReverseMIterator Matrix<T>::getConstReverseMIterator(co
 {
     const auto&[diagonalNr, diagonalIndex] = diagonalNrAndIndex;
     GET_RANDOM_MITERATOR_BY_DIAG_NUMBER_AND_INDEX(ConstReverseMIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, diagonalNr, diagonalIndex);
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WrappingDiagonalIterator Matrix<T>::wdBegin()
+{
+    return WrappingDiagonalIterator{m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, 0};
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WrappingDiagonalIterator Matrix<T>::wdEnd()
+{
+    return WrappingDiagonalIterator{m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns)};
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WrappingDiagonalIterator Matrix<T>::getWDIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+{
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows || columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
+
+    const auto result{mapRowAndColumnNrToDiagonalIndex(m_NrOfRows, m_NrOfColumns, {rowNr, columnNr})};
+    assert(result.first);
+
+    const diff_type c_Index{result.first ? *result.first : 0};
+
+    return WrappingDiagonalIterator{m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, c_Index};
 }
 
 template<MatrixElementType T>
