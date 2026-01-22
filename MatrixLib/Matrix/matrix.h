@@ -3077,8 +3077,17 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getRowNr() c
 
     if (!_isEmpty())
     {
-        const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
-        rowNr = result.first.first;
+        const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+
+        if (m_Index < c_UpperBound)
+        {
+            const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
+            rowNr = result.first.first;
+        }
+        else
+        {
+            rowNr = m_NrOfMatrixRows;
+        }
     }
 
     return rowNr;
@@ -3091,8 +3100,17 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getColumnNr(
 
     if (!_isEmpty())
     {
-        const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
-        columnNr = result.first.second;
+        const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+
+        if (m_Index < c_UpperBound)
+        {
+            const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
+            columnNr = result.first.second;
+        }
+        else
+        {
+            columnNr = m_NrOfMatrixColumns;
+        }
     }
 
     return columnNr;
