@@ -455,16 +455,16 @@ public:
         size_type m_NrOfMatrixColumns;      // number of matrix columns is required for mirrored iterators because the origin (diagonal 0) does no longer pass through element (0, 0)
     };
 
-    class WrappingDiagonalIterator
+    class WDIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(WrappingDiagonalIterator, T, diff_type, size_type);
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(WDIterator, T, diff_type, size_type);
         COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(T, diff_type);
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
 
-        WrappingDiagonalIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns, std::optional<diff_type> index);
+        WDIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns, std::optional<diff_type> index);
 
         std::optional<diff_type> m_Index;
         size_type m_NrOfMatrixRows;
@@ -653,9 +653,9 @@ public:
     ConstReverseMIterator getConstReverseMIterator(size_type rowNr, size_type columnNr) const;
     ConstReverseMIterator getConstReverseMIterator(const std::pair<diff_type, size_type>& diagonalNrAndIndex) const;
 
-    WrappingDiagonalIterator wdBegin();
-    WrappingDiagonalIterator wdEnd();
-    WrappingDiagonalIterator getWDIterator(size_type rowNr, size_type columnNr);
+    WDIterator wdBegin();
+    WDIterator wdEnd();
+    WDIterator getWDIterator(size_type rowNr, size_type columnNr);
 
     // required for being able to use the (const) auto (&) syntax for iterating through the matrix elements
     ZIterator begin();
@@ -2988,33 +2988,33 @@ bool Matrix<T>::ConstReverseMIterator::_isEmpty() const
     CHECK_MITERATOR_IS_EMPTY(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
-// POC: WrappingDiagonalIterator - starts from [0][0] and iterates diagonal after diagonal until reaching the opposite corner
+// POC: WDIterator - starts from [0][0] and iterates diagonal after diagonal until reaching the opposite corner
 template<MatrixElementType T>
-typename Matrix<T>::WrappingDiagonalIterator& Matrix<T>::WrappingDiagonalIterator::operator++()
+typename Matrix<T>::WDIterator& Matrix<T>::WDIterator::operator++()
 {
     ITERATOR_PRE_INCREMENT();
 }
 
 template<MatrixElementType T>
-typename Matrix<T>::WrappingDiagonalIterator Matrix<T>::WrappingDiagonalIterator::operator++(int unused)
+typename Matrix<T>::WDIterator Matrix<T>::WDIterator::operator++(int unused)
 {
-    ITERATOR_POST_INCREMENT(WrappingDiagonalIterator, unused);
+    ITERATOR_POST_INCREMENT(WDIterator, unused);
 }
 
 template<MatrixElementType T>
-typename Matrix<T>::WrappingDiagonalIterator& Matrix<T>::WrappingDiagonalIterator::operator--()
+typename Matrix<T>::WDIterator& Matrix<T>::WDIterator::operator--()
 {
     ITERATOR_PRE_DECREMENT();
 }
 
 template<MatrixElementType T>
-typename Matrix<T>::WrappingDiagonalIterator Matrix<T>::WrappingDiagonalIterator::operator--(int unused)
+typename Matrix<T>::WDIterator Matrix<T>::WDIterator::operator--(int unused)
 {
-    ITERATOR_POST_DECREMENT(WrappingDiagonalIterator, unused);
+    ITERATOR_POST_DECREMENT(WDIterator, unused);
 }
 
 template<MatrixElementType T>
-typename Matrix<T>::WrappingDiagonalIterator& Matrix<T>::WrappingDiagonalIterator::operator+=(Matrix<T>::WrappingDiagonalIterator::difference_type offset)
+typename Matrix<T>::WDIterator& Matrix<T>::WDIterator::operator+=(Matrix<T>::WDIterator::difference_type offset)
 {
     if (!_isEmpty())
     {
@@ -3026,7 +3026,7 @@ typename Matrix<T>::WrappingDiagonalIterator& Matrix<T>::WrappingDiagonalIterato
 }
 
 template<MatrixElementType T>
-typename Matrix<T>::WrappingDiagonalIterator& Matrix<T>::WrappingDiagonalIterator::operator-=(Matrix<T>::WrappingDiagonalIterator::difference_type offset)
+typename Matrix<T>::WDIterator& Matrix<T>::WDIterator::operator-=(Matrix<T>::WDIterator::difference_type offset)
 {
     if (!_isEmpty())
     {
@@ -3038,7 +3038,7 @@ typename Matrix<T>::WrappingDiagonalIterator& Matrix<T>::WrappingDiagonalIterato
 }
 
 template<MatrixElementType T>
-typename Matrix<T>::WrappingDiagonalIterator::difference_type Matrix<T>::WrappingDiagonalIterator::operator-(const Matrix<T>::WrappingDiagonalIterator& it) const
+typename Matrix<T>::WDIterator::difference_type Matrix<T>::WDIterator::operator-(const Matrix<T>::WDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr ||
                           m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
@@ -3049,7 +3049,7 @@ typename Matrix<T>::WrappingDiagonalIterator::difference_type Matrix<T>::Wrappin
 }
 
 template<MatrixElementType T>
-auto Matrix<T>::WrappingDiagonalIterator::operator<=>(const Matrix<T>::WrappingDiagonalIterator& it) const
+auto Matrix<T>::WDIterator::operator<=>(const Matrix<T>::WDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr ||
                           m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
@@ -3060,7 +3060,7 @@ auto Matrix<T>::WrappingDiagonalIterator::operator<=>(const Matrix<T>::WrappingD
 }
 
 template<MatrixElementType T>
-bool Matrix<T>::WrappingDiagonalIterator::operator==(const Matrix<T>::WrappingDiagonalIterator& it) const
+bool Matrix<T>::WDIterator::operator==(const Matrix<T>::WDIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr ||
                           m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
@@ -3071,7 +3071,7 @@ bool Matrix<T>::WrappingDiagonalIterator::operator==(const Matrix<T>::WrappingDi
 }
 
 template<MatrixElementType T>
-std::optional<typename Matrix<T>::size_type> Matrix<T>::WrappingDiagonalIterator::getRowNr() const
+std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getRowNr() const
 {
     std::optional<size_type> rowNr;
 
@@ -3085,7 +3085,7 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::WrappingDiagonalIterator
 }
 
 template<MatrixElementType T>
-std::optional<typename Matrix<T>::size_type> Matrix<T>::WrappingDiagonalIterator::getColumnNr() const
+std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getColumnNr() const
 {
     std::optional<size_type> columnNr;
 
@@ -3099,7 +3099,7 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::WrappingDiagonalIterator
 }
 
 template<MatrixElementType T>
-T& Matrix<T>::WrappingDiagonalIterator::operator*() const
+T& Matrix<T>::WDIterator::operator*() const
 {
     const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
     (void)c_UpperBound;
@@ -3115,7 +3115,7 @@ T& Matrix<T>::WrappingDiagonalIterator::operator*() const
 }
 
 template<MatrixElementType T>
-T* Matrix<T>::WrappingDiagonalIterator::operator->() const
+T* Matrix<T>::WDIterator::operator->() const
 {
     const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
     (void)c_UpperBound;
@@ -3131,7 +3131,7 @@ T* Matrix<T>::WrappingDiagonalIterator::operator->() const
 }
 
 template<MatrixElementType T>
-T& Matrix<T>::WrappingDiagonalIterator::operator[](Matrix<T>::WrappingDiagonalIterator::difference_type index) const
+T& Matrix<T>::WDIterator::operator[](Matrix<T>::WDIterator::difference_type index) const
 {
     CHECK_ERROR_CONDITION(_isEmpty(), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
 
@@ -3150,7 +3150,7 @@ T& Matrix<T>::WrappingDiagonalIterator::operator[](Matrix<T>::WrappingDiagonalIt
 }
 
 template<MatrixElementType T>
-Matrix<T>::WrappingDiagonalIterator::WrappingDiagonalIterator()
+Matrix<T>::WDIterator::WDIterator()
     : m_pMatrixPtr{nullptr}
     , m_NrOfMatrixRows{0}
     , m_NrOfMatrixColumns{0}
@@ -3158,7 +3158,7 @@ Matrix<T>::WrappingDiagonalIterator::WrappingDiagonalIterator()
 }
 
 template<MatrixElementType T>
-Matrix<T>::WrappingDiagonalIterator::WrappingDiagonalIterator(T** pMatrixPtr,
+Matrix<T>::WDIterator::WDIterator(T** pMatrixPtr,
                                        Matrix<T>::size_type nrOfMatrixRows,
                                        Matrix<T>::size_type nrOfMatrixColumns,
                                        std::optional<Matrix<T>::diff_type> index)
@@ -3196,7 +3196,7 @@ Matrix<T>::WrappingDiagonalIterator::WrappingDiagonalIterator(T** pMatrixPtr,
 }
 
 template<MatrixElementType T>
-void Matrix<T>::WrappingDiagonalIterator::_increment()
+void Matrix<T>::WDIterator::_increment()
 {
     if (!_isEmpty())
     {
@@ -3210,7 +3210,7 @@ void Matrix<T>::WrappingDiagonalIterator::_increment()
 }
 
 template<MatrixElementType T>
-void Matrix<T>::WrappingDiagonalIterator::_decrement()
+void Matrix<T>::WDIterator::_decrement()
 {
     if (!_isEmpty() && m_Index > 0)
     {
@@ -3219,7 +3219,7 @@ void Matrix<T>::WrappingDiagonalIterator::_decrement()
 }
 
 template<MatrixElementType T>
-bool Matrix<T>::WrappingDiagonalIterator::_isEmpty() const
+bool Matrix<T>::WDIterator::_isEmpty() const
 {
     if (m_pMatrixPtr)
     {
@@ -4537,19 +4537,19 @@ typename Matrix<T>::ConstReverseMIterator Matrix<T>::getConstReverseMIterator(co
 }
 
 template<MatrixElementType T>
-typename Matrix<T>::WrappingDiagonalIterator Matrix<T>::wdBegin()
+typename Matrix<T>::WDIterator Matrix<T>::wdBegin()
 {
-    return WrappingDiagonalIterator{m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, 0};
+    return WDIterator{m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, 0};
 }
 
 template<MatrixElementType T>
-typename Matrix<T>::WrappingDiagonalIterator Matrix<T>::wdEnd()
+typename Matrix<T>::WDIterator Matrix<T>::wdEnd()
 {
-    return WrappingDiagonalIterator{m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns)};
+    return WDIterator{m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns)};
 }
 
 template<MatrixElementType T>
-typename Matrix<T>::WrappingDiagonalIterator Matrix<T>::getWDIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+typename Matrix<T>::WDIterator Matrix<T>::getWDIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
 {
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows || columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
 
@@ -4558,7 +4558,7 @@ typename Matrix<T>::WrappingDiagonalIterator Matrix<T>::getWDIterator(Matrix<T>:
 
     const diff_type c_Index{result.first ? *result.first : 0};
 
-    return WrappingDiagonalIterator{m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, c_Index};
+    return WDIterator{m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, c_Index};
 }
 
 template<MatrixElementType T>
