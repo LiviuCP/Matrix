@@ -22,6 +22,12 @@ private slots:
     void testLessThanOrEqualToOperator();
     void testGreaterThanOperator();
     void testGreaterThanOrEqualToOperator();
+    void testPreIncrementOperator();
+    void testPostIncrementOperator();
+    void testCombinedIncrementOperators();
+    void testPreDecrementOperator();
+    void testPostDecrementOperator();
+    void testCombinedDecrementOperators();
 
     // test data
     void testIteratorCreation_data();
@@ -32,11 +38,17 @@ private slots:
     void testLessThanOrEqualToOperator_data();
     void testGreaterThanOperator_data();
     void testGreaterThanOrEqualToOperator_data();
+    void testPreIncrementOperator_data();
+    void testPostIncrementOperator_data();
+    void testPreDecrementOperator_data();
+    void testPostDecrementOperator_data();
 
 private:
     // test data helper methods
     void _buildLessThanOperatorTestingTable();
     void _buildLessThanOrEqualOperatorTestingTable();
+    void _buildIncrementOperatorTestingTable();
+    void _buildDecrementOperatorTestingTable();
 
     IntMatrix m_PrimaryIntMatrix;
     IntMatrix m_SecondaryIntMatrix;
@@ -128,6 +140,104 @@ void WDIteratorTests::testGreaterThanOrEqualToOperator()
     QFETCH(IntWDIter, secondIterator);
 
     QVERIFY2(secondIterator >= firstIterator && !(secondIterator < firstIterator), "The second iterator should be greater than or equal to the first one!");
+}
+
+void WDIteratorTests::testPreIncrementOperator()
+{
+    QFETCH(IntWDIter, inputIterator);
+    QFETCH(IntWDIter, expectedIterator);
+
+    m_PrimaryIntIterator = inputIterator;
+    ++m_PrimaryIntIterator;
+
+    QVERIFY2(m_PrimaryIntIterator == expectedIterator,
+             "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
+}
+
+void WDIteratorTests::testPostIncrementOperator()
+{
+    QFETCH(IntWDIter, inputIterator);
+    QFETCH(IntWDIter, expectedIterator);
+
+    m_PrimaryIntIterator = inputIterator;
+    m_PrimaryIntIterator++;
+
+    QVERIFY2(m_PrimaryIntIterator == expectedIterator,
+             "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
+}
+
+void WDIteratorTests::testCombinedIncrementOperators()
+{
+    m_PrimaryIntMatrix = {{9, 8}, -5};
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(5, 4);
+    m_SecondaryIntIterator = ++(++m_PrimaryIntIterator);
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(3, 6) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(3, 6),
+             "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(5, 4);
+    m_SecondaryIntIterator = (m_PrimaryIntIterator++)++;
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(5, 4),
+             "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(5, 4);
+    m_SecondaryIntIterator = (++m_PrimaryIntIterator)++;
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(3, 6) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5),
+             "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(5, 4);
+    m_SecondaryIntIterator = ++(m_PrimaryIntIterator++);
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5),
+             "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
+}
+
+void WDIteratorTests::testPreDecrementOperator()
+{
+    QFETCH(IntWDIter, inputIterator);
+    QFETCH(IntWDIter, expectedIterator);
+
+    m_PrimaryIntIterator = inputIterator;
+    --m_PrimaryIntIterator;
+
+    QVERIFY2(m_PrimaryIntIterator == expectedIterator,
+             "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
+}
+
+void WDIteratorTests::testPostDecrementOperator()
+{
+    QFETCH(IntWDIter, inputIterator);
+    QFETCH(IntWDIter, expectedIterator);
+
+    m_PrimaryIntIterator = inputIterator;
+    m_PrimaryIntIterator--;
+
+    QVERIFY2(m_PrimaryIntIterator == expectedIterator,
+             "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
+}
+
+void WDIteratorTests::testCombinedDecrementOperators()
+{
+    m_PrimaryIntMatrix = {{9, 8}, -5};
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(3, 6);
+    m_SecondaryIntIterator = --(--m_PrimaryIntIterator);
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(5, 4) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(5, 4),
+             "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(3, 6);
+    m_SecondaryIntIterator = (m_PrimaryIntIterator--)--;
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(3, 6),
+             "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(3, 6);
+    m_SecondaryIntIterator = (--m_PrimaryIntIterator)--;
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(5, 4) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5),
+             "The pre- and post-decrement operators do not work correctly, the resulting iterator doesn't point to the right element!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(3, 6);
+    m_SecondaryIntIterator = --(m_PrimaryIntIterator--);
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5),
+             "The pre- and post-decrement operators do not work correctly, the resulting iterator doesn't point to the right element!");
 }
 
 /*
@@ -222,6 +332,26 @@ void WDIteratorTests::testGreaterThanOrEqualToOperator_data()
     _buildLessThanOrEqualOperatorTestingTable();
 }
 
+void WDIteratorTests::testPreIncrementOperator_data()
+{
+    _buildIncrementOperatorTestingTable();
+}
+
+void WDIteratorTests::testPostIncrementOperator_data()
+{
+    _buildIncrementOperatorTestingTable();
+}
+
+void WDIteratorTests::testPreDecrementOperator_data()
+{
+    _buildDecrementOperatorTestingTable();
+}
+
+void WDIteratorTests::testPostDecrementOperator_data()
+{
+    _buildDecrementOperatorTestingTable();
+}
+
 void WDIteratorTests::_buildLessThanOperatorTestingTable()
 {
     m_PrimaryIntMatrix = {{9, 8}, -5};
@@ -260,6 +390,44 @@ void WDIteratorTests::_buildLessThanOrEqualOperatorTestingTable()
     QTest::newRow("13: end iterator, end iterator") << m_PrimaryIntMatrix.wdEnd() << m_PrimaryIntMatrix.wdEnd();
     QTest::newRow("14: begin iterator, end iterator") << m_SecondaryIntMatrix.wdBegin() << m_SecondaryIntMatrix.wdEnd();
     QTest::newRow("15: end iterator, begin iterator") << m_SecondaryIntMatrix.wdEnd() << m_SecondaryIntMatrix.wdBegin();
+}
+
+void WDIteratorTests::_buildIncrementOperatorTestingTable()
+{
+    m_PrimaryIntMatrix = {{9, 8}, -5};
+
+    QTest::addColumn<IntWDIter>("inputIterator");
+    QTest::addColumn<IntWDIter>("expectedIterator");
+
+    QTest::newRow("1: begin iterator, random iterator")  << m_PrimaryIntMatrix.wdBegin() << m_PrimaryIntMatrix.getWDIterator(1, 0);
+    QTest::newRow("2: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(1, 0) << m_PrimaryIntMatrix.getWDIterator(0, 1);
+    QTest::newRow("3: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(4, 6) << m_PrimaryIntMatrix.getWDIterator(3, 7);
+    QTest::newRow("4: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(3, 7) << m_PrimaryIntMatrix.getWDIterator(8, 3);
+    QTest::newRow("5: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(8, 3) << m_PrimaryIntMatrix.getWDIterator(7, 4);
+    QTest::newRow("6: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(6, 6) << m_PrimaryIntMatrix.getWDIterator(5, 7);
+    QTest::newRow("7: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(6, 7) << m_PrimaryIntMatrix.getWDIterator(8, 6);
+    QTest::newRow("8: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(7, 7) << m_PrimaryIntMatrix.getWDIterator(8, 7);
+    QTest::newRow("9: random iterator, end iterator")  << m_PrimaryIntMatrix.getWDIterator(8, 7) << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("10: end iterator, end iterator")  << m_PrimaryIntMatrix.wdEnd() << m_PrimaryIntMatrix.wdEnd();
+}
+
+void WDIteratorTests::_buildDecrementOperatorTestingTable()
+{
+    m_PrimaryIntMatrix = {{9, 8}, -5};
+
+    QTest::addColumn<IntWDIter>("inputIterator");
+    QTest::addColumn<IntWDIter>("expectedIterator");
+
+    QTest::newRow("1: end iterator, random iterator")  << m_PrimaryIntMatrix.wdEnd() << m_PrimaryIntMatrix.getWDIterator(8, 7);
+    QTest::newRow("2: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(8, 7) << m_PrimaryIntMatrix.getWDIterator(7, 7);
+    QTest::newRow("3: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(8, 6) << m_PrimaryIntMatrix.getWDIterator(6, 7);
+    QTest::newRow("4: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(5, 7) << m_PrimaryIntMatrix.getWDIterator(6, 6);
+    QTest::newRow("5: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(7, 4) << m_PrimaryIntMatrix.getWDIterator(8, 3);
+    QTest::newRow("6: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(8, 3) << m_PrimaryIntMatrix.getWDIterator(3, 7);
+    QTest::newRow("7: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(3, 7) << m_PrimaryIntMatrix.getWDIterator(4, 6);
+    QTest::newRow("8: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(0, 1) << m_PrimaryIntMatrix.getWDIterator(1, 0);
+    QTest::newRow("9: random iterator, begin iterator")  << m_PrimaryIntMatrix.getWDIterator(1, 0) << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("10: begin iterator, begin iterator")  << m_PrimaryIntMatrix.wdBegin() << m_PrimaryIntMatrix.wdBegin();
 }
 
 QTEST_APPLESS_MAIN(WDIteratorTests)
