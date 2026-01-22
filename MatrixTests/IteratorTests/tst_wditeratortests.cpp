@@ -14,6 +14,7 @@ class WDIteratorTests : public QObject
 private slots:
     // test functions
     void testIteratorCreation();
+    void testEmptyIterator();
 
     // test data
     void testIteratorCreation_data();
@@ -36,6 +37,16 @@ void WDIteratorTests::testIteratorCreation()
              "The iterator has not been correctly created!");
 }
 
+void WDIteratorTests::testEmptyIterator()
+{
+    IntWDIter emptyIt;
+
+    QVERIFY2(!emptyIt.getRowNr().has_value() &&
+             !emptyIt.getColumnNr().has_value() &&
+             !emptyIt.getIndex().has_value(),
+             "The iterator has not been correctly created!");
+}
+
 /*
 WDIterator indexes for 9x8 matrix:
 
@@ -49,7 +60,6 @@ WDIterator indexes for 9x8 matrix:
     28 37 45 52 58 63 67 70
     36 44 51 57 62 66 69 71
 */
-
 void WDIteratorTests::testIteratorCreation_data()
 {
     m_PrimaryIntMatrix = {{9, 8}, -5};
