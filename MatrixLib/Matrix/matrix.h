@@ -32,6 +32,7 @@ constexpr matrix_size_t maxAllowedDimension()
 }
 
 using matrix_opt_size_t = std::optional<matrix_size_t>;
+using matrix_opt_diff_t = std::optional<matrix_diff_t>;
 using MatrixPoint = std::pair<matrix_opt_size_t, matrix_opt_size_t>;
 
 /* Retrieves the row and column number of the matrix based on given diagonal index:
@@ -91,11 +92,11 @@ using MatrixPoint = std::pair<matrix_opt_size_t, matrix_opt_size_t>;
         - obtain the symmetric top-left coordinates and then by applying symmetry again (this time on coordinates) the
    required bottom-right row and column number would be obtained
 */
-static std::pair<MatrixPoint, std::optional<matrix_diff_t>> mapDiagonalIndexToRowAndColumnNr(matrix_size_t nrOfMatrixRows,
-                                                                                      matrix_size_t nrOfMatrixColumns,
-                                                                                      matrix_diff_t diagonalIndex)
+static std::pair<MatrixPoint, matrix_opt_diff_t> mapDiagonalIndexToRowAndColumnNr(matrix_size_t nrOfMatrixRows,
+                                                                                  matrix_size_t nrOfMatrixColumns,
+                                                                                  matrix_diff_t diagonalIndex)
 {
-    std::pair<MatrixPoint, std::optional<matrix_diff_t>> result;
+    std::pair<MatrixPoint, matrix_opt_diff_t> result;
 
     if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0)
     {
@@ -178,11 +179,11 @@ static std::pair<MatrixPoint, std::optional<matrix_diff_t>> mapDiagonalIndexToRo
    diagonal index and coordinates
    - similar to the previous function, for "empty matrixes" a null value is returned
 */
-static std::pair<std::optional<matrix_diff_t>, MatrixPoint> mapRowAndColumnNrToDiagonalIndex(matrix_size_t nrOfMatrixRows,
+static std::pair<matrix_opt_diff_t, MatrixPoint> mapRowAndColumnNrToDiagonalIndex(matrix_size_t nrOfMatrixRows,
                                                                                       matrix_size_t nrOfMatrixColumns,
                                                                                       MatrixPoint rowAndColumnNr)
 {
-    std::pair<std::optional<matrix_diff_t>, MatrixPoint> result;
+    std::pair<matrix_opt_diff_t, MatrixPoint> result;
 
     if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0 && rowAndColumnNr.first.has_value() && rowAndColumnNr.second.has_value())
     {
@@ -460,6 +461,10 @@ public:
     public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(WDIterator, T, diff_type, size_type);
         COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(T, diff_type);
+
+#ifdef USE_WD_ITER_INDEX
+        std::optional<diff_type> getIndex() const;
+#endif
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
@@ -3115,6 +3120,14 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getColumnNr(
 
     return columnNr;
 }
+
+#ifdef USE_WD_ITER_INDEX
+template<MatrixElementType T>
+std::optional<typename Matrix<T>::diff_type> Matrix<T>::WDIterator::getIndex() const
+{
+    return m_Index;
+}
+#endif
 
 template<MatrixElementType T>
 T& Matrix<T>::WDIterator::operator*() const

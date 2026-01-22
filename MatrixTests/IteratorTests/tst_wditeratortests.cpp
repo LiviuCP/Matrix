@@ -1,5 +1,7 @@
 #include <QTest>
 
+#define USE_WD_ITER_INDEX
+
 #include "testutils.h"
 
 Q_DECLARE_METATYPE(IntWDIter)
@@ -12,24 +14,61 @@ class WDIteratorTests : public QObject
 private slots:
     // test functions
     void testIteratorCreation();
+
+    // test data
+    void testIteratorCreation_data();
+
+private:
+    IntMatrix m_PrimaryIntMatrix;
+    IntMatrix m_SecondaryIntMatrix;
 };
 
 void WDIteratorTests::testIteratorCreation()
 {
-    IntMatrix matrix{4, 3, {-2, 1, 5,
-                             8, 10, 12,
-                            14, 5, 8,
-                            7, 7, 0
-                     }};
+    QFETCH(IntWDIter, iterator);
+    QFETCH(matrix_opt_size_t, expectedRowNr);
+    QFETCH(matrix_opt_size_t, expectedColumnNr);
+    QFETCH(matrix_opt_diff_t, expectedIndex);
 
-    IntWDIter it = matrix.wdBegin();
-    QVERIFY(it.getRowNr() == 0 && it.getColumnNr() == 0);
+    QVERIFY2(iterator.getRowNr() == expectedRowNr &&
+             iterator.getColumnNr() == expectedColumnNr &&
+             iterator.getIndex() == expectedIndex,
+             "The iterator has not been correctly created!");
+}
 
-    it = matrix.wdEnd();
-    QVERIFY(it.getRowNr() == 4 && it.getColumnNr() == 3);
+/*
+WDIterator indexes for 9x8 matrix:
 
-    it = matrix.getWDIterator(2, 1);
-    QVERIFY(it.getRowNr() == 2 && it.getColumnNr() == 1);
+     0  2  5  9 14 20 27 35
+     1  4  8 13 19 26 34 43
+     3  7 12 18 25 33 42 50
+     6 11 17 24 32 41 49 56
+    10 16 23 31 40 48 55 61
+    15 22 30 39 47 54 60 65
+    21 29 38 46 53 59 64 68
+    28 37 45 52 58 63 67 70
+    36 44 51 57 62 66 69 71
+*/
+
+void WDIteratorTests::testIteratorCreation_data()
+{
+    m_PrimaryIntMatrix = {{9, 8}, -5};
+    m_SecondaryIntMatrix.clear();
+
+    QTest::addColumn<IntWDIter>("iterator");
+    QTest::addColumn<matrix_opt_size_t>("expectedRowNr");
+    QTest::addColumn<matrix_opt_size_t>("expectedColumnNr");
+    QTest::addColumn<matrix_opt_diff_t>("expectedIndex");
+
+    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << matrix_opt_diff_t{0u};
+    QTest::newRow("2: end iterator") << m_PrimaryIntMatrix.wdEnd() << matrix_opt_size_t{9u} << matrix_opt_size_t{8u} << matrix_opt_diff_t{72u};
+    QTest::newRow("3: random iterator") << m_PrimaryIntMatrix.getWDIterator(0, 0) << matrix_opt_size_t{0u} << matrix_opt_size_t{0u} << matrix_opt_diff_t{0u};
+    QTest::newRow("4: random iterator") << m_PrimaryIntMatrix.getWDIterator(0, 1) << matrix_opt_size_t{0u} << matrix_opt_size_t{1u} << matrix_opt_diff_t{2u};
+    QTest::newRow("5: random iterator") << m_PrimaryIntMatrix.getWDIterator(5, 4) << matrix_opt_size_t{5u} << matrix_opt_size_t{4u} << matrix_opt_diff_t{47u};
+    QTest::newRow("6: random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 6) << matrix_opt_size_t{8u} << matrix_opt_size_t{6u} << matrix_opt_diff_t{69u};
+    QTest::newRow("7: random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 7) << matrix_opt_size_t{8u} << matrix_opt_size_t{7u} << matrix_opt_diff_t{71u};
+    QTest::newRow("8: begin iterator") << m_SecondaryIntMatrix.wdBegin() << matrix_opt_size_t{} << matrix_opt_size_t{} << matrix_opt_diff_t{};
+    QTest::newRow("9: end iterator") << m_SecondaryIntMatrix.wdEnd() << matrix_opt_size_t{} << matrix_opt_size_t{} << matrix_opt_diff_t{};
 }
 
 QTEST_APPLESS_MAIN(WDIteratorTests)
