@@ -3020,6 +3020,7 @@ typename Matrix<T>::WrappingDiagonalIterator& Matrix<T>::WrappingDiagonalIterato
     {
         const diff_type c_ResultingIndex{*m_Index + offset};
         const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+
         m_Index = std::clamp<diff_type>(c_ResultingIndex, 0, c_UpperBound);
     }
 }
@@ -3031,6 +3032,7 @@ typename Matrix<T>::WrappingDiagonalIterator& Matrix<T>::WrappingDiagonalIterato
     {
         const diff_type c_ResultingIndex{*m_Index - offset};
         const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+
         m_Index = std::clamp<diff_type>(c_ResultingIndex, 0, c_UpperBound);
     }
 }
@@ -3099,10 +3101,15 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::WrappingDiagonalIterator
 template<MatrixElementType T>
 T& Matrix<T>::WrappingDiagonalIterator::operator*() const
 {
-    CHECK_ERROR_CONDITION(_isEmpty() || m_Index == static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns), Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+    const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+    (void)c_UpperBound;
+
+    CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
 
     const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
     const auto&[rowNr, columnNr]{result.first};
+
+    assert(rowNr && columnNr);
 
     return m_pMatrixPtr[*rowNr][*columnNr];
 }
@@ -3110,10 +3117,15 @@ T& Matrix<T>::WrappingDiagonalIterator::operator*() const
 template<MatrixElementType T>
 T* Matrix<T>::WrappingDiagonalIterator::operator->() const
 {
-    CHECK_ERROR_CONDITION(_isEmpty() || m_Index == static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns), Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+    const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+    (void)c_UpperBound;
+
+    CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
 
     const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
     const auto&[rowNr, columnNr]{result.first};
+
+    assert(rowNr && columnNr);
 
     return (m_pMatrixPtr[*rowNr] + *columnNr);
 }
@@ -3132,7 +3144,9 @@ T& Matrix<T>::WrappingDiagonalIterator::operator[](Matrix<T>::WrappingDiagonalIt
     const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, c_ResultingIndex)};
     const auto&[rowNr, columnNr]{result.first};
 
-    return m_pMatrixPtr[rowNr][columnNr];
+    assert(rowNr && columnNr);
+
+    return m_pMatrixPtr[*rowNr][*columnNr];
 }
 
 template<MatrixElementType T>
@@ -3153,13 +3167,19 @@ Matrix<T>::WrappingDiagonalIterator::WrappingDiagonalIterator(T** pMatrixPtr,
 
     if (pMatrixPtr)
     {
-        if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0 && index.has_value() && index >= 0 && index <= nrOfMatrixRows * nrOfMatrixColumns)
+        if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0 && index.has_value() && index >= 0)
         {
-            m_pMatrixPtr = pMatrixPtr;
-            m_NrOfMatrixRows = nrOfMatrixRows;
-            m_NrOfMatrixColumns = nrOfMatrixColumns;
-            m_Index = index;
-            nonEmptyIteratorContructed = true;
+            const diff_type c_UpperBound{static_cast<diff_type>(nrOfMatrixRows) * static_cast<diff_type>(nrOfMatrixColumns)};
+            assert(index <= c_UpperBound);
+
+            if (index <= c_UpperBound)
+            {
+                m_pMatrixPtr = pMatrixPtr;
+                m_NrOfMatrixRows = nrOfMatrixRows;
+                m_NrOfMatrixColumns = nrOfMatrixColumns;
+                m_Index = index;
+                nonEmptyIteratorContructed = true;
+            }
         }
         else
         {
@@ -3178,9 +3198,14 @@ Matrix<T>::WrappingDiagonalIterator::WrappingDiagonalIterator(T** pMatrixPtr,
 template<MatrixElementType T>
 void Matrix<T>::WrappingDiagonalIterator::_increment()
 {
-    if (!_isEmpty() && m_Index != m_NrOfMatrixRows * m_NrOfMatrixColumns)
+    if (!_isEmpty())
     {
-        m_Index = *m_Index + 1;
+        const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+
+        if (m_Index < c_UpperBound)
+        {
+            m_Index = *m_Index + 1;
+        }
     }
 }
 
