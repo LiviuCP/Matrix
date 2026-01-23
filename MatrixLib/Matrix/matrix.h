@@ -3204,7 +3204,7 @@ Matrix<T>::WDIterator::WDIterator(T** pMatrixPtr,
     {
         if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0 && index.has_value() && index >= 0)
         {
-            const diff_type c_UpperBound{static_cast<diff_type>(nrOfMatrixRows) * static_cast<diff_type>(nrOfMatrixColumns)};
+            const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(nrOfMatrixRows) * static_cast<diff_type>(nrOfMatrixColumns))};
             assert(index <= c_UpperBound);
 
             if (index <= c_UpperBound)
@@ -3212,7 +3212,7 @@ Matrix<T>::WDIterator::WDIterator(T** pMatrixPtr,
                 m_pMatrixPtr = pMatrixPtr;
                 m_NrOfMatrixRows = nrOfMatrixRows;
                 m_NrOfMatrixColumns = nrOfMatrixColumns;
-                m_Index = index;
+                m_Index = *index;
                 nonEmptyIteratorContructed = true;
             }
         }
