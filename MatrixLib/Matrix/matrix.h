@@ -3028,6 +3028,8 @@ typename Matrix<T>::WDIterator& Matrix<T>::WDIterator::operator+=(Matrix<T>::WDI
 
         m_Index = std::clamp<diff_type>(c_ResultingIndex, 0, c_UpperBound);
     }
+
+    return *this;
 }
 
 template<MatrixElementType T>
@@ -3040,6 +3042,8 @@ typename Matrix<T>::WDIterator& Matrix<T>::WDIterator::operator-=(Matrix<T>::WDI
 
         m_Index = std::clamp<diff_type>(c_ResultingIndex, 0, c_UpperBound);
     }
+
+    return *this;
 }
 
 template<MatrixElementType T>

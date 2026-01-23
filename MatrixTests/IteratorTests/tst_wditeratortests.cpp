@@ -28,6 +28,10 @@ private slots:
     void testPreDecrementOperator();
     void testPostDecrementOperator();
     void testCombinedDecrementOperators();
+    void testOperatorPlus();
+    void testOperatorMinus();
+    void testOperatorPlusEqual();
+    void testOperatorMinusEqual();
 
     // test data
     void testIteratorCreation_data();
@@ -42,13 +46,17 @@ private slots:
     void testPostIncrementOperator_data();
     void testPreDecrementOperator_data();
     void testPostDecrementOperator_data();
-
+    void testOperatorPlus_data();
+    void testOperatorMinus_data();
+    void testOperatorPlusEqual_data();
+    void testOperatorMinusEqual_data();
 private:
     // test data helper methods
     void _buildLessThanOperatorTestingTable();
     void _buildLessThanOrEqualOperatorTestingTable();
     void _buildIncrementOperatorTestingTable();
     void _buildDecrementOperatorTestingTable();
+    void _buildOperatorPlusTestingTable();
 
     IntMatrix m_PrimaryIntMatrix;
     IntMatrix m_SecondaryIntMatrix;
@@ -240,6 +248,49 @@ void WDIteratorTests::testCombinedDecrementOperators()
              "The pre- and post-decrement operators do not work correctly, the resulting iterator doesn't point to the right element!");
 }
 
+void WDIteratorTests::testOperatorPlus()
+{
+    QFETCH(IntWDIter, iterator);
+    QFETCH(matrix_diff_t, scalarValue);
+    QFETCH(IntWDIter, expectedIterator);
+
+    QVERIFY2(iterator + scalarValue == expectedIterator, "Operator + does not work correctly, the resulting iterator does not point to the right element!");
+}
+
+void WDIteratorTests::testOperatorMinus()
+{
+    QFETCH(IntWDIter, iterator);
+    QFETCH(matrix_diff_t, scalarValue);
+    QFETCH(IntWDIter, expectedIterator);
+
+    scalarValue = -scalarValue;
+
+    QVERIFY2(iterator - scalarValue == expectedIterator, "Operator - does not work correctly, the resulting iterator does not point to the right element!");
+}
+
+void WDIteratorTests::testOperatorPlusEqual()
+{
+    QFETCH(IntWDIter, iterator);
+    QFETCH(matrix_diff_t, scalarValue);
+    QFETCH(IntWDIter, expectedIterator);
+
+    iterator += scalarValue;
+
+    QVERIFY2(iterator == expectedIterator, "Operator += does not work correctly, the resulting iterator does not point to the right element!");
+}
+
+void WDIteratorTests::testOperatorMinusEqual()
+{
+    QFETCH(IntWDIter, iterator);
+    QFETCH(matrix_diff_t, scalarValue);
+    QFETCH(IntWDIter, expectedIterator);
+
+    scalarValue = -scalarValue;
+    iterator -= scalarValue;
+
+    QVERIFY2(iterator == expectedIterator, "Operator -= does not work correctly, the resulting iterator does not point to the right element!");
+}
+
 /*
 WDIterator indexes for 9x8 matrix:
 
@@ -352,6 +403,26 @@ void WDIteratorTests::testPostDecrementOperator_data()
     _buildDecrementOperatorTestingTable();
 }
 
+void WDIteratorTests::testOperatorPlus_data()
+{
+    _buildOperatorPlusTestingTable();
+}
+
+void WDIteratorTests::testOperatorMinus_data()
+{
+    _buildOperatorPlusTestingTable();
+}
+
+void WDIteratorTests::testOperatorPlusEqual_data()
+{
+    _buildOperatorPlusTestingTable();
+}
+
+void WDIteratorTests::testOperatorMinusEqual_data()
+{
+    _buildOperatorPlusTestingTable();
+}
+
 void WDIteratorTests::_buildLessThanOperatorTestingTable()
 {
     m_PrimaryIntMatrix = {{9, 8}, -5};
@@ -428,6 +499,93 @@ void WDIteratorTests::_buildDecrementOperatorTestingTable()
     QTest::newRow("8: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(0, 1) << m_PrimaryIntMatrix.getWDIterator(1, 0);
     QTest::newRow("9: random iterator, begin iterator")  << m_PrimaryIntMatrix.getWDIterator(1, 0) << m_PrimaryIntMatrix.wdBegin();
     QTest::newRow("10: begin iterator, begin iterator")  << m_PrimaryIntMatrix.wdBegin() << m_PrimaryIntMatrix.wdBegin();
+}
+
+void WDIteratorTests::_buildOperatorPlusTestingTable()
+{
+    m_PrimaryIntMatrix = {{9, 8}, -5};
+    m_SecondaryIntMatrix.clear();
+
+    QTest::addColumn<IntWDIter>("iterator");
+    QTest::addColumn<matrix_diff_t>("scalarValue");
+    QTest::addColumn<IntWDIter>("expectedIterator");
+
+    QTest::newRow("1: begin iterator, begin iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{-3} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("2: begin iterator, begin iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{-1} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("3: begin iterator, begin iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{0} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("4: begin iterator, random iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{1} << m_PrimaryIntMatrix.getWDIterator(1, 0);
+    QTest::newRow("5: begin iterator, random iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{4} << m_PrimaryIntMatrix.getWDIterator(1, 1);
+    QTest::newRow("6: begin iterator, random iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{10} << m_PrimaryIntMatrix.getWDIterator(4, 0);
+    QTest::newRow("7: begin iterator, random iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{70} << m_PrimaryIntMatrix.getWDIterator(7, 7);
+    QTest::newRow("8: begin iterator, random iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{71} << m_PrimaryIntMatrix.getWDIterator(8, 7);
+    QTest::newRow("9: begin iterator, end iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{72} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("10: begin iterator, end iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{73} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("11: begin iterator, end iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{75} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("12: random iterator, begin iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{-4} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("13: random iterator, begin iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{-2} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("14: random iterator, begin iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{-1} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("15: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{0} << m_PrimaryIntMatrix.getWDIterator(1, 0);
+    QTest::newRow("16: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{3} << m_PrimaryIntMatrix.getWDIterator(1, 1);
+    QTest::newRow("17: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{9} << m_PrimaryIntMatrix.getWDIterator(4, 0);
+    QTest::newRow("18: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{69} << m_PrimaryIntMatrix.getWDIterator(7, 7);
+    QTest::newRow("19: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{70} << m_PrimaryIntMatrix.getWDIterator(8, 7);
+    QTest::newRow("20: random iterator, end iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{71} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("21: random iterator, end iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{72} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("22: random iterator, end iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{74} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("23: random iterator, begin iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{-47} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("24: random iterator, begin iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{-45} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("25: random iterator, begin iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{-44} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("26: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{-43} << m_PrimaryIntMatrix.getWDIterator(1, 0);
+    QTest::newRow("27: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{-6} << m_PrimaryIntMatrix.getWDIterator(6, 2);
+    QTest::newRow("28: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{-2} << m_PrimaryIntMatrix.getWDIterator(2, 6);
+    QTest::newRow("29: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{0} << m_PrimaryIntMatrix.getWDIterator(8, 1);
+    QTest::newRow("30: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) <<  matrix_diff_t{2} << m_PrimaryIntMatrix.getWDIterator(6, 3);
+    QTest::newRow("31: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{6} << m_PrimaryIntMatrix.getWDIterator(2, 7);
+    QTest::newRow("32: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{26} << m_PrimaryIntMatrix.getWDIterator(7, 7);
+    QTest::newRow("33: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{27} << m_PrimaryIntMatrix.getWDIterator(8, 7);
+    QTest::newRow("34: random iterator, end iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{28} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("35: random iterator, end iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{29} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("36: random iterator, end iterator") << m_PrimaryIntMatrix.getWDIterator(8, 1) << matrix_diff_t{31} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("37: random iterator, begin iterator") << m_PrimaryIntMatrix.getWDIterator(7, 7) << matrix_diff_t{-73} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("38: random iterator, begin iterator") << m_PrimaryIntMatrix.getWDIterator(7, 7) << matrix_diff_t{-71} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("39: random iterator, begin iterator") << m_PrimaryIntMatrix.getWDIterator(7, 7) << matrix_diff_t{-70} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("40: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(7, 7) << matrix_diff_t{-69} << m_PrimaryIntMatrix.getWDIterator(1, 0);
+    QTest::newRow("41: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(7, 7) << matrix_diff_t{-24} << m_PrimaryIntMatrix.getWDIterator(6, 3);
+    QTest::newRow("42: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(7, 7) << matrix_diff_t{-3} << m_PrimaryIntMatrix.getWDIterator(7, 6);
+    QTest::newRow("43: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(7, 7) << matrix_diff_t{0} << m_PrimaryIntMatrix.getWDIterator(7, 7);
+    QTest::newRow("44: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(7, 7) << matrix_diff_t{1} << m_PrimaryIntMatrix.getWDIterator(8, 7);
+    QTest::newRow("45: random iterator, end iterator") << m_PrimaryIntMatrix.getWDIterator(7, 7) << matrix_diff_t{2} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("46: random iterator, end iterator") << m_PrimaryIntMatrix.getWDIterator(7, 7) << matrix_diff_t{3} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("47: random iterator, end iterator") << m_PrimaryIntMatrix.getWDIterator(7, 7) << matrix_diff_t{5} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("48: random iterator, begin iterator") << m_PrimaryIntMatrix.getWDIterator(8, 7) << matrix_diff_t{-74} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("49: random iterator, begin iterator") << m_PrimaryIntMatrix.getWDIterator(8, 7) << matrix_diff_t{-72} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("50: random iterator, begin iterator") << m_PrimaryIntMatrix.getWDIterator(8, 7) << matrix_diff_t{-71} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("51: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 7) << matrix_diff_t{-70} << m_PrimaryIntMatrix.getWDIterator(1, 0);
+    QTest::newRow("52: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 7) << matrix_diff_t{-25} << m_PrimaryIntMatrix.getWDIterator(6, 3);
+    QTest::newRow("53: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 7) << matrix_diff_t{-4} << m_PrimaryIntMatrix.getWDIterator(7, 6);
+    QTest::newRow("54: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 7) << matrix_diff_t{-1} << m_PrimaryIntMatrix.getWDIterator(7, 7);
+    QTest::newRow("55: random iterator, random iterator") << m_PrimaryIntMatrix.getWDIterator(8, 7) << matrix_diff_t{0} << m_PrimaryIntMatrix.getWDIterator(8, 7);
+    QTest::newRow("56: random iterator, end iterator") << m_PrimaryIntMatrix.getWDIterator(8, 7) << matrix_diff_t{1} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("57: random iterator, end iterator") << m_PrimaryIntMatrix.getWDIterator(8, 7) << matrix_diff_t{2} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("58: random iterator, end iterator") << m_PrimaryIntMatrix.getWDIterator(8, 7) << matrix_diff_t{4} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("59: end iterator, begin iterator") << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{-75} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("60: end iterator, begin iterator") << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{-73} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("61: end iterator, begin iterator") << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{-72} << m_PrimaryIntMatrix.wdBegin();
+    QTest::newRow("62: end iterator, random iterator") << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{-71} << m_PrimaryIntMatrix.getWDIterator(1, 0);
+    QTest::newRow("63: end iterator, random iterator") << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{-26} << m_PrimaryIntMatrix.getWDIterator(6, 3);
+    QTest::newRow("64: end iterator, random iterator") << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{-5} << m_PrimaryIntMatrix.getWDIterator(7, 6);
+    QTest::newRow("65: end iterator, random iterator") << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{-2} << m_PrimaryIntMatrix.getWDIterator(7, 7);
+    QTest::newRow("66: end iterator, random iterator") << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{-1} << m_PrimaryIntMatrix.getWDIterator(8, 7);
+    QTest::newRow("67: end iterator, end iterator") << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{0} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("68: end iterator, end iterator") << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{1} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("69: end iterator, end iterator") << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{3} << m_PrimaryIntMatrix.wdEnd();
+    QTest::newRow("70: begin iterator, end iterator") << m_SecondaryIntMatrix.wdBegin() << matrix_diff_t{-1} << m_SecondaryIntMatrix.wdEnd();
+    QTest::newRow("71: begin iterator, end iterator") << m_SecondaryIntMatrix.wdBegin() << matrix_diff_t{1} << m_SecondaryIntMatrix.wdEnd();
+    QTest::newRow("72: end iterator, end iterator") << m_SecondaryIntMatrix.wdEnd() << matrix_diff_t{0} << m_SecondaryIntMatrix.wdEnd();
+    QTest::newRow("73: end iterator, end iterator") << m_SecondaryIntMatrix.wdEnd() << matrix_diff_t{1} << m_SecondaryIntMatrix.wdEnd();
+    QTest::newRow("74: end iterator, end iterator") << m_SecondaryIntMatrix.wdEnd() << matrix_diff_t{-1} << m_SecondaryIntMatrix.wdEnd();
+    QTest::newRow("75: empty iterator, empty iterator") << IntWDIter{} << matrix_diff_t{-1} << IntWDIter{};
+    QTest::newRow("76: empty iterator, empty iterator") << IntWDIter{} << matrix_diff_t{1} << IntWDIter{};
 }
 
 QTEST_APPLESS_MAIN(WDIteratorTests)
