@@ -36,6 +36,9 @@ private slots:
     void testAsteriskOperatorRead();
     void testAsteriskOperatorWrite();
     void testAsteriskOperatorReadWrite();
+    void testArrowOperatorRead();
+    void testArrowOperatorWrite();
+    void testArrowOperatorReadWrite();
 
     // test data
     void testIteratorCreation_data();
@@ -56,6 +59,7 @@ private slots:
     void testOperatorMinusEqual_data();
     void testDifferenceOperator_data();
     void testAsteriskOperatorRead_data();
+    void testArrowOperatorRead_data();
 
 private:
     // test data helper methods
@@ -67,8 +71,12 @@ private:
 
     IntMatrix m_PrimaryIntMatrix;
     IntMatrix m_SecondaryIntMatrix;
+    StringMatrix m_PrimaryStringMatrix;
+    StringMatrix m_SecondaryStringMatrix;
+
     IntWDIter m_PrimaryIntIterator;
     IntWDIter m_SecondaryIntIterator;
+    StringWDIter m_StringIterator;
 };
 
 void WDIteratorTests::testIteratorCreation()
@@ -391,6 +399,73 @@ void WDIteratorTests::testAsteriskOperatorReadWrite()
     QVERIFY(m_PrimaryIntMatrix.at(0, 1) == 10);
 }
 
+void WDIteratorTests::testArrowOperatorRead()
+{
+    QFETCH(StringWDIter, iterator);
+    QFETCH(int, expectedValue);
+
+    QVERIFY2(iterator->size() == static_cast<size_t>(expectedValue), "The arrow operator does not work correctly when reading the value!");
+}
+
+void WDIteratorTests::testArrowOperatorWrite()
+{
+    m_PrimaryStringMatrix = {{4, 3}, "zzz"};
+    m_SecondaryStringMatrix = {4, 3, {"abc", "zzz", "gfedcba", "ba", "zzz", "zzz", "zzz", "zzz", "abcdefghijk", "zzz", "zzz", "fedcba"}};
+    m_PrimaryStringMatrix.wdBegin()->assign("abc");
+    m_PrimaryStringMatrix.getWDIterator(1, 0)->assign("ba");
+    m_PrimaryStringMatrix.getWDIterator(0, 2)->assign("gfedcba");
+    m_PrimaryStringMatrix.getWDIterator(2, 2)->assign("abcdefghijk");
+    m_PrimaryStringMatrix.getWDIterator(3, 2)->assign("fedcba");
+
+    QVERIFY2(m_PrimaryStringMatrix == m_SecondaryStringMatrix, "The arrow operator does not work correctly when writing the value!");
+
+    // test with column capacity offset
+    m_PrimaryStringMatrix = {{4, 3}, "zzz"};
+    m_PrimaryStringMatrix.reserve(4, 5);
+    m_PrimaryStringMatrix.wdBegin()->assign("abc");
+    m_PrimaryStringMatrix.getWDIterator(1, 0)->assign("ba");
+    m_PrimaryStringMatrix.getWDIterator(0, 2)->assign("gfedcba");
+    m_PrimaryStringMatrix.getWDIterator(2, 2)->assign("abcdefghijk");
+    m_PrimaryStringMatrix.getWDIterator(3, 2)->assign("fedcba");
+
+    QVERIFY2(m_PrimaryStringMatrix == m_SecondaryStringMatrix, "The arrow operator does not work correctly when writing the value!");
+}
+
+void WDIteratorTests::testArrowOperatorReadWrite()
+{
+    m_PrimaryStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+    m_StringIterator = m_PrimaryStringMatrix.wdBegin();
+    m_PrimaryStringMatrix.at(0, 1) = "abcdefghi";
+    m_StringIterator += 2;
+
+    QVERIFY(m_StringIterator->size() == 9);
+
+    m_PrimaryStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+    m_StringIterator = m_PrimaryStringMatrix.wdBegin();
+    m_StringIterator += 2;
+    m_StringIterator->assign("abcdefghi");
+
+    QVERIFY(m_PrimaryStringMatrix.at(0, 1) == "abcdefghi");
+
+    // test with row/column capacity offset
+
+    m_PrimaryStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+    m_PrimaryStringMatrix.reserve(4, 5);
+    m_StringIterator = m_PrimaryStringMatrix.wdBegin();
+    m_PrimaryStringMatrix.at(0, 1) = "abcdefghi";
+    m_StringIterator += 2;
+
+    QVERIFY(m_StringIterator->size() == 9);
+
+    m_PrimaryStringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
+    m_PrimaryStringMatrix.reserve(4, 5);
+    m_StringIterator = m_PrimaryStringMatrix.wdBegin();
+    m_StringIterator += 2;
+    m_StringIterator->assign("abcdefghi");
+
+    QVERIFY(m_PrimaryStringMatrix.at(0, 1) == "abcdefghi");
+}
+
 /*
 WDIterator indexes for 9x8 matrix:
 
@@ -404,6 +479,7 @@ WDIterator indexes for 9x8 matrix:
     28 37 45 52 58 63 67 70
     36 44 51 57 62 66 69 71
 */
+
 void WDIteratorTests::testIteratorCreation_data()
 {
     m_PrimaryIntMatrix = {{9, 8}, -5};
@@ -601,6 +677,30 @@ void WDIteratorTests::testAsteriskOperatorRead_data()
     QTest::newRow("8: random iterator") << m_SecondaryIntMatrix.getWDIterator(0, 2) << 3;
     QTest::newRow("9: random iterator") << m_SecondaryIntMatrix.getWDIterator(2, 2) << 9;
     QTest::newRow("10: random iterator") << m_SecondaryIntMatrix.getWDIterator(3, 2) << -12;
+}
+
+void WDIteratorTests::testArrowOperatorRead_data()
+{
+    m_PrimaryStringMatrix = {4, 3, {"abc", "ba", "abcd", "jihgfedcba", "a", "gfedcba", "abcde", "ihgfedcba", "abcdefgh", "", "abcdefghijk", "fedcba"}};
+
+    QTest::addColumn<StringWDIter>("iterator");
+    QTest::addColumn<int>("expectedValue");
+
+    QTest::newRow("1: begin iterator") << m_PrimaryStringMatrix.wdBegin() << 3;
+    QTest::newRow("2: random iterator") << m_PrimaryStringMatrix.getWDIterator(1, 0) << 10;
+    QTest::newRow("3: random iterator") << m_PrimaryStringMatrix.getWDIterator(0, 2) << 4;
+    QTest::newRow("4: random iterator") << m_PrimaryStringMatrix.getWDIterator(2, 2) << 8;
+    QTest::newRow("5: random iterator") << m_PrimaryStringMatrix.getWDIterator(3, 2) << 6;
+
+    // test with row capacity offset
+    m_SecondaryStringMatrix = m_PrimaryStringMatrix;
+    m_SecondaryStringMatrix.reserve(6, 3);
+
+    QTest::newRow("6: begin iterator") << m_SecondaryStringMatrix.wdBegin() << 3;
+    QTest::newRow("7: random iterator") << m_SecondaryStringMatrix.getWDIterator(1, 0) << 10;
+    QTest::newRow("8: random iterator") << m_SecondaryStringMatrix.getWDIterator(0, 2) << 4;
+    QTest::newRow("9: random iterator") << m_SecondaryStringMatrix.getWDIterator(2, 2) << 8;
+    QTest::newRow("10: random iterator") << m_SecondaryStringMatrix.getWDIterator(3, 2) << 6;
 }
 
 void WDIteratorTests::_buildLessThanOperatorTestingTable()
