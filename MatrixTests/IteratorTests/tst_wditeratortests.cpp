@@ -929,11 +929,11 @@ void WDIteratorTests::_buildIncrementOperatorTestingTable()
 
     QTest::newRow("1: begin iterator, random iterator")  << m_PrimaryIntMatrix.wdBegin() << m_PrimaryIntMatrix.getWDIterator(1, 0);
     QTest::newRow("2: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(1, 0) << m_PrimaryIntMatrix.getWDIterator(0, 1);
-    QTest::newRow("3: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(4, 6) << m_PrimaryIntMatrix.getWDIterator(3, 7);
-    QTest::newRow("4: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(3, 7) << m_PrimaryIntMatrix.getWDIterator(8, 3);
-    QTest::newRow("5: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(8, 3) << m_PrimaryIntMatrix.getWDIterator(7, 4);
-    QTest::newRow("6: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(6, 6) << m_PrimaryIntMatrix.getWDIterator(5, 7);
-    QTest::newRow("7: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(6, 7) << m_PrimaryIntMatrix.getWDIterator(8, 6);
+    QTest::newRow("3: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(6, 2) << m_PrimaryIntMatrix.getWDIterator(5, 3);
+    QTest::newRow("4: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(5, 3) << m_PrimaryIntMatrix.getWDIterator(4, 4);
+    QTest::newRow("5: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(4, 4) << m_PrimaryIntMatrix.getWDIterator(3, 5);
+    QTest::newRow("6: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(3, 5) << m_PrimaryIntMatrix.getWDIterator(2, 6);
+    QTest::newRow("7: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(8, 1) << m_PrimaryIntMatrix.getWDIterator(7, 2);
     QTest::newRow("8: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(7, 7) << m_PrimaryIntMatrix.getWDIterator(8, 7);
     QTest::newRow("9: random iterator, end iterator")  << m_PrimaryIntMatrix.getWDIterator(8, 7) << m_PrimaryIntMatrix.wdEnd();
     QTest::newRow("10: end iterator, end iterator")  << m_PrimaryIntMatrix.wdEnd() << m_PrimaryIntMatrix.wdEnd();
@@ -948,11 +948,11 @@ void WDIteratorTests::_buildDecrementOperatorTestingTable()
 
     QTest::newRow("1: end iterator, random iterator")  << m_PrimaryIntMatrix.wdEnd() << m_PrimaryIntMatrix.getWDIterator(8, 7);
     QTest::newRow("2: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(8, 7) << m_PrimaryIntMatrix.getWDIterator(7, 7);
-    QTest::newRow("3: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(8, 6) << m_PrimaryIntMatrix.getWDIterator(6, 7);
-    QTest::newRow("4: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(5, 7) << m_PrimaryIntMatrix.getWDIterator(6, 6);
-    QTest::newRow("5: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(7, 4) << m_PrimaryIntMatrix.getWDIterator(8, 3);
-    QTest::newRow("6: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(8, 3) << m_PrimaryIntMatrix.getWDIterator(3, 7);
-    QTest::newRow("7: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(3, 7) << m_PrimaryIntMatrix.getWDIterator(4, 6);
+    QTest::newRow("3: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(7, 2) << m_PrimaryIntMatrix.getWDIterator(8, 1);
+    QTest::newRow("4: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(2, 6) << m_PrimaryIntMatrix.getWDIterator(3, 5);
+    QTest::newRow("5: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(3, 5) << m_PrimaryIntMatrix.getWDIterator(4, 4);
+    QTest::newRow("6: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(4, 4) << m_PrimaryIntMatrix.getWDIterator(5, 3);
+    QTest::newRow("7: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(5, 3) << m_PrimaryIntMatrix.getWDIterator(6, 2);
     QTest::newRow("8: random iterator, random iterator")  << m_PrimaryIntMatrix.getWDIterator(0, 1) << m_PrimaryIntMatrix.getWDIterator(1, 0);
     QTest::newRow("9: random iterator, begin iterator")  << m_PrimaryIntMatrix.getWDIterator(1, 0) << m_PrimaryIntMatrix.wdBegin();
     QTest::newRow("10: begin iterator, begin iterator")  << m_PrimaryIntMatrix.wdBegin() << m_PrimaryIntMatrix.wdBegin();
