@@ -196,24 +196,24 @@ void WDIteratorTests::testCombinedIncrementOperators()
 {
     m_PrimaryIntMatrix = {{9, 8}, -5};
 
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(5, 4);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(8, 1);
     m_SecondaryIntIterator = ++(++m_PrimaryIntIterator);
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(3, 6) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(3, 6),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(6, 3) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(6, 3),
              "The pre-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(5, 4);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(8, 1);
     m_SecondaryIntIterator = (m_PrimaryIntIterator++)++;
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(5, 4),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(7, 2) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(8, 1),
              "The post-increment operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(5, 4);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(8, 1);
     m_SecondaryIntIterator = (++m_PrimaryIntIterator)++;
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(3, 6) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(6, 3) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(7, 2),
              "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
 
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(5, 4);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(8, 1);
     m_SecondaryIntIterator = ++(m_PrimaryIntIterator++);
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(7, 2) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(7, 2),
              "The pre- and post-increment operators do not work correctly, the resulting iterator doesn't point to the right element!");
 }
 
@@ -245,24 +245,24 @@ void WDIteratorTests::testCombinedDecrementOperators()
 {
     m_PrimaryIntMatrix = {{9, 8}, -5};
 
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(3, 6);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(6, 3);
     m_SecondaryIntIterator = --(--m_PrimaryIntIterator);
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(5, 4) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(5, 4),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(8, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(8, 1),
              "The pre-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(3, 6);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(6, 3);
     m_SecondaryIntIterator = (m_PrimaryIntIterator--)--;
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(3, 6),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(7, 2) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(6, 3),
              "The post-decrement operator does not work correctly, the resulting iterator doesn't point to the right element!");
 
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(3, 6);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(6, 3);
     m_SecondaryIntIterator = (--m_PrimaryIntIterator)--;
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(5, 4) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(8, 1) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(7, 2),
              "The pre- and post-decrement operators do not work correctly, the resulting iterator doesn't point to the right element!");
 
-    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(3, 6);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(6, 3);
     m_SecondaryIntIterator = --(m_PrimaryIntIterator--);
-    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(4, 5),
+    QVERIFY2(m_PrimaryIntIterator == m_PrimaryIntMatrix.getWDIterator(7, 2) && m_SecondaryIntIterator == m_PrimaryIntMatrix.getWDIterator(7, 2),
              "The pre- and post-decrement operators do not work correctly, the resulting iterator doesn't point to the right element!");
 }
 
