@@ -3216,10 +3216,6 @@ Matrix<T>::WDIterator::WDIterator(T** pMatrixPtr,
                 nonEmptyIteratorContructed = true;
             }
         }
-        else
-        {
-            assert(false);
-        }
     }
 
     if (!nonEmptyIteratorContructed)
@@ -4574,13 +4570,13 @@ typename Matrix<T>::ConstReverseMIterator Matrix<T>::getConstReverseMIterator(co
 template<MatrixElementType T>
 typename Matrix<T>::WDIterator Matrix<T>::wdBegin()
 {
-    return WDIterator{m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, 0};
+    return WDIterator{m_pBaseArrayPtr + *m_RowCapacityOffset, m_NrOfRows, m_NrOfColumns, 0};
 }
 
 template<MatrixElementType T>
 typename Matrix<T>::WDIterator Matrix<T>::wdEnd()
 {
-    return WDIterator{m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns)};
+    return WDIterator{m_pBaseArrayPtr + *m_RowCapacityOffset, m_NrOfRows, m_NrOfColumns, static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns)};
 }
 
 template<MatrixElementType T>
@@ -4593,7 +4589,7 @@ typename Matrix<T>::WDIterator Matrix<T>::getWDIterator(Matrix<T>::size_type row
 
     const diff_type c_Index{result.first ? *result.first : 0};
 
-    return WDIterator{m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, c_Index};
+    return WDIterator{m_pBaseArrayPtr + *m_RowCapacityOffset, m_NrOfRows, m_NrOfColumns, c_Index};
 }
 
 template<MatrixElementType T>

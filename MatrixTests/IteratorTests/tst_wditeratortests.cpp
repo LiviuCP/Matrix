@@ -33,6 +33,9 @@ private slots:
     void testOperatorPlusEqual();
     void testOperatorMinusEqual();
     void testDifferenceOperator();
+    void testAsteriskOperatorRead();
+    void testAsteriskOperatorWrite();
+    void testAsteriskOperatorReadWrite();
 
     // test data
     void testIteratorCreation_data();
@@ -52,6 +55,8 @@ private slots:
     void testOperatorPlusEqual_data();
     void testOperatorMinusEqual_data();
     void testDifferenceOperator_data();
+    void testAsteriskOperatorRead_data();
+
 private:
     // test data helper methods
     void _buildLessThanOperatorTestingTable();
@@ -303,6 +308,89 @@ void WDIteratorTests::testDifferenceOperator()
              "The difference operator does not work correctly, difference between iterators is not the expected one!");
 }
 
+void WDIteratorTests::testAsteriskOperatorRead()
+{
+    QFETCH(IntWDIter, iterator);
+    QFETCH(int, expectedValue);
+
+    QVERIFY2(*iterator == expectedValue, "The asterisk operator does not work correctly when reading the value!");
+}
+
+/*
+WDIterator indexes for 4x3 matrix:
+
+    0 2 5
+    1 4 8
+    3 7 10
+    6 9 11
+*/
+
+void WDIteratorTests::testAsteriskOperatorWrite()
+{
+    m_PrimaryIntMatrix = {{4, 3}, -20};
+    m_SecondaryIntMatrix = {4, 3, {1, -20, -6, -2, -20, -20, -20, -20, 11, -20, -20, -12}};
+    *m_PrimaryIntMatrix.wdBegin() = 1;
+    *m_PrimaryIntMatrix.getWDIterator(1, 0) = -2;
+    *m_PrimaryIntMatrix.getWDIterator(0, 2) = -6;
+    *m_PrimaryIntMatrix.getWDIterator(2, 2) = 11;
+    *m_PrimaryIntMatrix.getWDIterator(3, 2) = -12;
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix, "The asterisk operator does not work correctly when writing the value!");
+
+    // test with row capacity offset
+    m_PrimaryIntMatrix = {{4, 3}, -20};
+    m_PrimaryIntMatrix.reserve(6, 3);
+    *m_PrimaryIntMatrix.wdBegin() = 1;
+    *m_PrimaryIntMatrix.getWDIterator(1, 0) = -2;
+    *m_PrimaryIntMatrix.getWDIterator(0, 2) = -6;
+    *m_PrimaryIntMatrix.getWDIterator(2, 2) = 11;
+    *m_PrimaryIntMatrix.getWDIterator(3, 2) = -12;
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix, "The asterisk operator does not work correctly when writing the value!");
+}
+
+/*
+WDIterator indexes for 2x3 matrix:
+
+    0 2 4
+    1 3 5
+*/
+
+void WDIteratorTests::testAsteriskOperatorReadWrite()
+{
+    m_PrimaryIntMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.wdBegin();
+    m_PrimaryIntMatrix.at(0, 1) = 10;
+    m_PrimaryIntIterator += 2;
+
+    QVERIFY(*m_PrimaryIntIterator == 10);
+
+    m_PrimaryIntMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.wdBegin();
+    m_PrimaryIntIterator += 2;
+    *m_PrimaryIntIterator = 10;
+
+    QVERIFY(m_PrimaryIntMatrix.at(0, 1) == 10);
+
+    // test with column capacity offset
+
+    m_PrimaryIntMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
+    m_PrimaryIntMatrix.reserve(2, 5);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.wdBegin();
+    m_PrimaryIntMatrix.at(0, 1) = 10;
+    m_PrimaryIntIterator += 2;
+
+    QVERIFY(*m_PrimaryIntIterator == 10);
+
+    m_PrimaryIntMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
+    m_PrimaryIntMatrix.reserve(2, 5);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.wdBegin();
+    m_PrimaryIntIterator += 2;
+    *m_PrimaryIntIterator = 10;
+
+    QVERIFY(m_PrimaryIntMatrix.at(0, 1) == 10);
+}
+
 /*
 WDIterator indexes for 9x8 matrix:
 
@@ -489,6 +577,30 @@ void WDIteratorTests::testDifferenceOperator_data()
     QTest::newRow("43: begin iterator, begin iterator") << m_SecondaryIntMatrix.wdBegin() << m_SecondaryIntMatrix.wdBegin() << matrix_diff_t{0};
     QTest::newRow("44: end iterator, end iterator") << m_SecondaryIntMatrix.wdEnd() << m_SecondaryIntMatrix.wdEnd() << matrix_diff_t{0};
     QTest::newRow("45: empty iterator, empty iterator") << IntWDIter{} << IntWDIter{} << matrix_diff_t{0};
+}
+
+void WDIteratorTests::testAsteriskOperatorRead_data()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12}};
+
+    QTest::addColumn<IntWDIter>("iterator");
+    QTest::addColumn<int>("expectedValue");
+
+    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.wdBegin() << 1;
+    QTest::newRow("2: random iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << -4;
+    QTest::newRow("3: random iterator") << m_PrimaryIntMatrix.getWDIterator(0, 2) << 3;
+    QTest::newRow("4: random iterator") << m_PrimaryIntMatrix.getWDIterator(2, 2) << 9;
+    QTest::newRow("5: random iterator") << m_PrimaryIntMatrix.getWDIterator(3, 2) << -12;
+
+    // test with row/column capacity offset
+    m_SecondaryIntMatrix = m_PrimaryIntMatrix;
+    m_SecondaryIntMatrix.reserve(6, 5);
+
+    QTest::newRow("6: begin iterator") << m_SecondaryIntMatrix.wdBegin() << 1;
+    QTest::newRow("7: random iterator") << m_SecondaryIntMatrix.getWDIterator(1, 0) << -4;
+    QTest::newRow("8: random iterator") << m_SecondaryIntMatrix.getWDIterator(0, 2) << 3;
+    QTest::newRow("9: random iterator") << m_SecondaryIntMatrix.getWDIterator(2, 2) << 9;
+    QTest::newRow("10: random iterator") << m_SecondaryIntMatrix.getWDIterator(3, 2) << -12;
 }
 
 void WDIteratorTests::_buildLessThanOperatorTestingTable()
