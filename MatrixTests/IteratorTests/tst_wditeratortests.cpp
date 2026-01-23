@@ -39,6 +39,8 @@ private slots:
     void testArrowOperatorRead();
     void testArrowOperatorWrite();
     void testArrowOperatorReadWrite();
+    void testSquareBracketsOperatorRead();
+    void testSquareBracketsOperatorWrite();
 
     // test data
     void testIteratorCreation_data();
@@ -60,6 +62,7 @@ private slots:
     void testDifferenceOperator_data();
     void testAsteriskOperatorRead_data();
     void testArrowOperatorRead_data();
+    void testSquareBracketsOperatorRead_data();
 
 private:
     // test data helper methods
@@ -466,6 +469,115 @@ void WDIteratorTests::testArrowOperatorReadWrite()
     QVERIFY(m_PrimaryStringMatrix.at(0, 1) == "abcdefghi");
 }
 
+void WDIteratorTests::testSquareBracketsOperatorRead()
+{
+    QFETCH(IntWDIter, iterator);
+    QFETCH(matrix_diff_t, index);
+    QFETCH(int, expectedValue);
+
+    QVERIFY2(iterator[index] == expectedValue,
+             "The dereference square brackets operator doesn't work correctly when reading the value from the given index!");
+}
+
+void WDIteratorTests::testSquareBracketsOperatorWrite()
+{
+    m_SecondaryIntMatrix = {4, 3, {1, -20, -6, -2, -20, -20, -20, -20, 11, -20, -20, -12}};
+
+    m_PrimaryIntMatrix = {{4, 3}, -20};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.wdBegin();
+    m_PrimaryIntIterator[0] = 1;
+    m_PrimaryIntIterator[1] = -2;
+    m_PrimaryIntIterator[5] = -6;
+    m_PrimaryIntIterator[10] = 11;
+    m_PrimaryIntIterator[11] = -12;
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
+             "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
+
+    m_PrimaryIntMatrix = {{4, 3}, -20};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(1, 0);
+    m_PrimaryIntIterator[-1] = 1;
+    m_PrimaryIntIterator[0] = -2;
+    m_PrimaryIntIterator[4] = -6;
+    m_PrimaryIntIterator[9] = 11;
+    m_PrimaryIntIterator[10] = -12;
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
+             "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
+
+    m_PrimaryIntMatrix = {{4, 3}, -20};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(0, 2);
+    m_PrimaryIntIterator[-5] = 1;
+    m_PrimaryIntIterator[-4] = -2;
+    m_PrimaryIntIterator[0] = -6;
+    m_PrimaryIntIterator[5] = 11;
+    m_PrimaryIntIterator[6] = -12;
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
+             "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
+
+    m_PrimaryIntMatrix = {{4, 3}, -20};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(2, 2);
+    m_PrimaryIntIterator[-10] = 1;
+    m_PrimaryIntIterator[-9] = -2;
+    m_PrimaryIntIterator[-5] = -6;
+    m_PrimaryIntIterator[0] = 11;
+    m_PrimaryIntIterator[1] = -12;
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
+             "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
+
+    m_PrimaryIntMatrix = {{4, 3}, -20};
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(3, 2);
+    m_PrimaryIntIterator[-11] = 1;
+    m_PrimaryIntIterator[-10] = -2;
+    m_PrimaryIntIterator[-6] = -6;
+    m_PrimaryIntIterator[-1] = 11;
+    m_PrimaryIntIterator[0] = -12;
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
+             "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
+
+    // test with row/column capacity offset
+    m_PrimaryIntMatrix = {{4, 3}, -20};
+    m_PrimaryIntMatrix.reserve(6, 5);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.wdBegin();
+    m_PrimaryIntIterator[0] = 1;
+    m_PrimaryIntIterator[1] = -2;
+    m_PrimaryIntIterator[5] = -6;
+    m_PrimaryIntIterator[10] = 11;
+    m_PrimaryIntIterator[11] = -12;
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
+             "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
+
+    // test with row capacity offset
+    m_PrimaryIntMatrix = {{4, 3}, -20};
+    m_PrimaryIntMatrix.reserve(6, 3);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(0, 2);
+    m_PrimaryIntIterator[-5] = 1;
+    m_PrimaryIntIterator[-4] = -2;
+    m_PrimaryIntIterator[0] = -6;
+    m_PrimaryIntIterator[5] = 11;
+    m_PrimaryIntIterator[6] = -12;
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
+             "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
+
+    // test with column capacity offset
+    m_PrimaryIntMatrix = {{4, 3}, -20};
+    m_PrimaryIntMatrix.reserve(4, 5);
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.getWDIterator(3, 2);
+    m_PrimaryIntIterator[-11] = 1;
+    m_PrimaryIntIterator[-10] = -2;
+    m_PrimaryIntIterator[-6] = -6;
+    m_PrimaryIntIterator[-1] = 11;
+    m_PrimaryIntIterator[0] = -12;
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix,
+             "The dereference square brackets operator doesn't work correctly when writing the value to the given index!");
+}
+
 /*
 WDIterator indexes for 9x8 matrix:
 
@@ -701,6 +813,71 @@ void WDIteratorTests::testArrowOperatorRead_data()
     QTest::newRow("8: random iterator") << m_SecondaryStringMatrix.getWDIterator(0, 2) << 4;
     QTest::newRow("9: random iterator") << m_SecondaryStringMatrix.getWDIterator(2, 2) << 8;
     QTest::newRow("10: random iterator") << m_SecondaryStringMatrix.getWDIterator(3, 2) << 6;
+}
+
+void WDIteratorTests::testSquareBracketsOperatorRead_data()
+{
+    m_PrimaryIntMatrix = {4, 3, {1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12}};
+
+    QTest::addColumn<IntWDIter>("iterator");
+    QTest::addColumn<matrix_diff_t>("index");
+    QTest::addColumn<int>("expectedValue");
+
+    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{0} << 1;
+    QTest::newRow("2: begin iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{1} << -4;
+    QTest::newRow("3: begin iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{5} << 3;
+    QTest::newRow("4: begin iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{10} << 9;
+    QTest::newRow("5: begin iterator") << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{11} << -12;
+    QTest::newRow("6: random iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{-1} << 1;
+    QTest::newRow("7: random iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{0} << -4;
+    QTest::newRow("8: random iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{4} << 3;
+    QTest::newRow("9: random iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{9} << 9;
+    QTest::newRow("10: random iterator") << m_PrimaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{10} << -12;
+    QTest::newRow("11: random iterator") << m_PrimaryIntMatrix.getWDIterator(0, 2) << matrix_diff_t{-5} << 1;
+    QTest::newRow("12: random iterator") << m_PrimaryIntMatrix.getWDIterator(0, 2) << matrix_diff_t{-4} << -4;
+    QTest::newRow("13: random iterator") << m_PrimaryIntMatrix.getWDIterator(0, 2) << matrix_diff_t{0} << 3;
+    QTest::newRow("14: random iterator") << m_PrimaryIntMatrix.getWDIterator(0, 2) << matrix_diff_t{5} << 9;
+    QTest::newRow("15: random iterator") << m_PrimaryIntMatrix.getWDIterator(0, 2) << matrix_diff_t{6} << -12;
+    QTest::newRow("16: random iterator") << m_PrimaryIntMatrix.getWDIterator(2, 2) << matrix_diff_t{-10} << 1;
+    QTest::newRow("17: random iterator") << m_PrimaryIntMatrix.getWDIterator(2, 2) << matrix_diff_t{-9} << -4;
+    QTest::newRow("18: random iterator") << m_PrimaryIntMatrix.getWDIterator(2, 2) << matrix_diff_t{-5} << 3;
+    QTest::newRow("19: random iterator") << m_PrimaryIntMatrix.getWDIterator(2, 2) << matrix_diff_t{0} << 9;
+    QTest::newRow("20: random iterator") << m_PrimaryIntMatrix.getWDIterator(2, 2) << matrix_diff_t{1} << -12;
+    QTest::newRow("21: random iterator") << m_PrimaryIntMatrix.getWDIterator(3, 2) << matrix_diff_t{-11} << 1;
+    QTest::newRow("22: random iterator") << m_PrimaryIntMatrix.getWDIterator(3, 2) << matrix_diff_t{-10} << -4;
+    QTest::newRow("23: random iterator") << m_PrimaryIntMatrix.getWDIterator(3, 2) << matrix_diff_t{-6} << 3;
+    QTest::newRow("24: random iterator") << m_PrimaryIntMatrix.getWDIterator(3, 2) << matrix_diff_t{-1} << 9;
+    QTest::newRow("25: random iterator") << m_PrimaryIntMatrix.getWDIterator(3, 2) << matrix_diff_t{0} << -12;
+
+    // test with column capacity offset
+    m_SecondaryIntMatrix = m_PrimaryIntMatrix;
+    m_SecondaryIntMatrix.reserve(4, 5);
+
+    QTest::newRow("26: begin iterator") << m_SecondaryIntMatrix.wdBegin() << matrix_diff_t{0} << 1;
+    QTest::newRow("27: begin iterator") << m_SecondaryIntMatrix.wdBegin() << matrix_diff_t{1} << -4;
+    QTest::newRow("28: begin iterator") << m_SecondaryIntMatrix.wdBegin() << matrix_diff_t{5} << 3;
+    QTest::newRow("29: begin iterator") << m_SecondaryIntMatrix.wdBegin() << matrix_diff_t{10} << 9;
+    QTest::newRow("30: begin iterator") << m_SecondaryIntMatrix.wdBegin() << matrix_diff_t{11} << -12;
+    QTest::newRow("31: random iterator") << m_SecondaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{-1} << 1;
+    QTest::newRow("32: random iterator") << m_SecondaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{0} << -4;
+    QTest::newRow("33: random iterator") << m_SecondaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{4} << 3;
+    QTest::newRow("34: random iterator") << m_SecondaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{9} << 9;
+    QTest::newRow("35: random iterator") << m_SecondaryIntMatrix.getWDIterator(1, 0) << matrix_diff_t{10} << -12;
+    QTest::newRow("36: random iterator") << m_SecondaryIntMatrix.getWDIterator(0, 2) << matrix_diff_t{-5} << 1;
+    QTest::newRow("37: random iterator") << m_SecondaryIntMatrix.getWDIterator(0, 2) << matrix_diff_t{-4} << -4;
+    QTest::newRow("38: random iterator") << m_SecondaryIntMatrix.getWDIterator(0, 2) << matrix_diff_t{0} << 3;
+    QTest::newRow("39: random iterator") << m_SecondaryIntMatrix.getWDIterator(0, 2) << matrix_diff_t{5} << 9;
+    QTest::newRow("40: random iterator") << m_SecondaryIntMatrix.getWDIterator(0, 2) << matrix_diff_t{6} << -12;
+    QTest::newRow("41: random iterator") << m_SecondaryIntMatrix.getWDIterator(2, 2) << matrix_diff_t{-10} << 1;
+    QTest::newRow("42: random iterator") << m_SecondaryIntMatrix.getWDIterator(2, 2) << matrix_diff_t{-9} << -4;
+    QTest::newRow("43: random iterator") << m_SecondaryIntMatrix.getWDIterator(2, 2) << matrix_diff_t{-5} << 3;
+    QTest::newRow("44: random iterator") << m_SecondaryIntMatrix.getWDIterator(2, 2) << matrix_diff_t{0} << 9;
+    QTest::newRow("45: random iterator") << m_SecondaryIntMatrix.getWDIterator(2, 2) << matrix_diff_t{1} << -12;
+    QTest::newRow("46: random iterator") << m_SecondaryIntMatrix.getWDIterator(3, 2) << matrix_diff_t{-11} << 1;
+    QTest::newRow("47: random iterator") << m_SecondaryIntMatrix.getWDIterator(3, 2) << matrix_diff_t{-10} << -4;
+    QTest::newRow("48: random iterator") << m_SecondaryIntMatrix.getWDIterator(3, 2) << matrix_diff_t{-6} << 3;
+    QTest::newRow("49: random iterator") << m_SecondaryIntMatrix.getWDIterator(3, 2) << matrix_diff_t{-1} << 9;
+    QTest::newRow("50: random iterator") << m_SecondaryIntMatrix.getWDIterator(3, 2) << matrix_diff_t{0} << -12;
 }
 
 void WDIteratorTests::_buildLessThanOperatorTestingTable()
