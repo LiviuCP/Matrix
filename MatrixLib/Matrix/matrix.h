@@ -4587,7 +4587,7 @@ typename Matrix<T>::WDIterator Matrix<T>::getWDIterator(Matrix<T>::size_type row
     const auto result{mapRowAndColumnNrToDiagonalIndex(m_NrOfRows, m_NrOfColumns, {rowNr, columnNr})};
     assert(result.first);
 
-    const diff_type c_Index{result.first ? *result.first : 0};
+    const diff_type c_Index{result.first ? *result.first : diff_type{0}};
 
     return WDIterator{m_pBaseArrayPtr + *m_RowCapacityOffset, m_NrOfRows, m_NrOfColumns, c_Index};
 }

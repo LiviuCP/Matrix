@@ -407,12 +407,16 @@ void IteratorExceptionTests::testNonDiagRandomIteratorRowColumnExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntReverseZIter it{matrix.getReverseZIterator(rowNr, columnNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstReverseZIter it{matrix.getConstReverseZIterator(rowNr, columnNr)}; Q_UNUSED(it)});
 
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntWDIter it{matrix.getWDIterator(rowNr, columnNr)}; Q_UNUSED(it)});
+
     matrix.transpose();
     
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntNIter it{matrix.getNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstNIter it{matrix.getConstNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntReverseNIter it{matrix.getReverseNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstReverseNIter it{matrix.getConstReverseNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
+
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntWDIter it{matrix.getWDIterator(columnNr, rowNr)}; Q_UNUSED(it)});
 }
 
 void IteratorExceptionTests::testNonDiagRandomIteratorIndexExceptions()
