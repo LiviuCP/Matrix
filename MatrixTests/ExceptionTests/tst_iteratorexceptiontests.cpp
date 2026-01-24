@@ -528,12 +528,15 @@ void IteratorExceptionTests::testZIteratorArrowOperatorExceptions()
     QFETCH(StringConstZIter, constZIterator);
     QFETCH(StringReverseZIter, reverseZIterator);
     QFETCH(StringConstReverseZIter, constReverseZIterator);
+    QFETCH(StringWDIter, wdIterator);
     QFETCH(std::string, value);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {zIterator->assign(value);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {Q_UNUSED(constZIterator->size());});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {reverseZIterator->assign(value);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {Q_UNUSED(constReverseZIterator->size());});
+
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {wdIterator->assign(value);});
 }
 
 void IteratorExceptionTests::testNIteratorArrowOperatorExceptions()
@@ -900,14 +903,15 @@ void IteratorExceptionTests::testZIteratorArrowOperatorExceptions_data()
     QTest::addColumn<StringConstZIter>("constZIterator");
     QTest::addColumn<StringReverseZIter>("reverseZIterator");
     QTest::addColumn<StringConstReverseZIter>("constReverseZIterator");
+    QTest::addColumn<StringWDIter>("wdIterator");
     QTest::addColumn<std::string>("value");
 
     m_PrimaryStringMatrix.clear();
     m_SecondaryStringMatrix = {2, 3, {"abc", "def", "ghi", "jkl", "mno", "pqr"}};
 
-    QTest::newRow("1: begin iterator") << m_PrimaryStringMatrix.zBegin() << m_PrimaryStringMatrix.constZBegin() << m_PrimaryStringMatrix.reverseZBegin() << m_PrimaryStringMatrix.constReverseZBegin() << std::string{"zzz"};
-    QTest::newRow("2: end iterator") << m_PrimaryStringMatrix.zEnd() << m_PrimaryStringMatrix.constZEnd() << m_PrimaryStringMatrix.reverseZEnd() << m_PrimaryStringMatrix.constReverseZEnd() << std::string{"zzz"};
-    QTest::newRow("3: end itertator") << m_SecondaryStringMatrix.zEnd() << m_SecondaryStringMatrix.constZEnd() << m_SecondaryStringMatrix.reverseZEnd() << m_SecondaryStringMatrix.constReverseZEnd() << std::string{"zzz"};
+    QTest::newRow("1: begin iterator") << m_PrimaryStringMatrix.zBegin() << m_PrimaryStringMatrix.constZBegin() << m_PrimaryStringMatrix.reverseZBegin() << m_PrimaryStringMatrix.constReverseZBegin() << m_PrimaryStringMatrix.wdBegin() << std::string{"zzz"};
+    QTest::newRow("2: end iterator") << m_PrimaryStringMatrix.zEnd() << m_PrimaryStringMatrix.constZEnd() << m_PrimaryStringMatrix.reverseZEnd() << m_PrimaryStringMatrix.constReverseZEnd() << m_PrimaryStringMatrix.wdEnd() << std::string{"zzz"};
+    QTest::newRow("3: end itertator") << m_SecondaryStringMatrix.zEnd() << m_SecondaryStringMatrix.constZEnd() << m_SecondaryStringMatrix.reverseZEnd() << m_SecondaryStringMatrix.constReverseZEnd() << m_SecondaryStringMatrix.wdEnd() << std::string{"zzz"};
 }
 
 void IteratorExceptionTests::testNIteratorArrowOperatorExceptions_data()
