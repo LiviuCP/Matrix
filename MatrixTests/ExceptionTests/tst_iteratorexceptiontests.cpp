@@ -53,6 +53,7 @@ static_assert(std::random_access_iterator<IntMIter>);
 static_assert(std::random_access_iterator<IntConstMIter>);
 static_assert(std::random_access_iterator<IntReverseMIter>);
 static_assert(std::random_access_iterator<IntConstReverseMIter>);
+static_assert(std::random_access_iterator<IntWDIter>);
 static_assert(std::random_access_iterator<StringZIter>);
 static_assert(std::random_access_iterator<StringConstZIter>);
 static_assert(std::random_access_iterator<StringReverseZIter>);
@@ -69,6 +70,7 @@ static_assert(std::random_access_iterator<StringMIter>);
 static_assert(std::random_access_iterator<StringConstMIter>);
 static_assert(std::random_access_iterator<StringReverseMIter>);
 static_assert(std::random_access_iterator<StringConstReverseMIter>);
+static_assert(std::random_access_iterator<StringWDIter>);
 
 class IteratorExceptionTests : public QObject
 {
