@@ -43,6 +43,7 @@ private slots:
     void testSquareBracketsOperatorWrite();
     void testStdCount();
     void testStdFind();
+    void testStdFindWithIncrementAndCount();
 
     // test data
     void testIteratorCreation_data();
@@ -601,6 +602,39 @@ void WDIteratorTests::testStdFind()
 
     m_PrimaryIntIterator = std::find(leftIterator, rightIterator, searchedValue);
     QVERIFY2(m_PrimaryIntIterator == expectedIterator, "The std::find algorithm does not return the expected iterator!");
+}
+
+void WDIteratorTests::testStdFindWithIncrementAndCount()
+{
+    m_PrimaryIntMatrix = {4, 5, {
+                              -1, 3,  5,  1, 8,
+                               1, 4,  0,  2, 7,
+                               1, 8, -2, -7, 9,
+                               9, 2,  9,  2, 8
+                          }};
+
+    m_PrimaryIntIterator = std::find(m_PrimaryIntMatrix.wdBegin(), m_PrimaryIntMatrix.wdEnd(), 4);
+
+    ++m_PrimaryIntIterator;
+
+    QVERIFY2(*m_PrimaryIntIterator == 5, "The iterator doesn't work correctly with std::find, incorrect next element returned!");
+    QVERIFY2(std::find(m_PrimaryIntMatrix.wdBegin(), m_PrimaryIntMatrix.wdEnd(), 10) == m_PrimaryIntMatrix.wdEnd(),
+             "The iterator doesn't work correctly with std::find, a non existing value has been found in the matrix!");
+
+    m_PrimaryIntIterator = m_PrimaryIntMatrix.wdBegin();
+
+    while(m_PrimaryIntIterator != m_PrimaryIntMatrix.wdEnd())
+    {
+        m_PrimaryIntIterator = std::find(m_PrimaryIntIterator, m_PrimaryIntMatrix.wdEnd(), 9);
+
+        if (m_PrimaryIntIterator != m_PrimaryIntMatrix.wdEnd())
+        {
+            *m_PrimaryIntIterator = 10;
+        }
+    }
+
+    QVERIFY2(std::count(m_PrimaryIntMatrix.wdBegin(), m_PrimaryIntMatrix.wdEnd(), 10) == 3,
+             "The iterator doesn't work properly with std::find, element values haven't been correctly replaced!");
 }
 
 /*
