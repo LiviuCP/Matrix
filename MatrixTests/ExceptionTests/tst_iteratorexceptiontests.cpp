@@ -475,12 +475,15 @@ void IteratorExceptionTests::testZIteratorAsteriskOperatorExceptions()
     QFETCH(IntConstZIter, constZIterator);
     QFETCH(IntReverseZIter, reverseZIterator);
     QFETCH(IntConstReverseZIter, constReverseZIterator);
+    QFETCH(IntWDIter, wdIterator);
     QFETCH(int, value);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {*zIterator = value;});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {Q_UNUSED(*constZIterator);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {*reverseZIterator = value;});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {Q_UNUSED(*constReverseZIterator);});
+
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {*wdIterator = value;});
 }
 
 void IteratorExceptionTests::testNIteratorAsteriskOperatorExceptions()
@@ -846,14 +849,15 @@ void IteratorExceptionTests::testZIteratorAsteriskOperatorExceptions_data()
     QTest::addColumn<IntConstZIter>("constZIterator");
     QTest::addColumn<IntReverseZIter>("reverseZIterator");
     QTest::addColumn<IntConstReverseZIter>("constReverseZIterator");
+    QTest::addColumn<IntWDIter>("wdIterator");
     QTest::addColumn<int>("value");
 
     m_PrimaryIntMatrix.clear();
     m_SecondaryIntMatrix = {4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZBegin() << -9;
-    QTest::newRow("2: end iterator") << m_PrimaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << -14;
-    QTest::newRow("3: end iterator") << m_SecondaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << -14;
+    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZBegin() << m_PrimaryIntMatrix.wdBegin() << -9;
+    QTest::newRow("2: end iterator") << m_PrimaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << m_PrimaryIntMatrix.wdEnd() << -14;
+    QTest::newRow("3: end iterator") << m_SecondaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << m_SecondaryIntMatrix.wdEnd() << -14;
 }
 
 void IteratorExceptionTests::testNIteratorAsteriskOperatorExceptions_data()

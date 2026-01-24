@@ -3136,7 +3136,7 @@ std::optional<typename Matrix<T>::diff_type> Matrix<T>::WDIterator::getIndex() c
 template<MatrixElementType T>
 T& Matrix<T>::WDIterator::operator*() const
 {
-    const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+    const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
     (void)c_UpperBound;
 
     CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
