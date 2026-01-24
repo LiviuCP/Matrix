@@ -639,15 +639,6 @@ void WDIteratorTests::testStdFindWithIncrementAndCount()
 }
 
 
-/*
-WDIterator indexes for 4x5 matrix:
-
-     0  2  5  9 13
-     1  4  8 12 16
-     3  7 11 15 18
-     6 10 14 17 19
-*/
-
 void WDIteratorTests::testStdSort()
 {
     m_PrimaryIntMatrix = {4, 5, {
