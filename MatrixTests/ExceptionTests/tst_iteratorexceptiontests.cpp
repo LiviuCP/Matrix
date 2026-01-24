@@ -72,6 +72,16 @@ static_assert(std::random_access_iterator<StringReverseMIter>);
 static_assert(std::random_access_iterator<StringConstReverseMIter>);
 static_assert(std::random_access_iterator<StringWDIter>);
 
+/* The WDIterator belongs to neither of the categories introduced so far: diagonal and non-diagonal (row/column) iterators.
+
+   The reason is that diagonal iterators only sweep the matrix partially (namely the corresponding diagonal)
+   while the row/column iterators traverse the container totally but by using rows and columns.
+
+   In order to avoid creating new test functions it will be attempted to add the WDIterator tests
+   to the ones containing ZIterators as a relative analogy between the two can be used by considering
+   "equivalent" indexes.
+*/
+
 class IteratorExceptionTests : public QObject
 {
     Q_OBJECT
@@ -141,6 +151,9 @@ void IteratorExceptionTests::testZIteratorTwoOperandsExceptions()
     QFETCH(IntConstReverseZIter, firstConstReverseZIterator);
     QFETCH(IntConstReverseZIter, secondConstReverseZIterator);
 
+    QFETCH(IntWDIter, firstWDIterator);
+    QFETCH(IntWDIter, secondWDIterator);
+
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool areEqual{firstZIterator == secondZIterator}; Q_UNUSED(areEqual);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool areNotEqual{firstZIterator != secondZIterator}; Q_UNUSED(areNotEqual);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isSmallerThan{firstZIterator < secondZIterator}; Q_UNUSED(isSmallerThan);});
@@ -172,6 +185,14 @@ void IteratorExceptionTests::testZIteratorTwoOperandsExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isGreaterThan{firstConstReverseZIterator > secondConstReverseZIterator}; Q_UNUSED(isGreaterThan);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isGreaterThanOrEqual{firstConstReverseZIterator >= secondConstReverseZIterator}; Q_UNUSED(isGreaterThanOrEqual);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix_diff_t diff{firstConstReverseZIterator - secondConstReverseZIterator}; Q_UNUSED(diff);});
+
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool areEqual{firstWDIterator == secondWDIterator}; Q_UNUSED(areEqual);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool areNotEqual{firstWDIterator != secondWDIterator}; Q_UNUSED(areNotEqual);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isSmallerThan{firstWDIterator < secondWDIterator}; Q_UNUSED(isSmallerThan);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isSmallerThanOrEqual{firstWDIterator <= secondWDIterator}; Q_UNUSED(isSmallerThanOrEqual);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isGreaterThan{firstWDIterator > secondWDIterator}; Q_UNUSED(isGreaterThan);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isGreaterThanOrEqual{firstWDIterator >= secondWDIterator}; Q_UNUSED(isGreaterThanOrEqual);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix_diff_t diff{firstWDIterator - secondWDIterator}; Q_UNUSED(diff);});
 }
 
 void IteratorExceptionTests::testNIteratorTwoOperandsExceptions()
@@ -611,15 +632,18 @@ void IteratorExceptionTests::testZIteratorTwoOperandsExceptions_data()
     QTest::addColumn<IntConstReverseZIter>("firstConstReverseZIterator");
     QTest::addColumn<IntConstReverseZIter>("secondConstReverseZIterator");
 
+    QTest::addColumn<IntWDIter>("firstWDIterator");
+    QTest::addColumn<IntWDIter>("secondWDIterator");
+
     m_PrimaryIntMatrix = {{2, 3}, 4};
     m_SecondaryIntMatrix = {{2, 3}, -5};
     m_ThirdIntMatrix = {{2, 3}, 4};
     m_FourthIntMatrix = m_PrimaryIntMatrix;
     m_FifthIntMatrix = std::move(m_ThirdIntMatrix);
 
-    QTest::newRow("1: end iterator, random iterator") << m_PrimaryIntMatrix.zEnd() << m_SecondaryIntMatrix.getZIterator(1, 0) << m_PrimaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.getConstZIterator(1, 0) << m_PrimaryIntMatrix.reverseZEnd() << m_SecondaryIntMatrix.getReverseZIterator(1, 0) << m_PrimaryIntMatrix.constReverseZEnd() << m_SecondaryIntMatrix.getConstReverseZIterator(1, 0);
-    QTest::newRow("2: end iterator, begin iterator") << m_PrimaryIntMatrix.zEnd() << m_FourthIntMatrix.zBegin() << m_PrimaryIntMatrix.constZEnd() << m_FourthIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZEnd() << m_FourthIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZEnd() << m_FourthIntMatrix.constReverseZBegin();
-    QTest::newRow("3: begin iterator, end iterator") << m_ThirdIntMatrix.zBegin() << m_FifthIntMatrix.zEnd() << m_ThirdIntMatrix.constZBegin() << m_FifthIntMatrix.constZEnd() << m_ThirdIntMatrix.reverseZBegin() << m_FifthIntMatrix.reverseZEnd() << m_ThirdIntMatrix.constReverseZBegin() << m_FifthIntMatrix.constReverseZEnd();
+    QTest::newRow("1: end iterator, random iterator") << m_PrimaryIntMatrix.zEnd() << m_SecondaryIntMatrix.getZIterator(1, 0) << m_PrimaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.getConstZIterator(1, 0) << m_PrimaryIntMatrix.reverseZEnd() << m_SecondaryIntMatrix.getReverseZIterator(1, 0) << m_PrimaryIntMatrix.constReverseZEnd() << m_SecondaryIntMatrix.getConstReverseZIterator(1, 0) << m_PrimaryIntMatrix.wdEnd() << m_SecondaryIntMatrix.getWDIterator(0, 1);
+    QTest::newRow("2: end iterator, begin iterator") << m_PrimaryIntMatrix.zEnd() << m_FourthIntMatrix.zBegin() << m_PrimaryIntMatrix.constZEnd() << m_FourthIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZEnd() << m_FourthIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZEnd() << m_FourthIntMatrix.constReverseZBegin() << m_PrimaryIntMatrix.wdEnd() << m_FourthIntMatrix.wdBegin();
+    QTest::newRow("3: begin iterator, end iterator") << m_ThirdIntMatrix.zBegin() << m_FifthIntMatrix.zEnd() << m_ThirdIntMatrix.constZBegin() << m_FifthIntMatrix.constZEnd() << m_ThirdIntMatrix.reverseZBegin() << m_FifthIntMatrix.reverseZEnd() << m_ThirdIntMatrix.constReverseZBegin() << m_FifthIntMatrix.constReverseZEnd() << m_ThirdIntMatrix.wdBegin() << m_FifthIntMatrix.wdEnd();
 }
 
 void IteratorExceptionTests::testNIteratorTwoOperandsExceptions_data()
