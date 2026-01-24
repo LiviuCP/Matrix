@@ -44,6 +44,7 @@ private slots:
     void testStdCount();
     void testStdFind();
     void testStdFindWithIncrementAndCount();
+    void testStdSort();
 
     // test data
     void testIteratorCreation_data();
@@ -635,6 +636,91 @@ void WDIteratorTests::testStdFindWithIncrementAndCount()
 
     QVERIFY2(std::count(m_PrimaryIntMatrix.wdBegin(), m_PrimaryIntMatrix.wdEnd(), 10) == 3,
              "The iterator doesn't work properly with std::find, element values haven't been correctly replaced!");
+}
+
+
+/*
+WDIterator indexes for 4x5 matrix:
+
+     0  2  5  9 13
+     1  4  8 12 16
+     3  7 11 15 18
+     6 10 14 17 19
+*/
+
+void WDIteratorTests::testStdSort()
+{
+    m_PrimaryIntMatrix = {4, 5, {
+                              -1, 3,  5,  6, 8,
+                               1, 4,  0,  2, 7,
+                               1, 8, -2, -7, 9,
+                               9, 2,  9,  2, 11
+                          }};
+
+    m_SecondaryIntMatrix = {4, 5, {
+                               -7, -1, 1, 3, 7,
+                               -2,  1, 2, 6, 9,
+                                0,  2, 5, 8, 9,
+                                2,  4, 8, 9, 11
+                            }};
+
+    std::sort(m_PrimaryIntMatrix.wdBegin(), m_PrimaryIntMatrix.wdEnd());
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix, "The std::sort algorithm does not sort the matrix as expected!");
+
+    m_PrimaryIntMatrix = {4, 5, {
+                              -1, 3,  5,  6, 8,
+                               1, 4,  0,  2, 7,
+                               1, 8, -2, -7, 9,
+                               9, 2,  9,  2, 11
+                          }};
+
+    m_SecondaryIntMatrix = {4, 5, {
+                              -1, 3,  5, -2, 6,
+                               1, 4, -7,  2, 7,
+                               1, 8,  2,  9, 9,
+                               9, 0,  8,  2, 11
+                            }};
+
+    std::sort(m_PrimaryIntMatrix.getWDIterator(1, 2), m_PrimaryIntMatrix.getWDIterator(1, 4));
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix, "The std::sort algorithm does not sort the matrix as expected!");
+
+    m_PrimaryIntMatrix = {4, 5, {
+                              -1, 3,  5,  6, 8,
+                               1, 4,  0,  2, 7,
+                               1, 8, -2, -7, 9,
+                               9, 2,  9,  2, 11
+                          }};
+
+    m_SecondaryIntMatrix = {4, 5, {
+                              -1, 1,  3,  8, 8,
+                               0, 2,  6,  2, 7,
+                               1, 5, -2, -7, 9,
+                               4, 9,  9,  2, 11
+                            }};
+
+    std::sort(m_PrimaryIntMatrix.wdBegin(), m_PrimaryIntMatrix.getWDIterator(2, 2));
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix, "The std::sort algorithm does not sort the matrix as expected!");
+
+    m_PrimaryIntMatrix = {4, 5, {
+                              -1, 3,  5,  6, 8,
+                               1, 4,  0,  2, 7,
+                               1, 8, -2, -7, 9,
+                               9, 2,  9,  2, 11
+                          }};
+
+    m_SecondaryIntMatrix = {4, 5, {
+                              -1, 3,  5,  6, 2,
+                               1, 4,  0, -2, 8,
+                               1, 8, -7,  7, 9,
+                               9, 2,  2,  9, 11
+                            }};
+
+    std::sort(m_PrimaryIntMatrix.getWDIterator(2, 2), m_PrimaryIntMatrix.wdEnd());
+
+    QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix, "The std::sort algorithm does not sort the matrix as expected!");
 }
 
 /*
