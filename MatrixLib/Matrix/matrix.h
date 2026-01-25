@@ -3171,10 +3171,10 @@ T& Matrix<T>::WDIterator::operator[](Matrix<T>::WDIterator::difference_type inde
     CHECK_ERROR_CONDITION(_isEmpty(), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
 
     const diff_type c_ResultingIndex{static_cast<diff_type>(*m_Index + index)};
-    const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+    const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
     (void) c_UpperBound;
 
-    CHECK_ERROR_CONDITION(c_ResultingIndex >= c_UpperBound, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+    CHECK_ERROR_CONDITION(c_ResultingIndex < 0 || c_ResultingIndex >= c_UpperBound, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
 
     const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, c_ResultingIndex)};
     const auto&[rowNr, columnNr]{result.first};
