@@ -7,6 +7,40 @@
 Q_DECLARE_METATYPE(IntWDIter)
 Q_DECLARE_METATYPE(StringWDIter)
 
+/*
+WDIterator vs. ZIterator indexes for:
+- 2x3 matrix:
+
+    0 2 4                               0 1 2
+    1 3 5                               3 4 5
+
+- 4x3 matrix:
+
+    0 2 5                               0 1  2
+    1 4 8                               3 4  5
+    3 7 10                              6 7  8
+    6 9 11                              9 10 11
+
+- 4x5 matrix:
+
+     0  2  5  9 13                      0  1  2  3  4
+     1  4  8 12 16                      5  6  7  8  9
+     3  7 11 15 18                      10 11 12 13 14
+     6 10 14 17 19                      15 16 17 18 19
+
+- 9x8 matrix:
+
+     0  2  5  9 14 20 27 35             0  1  2  3  4  5  6  7
+     1  4  8 13 19 26 34 43             8  9  10 11 12 13 14 15
+     3  7 12 18 25 33 42 50             16 17 18 19 20 21 22 23
+     6 11 17 24 32 41 49 56             24 25 26 27 28 29 30 31
+    10 16 23 31 40 48 55 61             32 33 34 35 36 37 38 39
+    15 22 30 39 47 54 60 65             40 41 42 43 44 45 46 47
+    21 29 38 46 53 59 64 68             48 49 50 51 52 53 54 55
+    28 37 45 52 58 63 67 70             56 57 58 59 60 61 62 63
+    36 44 51 57 62 66 69 71             64 65 66 67 68 69 70 71
+*/
+
 class WDIteratorTests : public QObject
 {
     Q_OBJECT
@@ -333,15 +367,6 @@ void WDIteratorTests::testAsteriskOperatorRead()
     QVERIFY2(*iterator == expectedValue, "The asterisk operator does not work correctly when reading the value!");
 }
 
-/*
-WDIterator indexes for 4x3 matrix:
-
-    0 2 5
-    1 4 8
-    3 7 10
-    6 9 11
-*/
-
 void WDIteratorTests::testAsteriskOperatorWrite()
 {
     m_PrimaryIntMatrix = {{4, 3}, -20};
@@ -365,13 +390,6 @@ void WDIteratorTests::testAsteriskOperatorWrite()
 
     QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix, "The asterisk operator does not work correctly when writing the value!");
 }
-
-/*
-WDIterator indexes for 2x3 matrix:
-
-    0 2 4
-    1 3 5
-*/
 
 void WDIteratorTests::testAsteriskOperatorReadWrite()
 {
@@ -714,20 +732,6 @@ void WDIteratorTests::testStdSort()
     QVERIFY2(m_PrimaryIntMatrix == m_SecondaryIntMatrix, "The std::sort algorithm does not sort the matrix as expected!");
 }
 
-/*
-WDIterator indexes for 9x8 matrix:
-
-     0  2  5  9 14 20 27 35
-     1  4  8 13 19 26 34 43
-     3  7 12 18 25 33 42 50
-     6 11 17 24 32 41 49 56
-    10 16 23 31 40 48 55 61
-    15 22 30 39 47 54 60 65
-    21 29 38 46 53 59 64 68
-    28 37 45 52 58 63 67 70
-    36 44 51 57 62 66 69 71
-*/
-
 void WDIteratorTests::testIteratorCreation_data()
 {
     m_PrimaryIntMatrix = {{9, 8}, -5};
@@ -1015,15 +1019,6 @@ void WDIteratorTests::testSquareBracketsOperatorRead_data()
     QTest::newRow("49: random iterator") << m_SecondaryIntMatrix.getWDIterator(3, 2) << matrix_diff_t{-1} << 9;
     QTest::newRow("50: random iterator") << m_SecondaryIntMatrix.getWDIterator(3, 2) << matrix_diff_t{0} << -12;
 }
-
-/*
-WDIterator indexes for 4x5 matrix:
-
-     0  2  5  9 13
-     1  4  8 12 16
-     3  7 11 15 18
-     6 10 14 17 19
-*/
 
 void WDIteratorTests::testStdCount_data()
 {
