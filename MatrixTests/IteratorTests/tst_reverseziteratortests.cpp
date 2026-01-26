@@ -742,13 +742,8 @@ void ReverseZIteratorTests::testIteratorCreation_data()
     QTest::newRow("15: random iterator") << m_PrimaryIntMatrix.getReverseZIterator(5, 4) << matrix_opt_size_t{5} << matrix_opt_size_t{4};
     QTest::newRow("16: random iterator") << m_PrimaryIntMatrix.getReverseZIterator(8, 6) << matrix_opt_size_t{8} << matrix_opt_size_t{6};
     QTest::newRow("17: random iterator") << m_PrimaryIntMatrix.getReverseZIterator(8, 7) << matrix_opt_size_t{8} << matrix_opt_size_t{7};
-    QTest::newRow("18: random iterator") << m_PrimaryIntMatrix.getReverseZIterator(0) << matrix_opt_size_t{0} << matrix_opt_size_t{0};
-    QTest::newRow("19: random iterator") << m_PrimaryIntMatrix.getReverseZIterator(1) << matrix_opt_size_t{0} << matrix_opt_size_t{1};
-    QTest::newRow("20: random iterator") << m_PrimaryIntMatrix.getReverseZIterator(44) << matrix_opt_size_t{5} << matrix_opt_size_t{4};
-    QTest::newRow("21: random iterator") << m_PrimaryIntMatrix.getReverseZIterator(70) << matrix_opt_size_t{8} << matrix_opt_size_t{6};
-    QTest::newRow("22: random iterator") << m_PrimaryIntMatrix.getReverseZIterator(71) << matrix_opt_size_t{8} << matrix_opt_size_t{7};
-    QTest::newRow("23: begin iterator") << m_SecondaryIntMatrix.reverseZBegin() << matrix_opt_size_t{} << matrix_opt_size_t{};
-    QTest::newRow("24: end iterator") << m_SecondaryIntMatrix.reverseZEnd() << matrix_opt_size_t{} << matrix_opt_size_t{};
+    QTest::newRow("18: begin iterator") << m_SecondaryIntMatrix.reverseZBegin() << matrix_opt_size_t{} << matrix_opt_size_t{};
+    QTest::newRow("19: end iterator") << m_SecondaryIntMatrix.reverseZEnd() << matrix_opt_size_t{} << matrix_opt_size_t{};
 }
 
 void ReverseZIteratorTests::testIteratorsAreEqual_data()
@@ -759,11 +754,11 @@ void ReverseZIteratorTests::testIteratorsAreEqual_data()
     QTest::addColumn<IntReverseZIter>("firstIterator");
     QTest::addColumn<IntReverseZIter>("secondIterator");
 
-    QTest::newRow("1: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(0) << m_PrimaryIntMatrix.getReverseZIterator(0, 0);
-    QTest::newRow("2: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(1) << m_PrimaryIntMatrix.getReverseZIterator(0, 1);
-    QTest::newRow("3: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(44) << m_PrimaryIntMatrix.getReverseZIterator(5, 4);
-    QTest::newRow("4: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(70) << m_PrimaryIntMatrix.getReverseZIterator(8, 6);
-    QTest::newRow("5: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(71) << m_PrimaryIntMatrix.getReverseZIterator(8, 7);
+    QTest::newRow("1: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(0, 0) << m_PrimaryIntMatrix.getReverseZIterator(0, 0);
+    QTest::newRow("2: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(0, 1) << m_PrimaryIntMatrix.getReverseZIterator(0, 1);
+    QTest::newRow("3: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(5, 4) << m_PrimaryIntMatrix.getReverseZIterator(5, 4);
+    QTest::newRow("4: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(8, 6) << m_PrimaryIntMatrix.getReverseZIterator(8, 6);
+    QTest::newRow("5: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(8, 7) << m_PrimaryIntMatrix.getReverseZIterator(8, 7);
     QTest::newRow("6: begin iterator, random iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.getReverseZIterator(8, 7);
     QTest::newRow("7: row begin iterator, random iterator") << m_PrimaryIntMatrix.reverseZRowBegin(0) << m_PrimaryIntMatrix.getReverseZIterator(0, 7);
     QTest::newRow("8: row begin iterator, random iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.getReverseZIterator(1, 7);
@@ -1051,22 +1046,14 @@ void ReverseZIteratorTests::testStdCount_data()
     QTest::newRow("8: random iterator, end iterator") << m_PrimaryIntMatrix.getReverseZIterator(2, 3) << m_PrimaryIntMatrix.reverseZEnd() << 2 << matrix_diff_t{2};
     QTest::newRow("9: begin iterator, random iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.getReverseZIterator(2, 2) << 2 << matrix_diff_t{1};
     QTest::newRow("10: random iterator, end iterator") << m_PrimaryIntMatrix.getReverseZIterator(2, 2) << m_PrimaryIntMatrix.reverseZEnd() << 2 << matrix_diff_t{2};
-    QTest::newRow("11: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(9) << m_PrimaryIntMatrix.getReverseZIterator(2) << 1 << matrix_diff_t{2};
-    QTest::newRow("12: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(10) << m_PrimaryIntMatrix.getReverseZIterator(2) << 1 << matrix_diff_t{2};
-    QTest::newRow("13: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(9) << m_PrimaryIntMatrix.getReverseZIterator(3) << 1 << matrix_diff_t{1};
-    QTest::newRow("14: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(10) << m_PrimaryIntMatrix.getReverseZIterator(3) << 1 << matrix_diff_t{1};
-    QTest::newRow("15: begin iterator, random iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.getReverseZIterator(13) << 2 << matrix_diff_t{1};
-    QTest::newRow("16: random iterator, end iterator") << m_PrimaryIntMatrix.getReverseZIterator(13) << m_PrimaryIntMatrix.reverseZEnd() << 2 << matrix_diff_t{2};
-    QTest::newRow("17: begin iterator, random iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.getReverseZIterator(12) << 2 << matrix_diff_t{1};
-    QTest::newRow("18: random iterator, end iterator") << m_PrimaryIntMatrix.getReverseZIterator(12) << m_PrimaryIntMatrix.reverseZEnd() << 2 << matrix_diff_t{2};
-    QTest::newRow("19: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZRowEnd(1) << 5 << matrix_diff_t{1};
-    QTest::newRow("20: row end iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowEnd(3) << m_PrimaryIntMatrix.reverseZRowEnd(0) << 8 << matrix_diff_t{2};
-    QTest::newRow("21: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(3) << m_PrimaryIntMatrix.reverseZRowEnd(3) << 9 << matrix_diff_t{1};
-    QTest::newRow("22: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(3) << m_PrimaryIntMatrix.reverseZRowEnd(2) << 9 << matrix_diff_t{2};
-    QTest::newRow("23: row end iterator, end iterator") << m_PrimaryIntMatrix.reverseZRowEnd(1) << m_PrimaryIntMatrix.reverseZEnd() << 1 << matrix_diff_t{2};
-    QTest::newRow("24: begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZRowEnd(1) << 1 << matrix_diff_t{1};
-    QTest::newRow("25: row begin iterator, end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(2) << m_PrimaryIntMatrix.reverseZEnd() << 1 << matrix_diff_t{3};
-    QTest::newRow("26: begin iterator, row begin iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZRowBegin(2) << 1 << matrix_diff_t{0};
+    QTest::newRow("11: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZRowEnd(1) << 5 << matrix_diff_t{1};
+    QTest::newRow("12: row end iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowEnd(3) << m_PrimaryIntMatrix.reverseZRowEnd(0) << 8 << matrix_diff_t{2};
+    QTest::newRow("13: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(3) << m_PrimaryIntMatrix.reverseZRowEnd(3) << 9 << matrix_diff_t{1};
+    QTest::newRow("14: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(3) << m_PrimaryIntMatrix.reverseZRowEnd(2) << 9 << matrix_diff_t{2};
+    QTest::newRow("15: row end iterator, end iterator") << m_PrimaryIntMatrix.reverseZRowEnd(1) << m_PrimaryIntMatrix.reverseZEnd() << 1 << matrix_diff_t{2};
+    QTest::newRow("16: begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZRowEnd(1) << 1 << matrix_diff_t{1};
+    QTest::newRow("17: row begin iterator, end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(2) << m_PrimaryIntMatrix.reverseZEnd() << 1 << matrix_diff_t{3};
+    QTest::newRow("18: begin iterator, row begin iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZRowBegin(2) << 1 << matrix_diff_t{0};
 }
 
 void ReverseZIteratorTests::testStdFind_data()
@@ -1083,27 +1070,27 @@ void ReverseZIteratorTests::testStdFind_data()
     QTest::addColumn<int>("searchedValue");
     QTest::addColumn<IntReverseZIter>("expectedIterator");
 
-    QTest::newRow("1: begin iterator, end iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZEnd() << 5 << m_PrimaryIntMatrix.getReverseZIterator(5);
+    QTest::newRow("1: begin iterator, end iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZEnd() << 5 << m_PrimaryIntMatrix.getReverseZIterator(1, 0);
     QTest::newRow("2: begin iterator, end iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZEnd() << 10 << m_PrimaryIntMatrix.reverseZEnd();
     QTest::newRow("3: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZRowEnd(1) << 6 << m_PrimaryIntMatrix.reverseZRowBegin(1);
     QTest::newRow("4: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZRowEnd(1) << 5 << m_PrimaryIntMatrix.getReverseZIterator(1, 0);
-    QTest::newRow("5: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZRowEnd(1) << 8 << m_PrimaryIntMatrix.getReverseZIterator(7);
+    QTest::newRow("5: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZRowEnd(1) << 8 << m_PrimaryIntMatrix.getReverseZIterator(1, 2);
     QTest::newRow("6: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZRowEnd(1) << -1 << m_PrimaryIntMatrix.reverseZRowEnd(1);
     QTest::newRow("7: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZRowEnd(1) << 1 << m_PrimaryIntMatrix.reverseZRowEnd(1);
     QTest::newRow("8: row begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZRowEnd(1) << 10 << m_PrimaryIntMatrix.reverseZRowEnd(1);
     QTest::newRow("9: row begin iterator, end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZEnd() << 6 << m_PrimaryIntMatrix.reverseZRowBegin(1);
-    QTest::newRow("10: row begin iterator, end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZEnd() << -1 << m_PrimaryIntMatrix.getReverseZIterator(0);
+    QTest::newRow("10: row begin iterator, end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZEnd() << -1 << m_PrimaryIntMatrix.getReverseZIterator(0, 0);
     QTest::newRow("11: row begin iterator, end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZEnd() << 3 << m_PrimaryIntMatrix.getReverseZIterator(0, 2);
     QTest::newRow("12: row begin iterator, end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZEnd() << -2 << m_PrimaryIntMatrix.reverseZEnd();
     QTest::newRow("13: row begin iterator, end iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << m_PrimaryIntMatrix.reverseZEnd() << 10 << m_PrimaryIntMatrix.reverseZEnd();
     QTest::newRow("14: begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZRowEnd(1) << 11 << m_PrimaryIntMatrix.reverseZBegin();
     QTest::newRow("15: begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZRowEnd(1) << 5 << m_PrimaryIntMatrix.getReverseZIterator(1, 0);
-    QTest::newRow("16: begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZRowEnd(1) << 0 << m_PrimaryIntMatrix.getReverseZIterator(8);
+    QTest::newRow("16: begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZRowEnd(1) << 0 << m_PrimaryIntMatrix.getReverseZIterator(1, 3);
     QTest::newRow("17: begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZRowEnd(1) << 1 << m_PrimaryIntMatrix.reverseZRowEnd(1);
     QTest::newRow("18: begin iterator, row end iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.reverseZRowEnd(1) << 10 << m_PrimaryIntMatrix.reverseZRowEnd(1);
     QTest::newRow("19: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << m_PrimaryIntMatrix.getReverseZIterator(1, 3) << 7 << m_PrimaryIntMatrix.getReverseZIterator(3, 1);
     QTest::newRow("20: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << m_PrimaryIntMatrix.getReverseZIterator(1, 3) << -7 << m_PrimaryIntMatrix.getReverseZIterator(3, 0);
-    QTest::newRow("21: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << m_PrimaryIntMatrix.getReverseZIterator(1, 3) << -2 << m_PrimaryIntMatrix.getReverseZIterator(11);
+    QTest::newRow("21: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << m_PrimaryIntMatrix.getReverseZIterator(1, 3) << -2 << m_PrimaryIntMatrix.getReverseZIterator(2, 1);
     QTest::newRow("22: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << m_PrimaryIntMatrix.getReverseZIterator(1, 3) << -1 << m_PrimaryIntMatrix.getReverseZIterator(1, 3);
     QTest::newRow("23: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << m_PrimaryIntMatrix.getReverseZIterator(1, 3) << 11 << m_PrimaryIntMatrix.getReverseZIterator(1, 3);
     QTest::newRow("24: random iterator, random iterator") << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << m_PrimaryIntMatrix.getReverseZIterator(1, 3) << 10 << m_PrimaryIntMatrix.getReverseZIterator(1, 3);
@@ -1114,7 +1101,7 @@ void ReverseZIteratorTests::testStdFind_data()
     QTest::newRow("29: random iterator, end iterator") << m_PrimaryIntMatrix.getReverseZIterator(1, 3) << m_PrimaryIntMatrix.reverseZEnd() << 10 << m_PrimaryIntMatrix.reverseZEnd();
     QTest::newRow("30: begin iterator, random iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << 11 << m_PrimaryIntMatrix.reverseZBegin();
     QTest::newRow("31: begin iterator, random iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << 2 << m_PrimaryIntMatrix.getReverseZIterator(3, 2);
-    QTest::newRow("32: begin iterator, random iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << 9 << m_PrimaryIntMatrix.getReverseZIterator(18);
+    QTest::newRow("32: begin iterator, random iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << 9 << m_PrimaryIntMatrix.getReverseZIterator(3, 3);
     QTest::newRow("33: begin iterator, random iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << 0 << m_PrimaryIntMatrix.getReverseZIterator(3, 1);
     QTest::newRow("34: begin iterator, random iterator") << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.getReverseZIterator(3, 1) << 10 << m_PrimaryIntMatrix.getReverseZIterator(3, 1);
 }

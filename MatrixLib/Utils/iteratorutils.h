@@ -506,13 +506,6 @@
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows || matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]); \
     return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr};
 
-#define GET_NON_DIAG_ITERATOR_BY_INDEX(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, \
-                                       mMatrixPrimaryDimension, mMatrixSecondaryDimension, FirstOperator, SecondOperator, arrayIndex) \
-    CHECK_ERROR_CONDITION(arrayIndex < 0 || arrayIndex >= static_cast<diff_type>(mMatrixPrimaryDimension) * static_cast<diff_type>(mMatrixSecondaryDimension), \
-                          Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]); \
-\
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, arrayIndex FirstOperator mMatrixSecondaryDimension, arrayIndex SecondOperator mMatrixSecondaryDimension};
-
 // common DIterator/MIterator macros
 
 #define DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(mIteratorDiagonalSize, mIteratorDiagonalIndex, Sign, scalarValue) \

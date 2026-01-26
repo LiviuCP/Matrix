@@ -83,7 +83,6 @@ private slots:
     void testDiagBeginEndIteratorAbsoluteCoordinatesExceptions();
     void testDiagBeginEndIteratorRelativeCoordinatesExceptions();
     void testNonDiagRandomIteratorRowColumnExceptions();
-    void testNonDiagRandomIteratorIndexExceptions();
     void testDiagRandomIteratorAbsoluteCoordinatesExceptions();
     void testDiagRandomIteratorRelativeCoordinatesExceptions();
     void testZIteratorAsteriskOperatorExceptions();
@@ -104,7 +103,6 @@ private slots:
     void testDiagBeginEndIteratorAbsoluteCoordinatesExceptions_data();
     void testDiagBeginEndIteratorRelativeCoordinatesExceptions_data();
     void testNonDiagRandomIteratorRowColumnExceptions_data();
-    void testNonDiagRandomIteratorIndexExceptions_data();
     void testDiagRandomIteratorAbsoluteCoordinatesExceptions_data();
     void testDiagRandomIteratorRelativeCoordinatesExceptions_data();
     void testZIteratorAsteriskOperatorExceptions_data();
@@ -390,24 +388,6 @@ void IteratorExceptionTests::testNonDiagRandomIteratorRowColumnExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstNIter it{matrix.getConstNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntReverseNIter it{matrix.getReverseNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstReverseNIter it{matrix.getConstReverseNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
-}
-
-void IteratorExceptionTests::testNonDiagRandomIteratorIndexExceptions()
-{
-    QFETCH(IntMatrix, matrix);
-    QFETCH(matrix_diff_t, index);
-    
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntZIter it{matrix.getZIterator(index)}; Q_UNUSED(it)});
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstZIter it{matrix.getConstZIterator(index)}; Q_UNUSED(it)});
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntReverseZIter it{matrix.getReverseZIterator(index)}; Q_UNUSED(it)});
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstReverseZIter it{matrix.getConstReverseZIterator(index)}; Q_UNUSED(it)});
-
-    matrix.transpose();
-    
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntNIter it{matrix.getNIterator(index)}; Q_UNUSED(it)});
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstNIter it{matrix.getConstNIterator(index)}; Q_UNUSED(it)});
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntReverseNIter it{matrix.getReverseNIterator(index)}; Q_UNUSED(it)});
-    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstReverseNIter it{matrix.getConstReverseNIterator(index)}; Q_UNUSED(it)});
 }
 
 void IteratorExceptionTests::testDiagRandomIteratorAbsoluteCoordinatesExceptions()
@@ -771,17 +751,6 @@ void IteratorExceptionTests::testNonDiagRandomIteratorRowColumnExceptions_data()
     QTest::newRow("2: row/column number random iterator") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{1u} << matrix_size_t{3u};
     QTest::newRow("3: row/column number random iterator") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{2u} << matrix_size_t{1u};
     QTest::newRow("4: row/column number random iterator") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_size_t{2u} << matrix_size_t{3u};
-}
-
-void IteratorExceptionTests::testNonDiagRandomIteratorIndexExceptions_data()
-{
-    QTest::addColumn<IntMatrix>("matrix");
-    QTest::addColumn<matrix_diff_t>("index");
-
-    QTest::newRow("1: negative index, non-empty matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_diff_t{-1};
-    QTest::newRow("2: index out of range, non-empty matrix") << IntMatrix{2, 3, {1, 2, 3, 4, 5, 6}} << matrix_diff_t{6};
-    QTest::newRow("3: negative index, empty matrix") << IntMatrix{} << matrix_diff_t{-1};
-    QTest::newRow("4: index out of range, empty matrix") << IntMatrix{} << matrix_diff_t{0};
 }
 
 void IteratorExceptionTests::testDiagRandomIteratorAbsoluteCoordinatesExceptions_data()
