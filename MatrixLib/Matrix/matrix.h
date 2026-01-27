@@ -2874,7 +2874,10 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getRowNr() c
         if (m_Index < c_UpperBound)
         {
             const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
-            rowNr = result.first.first;
+            const auto&[resultingRowAndColumnNr, _]{result};
+            const auto&[resultingRowNumber, __]{resultingRowAndColumnNr};
+
+            rowNr = resultingRowNumber;
         }
         else
         {
@@ -2897,7 +2900,10 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getColumnNr(
         if (m_Index < c_UpperBound)
         {
             const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
-            columnNr = result.first.second;
+            const auto&[resultingRowAndColumnNr, _]{result};
+            const auto&[__, resultingColumnNumber]{resultingRowAndColumnNr};
+
+            columnNr = resultingColumnNumber;
         }
         else
         {
@@ -2927,7 +2933,7 @@ T& Matrix<T>::WDIterator::operator*() const
     const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
     const auto&[rowNr, columnNr]{result.first};
 
-    assert(rowNr && columnNr);
+    assert(rowNr.has_value() && columnNr.has_value());
 
     return m_pMatrixPtr[*rowNr][*columnNr];
 }
@@ -2943,7 +2949,7 @@ T* Matrix<T>::WDIterator::operator->() const
     const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
     const auto&[rowNr, columnNr]{result.first};
 
-    assert(rowNr && columnNr);
+    assert(rowNr.has_value() && columnNr.has_value());
 
     return (m_pMatrixPtr[*rowNr] + *columnNr);
 }
@@ -2962,7 +2968,7 @@ T& Matrix<T>::WDIterator::operator[](Matrix<T>::WDIterator::difference_type inde
     const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, c_ResultingIndex)};
     const auto&[rowNr, columnNr]{result.first};
 
-    assert(rowNr && columnNr);
+    assert(rowNr.has_value() && columnNr.has_value());
 
     return m_pMatrixPtr[*rowNr][*columnNr];
 }
@@ -2998,6 +3004,10 @@ Matrix<T>::WDIterator::WDIterator(T** pMatrixPtr,
                 m_Index = *index;
                 nonEmptyIteratorContructed = true;
             }
+        }
+        else
+        {
+            assert(false);
         }
     }
 
@@ -4304,13 +4314,13 @@ typename Matrix<T>::ConstReverseMIterator Matrix<T>::getConstReverseMIterator(co
 template<MatrixElementType T>
 typename Matrix<T>::WDIterator Matrix<T>::wdBegin()
 {
-    return WDIterator{m_pBaseArrayPtr + *m_RowCapacityOffset, m_NrOfRows, m_NrOfColumns, 0};
+    return WDIterator{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, 0};
 }
 
 template<MatrixElementType T>
 typename Matrix<T>::WDIterator Matrix<T>::wdEnd()
 {
-    return WDIterator{m_pBaseArrayPtr + *m_RowCapacityOffset, m_NrOfRows, m_NrOfColumns, static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns)};
+    return WDIterator{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns)};
 }
 
 template<MatrixElementType T>
@@ -4323,7 +4333,7 @@ typename Matrix<T>::WDIterator Matrix<T>::getWDIterator(Matrix<T>::size_type row
 
     const diff_type c_Index{result.first ? *result.first : diff_type{0}};
 
-    return WDIterator{m_pBaseArrayPtr + *m_RowCapacityOffset, m_NrOfRows, m_NrOfColumns, c_Index};
+    return WDIterator{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, c_Index};
 }
 
 template<MatrixElementType T>
