@@ -41,7 +41,7 @@ int main()
             currentSubtotal += *it;
         }
 
-        columnSubtotalsMatrix[columnNumber] = currentSubtotal;
+        columnSubtotalsMatrix.at(0, columnNumber) = currentSubtotal;
         std::sort(matrixCopy.reverseNColumnBegin(columnNumber), matrixCopy.reverseNColumnEnd(columnNumber));
     }
 

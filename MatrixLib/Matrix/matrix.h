@@ -266,9 +266,6 @@ public:
     T& at(size_type rowNr, size_type columnNr);
     const T& at(size_type rowNr, size_type columnNr) const;
 
-    T& operator[] (diff_type index);
-    const T& operator[](diff_type index) const;
-
     Matrix& operator=(const Matrix& matrix);
     Matrix& operator=(Matrix&& matrix);
 
@@ -2874,20 +2871,6 @@ const T& Matrix<T>::at(Matrix<T>::size_type rowNr,
 {
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows || columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
     return m_pBaseArrayPtr[*m_RowCapacityOffset + rowNr][columnNr];
-}
-
-template<MatrixElementType T>
-T& Matrix<T>::operator[](Matrix<T>::diff_type index)
-{
-    CHECK_ERROR_CONDITION(index < 0 || index >= static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns), Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
-    return m_pBaseArrayPtr[*m_RowCapacityOffset + index / m_NrOfColumns][index % m_NrOfColumns];
-}
-
-template<MatrixElementType T>
-const T& Matrix<T>::operator[](Matrix<T>::diff_type index) const
-{
-    CHECK_ERROR_CONDITION(index < 0 || index >= static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns), Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
-    return m_pBaseArrayPtr[*m_RowCapacityOffset + index / m_NrOfColumns][index % m_NrOfColumns];
 }
 
 template <MatrixElementType T>
