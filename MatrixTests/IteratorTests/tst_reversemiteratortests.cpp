@@ -402,6 +402,10 @@ void ReverseMIteratorTests::testArrowOperator()
     QVERIFY2(*m_StringMatrix.getReverseMIterator({1, 0}) == "abcdefghij",
              "The arrow operator does not work correctly when writing the value!");
 
+    QVERIFY(m_StringMatrix.getReverseMIterator(0, 1)->starts_with("pq"));
+    QVERIFY(m_StringMatrix.getReverseMIterator(1, 1)->starts_with("jk"));
+    QVERIFY(m_StringMatrix.getReverseMIterator(1, 2)->starts_with("mn"));
+
     // test with row/column capacity offset
     m_StringMatrix = {2, 3, {"abc", "pqr", "ghi", "defed", "jkl", "mno"}};
     m_StringMatrix.reserve(4, 5);
@@ -414,6 +418,10 @@ void ReverseMIteratorTests::testArrowOperator()
 
     QVERIFY2(*m_StringMatrix.getReverseMIterator({1, 0}) == "abcdefghij",
              "The arrow operator does not work correctly when writing the value!");
+
+    QVERIFY(m_StringMatrix.getReverseMIterator(0, 1)->starts_with("pq"));
+    QVERIFY(m_StringMatrix.getReverseMIterator(1, 1)->starts_with("jk"));
+    QVERIFY(m_StringMatrix.getReverseMIterator(1, 2)->starts_with("mn"));
 }
 
 void ReverseMIteratorTests::testSquareBracketsOperatorRead()

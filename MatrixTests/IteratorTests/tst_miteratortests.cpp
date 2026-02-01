@@ -402,6 +402,10 @@ void MIteratorTests::testArrowOperator()
     QVERIFY2(*m_StringMatrix.getMIterator({1, 1}) == "abcdefghij",
              "The arrow operator does not work correctly when writing the value!");
 
+    QVERIFY(m_StringMatrix.getMIterator(0, 1)->starts_with("de"));
+    QVERIFY(m_StringMatrix.getMIterator(1, 1)->starts_with("mn"));
+    QVERIFY(m_StringMatrix.getMIterator(1, 2)->starts_with("pq"));
+
     // test with row/column capacity offset
     m_StringMatrix = {2, 3, {"abc", "defed", "ghi", "jkl", "mno", "pqr"}};
     m_StringMatrix.reserve(4, 5);
@@ -414,6 +418,10 @@ void MIteratorTests::testArrowOperator()
 
     QVERIFY2(*m_StringMatrix.getMIterator({1, 1}) == "abcdefghij",
              "The arrow operator does not work correctly when writing the value!");
+
+    QVERIFY(m_StringMatrix.getMIterator(0, 1)->starts_with("de"));
+    QVERIFY(m_StringMatrix.getMIterator(1, 1)->starts_with("mn"));
+    QVERIFY(m_StringMatrix.getMIterator(1, 2)->starts_with("pq"));
 }
 
 void MIteratorTests::testSquareBracketsOperatorRead()

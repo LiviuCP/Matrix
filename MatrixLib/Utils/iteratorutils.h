@@ -128,9 +128,9 @@
 \
     if (pMatrixPtr) \
     { \
-        if (matrixPrimaryDimension > 0 && matrixSecondaryDimension > 0 && matrixPrimaryCoordinate.has_value() && matrixSecondaryCoordinate.has_value() && \
+        if (matrixPrimaryDimension > size_type{0} && matrixSecondaryDimension > size_type{0} && matrixPrimaryCoordinate.has_value() && matrixSecondaryCoordinate.has_value() && \
             ((matrixPrimaryCoordinate < matrixPrimaryDimension && matrixSecondaryCoordinate < matrixSecondaryDimension) || \
-             (matrixPrimaryCoordinate == matrixPrimaryDimension - 1 && matrixSecondaryCoordinate == matrixSecondaryDimension))) \
+             (matrixPrimaryCoordinate == matrixPrimaryDimension - size_type{1} && matrixSecondaryCoordinate == matrixSecondaryDimension))) \
         { \
             mpIteratorPtr = pMatrixPtr; \
             mIteratorPrimaryDimension = matrixPrimaryDimension; \
@@ -148,8 +148,8 @@
     if (!nonEmptyIteratorConstructed) \
     { \
         mpIteratorPtr = nullptr; \
-        mIteratorPrimaryDimension = 0; \
-        mIteratorSecondaryDimension = 0; \
+        mIteratorPrimaryDimension = size_type{0}; \
+        mIteratorSecondaryDimension = size_type{0}; \
     }
 
 #define CONSTRUCT_REVERSE_NON_DIAG_ITERATOR(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, \
@@ -158,8 +158,8 @@
 \
     if (pMatrixPtr) \
     { \
-        if (matrixPrimaryDimension > 0 && matrixSecondaryDimension > 0 && matrixPrimaryCoordinate.has_value() && \
-            ((0 == matrixPrimaryCoordinate && !matrixSecondaryCoordinate.has_value()) || \
+        if (matrixPrimaryDimension > size_type{0} && matrixSecondaryDimension > size_type{0} && matrixPrimaryCoordinate.has_value() && \
+            ((size_type{0} == matrixPrimaryCoordinate && !matrixSecondaryCoordinate.has_value()) || \
              (matrixPrimaryCoordinate < matrixPrimaryDimension && matrixSecondaryCoordinate.has_value() && matrixSecondaryCoordinate < matrixSecondaryDimension))) \
         { \
             mpIteratorPtr = pMatrixPtr; \
@@ -178,8 +178,8 @@
     if (!nonEmptyIteratorConstructed) \
     { \
         mpIteratorPtr = nullptr; \
-        mIteratorPrimaryDimension = 0; \
-        mIteratorSecondaryDimension = 0; \
+        mIteratorPrimaryDimension = size_type{0}; \
+        mIteratorSecondaryDimension = size_type{0}; \
     }
 
 #define FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, \
@@ -187,12 +187,14 @@
     if (!_isEmpty()) \
     { \
         const diff_type normalizedScalarValue = Sign scalarValue; \
-        const diff_type c_CurrentIndex{static_cast<diff_type>(*mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + *mIteratorSecondaryCoordinate)}; \
-        const diff_type c_ResultingIndex{normalizedScalarValue < 0 && std::abs(normalizedScalarValue) > c_CurrentIndex ? diff_type{0} : static_cast<diff_type>(c_CurrentIndex + normalizedScalarValue)}; \
-        const diff_type c_UpperBound{static_cast<diff_type>(mIteratorPrimaryDimension * mIteratorSecondaryDimension)}; \
+        const diff_type c_CurrentIndex{static_cast<diff_type>(static_cast<diff_type>(*mIteratorPrimaryCoordinate) * \
+                                                              static_cast<diff_type>(mIteratorSecondaryDimension) + \
+                                                              static_cast<diff_type>(*mIteratorSecondaryCoordinate))}; \
+        const diff_type c_ResultingIndex{normalizedScalarValue < diff_type{0} && std::abs(normalizedScalarValue) > c_CurrentIndex ? diff_type{0} : static_cast<diff_type>(c_CurrentIndex + normalizedScalarValue)}; \
+        const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) * static_cast<diff_type>(mIteratorSecondaryDimension))}; \
 \
-        mIteratorPrimaryCoordinate = c_ResultingIndex < c_UpperBound ? c_ResultingIndex / mIteratorSecondaryDimension : mIteratorPrimaryDimension - 1; \
-        mIteratorSecondaryCoordinate = c_ResultingIndex < c_UpperBound ? c_ResultingIndex % mIteratorSecondaryDimension : mIteratorSecondaryDimension; \
+        mIteratorPrimaryCoordinate = c_ResultingIndex < c_UpperBound ? static_cast<size_type>(c_ResultingIndex / static_cast<diff_type>(mIteratorSecondaryDimension)) : mIteratorPrimaryDimension - size_type{1}; \
+        mIteratorSecondaryCoordinate = c_ResultingIndex < c_UpperBound ? static_cast<size_type>(c_ResultingIndex % static_cast<diff_type>(mIteratorSecondaryDimension)) : mIteratorSecondaryDimension; \
     } \
 \
     return *this;
@@ -202,35 +204,35 @@
     if (!_isEmpty()) \
     { \
         const diff_type normalizedScalarValue = Sign scalarValue; \
-        const std::optional<diff_type> c_CurrentIndex{mIteratorSecondaryCoordinate.has_value() ? std::optional{static_cast<diff_type>(*mIteratorPrimaryCoordinate * \
-                                                                                                                                       mIteratorSecondaryDimension + \
-                                                                                                                                      *mIteratorSecondaryCoordinate)} \
+        const std::optional<diff_type> c_CurrentIndex{mIteratorSecondaryCoordinate.has_value() ? std::optional{static_cast<diff_type>(static_cast<diff_type>(*mIteratorPrimaryCoordinate) * \
+                                                                                                                                      static_cast<diff_type>(mIteratorSecondaryDimension) + \
+                                                                                                                                      static_cast<diff_type>(*mIteratorSecondaryCoordinate))} \
                                                                                                : std::nullopt}; \
         std::optional<diff_type> resultingIndex; \
 \
         if (c_CurrentIndex.has_value()) \
         { \
-            if (normalizedScalarValue >= 0 || std::abs(normalizedScalarValue) <= c_CurrentIndex) \
+            if (normalizedScalarValue >= diff_type{0} || std::abs(normalizedScalarValue) <= c_CurrentIndex) \
             { \
                 resultingIndex = *c_CurrentIndex + normalizedScalarValue; \
             } \
         } \
         else \
         { \
-            if (normalizedScalarValue > 0) \
+            if (normalizedScalarValue > diff_type{0}) \
             { \
-                resultingIndex = normalizedScalarValue - 1; \
+                resultingIndex = normalizedScalarValue - diff_type{1}; \
             } \
         } \
 \
-        const diff_type c_UpperBound{static_cast<diff_type>(mIteratorPrimaryDimension * mIteratorSecondaryDimension)}; \
+        const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) * static_cast<diff_type>(mIteratorSecondaryDimension))}; \
 \
-        mIteratorPrimaryCoordinate = !resultingIndex.has_value() ? 0 \
-                                                                 : resultingIndex >= c_UpperBound ? static_cast<size_type>(mIteratorPrimaryDimension - 1) \
-                                                                                                  : static_cast<size_type>(*resultingIndex / mIteratorSecondaryDimension); \
+        mIteratorPrimaryCoordinate = !resultingIndex.has_value() ? size_type{0} \
+                                                                 : resultingIndex >= c_UpperBound ? static_cast<size_type>(mIteratorPrimaryDimension - size_type{1}) \
+                                                                                                  : static_cast<size_type>(*resultingIndex / static_cast<diff_type>(mIteratorSecondaryDimension)); \
         mIteratorSecondaryCoordinate = !resultingIndex.has_value() ? std::nullopt \
-                                                                   : resultingIndex >= c_UpperBound ? std::optional{static_cast<size_type>(mIteratorSecondaryDimension - 1)} \
-                                                                                                    : std::optional{static_cast<size_type>(*resultingIndex % mIteratorSecondaryDimension)}; \
+                                                                   : resultingIndex >= c_UpperBound ? std::optional{static_cast<size_type>(mIteratorSecondaryDimension - size_type{1})} \
+                                                                                                    : std::optional{static_cast<size_type>(*resultingIndex % static_cast<diff_type>(mIteratorSecondaryDimension))}; \
     } \
 \
     return *this;
@@ -242,12 +244,17 @@
                           mIteratorSecondaryDimension != secondIterator.mIteratorSecondaryDimension, \
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]); \
 \
-    auto result = 0; \
+    diff_type result{0}; \
 \
     if (!_isEmpty()) \
     { \
-        const diff_type c_FirstItIndex{static_cast<diff_type>(*mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + *mIteratorSecondaryCoordinate)}; \
-        const diff_type c_SecondItIndex{static_cast<diff_type>(*secondIterator.mIteratorPrimaryCoordinate * secondIterator.mIteratorSecondaryDimension + *secondIterator.mIteratorSecondaryCoordinate)}; \
+        const diff_type c_FirstItIndex{static_cast<diff_type>(static_cast<diff_type>(*mIteratorPrimaryCoordinate) * \
+                                                              static_cast<diff_type>(mIteratorSecondaryDimension) + \
+                                                              static_cast<diff_type>(*mIteratorSecondaryCoordinate))}; \
+\
+        const diff_type c_SecondItIndex{static_cast<diff_type>(static_cast<diff_type>(*secondIterator.mIteratorPrimaryCoordinate) * \
+                                                               static_cast<diff_type>(secondIterator.mIteratorSecondaryDimension) + \
+                                                               static_cast<diff_type>(*secondIterator.mIteratorSecondaryCoordinate))}; \
 \
         result = c_FirstItIndex - c_SecondItIndex; \
     } \
@@ -261,17 +268,17 @@
                           mIteratorSecondaryDimension != secondIterator.mIteratorSecondaryDimension, \
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]); \
 \
-    auto result = 0; \
+    diff_type result{0}; \
 \
     if (!_isEmpty()) \
     { \
-        const std::optional<size_type> c_FirstItIndex{mIteratorSecondaryCoordinate.has_value() ? std::optional{*mIteratorPrimaryCoordinate * \
-                                                                                                                mIteratorSecondaryDimension + \
-                                                                                                               *mIteratorSecondaryCoordinate} \
+        const std::optional<diff_type> c_FirstItIndex{mIteratorSecondaryCoordinate.has_value() ? std::optional{static_cast<diff_type>(static_cast<diff_type>(*mIteratorPrimaryCoordinate) * \
+                                                                                                                                      static_cast<diff_type>(mIteratorSecondaryDimension) + \
+                                                                                                                                      static_cast<diff_type>(*mIteratorSecondaryCoordinate))} \
                                                                                                : std::nullopt}; \
-        const std::optional<size_type> c_SecondItIndex{secondIterator.mIteratorSecondaryCoordinate.has_value() ? std::optional{*secondIterator.mIteratorPrimaryCoordinate * \
-                                                                                                                                secondIterator.mIteratorSecondaryDimension + \
-                                                                                                                               *secondIterator.mIteratorSecondaryCoordinate} \
+        const std::optional<diff_type> c_SecondItIndex{secondIterator.mIteratorSecondaryCoordinate.has_value() ? std::optional{static_cast<diff_type>(static_cast<diff_type>(*secondIterator.mIteratorPrimaryCoordinate) * \
+                                                                                                                                                      static_cast<diff_type>(secondIterator.mIteratorSecondaryDimension) + \
+                                                                                                                                                      static_cast<diff_type>(*secondIterator.mIteratorSecondaryCoordinate))} \
                                                                                                                : std::nullopt}; \
 \
         if (c_FirstItIndex.has_value() && c_SecondItIndex.has_value()) \
@@ -280,11 +287,11 @@
         } \
         else if (!c_FirstItIndex.has_value() && c_SecondItIndex.has_value()) \
         { \
-            result = *c_SecondItIndex + 1; \
+            result = *c_SecondItIndex + diff_type{1}; \
         } \
         else if (c_FirstItIndex.has_value() && !c_SecondItIndex.has_value()) \
         { \
-            result = -1 - *c_FirstItIndex; \
+            result = diff_type{-1} - *c_FirstItIndex; \
         } \
     } \
 \
@@ -375,12 +382,14 @@
                                                     mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, FirstOperator, SecondOperator, arrayIndex) \
     CHECK_ERROR_CONDITION(_isEmpty(), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
-    const diff_type c_CurrentIndex{static_cast<diff_type>(*mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + *mIteratorSecondaryCoordinate)}; \
+    const diff_type c_CurrentIndex{static_cast<diff_type>(static_cast<diff_type>(*mIteratorPrimaryCoordinate) * \
+                                                          static_cast<diff_type>(mIteratorSecondaryDimension) + \
+                                                          static_cast<diff_type>(*mIteratorSecondaryCoordinate))}; \
 \
-    CHECK_ERROR_CONDITION(arrayIndex < 0 && std::abs(arrayIndex) > c_CurrentIndex, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
+    CHECK_ERROR_CONDITION(arrayIndex < diff_type{0} && std::abs(arrayIndex) > c_CurrentIndex, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
     const diff_type c_ResultingIndex{static_cast<diff_type>(c_CurrentIndex + arrayIndex)}; \
-    const diff_type c_UpperBound{static_cast<diff_type>(mIteratorPrimaryDimension * mIteratorSecondaryDimension)}; \
+    const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) * static_cast<diff_type>(mIteratorSecondaryDimension))}; \
     (void) c_UpperBound; \
 \
     CHECK_ERROR_CONDITION(c_ResultingIndex >= c_UpperBound, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
@@ -391,13 +400,15 @@
                                                     mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, FirstOperator, SecondOperator, arrayIndex) \
     CHECK_ERROR_CONDITION(_isEmpty() || !mIteratorSecondaryCoordinate.has_value(), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
-    const diff_type c_CurrentIndex{static_cast<diff_type>(*mIteratorPrimaryCoordinate * mIteratorSecondaryDimension + *mIteratorSecondaryCoordinate)}; \
-    const diff_type c_NormalizedIndex = -arrayIndex; \
+    const diff_type c_CurrentIndex{static_cast<diff_type>(static_cast<diff_type>(*mIteratorPrimaryCoordinate) * \
+                                                          static_cast<diff_type>(mIteratorSecondaryDimension) + \
+                                                          static_cast<diff_type>(*mIteratorSecondaryCoordinate))}; \
+    const diff_type c_NormalizedIndex{static_cast<diff_type>(-arrayIndex)}; \
 \
-    CHECK_ERROR_CONDITION(c_NormalizedIndex < 0 && std::abs(c_NormalizedIndex) > c_CurrentIndex, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
+    CHECK_ERROR_CONDITION(c_NormalizedIndex < diff_type{0} && std::abs(c_NormalizedIndex) > c_CurrentIndex, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
     const diff_type c_ResultingIndex{static_cast<diff_type>(c_CurrentIndex + c_NormalizedIndex)}; \
-    const diff_type c_UpperBound{static_cast<diff_type>(mIteratorPrimaryDimension * mIteratorSecondaryDimension)}; \
+    const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) * static_cast<diff_type>(mIteratorSecondaryDimension))}; \
     (void) c_UpperBound; \
 \
     CHECK_ERROR_CONDITION(c_ResultingIndex >= c_UpperBound, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
@@ -407,45 +418,45 @@
 #define FORWARD_NON_DIAG_ITERATOR_DO_INCREMENT(mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate) \
     if (!_isEmpty() && (mIteratorSecondaryCoordinate != mIteratorSecondaryDimension || mIteratorPrimaryCoordinate != (mIteratorPrimaryDimension - 1))) \
     { \
-        mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate + 1; \
+        mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate + size_type{1}; \
 \
-        if (mIteratorSecondaryCoordinate == mIteratorSecondaryDimension && mIteratorPrimaryCoordinate != (mIteratorPrimaryDimension - 1)) \
+        if (mIteratorSecondaryCoordinate == mIteratorSecondaryDimension && mIteratorPrimaryCoordinate != (mIteratorPrimaryDimension - size_type{1})) \
         { \
             mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate - mIteratorSecondaryDimension; \
-            mIteratorPrimaryCoordinate = *mIteratorPrimaryCoordinate + 1; \
+            mIteratorPrimaryCoordinate = *mIteratorPrimaryCoordinate + size_type{1}; \
         } \
     }
 
 #define REVERSE_NON_DIAG_ITERATOR_DO_INCREMENT(mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate) \
-    if (!_isEmpty() && (mIteratorSecondaryCoordinate.has_value() || mIteratorPrimaryCoordinate > 0)) \
+    if (!_isEmpty() && (mIteratorSecondaryCoordinate.has_value() || mIteratorPrimaryCoordinate > size_type{0})) \
     { \
-        if (mIteratorSecondaryCoordinate > 0) \
+        if (mIteratorSecondaryCoordinate > size_type{0}) \
         { \
-           mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate - 1; \
+           mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate - size_type{1}; \
         } \
         else \
         { \
             mIteratorSecondaryCoordinate.reset(); \
         } \
  \
-        if (!mIteratorSecondaryCoordinate.has_value() && mIteratorPrimaryCoordinate > 0) \
+        if (!mIteratorSecondaryCoordinate.has_value() && mIteratorPrimaryCoordinate > size_type{0}) \
         { \
-            mIteratorSecondaryCoordinate = mIteratorSecondaryDimension - 1; \
-            mIteratorPrimaryCoordinate = *mIteratorPrimaryCoordinate - 1; \
+            mIteratorSecondaryCoordinate = mIteratorSecondaryDimension - size_type{1}; \
+            mIteratorPrimaryCoordinate = *mIteratorPrimaryCoordinate - size_type{1}; \
         } \
     }
 
 #define FORWARD_NON_DIAG_ITERATOR_DO_DECREMENT(mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate) \
-    if (!_isEmpty() && (mIteratorPrimaryCoordinate > 0 || mIteratorSecondaryCoordinate > 0)) \
+    if (!_isEmpty() && (mIteratorPrimaryCoordinate > size_type{0} || mIteratorSecondaryCoordinate > size_type{0})) \
     { \
         if(0 == mIteratorSecondaryCoordinate) \
         { \
-            mIteratorPrimaryCoordinate = *mIteratorPrimaryCoordinate - 1; \
-            mIteratorSecondaryCoordinate = mIteratorSecondaryDimension - 1; \
+            mIteratorPrimaryCoordinate = *mIteratorPrimaryCoordinate - size_type{1}; \
+            mIteratorSecondaryCoordinate = mIteratorSecondaryDimension - size_type{1}; \
         } \
         else \
         { \
-            mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate - 1; \
+            mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate - size_type{1}; \
         } \
     }
 
@@ -454,18 +465,18 @@
     { \
         if (!mIteratorSecondaryCoordinate.has_value()) \
         { \
-            mIteratorSecondaryCoordinate = 0; /* decrement from end iterator */ \
+            mIteratorSecondaryCoordinate = size_type{0}; /* decrement from end iterator */ \
         } \
-        else if (mIteratorPrimaryCoordinate < mIteratorPrimaryDimension - 1 || mIteratorSecondaryCoordinate < mIteratorSecondaryDimension - 1) \
+        else if (mIteratorPrimaryCoordinate < mIteratorPrimaryDimension - size_type{1} || mIteratorSecondaryCoordinate < mIteratorSecondaryDimension - size_type{1}) \
         { \
-            if(mIteratorSecondaryCoordinate == mIteratorSecondaryDimension - 1) \
+            if(mIteratorSecondaryCoordinate == mIteratorSecondaryDimension - size_type{1}) \
             { \
-                mIteratorPrimaryCoordinate = *mIteratorPrimaryCoordinate + 1; \
-                mIteratorSecondaryCoordinate = 0; \
+                mIteratorPrimaryCoordinate = *mIteratorPrimaryCoordinate + size_type{1}; \
+                mIteratorSecondaryCoordinate = size_type{0}; \
             } \
             else \
             { \
-                mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate + 1; \
+                mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate + size_type{1}; \
             } \
         } \
     }
@@ -474,11 +485,11 @@
 #define CHECK_FORWARD_NON_DIAG_ITERATOR_IS_EMPTY(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate) \
     if (mpIteratorPtr) \
     { \
-        assert(mIteratorPrimaryDimension > 0 && mIteratorSecondaryDimension > 0 && mIteratorPrimaryCoordinate.has_value() && mIteratorSecondaryCoordinate.has_value()); \
+        assert(mIteratorPrimaryDimension > size_type{0} && mIteratorSecondaryDimension > size_type{0} && mIteratorPrimaryCoordinate.has_value() && mIteratorSecondaryCoordinate.has_value()); \
     } \
     else \
     { \
-        assert(0 == mIteratorPrimaryDimension && 0 == mIteratorSecondaryDimension && !mIteratorPrimaryCoordinate.has_value() && !mIteratorSecondaryCoordinate.has_value()); \
+        assert(size_type{0} == mIteratorPrimaryDimension && size_type{0} == mIteratorSecondaryDimension && !mIteratorPrimaryCoordinate.has_value() && !mIteratorSecondaryCoordinate.has_value()); \
     } \
 \
     return !mpIteratorPtr;
@@ -486,21 +497,22 @@
 #define CHECK_REVERSE_NON_DIAG_ITERATOR_IS_EMPTY(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate) \
     if (mpIteratorPtr) \
     { \
-        assert(mIteratorPrimaryDimension > 0 && mIteratorSecondaryDimension > 0 && mIteratorPrimaryCoordinate.has_value()); \
+        assert(mIteratorPrimaryDimension > size_type{0} && mIteratorSecondaryDimension > size_type{0} && mIteratorPrimaryCoordinate.has_value()); \
     } \
     else \
     { \
-        assert(0 == mIteratorPrimaryDimension && 0 == mIteratorSecondaryDimension && !mIteratorPrimaryCoordinate.has_value() && !mIteratorSecondaryCoordinate.has_value()); \
+        assert(size_type{0} == mIteratorPrimaryDimension && size_type{0} == mIteratorSecondaryDimension && !mIteratorPrimaryCoordinate.has_value() && !mIteratorSecondaryCoordinate.has_value()); \
     } \
 \
     return !mpIteratorPtr;
 
 #define GET_FORWARD_NON_DIAG_BEGIN_ITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns) \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, 0, 0};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, size_type{0}, size_type{0}};
 
 #define GET_REVERSE_NON_DIAG_BEGIN_ITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns) \
     return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, \
-                        (mMatrixNrOfRows > 0 ? std::optional{mMatrixNrOfRows - 1} : std::nullopt), (mMatrixNrOfColumns > 0 ? std::optional{mMatrixNrOfColumns - 1} : std::nullopt)};
+                        (mMatrixNrOfRows > size_type{0} ? std::optional{mMatrixNrOfRows - size_type{1}} : std::nullopt), \
+                        (mMatrixNrOfColumns > size_type{0} ? std::optional{mMatrixNrOfColumns - size_type{1}} : std::nullopt)};
 
 #define GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows || matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]); \
@@ -509,9 +521,9 @@
 // common DIterator/MIterator macros
 
 #define DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(mIteratorDiagonalSize, mIteratorDiagonalIndex, Sign, scalarValue) \
-    const diff_type c_NormalizedScalarValue = Sign scalarValue; \
-    const size_type c_ResultingIndex = (c_NormalizedScalarValue < 0 && std::abs(c_NormalizedScalarValue) > mIteratorDiagonalIndex) ? 0 \
-                                                                                                                                   : *mIteratorDiagonalIndex + c_NormalizedScalarValue; \
+    const diff_type c_NormalizedScalarValue{static_cast<diff_type>(Sign scalarValue)}; \
+    const size_type c_ResultingIndex{static_cast<size_type>((c_NormalizedScalarValue < diff_type{0} && static_cast<size_type>(std::abs(c_NormalizedScalarValue)) > mIteratorDiagonalIndex) ? size_type{0} \
+                                                                                                        : static_cast<size_type>(static_cast<diff_type>(*mIteratorDiagonalIndex) + c_NormalizedScalarValue))}; \
     mIteratorDiagonalIndex = std::min(c_ResultingIndex, mIteratorDiagonalSize); \
 \
     return *this;
@@ -519,13 +531,13 @@
 #define DIAG_ITERATOR_DO_INCREMENT(mIteratorDiagonalSize, mIteratorDiagonalIndex) \
     if (!_isEmpty() && mIteratorDiagonalIndex < mIteratorDiagonalSize) \
     { \
-        mIteratorDiagonalIndex = *mIteratorDiagonalIndex + 1; \
+        mIteratorDiagonalIndex = *mIteratorDiagonalIndex + size_type{1}; \
     }
 
 #define DIAG_ITERATOR_DO_DECREMENT(mIteratorDiagonalIndex) \
-    if (!_isEmpty() && mIteratorDiagonalIndex > 0) \
+    if (!_isEmpty() && mIteratorDiagonalIndex > size_type{0}) \
     { \
-        mIteratorDiagonalIndex = *mIteratorDiagonalIndex - 1; \
+        mIteratorDiagonalIndex = *mIteratorDiagonalIndex - size_type{1}; \
     }
 
 #define DIAG_ITERATOR_COMPUTE_DIFFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, secondIterator) \
@@ -534,8 +546,7 @@
                           mIteratorDiagonalNr != secondIterator.mIteratorDiagonalNr, \
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]); \
 \
-    /* No overflow occurs as the two operands are automatically converted to diff_type prior to applying difference operation */ \
-    return !_isEmpty() ? (static_cast<diff_type>(*mIteratorDiagonalIndex) - static_cast<diff_type>(*secondIterator.mIteratorDiagonalIndex)) : 0; \
+    return !_isEmpty() ? (static_cast<diff_type>(*mIteratorDiagonalIndex) - static_cast<diff_type>(*secondIterator.mIteratorDiagonalIndex)) : diff_type{0}; \
 
 #define DIAG_ITERATOR_CHECK_EQUIVALENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, secondIterator) \
     CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr || \
@@ -554,9 +565,9 @@
     return _isEmpty() || mIteratorDiagonalIndex == secondIterator.mIteratorDiagonalIndex;
 
 #define GET_DIAG_BEGIN_ITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixDiagonalNr) \
-    CHECK_ERROR_CONDITION(matrixDiagonalNr < (1 - static_cast<diff_type>(mMatrixNrOfRows)) || matrixDiagonalNr > (static_cast<diff_type>(mMatrixNrOfColumns) - 1), \
+    CHECK_ERROR_CONDITION(matrixDiagonalNr < (diff_type{1} - static_cast<diff_type>(mMatrixNrOfRows)) || matrixDiagonalNr > (static_cast<diff_type>(mMatrixNrOfColumns) - diff_type{1}), \
                           Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]); \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, {matrixDiagonalNr, 0}};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, {matrixDiagonalNr, size_type{0}}};
 
 #define GET_DIAG_RANDOM_ITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
@@ -567,106 +578,67 @@
 // specialized ZIterator macros
 
 #define GET_FORWARD_END_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns) \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, (mMatrixNrOfRows > 0 ? mMatrixNrOfRows - 1 : 0), mMatrixNrOfColumns};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, (mMatrixNrOfRows > size_type{0} ? mMatrixNrOfRows - size_type{1} : size_type{0}), mMatrixNrOfColumns};
 
 #define GET_REVERSE_END_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns) \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, 0, std::nullopt};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, size_type{0}, std::nullopt};
 
 #define GET_FORWARD_ROW_BEGIN_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr) \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, 0};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, size_type{0}};
 
 #define GET_REVERSE_ROW_BEGIN_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr) \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
 \
     /* number of columns should be > 0, see above error condition implying matrix should not be empty*/ \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, (mMatrixNrOfColumns > 0 ? mMatrixNrOfColumns - 1 : 0)};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, (mMatrixNrOfColumns > size_type{0} ? mMatrixNrOfColumns - size_type{1} : size_type{0})};
 
 #define GET_FORWARD_ROW_END_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr) \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
 \
-    IteratorType it{}; \
-\
-    /* no overflow, number of rows should be greater than 0, see above error condition implying matrix should not be empty*/ \
-    if (matrixRowNr < mMatrixNrOfRows - 1) \
-    { \
-        it = IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr + 1, 0}; \
-    } \
-    else \
-    { \
-        it = IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, mMatrixNrOfColumns}; \
-    } \
-\
-    return it;
+    /* no overflow, number of rows should be greater than 0, see above error condition implying matrix should not be empty */ \
+    return matrixRowNr < mMatrixNrOfRows - 1 ? IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr + size_type{1}, size_type{0}} \
+                                             : IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, mMatrixNrOfColumns};
 
 #define GET_REVERSE_ROW_END_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr) \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
 \
-    IteratorType it{}; \
-\
-    if (matrixRowNr > 0) \
-    { \
-        /* number of columns should be > 0, see above error condition implying matrix should not be empty*/ \
-        it = IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr - 1, (mMatrixNrOfColumns > 0 ? mMatrixNrOfColumns - 1 : 0)}; \
-    } \
-    else \
-    { \
-        it = IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, 0, std::nullopt}; \
-    } \
-\
-    return it;
+    /* When matrixRowNr > 0 : number of columns should be > 0, see above error condition implying matrix should not be empty */ \
+    return matrixRowNr > size_type{0} ? IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr - size_type{1}, (mMatrixNrOfColumns > size_type{0} ? mMatrixNrOfColumns - size_type{1} \
+                                                                                                                                                                        : size_type{0})} \
+                                      : IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, size_type{0}, std::nullopt};
 
 // specialized NIterator macros
 
 #define GET_FORWARD_END_NITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns) \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns,  mMatrixNrOfRows, mMatrixNrOfColumns > 0 ? mMatrixNrOfColumns - 1 : 0};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns,  mMatrixNrOfRows, mMatrixNrOfColumns > size_type{0} ? mMatrixNrOfColumns - size_type{1} : size_type{0}};
 
 #define GET_REVERSE_END_NITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns) \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, std::nullopt, 0};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, std::nullopt, size_type{0}};
 
 #define GET_FORWARD_COLUMN_BEGIN_NITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, 0, matrixColumnNr};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, size_type{0}, matrixColumnNr};
 
 #define GET_REVERSE_COLUMN_BEGIN_NITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
 \
     /* number of rows should be > 0, see above error condition implying matrix should not be empty */ \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, (mMatrixNrOfRows > 0 ? mMatrixNrOfRows - 1 : 0), matrixColumnNr};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, (mMatrixNrOfRows > size_type{0} ? mMatrixNrOfRows - size_type{1} : size_type{0}), matrixColumnNr};
 
 #define GET_FORWARD_COLUMN_END_NITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
 \
-    IteratorType it{}; \
-\
-    /* no overflow, number of columns should be greater than 0, see above error condition implying matrix should not be empty*/ \
-    if (matrixColumnNr < mMatrixNrOfColumns - 1) \
-    { \
-        it = IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, 0, matrixColumnNr + 1}; \
-    } \
-    else \
-    { \
-        it = IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, mMatrixNrOfRows, matrixColumnNr}; \
-    } \
-\
-    return it;
+    /* no overflow, number of columns should be greater than 0, see above error condition implying matrix should not be empty */ \
+    return matrixColumnNr < mMatrixNrOfColumns - size_type{1} ? IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, size_type{0}, matrixColumnNr + size_type{1}} \
+                                                              : IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, mMatrixNrOfRows, matrixColumnNr};
 
 #define GET_REVERSE_COLUMN_END_NITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixColumnNr) \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
 \
-    IteratorType it{}; \
-\
-    if (matrixColumnNr > 0) \
-    { \
-        /* number of rows should be > 0, see above error condition implying matrix should not be empty */ \
-        it = IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, (mMatrixNrOfRows > 0 ? mMatrixNrOfRows - 1 : 0), matrixColumnNr - 1}; \
-    } \
-    else \
-    { \
-        it = IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, std::nullopt, 0}; \
-    } \
-\
-    return it;
+    /* When matrixColumnNr > 0 : number of rows should be > 0, see above error condition implying matrix should not be empty */ \
+    return matrixColumnNr > size_type{0} ? IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, (mMatrixNrOfRows > size_type{0} ? mMatrixNrOfRows - size_type{1} : size_type{0}), matrixColumnNr - size_type{1}} \
+                                         : IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, std::nullopt, size_type{0}};
 
 // specialized DIterator macros
 
@@ -676,7 +648,7 @@
 \
     if (pMatrixPtr) \
     { \
-        if (matrixRowsCount > 0 && matrixColumnsCount > 0 && matrixRowNr.has_value() && matrixColumnNr.has_value() && matrixRowNr < matrixRowsCount && matrixColumnNr < matrixColumnsCount) \
+        if (matrixRowsCount > size_type{0} && matrixColumnsCount > size_type{0} && matrixRowNr.has_value() && matrixColumnNr.has_value() && matrixRowNr < matrixRowsCount && matrixColumnNr < matrixColumnsCount) \
         { \
             mpIteratorPtr = pMatrixPtr; \
             mIteratorDiagonalNr = static_cast<diff_type>(*matrixColumnNr) - static_cast<diff_type>(*matrixRowNr); \
@@ -693,8 +665,8 @@
     if (!nonEmptyIteratorConstructed) \
     { \
         mpIteratorPtr = nullptr; \
-        mIteratorDiagonalNr = 0; \
-        mIteratorDiagonalSize = 0; \
+        mIteratorDiagonalNr = diff_type{0}; \
+        mIteratorDiagonalSize = size_type{0}; \
     }
 
 #define CONSTRUCT_FORWARD_DITERATOR_WITH_DIAG_NR_AND_INDEX(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, \
@@ -704,17 +676,17 @@
     if (pMatrixPtr) \
     { \
         std::optional<size_type> resultingDiagonalIndex; \
-        size_type resultingDiagonalSize = 0; \
+        size_type resultingDiagonalSize{0}; \
         \
-        if (matrixRowsCount > 0 && matrixColumnsCount > 0 && diagonalIndex.has_value()) \
+        if (matrixRowsCount > size_type{0} && matrixColumnsCount > size_type{0} && diagonalIndex.has_value()) \
         { \
-            const diff_type c_MinDiagonalNr = 1 - static_cast<diff_type>(matrixRowsCount); \
-            const diff_type c_MaxDiagonalNr = static_cast<diff_type>(matrixColumnsCount) - 1; \
+            const diff_type c_MinDiagonalNr{static_cast<diff_type>(diff_type{1} - static_cast<diff_type>(matrixRowsCount))}; \
+            const diff_type c_MaxDiagonalNr{static_cast<diff_type>(static_cast<diff_type>(matrixColumnsCount) - diff_type{1})}; \
 \
             if (diagonalNr >= c_MinDiagonalNr && diagonalNr <= c_MaxDiagonalNr) \
             { \
-                resultingDiagonalSize = diagonalNr < 0 ? std::min<size_type>(matrixRowsCount + diagonalNr, matrixColumnsCount) \
-                                                       : std::min<size_type>(matrixColumnsCount - diagonalNr, matrixRowsCount); \
+                resultingDiagonalSize = diagonalNr < diff_type{0} ? std::min<size_type>(matrixRowsCount - static_cast<size_type>(-diagonalNr), matrixColumnsCount) \
+                                                                  : std::min<size_type>(matrixColumnsCount - static_cast<size_type>(diagonalNr), matrixRowsCount); \
 \
                 if (diagonalIndex <= resultingDiagonalSize) \
                 { \
@@ -740,8 +712,8 @@
     if (!nonEmptyIteratorConstructed) \
     { \
         mpIteratorPtr = nullptr; \
-        mIteratorDiagonalNr = 0; \
-        mIteratorDiagonalSize = 0; \
+        mIteratorDiagonalNr = diff_type{0}; \
+        mIteratorDiagonalSize = size_type{0}; \
     }
 
 #define CONSTRUCT_REVERSE_DITERATOR_WITH_ROW_AND_COLUMN_NR(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, \
@@ -750,14 +722,14 @@
 \
     if (pMatrixPtr) \
     { \
-        const bool c_AreValidDimensions = matrixRowsCount > 0 && matrixColumnsCount > 0; \
+        const bool c_AreValidDimensions{matrixRowsCount > size_type{0} && matrixColumnsCount > size_type{0}}; \
         assert(c_AreValidDimensions); \
 \
         if (c_AreValidDimensions) \
         { \
             const bool c_AreRowAndColumnNrValid{(!matrixRowNr.has_value() && !matrixColumnNr.has_value()) || \
-                                                (!matrixRowNr.has_value() && matrixColumnNr < matrixColumnsCount - 1) || \
-                                                (!matrixColumnNr.has_value() && matrixRowNr < matrixRowsCount - 1) || \
+                                                (!matrixRowNr.has_value() && matrixColumnNr < matrixColumnsCount - size_type{1}) || \
+                                                (!matrixColumnNr.has_value() && matrixRowNr < matrixRowsCount - size_type{1}) || \
                                                 (matrixRowNr.has_value() && matrixColumnNr.has_value() && matrixRowNr < matrixRowsCount && matrixColumnNr < matrixColumnsCount)}; \
             assert(c_AreRowAndColumnNrValid); \
 \
@@ -765,15 +737,15 @@
             { \
                 mpIteratorPtr = pMatrixPtr; \
                 mIteratorDiagonalNr = matrixRowNr.has_value() && matrixColumnNr.has_value() ? static_cast<diff_type>(*matrixColumnNr) - static_cast<diff_type>(*matrixRowNr) \
-                                                                                            : matrixRowNr.has_value() ? -1 - static_cast<diff_type>(*matrixRowNr) \
-                                                                                                                      : matrixColumnNr.has_value() ? static_cast<diff_type>(*matrixColumnNr) + 1 \
-                                                                                                                                                   : 0; \
+                                                                                            : matrixRowNr.has_value() ? diff_type{-1} - static_cast<diff_type>(*matrixRowNr) \
+                                                                                                                      : matrixColumnNr.has_value() ? static_cast<diff_type>(*matrixColumnNr) + diff_type{1} \
+                                                                                                                                                   : diff_type{0}; \
 \
                 /* There should be no overflow risk (the absolute value of the diagonal number is lower than number of rows (negative) / columns (positive) */ \
-                mIteratorDiagonalSize = matrixRowsCount >= matrixColumnsCount ? (mIteratorDiagonalNr < 0 ? matrixRowsCount + mIteratorDiagonalNr : matrixColumnsCount - mIteratorDiagonalNr) \
-                                                                              : (mIteratorDiagonalNr <= 0 ? matrixRowsCount + mIteratorDiagonalNr : matrixColumnsCount - mIteratorDiagonalNr); \
-                mIteratorDiagonalIndex = mIteratorDiagonalNr < 0 ? (matrixColumnNr.has_value() ? mIteratorDiagonalSize - 1 - *matrixColumnNr : mIteratorDiagonalSize) \
-                                                                 : (matrixRowNr.has_value() ? mIteratorDiagonalSize - 1 - *matrixRowNr : mIteratorDiagonalSize); \
+                mIteratorDiagonalSize = matrixRowsCount >= matrixColumnsCount ? (mIteratorDiagonalNr < diff_type{0} ? matrixRowsCount + mIteratorDiagonalNr : matrixColumnsCount - mIteratorDiagonalNr) \
+                                                                              : (mIteratorDiagonalNr <= diff_type{0} ? matrixRowsCount + mIteratorDiagonalNr : matrixColumnsCount - mIteratorDiagonalNr); \
+                mIteratorDiagonalIndex = mIteratorDiagonalNr < diff_type{0} ? (matrixColumnNr.has_value() ? mIteratorDiagonalSize - size_type{1} - *matrixColumnNr : mIteratorDiagonalSize) \
+                                                                            : (matrixRowNr.has_value() ? mIteratorDiagonalSize - size_type{1} - *matrixRowNr : mIteratorDiagonalSize); \
                 nonEmptyIteratorConstructed = true; \
             } \
         } \
@@ -782,8 +754,8 @@
     if (!nonEmptyIteratorConstructed) \
     { \
         mpIteratorPtr = nullptr; \
-        mIteratorDiagonalNr = 0; \
-        mIteratorDiagonalSize = 0; \
+        mIteratorDiagonalNr = diff_type{0}; \
+        mIteratorDiagonalSize = size_type{0}; \
     }
 
 #define CONSTRUCT_REVERSE_DITERATOR_WITH_DIAG_NR_AND_INDEX(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, \
@@ -793,21 +765,20 @@
     if (pMatrixPtr) \
     { \
         std::optional<size_type> resultingDiagonalIndex; \
-        size_type resultingDiagonalSize = 0; \
+        size_type resultingDiagonalSize{0}; \
         \
-        if (matrixRowsCount > 0 && matrixColumnsCount > 0 && diagonalIndex.has_value()) \
+        if (matrixRowsCount > size_type{0} && matrixColumnsCount > size_type{0} && diagonalIndex.has_value()) \
         { \
-            const diff_type c_MinDiagonalNr = 1 - static_cast<diff_type>(matrixRowsCount); \
-            const diff_type c_MaxDiagonalNr = static_cast<diff_type>(matrixColumnsCount) - 1; \
+            const diff_type c_MinDiagonalNr{static_cast<diff_type>(diff_type{1} - static_cast<diff_type>(matrixRowsCount))}; \
+            const diff_type c_MaxDiagonalNr{static_cast<diff_type>(static_cast<diff_type>(matrixColumnsCount) - diff_type{1}); \
 \
             if (diagonalNr >= c_MinDiagonalNr && diagonalNr <= c_MaxDiagonalNr) \
             { \
                 const size_type c_MaxSize{std::max(matrixRowsCount, matrixColumnsCount)}; \
-                const diff_type c_Delta{static_cast<diff_type>(matrixRowsCount) - static_cast<diff_type>(matrixColumnsCount)}; \
 \
                 /* There should be no overflow risk (the absolute value of the diagonal number is lower than number of rows (negative) / columns (positive) */ \
-                resultingDiagonalSize = matrixRowsCount >= matrixColumnsCount ? (mIteratorDiagonalNr < 0 ? matrixRowsCount + mIteratorDiagonalNr : matrixColumnsCount - mIteratorDiagonalNr) \
-                                                                              : (mIteratorDiagonalNr <= 0 ? matrixRowsCount + mIteratorDiagonalNr : matrixColumnsCount - mIteratorDiagonalNr); \
+                resultingDiagonalSize = matrixRowsCount >= matrixColumnsCount ? (mIteratorDiagonalNr < diff_type{0} ? matrixRowsCount + mIteratorDiagonalNr : matrixColumnsCount - mIteratorDiagonalNr) \
+                                                                              : (mIteratorDiagonalNr <= diff_type{0} ? matrixRowsCount + mIteratorDiagonalNr : matrixColumnsCount - mIteratorDiagonalNr); \
 \
                 if (diagonalIndex <= resultingDiagonalSize) \
                 { \
@@ -833,15 +804,15 @@
     if (!nonEmptyIteratorConstructed) \
     { \
         mpIteratorPtr = nullptr; \
-        mIteratorDiagonalNr = 0; \
-        mIteratorDiagonalSize = 0; \
+        mIteratorDiagonalNr = diff_type{0}; \
+        mIteratorDiagonalSize = size_type{0}; \
     }
 
 #define FORWARD_DITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex) \
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
-    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(*mIteratorDiagonalIndex + std::abs(mIteratorDiagonalNr)) : *mIteratorDiagonalIndex}; \
-    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? *mIteratorDiagonalIndex : static_cast<size_type>(*mIteratorDiagonalIndex + mIteratorDiagonalNr)}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(*mIteratorDiagonalIndex + static_cast<size_type>(-mIteratorDiagonalNr)) : *mIteratorDiagonalIndex}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < diff_type{0} ? *mIteratorDiagonalIndex : static_cast<size_type>(*mIteratorDiagonalIndex + static_cast<size_type>(mIteratorDiagonalNr))}; \
 \
     return mpIteratorPtr[c_IteratorRowNr][c_IteratorColumnNr];
 
@@ -849,18 +820,18 @@
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
     /* no overflow risk, diagonal index is less than diagonal size */ \
-    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - 1 + std::abs(mIteratorDiagonalNr)) \
-                                                            : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - 1)}; \
-    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - 1) \
-                                                               : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - 1 + mIteratorDiagonalNr)}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} + static_cast<size_type>(-mIteratorDiagonalNr)) \
+                                                            : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1})}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1}) \
+                                                               : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} + static_cast<size_type>(mIteratorDiagonalNr))}; \
 \
     return mpIteratorPtr[c_IteratorRowNr][c_IteratorColumnNr];
 
 #define FORWARD_DITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex) \
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
-    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(*mIteratorDiagonalIndex + std::abs(mIteratorDiagonalNr)) : *mIteratorDiagonalIndex}; \
-    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? *mIteratorDiagonalIndex : static_cast<size_type>(*mIteratorDiagonalIndex + mIteratorDiagonalNr)}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(*mIteratorDiagonalIndex + static_cast<size_type>(-mIteratorDiagonalNr)) : *mIteratorDiagonalIndex}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < diff_type{0} ? *mIteratorDiagonalIndex : static_cast<size_type>(*mIteratorDiagonalIndex + static_cast<size_type>(mIteratorDiagonalNr))}; \
 \
     return (mpIteratorPtr[c_IteratorRowNr] + c_IteratorColumnNr);
 
@@ -868,37 +839,37 @@
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
     /* no overflow risk, diagonal index is less than diagonal size */ \
-    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - 1 + std::abs(mIteratorDiagonalNr)) \
-                                                            : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - 1)}; \
-    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - 1) \
-                                                               : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - 1 + mIteratorDiagonalNr)}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} + static_cast<size_type>(-mIteratorDiagonalNr)) \
+                                                                       : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1})}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1}) \
+                                                                          : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} + static_cast<size_type>(mIteratorDiagonalNr))}; \
 \
     return (mpIteratorPtr[c_IteratorRowNr] + c_IteratorColumnNr);
 
 #define FORWARD_DITERATOR_INDEX_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, arrayIndex) \
-    CHECK_ERROR_CONDITION(_isEmpty() || (arrayIndex < 0 && std::abs(arrayIndex) > mIteratorDiagonalIndex), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
+    CHECK_ERROR_CONDITION(_isEmpty() || (arrayIndex < diff_type{0} && static_cast<size_type>(std::abs(arrayIndex)) > mIteratorDiagonalIndex), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
-    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(*mIteratorDiagonalIndex + arrayIndex)}; \
+    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*mIteratorDiagonalIndex) + arrayIndex)}; \
 \
     CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
-    const size_type c_ResultingRowNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(c_ResultingDiagonalIndex + std::abs(mIteratorDiagonalNr)) : c_ResultingDiagonalIndex}; \
-    const size_type c_ResultingColumnNr{mIteratorDiagonalNr < 0 ? c_ResultingDiagonalIndex : static_cast<size_type>(c_ResultingDiagonalIndex + mIteratorDiagonalNr)}; \
+    const size_type c_ResultingRowNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(c_ResultingDiagonalIndex + static_cast<size_type>(-mIteratorDiagonalNr)) : c_ResultingDiagonalIndex}; \
+    const size_type c_ResultingColumnNr{mIteratorDiagonalNr < diff_type{0} ? c_ResultingDiagonalIndex : static_cast<size_type>(c_ResultingDiagonalIndex + static_cast<size_type>(mIteratorDiagonalNr))}; \
 \
     return mpIteratorPtr[c_ResultingRowNr][c_ResultingColumnNr];
 
 #define REVERSE_DITERATOR_INDEX_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, arrayIndex) \
-    CHECK_ERROR_CONDITION(_isEmpty() || (arrayIndex < 0 && std::abs(arrayIndex) > mIteratorDiagonalIndex), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
+    CHECK_ERROR_CONDITION(_isEmpty() || (arrayIndex < diff_type{0} && static_cast<size_type>(std::abs(arrayIndex)) > mIteratorDiagonalIndex), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
-    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(*mIteratorDiagonalIndex + arrayIndex)}; \
+    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*mIteratorDiagonalIndex) + arrayIndex)}; \
 \
     CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
     /* no overflow risk, diagonal index is less than diagonal size */ \
-    const size_type c_ResultingRowNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorDiagonalSize - c_ResultingDiagonalIndex - 1 + std::abs(mIteratorDiagonalNr)) \
-                                                             : static_cast<size_type>(mIteratorDiagonalSize - c_ResultingDiagonalIndex - 1)}; \
-    const size_type c_ResultingColumnNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorDiagonalSize - c_ResultingDiagonalIndex - 1) \
-                                                                : static_cast<size_type>(mIteratorDiagonalSize - c_ResultingDiagonalIndex - 1 + mIteratorDiagonalNr)}; \
+    const size_type c_ResultingRowNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorDiagonalSize - c_ResultingDiagonalIndex - size_type{1} + static_cast<size_type>(-mIteratorDiagonalNr)) \
+                                                                        : static_cast<size_type>(mIteratorDiagonalSize - c_ResultingDiagonalIndex - size_type{1})}; \
+    const size_type c_ResultingColumnNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorDiagonalSize - c_ResultingDiagonalIndex - size_type{1}) \
+                                                                           : static_cast<size_type>(mIteratorDiagonalSize - c_ResultingDiagonalIndex - size_type{1} + static_cast<size_type>(mIteratorDiagonalNr))}; \
 \
     return mpIteratorPtr[c_ResultingRowNr][c_ResultingColumnNr];
 
@@ -906,17 +877,17 @@
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
 \
-    const auto c_DiagonalNr{static_cast<diff_type>(matrixColumnNr) - static_cast<diff_type>(matrixRowNr)}; \
+    const auto c_DiagonalNr{static_cast<diff_type>(static_cast<diff_type>(matrixColumnNr) - static_cast<diff_type>(matrixRowNr))}; \
 \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, {c_DiagonalNr, 0}};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, {c_DiagonalNr, size_type{0}}};
 
 #define GET_END_DITERATOR_BY_DIAG_NUMBER(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixDiagonalNr) \
-    CHECK_ERROR_CONDITION(matrixDiagonalNr < (1 - static_cast<diff_type>(mMatrixNrOfRows)) || \
-                          matrixDiagonalNr > (static_cast<diff_type>(mMatrixNrOfColumns) - 1), \
+    CHECK_ERROR_CONDITION(matrixDiagonalNr < (diff_type{1} - static_cast<diff_type>(mMatrixNrOfRows)) || \
+                          matrixDiagonalNr > (static_cast<diff_type>(mMatrixNrOfColumns) - diff_type{1}), \
                           Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]); \
 \
-    const size_type c_BeginRowNr{matrixDiagonalNr < 0 ? static_cast<size_type>(std::abs(matrixDiagonalNr)) : size_type{0}}; \
-    const size_type c_BeginColumnNr{matrixDiagonalNr < 0 ? size_type{0} : static_cast<size_type>(matrixDiagonalNr)}; \
+    const size_type c_BeginRowNr{matrixDiagonalNr < diff_type{0} ? static_cast<size_type>(-matrixDiagonalNr) : size_type{0}}; \
+    const size_type c_BeginColumnNr{matrixDiagonalNr < diff_type{0} ? size_type{0} : static_cast<size_type>(matrixDiagonalNr)}; \
 \
     /* no overflow risk, begin row number and begin column number determined based on diagonal number which should not exceed total number of rows/columns (see above error condition) */ \
     const size_type c_EndDiagonalIndex{std::min(static_cast<size_type>(mMatrixNrOfRows - c_BeginRowNr), static_cast<size_type>(mMatrixNrOfColumns - c_BeginColumnNr))}; \
@@ -927,10 +898,10 @@
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
 \
-    const auto c_DiagonalNr{static_cast<diff_type>(matrixColumnNr) - static_cast<diff_type>(matrixRowNr)}; \
+    const auto c_DiagonalNr{static_cast<diff_type>(static_cast<diff_type>(matrixColumnNr) - static_cast<diff_type>(matrixRowNr))}; \
 \
-    const size_type c_BeginRowNr{c_DiagonalNr < 0 ? static_cast<size_type>(std::abs(c_DiagonalNr)) : size_type{0}}; \
-    const size_type c_BeginColumnNr{c_DiagonalNr < 0 ? size_type{0} : static_cast<size_type>(c_DiagonalNr)}; \
+    const size_type c_BeginRowNr{c_DiagonalNr < diff_type{0} ? static_cast<size_type>(-c_DiagonalNr) : size_type{0}}; \
+    const size_type c_BeginColumnNr{c_DiagonalNr < diff_type{0} ? size_type{0} : static_cast<size_type>(c_DiagonalNr)}; \
 \
     /* no overflow risk, begin row number and begin column number determined based on diagonal number which should not exceed total number of rows/columns (see above error conditions) */ \
     const size_type c_EndDiagonalIndex{std::min(static_cast<size_type>(mMatrixNrOfRows - c_BeginRowNr), static_cast<size_type>(mMatrixNrOfColumns - c_BeginColumnNr))}; \
@@ -938,12 +909,12 @@
     return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, {c_DiagonalNr, c_EndDiagonalIndex}};
 
 #define GET_RANDOM_DITERATOR_BY_DIAG_NUMBER_AND_INDEX(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, iteratorDiagonalNr, iteratorDiagonalIndex) \
-    CHECK_ERROR_CONDITION(iteratorDiagonalNr < (1 - static_cast<diff_type>(mMatrixNrOfRows)) || \
-                          iteratorDiagonalNr > (static_cast<diff_type>(mMatrixNrOfColumns) - 1), \
+    CHECK_ERROR_CONDITION(iteratorDiagonalNr < (diff_type{1} - static_cast<diff_type>(mMatrixNrOfRows)) || \
+                          iteratorDiagonalNr > (static_cast<diff_type>(mMatrixNrOfColumns) - diff_type{1}), \
                           Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]); \
 \
-    const size_type c_BeginRowNr{iteratorDiagonalNr < 0 ? static_cast<size_type>(std::abs(iteratorDiagonalNr)) : size_type{0}}; \
-    const size_type c_BeginColumnNr{iteratorDiagonalNr < 0 ? size_type{0} : static_cast<size_type>(iteratorDiagonalNr)}; \
+    const size_type c_BeginRowNr{iteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(-iteratorDiagonalNr) : size_type{0}}; \
+    const size_type c_BeginColumnNr{iteratorDiagonalNr < diff_type{0} ? size_type{0} : static_cast<size_type>(iteratorDiagonalNr)}; \
 \
     /* no overflow risk, begin row number and begin column number determined based on diagonal number which should not exceed total number of rows/columns (see above error condition) */ \
     const size_type c_DiagonalSize{std::min(static_cast<size_type>(mMatrixNrOfRows - c_BeginRowNr), static_cast<size_type>(mMatrixNrOfColumns - c_BeginColumnNr))}; \
@@ -955,11 +926,11 @@
 #define CHECK_DITERATOR_IS_EMPTY(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex) \
     if (mpIteratorPtr) \
     { \
-        assert(mIteratorDiagonalSize > 0 && mIteratorDiagonalIndex.has_value()); \
+        assert(mIteratorDiagonalSize > size_type{0} && mIteratorDiagonalIndex.has_value()); \
     } \
     else \
     { \
-        assert(0 == mIteratorDiagonalNr && 0 == mIteratorDiagonalSize && !mIteratorDiagonalIndex.has_value()); \
+        assert(diff_type{0} == mIteratorDiagonalNr && size_type{0} == mIteratorDiagonalSize && !mIteratorDiagonalIndex.has_value()); \
     } \
 \
     return !mpIteratorPtr;
@@ -972,12 +943,12 @@
 \
     if (pMatrixPtr) \
     { \
-        if (matrixRowsCount > 0 && matrixColumnsCount > 0 && matrixRowNr.has_value() && matrixColumnNr.has_value() && matrixRowNr < matrixRowsCount && matrixColumnNr < matrixColumnsCount) \
+        if (matrixRowsCount > size_type{0} && matrixColumnsCount > size_type{0} && matrixRowNr.has_value() && matrixColumnNr.has_value() && matrixRowNr < matrixRowsCount && matrixColumnNr < matrixColumnsCount) \
         { \
             mpIteratorPtr = pMatrixPtr; \
-            mIteratorDiagonalNr = static_cast<diff_type>(matrixColumnsCount - *matrixColumnNr) - static_cast<diff_type>(*matrixRowNr) - 1; \
-            mIteratorDiagonalIndex = std::min<size_type>(*matrixRowNr, matrixColumnsCount - *matrixColumnNr - 1); \
-            mIteratorDiagonalSize = *mIteratorDiagonalIndex + std::min<size_type>(matrixRowsCount - *matrixRowNr, *matrixColumnNr + 1); \
+            mIteratorDiagonalNr = static_cast<diff_type>(static_cast<diff_type>(matrixColumnsCount) - static_cast<diff_type>(*matrixColumnNr)) - static_cast<diff_type>(*matrixRowNr) - diff_type{1}; \
+            mIteratorDiagonalIndex = std::min<size_type>(*matrixRowNr, matrixColumnsCount - *matrixColumnNr - size_type{1}); \
+            mIteratorDiagonalSize = *mIteratorDiagonalIndex + std::min<size_type>(matrixRowsCount - *matrixRowNr, *matrixColumnNr + size_type{1}); \
             mIteratorColumnsCount = matrixColumnsCount; \
             nonEmptyIteratorConstructed = true; \
         } \
@@ -990,9 +961,9 @@
     if (!nonEmptyIteratorConstructed) \
     { \
         mpIteratorPtr = nullptr; \
-        mIteratorDiagonalNr = 0; \
-        mIteratorDiagonalSize = 0; \
-        mIteratorColumnsCount = 0; \
+        mIteratorDiagonalNr = diff_type{0}; \
+        mIteratorDiagonalSize = size_type{0}; \
+        mIteratorColumnsCount = size_type{0}; \
     }
 
 #define CONSTRUCT_FORWARD_MITERATOR_WITH_DIAG_NR_AND_INDEX(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount, \
@@ -1002,17 +973,17 @@
     if (pMatrixPtr) \
     { \
         std::optional<size_type> resultingDiagonalIndex; \
-        size_type resultingDiagonalSize = 0; \
+        size_type resultingDiagonalSize{0}; \
         \
-        if (matrixRowsCount > 0 && matrixColumnsCount > 0 && diagonalIndex.has_value()) \
+        if (matrixRowsCount > size_type{0} && matrixColumnsCount > size_type{0} && diagonalIndex.has_value()) \
         { \
-            const diff_type c_MinDiagonalNr = 1 - static_cast<diff_type>(matrixRowsCount); \
-            const diff_type c_MaxDiagonalNr = static_cast<diff_type>(matrixColumnsCount) - 1; \
+            const diff_type c_MinDiagonalNr{static_cast<diff_type>(diff_type{1} - static_cast<diff_type>(matrixRowsCount))}; \
+            const diff_type c_MaxDiagonalNr{static_cast<diff_type>(static_cast<diff_type>(matrixColumnsCount) - diff_type{1})}; \
 \
             if (diagonalNr >= c_MinDiagonalNr && diagonalNr <= c_MaxDiagonalNr) \
             { \
-                resultingDiagonalSize = diagonalNr < 0 ? std::min<size_type>(matrixRowsCount + diagonalNr, matrixColumnsCount) \
-                                                       : std::min<size_type>(matrixColumnsCount - diagonalNr, matrixRowsCount); \
+                resultingDiagonalSize = diagonalNr < diff_type{0} ? std::min<size_type>(matrixRowsCount - static_cast<size_type>(-diagonalNr), matrixColumnsCount) \
+                                                                  : std::min<size_type>(matrixColumnsCount - static_cast<size_type>(diagonalNr), matrixRowsCount); \
 \
                 if (diagonalIndex <= resultingDiagonalSize) \
                 { \
@@ -1039,9 +1010,9 @@
     if (!nonEmptyIteratorConstructed) \
     { \
         mpIteratorPtr = nullptr; \
-        mIteratorDiagonalNr = 0; \
-        mIteratorDiagonalSize = 0; \
-        mIteratorColumnsCount = 0; \
+        mIteratorDiagonalNr = diff_type{0}; \
+        mIteratorDiagonalSize = size_type{0}; \
+        mIteratorColumnsCount = size_type{0}; \
     }
 
 #define CONSTRUCT_REVERSE_MITERATOR_WITH_ROW_AND_COLUMN_NR(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount, \
@@ -1050,25 +1021,25 @@
 \
     if (pMatrixPtr) \
     { \
-        if (matrixRowsCount > 0 && matrixColumnsCount > 0 && matrixColumnNr.has_value() && matrixColumnNr <= matrixColumnsCount) \
+        if (matrixRowsCount > size_type{0} && matrixColumnsCount > size_type{0} && matrixColumnNr.has_value() && matrixColumnNr <= matrixColumnsCount) \
         { \
-            const bool c_IsValidRowNr = (!matrixRowNr.has_value() && matrixColumnNr > 0) || \
-                                         (matrixRowNr.has_value() && ((matrixRowNr < matrixRowsCount - 1 && matrixColumnNr == matrixColumnsCount) || \
-                                                                      (matrixRowNr < matrixRowsCount && matrixColumnNr < matrixColumnsCount))); \
+            const bool c_IsValidRowNr{(!matrixRowNr.has_value() && matrixColumnNr > size_type{0}) || \
+                                       (matrixRowNr.has_value() && ((matrixRowNr < matrixRowsCount - size_type{1} && matrixColumnNr == matrixColumnsCount) || \
+                                                                    (matrixRowNr < matrixRowsCount && matrixColumnNr < matrixColumnsCount)))}; \
             assert(c_IsValidRowNr); \
 \
             if (c_IsValidRowNr) \
             { \
                 mpIteratorPtr = pMatrixPtr; \
-                mIteratorDiagonalNr = matrixRowNr.has_value() ? static_cast<diff_type>(matrixColumnsCount - *matrixColumnNr) - static_cast<diff_type>(*matrixRowNr) - 1 \
-                                                              : static_cast<diff_type>(matrixColumnsCount - *matrixColumnNr); \
+                mIteratorDiagonalNr = matrixRowNr.has_value() ? static_cast<diff_type>(static_cast<diff_type>(matrixColumnsCount) - static_cast<diff_type>(*matrixColumnNr)) - static_cast<diff_type>(*matrixRowNr) - diff_type{1} \
+                                                              : static_cast<diff_type>(static_cast<diff_type>(matrixColumnsCount) - static_cast<diff_type>(*matrixColumnNr)); \
 \
                 /* There should be no overflow risk (the absolute value of the diagonal number is lower than number of rows (negative) / columns (positive) */ \
-                mIteratorDiagonalSize = matrixRowsCount >= matrixColumnsCount ? (mIteratorDiagonalNr < 0 ? matrixRowsCount + mIteratorDiagonalNr : matrixColumnsCount - mIteratorDiagonalNr) \
-                                                                              : (mIteratorDiagonalNr <= 0 ? matrixRowsCount + mIteratorDiagonalNr : matrixColumnsCount - mIteratorDiagonalNr); \
-                mIteratorDiagonalIndex = mIteratorDiagonalNr < 0 ? mIteratorDiagonalSize - matrixColumnsCount + *matrixColumnNr \
-                                                                 : matrixRowNr.has_value() ? mIteratorDiagonalSize - 1 - *matrixRowNr \
-                                                                                           : mIteratorDiagonalSize; \
+                mIteratorDiagonalSize = matrixRowsCount >= matrixColumnsCount ? (mIteratorDiagonalNr < diff_type{0} ? matrixRowsCount - static_cast<size_type>(-mIteratorDiagonalNr) : matrixColumnsCount + static_cast<size_type>(-mIteratorDiagonalNr)) \
+                                                                              : (mIteratorDiagonalNr <= diff_type{0} ? matrixRowsCount + static_cast<size_type>(mIteratorDiagonalNr) : matrixColumnsCount - static_cast<size_type>(mIteratorDiagonalNr)); \
+                mIteratorDiagonalIndex = mIteratorDiagonalNr < diff_type{0} ? mIteratorDiagonalSize - matrixColumnsCount + *matrixColumnNr \
+                                                                            : matrixRowNr.has_value() ? mIteratorDiagonalSize - size_type{1} - *matrixRowNr \
+                                                                                                      : mIteratorDiagonalSize; \
                 mIteratorColumnsCount = matrixColumnsCount; \
                 nonEmptyIteratorConstructed = true; \
             } \
@@ -1082,9 +1053,9 @@
     if (!nonEmptyIteratorConstructed) \
     { \
         mpIteratorPtr = nullptr; \
-        mIteratorDiagonalNr = 0; \
-        mIteratorDiagonalSize = 0; \
-        mIteratorColumnsCount = 0; \
+        mIteratorDiagonalNr = diff_type{0}; \
+        mIteratorDiagonalSize = size_type{0}; \
+        mIteratorColumnsCount = size_type{0}; \
     }
 
 #define CONSTRUCT_REVERSE_MITERATOR_WITH_DIAG_NR_AND_INDEX(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount, \
@@ -1094,18 +1065,18 @@
     if (pMatrixPtr) \
     { \
         std::optional<size_type> resultingDiagonalIndex; \
-        size_type resultingDiagonalSize = 0; \
+        size_type resultingDiagonalSize{0}; \
         \
-        if (matrixRowsCount > 0 && matrixColumnsCount > 0 && diagonalIndex.has_value()) \
+        if (matrixRowsCount > size_type{0} && matrixColumnsCount > size_type{0} && diagonalIndex.has_value()) \
         { \
-            const diff_type c_MinDiagonalNr = 1 - static_cast<diff_type>(matrixRowsCount); \
-            const diff_type c_MaxDiagonalNr = static_cast<diff_type>(matrixColumnsCount) - 1; \
+            const diff_type c_MinDiagonalNr = diff_type{1} - static_cast<diff_type>(matrixRowsCount); \
+            const diff_type c_MaxDiagonalNr = static_cast<diff_type>(matrixColumnsCount) - diff_type{1}; \
 \
             if (diagonalNr >= c_MinDiagonalNr && diagonalNr <= c_MaxDiagonalNr) \
             { \
                 /* There should be no overflow risk (the absolute value of the diagonal number is lower than number of rows (negative) / columns (positive) */ \
-                resultingDiagonalSize = matrixRowsCount >= matrixColumnsCount ? (diagonalNr < 0 ? matrixRowsCount + diagonalNr : matrixColumnsCount - diagonalNr) \
-                                                                              : (diagonalNr <= 0 ? matrixRowsCount + diagonalNr : matrixColumnsCount - diagonalNr); \
+                resultingDiagonalSize = matrixRowsCount >= matrixColumnsCount ? (diagonalNr < diff_type{0} ? matrixRowsCount - static_cast<size_type>(-diagonalNr) : matrixColumnsCount + static_cast<size_type>(-diagonalNr)) \
+                                                                              : (diagonalNr <= diff_type{0} ? matrixRowsCount + static_cast<size_type>(diagonalNr) : matrixColumnsCount - static_cast<size_type>(diagonalNr)); \
 \
                 if (diagonalIndex <= resultingDiagonalSize) \
                 { \
@@ -1132,20 +1103,20 @@
     if (!nonEmptyIteratorConstructed) \
     { \
         mpIteratorPtr = nullptr; \
-        mIteratorDiagonalNr = 0; \
-        mIteratorDiagonalSize = 0; \
-        mIteratorColumnsCount = 0; \
+        mIteratorDiagonalNr = diff_type{0}; \
+        mIteratorDiagonalSize = size_type{0}; \
+        mIteratorColumnsCount = size_type{0}; \
     }
 
 #define FORWARD_MITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount) \
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
-    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(*mIteratorDiagonalIndex + std::abs(mIteratorDiagonalNr)) : *mIteratorDiagonalIndex}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(*mIteratorDiagonalIndex + static_cast<size_type>(-mIteratorDiagonalNr)) : *mIteratorDiagonalIndex}; \
 \
     /* No overflow as the maximum diagonal index (for non-end iterators in non-empty matrixes) is less than the difference between the */ \
     /* columns count and diagonal number (for positive diagonals) respectively less than the number of columns (for negative diagonals) */ \
-    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorColumnsCount - *mIteratorDiagonalIndex - 1) \
-                                                               : static_cast<size_type>(mIteratorColumnsCount - *mIteratorDiagonalIndex - 1 - mIteratorDiagonalNr)}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorColumnsCount - *mIteratorDiagonalIndex - size_type{1}) \
+                                                                          : static_cast<size_type>(mIteratorColumnsCount - *mIteratorDiagonalIndex - size_type{1} - mIteratorDiagonalNr)}; \
 \
     return mpIteratorPtr[c_IteratorRowNr][c_IteratorColumnNr];
 
@@ -1153,22 +1124,22 @@
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
     /* No overflow risk: diagonal index is smaller than diagonal size; diagonal size is not higher than number of columns; diagonal number if smaller than number of columns */ \
-    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - 1  + std::abs(mIteratorDiagonalNr)) \
-                                                            : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - 1)}; \
-    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + *mIteratorDiagonalIndex) \
-                                                               : static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + *mIteratorDiagonalIndex - mIteratorDiagonalNr)}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1}  + static_cast<size_type>(-mIteratorDiagonalNr)) \
+                                                                       : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1})}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + *mIteratorDiagonalIndex) \
+                                                                          : static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + *mIteratorDiagonalIndex - static_cast<size_type>(mIteratorDiagonalNr))}; \
 \
     return mpIteratorPtr[c_IteratorRowNr][c_IteratorColumnNr];
 
 #define FORWARD_MITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount) \
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
-    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(*mIteratorDiagonalIndex + std::abs(mIteratorDiagonalNr)) : *mIteratorDiagonalIndex}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(*mIteratorDiagonalIndex + static_cast<size_type>(-mIteratorDiagonalNr)) : *mIteratorDiagonalIndex}; \
 \
     /* No overflow as the maximum diagonal index (for non-end iterators in non-empty matrixes) is less than the difference between the */ \
     /* columns count and diagonal number (for positive diagonals) respectively less than the number of columns (for negative diagonals) */ \
-    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorColumnsCount - *mIteratorDiagonalIndex - 1) \
-                                                               : static_cast<size_type>(mIteratorColumnsCount - *mIteratorDiagonalIndex - 1 - mIteratorDiagonalNr)}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorColumnsCount - *mIteratorDiagonalIndex - size_type{1}) \
+                                                                          : static_cast<size_type>(mIteratorColumnsCount - *mIteratorDiagonalIndex - size_type{1} - static_cast<size_type>(mIteratorDiagonalNr))}; \
 \
     return (mpIteratorPtr[c_IteratorRowNr] + c_IteratorColumnNr);
 
@@ -1176,41 +1147,41 @@
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]); \
 \
     /* No overflow risk: diagonal index is smaller than diagonal size; diagonal size is not higher than number of columns; diagonal number if smaller than number of columns */ \
-    const size_type c_IteratorRowNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - 1 + std::abs(mIteratorDiagonalNr)) \
-                                                            : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - 1)}; \
-    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + *mIteratorDiagonalIndex) \
-                                                               : static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + *mIteratorDiagonalIndex - mIteratorDiagonalNr)}; \
+    const size_type c_IteratorRowNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} + static_cast<size_type>(-mIteratorDiagonalNr)) \
+                                                                       : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1})}; \
+    const size_type c_IteratorColumnNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + *mIteratorDiagonalIndex) \
+                                                                          : static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + *mIteratorDiagonalIndex - static_cast<size_type>(mIteratorDiagonalNr))}; \
 \
     return (mpIteratorPtr[c_IteratorRowNr] + c_IteratorColumnNr);
 
 #define FORWARD_MITERATOR_INDEX_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount, arrayIndex) \
-    CHECK_ERROR_CONDITION(_isEmpty() || (arrayIndex < 0 && std::abs(arrayIndex) > mIteratorDiagonalIndex), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
+    CHECK_ERROR_CONDITION(_isEmpty() || (arrayIndex < diff_type{0} && static_cast<size_type>(std::abs(arrayIndex)) > mIteratorDiagonalIndex), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
-    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(*mIteratorDiagonalIndex + arrayIndex)}; \
+    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*mIteratorDiagonalIndex) + arrayIndex)}; \
 \
     CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
-    const size_type c_ResultingRowNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(c_ResultingDiagonalIndex + std::abs(mIteratorDiagonalNr)) : c_ResultingDiagonalIndex}; \
+    const size_type c_ResultingRowNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(c_ResultingDiagonalIndex + static_cast<size_type>(-mIteratorDiagonalNr)) : c_ResultingDiagonalIndex}; \
 \
     /* No overflow as the maximum diagonal index (for non-end iterators in non-empty matrixes) is less than the difference between the */ \
     /* columns count and diagonal number (for positive diagonals) respectively less than the number of columns (for negative diagonals) */ \
-    const size_type c_ResultingColumnNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorColumnsCount - c_ResultingDiagonalIndex - 1) \
-                                                                : static_cast<size_type>(mIteratorColumnsCount - c_ResultingDiagonalIndex - 1 - mIteratorDiagonalNr)}; \
+    const size_type c_ResultingColumnNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorColumnsCount - c_ResultingDiagonalIndex - size_type{1}) \
+                                                                           : static_cast<size_type>(mIteratorColumnsCount - c_ResultingDiagonalIndex - size_type{1} - static_cast<size_type>(mIteratorDiagonalNr))}; \
 \
     return mpIteratorPtr[c_ResultingRowNr][c_ResultingColumnNr];
 
 #define REVERSE_MITERATOR_INDEX_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorColumnsCount, arrayIndex) \
-    CHECK_ERROR_CONDITION(_isEmpty() || (arrayIndex < 0 && std::abs(arrayIndex) > mIteratorDiagonalIndex), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
+    CHECK_ERROR_CONDITION(_isEmpty() || (arrayIndex < diff_type{0} && static_cast<size_type>(std::abs(arrayIndex)) > mIteratorDiagonalIndex), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
-    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(*mIteratorDiagonalIndex + arrayIndex)}; \
+    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*mIteratorDiagonalIndex) + arrayIndex)}; \
 \
     CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= mIteratorDiagonalSize, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]); \
 \
     /* No overflow risk: diagonal index is smaller than diagonal size; diagonal size is not higher than number of columns; diagonal number if smaller than number of columns */ \
-    const size_type c_ResultingRowNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorDiagonalSize - c_ResultingDiagonalIndex - 1 + std::abs(mIteratorDiagonalNr)) \
-                                                             : static_cast<size_type>(mIteratorDiagonalSize - c_ResultingDiagonalIndex - 1)}; \
-    const size_type c_ResultingColumnNr{mIteratorDiagonalNr < 0 ? static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + c_ResultingDiagonalIndex) \
-                                                                : static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + c_ResultingDiagonalIndex - mIteratorDiagonalNr)}; \
+    const size_type c_ResultingRowNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorDiagonalSize - c_ResultingDiagonalIndex - size_type{1} + static_cast<size_type>(-mIteratorDiagonalNr)) \
+                                                                        : static_cast<size_type>(mIteratorDiagonalSize - c_ResultingDiagonalIndex - size_type{1})}; \
+    const size_type c_ResultingColumnNr{mIteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + c_ResultingDiagonalIndex) \
+                                                                           : static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + c_ResultingDiagonalIndex - static_cast<size_type>(mIteratorDiagonalNr))}; \
 \
     return mpIteratorPtr[c_ResultingRowNr][c_ResultingColumnNr];
 
@@ -1218,21 +1189,21 @@
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
 \
-    const auto c_DiagonalNr{static_cast<diff_type>(mMatrixNrOfColumns - matrixColumnNr - 1) - static_cast<diff_type>(matrixRowNr)}; \
+    const auto c_DiagonalNr{static_cast<diff_type>(static_cast<diff_type>(mMatrixNrOfColumns) - static_cast<diff_type>(matrixColumnNr) - diff_type{1}) - static_cast<diff_type>(matrixRowNr)}; \
 \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, {c_DiagonalNr, 0}};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, {c_DiagonalNr, size_type{0}}};
 
 #define GET_END_MITERATOR_BY_DIAG_NUMBER(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixDiagonalNr) \
-    CHECK_ERROR_CONDITION(matrixDiagonalNr < (1 - static_cast<diff_type>(mMatrixNrOfRows)) || \
-                          matrixDiagonalNr > (static_cast<diff_type>(mMatrixNrOfColumns) - 1), \
+    CHECK_ERROR_CONDITION(matrixDiagonalNr < (diff_type{1} - static_cast<diff_type>(mMatrixNrOfRows)) || \
+                          matrixDiagonalNr > (static_cast<diff_type>(mMatrixNrOfColumns) - diff_type{1}), \
                           Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]); \
 \
-    const size_type c_BeginRowNr{matrixDiagonalNr < 0 ? static_cast<size_type>(std::abs(matrixDiagonalNr)) : size_type{0}}; \
+    const size_type c_BeginRowNr{matrixDiagonalNr < diff_type{0} ? static_cast<size_type>(-matrixDiagonalNr) : size_type{0}}; \
 \
     /* no overflow as for positive diagonals the diagonal number should be strictly smaller than the number */ \
     /* of matrix columns if the matrix is not empty (if empty above error condition triggers) */ \
-    const size_type c_BeginColumnNr{matrixDiagonalNr <= 0 ? static_cast<size_type>(mMatrixNrOfColumns - 1) : static_cast<size_type>(mMatrixNrOfColumns - 1 - matrixDiagonalNr)}; \
-    const size_type c_EndDiagonalIndex{std::min(static_cast<size_type>(mMatrixNrOfRows - c_BeginRowNr), static_cast<size_type>(c_BeginColumnNr + 1))}; \
+    const size_type c_BeginColumnNr{matrixDiagonalNr <= diff_type{0} ? static_cast<size_type>(mMatrixNrOfColumns - size_type{1}) : static_cast<size_type>(mMatrixNrOfColumns - size_type{1} - static_cast<size_type>(matrixDiagonalNr))}; \
+    const size_type c_EndDiagonalIndex{std::min(static_cast<size_type>(mMatrixNrOfRows - c_BeginRowNr), static_cast<size_type>(c_BeginColumnNr + size_type{1}))}; \
 \
     return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, {matrixDiagonalNr, c_EndDiagonalIndex}};
 
@@ -1240,31 +1211,31 @@
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]); \
     CHECK_ERROR_CONDITION(matrixColumnNr >= mMatrixNrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]); \
 \
-    const auto c_DiagonalNr{static_cast<diff_type>(mMatrixNrOfColumns - matrixColumnNr - 1) - static_cast<diff_type>(matrixRowNr)}; \
+    const auto c_DiagonalNr{static_cast<diff_type>(static_cast<diff_type>(mMatrixNrOfColumns) - static_cast<diff_type>(matrixColumnNr) - diff_type{1}) - static_cast<diff_type>(matrixRowNr)}; \
 \
-    const size_type c_BeginRowNr{c_DiagonalNr < 0 ? static_cast<size_type>(std::abs(c_DiagonalNr)) : size_type{0}}; \
+    const size_type c_BeginRowNr{c_DiagonalNr < diff_type{0} ? static_cast<size_type>(-c_DiagonalNr) : size_type{0}}; \
 \
     /* no overflow as for positive diagonals the diagonal number should be strictly smaller than the number */ \
     /* of matrix columns if the matrix is not empty (if empty above error conditions trigger) */ \
-    const size_type c_BeginColumnNr{c_DiagonalNr <= 0 ? static_cast<size_type>(mMatrixNrOfColumns - 1) : static_cast<size_type>(mMatrixNrOfColumns - 1 - c_DiagonalNr)}; \
-    const size_type c_EndDiagonalIndex{std::min(static_cast<size_type>(mMatrixNrOfRows - c_BeginRowNr), static_cast<size_type>(c_BeginColumnNr + 1))}; \
+    const size_type c_BeginColumnNr{c_DiagonalNr <= diff_type{0} ? static_cast<size_type>(mMatrixNrOfColumns - size_type{1}) : static_cast<size_type>(mMatrixNrOfColumns - size_type{1} - static_cast<size_type>(c_DiagonalNr))}; \
+    const size_type c_EndDiagonalIndex{std::min(static_cast<size_type>(mMatrixNrOfRows - c_BeginRowNr), static_cast<size_type>(c_BeginColumnNr + size_type{1}))}; \
 \
     return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, {c_DiagonalNr, c_EndDiagonalIndex}};
 
 #define GET_RANDOM_MITERATOR_BY_DIAG_NUMBER_AND_INDEX(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, iteratorDiagonalNr, iteratorDiagonalIndex) \
-    CHECK_ERROR_CONDITION(iteratorDiagonalNr < (1 - static_cast<diff_type>(mMatrixNrOfRows)) || \
-                          iteratorDiagonalNr > (static_cast<diff_type>(mMatrixNrOfColumns) - 1), \
+    CHECK_ERROR_CONDITION(iteratorDiagonalNr < (diff_type{1} - static_cast<diff_type>(mMatrixNrOfRows)) || \
+                          iteratorDiagonalNr > (static_cast<diff_type>(mMatrixNrOfColumns) - diff_type{1}), \
                           Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]); \
 \
-    const size_type c_BeginRowNr{iteratorDiagonalNr < 0 ? static_cast<size_type>(std::abs(iteratorDiagonalNr)) : size_type{0}}; \
+    const size_type c_BeginRowNr{iteratorDiagonalNr < diff_type{0} ? static_cast<size_type>(-iteratorDiagonalNr) : size_type{0}}; \
 \
     /* no overflow as for positive diagonals the diagonal number should be strictly smaller than the */ \
     /* number of matrix columns if the matrix is not empty (if empty above error condition triggers) */ \
-    const size_type c_BeginColumnNr{iteratorDiagonalNr <= 0 ? static_cast<size_type>(mMatrixNrOfColumns - 1) : static_cast<size_type>(mMatrixNrOfColumns - 1 - iteratorDiagonalNr)}; \
+    const size_type c_BeginColumnNr{iteratorDiagonalNr <= diff_type{0} ? static_cast<size_type>(mMatrixNrOfColumns - size_type{1}) : static_cast<size_type>(mMatrixNrOfColumns - size_type{1} - static_cast<size_type>(iteratorDiagonalNr))}; \
 \
     /* no overflow as for negative diagonals the diagonal number (in absolute value) should be strictly smaller than the */ \
     /* number of matrix rows if the matrix is not empty (if empty above error condition triggers */ \
-    const size_type c_DiagonalSize {std::min(static_cast<size_type>(mMatrixNrOfRows - c_BeginRowNr), static_cast<size_type>(c_BeginColumnNr + 1))}; \
+    const size_type c_DiagonalSize {std::min(static_cast<size_type>(mMatrixNrOfRows - c_BeginRowNr), static_cast<size_type>(c_BeginColumnNr + size_type{1}))}; \
 \
     CHECK_ERROR_CONDITION(iteratorDiagonalIndex >= c_DiagonalSize, Matr::errorMessages[Matr::Errors::DIAGONAL_INDEX_OUT_OF_BOUNDS]); \
 \
@@ -1273,11 +1244,11 @@
 #define CHECK_MITERATOR_IS_EMPTY(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex, mIteratorNrOfColumns) \
     if (mpIteratorPtr) \
     { \
-        assert(mIteratorDiagonalSize > 0 && mIteratorDiagonalIndex.has_value() && mIteratorNrOfColumns > 0); \
+        assert(mIteratorDiagonalSize > size_type{0} && mIteratorDiagonalIndex.has_value() && mIteratorNrOfColumns > size_type{0}); \
     } \
     else \
     { \
-        assert(0 == mIteratorDiagonalNr && 0 == mIteratorDiagonalSize && !mIteratorDiagonalIndex.has_value() && 0 == mIteratorNrOfColumns); \
+        assert(diff_type{0} == mIteratorDiagonalNr && size_type{0} == mIteratorDiagonalSize && !mIteratorDiagonalIndex.has_value() && size_type{0} == mIteratorNrOfColumns); \
     } \
 \
     return !mpIteratorPtr;
