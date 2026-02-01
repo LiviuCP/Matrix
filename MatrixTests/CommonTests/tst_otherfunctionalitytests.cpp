@@ -15,13 +15,11 @@ private slots:
     void testIntMatrixesAreEqual();
     void testIntMatrixesAreNotEqual();
     void testIntMatrixFunctionAt();
-    void testIntMatrixSquareBracketsOperator();
     void testIntMatrixGetBaseArray();
 
     void testStringMatrixesAreEqual();
     void testStringMatrixesAreNotEqual();
     void testStringMatrixFunctionAt();
-    void testStringMatrixSquareBracketsOperator();
     void testStringMatrixGetBaseArray();
 
     // test data
@@ -84,76 +82,6 @@ void OtherFunctionalityTests::testIntMatrixFunctionAt()
 
     const IntMatrix secondMatrix{mPrimaryIntMatrix};
     CHECK_MATRIX_IS_DIAGONAL_WITH_CORRECT_ELEMENT_VALUES(secondMatrix, 2, -5, "The const at() method does not work correctly, read values are wrong!");
-}
-
-void OtherFunctionalityTests::testIntMatrixSquareBracketsOperator()
-{
-    mPrimaryIntMatrix = {4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-
-    QVERIFY2(mPrimaryIntMatrix[0] == 1 &&
-             mPrimaryIntMatrix[1] == 2 &&
-             mPrimaryIntMatrix[2] == 3 &&
-             mPrimaryIntMatrix[3] == 4 &&
-             mPrimaryIntMatrix[4] == 5 &&
-             mPrimaryIntMatrix[5] == 6 &&
-             mPrimaryIntMatrix[6] == 7 &&
-             mPrimaryIntMatrix[7] == 8 &&
-             mPrimaryIntMatrix[8] == 9 &&
-             mPrimaryIntMatrix[9] == 10 &&
-             mPrimaryIntMatrix[10] == 11 &&
-             mPrimaryIntMatrix[11] == 12, "The square brackets operator did not return the right values!");
-
-
-    mPrimaryIntMatrix = {{2, 3}, 5};
-
-    mPrimaryIntMatrix[0] = 70;
-    mPrimaryIntMatrix[1] = 80;
-    mPrimaryIntMatrix[2] = 90;
-    mPrimaryIntMatrix[3] = 100;
-    mPrimaryIntMatrix[4] = 110;
-    mPrimaryIntMatrix[5] = 120;
-
-    QVERIFY2(mPrimaryIntMatrix == IntMatrix(2, 3, {70, 80, 90, 100, 110, 120}), "The square brackets operator did not write the right values!");
-
-    mPrimaryIntMatrix = {{10, 10}, 2};
-    const IntMatrix::size_type nrOfRowsOrColumns{mPrimaryIntMatrix.getNrOfRows()};
-
-    for (IntMatrix::size_type rowColumnNr{0}; rowColumnNr < nrOfRowsOrColumns; ++rowColumnNr)
-    {
-        mPrimaryIntMatrix[rowColumnNr * nrOfRowsOrColumns + rowColumnNr] = -5;
-    }
-
-    QVERIFY2(mPrimaryIntMatrix == IntMatrix(10, {2, -5}), "The square brackets operator did not write the right values!");
-
-    // test the "const" square brackets operator too (similar to "const" at() - just to ensure it has been created)
-    const IntMatrix firstMatrix{4, 3, {10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120}};
-
-    QVERIFY2(firstMatrix[0] == 10 &&
-             firstMatrix[1] == 20 &&
-             firstMatrix[2] == 30 &&
-             firstMatrix[3] == 40 &&
-             firstMatrix[4] == 50 &&
-             firstMatrix[5] == 60 &&
-             firstMatrix[6] == 70 &&
-             firstMatrix[7] == 80 &&
-             firstMatrix[8] == 90 &&
-             firstMatrix[9] == 100 &&
-             firstMatrix[10] == 110 &&
-             firstMatrix[11] == 120, "The const square brackets operator does not work correctly, read values are wrong!");
-
-    const IntMatrix secondMatrix{mPrimaryIntMatrix};
-
-    QVERIFY2(secondMatrix[0] == -5 &&
-             secondMatrix[12] == 2 &&
-             secondMatrix[24] == 2 &&
-             secondMatrix[33] == -5 &&
-             secondMatrix[48] == 2 &&
-             secondMatrix[59] == 2 &&
-             secondMatrix[66] == -5 &&
-             secondMatrix[78] == 2 &&
-             secondMatrix[88] == -5 &&
-             secondMatrix[95] == 2 &&
-             secondMatrix[99] == -5,  "The const square brackets operator does not work correctly, read values are wrong!");
 }
 
 void OtherFunctionalityTests::testIntMatrixGetBaseArray()
@@ -258,76 +186,6 @@ void OtherFunctionalityTests::testStringMatrixFunctionAt()
 
     const StringMatrix secondMatrix{mPrimaryStringMatrix};
     CHECK_MATRIX_IS_DIAGONAL_WITH_CORRECT_ELEMENT_VALUES(secondMatrix, "Two", "_Five", "The const at() method does not work correctly, read values are wrong!")
-}
-
-void OtherFunctionalityTests::testStringMatrixSquareBracketsOperator()
-{
-    mPrimaryStringMatrix = {4, 3, {"First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"}};
-
-    QVERIFY2(mPrimaryStringMatrix[0] == "First" &&
-             mPrimaryStringMatrix[1] == "Second" &&
-             mPrimaryStringMatrix[2] == "Third" &&
-             mPrimaryStringMatrix[3] == "Fourth" &&
-             mPrimaryStringMatrix[4] == "Fifth" &&
-             mPrimaryStringMatrix[5] == "Sixth" &&
-             mPrimaryStringMatrix[6] == "Seventh" &&
-             mPrimaryStringMatrix[7] == "Eighth" &&
-             mPrimaryStringMatrix[8] == "Ninth" &&
-             mPrimaryStringMatrix[9] == "Tenth" &&
-             mPrimaryStringMatrix[10] == "Eleventh" &&
-             mPrimaryStringMatrix[11] == "Twelfth", "The square brackets operator did not return the right values!");
-
-
-    mPrimaryStringMatrix = {{2, 3}, "Five"};
-
-    mPrimaryStringMatrix[0] = "Seventy";
-    mPrimaryStringMatrix[1] = "Eighty";
-    mPrimaryStringMatrix[2] = "Ninety";
-    mPrimaryStringMatrix[3] = "OneHundred";
-    mPrimaryStringMatrix[4] = "OneHundredAndTen";
-    mPrimaryStringMatrix[5] = "OneHundredAndTwenty";
-
-    QVERIFY2(mPrimaryStringMatrix == StringMatrix(2, 3, {"Seventy", "Eighty", "Ninety", "OneHundred", "OneHundredAndTen", "OneHundredAndTwenty"}), "The square brackets operator did not write the right values!");
-
-    mPrimaryStringMatrix = {{10, 10}, "Two"};
-    const StringMatrix::size_type nrOfRowsOrColumns{mPrimaryStringMatrix.getNrOfRows()};
-
-    for (StringMatrix::size_type rowColumnNr{0}; rowColumnNr < nrOfRowsOrColumns; ++rowColumnNr)
-    {
-        mPrimaryStringMatrix[rowColumnNr * nrOfRowsOrColumns + rowColumnNr] = "_Five";
-    }
-
-    QVERIFY2(mPrimaryStringMatrix == StringMatrix(10, {"Two", "_Five"}), "The square brackets operator did not write the right values!");
-
-    // test the "const" square brackets operator too (similar to "const" at() - just to ensure it has been created)
-    const StringMatrix firstMatrix{4, 3, {"Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety", "OneHundred", "OneHundredAndTen", "OneHundredAndTwenty"}};
-
-    QVERIFY2(firstMatrix[0] == "Ten" &&
-             firstMatrix[1] == "Twenty" &&
-             firstMatrix[2] == "Thirty" &&
-             firstMatrix[3] == "Forty" &&
-             firstMatrix[4] == "Fifty" &&
-             firstMatrix[5] == "Sixty" &&
-             firstMatrix[6] == "Seventy" &&
-             firstMatrix[7] == "Eighty" &&
-             firstMatrix[8] == "Ninety" &&
-             firstMatrix[9] == "OneHundred" &&
-             firstMatrix[10] == "OneHundredAndTen" &&
-             firstMatrix[11] == "OneHundredAndTwenty", "The const square brackets operator does not work correctly, read values are wrong!");
-
-    const StringMatrix secondMatrix{mPrimaryStringMatrix};
-
-    QVERIFY2(secondMatrix[0] == "_Five" &&
-             secondMatrix[12] == "Two" &&
-             secondMatrix[24] == "Two" &&
-             secondMatrix[33] == "_Five" &&
-             secondMatrix[48] == "Two" &&
-             secondMatrix[59] == "Two" &&
-             secondMatrix[66] == "_Five" &&
-             secondMatrix[78] == "Two" &&
-             secondMatrix[88] == "_Five" &&
-             secondMatrix[95] == "Two" &&
-             secondMatrix[99] == "_Five",  "The const square brackets operator does not work correctly, read values are wrong!");
 }
 
 void OtherFunctionalityTests::testStringMatrixGetBaseArray()

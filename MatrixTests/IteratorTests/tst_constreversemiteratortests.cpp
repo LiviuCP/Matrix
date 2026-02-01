@@ -392,12 +392,20 @@ void ConstReverseMIteratorTests::testArrowOperator()
 
     QVERIFY2(m_StringIterator->size() == 5, "The arrow operator does not work correctly when reading the value!");
 
+    QVERIFY(m_StringMatrix.getConstReverseMIterator(0, 1)->starts_with("pq"));
+    QVERIFY(m_StringMatrix.getConstReverseMIterator(1, 1)->starts_with("jk"));
+    QVERIFY(m_StringMatrix.getConstReverseMIterator(1, 2)->starts_with("mn"));
+
     // test with column capacity offset
     m_StringMatrix = {2, 3, {"abc", "pqr", "ghi", "defed", "jkl", "mno"}};
     m_StringMatrix.reserve(2, 5);
     m_StringIterator = m_StringMatrix.constReverseMBegin(0, 1);
 
     QVERIFY2(m_StringIterator->size() == 5, "The arrow operator does not work correctly when reading the value!");
+
+    QVERIFY(m_StringMatrix.getConstReverseMIterator(0, 1)->starts_with("pq"));
+    QVERIFY(m_StringMatrix.getConstReverseMIterator(1, 1)->starts_with("jk"));
+    QVERIFY(m_StringMatrix.getConstReverseMIterator(1, 2)->starts_with("mn"));
 }
 
 void ConstReverseMIteratorTests::testSquareBracketsOperator()

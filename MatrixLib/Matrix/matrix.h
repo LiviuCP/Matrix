@@ -278,9 +278,6 @@ public:
     T& at(size_type rowNr, size_type columnNr);
     const T& at(size_type rowNr, size_type columnNr) const;
 
-    T& operator[] (diff_type index);
-    const T& operator[](diff_type index) const;
-
     Matrix& operator=(const Matrix& matrix);
     Matrix& operator=(Matrix&& matrix);
 
@@ -1905,7 +1902,7 @@ template<MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseDIterator::getRowNr() const
 {
     return _isEmpty() ? std::nullopt
-                      : m_DiagonalNr < 0 ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(std::abs(m_DiagonalNr))}
+                      : m_DiagonalNr < 0 ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(-m_DiagonalNr)}
                                          : *m_DiagonalIndex < m_DiagonalSize ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1}
                                                                              : std::nullopt;
 }
@@ -2055,7 +2052,7 @@ template<MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseDIterator::getRowNr() const
 {
     return _isEmpty() ? std::nullopt
-                      : m_DiagonalNr < 0 ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(std::abs(m_DiagonalNr))}
+                      : m_DiagonalNr < 0 ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(-m_DiagonalNr)}
                                          : *m_DiagonalIndex < m_DiagonalSize ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1}
                                                                              : std::nullopt;
 }
@@ -2523,7 +2520,7 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseMIterator::getRow
 {
     // no overflow risk, diagonal index should not exceed diagonal size
     return _isEmpty() ? std::nullopt
-                      : m_DiagonalNr < 0 ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(std::abs(m_DiagonalNr))}
+                      : m_DiagonalNr < 0 ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(-m_DiagonalNr)}
                                          : *m_DiagonalIndex < m_DiagonalSize ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1}
                                                                              : std::nullopt;
 }
@@ -2675,7 +2672,7 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseMIterator::g
 {
     // no overflow risk, diagonal index should not exceed diagonal size
     return _isEmpty() ? std::nullopt
-                      : m_DiagonalNr < 0 ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(std::abs(m_DiagonalNr))}
+                      : m_DiagonalNr < 0 ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(-m_DiagonalNr)}
                                          : *m_DiagonalIndex < m_DiagonalSize ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1}
                                                                              : std::nullopt;
 }
@@ -3171,20 +3168,6 @@ const T& Matrix<T>::at(Matrix<T>::size_type rowNr,
 {
     CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows || columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
     return m_pBaseArrayPtr[*m_RowCapacityOffset + rowNr][columnNr];
-}
-
-template<MatrixElementType T>
-T& Matrix<T>::operator[](Matrix<T>::diff_type index)
-{
-    CHECK_ERROR_CONDITION(index < 0 || index >= static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns), Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
-    return m_pBaseArrayPtr[*m_RowCapacityOffset + index / m_NrOfColumns][index % m_NrOfColumns];
-}
-
-template<MatrixElementType T>
-const T& Matrix<T>::operator[](Matrix<T>::diff_type index) const
-{
-    CHECK_ERROR_CONDITION(index < 0 || index >= static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns), Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
-    return m_pBaseArrayPtr[*m_RowCapacityOffset + index / m_NrOfColumns][index % m_NrOfColumns];
 }
 
 template <MatrixElementType T>
@@ -4429,7 +4412,7 @@ void Matrix<T>::_insertUninitializedRow(Matrix<T>::size_type rowNr)
     if (m_NrOfRows == m_RowCapacity)
     {
         Matrix helperMatrix{std::move(*this)};
-        const size_type c_NewRowCapacity{std::min(static_cast<size_type>(2 * helperMatrix.m_NrOfRows), maxAllowedDimension())};
+        const size_type c_NewRowCapacity{std::min(static_cast<size_type>(size_type{2} * helperMatrix.m_NrOfRows), maxAllowedDimension())};
 
         _deallocMemory(); // not quite necessary, just for safety/consistency purposes
         _allocMemory(helperMatrix.m_NrOfRows + 1, helperMatrix.m_NrOfColumns, c_NewRowCapacity, helperMatrix.m_ColumnCapacity);
@@ -4469,7 +4452,7 @@ typename Matrix<T>::size_type Matrix<T>::_insertUninitializedColumn(Matrix<T>::s
     if (m_NrOfColumns == m_ColumnCapacity)
     {
         Matrix helperMatrix{std::move(*this)};
-        const size_type c_NewColumnCapacity{std::min(static_cast<size_type>(2 * helperMatrix.m_NrOfColumns), maxAllowedDimension())};
+        const size_type c_NewColumnCapacity{std::min(static_cast<size_type>(size_type{2} * helperMatrix.m_NrOfColumns), maxAllowedDimension())};
 
         _deallocMemory(); // not quite necessary, just for safety/consistency purposes
         _allocMemory(helperMatrix.m_NrOfRows, helperMatrix.m_NrOfColumns + 1, helperMatrix.m_RowCapacity, c_NewColumnCapacity);
@@ -4513,8 +4496,8 @@ void Matrix<T>::_reallocEraseDimensionElement(Matrix<T>::size_type dimensionElem
     {
         const size_type c_RequiredNrOfRows{isRow ? static_cast<size_type>(m_NrOfRows - 1) : m_NrOfRows};
         const size_type c_RequiredNrOfColumns{isRow ? m_NrOfColumns : static_cast<size_type>(m_NrOfColumns - 1)};
-        const size_type c_RequiredRowCapacity{isRow ? static_cast<size_type>(2 * c_RequiredNrOfRows) : m_RowCapacity};
-        const size_type c_RequiredColumnCapacity{isRow ? m_ColumnCapacity : static_cast<size_type>(2 * c_RequiredNrOfColumns)};
+        const size_type c_RequiredRowCapacity{isRow ? static_cast<size_type>(size_type{2} * c_RequiredNrOfRows) : m_RowCapacity};
+        const size_type c_RequiredColumnCapacity{isRow ? m_ColumnCapacity : static_cast<size_type>(size_type{2} * c_RequiredNrOfColumns)};
 
         // row or column nr depending on scenario (variable isRow)
         const size_type c_DimensionElementNr{std::clamp<size_type>(dimensionElementNr, 0u, isRow ? c_RequiredNrOfRows : c_RequiredNrOfColumns)};
