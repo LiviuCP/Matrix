@@ -99,10 +99,7 @@ void NIteratorTests::testIteratorCreation()
 
 void NIteratorTests::testEmptyIterator()
 {
-    m_PrimaryIntMatrix = {{8, 9}, -5};
-    m_SecondaryIntMatrix.clear();
     IntNIter emptyIt;
-
     QVERIFY2(!emptyIt.getRowNr().has_value() && !emptyIt.getColumnNr().has_value(), "The iterator has not been correctly created!");
 }
 

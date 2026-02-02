@@ -125,10 +125,7 @@ void ConstZIteratorTests::testIteratorCreationFromNonConstIterator()
 
 void ConstZIteratorTests::testEmptyIterator()
 {
-    m_PrimaryIntMatrix = {{9, 8}, -5};
-    m_SecondaryIntMatrix.clear();
     IntConstZIter emptyIt;
-
     QVERIFY2(!emptyIt.getRowNr().has_value() && !emptyIt.getColumnNr().has_value(), "The iterator has not been correctly created!");
 }
 

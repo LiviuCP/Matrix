@@ -86,12 +86,13 @@ void MIteratorTests::testIteratorCreation()
 
 void MIteratorTests::testEmptyIterator()
 {
-    m_PrimaryIntMatrix = {4, 3, {1, 2, -3, 4, -5, 6, 7, -8, 9, 10, -11, 12}};
-    m_SecondaryIntMatrix.clear();
-    
     IntMIter emptyIterator;
 
-    QVERIFY2(!emptyIterator.getRowNr().has_value() && !emptyIterator.getColumnNr().has_value() && emptyIterator.getDiagonalNr() == 0 && !emptyIterator.getDiagonalIndex().has_value(), "The iterator has not been correctly created");
+    QVERIFY2(!emptyIterator.getRowNr().has_value() &&
+             !emptyIterator.getColumnNr().has_value() &&
+             emptyIterator.getDiagonalNr() == 0 &&
+             !emptyIterator.getDiagonalIndex().has_value(),
+             "The iterator has not been correctly created");
 }
 
 void MIteratorTests::testIteratorsAreEqual()
