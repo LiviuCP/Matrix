@@ -3,21 +3,13 @@
 
 #include <utility>
 #include <memory>
-#include <algorithm>
-#include <optional>
 #include <vector>
 #include <cassert>
 
+#include "matrixdimensions.h"
+
 #include "../Utils/iteratorutils.h"
 #include "../Utils/errorhandling.h"
-
-#ifndef USE_SMALL_DIMENSIONS
-using matrix_size_t = uint32_t;
-using matrix_diff_t = int64_t;
-#else
-using matrix_size_t = uint8_t;
-using matrix_diff_t = int16_t;
-#endif
 
 constexpr matrix_size_t maxAllowedDimension()
 {
@@ -255,6 +247,28 @@ public:
         size_type m_NrOfMatrixColumns;      // number of matrix columns is required for mirrored iterators because the origin (diagonal 0) does no longer pass through element (0, 0)
     };
 
+    // proof-of-concept iterator class, currently not to be included within "official" Matrix code (master branch)
+    class WDIterator
+    {
+    public:
+        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(WDIterator, T, diff_type, size_type);
+        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(T, diff_type);
+
+#ifdef USE_WD_ITER_INDEX
+        // to be used only for testing purposes
+        std::optional<diff_type> getIndex() const;
+#endif
+
+    private:
+        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
+
+        WDIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns, std::optional<diff_type> index);
+
+        std::optional<diff_type> m_Index;
+        size_type m_NrOfMatrixRows;
+        size_type m_NrOfMatrixColumns;
+    };
+
     Matrix();
     Matrix(size_type nrOfRows, size_type nrOfColumns, std::vector<T>&& vec);
     Matrix(dimensions_t dimensions, const T& value);
@@ -425,6 +439,10 @@ public:
     ConstReverseMIterator constReverseMEnd(size_type rowNr, size_type columnNr) const;
     ConstReverseMIterator getConstReverseMIterator(size_type rowNr, size_type columnNr) const;
     ConstReverseMIterator getConstReverseMIterator(const std::pair<diff_type, size_type>& diagonalNrAndIndex) const;
+
+    WDIterator wdBegin();
+    WDIterator wdEnd();
+    WDIterator getWDIterator(size_type rowNr, size_type columnNr);
 
     // required for being able to use the (const) auto (&) syntax for iterating through the matrix elements
     ZIterator begin();
@@ -2757,6 +2775,295 @@ bool Matrix<T>::ConstReverseMIterator::_isEmpty() const
     CHECK_MITERATOR_IS_EMPTY(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
+/* POC: WDIterator ("wrapping" diagonal iterator) - starts from [0][0] and iterates diagonal after diagonal until reaching the opposite corner [nrOfRows - 1][nrOfColumns - 1]
+
+   E.g. for a 4x3 matrix the iteration order is:
+        0 2 5
+        1 4 8
+        3 7 10
+        6 9 11
+*/
+
+template<MatrixElementType T>
+typename Matrix<T>::WDIterator& Matrix<T>::WDIterator::operator++()
+{
+    ITERATOR_PRE_INCREMENT();
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WDIterator Matrix<T>::WDIterator::operator++(int unused)
+{
+    ITERATOR_POST_INCREMENT(WDIterator, unused);
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WDIterator& Matrix<T>::WDIterator::operator--()
+{
+    ITERATOR_PRE_DECREMENT();
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WDIterator Matrix<T>::WDIterator::operator--(int unused)
+{
+    ITERATOR_POST_DECREMENT(WDIterator, unused);
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WDIterator& Matrix<T>::WDIterator::operator+=(Matrix<T>::WDIterator::difference_type offset)
+{
+    if (!_isEmpty())
+    {
+        const diff_type c_ResultingIndex{*m_Index + offset};
+        const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+
+        m_Index = std::clamp<diff_type>(c_ResultingIndex, 0, c_UpperBound);
+    }
+
+    return *this;
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WDIterator& Matrix<T>::WDIterator::operator-=(Matrix<T>::WDIterator::difference_type offset)
+{
+    if (!_isEmpty())
+    {
+        const diff_type c_ResultingIndex{*m_Index - offset};
+        const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+
+        m_Index = std::clamp<diff_type>(c_ResultingIndex, 0, c_UpperBound);
+    }
+
+    return *this;
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WDIterator::difference_type Matrix<T>::WDIterator::operator-(const Matrix<T>::WDIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr ||
+                          m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
+                          m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return !_isEmpty() ? *m_Index - *(it.m_Index) : 0;
+}
+
+template<MatrixElementType T>
+auto Matrix<T>::WDIterator::operator<=>(const Matrix<T>::WDIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr ||
+                          m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
+                          m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return !_isEmpty() ? *m_Index <=> *it.m_Index : std::strong_ordering::equal;
+}
+
+template<MatrixElementType T>
+bool Matrix<T>::WDIterator::operator==(const Matrix<T>::WDIterator& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr ||
+                          m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
+                          m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return m_Index == it.m_Index;
+}
+
+template<MatrixElementType T>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getRowNr() const
+{
+    std::optional<size_type> rowNr;
+
+    if (!_isEmpty())
+    {
+        const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+
+        if (m_Index < c_UpperBound)
+        {
+            const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
+            const auto&[resultingRowAndColumnNr, _]{result};
+            const auto&[resultingRowNumber, __]{resultingRowAndColumnNr};
+
+            rowNr = resultingRowNumber;
+        }
+        else
+        {
+            rowNr = m_NrOfMatrixRows;
+        }
+    }
+
+    return rowNr;
+}
+
+template<MatrixElementType T>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getColumnNr() const
+{
+    std::optional<size_type> columnNr;
+
+    if (!_isEmpty())
+    {
+        const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+
+        if (m_Index < c_UpperBound)
+        {
+            const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
+            const auto&[resultingRowAndColumnNr, _]{result};
+            const auto&[__, resultingColumnNumber]{resultingRowAndColumnNr};
+
+            columnNr = resultingColumnNumber;
+        }
+        else
+        {
+            columnNr = m_NrOfMatrixColumns;
+        }
+    }
+
+    return columnNr;
+}
+
+#ifdef USE_WD_ITER_INDEX
+template<MatrixElementType T>
+std::optional<typename Matrix<T>::diff_type> Matrix<T>::WDIterator::getIndex() const
+{
+    return m_Index;
+}
+#endif
+
+template<MatrixElementType T>
+T& Matrix<T>::WDIterator::operator*() const
+{
+    const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
+    (void)c_UpperBound;
+
+    CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+
+    const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
+    const auto&[rowNr, columnNr]{result.first};
+
+    assert(rowNr.has_value() && columnNr.has_value());
+
+    return m_pMatrixPtr[*rowNr][*columnNr];
+}
+
+template<MatrixElementType T>
+T* Matrix<T>::WDIterator::operator->() const
+{
+    const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
+    (void)c_UpperBound;
+
+    CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound, Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+
+    const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
+    const auto&[rowNr, columnNr]{result.first};
+
+    assert(rowNr.has_value() && columnNr.has_value());
+
+    return (m_pMatrixPtr[*rowNr] + *columnNr);
+}
+
+template<MatrixElementType T>
+T& Matrix<T>::WDIterator::operator[](Matrix<T>::WDIterator::difference_type index) const
+{
+    CHECK_ERROR_CONDITION(_isEmpty(), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    const diff_type c_ResultingIndex{static_cast<diff_type>(*m_Index + index)};
+    const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
+    (void) c_UpperBound;
+
+    CHECK_ERROR_CONDITION(c_ResultingIndex < 0 || c_ResultingIndex >= c_UpperBound, Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, c_ResultingIndex)};
+    const auto&[rowNr, columnNr]{result.first};
+
+    assert(rowNr.has_value() && columnNr.has_value());
+
+    return m_pMatrixPtr[*rowNr][*columnNr];
+}
+
+template<MatrixElementType T>
+Matrix<T>::WDIterator::WDIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
+}
+
+template<MatrixElementType T>
+Matrix<T>::WDIterator::WDIterator(T** pMatrixPtr,
+                                       Matrix<T>::size_type nrOfMatrixRows,
+                                       Matrix<T>::size_type nrOfMatrixColumns,
+                                       std::optional<Matrix<T>::diff_type> index)
+{
+    bool nonEmptyIteratorContructed{false};
+
+    if (pMatrixPtr)
+    {
+        if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0 && index.has_value() && index >= 0)
+        {
+            const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(nrOfMatrixRows) * static_cast<diff_type>(nrOfMatrixColumns))};
+            assert(index <= c_UpperBound);
+
+            if (index <= c_UpperBound)
+            {
+                m_pMatrixPtr = pMatrixPtr;
+                m_NrOfMatrixRows = nrOfMatrixRows;
+                m_NrOfMatrixColumns = nrOfMatrixColumns;
+                m_Index = *index;
+                nonEmptyIteratorContructed = true;
+            }
+        }
+        else
+        {
+            assert(false);
+        }
+    }
+
+    if (!nonEmptyIteratorContructed)
+    {
+        m_pMatrixPtr = nullptr;
+        m_NrOfMatrixRows = 0;
+        m_NrOfMatrixColumns = 0;
+    }
+}
+
+template<MatrixElementType T>
+void Matrix<T>::WDIterator::_increment()
+{
+    if (!_isEmpty())
+    {
+        const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
+
+        if (m_Index < c_UpperBound)
+        {
+            m_Index = *m_Index + 1;
+        }
+    }
+}
+
+template<MatrixElementType T>
+void Matrix<T>::WDIterator::_decrement()
+{
+    if (!_isEmpty() && m_Index > 0)
+    {
+        m_Index = *m_Index - 1;
+    }
+}
+
+template<MatrixElementType T>
+bool Matrix<T>::WDIterator::_isEmpty() const
+{
+    if (m_pMatrixPtr)
+    {
+        assert(m_NrOfMatrixRows > 0 && m_NrOfMatrixColumns > 0 && m_Index.has_value());
+    }
+    else
+    {
+        assert(0 == m_NrOfMatrixRows && 0 == m_NrOfMatrixColumns && !m_Index.has_value());
+    }
+
+    return !m_pMatrixPtr;
+}
+
 // matrix methods
 
 template <MatrixElementType T>
@@ -3995,6 +4302,31 @@ typename Matrix<T>::ConstReverseMIterator Matrix<T>::getConstReverseMIterator(co
 {
     const auto&[diagonalNr, diagonalIndex] = diagonalNrAndIndex;
     GET_RANDOM_MITERATOR_BY_DIAG_NUMBER_AND_INDEX(ConstReverseMIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, diagonalNr, diagonalIndex);
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WDIterator Matrix<T>::wdBegin()
+{
+    return WDIterator{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, 0};
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WDIterator Matrix<T>::wdEnd()
+{
+    return WDIterator{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, static_cast<diff_type>(m_NrOfRows) * static_cast<diff_type>(m_NrOfColumns)};
+}
+
+template<MatrixElementType T>
+typename Matrix<T>::WDIterator Matrix<T>::getWDIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+{
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows || columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
+
+    const auto result{mapRowAndColumnNrToDiagonalIndex(m_NrOfRows, m_NrOfColumns, {rowNr, columnNr})};
+    assert(result.first);
+
+    const diff_type c_Index{result.first ? *result.first : diff_type{0}};
+
+    return WDIterator{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns, c_Index};
 }
 
 template<MatrixElementType T>

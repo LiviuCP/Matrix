@@ -31,6 +31,7 @@ using IntMIter = Matrix<int>::MIterator;
 using IntConstMIter = Matrix<int>::ConstMIterator;
 using IntReverseMIter = Matrix<int>::ReverseMIterator;
 using IntConstReverseMIter = Matrix<int>::ConstReverseMIterator;
+using IntWDIter = Matrix<int>::WDIterator;
 
 using StringZIter = Matrix<std::string>::ZIterator;
 using StringConstZIter = Matrix<std::string>::ConstZIterator;
@@ -48,6 +49,7 @@ using StringMIter = Matrix<std::string>::MIterator;
 using StringConstMIter = Matrix<std::string>::ConstMIterator;
 using StringReverseMIter = Matrix<std::string>::ReverseMIterator;
 using StringConstReverseMIter = Matrix<std::string>::ConstReverseMIterator;
+using StringWDIter = Matrix<std::string>::WDIterator;
 
 // various constants related to the maximum allowed matrix dimensions
 static constexpr matrix_size_t c_MaxAllowedDimension{maxAllowedDimension()};

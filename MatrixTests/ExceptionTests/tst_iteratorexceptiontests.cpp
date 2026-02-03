@@ -19,6 +19,7 @@ Q_DECLARE_METATYPE(IntMIter)
 Q_DECLARE_METATYPE(IntConstMIter)
 Q_DECLARE_METATYPE(IntReverseMIter)
 Q_DECLARE_METATYPE(IntConstReverseMIter)
+Q_DECLARE_METATYPE(IntWDIter)
 Q_DECLARE_METATYPE(StringZIter)
 Q_DECLARE_METATYPE(StringConstZIter)
 Q_DECLARE_METATYPE(StringReverseZIter)
@@ -35,6 +36,7 @@ Q_DECLARE_METATYPE(StringMIter)
 Q_DECLARE_METATYPE(StringConstMIter)
 Q_DECLARE_METATYPE(StringReverseMIter)
 Q_DECLARE_METATYPE(StringConstReverseMIter)
+Q_DECLARE_METATYPE(StringWDIter)
 Q_DECLARE_METATYPE(std::string)
 
 static_assert(std::random_access_iterator<IntZIter>);
@@ -53,6 +55,7 @@ static_assert(std::random_access_iterator<IntMIter>);
 static_assert(std::random_access_iterator<IntConstMIter>);
 static_assert(std::random_access_iterator<IntReverseMIter>);
 static_assert(std::random_access_iterator<IntConstReverseMIter>);
+static_assert(std::random_access_iterator<IntWDIter>);
 static_assert(std::random_access_iterator<StringZIter>);
 static_assert(std::random_access_iterator<StringConstZIter>);
 static_assert(std::random_access_iterator<StringReverseZIter>);
@@ -69,6 +72,16 @@ static_assert(std::random_access_iterator<StringMIter>);
 static_assert(std::random_access_iterator<StringConstMIter>);
 static_assert(std::random_access_iterator<StringReverseMIter>);
 static_assert(std::random_access_iterator<StringConstReverseMIter>);
+static_assert(std::random_access_iterator<StringWDIter>);
+
+/* The WDIterator belongs to neither of the categories introduced so far: diagonal and non-diagonal (row/column) iterators.
+
+   The reason is that diagonal iterators only sweep the matrix partially (namely the corresponding diagonal)
+   while the row/column iterators fully traverse the container but row by row or column by column.
+
+   In order to avoid creating new test functions the WDIterator testing will be included within exception test methods used by ZIterator
+   as an analogy between the two can be performed by considering "equivalent" unidimensional ("virtual") indexes.
+*/
 
 class IteratorExceptionTests : public QObject
 {
@@ -137,6 +150,9 @@ void IteratorExceptionTests::testZIteratorTwoOperandsExceptions()
     QFETCH(IntConstReverseZIter, firstConstReverseZIterator);
     QFETCH(IntConstReverseZIter, secondConstReverseZIterator);
 
+    QFETCH(IntWDIter, firstWDIterator);
+    QFETCH(IntWDIter, secondWDIterator);
+
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool areEqual{firstZIterator == secondZIterator}; Q_UNUSED(areEqual);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool areNotEqual{firstZIterator != secondZIterator}; Q_UNUSED(areNotEqual);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isSmallerThan{firstZIterator < secondZIterator}; Q_UNUSED(isSmallerThan);});
@@ -168,6 +184,14 @@ void IteratorExceptionTests::testZIteratorTwoOperandsExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isGreaterThan{firstConstReverseZIterator > secondConstReverseZIterator}; Q_UNUSED(isGreaterThan);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isGreaterThanOrEqual{firstConstReverseZIterator >= secondConstReverseZIterator}; Q_UNUSED(isGreaterThanOrEqual);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix_diff_t diff{firstConstReverseZIterator - secondConstReverseZIterator}; Q_UNUSED(diff);});
+
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool areEqual{firstWDIterator == secondWDIterator}; Q_UNUSED(areEqual);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool areNotEqual{firstWDIterator != secondWDIterator}; Q_UNUSED(areNotEqual);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isSmallerThan{firstWDIterator < secondWDIterator}; Q_UNUSED(isSmallerThan);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isSmallerThanOrEqual{firstWDIterator <= secondWDIterator}; Q_UNUSED(isSmallerThanOrEqual);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isGreaterThan{firstWDIterator > secondWDIterator}; Q_UNUSED(isGreaterThan);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {bool isGreaterThanOrEqual{firstWDIterator >= secondWDIterator}; Q_UNUSED(isGreaterThanOrEqual);});
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {matrix_diff_t diff{firstWDIterator - secondWDIterator}; Q_UNUSED(diff);});
 }
 
 void IteratorExceptionTests::testNIteratorTwoOperandsExceptions()
@@ -382,12 +406,16 @@ void IteratorExceptionTests::testNonDiagRandomIteratorRowColumnExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntReverseZIter it{matrix.getReverseZIterator(rowNr, columnNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstReverseZIter it{matrix.getConstReverseZIterator(rowNr, columnNr)}; Q_UNUSED(it)});
 
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntWDIter it{matrix.getWDIterator(rowNr, columnNr)}; Q_UNUSED(it)});
+
     matrix.transpose();
     
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntNIter it{matrix.getNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstNIter it{matrix.getConstNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntReverseNIter it{matrix.getReverseNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntConstReverseNIter it{matrix.getConstReverseNIterator(columnNr, rowNr)}; Q_UNUSED(it)});
+
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {IntWDIter it{matrix.getWDIterator(columnNr, rowNr)}; Q_UNUSED(it)});
 }
 
 void IteratorExceptionTests::testDiagRandomIteratorAbsoluteCoordinatesExceptions()
@@ -428,12 +456,15 @@ void IteratorExceptionTests::testZIteratorAsteriskOperatorExceptions()
     QFETCH(IntConstZIter, constZIterator);
     QFETCH(IntReverseZIter, reverseZIterator);
     QFETCH(IntConstReverseZIter, constReverseZIterator);
+    QFETCH(IntWDIter, wdIterator);
     QFETCH(int, value);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {*zIterator = value;});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {Q_UNUSED(*constZIterator);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {*reverseZIterator = value;});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {Q_UNUSED(*constReverseZIterator);});
+
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {*wdIterator = value;});
 }
 
 void IteratorExceptionTests::testNIteratorAsteriskOperatorExceptions()
@@ -478,12 +509,15 @@ void IteratorExceptionTests::testZIteratorArrowOperatorExceptions()
     QFETCH(StringConstZIter, constZIterator);
     QFETCH(StringReverseZIter, reverseZIterator);
     QFETCH(StringConstReverseZIter, constReverseZIterator);
+    QFETCH(StringWDIter, wdIterator);
     QFETCH(std::string, value);
 
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {zIterator->assign(value);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {Q_UNUSED(constZIterator->size());});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {reverseZIterator->assign(value);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {Q_UNUSED(constReverseZIterator->size());});
+
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {wdIterator->assign(value);});
 }
 
 void IteratorExceptionTests::testNIteratorArrowOperatorExceptions()
@@ -528,6 +562,7 @@ void IteratorExceptionTests::testZIteratorSquareBracketsOperatorExceptions()
     QFETCH(IntConstZIter, constZIterator);
     QFETCH(IntReverseZIter, reverseZIterator);
     QFETCH(IntConstReverseZIter, constReverseZIterator);
+    QFETCH(IntWDIter, wdIterator);
     QFETCH(matrix_diff_t, forwardIndex);
     QFETCH(matrix_diff_t, reverseIndex);
     QFETCH(int, value);
@@ -536,6 +571,8 @@ void IteratorExceptionTests::testZIteratorSquareBracketsOperatorExceptions()
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {Q_UNUSED(constZIterator[forwardIndex]);});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {reverseZIterator[reverseIndex] = value;});
     QVERIFY_THROWS_EXCEPTION(std::runtime_error, {Q_UNUSED(constReverseZIterator[reverseIndex]);});
+
+    QVERIFY_THROWS_EXCEPTION(std::runtime_error, {wdIterator[forwardIndex] = value;});
 }
 
 void IteratorExceptionTests::testNIteratorSquareBracketsOperatorExceptions()
@@ -589,15 +626,18 @@ void IteratorExceptionTests::testZIteratorTwoOperandsExceptions_data()
     QTest::addColumn<IntConstReverseZIter>("firstConstReverseZIterator");
     QTest::addColumn<IntConstReverseZIter>("secondConstReverseZIterator");
 
+    QTest::addColumn<IntWDIter>("firstWDIterator");
+    QTest::addColumn<IntWDIter>("secondWDIterator");
+
     m_PrimaryIntMatrix = {{2, 3}, 4};
     m_SecondaryIntMatrix = {{2, 3}, -5};
     m_ThirdIntMatrix = {{2, 3}, 4};
     m_FourthIntMatrix = m_PrimaryIntMatrix;
     m_FifthIntMatrix = std::move(m_ThirdIntMatrix);
 
-    QTest::newRow("1: end iterator, random iterator") << m_PrimaryIntMatrix.zEnd() << m_SecondaryIntMatrix.getZIterator(1, 0) << m_PrimaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.getConstZIterator(1, 0) << m_PrimaryIntMatrix.reverseZEnd() << m_SecondaryIntMatrix.getReverseZIterator(1, 0) << m_PrimaryIntMatrix.constReverseZEnd() << m_SecondaryIntMatrix.getConstReverseZIterator(1, 0);
-    QTest::newRow("2: end iterator, begin iterator") << m_PrimaryIntMatrix.zEnd() << m_FourthIntMatrix.zBegin() << m_PrimaryIntMatrix.constZEnd() << m_FourthIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZEnd() << m_FourthIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZEnd() << m_FourthIntMatrix.constReverseZBegin();
-    QTest::newRow("3: begin iterator, end iterator") << m_ThirdIntMatrix.zBegin() << m_FifthIntMatrix.zEnd() << m_ThirdIntMatrix.constZBegin() << m_FifthIntMatrix.constZEnd() << m_ThirdIntMatrix.reverseZBegin() << m_FifthIntMatrix.reverseZEnd() << m_ThirdIntMatrix.constReverseZBegin() << m_FifthIntMatrix.constReverseZEnd();
+    QTest::newRow("1: end iterator, random iterator") << m_PrimaryIntMatrix.zEnd() << m_SecondaryIntMatrix.getZIterator(1, 0) << m_PrimaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.getConstZIterator(1, 0) << m_PrimaryIntMatrix.reverseZEnd() << m_SecondaryIntMatrix.getReverseZIterator(1, 0) << m_PrimaryIntMatrix.constReverseZEnd() << m_SecondaryIntMatrix.getConstReverseZIterator(1, 0) << m_PrimaryIntMatrix.wdEnd() << m_SecondaryIntMatrix.getWDIterator(0, 1);
+    QTest::newRow("2: end iterator, begin iterator") << m_PrimaryIntMatrix.zEnd() << m_FourthIntMatrix.zBegin() << m_PrimaryIntMatrix.constZEnd() << m_FourthIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZEnd() << m_FourthIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZEnd() << m_FourthIntMatrix.constReverseZBegin() << m_PrimaryIntMatrix.wdEnd() << m_FourthIntMatrix.wdBegin();
+    QTest::newRow("3: begin iterator, end iterator") << m_ThirdIntMatrix.zBegin() << m_FifthIntMatrix.zEnd() << m_ThirdIntMatrix.constZBegin() << m_FifthIntMatrix.constZEnd() << m_ThirdIntMatrix.reverseZBegin() << m_FifthIntMatrix.reverseZEnd() << m_ThirdIntMatrix.constReverseZBegin() << m_FifthIntMatrix.constReverseZEnd() << m_ThirdIntMatrix.wdBegin() << m_FifthIntMatrix.wdEnd();
 }
 
 void IteratorExceptionTests::testNIteratorTwoOperandsExceptions_data()
@@ -785,14 +825,15 @@ void IteratorExceptionTests::testZIteratorAsteriskOperatorExceptions_data()
     QTest::addColumn<IntConstZIter>("constZIterator");
     QTest::addColumn<IntReverseZIter>("reverseZIterator");
     QTest::addColumn<IntConstReverseZIter>("constReverseZIterator");
+    QTest::addColumn<IntWDIter>("wdIterator");
     QTest::addColumn<int>("value");
 
     m_PrimaryIntMatrix.clear();
     m_SecondaryIntMatrix = {4, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
 
-    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZBegin() << -9;
-    QTest::newRow("2: end iterator") << m_PrimaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << -14;
-    QTest::newRow("3: end iterator") << m_SecondaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << -14;
+    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZBegin() << m_PrimaryIntMatrix.wdBegin() << -9;
+    QTest::newRow("2: end iterator") << m_PrimaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << m_PrimaryIntMatrix.wdEnd() << -14;
+    QTest::newRow("3: end iterator") << m_SecondaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << m_SecondaryIntMatrix.wdEnd() << -14;
 }
 
 void IteratorExceptionTests::testNIteratorAsteriskOperatorExceptions_data()
@@ -835,14 +876,15 @@ void IteratorExceptionTests::testZIteratorArrowOperatorExceptions_data()
     QTest::addColumn<StringConstZIter>("constZIterator");
     QTest::addColumn<StringReverseZIter>("reverseZIterator");
     QTest::addColumn<StringConstReverseZIter>("constReverseZIterator");
+    QTest::addColumn<StringWDIter>("wdIterator");
     QTest::addColumn<std::string>("value");
 
     m_PrimaryStringMatrix.clear();
     m_SecondaryStringMatrix = {2, 3, {"abc", "def", "ghi", "jkl", "mno", "pqr"}};
 
-    QTest::newRow("1: begin iterator") << m_PrimaryStringMatrix.zBegin() << m_PrimaryStringMatrix.constZBegin() << m_PrimaryStringMatrix.reverseZBegin() << m_PrimaryStringMatrix.constReverseZBegin() << std::string{"zzz"};
-    QTest::newRow("2: end iterator") << m_PrimaryStringMatrix.zEnd() << m_PrimaryStringMatrix.constZEnd() << m_PrimaryStringMatrix.reverseZEnd() << m_PrimaryStringMatrix.constReverseZEnd() << std::string{"zzz"};
-    QTest::newRow("3: end itertator") << m_SecondaryStringMatrix.zEnd() << m_SecondaryStringMatrix.constZEnd() << m_SecondaryStringMatrix.reverseZEnd() << m_SecondaryStringMatrix.constReverseZEnd() << std::string{"zzz"};
+    QTest::newRow("1: begin iterator") << m_PrimaryStringMatrix.zBegin() << m_PrimaryStringMatrix.constZBegin() << m_PrimaryStringMatrix.reverseZBegin() << m_PrimaryStringMatrix.constReverseZBegin() << m_PrimaryStringMatrix.wdBegin() << std::string{"zzz"};
+    QTest::newRow("2: end iterator") << m_PrimaryStringMatrix.zEnd() << m_PrimaryStringMatrix.constZEnd() << m_PrimaryStringMatrix.reverseZEnd() << m_PrimaryStringMatrix.constReverseZEnd() << m_PrimaryStringMatrix.wdEnd() << std::string{"zzz"};
+    QTest::newRow("3: end itertator") << m_SecondaryStringMatrix.zEnd() << m_SecondaryStringMatrix.constZEnd() << m_SecondaryStringMatrix.reverseZEnd() << m_SecondaryStringMatrix.constReverseZEnd() << m_SecondaryStringMatrix.wdEnd() << std::string{"zzz"};
 }
 
 void IteratorExceptionTests::testNIteratorArrowOperatorExceptions_data()
@@ -885,6 +927,7 @@ void IteratorExceptionTests::testZIteratorSquareBracketsOperatorExceptions_data(
     QTest::addColumn<IntConstZIter>("constZIterator");
     QTest::addColumn<IntReverseZIter>("reverseZIterator");
     QTest::addColumn<IntConstReverseZIter>("constReverseZIterator");
+    QTest::addColumn<IntWDIter>("wdIterator");
     QTest::addColumn<matrix_diff_t>("forwardIndex");
     QTest::addColumn<matrix_diff_t>("reverseIndex");
     QTest::addColumn<int>("value");
@@ -892,24 +935,24 @@ void IteratorExceptionTests::testZIteratorSquareBracketsOperatorExceptions_data(
     m_PrimaryIntMatrix = {2, 3, {1, 2, -3, 4, -5, 6}};
     m_SecondaryIntMatrix.clear();
 
-    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZBegin() << matrix_diff_t{-2} << matrix_diff_t{-2} << 7;
-    QTest::newRow("2: begin iterator") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZBegin() << matrix_diff_t{-1} << matrix_diff_t{-1} << 7;
-    QTest::newRow("3: begin iterator") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZBegin() << matrix_diff_t{6} << matrix_diff_t{6} << 7;
-    QTest::newRow("4: begin iterator") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZBegin() << matrix_diff_t{7} << matrix_diff_t{7} << 7;
-    QTest::newRow("5: random iterator") << m_PrimaryIntMatrix.getZIterator(1, 0) << m_PrimaryIntMatrix.getConstZIterator(1, 0) << m_PrimaryIntMatrix.getReverseZIterator(1, 0) << m_PrimaryIntMatrix.getConstReverseZIterator(1, 0) << matrix_diff_t{-5} << matrix_diff_t{-4} << 7;
-    QTest::newRow("6: random iterator") << m_PrimaryIntMatrix.getZIterator(1, 0) << m_PrimaryIntMatrix.getConstZIterator(1, 0) << m_PrimaryIntMatrix.getReverseZIterator(1, 0) << m_PrimaryIntMatrix.getConstReverseZIterator(1, 0) << matrix_diff_t{-4} << matrix_diff_t{-3} << 7;
-    QTest::newRow("7: random iterator") << m_PrimaryIntMatrix.getZIterator(1, 0) << m_PrimaryIntMatrix.getConstZIterator(1, 0) << m_PrimaryIntMatrix.getReverseZIterator(1, 0) << m_PrimaryIntMatrix.getConstReverseZIterator(1, 0) << matrix_diff_t{3} << matrix_diff_t{4} << 7;
-    QTest::newRow("8: random iterator") << m_PrimaryIntMatrix.getZIterator(1, 0) << m_PrimaryIntMatrix.getConstZIterator(1, 0) << m_PrimaryIntMatrix.getReverseZIterator(1, 0) << m_PrimaryIntMatrix.getConstReverseZIterator(1, 0) << matrix_diff_t{4} << matrix_diff_t{5} << 7;
-    QTest::newRow("9: end iterator") << m_PrimaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << matrix_diff_t{-8} << matrix_diff_t{-8} << 7;
-    QTest::newRow("10: end iterator") << m_PrimaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << matrix_diff_t{-7} << matrix_diff_t{-7} << 7;
-    QTest::newRow("11: end iterator") << m_PrimaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << matrix_diff_t{0} << matrix_diff_t{0} << 7;
-    QTest::newRow("12: end iterator") << m_PrimaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << matrix_diff_t{1} << matrix_diff_t{1} << 7;
-    QTest::newRow("13: begin iterator") << m_SecondaryIntMatrix.zBegin() << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.reverseZBegin() << m_SecondaryIntMatrix.constReverseZBegin() << matrix_diff_t{-1} << matrix_diff_t{-1} << 7;
-    QTest::newRow("14: begin iterator") << m_SecondaryIntMatrix.zBegin() << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.reverseZBegin() << m_SecondaryIntMatrix.constReverseZBegin() << matrix_diff_t{0} << matrix_diff_t{0} << 7;
-    QTest::newRow("15: begin iterator") << m_SecondaryIntMatrix.zBegin() << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.reverseZBegin() << m_SecondaryIntMatrix.constReverseZBegin() << matrix_diff_t{1} << matrix_diff_t{1} << 7;
-    QTest::newRow("16: end iterator") << m_SecondaryIntMatrix.zEnd() << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.reverseZEnd() << m_SecondaryIntMatrix.constReverseZEnd() << matrix_diff_t{-1} << matrix_diff_t{-1} << 7;
-    QTest::newRow("17: end iterator") << m_SecondaryIntMatrix.zEnd() << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.reverseZEnd() << m_SecondaryIntMatrix.constReverseZEnd() << matrix_diff_t{0} << matrix_diff_t{0} << 7;
-    QTest::newRow("18: end iterator") << m_SecondaryIntMatrix.zEnd() << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.reverseZEnd() << m_SecondaryIntMatrix.constReverseZEnd() << matrix_diff_t{1} << matrix_diff_t{1} << 7;
+    QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZBegin() << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{-2} << matrix_diff_t{-2} << 7;
+    QTest::newRow("2: begin iterator") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZBegin() << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{-1} << matrix_diff_t{-1} << 7;
+    QTest::newRow("3: begin iterator") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZBegin() << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{6} << matrix_diff_t{6} << 7;
+    QTest::newRow("4: begin iterator") << m_PrimaryIntMatrix.zBegin() << m_PrimaryIntMatrix.constZBegin() << m_PrimaryIntMatrix.reverseZBegin() << m_PrimaryIntMatrix.constReverseZBegin() << m_PrimaryIntMatrix.wdBegin() << matrix_diff_t{7} << matrix_diff_t{7} << 7;
+    QTest::newRow("5: random iterator") << m_PrimaryIntMatrix.getZIterator(1, 0) << m_PrimaryIntMatrix.getConstZIterator(1, 0) << m_PrimaryIntMatrix.getReverseZIterator(1, 0) << m_PrimaryIntMatrix.getConstReverseZIterator(1, 0) << m_PrimaryIntMatrix.getWDIterator(1, 1) << matrix_diff_t{-5} << matrix_diff_t{-4} << 7;
+    QTest::newRow("6: random iterator") << m_PrimaryIntMatrix.getZIterator(1, 0) << m_PrimaryIntMatrix.getConstZIterator(1, 0) << m_PrimaryIntMatrix.getReverseZIterator(1, 0) << m_PrimaryIntMatrix.getConstReverseZIterator(1, 0) << m_PrimaryIntMatrix.getWDIterator(1, 1) << matrix_diff_t{-4} << matrix_diff_t{-3} << 7;
+    QTest::newRow("7: random iterator") << m_PrimaryIntMatrix.getZIterator(1, 0) << m_PrimaryIntMatrix.getConstZIterator(1, 0) << m_PrimaryIntMatrix.getReverseZIterator(1, 0) << m_PrimaryIntMatrix.getConstReverseZIterator(1, 0) << m_PrimaryIntMatrix.getWDIterator(1, 1) << matrix_diff_t{3} << matrix_diff_t{4} << 7;
+    QTest::newRow("8: random iterator") << m_PrimaryIntMatrix.getZIterator(1, 0) << m_PrimaryIntMatrix.getConstZIterator(1, 0) << m_PrimaryIntMatrix.getReverseZIterator(1, 0) << m_PrimaryIntMatrix.getConstReverseZIterator(1, 0) << m_PrimaryIntMatrix.getWDIterator(1, 1) << matrix_diff_t{4} << matrix_diff_t{5} << 7;
+    QTest::newRow("9: end iterator") << m_PrimaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{-8} << matrix_diff_t{-8} << 7;
+    QTest::newRow("10: end iterator") << m_PrimaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{-7} << matrix_diff_t{-7} << 7;
+    QTest::newRow("11: end iterator") << m_PrimaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{0} << matrix_diff_t{0} << 7;
+    QTest::newRow("12: end iterator") << m_PrimaryIntMatrix.zEnd() << m_PrimaryIntMatrix.constZEnd() << m_PrimaryIntMatrix.reverseZEnd() << m_PrimaryIntMatrix.constReverseZEnd() << m_PrimaryIntMatrix.wdEnd() << matrix_diff_t{1} << matrix_diff_t{1} << 7;
+    QTest::newRow("13: begin iterator") << m_SecondaryIntMatrix.zBegin() << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.reverseZBegin() << m_SecondaryIntMatrix.constReverseZBegin() << m_SecondaryIntMatrix.wdBegin() << matrix_diff_t{-1} << matrix_diff_t{-1} << 7;
+    QTest::newRow("14: begin iterator") << m_SecondaryIntMatrix.zBegin() << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.reverseZBegin() << m_SecondaryIntMatrix.constReverseZBegin() << m_SecondaryIntMatrix.wdBegin() << matrix_diff_t{0} << matrix_diff_t{0} << 7;
+    QTest::newRow("15: begin iterator") << m_SecondaryIntMatrix.zBegin() << m_SecondaryIntMatrix.constZBegin() << m_SecondaryIntMatrix.reverseZBegin() << m_SecondaryIntMatrix.constReverseZBegin() << m_SecondaryIntMatrix.wdBegin() << matrix_diff_t{1} << matrix_diff_t{1} << 7;
+    QTest::newRow("16: end iterator") << m_SecondaryIntMatrix.zEnd() << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.reverseZEnd() << m_SecondaryIntMatrix.constReverseZEnd() << m_SecondaryIntMatrix.wdEnd() << matrix_diff_t{-1} << matrix_diff_t{-1} << 7;
+    QTest::newRow("17: end iterator") << m_SecondaryIntMatrix.zEnd() << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.reverseZEnd() << m_SecondaryIntMatrix.constReverseZEnd() << m_SecondaryIntMatrix.wdEnd() << matrix_diff_t{0} << matrix_diff_t{0} << 7;
+    QTest::newRow("18: end iterator") << m_SecondaryIntMatrix.zEnd() << m_SecondaryIntMatrix.constZEnd() << m_SecondaryIntMatrix.reverseZEnd() << m_SecondaryIntMatrix.constReverseZEnd() << m_SecondaryIntMatrix.wdEnd() << matrix_diff_t{1} << matrix_diff_t{1} << 7;
 }
 
 void IteratorExceptionTests::testNIteratorSquareBracketsOperatorExceptions_data()
