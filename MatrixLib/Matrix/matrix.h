@@ -254,11 +254,6 @@ public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(WDIterator, T, diff_type, size_type);
         COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(T, diff_type);
 
-#ifdef USE_WD_ITER_INDEX
-        // to be used only for testing purposes
-        std::optional<diff_type> getIndex() const;
-#endif
-
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
 
@@ -2920,14 +2915,6 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getColumnNr(
 
     return columnNr;
 }
-
-#ifdef USE_WD_ITER_INDEX
-template<MatrixElementType T>
-std::optional<typename Matrix<T>::diff_type> Matrix<T>::WDIterator::getIndex() const
-{
-    return m_Index;
-}
-#endif
 
 template<MatrixElementType T>
 T& Matrix<T>::WDIterator::operator*() const
