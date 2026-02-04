@@ -254,6 +254,8 @@ public:
         COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(WDIterator, T, diff_type, size_type);
         COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(T, diff_type);
 
+        std::pair<std::optional<size_type>, std::optional<size_type>> getRowAndColumnNr() const;
+
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
 
@@ -2864,10 +2866,14 @@ bool Matrix<T>::WDIterator::operator==(const Matrix<T>::WDIterator& it) const
     return m_Index == it.m_Index;
 }
 
+/* As determining the row and column number is not trivial for WDIterators, it is more efficient to determine them both in the same time.
+   However for consistency reasons with the other iterators the getRowNr() and getColumnNr() methods have been kept as well.
+*/
+
 template<MatrixElementType T>
-std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getRowNr() const
+std::pair<std::optional<typename Matrix<T>::size_type>, std::optional<typename Matrix<T>::size_type>> Matrix<T>::WDIterator::getRowAndColumnNr() const
 {
-    std::optional<size_type> rowNr;
+    std::pair<std::optional<size_type>, std::optional<size_type>> rowAndColumnNr;
 
     if (!_isEmpty())
     {
@@ -2877,43 +2883,29 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getRowNr() c
         {
             const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
             const auto&[resultingRowAndColumnNr, _]{result};
-            const auto&[resultingRowNumber, __]{resultingRowAndColumnNr};
 
-            rowNr = resultingRowNumber;
+            rowAndColumnNr = resultingRowAndColumnNr;
         }
         else
         {
-            rowNr = m_NrOfMatrixRows;
+            rowAndColumnNr.first = m_NrOfMatrixRows;
+            rowAndColumnNr.second = m_NrOfMatrixColumns;
         }
     }
 
-    return rowNr;
+    return rowAndColumnNr;
+}
+
+template<MatrixElementType T>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getRowNr() const
+{
+    return getRowAndColumnNr().first;
 }
 
 template<MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getColumnNr() const
 {
-    std::optional<size_type> columnNr;
-
-    if (!_isEmpty())
-    {
-        const diff_type c_UpperBound{static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)};
-
-        if (m_Index < c_UpperBound)
-        {
-            const auto result{mapDiagonalIndexToRowAndColumnNr(m_NrOfMatrixRows, m_NrOfMatrixColumns, *m_Index)};
-            const auto&[resultingRowAndColumnNr, _]{result};
-            const auto&[__, resultingColumnNumber]{resultingRowAndColumnNr};
-
-            columnNr = resultingColumnNumber;
-        }
-        else
-        {
-            columnNr = m_NrOfMatrixColumns;
-        }
-    }
-
-    return columnNr;
+    return getRowAndColumnNr().second;
 }
 
 template<MatrixElementType T>
