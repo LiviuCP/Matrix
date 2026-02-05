@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 #include <cmath>
 
@@ -1409,3 +1410,4 @@ void ZIteratorTests::_buildOperatorPlusTestingTable()
 QTEST_APPLESS_MAIN(ZIteratorTests)
 
 #include "tst_ziteratortests.moc"
+// clang-format on

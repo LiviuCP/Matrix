@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "testutils.h"
@@ -1281,3 +1282,4 @@ void NIteratorTests::_buildOperatorPlusTestingTable()
 QTEST_APPLESS_MAIN(NIteratorTests)
 
 #include "tst_niteratortests.moc"
+// clang-format on

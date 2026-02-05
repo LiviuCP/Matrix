@@ -1,3 +1,4 @@
+// clang-format off
 #ifndef TST_TRANSFORMATIONTESTS_DATA_H
 #define TST_TRANSFORMATIONTESTS_DATA_H
 
@@ -50,3 +51,4 @@ StringMatrix c_StringMatrix1_8x9{8, 9, { "-1a",   "2B",  "-3c",   "4D",  "-5e", 
                                  }};
 
 #endif // TST_TRANSFORMATIONTESTS_DATA_H
+// clang-format on

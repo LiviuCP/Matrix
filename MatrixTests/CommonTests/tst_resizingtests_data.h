@@ -1,3 +1,4 @@
+// clang-format off
 #ifndef TST_RESIZINGTESTS_DATA_H
 #define TST_RESIZINGTESTS_DATA_H
 
@@ -1013,3 +1014,4 @@ StringMatrix c_StringMatrix3_9x10{9, 10, { "-1a",  "2B",  "-3c",  "4D",  "-5e", 
                                   }};
 
 #endif // TST_RESIZINGTESTS_DATA_H
+// clang-format on

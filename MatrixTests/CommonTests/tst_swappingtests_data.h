@@ -1,3 +1,4 @@
+// clang-format off
 #ifndef TST_SWAPPINGTESTS_DATA_H
 #define TST_SWAPPINGTESTS_DATA_H
 
@@ -92,3 +93,4 @@ StringMatrix c_StringMatrix2_8x9{8, 9, { "-1a",   "2B",   "8H",   "4D",  "-5e", 
                                  }};
 
 #endif // TST_SWAPPINGTESTS_DATA_H
+// clang-format on

@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 #include <QPointF>
 
@@ -73,3 +74,4 @@ void QPointFMatrixTests::testMatrixesAreNotEqual_data()
 QTEST_APPLESS_MAIN(QPointFMatrixTests)
 
 #include "tst_qpointfmatrixtests.moc"
+// clang-format on

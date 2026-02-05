@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "testutils.h"
@@ -972,3 +973,4 @@ void IteratorExceptionTests::testDiagIteratorSquareBracketsOperatorExceptions_da
 QTEST_APPLESS_MAIN(IteratorExceptionTests)
 
 #include "tst_iteratorexceptiontests.moc"
+// clang-format on

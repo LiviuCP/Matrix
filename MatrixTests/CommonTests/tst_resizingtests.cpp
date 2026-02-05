@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "tst_resizingtests.h"
@@ -1488,3 +1489,4 @@ void ResizingTests::_buildIntMatrixInsertColumnTestingTable()
 QTEST_APPLESS_MAIN(ResizingTests)
 
 #include "tst_resizingtests.moc"
+// clang-format on

@@ -1,11 +1,11 @@
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 
 #include "matrix.h"
 
 void clearScreen()
 {
-#if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
+#if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
     system("clear");
 #else
     system("cls");
@@ -18,7 +18,8 @@ void printMatrix(const Matrix<int>& matrix)
 
     for (int rowNumber{0}; rowNumber < matrix.getNrOfRows(); ++rowNumber)
     {
-        for (Matrix<int>::ConstZIterator it{matrix.constZRowBegin(rowNumber)}; it != matrix.constZRowEnd(rowNumber); ++it)
+        for (Matrix<int>::ConstZIterator it{matrix.constZRowBegin(rowNumber)}; it != matrix.constZRowEnd(rowNumber);
+             ++it)
         {
             std::cout << *it << " ";
         }
