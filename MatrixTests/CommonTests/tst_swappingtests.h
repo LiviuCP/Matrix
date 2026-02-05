@@ -1,5 +1,4 @@
-#ifndef TST_SWAPPINGTESTS_H
-#define TST_SWAPPINGTESTS_H
+#pragma once
 
 #define TEST_MATRIXES_SWAP(matrixType, primaryMatrix, secondaryMatrix)                                                 \
     QFETCH(Matrix<matrixType>, firstMatrix);                                                                           \
@@ -42,5 +41,3 @@
                                                                                                                        \
     matrix.swapColumns(firstColumnNr, secondColumnNr);                                                                 \
     QVERIFY2(matrix == expectedMatrix, "Columns are incorrectly swapped!");
-
-#endif // TST_SWAPPINGTESTS_H

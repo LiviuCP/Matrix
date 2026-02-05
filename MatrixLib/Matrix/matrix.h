@@ -1,5 +1,4 @@
-#ifndef MATRIX_H
-#define MATRIX_H
+#pragma once
 
 #include <algorithm>
 #include <cassert>
@@ -4896,5 +4895,3 @@ template <MatrixElementType T> void* Matrix<T>::_convertToArray(Matrix<T>::size_
 #undef GET_END_MITERATOR_BY_ROW_AND_COLUMN_NUMBER
 #undef GET_RANDOM_MITERATOR_BY_DIAG_NUMBER_AND_INDEX
 #undef CHECK_MITERATOR_IS_EMPTY
-
-#endif // MATRIX_H

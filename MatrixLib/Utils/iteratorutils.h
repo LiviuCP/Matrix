@@ -1,5 +1,4 @@
-#ifndef ITERATORUTILS_H
-#define ITERATORUTILS_H
+#pragma once
 
 /* These macros are meant solely meant for internal use within the Matrix class */
 
@@ -1623,5 +1622,3 @@
     }                                                                                                                  \
                                                                                                                        \
     return !mpIteratorPtr;
-
-#endif // ITERATORUTILS_H

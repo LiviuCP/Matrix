@@ -1,5 +1,4 @@
-#ifndef TST_CONSTRUCTIONANDASSIGNMENTTESTS_H
-#define TST_CONSTRUCTIONANDASSIGNMENTTESTS_H
+#pragma once
 
 #include "testutils.h"
 
@@ -221,5 +220,3 @@
                                                                                                                        \
         QVERIFY(destMatrix.isEmpty());                                                                                 \
     }
-
-#endif // TST_CONSTRUCTIONANDASSIGNMENTTESTS_H

@@ -1,6 +1,5 @@
 // clang-format off
-#ifndef TST_SWAPPINGTESTS_DATA_H
-#define TST_SWAPPINGTESTS_DATA_H
+#pragma once
 
 #include "testutils.h"
 
@@ -91,6 +90,4 @@ StringMatrix c_StringMatrix2_8x9{8, 9, { "-1a",   "2B",   "8H",   "4D",  "-5e", 
                                         "-55a",  "56B",  "62H",  "58D", "-59e",  "60F", "-61g", "-57c", "-63i",
                                          "64a", "-65B", "-71H", "-67D",  "68e", "-69F",  "70g",  "66c",  "72i"
                                  }};
-
-#endif // TST_SWAPPINGTESTS_DATA_H
 // clang-format on

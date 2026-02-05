@@ -1,5 +1,4 @@
-#ifndef TST_OTHERFUNCTIONALITYTESTS_H
-#define TST_OTHERFUNCTIONALITYTESTS_H
+#pragma once
 
 #define TEST_MATRIXES_ARE_EQUAL(matrixType)                                                                            \
     QFETCH(Matrix<matrixType>, firstMatrix);                                                                           \
@@ -21,5 +20,3 @@
     QFETCH(Matrix<matrixType>, secondMatrix);                                                                          \
                                                                                                                        \
     QVERIFY2(firstMatrix != secondMatrix && !(firstMatrix == secondMatrix), "The matrixes should not be equal!");
-
-#endif // TST_OTHERFUNCTIONALITYTESTS_H

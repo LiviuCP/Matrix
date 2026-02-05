@@ -1,5 +1,4 @@
-#ifndef TESTUTILS_H
-#define TESTUTILS_H
+#pragma once
 
 #include <QPointF>
 #include <string>
@@ -156,5 +155,3 @@ enum class SplitMode : unsigned short
             }                                                                                                          \
         }                                                                                                              \
     }
-
-#endif // TESTUTILS_H

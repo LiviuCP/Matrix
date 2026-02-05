@@ -1,5 +1,4 @@
-#ifndef TST_RESIZINGTESTS_H
-#define TST_RESIZINGTESTS_H
+#pragma once
 
 #include "testutils.h"
 
@@ -331,5 +330,3 @@
     primaryMatrix.clear();                                                                                             \
                                                                                                                        \
     TEST_CLEAR_CHECK_MATRIX_SIZE_AND_CAPACITY(primaryMatrix);
-
-#endif // TST_RESIZINGTESTS_H

@@ -1,5 +1,4 @@
-#ifndef TST_BASICCAPACITYTESTS_H
-#define TST_BASICCAPACITYTESTS_H
+#pragma once
 
 #define TEST_VECTOR_CONSTRUCTOR_CHECK_MATRIX_CAPACITY(matrix, expectedRowCapacity, expectedColumnCapacity,             \
                                                       expectedRowCapacityOffset, expectedColumnCapacityOffset)         \
@@ -442,5 +441,3 @@
                  destMatrix.getRowCapacityOffset() == expectedDestRowCapacityOffset &&                                 \
                  destMatrix.getColumnCapacityOffset() == expectedDestColumnCapacityOffset,                             \
              "Horizontal split failed, capacity (offset) of the destination matrix is not correct!");
-
-#endif // TST_BASICCAPACITYTESTS_H

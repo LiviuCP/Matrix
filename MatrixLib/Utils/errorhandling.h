@@ -1,5 +1,4 @@
-#ifndef ERROR_HANDLING_H
-#define ERROR_HANDLING_H
+#pragma once
 
 #include <map>
 #include <string>
@@ -83,5 +82,3 @@ static std::map<Errors, string> errorMessages{
     {Errors::MAX_ALLOWED_DIMENSIONS_EXCEEDED, string{"The maximum allowed dimensions have been exceeded."}}};
 } // namespace Matr
 #endif
-
-#endif // ERROR_HANDLING_H

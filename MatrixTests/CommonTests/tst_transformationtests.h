@@ -1,5 +1,4 @@
-#ifndef TST_TRANSFORMATIONTESTS_H
-#define TST_TRANSFORMATIONTESTS_H
+#pragma once
 
 #define TEST_MATRIX_TRANSPOSE(matrixType)                                                                              \
     QFETCH(Matrix<matrixType>, matrix);                                                                                \
@@ -160,5 +159,3 @@
     }                                                                                                                  \
                                                                                                                        \
     QVERIFY2(destMatrix == expectedDestMatrix, "Horizontal split failed, destination matrix has incorrect values!");
-
-#endif // TST_TRANSFORMATIONTESTS_H

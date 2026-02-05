@@ -1,5 +1,4 @@
-#ifndef TST_COMBINEDCAPACITYTESTS_H
-#define TST_COMBINEDCAPACITYTESTS_H
+#pragma once
 
 #define TEST_CAPACITY_WITH_RESERVE_AND_RESIZE_AND_DEFAULT_NEW_VALUES(matrixType, primaryMatrix)                        \
     QFETCH(Matrix<matrixType>, matrix);                                                                                \
@@ -324,5 +323,3 @@
             expectedColumnCapacity == primaryMatrix.getColumnCapacity() &&                                             \
             expectedRowCapacityOffset == primaryMatrix.getRowCapacityOffset() &&                                       \
             expectedColumnCapacityOffset == primaryMatrix.getColumnCapacityOffset());
-
-#endif // TST_COMBINEDCAPACITYTESTS_H
