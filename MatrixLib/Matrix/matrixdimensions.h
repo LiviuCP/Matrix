@@ -1,5 +1,4 @@
-#ifndef MATRIXDIMENSIONS_H
-#define MATRIXDIMENSIONS_H
+#pragma once
 
 #include <cstdint>
 #include <optional>
@@ -15,5 +14,3 @@ using matrix_diff_t = int16_t;
 using matrix_opt_size_t = std::optional<matrix_size_t>;
 using matrix_opt_diff_t = std::optional<matrix_diff_t>;
 using MatrixPoint = std::pair<matrix_opt_size_t, matrix_opt_size_t>;
-
-#endif // MATRIXDIMENSIONS_H

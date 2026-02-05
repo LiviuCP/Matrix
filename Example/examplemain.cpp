@@ -1,3 +1,4 @@
+// clang-format off
 /* Small example project illustrating the usage of the Matrix library */
 
 #include <iostream>
@@ -96,3 +97,4 @@ int main()
 
     return 0;
 }
+// clang-format on

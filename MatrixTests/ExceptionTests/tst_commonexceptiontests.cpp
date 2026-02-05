@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "testutils.h"
@@ -582,3 +583,4 @@ void CommonExceptionTests::_buildInsertColumnExceptionsTestingTable()
 QTEST_APPLESS_MAIN(CommonExceptionTests)
 
 #include "tst_commonexceptiontests.moc"
+// clang-format on

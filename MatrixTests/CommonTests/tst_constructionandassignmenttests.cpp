@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "tst_constructionandassignmenttests.h"
@@ -749,3 +750,4 @@ void ConstructionAndAssignmentTests::_buildStringMatrixMoveCopyAssignmentOperato
 QTEST_APPLESS_MAIN(ConstructionAndAssignmentTests)
 
 #include "tst_constructionandassignmenttests.moc"
+// clang-format on

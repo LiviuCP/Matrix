@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "testutils.h"
@@ -309,3 +310,4 @@ void OtherFunctionalityTests::testStringMatrixesAreNotEqual_data()
 QTEST_APPLESS_MAIN(OtherFunctionalityTests)
 
 #include "tst_otherfunctionalitytests.moc"
+// clang-format on

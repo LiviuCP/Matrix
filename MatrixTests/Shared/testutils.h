@@ -1,5 +1,4 @@
-#ifndef TESTUTILS_H
-#define TESTUTILS_H
+#pragma once
 
 #include <QPointF>
 #include <string>
@@ -60,9 +59,11 @@ static constexpr matrix_size_t c_IncrMaxAllowedDimension{c_MaxAllowedDimension +
 static constexpr matrix_size_t c_HalfMaxAllowedDimension{c_MaxAllowedDimension / 2};
 static constexpr matrix_size_t c_DecrHalfMaxAllowedDimension{c_MaxAllowedDimension / 2 - 1};
 static constexpr matrix_size_t c_IncrHalfMaxAllowedDimension{c_MaxAllowedDimension / 2 + 1};
-static constexpr matrix_size_t c_ThreeQuartersMaxAllowedDimension{c_HalfMaxAllowedDimension + c_HalfMaxAllowedDimension / 2};
+static constexpr matrix_size_t c_ThreeQuartersMaxAllowedDimension{c_HalfMaxAllowedDimension +
+                                                                  c_HalfMaxAllowedDimension / 2};
 static constexpr matrix_size_t c_QuarterMaxAllowedDimension{c_MaxAllowedDimension / 4};
-static constexpr matrix_size_t c_FiveEighthsMaxAllowedDimension{c_HalfMaxAllowedDimension + c_HalfMaxAllowedDimension / 4};
+static constexpr matrix_size_t c_FiveEighthsMaxAllowedDimension{c_HalfMaxAllowedDimension +
+                                                                c_HalfMaxAllowedDimension / 4};
 static constexpr matrix_size_t c_SevenEighthsMaxAllowedDimension{(c_MaxAllowedDimension / 8) * 7};
 static constexpr matrix_size_t c_DecrQuarterMaxAllowedDimension{c_QuarterMaxAllowedDimension - 1};
 static constexpr matrix_size_t c_IncrQuarterMaxAllowedDimension{c_QuarterMaxAllowedDimension + 1};
@@ -71,11 +72,14 @@ static constexpr matrix_size_t c_DoubleQuarterMaxAllowedDimension{c_QuarterMaxAl
 static constexpr matrix_size_t c_DoubleDecrQuarterMaxAllowedDimension{c_DecrQuarterMaxAllowedDimension * 2};
 static constexpr matrix_size_t c_HalfQuarterMaxAllowedDimension{c_QuarterMaxAllowedDimension / 2};
 static constexpr matrix_size_t c_HalfDecrQuarterMaxAllowedDimension{c_DecrQuarterMaxAllowedDimension / 2};
-static constexpr matrix_size_t c_HalfThreeQuartersMaxAllowedDimension{(c_MaxAllowedDimension - c_QuarterMaxAllowedDimension) / 2};
+static constexpr matrix_size_t c_HalfThreeQuartersMaxAllowedDimension{
+    (c_MaxAllowedDimension - c_QuarterMaxAllowedDimension) / 2};
 
-static constexpr matrix_size_t c_HalfToFiveEighthsCapacityOffset{(c_FiveEighthsMaxAllowedDimension - c_HalfMaxAllowedDimension) / 2};
+static constexpr matrix_size_t c_HalfToFiveEighthsCapacityOffset{
+    (c_FiveEighthsMaxAllowedDimension - c_HalfMaxAllowedDimension) / 2};
 static constexpr matrix_size_t c_HalfToMaxCapacityOffset{(c_MaxAllowedDimension - c_HalfMaxAllowedDimension) / 2};
-static constexpr matrix_size_t c_SevenEighthsToMaxCapacityOffset{(c_MaxAllowedDimension - c_SevenEighthsMaxAllowedDimension) / 2};
+static constexpr matrix_size_t c_SevenEighthsToMaxCapacityOffset{
+    (c_MaxAllowedDimension - c_SevenEighthsMaxAllowedDimension) / 2};
 
 static constexpr bool c_IsEvenMaxAllowedDimension{0 == c_MaxAllowedDimension % 2};
 
@@ -96,58 +100,60 @@ enum class SplitMode : unsigned short
 };
 
 // useful macros shared between various test cases
-#define CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, \
-                                       requiredRowCapacity, requiredColumnCapacity, requiredRowCapacityOffset, requiredColumnCapacityOffset, \
-                                       dimensionsFailMessage, capacityFailMessage, capacityOffsetFailMessage) \
-    if (matrix.getNrOfRows() != requiredNrOfRows || matrix.getNrOfColumns() != requiredNrOfColumns) \
-    { \
-        QFAIL(dimensionsFailMessage); \
-    } \
-\
-    if (matrix.getRowCapacity() != requiredRowCapacity || matrix.getColumnCapacity() != requiredColumnCapacity) \
-    { \
-        QFAIL(capacityFailMessage); \
-    } \
-\
-    if (matrix.getRowCapacityOffset() != requiredRowCapacityOffset || matrix.getColumnCapacityOffset() != requiredColumnCapacityOffset) \
-    { \
-        QFAIL(capacityOffsetFailMessage); \
+#define CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns, requiredRowCapacity,             \
+                                       requiredColumnCapacity, requiredRowCapacityOffset,                              \
+                                       requiredColumnCapacityOffset, dimensionsFailMessage, capacityFailMessage,       \
+                                       capacityOffsetFailMessage)                                                      \
+    if (matrix.getNrOfRows() != requiredNrOfRows || matrix.getNrOfColumns() != requiredNrOfColumns)                    \
+    {                                                                                                                  \
+        QFAIL(dimensionsFailMessage);                                                                                  \
+    }                                                                                                                  \
+                                                                                                                       \
+    if (matrix.getRowCapacity() != requiredRowCapacity || matrix.getColumnCapacity() != requiredColumnCapacity)        \
+    {                                                                                                                  \
+        QFAIL(capacityFailMessage);                                                                                    \
+    }                                                                                                                  \
+                                                                                                                       \
+    if (matrix.getRowCapacityOffset() != requiredRowCapacityOffset ||                                                  \
+        matrix.getColumnCapacityOffset() != requiredColumnCapacityOffset)                                              \
+    {                                                                                                                  \
+        QFAIL(capacityOffsetFailMessage);                                                                              \
     }
 
-#define CHECK_MATRIX_HAS_THE_RIGHT_ELEMENT_VALUES(matrix, elementsList, errorMessage) \
-    for (size_t elementNr{0}; elementNr < elementsList.size(); ++elementNr) \
-    { \
-        const matrix_size_t c_ColumnsCount{matrix.getNrOfColumns()}; \
-\
-        if (elementsList[elementNr] != matrix.at(elementNr / c_ColumnsCount, elementNr % c_ColumnsCount)) \
-        { \
-            QFAIL(errorMessage); \
-        } \
+#define CHECK_MATRIX_HAS_THE_RIGHT_ELEMENT_VALUES(matrix, elementsList, errorMessage)                                  \
+    for (size_t elementNr{0}; elementNr < elementsList.size(); ++elementNr)                                            \
+    {                                                                                                                  \
+        const matrix_size_t c_ColumnsCount{matrix.getNrOfColumns()};                                                   \
+                                                                                                                       \
+        if (elementsList[elementNr] != matrix.at(elementNr / c_ColumnsCount, elementNr % c_ColumnsCount))              \
+        {                                                                                                              \
+            QFAIL(errorMessage);                                                                                       \
+        }                                                                                                              \
     }
 
-#define CHECK_ELEMENTS_ARE_IDENTICAL_AND_HAVE_CORRECT_VALUE(matrix, elementValue, errorMessage) \
-    for (int rowNr{0u}; rowNr < matrix.getNrOfRows(); ++rowNr) \
-    { \
-        for (int columnNr{0u}; columnNr < matrix.getNrOfColumns(); ++columnNr) \
-        { \
-            if (matrix.at(rowNr, columnNr) != elementValue) \
-            { \
-                QFAIL(errorMessage); \
-                break; \
-            } \
-        } \
+#define CHECK_ELEMENTS_ARE_IDENTICAL_AND_HAVE_CORRECT_VALUE(matrix, elementValue, errorMessage)                        \
+    for (int rowNr{0u}; rowNr < matrix.getNrOfRows(); ++rowNr)                                                         \
+    {                                                                                                                  \
+        for (int columnNr{0u}; columnNr < matrix.getNrOfColumns(); ++columnNr)                                         \
+        {                                                                                                              \
+            if (matrix.at(rowNr, columnNr) != elementValue)                                                            \
+            {                                                                                                          \
+                QFAIL(errorMessage);                                                                                   \
+                break;                                                                                                 \
+            }                                                                                                          \
+        }                                                                                                              \
     }
 
-#define CHECK_MATRIX_IS_DIAGONAL_WITH_CORRECT_ELEMENT_VALUES(matrix, nonDiagElementValue, diagElementValue, errorMessage) \
-    for (StringMatrix::size_type rowNr{0u}; rowNr < matrix.getNrOfRows(); ++rowNr) \
-    { \
-        for (StringMatrix::size_type columnNr{0u}; columnNr < matrix.getNrOfColumns(); ++columnNr) \
-        { \
-            if ((rowNr != columnNr && matrix.at(rowNr, columnNr) != nonDiagElementValue) || (rowNr == columnNr && matrix.at(rowNr, columnNr) != diagElementValue)) \
-            { \
-                QFAIL(errorMessage); \
-            } \
-        } \
+#define CHECK_MATRIX_IS_DIAGONAL_WITH_CORRECT_ELEMENT_VALUES(matrix, nonDiagElementValue, diagElementValue,            \
+                                                             errorMessage)                                             \
+    for (StringMatrix::size_type rowNr{0u}; rowNr < matrix.getNrOfRows(); ++rowNr)                                     \
+    {                                                                                                                  \
+        for (StringMatrix::size_type columnNr{0u}; columnNr < matrix.getNrOfColumns(); ++columnNr)                     \
+        {                                                                                                              \
+            if ((rowNr != columnNr && matrix.at(rowNr, columnNr) != nonDiagElementValue) ||                            \
+                (rowNr == columnNr && matrix.at(rowNr, columnNr) != diagElementValue))                                 \
+            {                                                                                                          \
+                QFAIL(errorMessage);                                                                                   \
+            }                                                                                                          \
+        }                                                                                                              \
     }
-
-#endif // TESTUTILS_H

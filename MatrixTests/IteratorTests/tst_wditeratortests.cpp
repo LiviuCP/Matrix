@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "testutils.h"
@@ -1276,3 +1277,4 @@ void WDIteratorTests::_buildOperatorPlusTestingTable()
 QTEST_APPLESS_MAIN(WDIteratorTests)
 
 #include "tst_wditeratortests.moc"
+// clang-format on

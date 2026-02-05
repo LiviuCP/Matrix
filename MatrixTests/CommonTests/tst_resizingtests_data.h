@@ -1,5 +1,5 @@
-#ifndef TST_RESIZINGTESTS_DATA_H
-#define TST_RESIZINGTESTS_DATA_H
+// clang-format off
+#pragma once
 
 #include "testutils.h"
 
@@ -1011,5 +1011,4 @@ StringMatrix c_StringMatrix3_9x10{9, 10, { "-1a",  "2B",  "-3c",  "4D",  "-5e", 
                                           "-71H", "72i", "-73a", "74B", "-75c", "76D", "-77e", "78F", "-79g", "80H",
                                           "-81i", "82a", "-83B", "84c", "-85D", "86e", "-87F", "88g", "-89H", "90i"
                                   }};
-
-#endif // TST_RESIZINGTESTS_DATA_H
+// clang-format on

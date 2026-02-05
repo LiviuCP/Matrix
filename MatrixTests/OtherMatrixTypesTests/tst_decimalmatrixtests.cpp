@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "testutils.h"
@@ -72,3 +73,4 @@ void DecimalMatrixTests::testMatrixesAreNotEqual_data()
 QTEST_APPLESS_MAIN(DecimalMatrixTests)
 
 #include "tst_decimalmatrixtests.moc"
+// clang-format on

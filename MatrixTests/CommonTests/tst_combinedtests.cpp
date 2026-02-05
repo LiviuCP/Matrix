@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "testutils.h"
@@ -274,3 +275,4 @@ void CombinedTests::testStringMatrixCatByColumnWithModifiedColumnCapacityOffset(
 QTEST_APPLESS_MAIN(CombinedTests)
 
 #include "tst_combinedtests.moc"
+// clang-format on

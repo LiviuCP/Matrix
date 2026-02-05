@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "testutils.h"
@@ -162,3 +163,4 @@ void SwappingTests::testStringMatrixSwapColumns_data()
 QTEST_APPLESS_MAIN(SwappingTests)
 
 #include "tst_swappingtests.moc"
+// clang-format on

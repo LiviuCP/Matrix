@@ -1,3 +1,4 @@
+// clang-format off
 #define ERROR_CHECKING
 
 #include <QTest>
@@ -77,3 +78,4 @@ void FractionMatrixTests::testMatrixesAreNotEqual_data()
 QTEST_APPLESS_MAIN(FractionMatrixTests)
 
 #include "tst_fractionmatrixtests.moc"
+// clang-format on

@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "testutils.h"
@@ -851,3 +852,4 @@ void ReverseMIteratorTests::_buildOperatorPlusTestingTable()
 QTEST_APPLESS_MAIN(ReverseMIteratorTests)
 
 #include "tst_reversemiteratortests.moc"
+// clang-format on

@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "testutils.h"
@@ -409,3 +410,4 @@ void TransformationTests::testStringMatrixSplitByColumn_data()
 QTEST_APPLESS_MAIN(TransformationTests)
 
 #include "tst_transformationtests.moc"
+// clang-format on

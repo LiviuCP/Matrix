@@ -1,3 +1,4 @@
+// clang-format off
 #include <QTest>
 
 #include "testutils.h"
@@ -1421,3 +1422,4 @@ void CombinedIntMatrixCapacityTests::_buildReserveAndInsertColumnTestingTable()
 QTEST_APPLESS_MAIN(CombinedIntMatrixCapacityTests)
 
 #include "tst_combinedintmatrixcapacitytests.moc"
+// clang-format on
