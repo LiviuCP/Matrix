@@ -1,23 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
-
 project(IteratorTests LANGUAGES CXX)
-
-find_package(QT NAMES Qt5 Qt6 COMPONENTS Test REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Test REQUIRED)
-
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-enable_testing()
-
-include_directories(../Shared)
-include_directories(../../MatrixLib/Matrix)
 
 add_executable(ZIteratorTests tst_ziteratortests.cpp)
 add_executable(ConstZIteratorTests tst_constziteratortests.cpp)
@@ -69,4 +50,3 @@ target_link_libraries(MIteratorTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(ConstMIteratorTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(ReverseMIteratorTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(ConstReverseMIteratorTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
-

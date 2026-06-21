@@ -1,27 +1,8 @@
-cmake_minimum_required(VERSION 3.5)
-
 project(OtherMatrixTypesTests LANGUAGES CXX)
-
-find_package(QT NAMES Qt5 Qt6 COMPONENTS Test REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Test REQUIRED)
-
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(FRACTION_LIB_ENABLED OFF) # set this ON once the Fractions library and include dir are setup
 
 add_definitions(-DQT)
-
-enable_testing()
-
-include_directories(../Shared)
-include_directories(../../MatrixLib/Matrix)
 
 add_executable(DecimalMatrixTests tst_decimalmatrixtests.cpp)
 add_executable(QPointFMatrixTests tst_qpointfmatrixtests.cpp)
