@@ -9,6 +9,10 @@ add_test(NAME BasicStringMatrixCapacityTests COMMAND BasicStringMatrixCapacityTe
 add_test(NAME CombinedStringMatrixCapacityTests COMMAND CombinedStringMatrixCapacityTests)
 
 target_link_libraries(BasicIntMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(BasicIntMatrixCapacityTests PRIVATE MatrixLib)
 target_link_libraries(CombinedIntMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(CombinedIntMatrixCapacityTests PRIVATE MatrixLib)
 target_link_libraries(BasicStringMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(BasicStringMatrixCapacityTests PRIVATE MatrixLib)
 target_link_libraries(CombinedStringMatrixCapacityTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(CombinedStringMatrixCapacityTests PRIVATE MatrixLib)

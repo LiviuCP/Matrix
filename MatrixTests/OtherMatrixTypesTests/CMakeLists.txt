@@ -11,13 +11,16 @@ add_test(NAME DecimalMatrixTests COMMAND DecimalMatrixTests)
 add_test(NAME QPointFMatrixTests COMMAND QPointFMatrixTests)
 
 target_link_libraries(DecimalMatrixTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(DecimalMatrixTests PRIVATE MatrixLib)
 target_link_libraries(QPointFMatrixTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+target_link_libraries(QPointFMatrixTests PRIVATE MatrixLib)
 
 if (${FRACTION_LIB_ENABLED})
     include_directories(../../../Fractions/FractionLib) # set the include dir path for the Fractions library
     add_executable(FractionMatrixTests tst_fractionmatrixtests.cpp)
     add_test(NAME FractionMatrixTests COMMAND FractionMatrixTests)
     target_link_libraries(FractionMatrixTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+    target_link_libraries(FractionMatrixTests PRIVATE MatrixLib)
 
     set(FRACTION_LIB_TYPE SHARED)
 

@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "matrix.h"
+import matrix;
 
 void clearScreen()
 {

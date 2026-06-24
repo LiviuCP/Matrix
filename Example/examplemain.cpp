@@ -3,8 +3,9 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cassert>
 
-#include "matrix.h"
+import matrix;
 
 using namespace std;
 using IntMatrix = Matrix<int>;

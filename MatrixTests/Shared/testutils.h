@@ -3,7 +3,7 @@
 #include <QPointF>
 #include <string>
 
-#include "matrix.h"
+import matrix;
 
 using matrix_opt_size_t = std::optional<matrix_size_t>;
 using size_tuple_t = std::tuple<matrix_size_t, matrix_size_t, matrix_size_t, matrix_opt_size_t, matrix_opt_size_t>;
