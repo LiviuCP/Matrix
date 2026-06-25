@@ -1,6 +1,10 @@
 project(MatrixLib LANGUAGES CXX)
 
-add_library(${PROJECT_NAME} Utils/errorhandling.cpp)
+if(BUILD_SHARED_MATRIX_LIB)
+    add_library(${PROJECT_NAME} SHARED Utils/errorhandling.cpp)
+else()
+    add_library(${PROJECT_NAME} STATIC Utils/errorhandling.cpp)
+endif()
 
 target_sources(${PROJECT_NAME}
     PUBLIC
