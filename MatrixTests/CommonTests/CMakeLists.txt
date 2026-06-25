@@ -1,8 +1,5 @@
 project(CommonTests LANGUAGES CXX)
 
-add_compile_definitions(USE_CAPACITY_OFFSET)
-add_compile_definitions(USE_SMALL_DIMENSIONS)
-
 add_executable(ConstructionAndAssignmentTests tst_constructionandassignmenttests.cpp)
 add_executable(ResizingTests tst_resizingtests.cpp)
 add_executable(TransformationTests tst_transformationtests.cpp)

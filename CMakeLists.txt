@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.28)
 
+add_compile_definitions(USE_SMALL_DIMENSIONS)
+add_compile_definitions(USE_CAPACITY_OFFSET)
+add_compile_definitions(CONVERT_TO_EXCEPTIONS)
+
 project(Matrix LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)

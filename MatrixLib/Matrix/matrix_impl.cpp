@@ -177,7 +177,7 @@ template <MatrixElementType T> typename Matrix<T>::size_type Matrix<T>::getColum
 {
     return m_ColumnCapacity;
 }
-// #ifdef USE_CAPACITY_OFFSET
+#ifdef USE_CAPACITY_OFFSET
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::getRowCapacityOffset() const
 {
     return m_RowCapacityOffset;
@@ -187,7 +187,7 @@ template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matr
 {
     return m_ColumnCapacityOffset;
 }
-// #endif
+#endif
 template <MatrixElementType T> bool Matrix<T>::isEmpty() const
 {
     if (m_pAllocPtr)

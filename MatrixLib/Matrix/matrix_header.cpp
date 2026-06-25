@@ -8,13 +8,13 @@ module;
 
 export module matrix:matrix_header;
 
-// #ifndef USE_SMALL_DIMENSIONS
-// export using matrix_size_t = uint32_t;
-// export using matrix_diff_t = int64_t;
-// #else
+#ifndef USE_SMALL_DIMENSIONS
+export using matrix_size_t = uint32_t;
+export using matrix_diff_t = int64_t;
+#else
 export using matrix_size_t = uint8_t;
 export using matrix_diff_t = int16_t;
-// #endif
+#endif
 
 export constexpr matrix_size_t maxAllowedDimension()
 {
@@ -274,10 +274,10 @@ public:
     size_type getNrOfColumns() const;
     size_type getRowCapacity() const;
     size_type getColumnCapacity() const;
-    // #ifdef USE_CAPACITY_OFFSET
+    #ifdef USE_CAPACITY_OFFSET
     std::optional<size_type> getRowCapacityOffset() const;
     std::optional<size_type> getColumnCapacityOffset() const;
-    // #endif
+    #endif
     bool isEmpty() const;
 
     void transpose();

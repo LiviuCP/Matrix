@@ -4,7 +4,7 @@
 #include <string>
 
 #ifndef ERROR_CHECKING_DISABLED
-// #ifdef CONVERT_TO_EXCEPTIONS
+#ifdef CONVERT_TO_EXCEPTIONS
 #define CHECK_ERROR_CONDITION(condition, errorMessage)                                                                 \
     {                                                                                                                  \
         /*printf("checking error condition, trigger exception\n");*/                                                   \
@@ -13,17 +13,17 @@
             throw std::runtime_error(errorMessage);                                                                    \
         }                                                                                                              \
     }
-// #else
-// #define CHECK_ERROR_CONDITION(condition, errorMessage) \
-//     { \
-//         /*printf("checking error condition, assertion\n");*/ \
-//         if (condition) \
-//         { \
-//             fprintf(stderr, "ASSERTION ERROR TRIGERRED! %s\n", errorMessage.c_str()); \
-//             assert(false); \
-//         } \
-//     }
-// #endif
+#else
+#define CHECK_ERROR_CONDITION(condition, errorMessage)                                                                 \
+    {                                                                                                                  \
+        /*printf("checking error condition, assertion\n");*/                                                           \
+        if (condition)                                                                                                 \
+        {                                                                                                              \
+            fprintf(stderr, "ASSERTION ERROR TRIGERRED! %s\n", errorMessage.c_str());                                  \
+            assert(false);                                                                                             \
+        }                                                                                                              \
+    }
+#endif
 #else
 #define CHECK_ERROR_CONDITION(condition, errorMessage)
 #endif
