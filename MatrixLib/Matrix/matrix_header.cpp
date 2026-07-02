@@ -274,10 +274,10 @@ public:
     size_type getNrOfColumns() const;
     size_type getRowCapacity() const;
     size_type getColumnCapacity() const;
-    #ifdef USE_CAPACITY_OFFSET
+#ifdef USE_CAPACITY_OFFSET
     std::optional<size_type> getRowCapacityOffset() const;
     std::optional<size_type> getColumnCapacityOffset() const;
-    #endif
+#endif
     bool isEmpty() const;
 
     void transpose();

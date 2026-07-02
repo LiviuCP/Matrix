@@ -1,7 +1,45 @@
 // clang-format off
 #include <QTest>
 
-#include "testutils.h"
+#include <string>
+
+import matrix;
+
+using IntMatrix = Matrix<int>;
+using IntZIter = IntMatrix::ZIterator;
+using IntConstZIter = IntMatrix::ConstZIterator;
+using IntReverseZIter = IntMatrix::ReverseZIterator;
+using IntConstReverseZIter = IntMatrix::ConstReverseZIterator;
+using IntNIter = IntMatrix::NIterator;
+using IntConstNIter = IntMatrix::ConstNIterator;
+using IntReverseNIter = IntMatrix::ReverseNIterator;
+using IntConstReverseNIter = IntMatrix::ConstReverseNIterator;
+using IntDIter = IntMatrix::DIterator;
+using IntConstDIter = IntMatrix::ConstDIterator;
+using IntReverseDIter = IntMatrix::ReverseDIterator;
+using IntConstReverseDIter = IntMatrix::ConstReverseDIterator;
+using IntMIter = IntMatrix::MIterator;
+using IntConstMIter = IntMatrix::ConstMIterator;
+using IntReverseMIter = IntMatrix::ReverseMIterator;
+using IntConstReverseMIter = IntMatrix::ConstReverseMIterator;
+
+using StringMatrix = Matrix<std::string>;
+using StringZIter = StringMatrix::ZIterator;
+using StringConstZIter = StringMatrix::ConstZIterator;
+using StringReverseZIter = StringMatrix::ReverseZIterator;
+using StringConstReverseZIter = StringMatrix::ConstReverseZIterator;
+using StringNIter = StringMatrix::NIterator;
+using StringConstNIter = StringMatrix::ConstNIterator;
+using StringReverseNIter = StringMatrix::ReverseNIterator;
+using StringConstReverseNIter = StringMatrix::ConstReverseNIterator;
+using StringDIter = StringMatrix::DIterator;
+using StringConstDIter = StringMatrix::ConstDIterator;
+using StringReverseDIter = StringMatrix::ReverseDIterator;
+using StringConstReverseDIter = StringMatrix::ConstReverseDIterator;
+using StringMIter = StringMatrix::MIterator;
+using StringConstMIter = StringMatrix::ConstMIterator;
+using StringReverseMIter = StringMatrix::ReverseMIterator;
+using StringConstReverseMIter = StringMatrix::ConstReverseMIterator;
 
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(IntZIter)

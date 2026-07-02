@@ -8,7 +8,7 @@ endif()
 
 target_sources(${PROJECT_NAME}
     PUBLIC
-        FILE_SET library_modules
+        FILE_SET matrix_modules
         TYPE CXX_MODULES
         FILES
             Matrix/matrix.cpp

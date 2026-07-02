@@ -14,6 +14,30 @@ add_test(NAME SwappingTests COMMAND SwappingTests)
 add_test(NAME OtherFunctionalityTests COMMAND OtherFunctionalityTests)
 add_test(NAME CombinedTests COMMAND CombinedTests)
 
+target_sources(ResizingTests
+    PUBLIC
+        FILE_SET resizing_tests_data_module
+        TYPE CXX_MODULES
+        FILES
+            tst_resizingtests_data.cpp
+)
+
+target_sources(TransformationTests
+    PUBLIC
+        FILE_SET transformation_tests_data_module
+        TYPE CXX_MODULES
+        FILES
+            tst_transformationtests_data.cpp
+)
+
+target_sources(SwappingTests
+    PUBLIC
+        FILE_SET swapping_tests_data_module
+        TYPE CXX_MODULES
+        FILES
+            tst_swappingtests_data.cpp
+)
+
 target_link_libraries(ConstructionAndAssignmentTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(ConstructionAndAssignmentTests PRIVATE MatrixLib)
 target_link_libraries(ResizingTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)

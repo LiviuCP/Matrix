@@ -1,7 +1,18 @@
 // clang-format off
 #include <QTest>
 
-#include "testutils.h"
+#include <string>
+
+import matrix;
+
+using matrix_opt_size_t = std::optional<matrix_size_t>;
+
+using IntMatrix = Matrix<int>;
+using StringMatrix = Matrix<std::string>;
+
+using IntConstReverseMIter = IntMatrix::ConstReverseMIterator;
+using StringConstReverseMIter = StringMatrix::ConstReverseMIterator;
+using IntReverseMIter = IntMatrix::ReverseMIterator;
 
 Q_DECLARE_METATYPE(IntConstReverseMIter)
 Q_DECLARE_METATYPE(StringConstReverseMIter)

@@ -1,8 +1,16 @@
 // clang-format off
 #include <QTest>
 
+#include <string>
+
 #include "tst_resizingtests.h"
-#include "tst_resizingtests_data.h"
+
+import resizing_tests_data;
+
+using matrix_opt_size_t = std::optional<matrix_size_t>;
+
+using IntMatrix = Matrix<int>;
+using StringMatrix = Matrix<std::string>;
 
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(StringMatrix)

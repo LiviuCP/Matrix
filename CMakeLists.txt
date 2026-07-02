@@ -18,4 +18,5 @@ find_package(QT NAMES Qt5 Qt6 COMPONENTS Test QUIET)
 
 if(QT_FOUND)
     add_subdirectory(MatrixTests)
+    add_subdirectory(TestUtilsLib)
 endif()

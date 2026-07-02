@@ -1,8 +1,18 @@
 // clang-format off
 #include <QTest>
 
-#include "testutils.h"
+#include <string>
+
 #include "tst_combinedcapacitytests.h"
+#include "testenums.h"
+
+import testconstants;
+
+using matrix_opt_size_t = std::optional<matrix_size_t>;
+using size_tuple_t = std::tuple<matrix_size_t, matrix_size_t, matrix_size_t, matrix_opt_size_t, matrix_opt_size_t>;
+using size_tuple_array_t = std::vector<size_tuple_t>;
+
+using StringMatrix = Matrix<std::string>;
 
 Q_DECLARE_METATYPE(StringMatrix)
 Q_DECLARE_METATYPE(ConcatMode)

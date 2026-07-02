@@ -9,8 +9,7 @@ set(CMAKE_AUTORCC ON)
 
 enable_testing()
 
-include_directories(Shared)
-include_directories(../MatrixLib/Matrix)
+include_directories(../TestUtilsLib)
 
 add_subdirectory(CommonTests)
 add_subdirectory(ExceptionTests)

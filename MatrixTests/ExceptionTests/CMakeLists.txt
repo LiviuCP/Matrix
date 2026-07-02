@@ -7,6 +7,6 @@ add_test(NAME CommonExceptionTests COMMAND CommonExceptionTests)
 add_test(NAME IteratorExceptionTests COMMAND IteratorExceptionTests)
 
 target_link_libraries(CommonExceptionTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
-target_link_libraries(CommonExceptionTests PRIVATE MatrixLib)
+target_link_libraries(CommonExceptionTests PRIVATE TestUtilsLib)
 target_link_libraries(IteratorExceptionTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(IteratorExceptionTests PRIVATE MatrixLib)
