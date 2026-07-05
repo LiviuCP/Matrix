@@ -3,8 +3,9 @@
 
 #include <QTest>
 
-#include "matrix.h"
 #include "fraction.h"
+
+import matrix;
 
 using FractMatrix = Matrix<Fraction>;
 
