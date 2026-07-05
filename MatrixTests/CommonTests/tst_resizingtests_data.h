@@ -1,7 +1,12 @@
 // clang-format off
 #pragma once
 
-#include "testutils.h"
+#include <string>
+
+#include "matrix.h"
+
+using IntMatrix = Matrix<int>;
+using StringMatrix = Matrix<std::string>;
 
 /* Integer matrixes */
 

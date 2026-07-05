@@ -1,7 +1,6 @@
 // clang-format off
 #include <QTest>
 
-#include "testutils.h"
 #include "tst_swappingtests.h"
 #include "tst_swappingtests_data.h"
 

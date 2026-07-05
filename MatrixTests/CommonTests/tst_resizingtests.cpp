@@ -4,6 +4,8 @@
 #include "tst_resizingtests.h"
 #include "tst_resizingtests_data.h"
 
+using matrix_opt_size_t = std::optional<matrix_size_t>;
+
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(StringMatrix)
 

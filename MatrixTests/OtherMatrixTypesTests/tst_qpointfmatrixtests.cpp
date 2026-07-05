@@ -2,7 +2,9 @@
 #include <QTest>
 #include <QPointF>
 
-#include "testutils.h"
+#include "matrix.h"
+
+using QPointFMatrix = Matrix<QPointF>;
 
 Q_DECLARE_METATYPE(QPointFMatrix)
 
