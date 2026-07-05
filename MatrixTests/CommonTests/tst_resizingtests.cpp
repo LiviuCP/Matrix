@@ -12,6 +12,8 @@ using matrix_opt_size_t = std::optional<matrix_size_t>;
 using IntMatrix = Matrix<int>;
 using StringMatrix = Matrix<std::string>;
 
+using matrix_opt_size_t = std::optional<matrix_size_t>;
+
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(StringMatrix)
 
