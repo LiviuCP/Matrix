@@ -7,7 +7,6 @@
 
 import matrix;
 
-using namespace std;
 using IntMatrix = Matrix<int>;
 
 extern void clearScreen();
@@ -17,12 +16,12 @@ int main()
 {
     clearScreen();
 
-    cout << "This is a small usage example of the Matrix library" << endl << endl;
-    cout << "We will take a Matrix and perform following operations:" << endl;
-    cout << "- calculate column subtotals" << endl;
-    cout << "- perform a per-column sorting in decreasing order" << endl;
-    cout << "- replace the origin diagonal values with a new value" << endl;
-    cout << "- insert a row with the calculated subtotals within matrix" << endl << endl;
+    std::cout << "This is a small usage example of the Matrix library" << std::endl << std::endl;
+    std::cout << "We will take a Matrix and perform following operations:" << std::endl;
+    std::cout << "- calculate column subtotals" << std::endl;
+    std::cout << "- perform a per-column sorting in decreasing order" << std::endl;
+    std::cout << "- replace the origin diagonal values with a new value" << std::endl;
+    std::cout << "- insert a row with the calculated subtotals within matrix" << std::endl << std::endl;
 
     IntMatrix matrix{4, 5, {
             -1,  6,  8, 2,  4,
@@ -47,15 +46,15 @@ int main()
         std::sort(matrixCopy.reverseNColumnBegin(columnNumber), matrixCopy.reverseNColumnEnd(columnNumber));
     }
 
-    cout << "The original matrix is: " << endl;
+    std::cout << "The original matrix is: " << std::endl;
 
     printMatrix(matrix);
 
-    cout << "The column subtotals are: " << endl;
+    std::cout << "The column subtotals are: " << std::endl;
 
     printMatrix(columnSubtotalsMatrix);
 
-    cout << "The per column decreasingly sorted matrix is: " << endl;
+    std::cout << "The per column decreasingly sorted matrix is: " << std::endl;
 
     printMatrix(matrixCopy);
 
@@ -68,7 +67,7 @@ int main()
         *it = diagonalValue;
     }
 
-    cout << "After replacing the origin diagonal values of the sorted matrix with value " << diagonalValue << " the updated matrix is: " << endl;
+    std::cout << "After replacing the origin diagonal values of the sorted matrix with value " << diagonalValue << " the updated matrix is: " << std::endl;
 
     printMatrix(matrix);
 
@@ -90,11 +89,11 @@ int main()
         }
     }
 
-    cout << "After inserting the subtotals on row " << rowPositionToInsert + 1 << " the final matrix is: " << endl;
+    std::cout << "After inserting the subtotals on row " << rowPositionToInsert + 1 << " the final matrix is: " << std::endl;
 
     printMatrix(matrix);
 
-    cout << "Goodbye!" << endl << endl;
+    std::cout << "Goodbye!" << std::endl << std::endl;
 
     return 0;
 }
