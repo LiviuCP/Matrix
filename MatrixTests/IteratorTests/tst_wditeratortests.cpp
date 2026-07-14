@@ -1,7 +1,17 @@
 // clang-format off
 #include <QTest>
 
-#include "testutils.h"
+#include <string>
+
+#include "matrix.h"
+
+using matrix_opt_size_t = std::optional<matrix_size_t>;
+
+using IntMatrix = Matrix<int>;
+using StringMatrix = Matrix<std::string>;
+
+using IntWDIter = IntMatrix::WDIterator;
+using StringWDIter = StringMatrix::WDIterator;
 
 Q_DECLARE_METATYPE(IntWDIter)
 Q_DECLARE_METATYPE(StringWDIter)

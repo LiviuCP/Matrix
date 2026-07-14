@@ -1,7 +1,12 @@
 // clang-format off
 #include <QTest>
 
-#include "testutils.h"
+#include <string>
+
+#include "matrix.h"
+
+using IntMatrix = Matrix<int>;
+using StringMatrix = Matrix<std::string>;
 
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(StringMatrix)

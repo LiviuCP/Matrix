@@ -1,8 +1,15 @@
 // clang-format off
 #include <QTest>
 
-#include "testutils.h"
 #include "tst_basiccapacitytests.h"
+#include "testenums.h"
+#include "testconstants.h"
+
+using matrix_opt_size_t = std::optional<matrix_size_t>;
+using size_tuple_t = std::tuple<matrix_size_t, matrix_size_t, matrix_size_t, matrix_opt_size_t, matrix_opt_size_t>;
+using size_tuple_array_t = std::vector<size_tuple_t>;
+
+using IntMatrix = Matrix<int>;
 
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(size_tuple_t) // used for any data type (contains integer size_type values) - it cannot be redeclared with Q_DECL...

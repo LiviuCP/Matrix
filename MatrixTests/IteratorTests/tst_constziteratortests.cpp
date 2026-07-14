@@ -1,8 +1,19 @@
 // clang-format off
 #include <QTest>
-#include <cmath>
 
-#include "testutils.h"
+#include <cmath>
+#include <string>
+
+#include "matrix.h"
+
+using matrix_opt_size_t = std::optional<matrix_size_t>;
+
+using IntMatrix = Matrix<int>;
+using StringMatrix = Matrix<std::string>;
+
+using IntConstZIter = IntMatrix::ConstZIterator;
+using StringConstZIter = StringMatrix::ConstZIterator;
+using IntZIter = IntMatrix::ZIterator;
 
 Q_DECLARE_METATYPE(IntConstZIter)
 Q_DECLARE_METATYPE(StringConstZIter)

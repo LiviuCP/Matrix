@@ -1,7 +1,10 @@
 // clang-format off
 #include <QTest>
 
-#include "testutils.h"
+#include "testenums.h"
+#include "testconstants.h"
+
+using IntMatrix = Matrix<int>;
 
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(ConcatMode)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "testutils.h"
+#include "testmacros.h"
 
 #define TEST_RESERVE_RESIZE_CHECK_MATRIX_SIZE_AND_CAPACITY(matrix, requiredNrOfRows, requiredNrOfColumns,              \
                                                            requiredRowCapacity, requiredColumnCapacity,                \

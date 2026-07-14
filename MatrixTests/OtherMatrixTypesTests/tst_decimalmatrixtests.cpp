@@ -1,7 +1,9 @@
 // clang-format off
 #include <QTest>
 
-#include "testutils.h"
+#include "matrix.h"
+
+using DecMatrix = Matrix<double>;
 
 Q_DECLARE_METATYPE(DecMatrix)
 
