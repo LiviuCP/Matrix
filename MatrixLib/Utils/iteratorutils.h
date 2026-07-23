@@ -569,6 +569,27 @@
     return mpIteratorPtr[c_ResultingIndex FirstOperator mIteratorSecondaryDimension]                                   \
                         [c_ResultingIndex SecondOperator mIteratorSecondaryDimension];
 
+#define NEW_FORWARD_NON_DIAG_ITERATOR_INDEX_DEREFERENCE(mpIteratorPtr, mIteratorPrimaryDimension,                      \
+                                                        mIteratorSecondaryDimension, mIteratorIndex, FirstOperator,    \
+                                                        SecondOperator, arrayIndex)                                    \
+    CHECK_ERROR_CONDITION(_isEmpty(), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);                \
+                                                                                                                       \
+    const diff_type c_CurrentIndex{*mIteratorIndex};                                                                   \
+                                                                                                                       \
+    CHECK_ERROR_CONDITION(arrayIndex<diff_type{0} && std::abs(arrayIndex)> c_CurrentIndex,                             \
+                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);                            \
+                                                                                                                       \
+    const diff_type c_ResultingIndex{static_cast<diff_type>(c_CurrentIndex + arrayIndex)};                             \
+    const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) *            \
+                                                        static_cast<diff_type>(mIteratorSecondaryDimension))};         \
+    (void)c_UpperBound;                                                                                                \
+                                                                                                                       \
+    CHECK_ERROR_CONDITION(c_ResultingIndex >= c_UpperBound,                                                            \
+                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);                            \
+                                                                                                                       \
+    return mpIteratorPtr[c_ResultingIndex FirstOperator static_cast<diff_type>(mIteratorSecondaryDimension)]           \
+                        [c_ResultingIndex SecondOperator static_cast<diff_type>(mIteratorSecondaryDimension)];
+
 #define REVERSE_NON_DIAG_ITERATOR_INDEX_DEREFERENCE(                                                                   \
     mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,                 \
     mIteratorSecondaryCoordinate, FirstOperator, SecondOperator, arrayIndex)                                           \
