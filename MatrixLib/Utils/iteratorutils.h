@@ -342,6 +342,14 @@
                                                                                                                        \
     return result;
 
+#define NEW_FORWARD_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(mpIteratorPtr, mIteratorPrimaryDimension,                     \
+                                                         mIteratorSecondaryDimension, mIteratorIndex, secondIterator)  \
+    CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr ||                                             \
+                              mIteratorPrimaryDimension != secondIterator.mIteratorPrimaryDimension ||                 \
+                              mIteratorSecondaryDimension != secondIterator.mIteratorSecondaryDimension,               \
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);                                  \
+    return !_isEmpty() ? *mIteratorIndex - *secondIterator.mIteratorIndex : diff_type{0};
+
 #define REVERSE_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(mpIteratorPtr, mIteratorPrimaryDimension,                         \
                                                      mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,          \
                                                      mIteratorSecondaryCoordinate, secondIterator)                     \
