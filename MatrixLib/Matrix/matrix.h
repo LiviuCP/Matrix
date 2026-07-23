@@ -604,7 +604,7 @@ template <MatrixElementType T> T& Matrix<T>::ZIterator::operator*() const
 
 template <MatrixElementType T> T* Matrix<T>::ZIterator::operator->() const
 {
-    FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
+    NEW_FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::ZIterator::difference_type index) const

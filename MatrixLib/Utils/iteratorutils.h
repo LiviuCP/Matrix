@@ -531,6 +531,15 @@
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
     return (mpIteratorPtr[*mIteratorRowNr] + *mIteratorColumnNr);
 
+#define NEW_FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorPrimaryDimension,                      \
+                                                        mIteratorSecondaryDimension, mIteratorIndex)                   \
+    const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) *            \
+                                                        static_cast<diff_type>(mIteratorSecondaryDimension))};         \
+                                                                                                                       \
+    CHECK_ERROR_CONDITION(_isEmpty() || mIteratorIndex == c_UpperBound,                                                \
+                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
+    return (mpIteratorPtr[*getRowNr()] + *getColumnNr());
+
 #define REVERSE_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorRowNr,        \
                                                     mIteratorColumnNr, mIteratorSecondaryCoordinate)                   \
     CHECK_ERROR_CONDITION(_isEmpty() || !mIteratorSecondaryCoordinate.has_value(),                                     \
