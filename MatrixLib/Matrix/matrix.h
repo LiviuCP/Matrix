@@ -599,7 +599,7 @@ template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matr
 
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator*() const
 {
-    FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
+    NEW_FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> T* Matrix<T>::ZIterator::operator->() const
