@@ -457,6 +457,15 @@
                                                                                                                        \
     return (mIteratorRowNr == secondIterator.mIteratorRowNr && mIteratorColumnNr == secondIterator.mIteratorColumnNr);
 
+#define NEW_NON_DIAG_ITERATOR_CHECK_EQUALITY(mpIteratorPtr, mIteratorRowsCount, mIteratorColumnsCount, mIteratorIndex, \
+                                             secondIterator)                                                           \
+    CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr ||                                             \
+                              mIteratorRowsCount != secondIterator.mIteratorRowsCount ||                               \
+                              mIteratorColumnsCount != secondIterator.mIteratorColumnsCount,                           \
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);                                  \
+                                                                                                                       \
+    return mIteratorIndex == secondIterator.mIteratorIndex;
+
 #define FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorRowNr,     \
                                                        mIteratorColumnNr, mIteratorSecondaryCoordinate)                \
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorSecondaryCoordinate == mIteratorSecondaryDimension,                   \
@@ -544,6 +553,18 @@
         }                                                                                                              \
     }
 
+#define NEW_FORWARD_NON_DIAG_ITERATOR_DO_INCREMENT(mIteratorPrimaryDimension, mIteratorSecondaryDimension,             \
+                                                   mIteratorIndex)                                                     \
+    if (!_isEmpty())                                                                                                   \
+    {                                                                                                                  \
+        const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) *        \
+                                                            static_cast<diff_type>(mIteratorSecondaryDimension))};     \
+        if (mIteratorIndex < c_UpperBound)                                                                             \
+        {                                                                                                              \
+            mIteratorIndex = *mIteratorIndex + 1;                                                                      \
+        }                                                                                                              \
+    }
+
 #define REVERSE_NON_DIAG_ITERATOR_DO_INCREMENT(mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,                \
                                                mIteratorSecondaryCoordinate)                                           \
     if (!_isEmpty() && (mIteratorSecondaryCoordinate.has_value() || mIteratorPrimaryCoordinate > size_type{0}))        \
@@ -577,6 +598,12 @@
         {                                                                                                              \
             mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate - size_type{1};                               \
         }                                                                                                              \
+    }
+
+#define NEW_FORWARD_NON_DIAG_ITERATOR_DO_DECREMENT(mIteratorIndex)                                                     \
+    if (!_isEmpty() && mIteratorIndex > 0)                                                                             \
+    {                                                                                                                  \
+        mIteratorIndex = *mIteratorIndex - 1;                                                                          \
     }
 
 #define REVERSE_NON_DIAG_ITERATOR_DO_DECREMENT(mIteratorPrimaryDimension, mIteratorSecondaryDimension,                 \
@@ -614,6 +641,21 @@
     {                                                                                                                  \
         assert(size_type{0} == mIteratorPrimaryDimension && size_type{0} == mIteratorSecondaryDimension &&             \
                !mIteratorPrimaryCoordinate.has_value() && !mIteratorSecondaryCoordinate.has_value());                  \
+    }                                                                                                                  \
+                                                                                                                       \
+    return !mpIteratorPtr;
+
+#define NEW_CHECK_FORWARD_NON_DIAG_ITERATOR_IS_EMPTY(mpIteratorPtr, mIteratorPrimaryDimension,                         \
+                                                     mIteratorSecondaryDimension, mIteratorIndex)                      \
+    if (mpIteratorPtr)                                                                                                 \
+    {                                                                                                                  \
+        assert(mIteratorPrimaryDimension > size_type{0} && mIteratorSecondaryDimension > size_type{0} &&               \
+               mIteratorIndex.has_value());                                                                            \
+    }                                                                                                                  \
+    else                                                                                                               \
+    {                                                                                                                  \
+        assert(size_type{0} == mIteratorPrimaryDimension && size_type{0} == mIteratorSecondaryDimension &&             \
+               !mIteratorIndex.has_value());                                                                           \
     }                                                                                                                  \
                                                                                                                        \
     return !mpIteratorPtr;
