@@ -268,6 +268,23 @@
                                                                                                                        \
     return *this;
 
+#define NEW_FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(                                                            \
+    mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorIndex, Sign, scalarValue)          \
+    if (!_isEmpty())                                                                                                   \
+    {                                                                                                                  \
+        const diff_type normalizedScalarValue = Sign scalarValue;                                                      \
+        const diff_type c_ResultingIndex{normalizedScalarValue < diff_type{0} &&                                       \
+                                                 std::abs(normalizedScalarValue) > *mIteratorIndex                     \
+                                             ? diff_type{0}                                                            \
+                                             : static_cast<diff_type>(*mIteratorIndex + normalizedScalarValue)};       \
+        const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) *        \
+                                                            static_cast<diff_type>(mIteratorSecondaryDimension))};     \
+                                                                                                                       \
+        mIteratorIndex = std::min<diff_type>(c_ResultingIndex, c_UpperBound);                                          \
+    }                                                                                                                  \
+                                                                                                                       \
+    return *this;
+
 #define REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(mpIteratorPtr, mIteratorPrimaryDimension,                       \
                                                        mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,        \
                                                        mIteratorSecondaryCoordinate, Sign, scalarValue)                \

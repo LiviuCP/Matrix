@@ -557,15 +557,15 @@ template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::ZIterato
 template <MatrixElementType T>
 typename Matrix<T>::ZIterator& Matrix<T>::ZIterator::operator+=(Matrix<T>::ZIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                   m_ColumnNr, +, offset);
+    NEW_FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, +,
+                                                       offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ZIterator& Matrix<T>::ZIterator::operator-=(Matrix<T>::ZIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                   m_ColumnNr, -, offset);
+    NEW_FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, -,
+                                                       offset);
 }
 
 template <MatrixElementType T>
