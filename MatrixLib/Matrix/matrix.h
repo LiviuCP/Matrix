@@ -50,7 +50,7 @@ public:
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ZIterator, T, size_type);
+        NEW_COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ZIterator, T, diff_type, size_type);
     };
 
     class ConstZIterator
@@ -588,12 +588,14 @@ template <MatrixElementType T> bool Matrix<T>::ZIterator::operator==(const Matri
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
 {
-    return m_RowNr;
+    return m_Index ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns))
+                   : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getColumnNr() const
 {
-    return m_ColumnNr;
+    return m_Index ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns))
+                   : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator*() const
@@ -625,8 +627,13 @@ Matrix<T>::ZIterator::ZIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixR
                                 Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
                                 std::optional<Matrix<T>::size_type> columnNr)
 {
-    CONSTRUCT_FORWARD_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr,
-                                        pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr);
+    const std::optional<diff_type> c_Index{rowNr.has_value() && columnNr.has_value()
+                                               ? static_cast<diff_type>(*rowNr) *
+                                                         static_cast<diff_type>(nrOfMatrixColumns) +
+                                                     static_cast<diff_type>(*columnNr)
+                                               : std::optional<diff_type>{}};
+    NEW_CONSTRUCT_FORWARD_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, pMatrixPtr,
+                                            nrOfMatrixRows, nrOfMatrixColumns, c_Index);
 }
 
 template <MatrixElementType T> void Matrix<T>::ZIterator::_increment()

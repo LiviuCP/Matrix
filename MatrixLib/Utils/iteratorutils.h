@@ -91,6 +91,16 @@
     SizeType m_NrOfMatrixRows;                                                                                         \
     SizeType m_NrOfMatrixColumns;
 
+#define NEW_COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType, IterableType, DiffType, SizeType)         \
+    IteratorType(IterableType** pMatrixPtr, SizeType nrOfMatrixRows, SizeType nrOfMatrixColumns,                       \
+                 std::optional<SizeType> rowNr, std::optional<SizeType> columnNr);                                     \
+                                                                                                                       \
+    std::optional<DiffType> m_Index;                                                                                   \
+    std::optional<SizeType> m_RowNr;                                                                                   \
+    std::optional<SizeType> m_ColumnNr;                                                                                \
+    SizeType m_NrOfMatrixRows;                                                                                         \
+    SizeType m_NrOfMatrixColumns;
+
 #define COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType, IterableType, DiffType, SizeType)                 \
     IteratorType(IterableType** pMatrixPtr, SizeType nrOfMatrixRows, SizeType nrOfMatrixColumns,                       \
                  std::optional<SizeType> rowNr, std::optional<SizeType> columnNr);                                     \
@@ -149,6 +159,37 @@
             mIteratorSecondaryDimension = matrixSecondaryDimension;                                                    \
             mIteratorPrimaryCoordinate = matrixPrimaryCoordinate;                                                      \
             mIteratorSecondaryCoordinate = matrixSecondaryCoordinate;                                                  \
+            nonEmptyIteratorConstructed = true;                                                                        \
+        }                                                                                                              \
+        else                                                                                                           \
+        {                                                                                                              \
+            assert(false);                                                                                             \
+        }                                                                                                              \
+    }                                                                                                                  \
+                                                                                                                       \
+    if (!nonEmptyIteratorConstructed)                                                                                  \
+    {                                                                                                                  \
+        mpIteratorPtr = nullptr;                                                                                       \
+        mIteratorPrimaryDimension = size_type{0};                                                                      \
+        mIteratorSecondaryDimension = size_type{0};                                                                    \
+    }
+
+#define NEW_CONSTRUCT_FORWARD_NON_DIAG_ITERATOR(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, \
+                                                mIteratorIndex, pMatrixPtr, matrixPrimaryDimension,                    \
+                                                matrixSecondaryDimension, matrixIndex)                                 \
+    bool nonEmptyIteratorConstructed = false;                                                                          \
+                                                                                                                       \
+    if (pMatrixPtr)                                                                                                    \
+    {                                                                                                                  \
+        if (matrixPrimaryDimension > size_type{0} && matrixSecondaryDimension > size_type{0} &&                        \
+            matrixIndex.has_value() &&                                                                                 \
+            matrixIndex <= static_cast<diff_type>(static_cast<diff_type>(matrixPrimaryDimension) *                     \
+                                                  static_cast<diff_type>(matrixPrimaryDimension)))                     \
+        {                                                                                                              \
+            mpIteratorPtr = pMatrixPtr;                                                                                \
+            mIteratorPrimaryDimension = matrixPrimaryDimension;                                                        \
+            mIteratorSecondaryDimension = matrixSecondaryDimension;                                                    \
+            mIteratorIndex = matrixIndex;                                                                              \
             nonEmptyIteratorConstructed = true;                                                                        \
         }                                                                                                              \
         else                                                                                                           \
