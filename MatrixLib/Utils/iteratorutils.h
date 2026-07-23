@@ -408,6 +408,19 @@
                                                                                                                        \
     return result;
 
+#define NEW_FORWARD_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(mpIteratorPtr, mIteratorPrimaryDimension,                      \
+                                                        mIteratorSecondaryDimension, mIteratorIndex, firstIterator,    \
+                                                        secondIterator)                                                \
+    CHECK_ERROR_CONDITION(                                                                                             \
+        (firstIterator).mpIteratorPtr != (secondIterator).mpIteratorPtr ||                                             \
+            (firstIterator).mIteratorPrimaryDimension != (secondIterator).mIteratorPrimaryDimension ||                 \
+            (firstIterator).mIteratorSecondaryDimension != (secondIterator).mIteratorSecondaryDimension,               \
+        Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);                                                    \
+                                                                                                                       \
+    /* both iterators are either empty or not */                                                                       \
+    return !(firstIterator)._isEmpty() ? *(firstIterator).mIteratorIndex <=> *(secondIterator).mIteratorIndex          \
+                                       : std::strong_ordering::equal;
+
 #define REVERSE_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(mpIteratorPtr, mIteratorPrimaryDimension,                          \
                                                     mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,           \
                                                     mIteratorSecondaryCoordinate, firstIterator, secondIterator)       \

@@ -577,8 +577,8 @@ typename Matrix<T>::ZIterator::difference_type Matrix<T>::ZIterator::operator-(c
 
 template <MatrixElementType T> auto Matrix<T>::ZIterator::operator<=>(const Matrix<T>::ZIterator& it) const
 {
-    FORWARD_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                m_ColumnNr, *this, it);
+    NEW_FORWARD_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, *this,
+                                                    it);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ZIterator::operator==(const Matrix<T>::ZIterator& it) const
