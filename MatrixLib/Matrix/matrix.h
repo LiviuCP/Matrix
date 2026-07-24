@@ -626,11 +626,13 @@ Matrix<T>::ZIterator::ZIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixR
                                 Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
                                 std::optional<Matrix<T>::size_type> columnNr)
 {
-    const std::optional<diff_type> c_Index{rowNr.has_value() && columnNr.has_value()
-                                               ? static_cast<diff_type>(*rowNr) *
-                                                         static_cast<diff_type>(nrOfMatrixColumns) +
-                                                     static_cast<diff_type>(*columnNr)
-                                               : std::optional<diff_type>{}};
+    const std::optional<diff_type> c_Index{
+        rowNr.has_value() && columnNr.has_value()
+            ? rowNr == nrOfMatrixRows && columnNr == nrOfMatrixColumns
+                  ? static_cast<diff_type>(*rowNr) * static_cast<diff_type>(nrOfMatrixColumns)
+                  : static_cast<diff_type>(*rowNr) * static_cast<diff_type>(nrOfMatrixColumns) +
+                        static_cast<diff_type>(*columnNr)
+            : std::optional<diff_type>{}};
     NEW_CONSTRUCT_FORWARD_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, pMatrixPtr,
                                             nrOfMatrixRows, nrOfMatrixColumns, c_Index);
 }
@@ -3439,8 +3441,8 @@ template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zBegin()
 
 template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zEnd()
 {
-    GET_FORWARD_END_ZITERATOR(ZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                              m_NrOfRows, m_NrOfColumns);
+    NEW_GET_FORWARD_END_ZITERATOR(ZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                                  m_NrOfRows, m_NrOfColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zRowBegin(Matrix<T>::size_type rowNr)

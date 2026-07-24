@@ -96,8 +96,6 @@
                  std::optional<SizeType> rowNr, std::optional<SizeType> columnNr);                                     \
                                                                                                                        \
     std::optional<DiffType> m_Index;                                                                                   \
-    std::optional<SizeType> m_RowNr;                                                                                   \
-    std::optional<SizeType> m_ColumnNr;                                                                                \
     SizeType m_NrOfMatrixRows;                                                                                         \
     SizeType m_NrOfMatrixColumns;
 
@@ -184,7 +182,7 @@
         if (matrixPrimaryDimension > size_type{0} && matrixSecondaryDimension > size_type{0} &&                        \
             matrixIndex.has_value() &&                                                                                 \
             matrixIndex <= static_cast<diff_type>(static_cast<diff_type>(matrixPrimaryDimension) *                     \
-                                                  static_cast<diff_type>(matrixPrimaryDimension)))                     \
+                                                  static_cast<diff_type>(matrixSecondaryDimension)))                   \
         {                                                                                                              \
             mpIteratorPtr = pMatrixPtr;                                                                                \
             mIteratorPrimaryDimension = matrixPrimaryDimension;                                                        \
@@ -844,6 +842,9 @@
     return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns,                                            \
                         (mMatrixNrOfRows > size_type{0} ? mMatrixNrOfRows - size_type{1} : size_type{0}),              \
                         mMatrixNrOfColumns};
+
+#define NEW_GET_FORWARD_END_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)                \
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, mMatrixNrOfRows, mMatrixNrOfColumns};
 
 #define GET_REVERSE_END_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)                    \
     return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, size_type{0}, std::nullopt};
