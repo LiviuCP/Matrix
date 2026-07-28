@@ -730,17 +730,15 @@ void ReverseZIteratorTests::testIteratorCreation_data()
     QTest::addColumn<IntReverseZIter>("iterator");
     QTest::addColumn<matrix_opt_size_t>("expectedRowNr");
     QTest::addColumn<matrix_opt_size_t>("expectedColumnNr");
-    QTest::addColumn<bool>("isPrimaryMatrix");
-    QTest::addColumn<bool>("expectedValidity");
 
     QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.reverseZBegin() << matrix_opt_size_t{8} << matrix_opt_size_t{7};
-    QTest::newRow("2: end iterator") << m_PrimaryIntMatrix.reverseZEnd() << matrix_opt_size_t{0} << matrix_opt_size_t{};
+    QTest::newRow("2: end iterator") << m_PrimaryIntMatrix.reverseZEnd() << matrix_opt_size_t{} << matrix_opt_size_t{7};
     QTest::newRow("3: row begin iterator") << m_PrimaryIntMatrix.reverseZRowBegin(0) << matrix_opt_size_t{0} << matrix_opt_size_t{7};
     QTest::newRow("4: row begin iterator") << m_PrimaryIntMatrix.reverseZRowBegin(1) << matrix_opt_size_t{1} << matrix_opt_size_t{7};
     QTest::newRow("5: row begin iterator") << m_PrimaryIntMatrix.reverseZRowBegin(4) << matrix_opt_size_t{4} << matrix_opt_size_t{7};
     QTest::newRow("6: row begin iterator") << m_PrimaryIntMatrix.reverseZRowBegin(7) << matrix_opt_size_t{7} << matrix_opt_size_t{7};
     QTest::newRow("7: row begin iterator") << m_PrimaryIntMatrix.reverseZRowBegin(8) << matrix_opt_size_t{8} << matrix_opt_size_t{7};
-    QTest::newRow("8: row end iterator") << m_PrimaryIntMatrix.reverseZRowEnd(0) << matrix_opt_size_t{0} << matrix_opt_size_t{};
+    QTest::newRow("8: row end iterator") << m_PrimaryIntMatrix.reverseZRowEnd(0) << matrix_opt_size_t{} << matrix_opt_size_t{7};
     QTest::newRow("9: row end iterator") << m_PrimaryIntMatrix.reverseZRowEnd(1) << matrix_opt_size_t{0} << matrix_opt_size_t{7};
     QTest::newRow("10: row end iterator") << m_PrimaryIntMatrix.reverseZRowEnd(4) << matrix_opt_size_t{3} << matrix_opt_size_t{7};
     QTest::newRow("11: row end iterator") << m_PrimaryIntMatrix.reverseZRowEnd(7) << matrix_opt_size_t{6} << matrix_opt_size_t{7};

@@ -1,5 +1,40 @@
 #pragma once
 
+#include <optional>
+
+#include "../Matrix/matrixdimensions.h"
+
+static std::optional<matrix_diff_t> computeForwardNonDiagIteratorIndex(
+    matrix_size_t matrixPrimaryDimension, matrix_size_t matrixSecondaryDimension,
+    std::optional<matrix_size_t> matrixPrimaryCoordinate, std::optional<matrix_size_t> matrixSecondaryCoordinate)
+{
+    return matrixPrimaryCoordinate.has_value() && matrixSecondaryCoordinate.has_value()
+               ? matrixPrimaryCoordinate == matrixPrimaryDimension &&
+                         matrixSecondaryCoordinate == matrixSecondaryDimension
+                     ? static_cast<matrix_diff_t>(matrixPrimaryDimension) *
+                           static_cast<matrix_diff_t>(matrixSecondaryDimension)
+                     : static_cast<matrix_diff_t>(*matrixPrimaryCoordinate) *
+                               static_cast<matrix_diff_t>(matrixSecondaryDimension) +
+                           static_cast<matrix_diff_t>(*matrixSecondaryCoordinate)
+               : std::optional<matrix_diff_t>{};
+}
+
+static std::optional<matrix_diff_t> computeReverseNonDiagIteratorIndex(
+    matrix_size_t matrixPrimaryDimension, matrix_size_t matrixSecondaryDimension,
+    std::optional<matrix_size_t> matrixPrimaryCoordinate, std::optional<matrix_size_t> matrixSecondaryCoordinate)
+{
+    return matrixPrimaryCoordinate.has_value() && matrixSecondaryCoordinate.has_value()
+               ? (static_cast<matrix_diff_t>(matrixPrimaryDimension) -
+                  static_cast<matrix_diff_t>(*matrixPrimaryCoordinate)) *
+                         static_cast<matrix_diff_t>(matrixSecondaryDimension) -
+                     static_cast<matrix_diff_t>(*matrixSecondaryCoordinate) - matrix_diff_t{1}
+           : !matrixPrimaryCoordinate.has_value() &&
+                   matrixSecondaryCoordinate == matrixSecondaryDimension - matrix_diff_t{1}
+               ? static_cast<matrix_diff_t>(matrixPrimaryDimension) *
+                     static_cast<matrix_diff_t>(matrixSecondaryDimension)
+               : std::optional<matrix_diff_t>{};
+}
+
 /* These macros are meant solely meant for internal use within the Matrix class */
 
 // macros used for declaring iterator class members
@@ -82,12 +117,11 @@
                                                                                                                        \
     IterableType** m_pMatrixPtr;
 
-#define COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType, IterableType, SizeType)                       \
+#define COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType, IterableType, DiffType, SizeType)             \
     IteratorType(IterableType** pMatrixPtr, SizeType nrOfMatrixRows, SizeType nrOfMatrixColumns,                       \
                  std::optional<SizeType> rowNr, std::optional<SizeType> columnNr);                                     \
                                                                                                                        \
-    std::optional<SizeType> m_RowNr;                                                                                   \
-    std::optional<SizeType> m_ColumnNr;                                                                                \
+    std::optional<DiffType> m_Index; /* relative index within begin - end iterators range */                           \
     SizeType m_NrOfMatrixRows;                                                                                         \
     SizeType m_NrOfMatrixColumns;
 
@@ -129,26 +163,22 @@
 
 // common ZIterator/NIterator macros
 
-#define CONSTRUCT_FORWARD_NON_DIAG_ITERATOR(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension,     \
-                                            mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, pMatrixPtr,      \
-                                            matrixPrimaryDimension, matrixSecondaryDimension, matrixPrimaryCoordinate, \
-                                            matrixSecondaryCoordinate)                                                 \
+#define CONSTRUCT_NON_DIAG_ITERATOR(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension,             \
+                                    mIteratorIndex, pMatrixPtr, matrixPrimaryDimension, matrixSecondaryDimension,      \
+                                    matrixIndex)                                                                       \
     bool nonEmptyIteratorConstructed = false;                                                                          \
                                                                                                                        \
     if (pMatrixPtr)                                                                                                    \
     {                                                                                                                  \
         if (matrixPrimaryDimension > size_type{0} && matrixSecondaryDimension > size_type{0} &&                        \
-            matrixPrimaryCoordinate.has_value() && matrixSecondaryCoordinate.has_value() &&                            \
-            ((matrixPrimaryCoordinate < matrixPrimaryDimension &&                                                      \
-              matrixSecondaryCoordinate < matrixSecondaryDimension) ||                                                 \
-             (matrixPrimaryCoordinate == matrixPrimaryDimension - size_type{1} &&                                      \
-              matrixSecondaryCoordinate == matrixSecondaryDimension)))                                                 \
+            matrixIndex.has_value() &&                                                                                 \
+            matrixIndex <= static_cast<diff_type>(static_cast<diff_type>(matrixPrimaryDimension) *                     \
+                                                  static_cast<diff_type>(matrixSecondaryDimension)))                   \
         {                                                                                                              \
             mpIteratorPtr = pMatrixPtr;                                                                                \
             mIteratorPrimaryDimension = matrixPrimaryDimension;                                                        \
             mIteratorSecondaryDimension = matrixSecondaryDimension;                                                    \
-            mIteratorPrimaryCoordinate = matrixPrimaryCoordinate;                                                      \
-            mIteratorSecondaryCoordinate = matrixSecondaryCoordinate;                                                  \
+            mIteratorIndex = matrixIndex;                                                                              \
             nonEmptyIteratorConstructed = true;                                                                        \
         }                                                                                                              \
         else                                                                                                           \
@@ -164,434 +194,127 @@
         mIteratorSecondaryDimension = size_type{0};                                                                    \
     }
 
-#define CONSTRUCT_REVERSE_NON_DIAG_ITERATOR(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension,     \
-                                            mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate, pMatrixPtr,      \
-                                            matrixPrimaryDimension, matrixSecondaryDimension, matrixPrimaryCoordinate, \
-                                            matrixSecondaryCoordinate)                                                 \
-    bool nonEmptyIteratorConstructed = false;                                                                          \
-                                                                                                                       \
-    if (pMatrixPtr)                                                                                                    \
-    {                                                                                                                  \
-        if (matrixPrimaryDimension > size_type{0} && matrixSecondaryDimension > size_type{0} &&                        \
-            matrixPrimaryCoordinate.has_value() &&                                                                     \
-            ((size_type{0} == matrixPrimaryCoordinate && !matrixSecondaryCoordinate.has_value()) ||                    \
-             (matrixPrimaryCoordinate < matrixPrimaryDimension && matrixSecondaryCoordinate.has_value() &&             \
-              matrixSecondaryCoordinate < matrixSecondaryDimension)))                                                  \
-        {                                                                                                              \
-            mpIteratorPtr = pMatrixPtr;                                                                                \
-            mIteratorPrimaryDimension = matrixPrimaryDimension;                                                        \
-            mIteratorSecondaryDimension = matrixSecondaryDimension;                                                    \
-            mIteratorPrimaryCoordinate = matrixPrimaryCoordinate;                                                      \
-            mIteratorSecondaryCoordinate = matrixSecondaryCoordinate;                                                  \
-            nonEmptyIteratorConstructed = true;                                                                        \
-        }                                                                                                              \
-        else                                                                                                           \
-        {                                                                                                              \
-            assert(false);                                                                                             \
-        }                                                                                                              \
-    }                                                                                                                  \
-                                                                                                                       \
-    if (!nonEmptyIteratorConstructed)                                                                                  \
-    {                                                                                                                  \
-        mpIteratorPtr = nullptr;                                                                                       \
-        mIteratorPrimaryDimension = size_type{0};                                                                      \
-        mIteratorSecondaryDimension = size_type{0};                                                                    \
-    }
-
-#define FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(mpIteratorPtr, mIteratorPrimaryDimension,                       \
-                                                       mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,        \
-                                                       mIteratorSecondaryCoordinate, Sign, scalarValue)                \
+#define NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension,  \
+                                               mIteratorIndex, Sign, scalarValue)                                      \
     if (!_isEmpty())                                                                                                   \
     {                                                                                                                  \
         const diff_type normalizedScalarValue = Sign scalarValue;                                                      \
-        const diff_type c_CurrentIndex{                                                                                \
-            static_cast<diff_type>(static_cast<diff_type>(*mIteratorPrimaryCoordinate) *                               \
-                                       static_cast<diff_type>(mIteratorSecondaryDimension) +                           \
-                                   static_cast<diff_type>(*mIteratorSecondaryCoordinate))};                            \
         const diff_type c_ResultingIndex{normalizedScalarValue < diff_type{0} &&                                       \
-                                                 std::abs(normalizedScalarValue) > c_CurrentIndex                      \
+                                                 std::abs(normalizedScalarValue) > *mIteratorIndex                     \
                                              ? diff_type{0}                                                            \
-                                             : static_cast<diff_type>(c_CurrentIndex + normalizedScalarValue)};        \
+                                             : static_cast<diff_type>(*mIteratorIndex + normalizedScalarValue)};       \
         const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) *        \
                                                             static_cast<diff_type>(mIteratorSecondaryDimension))};     \
                                                                                                                        \
-        mIteratorPrimaryCoordinate =                                                                                   \
-            c_ResultingIndex < c_UpperBound                                                                            \
-                ? static_cast<size_type>(c_ResultingIndex / static_cast<diff_type>(mIteratorSecondaryDimension))       \
-                : mIteratorPrimaryDimension - size_type{1};                                                            \
-        mIteratorSecondaryCoordinate =                                                                                 \
-            c_ResultingIndex < c_UpperBound                                                                            \
-                ? static_cast<size_type>(c_ResultingIndex % static_cast<diff_type>(mIteratorSecondaryDimension))       \
-                : mIteratorSecondaryDimension;                                                                         \
+        mIteratorIndex = std::min<diff_type>(c_ResultingIndex, c_UpperBound);                                          \
     }                                                                                                                  \
                                                                                                                        \
     return *this;
 
-#define REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(mpIteratorPtr, mIteratorPrimaryDimension,                       \
-                                                       mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,        \
-                                                       mIteratorSecondaryCoordinate, Sign, scalarValue)                \
-    if (!_isEmpty())                                                                                                   \
-    {                                                                                                                  \
-        const diff_type normalizedScalarValue = Sign scalarValue;                                                      \
-        const std::optional<diff_type> c_CurrentIndex{                                                                 \
-            mIteratorSecondaryCoordinate.has_value()                                                                   \
-                ? std::optional{static_cast<diff_type>(static_cast<diff_type>(*mIteratorPrimaryCoordinate) *           \
-                                                           static_cast<diff_type>(mIteratorSecondaryDimension) +       \
-                                                       static_cast<diff_type>(*mIteratorSecondaryCoordinate))}         \
-                : std::nullopt};                                                                                       \
-        std::optional<diff_type> resultingIndex;                                                                       \
-                                                                                                                       \
-        if (c_CurrentIndex.has_value())                                                                                \
-        {                                                                                                              \
-            if (normalizedScalarValue >= diff_type{0} || std::abs(normalizedScalarValue) <= c_CurrentIndex)            \
-            {                                                                                                          \
-                resultingIndex = *c_CurrentIndex + normalizedScalarValue;                                              \
-            }                                                                                                          \
-        }                                                                                                              \
-        else                                                                                                           \
-        {                                                                                                              \
-            if (normalizedScalarValue > diff_type{0})                                                                  \
-            {                                                                                                          \
-                resultingIndex = normalizedScalarValue - diff_type{1};                                                 \
-            }                                                                                                          \
-        }                                                                                                              \
-                                                                                                                       \
-        const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) *        \
-                                                            static_cast<diff_type>(mIteratorSecondaryDimension))};     \
-                                                                                                                       \
-        mIteratorPrimaryCoordinate =                                                                                   \
-            !resultingIndex.has_value() ? size_type{0}                                                                 \
-            : resultingIndex >= c_UpperBound                                                                           \
-                ? static_cast<size_type>(mIteratorPrimaryDimension - size_type{1})                                     \
-                : static_cast<size_type>(*resultingIndex / static_cast<diff_type>(mIteratorSecondaryDimension));       \
-        mIteratorSecondaryCoordinate =                                                                                 \
-            !resultingIndex.has_value() ? std::nullopt                                                                 \
-            : resultingIndex >= c_UpperBound                                                                           \
-                ? std::optional{static_cast<size_type>(mIteratorSecondaryDimension - size_type{1})}                    \
-                : std::optional{                                                                                       \
-                      static_cast<size_type>(*resultingIndex % static_cast<diff_type>(mIteratorSecondaryDimension))};  \
-    }                                                                                                                  \
-                                                                                                                       \
-    return *this;
-
-#define FORWARD_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(mpIteratorPtr, mIteratorPrimaryDimension,                         \
-                                                     mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,          \
-                                                     mIteratorSecondaryCoordinate, secondIterator)                     \
+#define NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension,    \
+                                             mIteratorIndex, secondIterator)                                           \
     CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr ||                                             \
                               mIteratorPrimaryDimension != secondIterator.mIteratorPrimaryDimension ||                 \
                               mIteratorSecondaryDimension != secondIterator.mIteratorSecondaryDimension,               \
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);                                  \
-                                                                                                                       \
-    diff_type result{0};                                                                                               \
-                                                                                                                       \
-    if (!_isEmpty())                                                                                                   \
-    {                                                                                                                  \
-        const diff_type c_FirstItIndex{                                                                                \
-            static_cast<diff_type>(static_cast<diff_type>(*mIteratorPrimaryCoordinate) *                               \
-                                       static_cast<diff_type>(mIteratorSecondaryDimension) +                           \
-                                   static_cast<diff_type>(*mIteratorSecondaryCoordinate))};                            \
-                                                                                                                       \
-        const diff_type c_SecondItIndex{                                                                               \
-            static_cast<diff_type>(static_cast<diff_type>(*secondIterator.mIteratorPrimaryCoordinate) *                \
-                                       static_cast<diff_type>(secondIterator.mIteratorSecondaryDimension) +            \
-                                   static_cast<diff_type>(*secondIterator.mIteratorSecondaryCoordinate))};             \
-                                                                                                                       \
-        result = c_FirstItIndex - c_SecondItIndex;                                                                     \
-    }                                                                                                                  \
-                                                                                                                       \
-    return result;
+    return !_isEmpty() ? *mIteratorIndex - *secondIterator.mIteratorIndex : diff_type{0};
 
-#define REVERSE_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(mpIteratorPtr, mIteratorPrimaryDimension,                         \
-                                                     mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,          \
-                                                     mIteratorSecondaryCoordinate, secondIterator)                     \
-    CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr ||                                             \
-                              mIteratorPrimaryDimension != secondIterator.mIteratorPrimaryDimension ||                 \
-                              mIteratorSecondaryDimension != secondIterator.mIteratorSecondaryDimension,               \
-                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);                                  \
-                                                                                                                       \
-    diff_type result{0};                                                                                               \
-                                                                                                                       \
-    if (!_isEmpty())                                                                                                   \
-    {                                                                                                                  \
-        const std::optional<diff_type> c_FirstItIndex{                                                                 \
-            mIteratorSecondaryCoordinate.has_value()                                                                   \
-                ? std::optional{static_cast<diff_type>(static_cast<diff_type>(*mIteratorPrimaryCoordinate) *           \
-                                                           static_cast<diff_type>(mIteratorSecondaryDimension) +       \
-                                                       static_cast<diff_type>(*mIteratorSecondaryCoordinate))}         \
-                : std::nullopt};                                                                                       \
-        const std::optional<diff_type> c_SecondItIndex{                                                                \
-            secondIterator.mIteratorSecondaryCoordinate.has_value()                                                    \
-                ? std::optional{static_cast<diff_type>(                                                                \
-                      static_cast<diff_type>(*secondIterator.mIteratorPrimaryCoordinate) *                             \
-                          static_cast<diff_type>(secondIterator.mIteratorSecondaryDimension) +                         \
-                      static_cast<diff_type>(*secondIterator.mIteratorSecondaryCoordinate))}                           \
-                : std::nullopt};                                                                                       \
-                                                                                                                       \
-        if (c_FirstItIndex.has_value() && c_SecondItIndex.has_value())                                                 \
-        {                                                                                                              \
-            result = *c_SecondItIndex - *c_FirstItIndex;                                                               \
-        }                                                                                                              \
-        else if (!c_FirstItIndex.has_value() && c_SecondItIndex.has_value())                                           \
-        {                                                                                                              \
-            result = *c_SecondItIndex + diff_type{1};                                                                  \
-        }                                                                                                              \
-        else if (c_FirstItIndex.has_value() && !c_SecondItIndex.has_value())                                           \
-        {                                                                                                              \
-            result = diff_type{-1} - *c_FirstItIndex;                                                                  \
-        }                                                                                                              \
-    }                                                                                                                  \
-                                                                                                                       \
-    return result;
-
-#define FORWARD_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(mpIteratorPtr, mIteratorPrimaryDimension,                          \
-                                                    mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,           \
-                                                    mIteratorSecondaryCoordinate, firstIterator, secondIterator)       \
+#define NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension,     \
+                                            mIteratorIndex, firstIterator, secondIterator)                             \
     CHECK_ERROR_CONDITION(                                                                                             \
         (firstIterator).mpIteratorPtr != (secondIterator).mpIteratorPtr ||                                             \
             (firstIterator).mIteratorPrimaryDimension != (secondIterator).mIteratorPrimaryDimension ||                 \
             (firstIterator).mIteratorSecondaryDimension != (secondIterator).mIteratorSecondaryDimension,               \
         Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);                                                    \
                                                                                                                        \
-    auto result = std::strong_ordering::equal;                                                                         \
-                                                                                                                       \
     /* both iterators are either empty or not */                                                                       \
-    if (!(firstIterator)._isEmpty())                                                                                   \
-    {                                                                                                                  \
-        result = *(firstIterator).mIteratorPrimaryCoordinate <=> *(secondIterator).mIteratorPrimaryCoordinate;         \
-                                                                                                                       \
-        if (std::strong_ordering::equal == result)                                                                     \
-        {                                                                                                              \
-            result = *(firstIterator).mIteratorSecondaryCoordinate <=> *(secondIterator).mIteratorSecondaryCoordinate; \
-        }                                                                                                              \
-    }                                                                                                                  \
-                                                                                                                       \
-    return result;
+    return !(firstIterator)._isEmpty() ? *(firstIterator).mIteratorIndex <=> *(secondIterator).mIteratorIndex          \
+                                       : std::strong_ordering::equal;
 
-#define REVERSE_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(mpIteratorPtr, mIteratorPrimaryDimension,                          \
-                                                    mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,           \
-                                                    mIteratorSecondaryCoordinate, firstIterator, secondIterator)       \
-    CHECK_ERROR_CONDITION(                                                                                             \
-        (firstIterator).mpIteratorPtr != (secondIterator).mpIteratorPtr ||                                             \
-            (firstIterator).mIteratorPrimaryDimension != (secondIterator).mIteratorPrimaryDimension ||                 \
-            (firstIterator).mIteratorSecondaryDimension != (secondIterator).mIteratorSecondaryDimension,               \
-        Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);                                                    \
-                                                                                                                       \
-    auto result = std::strong_ordering::equal;                                                                         \
-                                                                                                                       \
-    /* both iterators are either empty or not */                                                                       \
-    if (!(firstIterator)._isEmpty())                                                                                   \
-    {                                                                                                                  \
-        result = *(secondIterator).mIteratorPrimaryCoordinate <=> *(firstIterator).mIteratorPrimaryCoordinate;         \
-                                                                                                                       \
-        if (std::strong_ordering::equal == result)                                                                     \
-        {                                                                                                              \
-            if ((firstIterator).mIteratorSecondaryCoordinate.has_value() &&                                            \
-                (secondIterator).mIteratorSecondaryCoordinate.has_value())                                             \
-            {                                                                                                          \
-                /* for reverse iterators greater coordinates mean smaller iterator */                                  \
-                result =                                                                                               \
-                    *(secondIterator).mIteratorSecondaryCoordinate <=> *(firstIterator).mIteratorSecondaryCoordinate;  \
-            }                                                                                                          \
-            else if ((firstIterator).mIteratorSecondaryCoordinate.has_value() &&                                       \
-                     !(secondIterator).mIteratorSecondaryCoordinate.has_value())                                       \
-            {                                                                                                          \
-                result = std::strong_ordering::less;                                                                   \
-            }                                                                                                          \
-            else if (!(firstIterator).mIteratorSecondaryCoordinate.has_value() &&                                      \
-                     (secondIterator).mIteratorSecondaryCoordinate.has_value())                                        \
-            {                                                                                                          \
-                result = std::strong_ordering::greater;                                                                \
-            }                                                                                                          \
-        }                                                                                                              \
-    }                                                                                                                  \
-                                                                                                                       \
-    return result;
-
-#define NON_DIAG_ITERATOR_CHECK_EQUALITY(mpIteratorPtr, mIteratorRowsCount, mIteratorColumnsCount, mIteratorRowNr,     \
-                                         mIteratorColumnNr, secondIterator)                                            \
+#define NON_DIAG_ITERATOR_CHECK_EQUALITY(mpIteratorPtr, mIteratorRowsCount, mIteratorColumnsCount, mIteratorIndex,     \
+                                         secondIterator)                                                               \
     CHECK_ERROR_CONDITION(mpIteratorPtr != secondIterator.mpIteratorPtr ||                                             \
                               mIteratorRowsCount != secondIterator.mIteratorRowsCount ||                               \
                               mIteratorColumnsCount != secondIterator.mIteratorColumnsCount,                           \
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);                                  \
                                                                                                                        \
-    return (mIteratorRowNr == secondIterator.mIteratorRowNr && mIteratorColumnNr == secondIterator.mIteratorColumnNr);
+    return mIteratorIndex == secondIterator.mIteratorIndex;
 
-#define FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorRowNr,     \
-                                                       mIteratorColumnNr, mIteratorSecondaryCoordinate)                \
-    CHECK_ERROR_CONDITION(_isEmpty() || mIteratorSecondaryCoordinate == mIteratorSecondaryDimension,                   \
-                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
-    return mpIteratorPtr[*mIteratorRowNr][*mIteratorColumnNr];
-
-#define REVERSE_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorRowNr,     \
-                                                       mIteratorColumnNr, mIteratorSecondaryCoordinate)                \
-    CHECK_ERROR_CONDITION(_isEmpty() || !mIteratorSecondaryCoordinate.has_value(),                                     \
-                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
-    return mpIteratorPtr[*mIteratorRowNr][*mIteratorColumnNr];
-
-#define FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorRowNr,        \
-                                                    mIteratorColumnNr, mIteratorSecondaryCoordinate)                   \
-    CHECK_ERROR_CONDITION(_isEmpty() || mIteratorSecondaryCoordinate == mIteratorSecondaryDimension,                   \
-                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
-    return (mpIteratorPtr[*mIteratorRowNr] + *mIteratorColumnNr);
-
-#define REVERSE_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorSecondaryDimension, mIteratorRowNr,        \
-                                                    mIteratorColumnNr, mIteratorSecondaryCoordinate)                   \
-    CHECK_ERROR_CONDITION(_isEmpty() || !mIteratorSecondaryCoordinate.has_value(),                                     \
-                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
-    return (mpIteratorPtr[*mIteratorRowNr] + *mIteratorColumnNr);
-
-#define FORWARD_NON_DIAG_ITERATOR_INDEX_DEREFERENCE(                                                                   \
-    mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,                 \
-    mIteratorSecondaryCoordinate, FirstOperator, SecondOperator, arrayIndex)                                           \
-    CHECK_ERROR_CONDITION(_isEmpty(), Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);                \
-                                                                                                                       \
-    const diff_type c_CurrentIndex{static_cast<diff_type>(static_cast<diff_type>(*mIteratorPrimaryCoordinate) *        \
-                                                              static_cast<diff_type>(mIteratorSecondaryDimension) +    \
-                                                          static_cast<diff_type>(*mIteratorSecondaryCoordinate))};     \
-                                                                                                                       \
-    CHECK_ERROR_CONDITION(arrayIndex<diff_type{0} && std::abs(arrayIndex)> c_CurrentIndex,                             \
-                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);                            \
-                                                                                                                       \
-    const diff_type c_ResultingIndex{static_cast<diff_type>(c_CurrentIndex + arrayIndex)};                             \
+#define NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension,  \
+                                               mIteratorIndex)                                                         \
     const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) *            \
                                                         static_cast<diff_type>(mIteratorSecondaryDimension))};         \
-    (void)c_UpperBound;                                                                                                \
                                                                                                                        \
-    CHECK_ERROR_CONDITION(c_ResultingIndex >= c_UpperBound,                                                            \
-                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);                            \
-                                                                                                                       \
-    return mpIteratorPtr[c_ResultingIndex FirstOperator mIteratorSecondaryDimension]                                   \
-                        [c_ResultingIndex SecondOperator mIteratorSecondaryDimension];
+    CHECK_ERROR_CONDITION(_isEmpty() || mIteratorIndex == c_UpperBound,                                                \
+                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
+    return mpIteratorPtr[*getRowNr()][*getColumnNr()];
 
-#define REVERSE_NON_DIAG_ITERATOR_INDEX_DEREFERENCE(                                                                   \
-    mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,                 \
-    mIteratorSecondaryCoordinate, FirstOperator, SecondOperator, arrayIndex)                                           \
-    CHECK_ERROR_CONDITION(_isEmpty() || !mIteratorSecondaryCoordinate.has_value(),                                     \
-                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);                            \
-                                                                                                                       \
-    const diff_type c_CurrentIndex{static_cast<diff_type>(static_cast<diff_type>(*mIteratorPrimaryCoordinate) *        \
-                                                              static_cast<diff_type>(mIteratorSecondaryDimension) +    \
-                                                          static_cast<diff_type>(*mIteratorSecondaryCoordinate))};     \
-    const diff_type c_NormalizedIndex{static_cast<diff_type>(-arrayIndex)};                                            \
-                                                                                                                       \
-    CHECK_ERROR_CONDITION(c_NormalizedIndex<diff_type{0} && std::abs(c_NormalizedIndex)> c_CurrentIndex,               \
-                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);                            \
-                                                                                                                       \
-    const diff_type c_ResultingIndex{static_cast<diff_type>(c_CurrentIndex + c_NormalizedIndex)};                      \
+#define NON_DIAG_ITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension,     \
+                                            mIteratorIndex)                                                            \
     const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) *            \
                                                         static_cast<diff_type>(mIteratorSecondaryDimension))};         \
-    (void)c_UpperBound;                                                                                                \
                                                                                                                        \
-    CHECK_ERROR_CONDITION(c_ResultingIndex >= c_UpperBound,                                                            \
+    CHECK_ERROR_CONDITION(_isEmpty() || mIteratorIndex == c_UpperBound,                                                \
+                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
+    return (mpIteratorPtr[*getRowNr()] + *getColumnNr());
+
+#define NON_DIAG_ITERATOR_INDEX_DEREFERENCE(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension,     \
+                                            mIteratorIndex, FirstOperator, SecondOperator, arrayIndex, multiplier,     \
+                                            Sign)                                                                      \
+    /* The iterator index should not be std::nullopt if the matrix is not empty */                                     \
+    CHECK_ERROR_CONDITION(_isEmpty() || (arrayIndex < diff_type{0} && std::abs(arrayIndex) > *mIteratorIndex),         \
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);                            \
                                                                                                                        \
-    return mpIteratorPtr[c_ResultingIndex FirstOperator mIteratorSecondaryDimension]                                   \
-                        [c_ResultingIndex SecondOperator mIteratorSecondaryDimension];
-
-#define FORWARD_NON_DIAG_ITERATOR_DO_INCREMENT(mIteratorPrimaryDimension, mIteratorSecondaryDimension,                 \
-                                               mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate)               \
-    if (!_isEmpty() && (mIteratorSecondaryCoordinate != mIteratorSecondaryDimension ||                                 \
-                        mIteratorPrimaryCoordinate != (mIteratorPrimaryDimension - 1)))                                \
-    {                                                                                                                  \
-        mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate + size_type{1};                                   \
+    const diff_type c_ShiftedIndex{static_cast<diff_type>(*mIteratorIndex + arrayIndex)};                              \
+    const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) *            \
+                                                        static_cast<diff_type>(mIteratorSecondaryDimension))};         \
                                                                                                                        \
-        if (mIteratorSecondaryCoordinate == mIteratorSecondaryDimension &&                                             \
-            mIteratorPrimaryCoordinate != (mIteratorPrimaryDimension - size_type{1}))                                  \
-        {                                                                                                              \
-            mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate - mIteratorSecondaryDimension;                \
-            mIteratorPrimaryCoordinate = *mIteratorPrimaryCoordinate + size_type{1};                                   \
-        }                                                                                                              \
-    }
-
-#define REVERSE_NON_DIAG_ITERATOR_DO_INCREMENT(mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,                \
-                                               mIteratorSecondaryCoordinate)                                           \
-    if (!_isEmpty() && (mIteratorSecondaryCoordinate.has_value() || mIteratorPrimaryCoordinate > size_type{0}))        \
-    {                                                                                                                  \
-        if (mIteratorSecondaryCoordinate > size_type{0})                                                               \
-        {                                                                                                              \
-            mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate - size_type{1};                               \
-        }                                                                                                              \
-        else                                                                                                           \
-        {                                                                                                              \
-            mIteratorSecondaryCoordinate.reset();                                                                      \
-        }                                                                                                              \
+    CHECK_ERROR_CONDITION(c_ShiftedIndex >= c_UpperBound,                                                              \
+                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);                            \
                                                                                                                        \
-        if (!mIteratorSecondaryCoordinate.has_value() && mIteratorPrimaryCoordinate > size_type{0})                    \
-        {                                                                                                              \
-            mIteratorSecondaryCoordinate = mIteratorSecondaryDimension - size_type{1};                                 \
-            mIteratorPrimaryCoordinate = *mIteratorPrimaryCoordinate - size_type{1};                                   \
-        }                                                                                                              \
-    }
+    const diff_type c_ResultingIndex{static_cast<diff_type>(static_cast<diff_type>(multiplier) *                       \
+                                                            (c_UpperBound - diff_type{1}) Sign c_ShiftedIndex)};       \
+                                                                                                                       \
+    return mpIteratorPtr[c_ResultingIndex FirstOperator static_cast<diff_type>(mIteratorSecondaryDimension)]           \
+                        [c_ResultingIndex SecondOperator static_cast<diff_type>(mIteratorSecondaryDimension)];
 
-#define FORWARD_NON_DIAG_ITERATOR_DO_DECREMENT(mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,                \
-                                               mIteratorSecondaryCoordinate)                                           \
-    if (!_isEmpty() && (mIteratorPrimaryCoordinate > size_type{0} || mIteratorSecondaryCoordinate > size_type{0}))     \
-    {                                                                                                                  \
-        if (0 == mIteratorSecondaryCoordinate)                                                                         \
-        {                                                                                                              \
-            mIteratorPrimaryCoordinate = *mIteratorPrimaryCoordinate - size_type{1};                                   \
-            mIteratorSecondaryCoordinate = mIteratorSecondaryDimension - size_type{1};                                 \
-        }                                                                                                              \
-        else                                                                                                           \
-        {                                                                                                              \
-            mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate - size_type{1};                               \
-        }                                                                                                              \
-    }
-
-#define REVERSE_NON_DIAG_ITERATOR_DO_DECREMENT(mIteratorPrimaryDimension, mIteratorSecondaryDimension,                 \
-                                               mIteratorPrimaryCoordinate, mIteratorSecondaryCoordinate)               \
+#define NON_DIAG_ITERATOR_DO_INCREMENT(mIteratorPrimaryDimension, mIteratorSecondaryDimension, mIteratorIndex)         \
     if (!_isEmpty())                                                                                                   \
     {                                                                                                                  \
-        if (!mIteratorSecondaryCoordinate.has_value())                                                                 \
+        const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(mIteratorPrimaryDimension) *        \
+                                                            static_cast<diff_type>(mIteratorSecondaryDimension))};     \
+        if (mIteratorIndex < c_UpperBound)                                                                             \
         {                                                                                                              \
-            mIteratorSecondaryCoordinate = size_type{0}; /* decrement from end iterator */                             \
-        }                                                                                                              \
-        else if (mIteratorPrimaryCoordinate < mIteratorPrimaryDimension - size_type{1} ||                              \
-                 mIteratorSecondaryCoordinate < mIteratorSecondaryDimension - size_type{1})                            \
-        {                                                                                                              \
-            if (mIteratorSecondaryCoordinate == mIteratorSecondaryDimension - size_type{1})                            \
-            {                                                                                                          \
-                mIteratorPrimaryCoordinate = *mIteratorPrimaryCoordinate + size_type{1};                               \
-                mIteratorSecondaryCoordinate = size_type{0};                                                           \
-            }                                                                                                          \
-            else                                                                                                       \
-            {                                                                                                          \
-                mIteratorSecondaryCoordinate = *mIteratorSecondaryCoordinate + size_type{1};                           \
-            }                                                                                                          \
+            mIteratorIndex = *mIteratorIndex + diff_type{1};                                                           \
         }                                                                                                              \
     }
 
-#define CHECK_FORWARD_NON_DIAG_ITERATOR_IS_EMPTY(mpIteratorPtr, mIteratorPrimaryDimension,                             \
-                                                 mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,              \
-                                                 mIteratorSecondaryCoordinate)                                         \
+#define NON_DIAG_ITERATOR_DO_DECREMENT(mIteratorIndex)                                                                 \
+    if (!_isEmpty() && mIteratorIndex > diff_type{0})                                                                  \
+    {                                                                                                                  \
+        mIteratorIndex = *mIteratorIndex - diff_type{1};                                                               \
+    }
+
+#define CHECK_NON_DIAG_ITERATOR_IS_EMPTY(mpIteratorPtr, mIteratorPrimaryDimension, mIteratorSecondaryDimension,        \
+                                         mIteratorIndex)                                                               \
     if (mpIteratorPtr)                                                                                                 \
     {                                                                                                                  \
         assert(mIteratorPrimaryDimension > size_type{0} && mIteratorSecondaryDimension > size_type{0} &&               \
-               mIteratorPrimaryCoordinate.has_value() && mIteratorSecondaryCoordinate.has_value());                    \
+               mIteratorIndex.has_value());                                                                            \
     }                                                                                                                  \
     else                                                                                                               \
     {                                                                                                                  \
         assert(size_type{0} == mIteratorPrimaryDimension && size_type{0} == mIteratorSecondaryDimension &&             \
-               !mIteratorPrimaryCoordinate.has_value() && !mIteratorSecondaryCoordinate.has_value());                  \
+               !mIteratorIndex.has_value());                                                                           \
     }                                                                                                                  \
                                                                                                                        \
     return !mpIteratorPtr;
 
-#define CHECK_REVERSE_NON_DIAG_ITERATOR_IS_EMPTY(mpIteratorPtr, mIteratorPrimaryDimension,                             \
-                                                 mIteratorSecondaryDimension, mIteratorPrimaryCoordinate,              \
-                                                 mIteratorSecondaryCoordinate)                                         \
-    if (mpIteratorPtr)                                                                                                 \
-    {                                                                                                                  \
-        assert(mIteratorPrimaryDimension > size_type{0} && mIteratorSecondaryDimension > size_type{0} &&               \
-               mIteratorPrimaryCoordinate.has_value());                                                                \
-    }                                                                                                                  \
-    else                                                                                                               \
-    {                                                                                                                  \
-        assert(size_type{0} == mIteratorPrimaryDimension && size_type{0} == mIteratorSecondaryDimension &&             \
-               !mIteratorPrimaryCoordinate.has_value() && !mIteratorSecondaryCoordinate.has_value());                  \
-    }                                                                                                                  \
-                                                                                                                       \
-    return !mpIteratorPtr;
+#define GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(IteratorType, mpIteratorPtr, mMatrixNrOfRows,                   \
+                                                       mMatrixNrOfColumns, matrixRowNr, matrixColumnNr)                \
+    CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows || matrixColumnNr >= mMatrixNrOfColumns,                      \
+                          Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);                                   \
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr};
 
 #define GET_FORWARD_NON_DIAG_BEGIN_ITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)          \
     return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, size_type{0}, size_type{0}};
@@ -602,11 +325,8 @@
         (mMatrixNrOfRows > size_type{0} ? std::optional{mMatrixNrOfRows - size_type{1}} : std::nullopt),               \
         (mMatrixNrOfColumns > size_type{0} ? std::optional{mMatrixNrOfColumns - size_type{1}} : std::nullopt)};
 
-#define GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(IteratorType, mpIteratorPtr, mMatrixNrOfRows,                   \
-                                                       mMatrixNrOfColumns, matrixRowNr, matrixColumnNr)                \
-    CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows || matrixColumnNr >= mMatrixNrOfColumns,                      \
-                          Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);                                   \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr};
+#define GET_FORWARD_NON_DIAG_END_ITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)            \
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, mMatrixNrOfRows, mMatrixNrOfColumns};
 
 // common DIterator/MIterator macros
 
@@ -680,13 +400,11 @@
 
 // specialized ZIterator macros
 
-#define GET_FORWARD_END_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)                    \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns,                                            \
-                        (mMatrixNrOfRows > size_type{0} ? mMatrixNrOfRows - size_type{1} : size_type{0}),              \
-                        mMatrixNrOfColumns};
-
+/* mMatrixNrOfColumns - size_type{1} is ignored by constructor if pointer is null (empty matrix),
+  otherwise it should not overflow */
 #define GET_REVERSE_END_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)                    \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, size_type{0}, std::nullopt};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, std::nullopt,                              \
+                        mMatrixNrOfColumns - size_type{1}};
 
 #define GET_FORWARD_ROW_BEGIN_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr) \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);      \
@@ -717,16 +435,16 @@
     return matrixRowNr > size_type{0}                                                                                  \
                ? IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr - size_type{1},          \
                               (mMatrixNrOfColumns > size_type{0} ? mMatrixNrOfColumns - size_type{1} : size_type{0})}  \
-               : IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, size_type{0}, std::nullopt};
+               : IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, std::nullopt,                        \
+                              mMatrixNrOfColumns - size_type{1}};
 
 // specialized NIterator macros
 
-#define GET_FORWARD_END_NITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)                    \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, mMatrixNrOfRows,                           \
-                        mMatrixNrOfColumns > size_type{0} ? mMatrixNrOfColumns - size_type{1} : size_type{0}};
-
+/* mMatrixNrOfRows - size_type{1} is ignored by constructor if pointer is null (empty matrix),
+  otherwise it should not overflow */
 #define GET_REVERSE_END_NITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)                    \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, std::nullopt, size_type{0}};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, mMatrixNrOfRows - size_type{1},            \
+                        std::nullopt};
 
 #define GET_FORWARD_COLUMN_BEGIN_NITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns,           \
                                            matrixColumnNr)                                                             \
@@ -767,7 +485,8 @@
                ? IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns,                                      \
                               (mMatrixNrOfRows > size_type{0} ? mMatrixNrOfRows - size_type{1} : size_type{0}),        \
                               matrixColumnNr - size_type{1}}                                                           \
-               : IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, std::nullopt, size_type{0}};
+               : IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, mMatrixNrOfRows - size_type{1},      \
+                              std::nullopt};
 
 // specialized DIterator macros
 

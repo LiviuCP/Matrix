@@ -7,16 +7,10 @@
 #include <utility>
 #include <vector>
 
+#include "matrixdimensions.h"
+
 #include "../Utils/errorhandling.h"
 #include "../Utils/iteratorutils.h"
-
-#ifndef USE_SMALL_DIMENSIONS
-using matrix_size_t = uint32_t;
-using matrix_diff_t = int64_t;
-#else
-using matrix_size_t = uint8_t;
-using matrix_diff_t = int16_t;
-#endif
 
 constexpr matrix_size_t maxAllowedDimension()
 {
@@ -50,7 +44,7 @@ public:
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ZIterator, T, size_type);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ZIterator, T, diff_type, size_type);
     };
 
     class ConstZIterator
@@ -63,7 +57,7 @@ public:
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstZIterator, T, size_type);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstZIterator, T, diff_type, size_type);
     };
 
     class ReverseZIterator
@@ -74,7 +68,7 @@ public:
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseZIterator, T, size_type);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseZIterator, T, diff_type, size_type);
     };
 
     class ConstReverseZIterator
@@ -87,7 +81,7 @@ public:
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator, T, size_type);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseZIterator, T, diff_type, size_type);
     };
 
     class NIterator
@@ -98,7 +92,7 @@ public:
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(NIterator, T, size_type);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(NIterator, T, diff_type, size_type);
     };
 
     class ConstNIterator
@@ -111,7 +105,7 @@ public:
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstNIterator, T, size_type);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstNIterator, T, diff_type, size_type);
     };
 
     class ReverseNIterator
@@ -122,7 +116,7 @@ public:
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseNIterator, T, size_type);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ReverseNIterator, T, diff_type, size_type);
     };
 
     class ConstReverseNIterator
@@ -135,7 +129,7 @@ public:
 
     private:
         COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
-        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator, T, size_type);
+        COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(ConstReverseNIterator, T, diff_type, size_type);
     };
 
     class DIterator
@@ -557,59 +551,57 @@ template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::ZIterato
 template <MatrixElementType T>
 typename Matrix<T>::ZIterator& Matrix<T>::ZIterator::operator+=(Matrix<T>::ZIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                   m_ColumnNr, +, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, +, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ZIterator& Matrix<T>::ZIterator::operator-=(Matrix<T>::ZIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                   m_ColumnNr, -, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, -, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ZIterator::difference_type Matrix<T>::ZIterator::operator-(const Matrix<T>::ZIterator& it) const
 {
-    FORWARD_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                 m_ColumnNr, it);
+    NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
 }
 
 template <MatrixElementType T> auto Matrix<T>::ZIterator::operator<=>(const Matrix<T>::ZIterator& it) const
 {
-    FORWARD_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                m_ColumnNr, *this, it);
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, *this, it);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ZIterator::operator==(const Matrix<T>::ZIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
 {
-    return m_RowNr;
+    return m_Index ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns))
+                   : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getColumnNr() const
 {
-    return m_ColumnNr;
+    return m_Index ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns))
+                   : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator*() const
 {
-    FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> T* Matrix<T>::ZIterator::operator->() const
 {
-    FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::ZIterator::difference_type index) const
 {
-    FORWARD_NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                m_ColumnNr, /, %, index);
+    NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, /, %, index, 0,
+                                        +);
 }
 
 template <MatrixElementType T>
@@ -625,23 +617,24 @@ Matrix<T>::ZIterator::ZIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixR
                                 Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
                                 std::optional<Matrix<T>::size_type> columnNr)
 {
-    CONSTRUCT_FORWARD_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr,
-                                        pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr);
+    CONSTRUCT_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, pMatrixPtr,
+                                nrOfMatrixRows, nrOfMatrixColumns,
+                                computeForwardNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr));
 }
 
 template <MatrixElementType T> void Matrix<T>::ZIterator::_increment()
 {
-    FORWARD_NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> void Matrix<T>::ZIterator::_decrement()
 {
-    FORWARD_NON_DIAG_ITERATOR_DO_DECREMENT(m_NrOfMatrixColumns, m_RowNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_DO_DECREMENT(m_Index);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ZIterator::_isEmpty() const
 {
-    CHECK_FORWARD_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr);
+    CHECK_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 // 2) ConstZIterator
@@ -670,63 +663,61 @@ template <MatrixElementType T>
 typename Matrix<T>::ConstZIterator& Matrix<T>::ConstZIterator::operator+=(
     Matrix<T>::ConstZIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                   m_ColumnNr, +, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, +, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ConstZIterator& Matrix<T>::ConstZIterator::operator-=(
     Matrix<T>::ConstZIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                   m_ColumnNr, -, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, -, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ConstZIterator::difference_type Matrix<T>::ConstZIterator::operator-(
     const Matrix<T>::ConstZIterator& it) const
 {
-    FORWARD_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                 m_ColumnNr, it);
+    NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
 }
 
 template <MatrixElementType T> auto Matrix<T>::ConstZIterator::operator<=>(const Matrix<T>::ConstZIterator& it) const
 {
-    FORWARD_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                m_ColumnNr, *this, it);
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, *this, it);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ConstZIterator::operator==(const Matrix<T>::ConstZIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstZIterator::getRowNr() const
 {
-    return m_RowNr;
+    return m_Index ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns))
+                   : std::optional<size_type>{};
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstZIterator::getColumnNr() const
 {
-    return m_ColumnNr;
+    return m_Index ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns))
+                   : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstZIterator::operator*() const
 {
-    FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> const T* Matrix<T>::ConstZIterator::operator->() const
 {
-    FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T>
 const T& Matrix<T>::ConstZIterator::operator[](Matrix<T>::ConstZIterator::difference_type index) const
 {
-    FORWARD_NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                m_ColumnNr, /, %, index);
+    NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, /, %, index, 0,
+                                        +);
 }
 
 template <MatrixElementType T>
@@ -740,8 +731,7 @@ Matrix<T>::ConstZIterator::ConstZIterator()
 template <MatrixElementType T>
 Matrix<T>::ConstZIterator::ConstZIterator(const ZIterator& zIterator)
     : m_pMatrixPtr{zIterator.m_pMatrixPtr}
-    , m_RowNr{zIterator.m_RowNr}
-    , m_ColumnNr{zIterator.m_ColumnNr}
+    , m_Index{zIterator.m_Index}
     , m_NrOfMatrixRows{zIterator.m_NrOfMatrixRows}
     , m_NrOfMatrixColumns{zIterator.m_NrOfMatrixColumns}
 {
@@ -753,23 +743,24 @@ Matrix<T>::ConstZIterator::ConstZIterator(T** pMatrixPtr, Matrix<T>::size_type n
                                           std::optional<Matrix<T>::size_type> rowNr,
                                           std::optional<Matrix<T>::size_type> columnNr)
 {
-    CONSTRUCT_FORWARD_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr,
-                                        pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr);
+    CONSTRUCT_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, pMatrixPtr,
+                                nrOfMatrixRows, nrOfMatrixColumns,
+                                computeForwardNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr));
 }
 
 template <MatrixElementType T> void Matrix<T>::ConstZIterator::_increment()
 {
-    FORWARD_NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> void Matrix<T>::ConstZIterator::_decrement()
 {
-    FORWARD_NON_DIAG_ITERATOR_DO_DECREMENT(m_NrOfMatrixColumns, m_RowNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_DO_DECREMENT(m_Index);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ConstZIterator::_isEmpty() const
 {
-    CHECK_FORWARD_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr);
+    CHECK_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 // 3) ReverseZIterator - iterates within matrix from end to [0][0] row by row (in reverse direction comparing to
@@ -799,65 +790,70 @@ template <MatrixElementType T>
 typename Matrix<T>::ReverseZIterator& Matrix<T>::ReverseZIterator::operator+=(
     Matrix<T>::ReverseZIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                   m_ColumnNr, -, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, +, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ReverseZIterator& Matrix<T>::ReverseZIterator::operator-=(
     Matrix<T>::ReverseZIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                   m_ColumnNr, +, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, -, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ReverseZIterator::difference_type Matrix<T>::ReverseZIterator::operator-(
     const Matrix<T>::ReverseZIterator& it) const
 {
-    REVERSE_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                 m_ColumnNr, it);
+    NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
 }
 
 template <MatrixElementType T>
 auto Matrix<T>::ReverseZIterator::operator<=>(const Matrix<T>::ReverseZIterator& it) const
 {
-    REVERSE_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                m_ColumnNr, *this, it);
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, *this, it);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ReverseZIterator::operator==(const Matrix<T>::ReverseZIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseZIterator::getRowNr() const
 {
-    return m_RowNr;
+    return m_Index.has_value() &&
+                   m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
+               ? static_cast<size_type>(m_NrOfMatrixRows) -
+                     static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns)) - size_type{1}
+               : std::optional<size_type>{};
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseZIterator::getColumnNr() const
 {
-    return m_ColumnNr;
+    return m_Index.has_value()
+               ? m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
+                     ? static_cast<size_type>(m_NrOfMatrixColumns) -
+                           static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns)) - size_type{1}
+                     : static_cast<size_type>(m_NrOfMatrixColumns) - size_type{1}
+               : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> T& Matrix<T>::ReverseZIterator::operator*() const
 {
-    REVERSE_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> T* Matrix<T>::ReverseZIterator::operator->() const
 {
-    REVERSE_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T>
 T& Matrix<T>::ReverseZIterator::operator[](Matrix<T>::ReverseZIterator::difference_type index) const
 {
-    REVERSE_NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                m_ColumnNr, /, %, index);
+    NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, /, %, index, 1,
+                                        -);
 }
 
 template <MatrixElementType T>
@@ -874,23 +870,24 @@ Matrix<T>::ReverseZIterator::ReverseZIterator(T** pMatrixPtr, Matrix<T>::size_ty
                                               std::optional<Matrix<T>::size_type> rowNr,
                                               std::optional<Matrix<T>::size_type> columnNr)
 {
-    CONSTRUCT_REVERSE_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr,
-                                        pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr);
+    CONSTRUCT_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, pMatrixPtr,
+                                nrOfMatrixRows, nrOfMatrixColumns,
+                                computeReverseNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr));
 }
 
 template <MatrixElementType T> void Matrix<T>::ReverseZIterator::_increment()
 {
-    REVERSE_NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixColumns, m_RowNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> void Matrix<T>::ReverseZIterator::_decrement()
 {
-    REVERSE_NON_DIAG_ITERATOR_DO_DECREMENT(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_DO_DECREMENT(m_Index);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ReverseZIterator::_isEmpty() const
 {
-    CHECK_REVERSE_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr);
+    CHECK_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 // 4) ConstReverseZIterator
@@ -921,66 +918,71 @@ template <MatrixElementType T>
 typename Matrix<T>::ConstReverseZIterator& Matrix<T>::ConstReverseZIterator::operator+=(
     Matrix<T>::ConstReverseZIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                   m_ColumnNr, -, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, +, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ConstReverseZIterator& Matrix<T>::ConstReverseZIterator::operator-=(
     Matrix<T>::ConstReverseZIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                   m_ColumnNr, +, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, -, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ConstReverseZIterator::difference_type Matrix<T>::ConstReverseZIterator::operator-(
     const Matrix<T>::ConstReverseZIterator& it) const
 {
-    REVERSE_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                 m_ColumnNr, it);
+    NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
 }
 
 template <MatrixElementType T>
 auto Matrix<T>::ConstReverseZIterator::operator<=>(const Matrix<T>::ConstReverseZIterator& it) const
 {
-    REVERSE_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                m_ColumnNr, *this, it);
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, *this, it);
 }
 
 template <MatrixElementType T>
 bool Matrix<T>::ConstReverseZIterator::operator==(const Matrix<T>::ConstReverseZIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseZIterator::getRowNr() const
 {
-    return m_RowNr;
+    return m_Index.has_value() &&
+                   m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
+               ? static_cast<size_type>(m_NrOfMatrixRows) -
+                     static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns)) - size_type{1}
+               : std::optional<size_type>{};
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseZIterator::getColumnNr() const
 {
-    return m_ColumnNr;
+    return m_Index.has_value()
+               ? m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
+                     ? static_cast<size_type>(m_NrOfMatrixColumns) -
+                           static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns)) - size_type{1}
+                     : static_cast<size_type>(m_NrOfMatrixColumns) - size_type{1}
+               : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstReverseZIterator::operator*() const
 {
-    REVERSE_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> const T* Matrix<T>::ConstReverseZIterator::operator->() const
 {
-    REVERSE_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T>
 const T& Matrix<T>::ConstReverseZIterator::operator[](Matrix<T>::ConstReverseZIterator::difference_type index) const
 {
-    REVERSE_NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr,
-                                                m_ColumnNr, /, %, index);
+    NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, /, %, index, 1,
+                                        -);
 }
 
 template <MatrixElementType T>
@@ -994,8 +996,7 @@ Matrix<T>::ConstReverseZIterator::ConstReverseZIterator()
 template <MatrixElementType T>
 Matrix<T>::ConstReverseZIterator::ConstReverseZIterator(const ReverseZIterator& reverseZIterator)
     : m_pMatrixPtr{reverseZIterator.m_pMatrixPtr}
-    , m_RowNr{reverseZIterator.m_RowNr}
-    , m_ColumnNr{reverseZIterator.m_ColumnNr}
+    , m_Index{reverseZIterator.m_Index}
     , m_NrOfMatrixRows{reverseZIterator.m_NrOfMatrixRows}
     , m_NrOfMatrixColumns{reverseZIterator.m_NrOfMatrixColumns}
 {
@@ -1007,23 +1008,24 @@ Matrix<T>::ConstReverseZIterator::ConstReverseZIterator(T** pMatrixPtr, Matrix<T
                                                         std::optional<Matrix<T>::size_type> rowNr,
                                                         std::optional<Matrix<T>::size_type> columnNr)
 {
-    CONSTRUCT_REVERSE_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr,
-                                        pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr);
+    CONSTRUCT_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, pMatrixPtr,
+                                nrOfMatrixRows, nrOfMatrixColumns,
+                                computeReverseNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr));
 }
 
 template <MatrixElementType T> void Matrix<T>::ConstReverseZIterator::_increment()
 {
-    REVERSE_NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixColumns, m_RowNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> void Matrix<T>::ConstReverseZIterator::_decrement()
 {
-    REVERSE_NON_DIAG_ITERATOR_DO_DECREMENT(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr);
+    NON_DIAG_ITERATOR_DO_DECREMENT(m_Index);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ConstReverseZIterator::_isEmpty() const
 {
-    CHECK_REVERSE_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr);
+    CHECK_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 // 5) NIterator - iterates within matrix from [0][0] to the end column by column
@@ -1050,59 +1052,57 @@ template <MatrixElementType T> typename Matrix<T>::NIterator Matrix<T>::NIterato
 template <MatrixElementType T>
 typename Matrix<T>::NIterator& Matrix<T>::NIterator::operator+=(Matrix<T>::NIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                   m_RowNr, +, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, +, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::NIterator& Matrix<T>::NIterator::operator-=(Matrix<T>::NIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                   m_RowNr, -, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, -, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::NIterator::difference_type Matrix<T>::NIterator::operator-(const Matrix<T>::NIterator& it) const
 {
-    FORWARD_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                 m_RowNr, it);
+    NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, it);
 }
 
 template <MatrixElementType T> auto Matrix<T>::NIterator::operator<=>(const Matrix<T>::NIterator& it) const
 {
-    FORWARD_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                m_RowNr, *this, it);
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, *this, it);
 }
 
 template <MatrixElementType T> bool Matrix<T>::NIterator::operator==(const Matrix<T>::NIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::NIterator::getRowNr() const
 {
-    return m_RowNr;
+    return m_Index ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixRows))
+                   : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::NIterator::getColumnNr() const
 {
-    return m_ColumnNr;
+    return m_Index ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixRows))
+                   : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> T& Matrix<T>::NIterator::operator*() const
 {
-    FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_RowNr, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> T* Matrix<T>::NIterator::operator->() const
 {
-    FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_RowNr, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> T& Matrix<T>::NIterator::operator[](Matrix<T>::NIterator::difference_type index) const
 {
-    FORWARD_NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                m_RowNr, %, /, index);
+    NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, %, /, index, 0,
+                                        +);
 }
 
 template <MatrixElementType T>
@@ -1118,23 +1118,24 @@ Matrix<T>::NIterator::NIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixR
                                 Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
                                 std::optional<Matrix<T>::size_type> columnNr)
 {
-    CONSTRUCT_FORWARD_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr,
-                                        pMatrixPtr, nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr);
+    CONSTRUCT_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, pMatrixPtr,
+                                nrOfMatrixColumns, nrOfMatrixRows,
+                                computeForwardNonDiagIteratorIndex(nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr));
 }
 
 template <MatrixElementType T> void Matrix<T>::NIterator::_increment()
 {
-    FORWARD_NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
 }
 
 template <MatrixElementType T> void Matrix<T>::NIterator::_decrement()
 {
-    FORWARD_NON_DIAG_ITERATOR_DO_DECREMENT(m_NrOfMatrixRows, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_DO_DECREMENT(m_Index);
 }
 
 template <MatrixElementType T> bool Matrix<T>::NIterator::_isEmpty() const
 {
-    CHECK_FORWARD_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr);
+    CHECK_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
 }
 
 // 6) ConstNIterator
@@ -1162,63 +1163,61 @@ template <MatrixElementType T>
 typename Matrix<T>::ConstNIterator& Matrix<T>::ConstNIterator::operator+=(
     Matrix<T>::ConstNIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                   m_RowNr, +, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, +, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ConstNIterator& Matrix<T>::ConstNIterator::operator-=(
     Matrix<T>::ConstNIterator::difference_type offset)
 {
-    FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                   m_RowNr, -, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, -, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ConstNIterator::difference_type Matrix<T>::ConstNIterator::operator-(
     const Matrix<T>::ConstNIterator& it) const
 {
-    FORWARD_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                 m_RowNr, it);
+    NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, it);
 }
 
 template <MatrixElementType T> auto Matrix<T>::ConstNIterator::operator<=>(const Matrix<T>::ConstNIterator& it) const
 {
-    FORWARD_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                m_RowNr, *this, it);
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, *this, it);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ConstNIterator::operator==(const Matrix<T>::ConstNIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstNIterator::getRowNr() const
 {
-    return m_RowNr;
+    return m_Index ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixRows))
+                   : std::optional<size_type>{};
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstNIterator::getColumnNr() const
 {
-    return m_ColumnNr;
+    return m_Index ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixRows))
+                   : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstNIterator::operator*() const
 {
-    FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_RowNr, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> const T* Matrix<T>::ConstNIterator::operator->() const
 {
-    FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_RowNr, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T>
 const T& Matrix<T>::ConstNIterator::operator[](Matrix<T>::ConstNIterator::difference_type index) const
 {
-    FORWARD_NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                m_RowNr, %, /, index);
+    NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, %, /, index, 0,
+                                        +);
 }
 
 template <MatrixElementType T>
@@ -1232,8 +1231,7 @@ Matrix<T>::ConstNIterator::ConstNIterator()
 template <MatrixElementType T>
 Matrix<T>::ConstNIterator::ConstNIterator(const NIterator& nIterator)
     : m_pMatrixPtr{nIterator.m_pMatrixPtr}
-    , m_RowNr{nIterator.m_RowNr}
-    , m_ColumnNr{nIterator.m_ColumnNr}
+    , m_Index{nIterator.m_Index}
     , m_NrOfMatrixRows{nIterator.m_NrOfMatrixRows}
     , m_NrOfMatrixColumns{nIterator.m_NrOfMatrixColumns}
 {
@@ -1245,23 +1243,24 @@ Matrix<T>::ConstNIterator::ConstNIterator(T** pMatrixPtr, Matrix<T>::size_type n
                                           std::optional<Matrix<T>::size_type> rowNr,
                                           std::optional<Matrix<T>::size_type> columnNr)
 {
-    CONSTRUCT_FORWARD_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr,
-                                        pMatrixPtr, nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr);
+    CONSTRUCT_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, pMatrixPtr,
+                                nrOfMatrixColumns, nrOfMatrixRows,
+                                computeForwardNonDiagIteratorIndex(nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr));
 }
 
 template <MatrixElementType T> void Matrix<T>::ConstNIterator::_increment()
 {
-    FORWARD_NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
 }
 
 template <MatrixElementType T> void Matrix<T>::ConstNIterator::_decrement()
 {
-    FORWARD_NON_DIAG_ITERATOR_DO_DECREMENT(m_NrOfMatrixRows, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_DO_DECREMENT(m_Index);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ConstNIterator::_isEmpty() const
 {
-    CHECK_FORWARD_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr);
+    CHECK_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
 }
 
 // 7) ReverseNIterator - iterates within matrix from end to [0][0] column by column (in reverse direction comparing to
@@ -1291,65 +1290,71 @@ template <MatrixElementType T>
 typename Matrix<T>::ReverseNIterator& Matrix<T>::ReverseNIterator::operator+=(
     Matrix<T>::ReverseNIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                   m_RowNr, -, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, +, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ReverseNIterator& Matrix<T>::ReverseNIterator::operator-=(
     Matrix<T>::ReverseNIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                   m_RowNr, +, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, -, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ReverseNIterator::difference_type Matrix<T>::ReverseNIterator::operator-(
     const Matrix<T>::ReverseNIterator& it) const
 {
-    REVERSE_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                 m_RowNr, it);
+    NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, it);
 }
 
 template <MatrixElementType T>
 auto Matrix<T>::ReverseNIterator::operator<=>(const Matrix<T>::ReverseNIterator& it) const
 {
-    REVERSE_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                m_RowNr, *this, it);
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, *this, it);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ReverseNIterator::operator==(const Matrix<T>::ReverseNIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseNIterator::getRowNr() const
 {
-    return m_RowNr;
+
+    return m_Index.has_value()
+               ? m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
+                     ? static_cast<size_type>(m_NrOfMatrixRows) -
+                           static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixRows)) - size_type{1}
+                     : static_cast<size_type>(m_NrOfMatrixRows) - size_type{1}
+               : std::optional<size_type>{};
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseNIterator::getColumnNr() const
 {
-    return m_ColumnNr;
+    return m_Index.has_value() &&
+                   m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
+               ? static_cast<size_type>(m_NrOfMatrixColumns) -
+                     static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixRows)) - size_type{1}
+               : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> T& Matrix<T>::ReverseNIterator::operator*() const
 {
-    REVERSE_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_RowNr, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> T* Matrix<T>::ReverseNIterator::operator->() const
 {
-    REVERSE_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_RowNr, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T>
 T& Matrix<T>::ReverseNIterator::operator[](Matrix<T>::ReverseNIterator::difference_type index) const
 {
-    REVERSE_NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                m_RowNr, %, /, index);
+    NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, %, /, index, 1,
+                                        -);
 }
 
 template <MatrixElementType T>
@@ -1366,23 +1371,24 @@ Matrix<T>::ReverseNIterator::ReverseNIterator(T** pMatrixPtr, Matrix<T>::size_ty
                                               std::optional<Matrix<T>::size_type> rowNr,
                                               std::optional<Matrix<T>::size_type> columnNr)
 {
-    CONSTRUCT_REVERSE_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr,
-                                        pMatrixPtr, nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr);
+    CONSTRUCT_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, pMatrixPtr,
+                                nrOfMatrixColumns, nrOfMatrixRows,
+                                computeReverseNonDiagIteratorIndex(nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr));
 }
 
 template <MatrixElementType T> void Matrix<T>::ReverseNIterator::_increment()
 {
-    REVERSE_NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixRows, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> void Matrix<T>::ReverseNIterator::_decrement()
 {
-    REVERSE_NON_DIAG_ITERATOR_DO_DECREMENT(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_DO_DECREMENT(m_Index);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ReverseNIterator::_isEmpty() const
 {
-    CHECK_REVERSE_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_ColumnNr, m_RowNr);
+    CHECK_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 // 8) ConstReverseNIterator
@@ -1413,66 +1419,72 @@ template <MatrixElementType T>
 typename Matrix<T>::ConstReverseNIterator& Matrix<T>::ConstReverseNIterator::operator+=(
     Matrix<T>::ConstReverseNIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                   m_RowNr, -, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, +, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ConstReverseNIterator& Matrix<T>::ConstReverseNIterator::operator-=(
     Matrix<T>::ConstReverseNIterator::difference_type offset)
 {
-    REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                   m_RowNr, +, offset);
+    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, -, offset);
 }
 
 template <MatrixElementType T>
 typename Matrix<T>::ConstReverseNIterator::difference_type Matrix<T>::ConstReverseNIterator::operator-(
     const Matrix<T>::ConstReverseNIterator& it) const
 {
-    REVERSE_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                 m_RowNr, it);
+    NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, it);
 }
 
 template <MatrixElementType T>
 auto Matrix<T>::ConstReverseNIterator::operator<=>(const Matrix<T>::ConstReverseNIterator& it) const
 {
-    REVERSE_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                m_RowNr, *this, it);
+    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, *this, it);
 }
 
 template <MatrixElementType T>
 bool Matrix<T>::ConstReverseNIterator::operator==(const Matrix<T>::ConstReverseNIterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_RowNr, m_ColumnNr, it);
+    NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseNIterator::getRowNr() const
 {
-    return m_RowNr;
+
+    return m_Index.has_value()
+               ? m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
+                     ? static_cast<size_type>(m_NrOfMatrixRows) -
+                           static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixRows)) - size_type{1}
+                     : static_cast<size_type>(m_NrOfMatrixRows) - size_type{1}
+               : std::optional<size_type>{};
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseNIterator::getColumnNr() const
 {
-    return m_ColumnNr;
+    return m_Index.has_value() &&
+                   m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
+               ? static_cast<size_type>(m_NrOfMatrixColumns) -
+                     static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixRows)) - size_type{1}
+               : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstReverseNIterator::operator*() const
 {
-    REVERSE_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_RowNr, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> const T* Matrix<T>::ConstReverseNIterator::operator->() const
 {
-    REVERSE_NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_RowNr, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T>
 const T& Matrix<T>::ConstReverseNIterator::operator[](Matrix<T>::ConstReverseNIterator::difference_type index) const
 {
-    REVERSE_NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr,
-                                                m_RowNr, %, /, index);
+    NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, %, /, index, 1,
+                                        -);
 }
 
 template <MatrixElementType T>
@@ -1486,8 +1498,7 @@ Matrix<T>::ConstReverseNIterator::ConstReverseNIterator()
 template <MatrixElementType T>
 Matrix<T>::ConstReverseNIterator::ConstReverseNIterator(const ReverseNIterator& reverseNIterator)
     : m_pMatrixPtr{reverseNIterator.m_pMatrixPtr}
-    , m_RowNr{reverseNIterator.m_RowNr}
-    , m_ColumnNr{reverseNIterator.m_ColumnNr}
+    , m_Index{reverseNIterator.m_Index}
     , m_NrOfMatrixRows{reverseNIterator.m_NrOfMatrixRows}
     , m_NrOfMatrixColumns{reverseNIterator.m_NrOfMatrixColumns}
 {
@@ -1499,23 +1510,24 @@ Matrix<T>::ConstReverseNIterator::ConstReverseNIterator(T** pMatrixPtr, Matrix<T
                                                         std::optional<Matrix<T>::size_type> rowNr,
                                                         std::optional<Matrix<T>::size_type> columnNr)
 {
-    CONSTRUCT_REVERSE_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr,
-                                        pMatrixPtr, nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr);
+    CONSTRUCT_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index, pMatrixPtr,
+                                nrOfMatrixColumns, nrOfMatrixRows,
+                                computeReverseNonDiagIteratorIndex(nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr));
 }
 
 template <MatrixElementType T> void Matrix<T>::ConstReverseNIterator::_increment()
 {
-    REVERSE_NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixRows, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> void Matrix<T>::ConstReverseNIterator::_decrement()
 {
-    REVERSE_NON_DIAG_ITERATOR_DO_DECREMENT(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_ColumnNr, m_RowNr);
+    NON_DIAG_ITERATOR_DO_DECREMENT(m_Index);
 }
 
 template <MatrixElementType T> bool Matrix<T>::ConstReverseNIterator::_isEmpty() const
 {
-    CHECK_REVERSE_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_ColumnNr, m_RowNr);
+    CHECK_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 // 9) DIterator (diagonal iterator, traverses a matrix diagonal)
@@ -1624,9 +1636,9 @@ Matrix<T>::DIterator::DIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixR
 }
 
 template <MatrixElementType T>
-Matrix<T>::DIterator::DIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
-                                Matrix<T>::size_type nrOfMatrixColumns,
-                                const std::pair<diff_type, std::optional<size_type>>& diagonalNrAndIndex)
+Matrix<T>::DIterator::DIterator(
+    T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows, Matrix<T>::size_type nrOfMatrixColumns,
+    const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
 {
     const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
     CONSTRUCT_FORWARD_DITERATOR_WITH_DIAG_NR_AND_INDEX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex,
@@ -1770,9 +1782,9 @@ Matrix<T>::ConstDIterator::ConstDIterator(T** pMatrixPtr, Matrix<T>::size_type n
 }
 
 template <MatrixElementType T>
-Matrix<T>::ConstDIterator::ConstDIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
-                                          Matrix<T>::size_type nrOfMatrixColumns,
-                                          const std::pair<diff_type, std::optional<size_type>>& diagonalNrAndIndex)
+Matrix<T>::ConstDIterator::ConstDIterator(
+    T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows, Matrix<T>::size_type nrOfMatrixColumns,
+    const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
 {
     const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
     CONSTRUCT_FORWARD_DITERATOR_WITH_DIAG_NR_AND_INDEX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex,
@@ -1915,9 +1927,9 @@ Matrix<T>::ReverseDIterator::ReverseDIterator(T** pMatrixPtr, Matrix<T>::size_ty
 }
 
 template <MatrixElementType T>
-Matrix<T>::ReverseDIterator::ReverseDIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
-                                              Matrix<T>::size_type nrOfMatrixColumns,
-                                              const std::pair<diff_type, std::optional<size_type>>& diagonalNrAndIndex)
+Matrix<T>::ReverseDIterator::ReverseDIterator(
+    T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows, Matrix<T>::size_type nrOfMatrixColumns,
+    const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
 {
     const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
     CONSTRUCT_FORWARD_DITERATOR_WITH_DIAG_NR_AND_INDEX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex,
@@ -2075,7 +2087,7 @@ Matrix<T>::ConstReverseDIterator::ConstReverseDIterator(T** pMatrixPtr, Matrix<T
 template <MatrixElementType T>
 Matrix<T>::ConstReverseDIterator::ConstReverseDIterator(
     T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows, Matrix<T>::size_type nrOfMatrixColumns,
-    const std::pair<diff_type, std::optional<size_type>>& diagonalNrAndIndex)
+    const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
 {
     const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
     CONSTRUCT_FORWARD_DITERATOR_WITH_DIAG_NR_AND_INDEX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex,
@@ -2217,9 +2229,9 @@ Matrix<T>::MIterator::MIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixR
 }
 
 template <MatrixElementType T>
-Matrix<T>::MIterator::MIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
-                                Matrix<T>::size_type nrOfMatrixColumns,
-                                const std::pair<diff_type, std::optional<size_type>>& diagonalNrAndIndex)
+Matrix<T>::MIterator::MIterator(
+    T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows, Matrix<T>::size_type nrOfMatrixColumns,
+    const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
 {
     const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
     CONSTRUCT_FORWARD_MITERATOR_WITH_DIAG_NR_AND_INDEX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex,
@@ -2376,9 +2388,9 @@ Matrix<T>::ConstMIterator::ConstMIterator(T** pMatrixPtr, Matrix<T>::size_type n
 }
 
 template <MatrixElementType T>
-Matrix<T>::ConstMIterator::ConstMIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
-                                          Matrix<T>::size_type nrOfMatrixColumns,
-                                          const std::pair<diff_type, std::optional<size_type>>& diagonalNrAndIndex)
+Matrix<T>::ConstMIterator::ConstMIterator(
+    T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows, Matrix<T>::size_type nrOfMatrixColumns,
+    const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
 {
     const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
     CONSTRUCT_FORWARD_MITERATOR_WITH_DIAG_NR_AND_INDEX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex,
@@ -2528,9 +2540,9 @@ Matrix<T>::ReverseMIterator::ReverseMIterator(T** pMatrixPtr, Matrix<T>::size_ty
 }
 
 template <MatrixElementType T>
-Matrix<T>::ReverseMIterator::ReverseMIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
-                                              Matrix<T>::size_type nrOfMatrixColumns,
-                                              const std::pair<diff_type, std::optional<size_type>>& diagonalNrAndIndex)
+Matrix<T>::ReverseMIterator::ReverseMIterator(
+    T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows, Matrix<T>::size_type nrOfMatrixColumns,
+    const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
 {
     const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
     CONSTRUCT_REVERSE_MITERATOR_WITH_DIAG_NR_AND_INDEX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex,
@@ -2695,7 +2707,7 @@ Matrix<T>::ConstReverseMIterator::ConstReverseMIterator(T** pMatrixPtr, Matrix<T
 template <MatrixElementType T>
 Matrix<T>::ConstReverseMIterator::ConstReverseMIterator(
     T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows, Matrix<T>::size_type nrOfMatrixColumns,
-    const std::pair<diff_type, std::optional<size_type>>& diagonalNrAndIndex)
+    const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
 {
     const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
     CONSTRUCT_REVERSE_MITERATOR_WITH_DIAG_NR_AND_INDEX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex,
@@ -3302,7 +3314,7 @@ template <MatrixElementType T> void Matrix<T>::catByColumn(Matrix& matrix)
     }
 }
 
-template <MatrixElementType T> void Matrix<T>::splitByRow(Matrix& matrix, size_type splitRowNr)
+template <MatrixElementType T> void Matrix<T>::splitByRow(Matrix& matrix, Matrix<T>::size_type splitRowNr)
 {
     CHECK_ERROR_CONDITION(&matrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARGUMENT]);
     CHECK_ERROR_CONDITION(splitRowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
@@ -3330,7 +3342,7 @@ template <MatrixElementType T> void Matrix<T>::splitByRow(Matrix& matrix, size_t
     _normalizeRowCapacity();
 }
 
-template <MatrixElementType T> void Matrix<T>::splitByColumn(Matrix& matrix, size_type splitColumnNr)
+template <MatrixElementType T> void Matrix<T>::splitByColumn(Matrix& matrix, Matrix<T>::size_type splitColumnNr)
 {
     CHECK_ERROR_CONDITION(&matrix == this, Matr::errorMessages[Matr::Errors::CURRENT_MATRIX_AS_ARGUMENT]);
     CHECK_ERROR_CONDITION(splitColumnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
@@ -3433,8 +3445,9 @@ template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zBegin()
 
 template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zEnd()
 {
-    GET_FORWARD_END_ZITERATOR(ZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                              m_NrOfRows, m_NrOfColumns);
+    GET_FORWARD_NON_DIAG_END_ITERATOR(ZIterator,
+                                      m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                                      m_NrOfRows, m_NrOfColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zRowBegin(Matrix<T>::size_type rowNr)
@@ -3467,9 +3480,9 @@ template <MatrixElementType T> typename Matrix<T>::ConstZIterator Matrix<T>::con
 
 template <MatrixElementType T> typename Matrix<T>::ConstZIterator Matrix<T>::constZEnd() const
 {
-    GET_FORWARD_END_ZITERATOR(ConstZIterator,
-                              m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                              m_NrOfColumns);
+    GET_FORWARD_NON_DIAG_END_ITERATOR(ConstZIterator,
+                                      m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                                      m_NrOfRows, m_NrOfColumns);
 }
 
 template <MatrixElementType T>
@@ -3584,8 +3597,9 @@ template <MatrixElementType T> typename Matrix<T>::NIterator Matrix<T>::nBegin()
 
 template <MatrixElementType T> typename Matrix<T>::NIterator Matrix<T>::nEnd()
 {
-    GET_FORWARD_END_NITERATOR(NIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                              m_NrOfRows, m_NrOfColumns);
+    GET_FORWARD_NON_DIAG_END_ITERATOR(NIterator,
+                                      m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                                      m_NrOfRows, m_NrOfColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::NIterator Matrix<T>::nColumnBegin(Matrix<T>::size_type columnNr)
@@ -3619,9 +3633,9 @@ template <MatrixElementType T> typename Matrix<T>::ConstNIterator Matrix<T>::con
 
 template <MatrixElementType T> typename Matrix<T>::ConstNIterator Matrix<T>::constNEnd() const
 {
-    GET_FORWARD_END_NITERATOR(ConstNIterator,
-                              m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                              m_NrOfColumns);
+    GET_FORWARD_NON_DIAG_END_ITERATOR(ConstNIterator,
+                                      m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                                      m_NrOfRows, m_NrOfColumns);
 }
 
 template <MatrixElementType T>
@@ -4410,7 +4424,7 @@ template <MatrixElementType T> void Matrix<T>::_shiftEraseColumn(Matrix<T>::size
     }
 }
 
-template <MatrixElementType T> void Matrix<T>::_rotateFirstColumn(size_type newColumnNr)
+template <MatrixElementType T> void Matrix<T>::_rotateFirstColumn(Matrix<T>::size_type newColumnNr)
 {
     if (!isEmpty())
     {
@@ -4821,30 +4835,21 @@ template <MatrixElementType T> void* Matrix<T>::_convertToArray(Matrix<T>::size_
 #undef ITERATOR_POST_INCREMENT
 #undef ITERATOR_PRE_DECREMENT
 #undef ITERATOR_POST_DECREMENT
-#undef CONSTRUCT_FORWARD_NON_DIAG_ITERATOR
-#undef CONSTRUCT_REVERSE_NON_DIAG_ITERATOR
-#undef FORWARD_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF
-#undef REVERSE_NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF
-#undef FORWARD_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE
-#undef REVERSE_NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE
-#undef FORWARD_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE
-#undef REVERSE_NON_DIAG_ITERATOR_CHECK_EQUIVALENCE
+#undef CONSTRUCT_NON_DIAG_ITERATOR
+#undef NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF
+#undef NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE
+#undef NON_DIAG_ITERATOR_CHECK_EQUIVALENCE
 #undef NON_DIAG_ITERATOR_CHECK_EQUALITY
-#undef FORWARD_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE
-#undef REVERSE_NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE
-#undef FORWARD_NON_DIAG_ITERATOR_ARROW_DEREFERENCE
-#undef REVERSE_NON_DIAG_ITERATOR_ARROW_DEREFERENCE
-#undef FORWARD_NON_DIAG_ITERATOR_INDEX_DEREFERENCE
-#undef REVERSE_NON_DIAG_ITERATOR_INDEX_DEREFERENCE
-#undef FORWARD_NON_DIAG_ITERATOR_DO_INCREMENT
-#undef REVERSE_NON_DIAG_ITERATOR_DO_INCREMENT
-#undef FORWARD_NON_DIAG_ITERATOR_DO_DECREMENT
-#undef REVERSE_NON_DIAG_ITERATOR_DO_DECREMENT
-#undef CHECK_FORWARD_NON_DIAG_ITERATOR_IS_EMPTY
-#undef CHECK_REVERSE_NON_DIAG_ITERATOR_IS_EMPTY
+#undef NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE
+#undef NON_DIAG_ITERATOR_ARROW_DEREFERENCE
+#undef NON_DIAG_ITERATOR_INDEX_DEREFERENCE
+#undef NON_DIAG_ITERATOR_DO_INCREMENT
+#undef NON_DIAG_ITERATOR_DO_DECREMENT
+#undef CHECK_NON_DIAG_ITERATOR_IS_EMPTY
+#undef GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER
 #undef GET_FORWARD_NON_DIAG_BEGIN_ITERATOR
 #undef GET_REVERSE_NON_DIAG_BEGIN_ITERATOR
-#undef GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER
+#undef GET_FORWARD_NON_DIAG_END_ITERATOR
 #undef DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF
 #undef DIAG_ITERATOR_DO_INCREMENT
 #undef DIAG_ITERATOR_DO_DECREMENT
@@ -4853,13 +4858,11 @@ template <MatrixElementType T> void* Matrix<T>::_convertToArray(Matrix<T>::size_
 #undef DIAG_ITERATOR_CHECK_EQUALITY
 #undef GET_DIAG_BEGIN_ITERATOR
 #undef GET_DIAG_RANDOM_ITERATOR
-#undef GET_FORWARD_END_ZITERATOR
 #undef GET_REVERSE_END_ZITERATOR
 #undef GET_FORWARD_ROW_BEGIN_ZITERATOR
 #undef GET_REVERSE_ROW_BEGIN_ZITERATOR
 #undef GET_FORWARD_ROW_END_ZITERATOR
 #undef GET_REVERSE_ROW_END_ZITERATOR
-#undef GET_FORWARD_END_NITERATOR
 #undef GET_REVERSE_END_NITERATOR
 #undef GET_FORWARD_COLUMN_BEGIN_NITERATOR
 #undef GET_REVERSE_COLUMN_BEGIN_NITERATOR
