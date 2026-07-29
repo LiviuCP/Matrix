@@ -310,6 +310,32 @@ static std::optional<matrix_diff_t> computeReverseNonDiagIteratorIndex(
                                                                                                                        \
     return !mpIteratorPtr;
 
+#define GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(mIteratorSecondaryDimension, mIteratorIndex, Operator)                \
+    return mIteratorIndex                                                                                              \
+               ? static_cast<size_type>(*mIteratorIndex Operator static_cast<diff_type>(mIteratorSecondaryDimension))  \
+               : std::optional<size_type>{};
+
+#define GET_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(mIteratorPrimaryDimension, mIteratorSecondaryDimension,       \
+                                                         mIteratorIndex)                                               \
+    return mIteratorIndex.has_value() && mIteratorIndex < static_cast<diff_type>(mIteratorPrimaryDimension) *          \
+                                                              static_cast<diff_type>(mIteratorSecondaryDimension)      \
+               ? static_cast<size_type>(mIteratorPrimaryDimension) -                                                   \
+                     static_cast<size_type>(*mIteratorIndex / static_cast<diff_type>(mIteratorSecondaryDimension)) -   \
+                     size_type{1}                                                                                      \
+               : std::optional<size_type>{};
+
+#define GET_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(mIteratorPrimaryDimension, mIteratorSecondaryDimension,     \
+                                                           mIteratorIndex)                                             \
+    return mIteratorIndex.has_value()                                                                                  \
+               ? m_Index < static_cast<diff_type>(mIteratorPrimaryDimension) *                                         \
+                               static_cast<diff_type>(mIteratorSecondaryDimension)                                     \
+                     ? static_cast<size_type>(mIteratorSecondaryDimension) -                                           \
+                           static_cast<size_type>(*mIteratorIndex %                                                    \
+                                                  static_cast<diff_type>(mIteratorSecondaryDimension)) -               \
+                           size_type{1}                                                                                \
+                     : static_cast<size_type>(mIteratorSecondaryDimension) - size_type{1}                              \
+               : std::optional<size_type>{};
+
 #define GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(IteratorType, mpIteratorPtr, mMatrixNrOfRows,                   \
                                                        mMatrixNrOfColumns, matrixRowNr, matrixColumnNr)                \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows || matrixColumnNr >= mMatrixNrOfColumns,                      \

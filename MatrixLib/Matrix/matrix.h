@@ -578,14 +578,12 @@ template <MatrixElementType T> bool Matrix<T>::ZIterator::operator==(const Matri
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
 {
-    return m_Index ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns))
-                   : std::optional<size_type>{};
+    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, /);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getColumnNr() const
 {
-    return m_Index ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns))
-                   : std::optional<size_type>{};
+    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, %);
 }
 
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator*() const
@@ -692,15 +690,13 @@ template <MatrixElementType T> bool Matrix<T>::ConstZIterator::operator==(const 
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstZIterator::getRowNr() const
 {
-    return m_Index ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns))
-                   : std::optional<size_type>{};
+    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, /);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstZIterator::getColumnNr() const
 {
-    return m_Index ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns))
-                   : std::optional<size_type>{};
+    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, %);
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstZIterator::operator*() const
@@ -821,22 +817,13 @@ template <MatrixElementType T> bool Matrix<T>::ReverseZIterator::operator==(cons
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseZIterator::getRowNr() const
 {
-    return m_Index.has_value() &&
-                   m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
-               ? static_cast<size_type>(m_NrOfMatrixRows) -
-                     static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns)) - size_type{1}
-               : std::optional<size_type>{};
+    GET_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseZIterator::getColumnNr() const
 {
-    return m_Index.has_value()
-               ? m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
-                     ? static_cast<size_type>(m_NrOfMatrixColumns) -
-                           static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns)) - size_type{1}
-                     : static_cast<size_type>(m_NrOfMatrixColumns) - size_type{1}
-               : std::optional<size_type>{};
+    GET_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> T& Matrix<T>::ReverseZIterator::operator*() const
@@ -950,22 +937,13 @@ bool Matrix<T>::ConstReverseZIterator::operator==(const Matrix<T>::ConstReverseZ
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseZIterator::getRowNr() const
 {
-    return m_Index.has_value() &&
-                   m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
-               ? static_cast<size_type>(m_NrOfMatrixRows) -
-                     static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns)) - size_type{1}
-               : std::optional<size_type>{};
+    GET_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseZIterator::getColumnNr() const
 {
-    return m_Index.has_value()
-               ? m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
-                     ? static_cast<size_type>(m_NrOfMatrixColumns) -
-                           static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns)) - size_type{1}
-                     : static_cast<size_type>(m_NrOfMatrixColumns) - size_type{1}
-               : std::optional<size_type>{};
+    GET_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstReverseZIterator::operator*() const
@@ -1079,14 +1057,12 @@ template <MatrixElementType T> bool Matrix<T>::NIterator::operator==(const Matri
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::NIterator::getRowNr() const
 {
-    return m_Index ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixRows))
-                   : std::optional<size_type>{};
+    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixRows, m_Index, %);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::NIterator::getColumnNr() const
 {
-    return m_Index ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixRows))
-                   : std::optional<size_type>{};
+    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixRows, m_Index, /);
 }
 
 template <MatrixElementType T> T& Matrix<T>::NIterator::operator*() const
@@ -1192,15 +1168,13 @@ template <MatrixElementType T> bool Matrix<T>::ConstNIterator::operator==(const 
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstNIterator::getRowNr() const
 {
-    return m_Index ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixRows))
-                   : std::optional<size_type>{};
+    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixRows, m_Index, %);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstNIterator::getColumnNr() const
 {
-    return m_Index ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixRows))
-                   : std::optional<size_type>{};
+    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixRows, m_Index, /);
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstNIterator::operator*() const
@@ -1321,23 +1295,13 @@ template <MatrixElementType T> bool Matrix<T>::ReverseNIterator::operator==(cons
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseNIterator::getRowNr() const
 {
-
-    return m_Index.has_value()
-               ? m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
-                     ? static_cast<size_type>(m_NrOfMatrixRows) -
-                           static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixRows)) - size_type{1}
-                     : static_cast<size_type>(m_NrOfMatrixRows) - size_type{1}
-               : std::optional<size_type>{};
+    GET_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseNIterator::getColumnNr() const
 {
-    return m_Index.has_value() &&
-                   m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
-               ? static_cast<size_type>(m_NrOfMatrixColumns) -
-                     static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixRows)) - size_type{1}
-               : std::optional<size_type>{};
+    GET_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
 }
 
 template <MatrixElementType T> T& Matrix<T>::ReverseNIterator::operator*() const
@@ -1451,23 +1415,13 @@ bool Matrix<T>::ConstReverseNIterator::operator==(const Matrix<T>::ConstReverseN
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseNIterator::getRowNr() const
 {
-
-    return m_Index.has_value()
-               ? m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
-                     ? static_cast<size_type>(m_NrOfMatrixRows) -
-                           static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixRows)) - size_type{1}
-                     : static_cast<size_type>(m_NrOfMatrixRows) - size_type{1}
-               : std::optional<size_type>{};
+    GET_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseNIterator::getColumnNr() const
 {
-    return m_Index.has_value() &&
-                   m_Index < static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns)
-               ? static_cast<size_type>(m_NrOfMatrixColumns) -
-                     static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixRows)) - size_type{1}
-               : std::optional<size_type>{};
+    GET_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstReverseNIterator::operator*() const
@@ -4846,6 +4800,9 @@ template <MatrixElementType T> void* Matrix<T>::_convertToArray(Matrix<T>::size_
 #undef NON_DIAG_ITERATOR_DO_INCREMENT
 #undef NON_DIAG_ITERATOR_DO_DECREMENT
 #undef CHECK_NON_DIAG_ITERATOR_IS_EMPTY
+#undef GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE
+#undef GET_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE
+#undef GET_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE
 #undef GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER
 #undef GET_FORWARD_NON_DIAG_BEGIN_ITERATOR
 #undef GET_REVERSE_NON_DIAG_BEGIN_ITERATOR
