@@ -10,7 +10,10 @@
 #include "matrixdimensions.h"
 
 #include "../Utils/errorhandling.h"
-#include "../Utils/iteratorutils.h"
+#include "../Utils/iteratordeclarations.h"
+#include "../Utils/iteratordefinitions.h"
+#include "../Utils/iteratorgetters.h"
+#include "../Utils/iteratorutilityfunctions.h"
 
 constexpr matrix_size_t maxAllowedDimension()
 {
@@ -578,12 +581,12 @@ template <MatrixElementType T> bool Matrix<T>::ZIterator::operator==(const Matri
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
 {
-    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, /);
+    RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, /);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getColumnNr() const
 {
-    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, %);
+    RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, %);
 }
 
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator*() const
@@ -690,13 +693,13 @@ template <MatrixElementType T> bool Matrix<T>::ConstZIterator::operator==(const 
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstZIterator::getRowNr() const
 {
-    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, /);
+    RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, /);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstZIterator::getColumnNr() const
 {
-    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, %);
+    RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, %);
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstZIterator::operator*() const
@@ -817,13 +820,13 @@ template <MatrixElementType T> bool Matrix<T>::ReverseZIterator::operator==(cons
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseZIterator::getRowNr() const
 {
-    GET_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
+    RETRIEVE_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseZIterator::getColumnNr() const
 {
-    GET_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
+    RETRIEVE_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> T& Matrix<T>::ReverseZIterator::operator*() const
@@ -937,13 +940,13 @@ bool Matrix<T>::ConstReverseZIterator::operator==(const Matrix<T>::ConstReverseZ
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseZIterator::getRowNr() const
 {
-    GET_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
+    RETRIEVE_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseZIterator::getColumnNr() const
 {
-    GET_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
+    RETRIEVE_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstReverseZIterator::operator*() const
@@ -1057,12 +1060,12 @@ template <MatrixElementType T> bool Matrix<T>::NIterator::operator==(const Matri
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::NIterator::getRowNr() const
 {
-    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixRows, m_Index, %);
+    RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixRows, m_Index, %);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::NIterator::getColumnNr() const
 {
-    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixRows, m_Index, /);
+    RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixRows, m_Index, /);
 }
 
 template <MatrixElementType T> T& Matrix<T>::NIterator::operator*() const
@@ -1168,13 +1171,13 @@ template <MatrixElementType T> bool Matrix<T>::ConstNIterator::operator==(const 
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstNIterator::getRowNr() const
 {
-    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixRows, m_Index, %);
+    RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixRows, m_Index, %);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstNIterator::getColumnNr() const
 {
-    GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixRows, m_Index, /);
+    RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixRows, m_Index, /);
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstNIterator::operator*() const
@@ -1295,13 +1298,13 @@ template <MatrixElementType T> bool Matrix<T>::ReverseNIterator::operator==(cons
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseNIterator::getRowNr() const
 {
-    GET_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
+    RETRIEVE_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseNIterator::getColumnNr() const
 {
-    GET_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
+    RETRIEVE_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
 }
 
 template <MatrixElementType T> T& Matrix<T>::ReverseNIterator::operator*() const
@@ -1415,13 +1418,13 @@ bool Matrix<T>::ConstReverseNIterator::operator==(const Matrix<T>::ConstReverseN
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseNIterator::getRowNr() const
 {
-    GET_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
+    RETRIEVE_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseNIterator::getColumnNr() const
 {
-    GET_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
+    RETRIEVE_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE(m_NrOfMatrixColumns, m_NrOfMatrixRows, m_Index);
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstReverseNIterator::operator*() const
@@ -4800,19 +4803,42 @@ template <MatrixElementType T> void* Matrix<T>::_convertToArray(Matrix<T>::size_
 #undef NON_DIAG_ITERATOR_DO_INCREMENT
 #undef NON_DIAG_ITERATOR_DO_DECREMENT
 #undef CHECK_NON_DIAG_ITERATOR_IS_EMPTY
-#undef GET_FORWARD_NON_DIAG_ITERATOR_COORDINATE
-#undef GET_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE
-#undef GET_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE
-#undef GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER
-#undef GET_FORWARD_NON_DIAG_BEGIN_ITERATOR
-#undef GET_REVERSE_NON_DIAG_BEGIN_ITERATOR
-#undef GET_FORWARD_NON_DIAG_END_ITERATOR
+#undef RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE
+#undef RETRIEVE_REVERSE_NON_DIAG_ITERATOR_PRIMARY_COORDINATE
+#undef RETRIEVE_REVERSE_NON_DIAG_ITERATOR_SECONDARY_COORDINATE
 #undef DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF
 #undef DIAG_ITERATOR_DO_INCREMENT
 #undef DIAG_ITERATOR_DO_DECREMENT
 #undef DIAG_ITERATOR_COMPUTE_DIFFERENCE
 #undef DIAG_ITERATOR_CHECK_EQUIVALENCE
 #undef DIAG_ITERATOR_CHECK_EQUALITY
+#undef CONSTRUCT_FORWARD_DITERATOR_WITH_ROW_AND_COLUMN_NR
+#undef CONSTRUCT_FORWARD_DITERATOR_WITH_DIAG_NR_AND_INDEX
+#undef CONSTRUCT_REVERSE_DITERATOR_WITH_ROW_AND_COLUMN_NR
+#undef CONSTRUCT_REVERSE_DITERATOR_WITH_DIAG_NR_AND_INDEX
+#undef FORWARD_DITERATOR_ASTERISK_DEREFERENCE
+#undef REVERSE_DITERATOR_ASTERISK_DEREFERENCE
+#undef FORWARD_DITERATOR_ARROW_DEREFERENCE
+#undef REVERSE_DITERATOR_ARROW_DEREFERENCE
+#undef FORWARD_DITERATOR_INDEX_DEREFERENCE
+#undef REVERSE_DITERATOR_INDEX_DEREFERENCE
+#undef CHECK_DITERATOR_IS_EMPTY
+#undef CONSTRUCT_FORWARD_MITERATOR_WITH_ROW_AND_COLUMN_NR
+#undef CONSTRUCT_FORWARD_MITERATOR_WITH_DIAG_NR_AND_INDEX
+#undef CONSTRUCT_REVERSE_MITERATOR_WITH_ROW_AND_COLUMN_NR
+#undef CONSTRUCT_REVERSE_MITERATOR_WITH_DIAG_NR_AND_INDEX
+#undef FORWARD_MITERATOR_ASTERISK_DEREFERENCE
+#undef REVERSE_MITERATOR_ASTERISK_DEREFERENCE
+#undef FORWARD_MITERATOR_ARROW_DEREFERENCE
+#undef REVERSE_MITERATOR_ARROW_DEREFERENCE
+#undef FORWARD_MITERATOR_INDEX_DEREFERENCE
+#undef REVERSE_MITERATOR_INDEX_DEREFERENCE
+#undef CHECK_MITERATOR_IS_EMPTY
+
+#undef GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER
+#undef GET_FORWARD_NON_DIAG_BEGIN_ITERATOR
+#undef GET_REVERSE_NON_DIAG_BEGIN_ITERATOR
+#undef GET_FORWARD_NON_DIAG_END_ITERATOR
 #undef GET_DIAG_BEGIN_ITERATOR
 #undef GET_DIAG_RANDOM_ITERATOR
 #undef GET_REVERSE_END_ZITERATOR
@@ -4825,33 +4851,11 @@ template <MatrixElementType T> void* Matrix<T>::_convertToArray(Matrix<T>::size_
 #undef GET_REVERSE_COLUMN_BEGIN_NITERATOR
 #undef GET_FORWARD_COLUMN_END_NITERATOR
 #undef GET_REVERSE_COLUMN_END_NITERATOR
-#undef CONSTRUCT_FORWARD_DITERATOR_WITH_ROW_AND_COLUMN_NR
-#undef CONSTRUCT_FORWARD_DITERATOR_WITH_DIAG_NR_AND_INDEX
-#undef CONSTRUCT_REVERSE_DITERATOR_WITH_ROW_AND_COLUMN_NR
-#undef CONSTRUCT_REVERSE_DITERATOR_WITH_DIAG_NR_AND_INDEX
-#undef FORWARD_DITERATOR_ASTERISK_DEREFERENCE
-#undef REVERSE_DITERATOR_ASTERISK_DEREFERENCE
-#undef FORWARD_DITERATOR_ARROW_DEREFERENCE
-#undef REVERSE_DITERATOR_ARROW_DEREFERENCE
-#undef FORWARD_DITERATOR_INDEX_DEREFERENCE
-#undef REVERSE_DITERATOR_INDEX_DEREFERENCE
 #undef GET_BEGIN_DITERATOR_BY_ROW_AND_COLUMN_NUMBER
 #undef GET_END_DITERATOR_BY_DIAG_NUMBER
 #undef GET_END_DITERATOR_BY_ROW_AND_COLUMN_NUMBER
 #undef GET_RANDOM_DITERATOR_BY_DIAG_NUMBER_AND_INDEX
-#undef CHECK_DITERATOR_IS_EMPTY
-#undef CONSTRUCT_FORWARD_MITERATOR_WITH_ROW_AND_COLUMN_NR
-#undef CONSTRUCT_FORWARD_MITERATOR_WITH_DIAG_NR_AND_INDEX
-#undef CONSTRUCT_REVERSE_MITERATOR_WITH_ROW_AND_COLUMN_NR
-#undef CONSTRUCT_REVERSE_MITERATOR_WITH_DIAG_NR_AND_INDEX
-#undef FORWARD_MITERATOR_ASTERISK_DEREFERENCE
-#undef REVERSE_MITERATOR_ASTERISK_DEREFERENCE
-#undef FORWARD_MITERATOR_ARROW_DEREFERENCE
-#undef REVERSE_MITERATOR_ARROW_DEREFERENCE
-#undef FORWARD_MITERATOR_INDEX_DEREFERENCE
-#undef REVERSE_MITERATOR_INDEX_DEREFERENCE
 #undef GET_BEGIN_MITERATOR_BY_ROW_AND_COLUMN_NUMBER
 #undef GET_END_MITERATOR_BY_DIAG_NUMBER
 #undef GET_END_MITERATOR_BY_ROW_AND_COLUMN_NUMBER
 #undef GET_RANDOM_MITERATOR_BY_DIAG_NUMBER_AND_INDEX
-#undef CHECK_MITERATOR_IS_EMPTY
