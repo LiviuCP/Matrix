@@ -1539,14 +1539,12 @@ template <MatrixElementType T> bool Matrix<T>::DIterator::operator==(const Matri
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getRowNr() const
 {
-    return _isEmpty() ? std::nullopt
-                      : std::optional{m_DiagonalNr < 0 ? *m_DiagonalIndex + std::abs(m_DiagonalNr) : *m_DiagonalIndex};
+    RETRIEVE_FORWARD_DIAG_ITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalIndex);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getColumnNr() const
 {
-    return _isEmpty() ? std::nullopt
-                      : std::optional{m_DiagonalNr < 0 ? *m_DiagonalIndex : *m_DiagonalIndex + m_DiagonalNr};
+    RETRIEVE_FORWARD_DITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalIndex);
 }
 
 template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::DIterator::getDiagonalNr() const
@@ -1673,15 +1671,13 @@ template <MatrixElementType T> bool Matrix<T>::ConstDIterator::operator==(const 
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstDIterator::getRowNr() const
 {
-    return _isEmpty() ? std::nullopt
-                      : std::optional{m_DiagonalNr < 0 ? *m_DiagonalIndex + std::abs(m_DiagonalNr) : *m_DiagonalIndex};
+    RETRIEVE_FORWARD_DIAG_ITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalIndex);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstDIterator::getColumnNr() const
 {
-    return _isEmpty() ? std::nullopt
-                      : std::optional{m_DiagonalNr < 0 ? *m_DiagonalIndex : *m_DiagonalIndex + m_DiagonalNr};
+    RETRIEVE_FORWARD_DITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalIndex);
 }
 
 template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::ConstDIterator::getDiagonalNr() const
@@ -1821,21 +1817,13 @@ template <MatrixElementType T> bool Matrix<T>::ReverseDIterator::operator==(cons
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseDIterator::getRowNr() const
 {
-    return _isEmpty() ? std::nullopt
-           : m_DiagonalNr < 0
-               ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(-m_DiagonalNr)}
-           : *m_DiagonalIndex < m_DiagonalSize ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1}
-                                               : std::nullopt;
+    RETRIEVE_REVERSE_DITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseDIterator::getColumnNr() const
 {
-    return _isEmpty() ? std::nullopt
-           : m_DiagonalNr > 0
-               ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(m_DiagonalNr)}
-           : *m_DiagonalIndex < m_DiagonalSize ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1}
-                                               : std::nullopt;
+    RETRIEVE_REVERSE_DITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
 }
 
 template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::ReverseDIterator::getDiagonalNr() const
@@ -1970,21 +1958,13 @@ bool Matrix<T>::ConstReverseDIterator::operator==(const Matrix<T>::ConstReverseD
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseDIterator::getRowNr() const
 {
-    return _isEmpty() ? std::nullopt
-           : m_DiagonalNr < 0
-               ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(-m_DiagonalNr)}
-           : *m_DiagonalIndex < m_DiagonalSize ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1}
-                                               : std::nullopt;
+    RETRIEVE_REVERSE_DITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseDIterator::getColumnNr() const
 {
-    return _isEmpty() ? std::nullopt
-           : m_DiagonalNr > 0
-               ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(m_DiagonalNr)}
-           : *m_DiagonalIndex < m_DiagonalSize ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1}
-                                               : std::nullopt;
+    RETRIEVE_REVERSE_DITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
 }
 
 template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::ConstReverseDIterator::getDiagonalNr() const
@@ -2120,21 +2100,12 @@ template <MatrixElementType T> bool Matrix<T>::MIterator::operator==(const Matri
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::MIterator::getRowNr() const
 {
-    return _isEmpty() ? std::nullopt
-                      : std::optional{m_DiagonalNr < 0 ? *m_DiagonalIndex + std::abs(m_DiagonalNr) : *m_DiagonalIndex};
+    RETRIEVE_FORWARD_DIAG_ITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalIndex);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::MIterator::getColumnNr() const
 {
-    // no overflow as for positive diagonals the diagonal number should be strictly smaller than the number of matrix
-    // columns if the matrix is not empty
-    return _isEmpty() ? std::nullopt
-           : m_DiagonalNr < 0
-               ? (*m_DiagonalIndex < m_NrOfMatrixColumns ? std::optional{m_NrOfMatrixColumns - *m_DiagonalIndex - 1}
-                                                         : std::nullopt)
-               : (*m_DiagonalIndex < m_NrOfMatrixColumns - static_cast<size_type>(m_DiagonalNr)
-                      ? std::optional{m_NrOfMatrixColumns - *m_DiagonalIndex - 1 - static_cast<size_type>(m_DiagonalNr)}
-                      : std::nullopt);
+    RETRIEVE_FORWARD_MITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::MIterator::getDiagonalNr() const
@@ -2266,22 +2237,13 @@ template <MatrixElementType T> bool Matrix<T>::ConstMIterator::operator==(const 
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstMIterator::getRowNr() const
 {
-    return _isEmpty() ? std::nullopt
-                      : std::optional{m_DiagonalNr < 0 ? *m_DiagonalIndex + std::abs(m_DiagonalNr) : *m_DiagonalIndex};
+    RETRIEVE_FORWARD_DIAG_ITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalIndex);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstMIterator::getColumnNr() const
 {
-    // no overflow as for positive diagonals the diagonal number should be strictly smaller than the number of matrix
-    // columns if the matrix is not empty
-    return _isEmpty() ? std::nullopt
-           : m_DiagonalNr < 0
-               ? (*m_DiagonalIndex < m_NrOfMatrixColumns ? std::optional{m_NrOfMatrixColumns - *m_DiagonalIndex - 1}
-                                                         : std::nullopt)
-               : (*m_DiagonalIndex < m_NrOfMatrixColumns - static_cast<size_type>(m_DiagonalNr)
-                      ? std::optional{m_NrOfMatrixColumns - *m_DiagonalIndex - 1 - static_cast<size_type>(m_DiagonalNr)}
-                      : std::nullopt);
+    RETRIEVE_FORWARD_MITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::ConstMIterator::getDiagonalNr() const
@@ -2427,23 +2389,13 @@ template <MatrixElementType T> bool Matrix<T>::ReverseMIterator::operator==(cons
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseMIterator::getRowNr() const
 {
-    // no overflow risk, diagonal index should not exceed diagonal size
-    return _isEmpty() ? std::nullopt
-           : m_DiagonalNr < 0
-               ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(-m_DiagonalNr)}
-           : *m_DiagonalIndex < m_DiagonalSize ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1}
-                                               : std::nullopt;
+    RETRIEVE_REVERSE_MITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseMIterator::getColumnNr() const
 {
-    // no overflow risk, diagonal index should not exceed diagonal size, the diagonal number is smaller than number of
-    // columns (in the second case)
-    return _isEmpty() ? std::nullopt
-                      : std::optional{m_DiagonalNr < 0
-                                          ? m_NrOfMatrixColumns - m_DiagonalSize + *m_DiagonalIndex
-                                          : m_NrOfMatrixColumns - m_DiagonalSize + *m_DiagonalIndex - m_DiagonalNr};
+    RETRIEVE_REVERSE_MITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::ReverseMIterator::getDiagonalNr() const
@@ -2582,23 +2534,13 @@ bool Matrix<T>::ConstReverseMIterator::operator==(const Matrix<T>::ConstReverseM
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseMIterator::getRowNr() const
 {
-    // no overflow risk, diagonal index should not exceed diagonal size
-    return _isEmpty() ? std::nullopt
-           : m_DiagonalNr < 0
-               ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(-m_DiagonalNr)}
-           : *m_DiagonalIndex < m_DiagonalSize ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1}
-                                               : std::nullopt;
+    RETRIEVE_REVERSE_MITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseMIterator::getColumnNr() const
 {
-    // no overflow risk, diagonal index should not exceed diagonal size, the diagonal number is smaller than number of
-    // columns (in the second case)
-    return _isEmpty() ? std::nullopt
-                      : std::optional{m_DiagonalNr < 0
-                                          ? m_NrOfMatrixColumns - m_DiagonalSize + *m_DiagonalIndex
-                                          : m_NrOfMatrixColumns - m_DiagonalSize + *m_DiagonalIndex - m_DiagonalNr};
+    RETRIEVE_REVERSE_MITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::ConstReverseMIterator::getDiagonalNr() const
@@ -4812,6 +4754,7 @@ template <MatrixElementType T> void* Matrix<T>::_convertToArray(Matrix<T>::size_
 #undef DIAG_ITERATOR_COMPUTE_DIFFERENCE
 #undef DIAG_ITERATOR_CHECK_EQUIVALENCE
 #undef DIAG_ITERATOR_CHECK_EQUALITY
+#undef RETRIEVE_FORWARD_DIAG_ITERATOR_ROW_NR
 #undef CONSTRUCT_FORWARD_DITERATOR_WITH_ROW_AND_COLUMN_NR
 #undef CONSTRUCT_FORWARD_DITERATOR_WITH_DIAG_NR_AND_INDEX
 #undef CONSTRUCT_REVERSE_DITERATOR_WITH_ROW_AND_COLUMN_NR
@@ -4823,6 +4766,9 @@ template <MatrixElementType T> void* Matrix<T>::_convertToArray(Matrix<T>::size_
 #undef FORWARD_DITERATOR_INDEX_DEREFERENCE
 #undef REVERSE_DITERATOR_INDEX_DEREFERENCE
 #undef CHECK_DITERATOR_IS_EMPTY
+#undef RETRIEVE_FORWARD_DITERATOR_COLUMN_NR
+#undef RETRIEVE_REVERSE_DITERATOR_ROW_NR
+#undef RETRIEVE_REVERSE_DITERATOR_COLUMN_NR
 #undef CONSTRUCT_FORWARD_MITERATOR_WITH_ROW_AND_COLUMN_NR
 #undef CONSTRUCT_FORWARD_MITERATOR_WITH_DIAG_NR_AND_INDEX
 #undef CONSTRUCT_REVERSE_MITERATOR_WITH_ROW_AND_COLUMN_NR
@@ -4834,6 +4780,9 @@ template <MatrixElementType T> void* Matrix<T>::_convertToArray(Matrix<T>::size_
 #undef FORWARD_MITERATOR_INDEX_DEREFERENCE
 #undef REVERSE_MITERATOR_INDEX_DEREFERENCE
 #undef CHECK_MITERATOR_IS_EMPTY
+#undef RETRIEVE_FORWARD_MITERATOR_COLUMN_NR
+#undef RETRIEVE_REVERSE_MITERATOR_ROW_NR
+#undef RETRIEVE_REVERSE_MITERATOR_COLUMN_NR
 
 #undef GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER
 #undef GET_FORWARD_NON_DIAG_BEGIN_ITERATOR

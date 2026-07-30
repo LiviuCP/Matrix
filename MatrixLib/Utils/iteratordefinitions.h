@@ -178,7 +178,7 @@
     return !mpIteratorPtr;
 
 #define RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE(mIteratorSecondaryDimension, mIteratorIndex, Operator)           \
-    return mIteratorIndex                                                                                              \
+    return mIteratorIndex.has_value()                                                                                  \
                ? static_cast<size_type>(*mIteratorIndex Operator static_cast<diff_type>(mIteratorSecondaryDimension))  \
                : std::optional<size_type>{};
 
@@ -257,6 +257,12 @@
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);                                  \
                                                                                                                        \
     return _isEmpty() || mIteratorDiagonalIndex == secondIterator.mIteratorDiagonalIndex;
+
+#define RETRIEVE_FORWARD_DIAG_ITERATOR_ROW_NR(mIteratorDiagonalNr, mIteratorDiagonalIndex)                             \
+    return !_isEmpty()                                                                                                 \
+               ? std::optional{mIteratorDiagonalNr < size_type{0} ? *m_DiagonalIndex + std::abs(mIteratorDiagonalNr)   \
+                                                                  : *mIteratorDiagonalIndex}                           \
+               : std::nullopt;
 
 // specialized DIterator macros
 
@@ -590,6 +596,30 @@
     }                                                                                                                  \
                                                                                                                        \
     return !mpIteratorPtr;
+
+#define RETRIEVE_FORWARD_DITERATOR_COLUMN_NR(mIteratorDiagonalNr, mIteratorDiagonalIndex)                              \
+    return !_isEmpty()                                                                                                 \
+               ? std::optional{mIteratorDiagonalNr < size_type{0} ? *m_DiagonalIndex                                   \
+                                                                  : *mIteratorDiagonalIndex + mIteratorDiagonalNr}     \
+               : std::nullopt;
+
+#define RETRIEVE_REVERSE_DITERATOR_ROW_NR(mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex)          \
+    return !_isEmpty() ? mIteratorDiagonalNr < size_type{0}                                                            \
+                             ? std::optional{mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} +          \
+                                             static_cast<size_type>(-mIteratorDiagonalNr)}                             \
+                         : *mIteratorDiagonalIndex < mIteratorDiagonalSize                                             \
+                             ? std::optional{mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1}}           \
+                             : std::nullopt                                                                            \
+                       : std::nullopt;
+
+#define RETRIEVE_REVERSE_DITERATOR_COLUMN_NR(mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex)       \
+    return !_isEmpty() ? mIteratorDiagonalNr > size_type{0}                                                            \
+                             ? std::optional{mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} +          \
+                                             static_cast<size_type>(mIteratorDiagonalNr)}                              \
+                         : *mIteratorDiagonalIndex < mIteratorDiagonalSize                                             \
+                             ? std::optional{mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1}}           \
+                             : std::nullopt                                                                            \
+                       : std::nullopt;
 
 // specialized MIterator macros
 
@@ -953,3 +983,38 @@
     }                                                                                                                  \
                                                                                                                        \
     return !mpIteratorPtr;
+
+#define RETRIEVE_FORWARD_MITERATOR_COLUMN_NR(mIteratorDiagonalNr, mIteratorDiagonalIndex, mIteratorNrOfColumns)        \
+    /* no overflow as for positive diagonals the diagonal number should be strictly smaller */                         \
+    /* than the number of matrix columns if the matrix is not empty */                                                 \
+    return !_isEmpty()                                                                                                 \
+               ? mIteratorDiagonalNr < size_type{0}                                                                    \
+                     ? (*mIteratorDiagonalIndex < mIteratorNrOfColumns                                                 \
+                            ? std::optional{mIteratorNrOfColumns - *mIteratorDiagonalIndex - size_type{1}}             \
+                            : std::nullopt)                                                                            \
+                     : (*mIteratorDiagonalIndex < mIteratorNrOfColumns - static_cast<size_type>(mIteratorDiagonalNr)   \
+                            ? std::optional{mIteratorNrOfColumns - *mIteratorDiagonalIndex - size_type{1} -            \
+                                            static_cast<size_type>(mIteratorDiagonalNr)}                               \
+                            : std::nullopt)                                                                            \
+               : std::nullopt;
+
+#define RETRIEVE_REVERSE_MITERATOR_ROW_NR(mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex,          \
+                                          mIteratorNrOfColumns)                                                        \
+    /* no overflow risk, diagonal index should not exceed diagonal size */                                             \
+    return !_isEmpty() ? mIteratorDiagonalNr < size_type{0}                                                            \
+                             ? std::optional{mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} +          \
+                                             static_cast<size_type>(-mIteratorDiagonalNr)}                             \
+                         : *mIteratorDiagonalIndex < mIteratorDiagonalSize                                             \
+                             ? std::optional{mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1}}           \
+                             : std::nullopt                                                                            \
+                       : std::nullopt;
+
+#define RETRIEVE_REVERSE_MITERATOR_COLUMN_NR(mIteratorDiagonalNr, mIteratorDiagonalSize, mIteratorDiagonalIndex,       \
+                                             mIteratorNrOfColumns)                                                     \
+    /* no overflow risk, diagonal index should not exceed diagonal size, the diagonal number */                        \
+    /* is smaller than number of columns (in the second case) */                                                       \
+    return !_isEmpty() ? std::optional{mIteratorDiagonalNr < size_type{0}                                              \
+                                           ? mIteratorNrOfColumns - mIteratorDiagonalSize + *mIteratorDiagonalIndex    \
+                                           : mIteratorNrOfColumns - mIteratorDiagonalSize + *mIteratorDiagonalIndex -  \
+                                                 mIteratorDiagonalNr}                                                  \
+                       : std::nullopt;
