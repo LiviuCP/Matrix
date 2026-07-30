@@ -742,7 +742,7 @@ void NIteratorTests::testIteratorCreation_data()
     QTest::addColumn<matrix_opt_size_t>("expectedColumnNr");
 
     QTest::newRow("1: begin iterator") << m_PrimaryIntMatrix.nBegin() << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
-    QTest::newRow("2: end iterator") << m_PrimaryIntMatrix.nEnd() << matrix_opt_size_t{8u} << matrix_opt_size_t{8u};
+    QTest::newRow("2: end iterator") << m_PrimaryIntMatrix.nEnd() << matrix_opt_size_t{0u} << matrix_opt_size_t{9u};
     QTest::newRow("3: column begin iterator") << m_PrimaryIntMatrix.nColumnBegin(0) << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
     QTest::newRow("4: column begin iterator") << m_PrimaryIntMatrix.nColumnBegin(1) << matrix_opt_size_t{0u} << matrix_opt_size_t{1u};
     QTest::newRow("5: column begin iterator") << m_PrimaryIntMatrix.nColumnBegin(4) << matrix_opt_size_t{0u} << matrix_opt_size_t{4u};
@@ -752,7 +752,7 @@ void NIteratorTests::testIteratorCreation_data()
     QTest::newRow("9: column end iterator") << m_PrimaryIntMatrix.nColumnEnd(1) << matrix_opt_size_t{0u} << matrix_opt_size_t{2u};
     QTest::newRow("10: column end iterator") << m_PrimaryIntMatrix.nColumnEnd(4) << matrix_opt_size_t{0u} << matrix_opt_size_t{5u};
     QTest::newRow("11: column end iterator") << m_PrimaryIntMatrix.nColumnEnd(7) << matrix_opt_size_t{0u} << matrix_opt_size_t{8u};
-    QTest::newRow("12: column end iterator") << m_PrimaryIntMatrix.nColumnEnd(8) << matrix_opt_size_t{8u} << matrix_opt_size_t{8u};
+    QTest::newRow("12: column end iterator") << m_PrimaryIntMatrix.nColumnEnd(8) << matrix_opt_size_t{0u} << matrix_opt_size_t{9u};
     QTest::newRow("13: random iterator") << m_PrimaryIntMatrix.getNIterator(0, 0) << matrix_opt_size_t{0u} << matrix_opt_size_t{0u};
     QTest::newRow("14: random iterator") << m_PrimaryIntMatrix.getNIterator(1, 0) << matrix_opt_size_t{1u} << matrix_opt_size_t{0u};
     QTest::newRow("15: random iterator") << m_PrimaryIntMatrix.getNIterator(4, 5) << matrix_opt_size_t{4u} << matrix_opt_size_t{5u};

@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <optional>
+#include <utility>
 
 #ifndef USE_SMALL_DIMENSIONS
 using matrix_size_t = uint32_t;
