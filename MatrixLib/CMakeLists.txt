@@ -1,9 +1,15 @@
 project(MatrixLib LANGUAGES CXX)
 
 if(BUILD_SHARED_MATRIX_LIB)
-    add_library(${PROJECT_NAME} SHARED Utils/errorhandling.cpp)
+    add_library(${PROJECT_NAME} SHARED
+        Utils/errorhandling.cpp
+        Utils/iteratorutilityfunctions.cpp
+    )
 else()
-    add_library(${PROJECT_NAME} STATIC Utils/errorhandling.cpp)
+    add_library(${PROJECT_NAME} STATIC
+        Utils/errorhandling.cpp
+        Utils/iteratorutilityfunctions.cpp
+    )
 endif()
 
 target_sources(${PROJECT_NAME}

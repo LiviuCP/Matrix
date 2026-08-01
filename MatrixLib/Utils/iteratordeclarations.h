@@ -1,6 +1,6 @@
 #pragma once
 
-/* These macros are meant solely meant for internal use within the Matrix class */
+/* These macros are solely meant for internal use within the Matrix class */
 
 // macros used for declaring iterator class members
 
@@ -82,12 +82,11 @@
                                                                                                                        \
     IterableType** m_pMatrixPtr;
 
-#define COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType, IterableType, SizeType)                       \
+#define COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType, IterableType, DiffType, SizeType)             \
     IteratorType(IterableType** pMatrixPtr, SizeType nrOfMatrixRows, SizeType nrOfMatrixColumns,                       \
                  std::optional<SizeType> rowNr, std::optional<SizeType> columnNr);                                     \
                                                                                                                        \
-    std::optional<SizeType> m_RowNr;                                                                                   \
-    std::optional<SizeType> m_ColumnNr;                                                                                \
+    std::optional<DiffType> m_Index; /* relative index within begin - end iterators range */                           \
     SizeType m_NrOfMatrixRows;                                                                                         \
     SizeType m_NrOfMatrixColumns;
 

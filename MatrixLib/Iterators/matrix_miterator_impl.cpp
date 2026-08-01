@@ -63,21 +63,12 @@ template <MatrixElementType T> bool Matrix<T>::MIterator::operator==(const Matri
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::MIterator::getRowNr() const
 {
-    return _isEmpty() ? std::nullopt
-                      : std::optional{m_DiagonalNr < 0 ? *m_DiagonalIndex + std::abs(m_DiagonalNr) : *m_DiagonalIndex};
+    RETRIEVE_FORWARD_DIAG_ITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalIndex);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::MIterator::getColumnNr() const
 {
-    // no overflow as for positive diagonals the diagonal number should be strictly smaller than the number of matrix
-    // columns if the matrix is not empty
-    return _isEmpty() ? std::nullopt
-           : m_DiagonalNr < 0
-               ? (*m_DiagonalIndex < m_NrOfMatrixColumns ? std::optional{m_NrOfMatrixColumns - *m_DiagonalIndex - 1}
-                                                         : std::nullopt)
-               : (*m_DiagonalIndex < m_NrOfMatrixColumns - static_cast<size_type>(m_DiagonalNr)
-                      ? std::optional{m_NrOfMatrixColumns - *m_DiagonalIndex - 1 - static_cast<size_type>(m_DiagonalNr)}
-                      : std::nullopt);
+    RETRIEVE_FORWARD_MITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::MIterator::getDiagonalNr() const
@@ -209,22 +200,13 @@ template <MatrixElementType T> bool Matrix<T>::ConstMIterator::operator==(const 
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstMIterator::getRowNr() const
 {
-    return _isEmpty() ? std::nullopt
-                      : std::optional{m_DiagonalNr < 0 ? *m_DiagonalIndex + std::abs(m_DiagonalNr) : *m_DiagonalIndex};
+    RETRIEVE_FORWARD_DIAG_ITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalIndex);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstMIterator::getColumnNr() const
 {
-    // no overflow as for positive diagonals the diagonal number should be strictly smaller than the number of matrix
-    // columns if the matrix is not empty
-    return _isEmpty() ? std::nullopt
-           : m_DiagonalNr < 0
-               ? (*m_DiagonalIndex < m_NrOfMatrixColumns ? std::optional{m_NrOfMatrixColumns - *m_DiagonalIndex - 1}
-                                                         : std::nullopt)
-               : (*m_DiagonalIndex < m_NrOfMatrixColumns - static_cast<size_type>(m_DiagonalNr)
-                      ? std::optional{m_NrOfMatrixColumns - *m_DiagonalIndex - 1 - static_cast<size_type>(m_DiagonalNr)}
-                      : std::nullopt);
+    RETRIEVE_FORWARD_MITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::ConstMIterator::getDiagonalNr() const
@@ -370,23 +352,13 @@ template <MatrixElementType T> bool Matrix<T>::ReverseMIterator::operator==(cons
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseMIterator::getRowNr() const
 {
-    // no overflow risk, diagonal index should not exceed diagonal size
-    return _isEmpty() ? std::nullopt
-           : m_DiagonalNr < 0
-               ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(-m_DiagonalNr)}
-           : *m_DiagonalIndex < m_DiagonalSize ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1}
-                                               : std::nullopt;
+    RETRIEVE_REVERSE_MITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseMIterator::getColumnNr() const
 {
-    // no overflow risk, diagonal index should not exceed diagonal size, the diagonal number is smaller than number of
-    // columns (in the second case)
-    return _isEmpty() ? std::nullopt
-                      : std::optional{m_DiagonalNr < 0
-                                          ? m_NrOfMatrixColumns - m_DiagonalSize + *m_DiagonalIndex
-                                          : m_NrOfMatrixColumns - m_DiagonalSize + *m_DiagonalIndex - m_DiagonalNr};
+    RETRIEVE_REVERSE_MITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::ReverseMIterator::getDiagonalNr() const
@@ -525,23 +497,13 @@ bool Matrix<T>::ConstReverseMIterator::operator==(const Matrix<T>::ConstReverseM
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseMIterator::getRowNr() const
 {
-    // no overflow risk, diagonal index should not exceed diagonal size
-    return _isEmpty() ? std::nullopt
-           : m_DiagonalNr < 0
-               ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1 + static_cast<size_type>(-m_DiagonalNr)}
-           : *m_DiagonalIndex < m_DiagonalSize ? std::optional{m_DiagonalSize - *m_DiagonalIndex - 1}
-                                               : std::nullopt;
+    RETRIEVE_REVERSE_MITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseMIterator::getColumnNr() const
 {
-    // no overflow risk, diagonal index should not exceed diagonal size, the diagonal number is smaller than number of
-    // columns (in the second case)
-    return _isEmpty() ? std::nullopt
-                      : std::optional{m_DiagonalNr < 0
-                                          ? m_NrOfMatrixColumns - m_DiagonalSize + *m_DiagonalIndex
-                                          : m_NrOfMatrixColumns - m_DiagonalSize + *m_DiagonalIndex - m_DiagonalNr};
+    RETRIEVE_REVERSE_MITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, m_NrOfMatrixColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::ConstReverseMIterator::getDiagonalNr() const

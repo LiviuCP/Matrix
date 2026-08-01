@@ -1,8 +1,14 @@
 #pragma once
 
-/* These macros are meant solely meant for internal use within the Matrix class */
+/* These macros are solely meant for internal use within the Matrix class */
 
 // common ZIterator/NIterator macros
+
+#define GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(IteratorType, mpIteratorPtr, mMatrixNrOfRows,                   \
+                                                       mMatrixNrOfColumns, matrixRowNr, matrixColumnNr)                \
+    CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows || matrixColumnNr >= mMatrixNrOfColumns,                      \
+                          Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);                                   \
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr};
 
 #define GET_FORWARD_NON_DIAG_BEGIN_ITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)          \
     return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, size_type{0}, size_type{0}};
@@ -13,11 +19,8 @@
         (mMatrixNrOfRows > size_type{0} ? std::optional{mMatrixNrOfRows - size_type{1}} : std::nullopt),               \
         (mMatrixNrOfColumns > size_type{0} ? std::optional{mMatrixNrOfColumns - size_type{1}} : std::nullopt)};
 
-#define GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(IteratorType, mpIteratorPtr, mMatrixNrOfRows,                   \
-                                                       mMatrixNrOfColumns, matrixRowNr, matrixColumnNr)                \
-    CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows || matrixColumnNr >= mMatrixNrOfColumns,                      \
-                          Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);                                   \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr, matrixColumnNr};
+#define GET_FORWARD_NON_DIAG_END_ITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)            \
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, mMatrixNrOfRows, mMatrixNrOfColumns};
 
 // common DIterator/MIterator macros
 
@@ -38,13 +41,11 @@
 
 // specialized ZIterator macros
 
-#define GET_FORWARD_END_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)                    \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns,                                            \
-                        (mMatrixNrOfRows > size_type{0} ? mMatrixNrOfRows - size_type{1} : size_type{0}),              \
-                        mMatrixNrOfColumns};
-
+/* mMatrixNrOfColumns - size_type{1} is ignored by constructor if pointer is null (empty matrix),
+  otherwise it should not overflow */
 #define GET_REVERSE_END_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)                    \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, size_type{0}, std::nullopt};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, std::nullopt,                              \
+                        mMatrixNrOfColumns - size_type{1}};
 
 #define GET_FORWARD_ROW_BEGIN_ZITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr) \
     CHECK_ERROR_CONDITION(matrixRowNr >= mMatrixNrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);      \
@@ -75,16 +76,16 @@
     return matrixRowNr > size_type{0}                                                                                  \
                ? IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, matrixRowNr - size_type{1},          \
                               (mMatrixNrOfColumns > size_type{0} ? mMatrixNrOfColumns - size_type{1} : size_type{0})}  \
-               : IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, size_type{0}, std::nullopt};
+               : IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, std::nullopt,                        \
+                              mMatrixNrOfColumns - size_type{1}};
 
 // specialized NIterator macros
 
-#define GET_FORWARD_END_NITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)                    \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, mMatrixNrOfRows,                           \
-                        mMatrixNrOfColumns > size_type{0} ? mMatrixNrOfColumns - size_type{1} : size_type{0}};
-
+/* mMatrixNrOfRows - size_type{1} is ignored by constructor if pointer is null (empty matrix),
+  otherwise it should not overflow */
 #define GET_REVERSE_END_NITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns)                    \
-    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, std::nullopt, size_type{0}};
+    return IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, mMatrixNrOfRows - size_type{1},            \
+                        std::nullopt};
 
 #define GET_FORWARD_COLUMN_BEGIN_NITERATOR(IteratorType, mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns,           \
                                            matrixColumnNr)                                                             \
@@ -125,7 +126,8 @@
                ? IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns,                                      \
                               (mMatrixNrOfRows > size_type{0} ? mMatrixNrOfRows - size_type{1} : size_type{0}),        \
                               matrixColumnNr - size_type{1}}                                                           \
-               : IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, std::nullopt, size_type{0}};
+               : IteratorType{mpIteratorPtr, mMatrixNrOfRows, mMatrixNrOfColumns, mMatrixNrOfRows - size_type{1},      \
+                              std::nullopt};
 
 // specialized DIterator macros
 

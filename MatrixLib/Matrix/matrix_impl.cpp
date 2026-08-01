@@ -725,8 +725,9 @@ template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zBegin()
 
 template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zEnd()
 {
-    GET_FORWARD_END_ZITERATOR(ZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                              m_NrOfRows, m_NrOfColumns);
+    GET_FORWARD_NON_DIAG_END_ITERATOR(ZIterator,
+                                      m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                                      m_NrOfRows, m_NrOfColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zRowBegin(Matrix<T>::size_type rowNr)
@@ -759,9 +760,9 @@ template <MatrixElementType T> typename Matrix<T>::ConstZIterator Matrix<T>::con
 
 template <MatrixElementType T> typename Matrix<T>::ConstZIterator Matrix<T>::constZEnd() const
 {
-    GET_FORWARD_END_ZITERATOR(ConstZIterator,
-                              m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                              m_NrOfColumns);
+    GET_FORWARD_NON_DIAG_END_ITERATOR(ConstZIterator,
+                                      m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                                      m_NrOfRows, m_NrOfColumns);
 }
 
 template <MatrixElementType T>
@@ -876,8 +877,9 @@ template <MatrixElementType T> typename Matrix<T>::NIterator Matrix<T>::nBegin()
 
 template <MatrixElementType T> typename Matrix<T>::NIterator Matrix<T>::nEnd()
 {
-    GET_FORWARD_END_NITERATOR(NIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                              m_NrOfRows, m_NrOfColumns);
+    GET_FORWARD_NON_DIAG_END_ITERATOR(NIterator,
+                                      m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                                      m_NrOfRows, m_NrOfColumns);
 }
 
 template <MatrixElementType T> typename Matrix<T>::NIterator Matrix<T>::nColumnBegin(Matrix<T>::size_type columnNr)
@@ -911,9 +913,9 @@ template <MatrixElementType T> typename Matrix<T>::ConstNIterator Matrix<T>::con
 
 template <MatrixElementType T> typename Matrix<T>::ConstNIterator Matrix<T>::constNEnd() const
 {
-    GET_FORWARD_END_NITERATOR(ConstNIterator,
-                              m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                              m_NrOfColumns);
+    GET_FORWARD_NON_DIAG_END_ITERATOR(ConstNIterator,
+                                      m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                                      m_NrOfRows, m_NrOfColumns);
 }
 
 template <MatrixElementType T>
