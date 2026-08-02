@@ -1,20 +1,16 @@
 module;
 
-#include <cstdint>
 #include <optional>
 #include <vector>
+
+#include "matrixdimensions.h"
 
 #include "../Utils/iteratordeclarations.h"
 
 export module matrix:matrix_header;
 
-#ifndef USE_SMALL_DIMENSIONS
-export using matrix_size_t = uint32_t;
-export using matrix_diff_t = int64_t;
-#else
-export using matrix_size_t = uint8_t;
-export using matrix_diff_t = int16_t;
-#endif
+export using matrix_size_t = Matr::size_t;
+export using matrix_diff_t = Matr::diff_t;
 
 export constexpr matrix_size_t maxAllowedDimension()
 {
