@@ -6,6 +6,11 @@
 
 #include "../Matrix/matrixdimensions.h"
 
+using matrix_size_t = Matr::size_t;
+using matrix_diff_t = Matr::diff_t;
+
+using MatrixPoint = std::pair<std::optional<matrix_size_t>, std::optional<matrix_size_t>>;
+
 static std::optional<matrix_diff_t> computeForwardNonDiagIteratorIndex(
     matrix_size_t matrixPrimaryDimension, matrix_size_t matrixSecondaryDimension,
     std::optional<matrix_size_t> matrixPrimaryCoordinate, std::optional<matrix_size_t> matrixSecondaryCoordinate)
@@ -94,11 +99,10 @@ static std::optional<matrix_diff_t> computeReverseNonDiagIteratorIndex(
         - obtain the symmetric top-left coordinates and then by applying symmetry again (this time on coordinates) the
    required bottom-right row and column number would be obtained
 */
-static std::pair<MatrixPoint, matrix_opt_diff_t> mapDiagonalIndexToRowAndColumnNr(matrix_size_t nrOfMatrixRows,
-                                                                                  matrix_size_t nrOfMatrixColumns,
-                                                                                  matrix_diff_t diagonalIndex)
+static std::pair<MatrixPoint, std::optional<matrix_diff_t>> mapDiagonalIndexToRowAndColumnNr(
+    matrix_size_t nrOfMatrixRows, matrix_size_t nrOfMatrixColumns, matrix_diff_t diagonalIndex)
 {
-    std::pair<MatrixPoint, matrix_opt_diff_t> result;
+    std::pair<MatrixPoint, std::optional<matrix_diff_t>> result;
 
     if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0)
     {
@@ -190,11 +194,10 @@ static std::pair<MatrixPoint, matrix_opt_diff_t> mapDiagonalIndexToRowAndColumnN
    diagonal index and coordinates
    - similar to the previous function, for "empty matrixes" a null value is returned
 */
-static std::pair<matrix_opt_diff_t, MatrixPoint> mapRowAndColumnNrToDiagonalIndex(matrix_size_t nrOfMatrixRows,
-                                                                                  matrix_size_t nrOfMatrixColumns,
-                                                                                  MatrixPoint rowAndColumnNr)
+static std::pair<std::optional<matrix_diff_t>, MatrixPoint> mapRowAndColumnNrToDiagonalIndex(
+    matrix_size_t nrOfMatrixRows, matrix_size_t nrOfMatrixColumns, MatrixPoint rowAndColumnNr)
 {
-    std::pair<matrix_opt_diff_t, MatrixPoint> result;
+    std::pair<std::optional<matrix_diff_t>, MatrixPoint> result;
 
     if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0 && rowAndColumnNr.first.has_value() &&
         rowAndColumnNr.second.has_value())

@@ -14,6 +14,9 @@
 #include "../Utils/iteratorgetters.h"
 #include "../Utils/iteratorutilityfunctions.h"
 
+using matrix_size_t = Matr::size_t;
+using matrix_diff_t = Matr::diff_t;
+
 constexpr matrix_size_t maxAllowedDimension()
 {
     // set all bits to 1 to get the maximum possible dimension (i.e. max. possible count of rows/columns)
