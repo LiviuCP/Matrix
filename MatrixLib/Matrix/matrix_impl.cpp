@@ -9,7 +9,16 @@ module;
 #include "../Utils/errorhandling.h"
 #include "../Utils/iteratorgetters.h"
 
+// When building the project on Mac using Ninja and LLVM Clang, I noticed
+// that a compilation error would be triggered unless adding export to the
+// implementation partition.
+// On Linux the export itself triggers a compilation error!
+#if defined(__APPLE__) && defined(__MACH__)
+export module matrix:matrix_impl;
+#else
 module matrix:matrix_impl;
+#endif
+
 import :matrix_header;
 
 template <MatrixElementType T> Matrix<T>::Matrix()

@@ -7,7 +7,16 @@ module;
 #include "../Utils/iteratordefinitions.h"
 #include "../Utils/iteratorutilityfunctions.h"
 
+// When building the project on Mac using Ninja and LLVM Clang, I noticed
+// that a compilation error would be triggered unless adding export to the
+// implementation partition.
+// On Linux the export itself triggers a compilation error!
+#if defined(__APPLE__) && defined(__MACH__)
+export module matrix:matrix_ziterator_impl;
+#else
 module matrix:matrix_ziterator_impl;
+#endif
+
 import :matrix_header;
 
 // 1) ZIterator - iterates within matrix from [0][0] to the end row by row

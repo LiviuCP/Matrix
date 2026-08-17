@@ -7,7 +7,16 @@ module;
 #include "../Utils/errorhandling.h"
 #include "../Utils/iteratordefinitions.h"
 
+// When building the project on Mac using Ninja and LLVM Clang, I noticed
+// that a compilation error would be triggered unless adding export to the
+// implementation partition.
+// On Linux the export itself triggers a compilation error!
+#if defined(__APPLE__) && defined(__MACH__)
+export module matrix:matrix_miterator_impl;
+#else
 module matrix:matrix_miterator_impl;
+#endif
+
 import :matrix_header;
 
 // 13) MIterator (mirrored diagonal iterator, traverses a matrix diagonal from the other side (symetrically to
