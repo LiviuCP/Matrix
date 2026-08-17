@@ -15,6 +15,8 @@ using StringMatrix = Matrix<std::string>;
 
 Q_DECLARE_METATYPE(StringMatrix)
 Q_DECLARE_METATYPE(ConcatMode)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
+Q_DECLARE_METATYPE(std::string)
 
 class CombinedStringMatrixCapacityTests : public QObject
 {

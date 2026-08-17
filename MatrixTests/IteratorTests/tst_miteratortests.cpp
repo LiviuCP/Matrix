@@ -15,6 +15,7 @@ using StringMIter = StringMatrix::MIterator;
 
 Q_DECLARE_METATYPE(IntMIter)
 Q_DECLARE_METATYPE(StringMIter)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
 
 class MIteratorTests : public QObject
 {

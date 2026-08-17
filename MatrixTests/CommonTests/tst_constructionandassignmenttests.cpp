@@ -13,6 +13,8 @@ using StringMatrix = Matrix<std::string>;
 
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(StringMatrix)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
+Q_DECLARE_METATYPE(std::string)
 
 class ConstructionAndAssignmentTests : public QObject
 {

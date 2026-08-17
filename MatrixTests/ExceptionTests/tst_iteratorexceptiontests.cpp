@@ -5,6 +5,12 @@
 
 #include "matrix.h"
 
+// for backward compatibility with older qt versions
+#if (!defined(QVERIFY_THROWS_EXCEPTION) && defined(QVERIFY_EXCEPTION_THROWN))
+    #define QVERIFY_THROWS_EXCEPTION(exceptionType, expression) \
+        QVERIFY_EXCEPTION_THROWN(expression, exceptionType)
+#endif
+
 using IntMatrix = Matrix<int>;
 using IntZIter = IntMatrix::ZIterator;
 using IntConstZIter = IntMatrix::ConstZIterator;

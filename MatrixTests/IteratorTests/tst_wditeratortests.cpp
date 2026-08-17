@@ -15,6 +15,7 @@ using StringWDIter = StringMatrix::WDIterator;
 
 Q_DECLARE_METATYPE(IntWDIter)
 Q_DECLARE_METATYPE(StringWDIter)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
 
 /*
 WDIterator vs. ZIterator indexes for:
