@@ -17,6 +17,7 @@ using IntDIter = IntMatrix::DIterator;
 Q_DECLARE_METATYPE(IntConstDIter)
 Q_DECLARE_METATYPE(StringConstDIter)
 Q_DECLARE_METATYPE(IntDIter)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
 
 class ConstDIteratorTests : public QObject
 {

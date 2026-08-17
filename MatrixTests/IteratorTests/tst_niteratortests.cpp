@@ -15,6 +15,7 @@ using StringNIter = StringMatrix::NIterator;
 
 Q_DECLARE_METATYPE(IntNIter)
 Q_DECLARE_METATYPE(StringNIter)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
 
 class NIteratorTests : public QObject
 {

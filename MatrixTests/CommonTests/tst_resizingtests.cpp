@@ -16,6 +16,8 @@ using matrix_opt_size_t = std::optional<matrix_size_t>;
 
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(StringMatrix)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
+Q_DECLARE_METATYPE(std::string)
 
 class ResizingTests : public QObject
 {

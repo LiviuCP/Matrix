@@ -17,6 +17,7 @@ using IntReverseNIter = IntMatrix::ReverseNIterator;
 Q_DECLARE_METATYPE(IntConstReverseNIter)
 Q_DECLARE_METATYPE(StringConstReverseNIter)
 Q_DECLARE_METATYPE(IntReverseNIter)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
 
 class ConstReverseNIteratorTests : public QObject
 {

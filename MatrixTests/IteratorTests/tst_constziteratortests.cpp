@@ -18,6 +18,7 @@ using IntZIter = IntMatrix::ZIterator;
 Q_DECLARE_METATYPE(IntConstZIter)
 Q_DECLARE_METATYPE(StringConstZIter)
 Q_DECLARE_METATYPE(IntZIter)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
 
 class ConstZIteratorTests : public QObject
 {
