@@ -17,6 +17,7 @@ using IntReverseZIter = IntMatrix::ReverseZIterator;
 Q_DECLARE_METATYPE(IntConstReverseZIter)
 Q_DECLARE_METATYPE(StringConstReverseZIter)
 Q_DECLARE_METATYPE(IntReverseZIter)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
 
 class ConstReverseZIteratorTests : public QObject
 {

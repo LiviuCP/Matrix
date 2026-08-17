@@ -15,6 +15,7 @@ using StringReverseZIter = StringMatrix::ReverseZIterator;
 
 Q_DECLARE_METATYPE(IntReverseZIter)
 Q_DECLARE_METATYPE(StringReverseZIter)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
 
 class ReverseZIteratorTests : public QObject
 {

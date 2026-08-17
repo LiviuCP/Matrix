@@ -13,6 +13,7 @@ using IntMatrix = Matrix<int>;
 
 Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(ConcatMode)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
 
 class CombinedIntMatrixCapacityTests : public QObject
 {

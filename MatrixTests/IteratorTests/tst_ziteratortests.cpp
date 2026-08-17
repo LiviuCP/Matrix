@@ -16,6 +16,7 @@ using StringZIter = StringMatrix::ZIterator;
 
 Q_DECLARE_METATYPE(IntZIter)
 Q_DECLARE_METATYPE(StringZIter)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
 
 class ZIteratorTests : public QObject
 {

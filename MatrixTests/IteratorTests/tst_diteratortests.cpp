@@ -15,6 +15,7 @@ using StringDIter = StringMatrix::DIterator;
 
 Q_DECLARE_METATYPE(IntDIter)
 Q_DECLARE_METATYPE(StringDIter)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
 
 class DIteratorTests : public QObject
 {

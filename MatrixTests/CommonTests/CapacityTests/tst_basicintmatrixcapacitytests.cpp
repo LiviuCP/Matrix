@@ -15,6 +15,7 @@ Q_DECLARE_METATYPE(IntMatrix)
 Q_DECLARE_METATYPE(size_tuple_t) // used for any data type (contains integer size_type values) - it cannot be redeclared with Q_DECL...
 Q_DECLARE_METATYPE(size_tuple_array_t) // same here
 Q_DECLARE_METATYPE(ConcatMode)
+Q_DECLARE_METATYPE(matrix_opt_size_t)
 
 class BasicIntMatrixCapacityTests : public QObject
 {
