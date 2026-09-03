@@ -44,6 +44,13 @@ public:
 
     template <typename Iter> class Iterator
     {
+    public:
+        Iterator& operator++();
+        Iterator operator++(int unused);
+        Iterator& operator--();
+        Iterator operator--(int unused);
+        Iterator& operator=(const Iterator& it) = default;
+
     protected:
         void _increment();
         void _decrement();
@@ -69,10 +76,9 @@ public:
         using pointer = T**;
         using reference = T&;
 
-        ZIterator& operator++();
-        ZIterator operator++(int unused);
-        ZIterator& operator--();
-        ZIterator operator--(int unused);
+        using Iterator<ZIterator>::operator++;
+        using Iterator<ZIterator>::operator--;
+        using Iterator<ZIterator>::operator=;
 
         ZIterator& operator+=(diff_type offset);
         ZIterator& operator-=(diff_type offset);
@@ -611,6 +617,46 @@ private:
 
 // 0) Base Iterator class (currently used only for non-diagonal iterators)
 
+template <MatrixElementType T>
+template <typename Iter>
+typename Matrix<T>::template Iterator<Iter>& Matrix<T>::Iterator<Iter>::operator++()
+{
+    _increment();
+    return *this;
+}
+
+template <MatrixElementType T>
+template <typename Iter>
+typename Matrix<T>::template Iterator<Iter> Matrix<T>::Iterator<Iter>::operator++(int unused)
+{
+    (void)unused;
+    Iterator<Iter> iterator{*this};
+
+    _increment();
+
+    return iterator;
+}
+
+template <MatrixElementType T>
+template <typename Iter>
+typename Matrix<T>::template Iterator<Iter>& Matrix<T>::Iterator<Iter>::operator--()
+{
+    _decrement();
+    return *this;
+}
+
+template <MatrixElementType T>
+template <typename Iter>
+typename Matrix<T>::template Iterator<Iter> Matrix<T>::Iterator<Iter>::operator--(int unused)
+{
+    (void)unused;
+    Iterator<Iter> iterator{*this};
+
+    _decrement();
+
+    return iterator;
+}
+
 template <MatrixElementType T> template <typename Iter> void Matrix<T>::Iterator<Iter>::_increment()
 {
     if (!_isEmpty())
@@ -647,26 +693,6 @@ template <MatrixElementType T> template <typename Iter> bool Matrix<T>::Iterator
 }
 
 // 1) ZIterator - iterates within matrix from [0][0] to the end row by row
-template <MatrixElementType T> typename Matrix<T>::ZIterator& Matrix<T>::ZIterator::operator++()
-{
-    ITERATOR_PRE_INCREMENT();
-}
-
-template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::ZIterator::operator++(int unused)
-{
-    ITERATOR_POST_INCREMENT(ZIterator, unused);
-}
-
-template <MatrixElementType T> typename Matrix<T>::ZIterator& Matrix<T>::ZIterator::operator--()
-{
-    ITERATOR_PRE_DECREMENT();
-}
-
-template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::ZIterator::operator--(int unused)
-{
-    ITERATOR_POST_DECREMENT(ZIterator, unused);
-}
-
 template <MatrixElementType T>
 typename Matrix<T>::ZIterator& Matrix<T>::ZIterator::operator+=(Matrix<T>::ZIterator::difference_type offset)
 {
