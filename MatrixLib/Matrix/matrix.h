@@ -54,8 +54,62 @@ public:
     class ZIterator : public Iterator<ZIterator>
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(ZIterator, T, diff_type, size_type);
-        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(T, diff_type);
+        /* Matrix should be allowed to use the private constructor of the iterator, but no other class should have this
+         * "privilege" */
+        friend class Matrix<T>;
+
+        /* all these are required for STL compatibility */
+        using iterator_category = std::random_access_iterator_tag;
+        using value_type = T;
+        using difference_type = diff_type;
+        using pointer = T**;
+        using reference = T&;
+
+        ZIterator& operator++();
+        ZIterator operator++(int unused);
+        ZIterator& operator--();
+        ZIterator operator--(int unused);
+
+        ZIterator& operator+=(diff_type offset);
+        ZIterator& operator-=(diff_type offset);
+
+        diff_type operator-(const ZIterator& it) const;
+
+        auto operator<=>(const ZIterator& it) const;
+        bool operator==(const ZIterator& it) const;
+
+        std::optional<size_type> getRowNr() const;
+        std::optional<size_type> getColumnNr() const;
+
+        /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
+         * empty matrix */
+        ZIterator();
+
+        friend Matrix<T>::ZIterator operator+(const Matrix<T>::ZIterator& it,
+                                              Matrix<T>::ZIterator::difference_type offset)
+        {
+            typename Matrix<T>::ZIterator temp{it};
+            temp += offset;
+            return temp;
+        }
+
+        friend Matrix<T>::ZIterator operator+(Matrix<T>::ZIterator::difference_type offset,
+                                              const Matrix<T>::ZIterator& it)
+        {
+            return it + offset;
+        }
+
+        friend Matrix<T>::ZIterator operator-(const Matrix<T>::ZIterator& it,
+                                              Matrix<T>::ZIterator::difference_type offset)
+        {
+            typename Matrix<T>::ZIterator temp{it};
+            temp -= offset;
+            return temp;
+        }
+
+        T& operator*() const;
+        T* operator->() const;
+        T& operator[](diff_type index) const;
 
     private:
         using Iterator<ZIterator>::m_Index;
