@@ -52,6 +52,8 @@ public:
         Iterator& operator=(const Iterator& it) = default;
 
     protected:
+        Iterator() = default;
+
         void _increment();
         void _decrement();
         bool _isEmpty() const;
