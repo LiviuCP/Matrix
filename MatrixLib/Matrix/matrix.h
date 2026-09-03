@@ -45,6 +45,8 @@ public:
     template <typename Iter> class Iterator
     {
     protected:
+        bool _isEmpty() const;
+
         std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
         matrix_size_t m_NrOfMatrixRows;
         matrix_size_t m_NrOfMatrixColumns;
@@ -122,7 +124,7 @@ public:
 
         void _increment();
         void _decrement();
-        bool _isEmpty() const;
+        using Iterator<ZIterator>::_isEmpty;
     };
 
     class ConstZIterator
@@ -605,6 +607,24 @@ private:
     std::optional<size_type> m_ColumnCapacityOffset;
 };
 
+// 0) Base Iterator class (currently used only for non-diagonal iterators)
+
+template <MatrixElementType T> template<typename Iter> bool Matrix<T>::Iterator<Iter>::_isEmpty() const
+{
+    if (m_pMatrixPtr)
+    {
+        assert(m_NrOfMatrixRows > size_type{0} && m_NrOfMatrixColumns > size_type{0} &&
+               m_Index.has_value());
+    }
+    else
+    {
+        assert(size_type{0} == m_NrOfMatrixRows && size_type{0} == m_NrOfMatrixColumns &&
+               !m_Index.has_value());
+    }
+
+    return !m_pMatrixPtr;
+}
+
 // 1) ZIterator - iterates within matrix from [0][0] to the end row by row
 template <MatrixElementType T> typename Matrix<T>::ZIterator& Matrix<T>::ZIterator::operator++()
 {
@@ -705,11 +725,6 @@ template <MatrixElementType T> void Matrix<T>::ZIterator::_increment()
 template <MatrixElementType T> void Matrix<T>::ZIterator::_decrement()
 {
     NON_DIAG_ITERATOR_DO_DECREMENT(m_Index);
-}
-
-template <MatrixElementType T> bool Matrix<T>::ZIterator::_isEmpty() const
-{
-    CHECK_NON_DIAG_ITERATOR_IS_EMPTY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 // 2) ConstZIterator
