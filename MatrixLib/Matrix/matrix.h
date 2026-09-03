@@ -48,6 +48,7 @@ public:
         std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
         matrix_size_t m_NrOfMatrixRows;
         matrix_size_t m_NrOfMatrixColumns;
+        T** m_pMatrixPtr;
     };
 
     class ZIterator : public Iterator<ZIterator>
@@ -60,10 +61,14 @@ public:
         using Iterator<ZIterator>::m_Index;
         using Iterator<ZIterator>::m_NrOfMatrixRows;
         using Iterator<ZIterator>::m_NrOfMatrixColumns;
+        using Iterator<ZIterator>::m_pMatrixPtr;
 
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
         ZIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns, std::optional<size_type> rowNr,
                   std::optional<size_type> columnNr);
+
+        void _increment();
+        void _decrement();
+        bool _isEmpty() const;
     };
 
     class ConstZIterator
@@ -621,10 +626,9 @@ template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::ZI
                                         +);
 }
 
-template <MatrixElementType T>
-Matrix<T>::ZIterator::ZIterator()
-    : m_pMatrixPtr{nullptr}
+template <MatrixElementType T> Matrix<T>::ZIterator::ZIterator()
 {
+    m_pMatrixPtr = nullptr;
     m_NrOfMatrixRows = 0;
     m_NrOfMatrixColumns = 0;
 }
