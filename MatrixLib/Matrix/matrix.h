@@ -45,6 +45,8 @@ public:
     template <typename Iter> class Iterator
     {
     protected:
+        void _increment();
+        void _decrement();
         bool _isEmpty() const;
 
         std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
@@ -122,8 +124,8 @@ public:
         ZIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns, std::optional<size_type> rowNr,
                   std::optional<size_type> columnNr);
 
-        void _increment();
-        void _decrement();
+        using Iterator<ZIterator>::_increment;
+        using Iterator<ZIterator>::_decrement;
         using Iterator<ZIterator>::_isEmpty;
     };
 
@@ -609,17 +611,36 @@ private:
 
 // 0) Base Iterator class (currently used only for non-diagonal iterators)
 
-template <MatrixElementType T> template<typename Iter> bool Matrix<T>::Iterator<Iter>::_isEmpty() const
+template <MatrixElementType T> template <typename Iter> void Matrix<T>::Iterator<Iter>::_increment()
+{
+    if (!_isEmpty())
+    {
+        const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) *
+                                                            static_cast<diff_type>(m_NrOfMatrixColumns))};
+        if (m_Index < c_UpperBound)
+        {
+            m_Index = *m_Index + diff_type{1};
+        }
+    }
+}
+
+template <MatrixElementType T> template <typename Iter> void Matrix<T>::Iterator<Iter>::_decrement()
+{
+    if (!_isEmpty() && m_Index > diff_type{0})
+    {
+        m_Index = *m_Index - diff_type{1};
+    }
+}
+
+template <MatrixElementType T> template <typename Iter> bool Matrix<T>::Iterator<Iter>::_isEmpty() const
 {
     if (m_pMatrixPtr)
     {
-        assert(m_NrOfMatrixRows > size_type{0} && m_NrOfMatrixColumns > size_type{0} &&
-               m_Index.has_value());
+        assert(m_NrOfMatrixRows > size_type{0} && m_NrOfMatrixColumns > size_type{0} && m_Index.has_value());
     }
     else
     {
-        assert(size_type{0} == m_NrOfMatrixRows && size_type{0} == m_NrOfMatrixColumns &&
-               !m_Index.has_value());
+        assert(size_type{0} == m_NrOfMatrixRows && size_type{0} == m_NrOfMatrixColumns && !m_Index.has_value());
     }
 
     return !m_pMatrixPtr;
@@ -715,16 +736,6 @@ Matrix<T>::ZIterator::ZIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixR
     CONSTRUCT_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, pMatrixPtr,
                                 nrOfMatrixRows, nrOfMatrixColumns,
                                 computeForwardNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr));
-}
-
-template <MatrixElementType T> void Matrix<T>::ZIterator::_increment()
-{
-    NON_DIAG_ITERATOR_DO_INCREMENT(m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
-}
-
-template <MatrixElementType T> void Matrix<T>::ZIterator::_decrement()
-{
-    NON_DIAG_ITERATOR_DO_DECREMENT(m_Index);
 }
 
 // 2) ConstZIterator
