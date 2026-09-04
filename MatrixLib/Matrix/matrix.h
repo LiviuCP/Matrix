@@ -49,6 +49,10 @@ public:
         Iterator operator++(int unused);
         Iterator& operator--();
         Iterator operator--(int unused);
+
+        Iterator& operator+=(diff_type offset);
+        Iterator& operator-=(diff_type offset);
+
         Iterator& operator=(const Iterator& it) = default;
 
     protected:
@@ -80,10 +84,9 @@ public:
 
         using Iterator<ZIterator>::operator++;
         using Iterator<ZIterator>::operator--;
+        using Iterator<ZIterator>::operator+=;
+        using Iterator<ZIterator>::operator-=;
         using Iterator<ZIterator>::operator=;
-
-        ZIterator& operator+=(diff_type offset);
-        ZIterator& operator-=(diff_type offset);
 
         diff_type operator-(const ZIterator& it) const;
 
@@ -694,19 +697,47 @@ template <MatrixElementType T> template <typename Iter> bool Matrix<T>::Iterator
     return !m_pMatrixPtr;
 }
 
+template <MatrixElementType T>
+template <typename Iter>
+typename Matrix<T>::template Iterator<Iter>& Matrix<T>::Iterator<Iter>::operator+=(Matrix<T>::diff_type offset)
+{
+    if (!_isEmpty())
+    {
+        const diff_type normalizedScalarValue = offset;
+        const diff_type c_ResultingIndex{normalizedScalarValue < diff_type{0} &&
+                                                 std::abs(normalizedScalarValue) > *m_Index
+                                             ? diff_type{0}
+                                             : static_cast<diff_type>(*m_Index + normalizedScalarValue)};
+        const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) *
+                                                            static_cast<diff_type>(m_NrOfMatrixColumns))};
+
+        m_Index = std::min<diff_type>(c_ResultingIndex, c_UpperBound);
+    }
+
+    return *this;
+}
+
+template <MatrixElementType T>
+template <typename Iter>
+typename Matrix<T>::template Iterator<Iter>& Matrix<T>::Iterator<Iter>::operator-=(Matrix<T>::diff_type offset)
+{
+    if (!_isEmpty())
+    {
+        const diff_type normalizedScalarValue = -offset;
+        const diff_type c_ResultingIndex{normalizedScalarValue < diff_type{0} &&
+                                                 std::abs(normalizedScalarValue) > *m_Index
+                                             ? diff_type{0}
+                                             : static_cast<diff_type>(*m_Index + normalizedScalarValue)};
+        const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) *
+                                                            static_cast<diff_type>(m_NrOfMatrixColumns))};
+
+        m_Index = std::min<diff_type>(c_ResultingIndex, c_UpperBound);
+    }
+
+    return *this;
+}
+
 // 1) ZIterator - iterates within matrix from [0][0] to the end row by row
-template <MatrixElementType T>
-typename Matrix<T>::ZIterator& Matrix<T>::ZIterator::operator+=(Matrix<T>::ZIterator::difference_type offset)
-{
-    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, +, offset);
-}
-
-template <MatrixElementType T>
-typename Matrix<T>::ZIterator& Matrix<T>::ZIterator::operator-=(Matrix<T>::ZIterator::difference_type offset)
-{
-    NON_DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, -, offset);
-}
-
 template <MatrixElementType T>
 typename Matrix<T>::ZIterator::difference_type Matrix<T>::ZIterator::operator-(const Matrix<T>::ZIterator& it) const
 {
