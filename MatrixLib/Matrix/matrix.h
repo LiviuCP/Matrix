@@ -57,6 +57,8 @@ public:
 
         diff_type operator-(const Iterator& it) const;
 
+        std::strong_ordering operator<=>(const Iterator& it) const;
+
     protected:
         Iterator() = default;
 
@@ -92,7 +94,7 @@ public:
 
         using Iterator<ZIterator>::operator-;
 
-        auto operator<=>(const ZIterator& it) const;
+        using Iterator<ZIterator>::operator<=>;
         bool operator==(const ZIterator& it) const;
 
         std::optional<size_type> getRowNr() const;
@@ -749,12 +751,19 @@ Matrix<T>::diff_type Matrix<T>::Iterator<Iter>::operator-(const Iterator& it) co
     return !_isEmpty() ? *m_Index - *it.m_Index : diff_type{0};
 }
 
-// 1) ZIterator - iterates within matrix from [0][0] to the end row by row
-template <MatrixElementType T> auto Matrix<T>::ZIterator::operator<=>(const Matrix<T>::ZIterator& it) const
+template <MatrixElementType T>
+template <typename Iter>
+std::strong_ordering Matrix<T>::Iterator<Iter>::operator<=>(const Iterator& it) const
 {
-    NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, *this, it);
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
+                              m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    /* both iterators are either empty or not */
+    return !_isEmpty() ? *m_Index <=> *it.m_Index : std::strong_ordering::equal;
 }
 
+// 1) ZIterator - iterates within matrix from [0][0] to the end row by row
 template <MatrixElementType T> bool Matrix<T>::ZIterator::operator==(const Matrix<T>::ZIterator& it) const
 {
     NON_DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
