@@ -55,6 +55,8 @@ public:
 
         Iterator& operator=(const Iterator& it) = default;
 
+        diff_type operator-(const Iterator& it) const;
+
     protected:
         Iterator() = default;
 
@@ -88,7 +90,7 @@ public:
         using Iterator<ZIterator>::operator-=;
         using Iterator<ZIterator>::operator=;
 
-        diff_type operator-(const ZIterator& it) const;
+        using Iterator<ZIterator>::operator-;
 
         auto operator<=>(const ZIterator& it) const;
         bool operator==(const ZIterator& it) const;
@@ -737,13 +739,17 @@ typename Matrix<T>::template Iterator<Iter>& Matrix<T>::Iterator<Iter>::operator
     return *this;
 }
 
-// 1) ZIterator - iterates within matrix from [0][0] to the end row by row
 template <MatrixElementType T>
-typename Matrix<T>::ZIterator::difference_type Matrix<T>::ZIterator::operator-(const Matrix<T>::ZIterator& it) const
+template <typename Iter>
+Matrix<T>::diff_type Matrix<T>::Iterator<Iter>::operator-(const Iterator& it) const
 {
-    NON_DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, it);
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
+                              m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+    return !_isEmpty() ? *m_Index - *it.m_Index : diff_type{0};
 }
 
+// 1) ZIterator - iterates within matrix from [0][0] to the end row by row
 template <MatrixElementType T> auto Matrix<T>::ZIterator::operator<=>(const Matrix<T>::ZIterator& it) const
 {
     NON_DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, *this, it);
