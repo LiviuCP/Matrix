@@ -61,7 +61,9 @@ public:
         bool operator==(const Iterator& it) const;
 
     protected:
-        Iterator() = default;
+        /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
+         * empty matrix */
+        Iterator();
 
         void _increment();
         void _decrement();
@@ -101,9 +103,7 @@ public:
         std::optional<size_type> getRowNr() const;
         std::optional<size_type> getColumnNr() const;
 
-        /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
-         * empty matrix */
-        ZIterator();
+        ZIterator() = default;
 
         friend Matrix<T>::ZIterator operator+(const Matrix<T>::ZIterator& it,
                                               Matrix<T>::ZIterator::difference_type offset)
@@ -775,6 +775,15 @@ bool Matrix<T>::Iterator<Iter>::operator==(const Iterator& it) const
     return m_Index == it.m_Index;
 }
 
+template <MatrixElementType T>
+template <typename Iter>
+Matrix<T>::Iterator<Iter>::Iterator()
+    : m_pMatrixPtr{nullptr}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
+}
+
 // 1) ZIterator - iterates within matrix from [0][0] to the end row by row
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
 {
@@ -800,13 +809,6 @@ template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::ZI
 {
     NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, /, %, index, 0,
                                         +);
-}
-
-template <MatrixElementType T> Matrix<T>::ZIterator::ZIterator()
-{
-    m_pMatrixPtr = nullptr;
-    m_NrOfMatrixRows = 0;
-    m_NrOfMatrixColumns = 0;
 }
 
 template <MatrixElementType T>
