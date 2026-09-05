@@ -73,7 +73,7 @@ public:
         MutableNonDiagIterator();
 
         MutableNonDiagIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
-                               std::optional<size_type> rowNr, std::optional<size_type> columnNr);
+                               std::optional<diff_type> index);
 
         void _increment();
         void _decrement();
@@ -857,16 +857,12 @@ template <typename IteratorType>
 Matrix<T>::MutableNonDiagIterator<IteratorType>::MutableNonDiagIterator(T** pMatrixPtr,
                                                                         Matrix<T>::size_type nrOfMatrixRows,
                                                                         Matrix<T>::size_type nrOfMatrixColumns,
-                                                                        std::optional<Matrix<T>::size_type> rowNr,
-                                                                        std::optional<Matrix<T>::size_type> columnNr)
+                                                                        std::optional<Matrix<T>::diff_type> index)
 {
     bool nonEmptyIteratorConstructed = false;
 
     if (pMatrixPtr)
     {
-        const std::optional<matrix_diff_t> index{
-            computeForwardNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)};
-
         if (nrOfMatrixRows > size_type{0} && nrOfMatrixColumns > size_type{0} && index.has_value() &&
             index <= static_cast<diff_type>(static_cast<diff_type>(nrOfMatrixRows) *
                                             static_cast<diff_type>(nrOfMatrixColumns)))
@@ -913,7 +909,9 @@ template <MatrixElementType T>
 Matrix<T>::ZIterator::ZIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
                                 Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
                                 std::optional<Matrix<T>::size_type> columnNr)
-    : MutableNonDiagIterator<ZIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr}
+    : MutableNonDiagIterator<ZIterator>{
+          pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
+          computeForwardNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)}
 {
 }
 
