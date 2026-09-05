@@ -65,6 +65,9 @@ public:
          * empty matrix */
         Iterator();
 
+        Iterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns, std::optional<size_type> rowNr,
+                 std::optional<size_type> columnNr);
+
         void _increment();
         void _decrement();
         bool _isEmpty() const;
@@ -784,6 +787,43 @@ Matrix<T>::Iterator<Iter>::Iterator()
 {
 }
 
+template <MatrixElementType T>
+template <typename Iter>
+Matrix<T>::Iterator<Iter>::Iterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
+                                    Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
+                                    std::optional<Matrix<T>::size_type> columnNr)
+{
+    bool nonEmptyIteratorConstructed = false;
+
+    if (pMatrixPtr)
+    {
+        const std::optional<matrix_diff_t> index{
+            computeForwardNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)};
+
+        if (nrOfMatrixRows > size_type{0} && nrOfMatrixColumns > size_type{0} && index.has_value() &&
+            index <= static_cast<diff_type>(static_cast<diff_type>(nrOfMatrixRows) *
+                                            static_cast<diff_type>(nrOfMatrixColumns)))
+        {
+            m_pMatrixPtr = pMatrixPtr;
+            m_NrOfMatrixRows = nrOfMatrixRows;
+            m_NrOfMatrixColumns = nrOfMatrixColumns;
+            m_Index = index;
+            nonEmptyIteratorConstructed = true;
+        }
+        else
+        {
+            assert(false);
+        }
+    }
+
+    if (!nonEmptyIteratorConstructed)
+    {
+        m_pMatrixPtr = nullptr;
+        m_NrOfMatrixRows = size_type{0};
+        m_NrOfMatrixColumns = size_type{0};
+    }
+}
+
 // 1) ZIterator - iterates within matrix from [0][0] to the end row by row
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
 {
@@ -815,10 +855,8 @@ template <MatrixElementType T>
 Matrix<T>::ZIterator::ZIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
                                 Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
                                 std::optional<Matrix<T>::size_type> columnNr)
+    : Iterator<ZIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr}
 {
-    CONSTRUCT_NON_DIAG_ITERATOR(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, pMatrixPtr,
-                                nrOfMatrixRows, nrOfMatrixColumns,
-                                computeForwardNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr));
 }
 
 // 2) ConstZIterator
