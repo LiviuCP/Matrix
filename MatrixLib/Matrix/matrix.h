@@ -115,31 +115,27 @@ public:
 
         ZIterator() = default;
 
-        friend Matrix<T>::ZIterator operator+(const Matrix<T>::ZIterator& it,
-                                              Matrix<T>::ZIterator::difference_type offset)
-        {
-            typename Matrix<T>::ZIterator temp{it};
-            temp += offset;
-            return temp;
-        }
-
-        friend Matrix<T>::ZIterator operator+(Matrix<T>::ZIterator::difference_type offset,
-                                              const Matrix<T>::ZIterator& it)
-        {
-            return it + offset;
-        }
-
-        friend Matrix<T>::ZIterator operator-(const Matrix<T>::ZIterator& it,
-                                              Matrix<T>::ZIterator::difference_type offset)
-        {
-            typename Matrix<T>::ZIterator temp{it};
-            temp -= offset;
-            return temp;
-        }
-
         using MutableNonDiagIterator<ZIterator>::operator*;
         using MutableNonDiagIterator<ZIterator>::operator->;
         T& operator[](diff_type index) const;
+
+        inline friend Matrix<T>::ZIterator operator+(const Matrix<T>::ZIterator& it,
+                                                     Matrix<T>::ZIterator::difference_type offset)
+        {
+            return addOffsetToIterator(it, offset);
+        }
+
+        inline friend Matrix<T>::ZIterator operator+(Matrix<T>::ZIterator::difference_type offset,
+                                                     const Matrix<T>::ZIterator& it)
+        {
+            return addOffsetToIterator(it, offset);
+        }
+
+        inline friend Matrix<T>::ZIterator operator-(const Matrix<T>::ZIterator& it,
+                                                     Matrix<T>::ZIterator::difference_type offset)
+        {
+            return addOffsetToIterator(it, -offset);
+        }
 
     private:
         using MutableNonDiagIterator<ZIterator>::m_Index;
