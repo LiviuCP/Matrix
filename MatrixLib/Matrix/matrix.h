@@ -887,18 +887,31 @@ Matrix<T>::MutableNonDiagIterator<IteratorType>::MutableNonDiagIterator(T** pMat
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
 {
-    RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, /);
+    return m_Index.has_value() ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns))
+                               : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getColumnNr() const
 {
-    RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, %);
+    return m_Index.has_value() ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns))
+                               : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::ZIterator::difference_type index) const
 {
-    NON_DIAG_ITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index, /, %, index, 0,
-                                        +);
+    /* The iterator index should not be std::nullopt if the matrix is not empty */
+    CHECK_ERROR_CONDITION(_isEmpty() || (index < diff_type{0} && std::abs(index) > *m_Index),
+                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    const diff_type c_ResultingIndex{static_cast<diff_type>(*m_Index + index)};
+    const diff_type c_UpperBound{
+        static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
+
+    CHECK_ERROR_CONDITION(c_ResultingIndex >= c_UpperBound,
+                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    return m_pMatrixPtr[c_ResultingIndex / static_cast<diff_type>(m_NrOfMatrixColumns)]
+                       [c_ResultingIndex % static_cast<diff_type>(m_NrOfMatrixColumns)];
 }
 
 template <MatrixElementType T>
