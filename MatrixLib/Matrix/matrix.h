@@ -60,6 +60,12 @@ public:
         std::strong_ordering operator<=>(const Iterator& it) const;
         bool operator==(const Iterator& it) const;
 
+        std::optional<size_type> getRowNr() const;
+        std::optional<size_type> getColumnNr() const;
+
+        T& operator*() const;
+        T* operator->() const;
+
     protected:
         /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
          * empty matrix */
@@ -130,8 +136,8 @@ public:
             return temp;
         }
 
-        T& operator*() const;
-        T* operator->() const;
+        using Iterator<ZIterator>::operator*;
+        using Iterator<ZIterator>::operator->;
         T& operator[](diff_type index) const;
 
     private:
@@ -780,6 +786,40 @@ bool Matrix<T>::Iterator<Iter>::operator==(const Iterator& it) const
 
 template <MatrixElementType T>
 template <typename Iter>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::Iterator<Iter>::getRowNr() const
+{
+    return static_cast<const Iter*>(this)->getRowNr();
+}
+
+template <MatrixElementType T>
+template <typename Iter>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::Iterator<Iter>::getColumnNr() const
+{
+    return static_cast<const Iter*>(this)->getColumnNr();
+}
+
+template <MatrixElementType T> template <typename Iter> T& Matrix<T>::Iterator<Iter>::operator*() const
+{
+    const diff_type c_UpperBound{
+        static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
+
+    CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound,
+                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+    return m_pMatrixPtr[*getRowNr()][*getColumnNr()];
+}
+
+template <MatrixElementType T> template <typename Iter> T* Matrix<T>::Iterator<Iter>::operator->() const
+{
+    const diff_type c_UpperBound{
+        static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
+
+    CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound,
+                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+    return (m_pMatrixPtr[*getRowNr()] + *getColumnNr());
+}
+
+template <MatrixElementType T>
+template <typename Iter>
 Matrix<T>::Iterator<Iter>::Iterator()
     : m_pMatrixPtr{nullptr}
     , m_NrOfMatrixRows{0}
@@ -833,16 +873,6 @@ template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matr
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getColumnNr() const
 {
     RETRIEVE_FORWARD_NON_DIAG_ITERATOR_COORDINATE(m_NrOfMatrixColumns, m_Index, %);
-}
-
-template <MatrixElementType T> T& Matrix<T>::ZIterator::operator*() const
-{
-    NON_DIAG_ITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
-}
-
-template <MatrixElementType T> T* Matrix<T>::ZIterator::operator->() const
-{
-    NON_DIAG_ITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_NrOfMatrixRows, m_NrOfMatrixColumns, m_Index);
 }
 
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::ZIterator::difference_type index) const
