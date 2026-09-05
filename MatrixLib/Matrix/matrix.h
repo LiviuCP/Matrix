@@ -65,6 +65,7 @@ public:
 
         T& operator*() const;
         T* operator->() const;
+        T& operator[](diff_type index) const;
 
     protected:
         /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
@@ -816,6 +817,11 @@ template <MatrixElementType T> template <typename Iter> T* Matrix<T>::Iterator<I
     CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound,
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
     return (m_pMatrixPtr[*getRowNr()] + *getColumnNr());
+}
+
+template <MatrixElementType T> template <typename Iter> T& Matrix<T>::Iterator<Iter>::operator[](diff_type index) const
+{
+    return static_cast<const Iter*>(this)->operator[](index);
 }
 
 template <MatrixElementType T>
