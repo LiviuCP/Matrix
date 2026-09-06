@@ -45,9 +45,9 @@ public:
     template <typename IteratorType> class MutableNonDiagIterator
     {
     public:
-        MutableNonDiagIterator& operator++();
+        IteratorType& operator++();
         MutableNonDiagIterator operator++(int unused);
-        MutableNonDiagIterator& operator--();
+        IteratorType& operator--();
         MutableNonDiagIterator operator--(int unused);
 
         MutableNonDiagIterator& operator+=(diff_type offset);
@@ -635,11 +635,11 @@ private:
 
 template <MatrixElementType T>
 template <typename IteratorType>
-typename Matrix<T>::template MutableNonDiagIterator<IteratorType>& Matrix<T>::MutableNonDiagIterator<
+IteratorType& Matrix<T>::MutableNonDiagIterator<
     IteratorType>::operator++()
 {
     _increment();
-    return *this;
+    return *static_cast<IteratorType*>(this);
 }
 
 template <MatrixElementType T>
@@ -657,11 +657,11 @@ typename Matrix<T>::template MutableNonDiagIterator<IteratorType> Matrix<T>::Mut
 
 template <MatrixElementType T>
 template <typename IteratorType>
-typename Matrix<T>::template MutableNonDiagIterator<IteratorType>& Matrix<T>::MutableNonDiagIterator<
+IteratorType& Matrix<T>::MutableNonDiagIterator<
     IteratorType>::operator--()
 {
     _decrement();
-    return *this;
+    return *static_cast<IteratorType*>(this);
 }
 
 template <MatrixElementType T>
