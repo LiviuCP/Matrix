@@ -762,7 +762,7 @@ typename Matrix<T>::template MutableNonDiagIterator<IteratorType>& Matrix<T>::Mu
 
 template <MatrixElementType T>
 template <typename IteratorType>
-Matrix<T>::diff_type Matrix<T>::MutableNonDiagIterator<IteratorType>::operator-(const MutableNonDiagIterator& it) const
+typename Matrix<T>::diff_type Matrix<T>::MutableNonDiagIterator<IteratorType>::operator-(const MutableNonDiagIterator& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
                               m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
