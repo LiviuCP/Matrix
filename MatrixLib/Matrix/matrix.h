@@ -46,9 +46,9 @@ public:
     {
     public:
         IteratorType& operator++();
-        MutableNonDiagIterator operator++(int unused);
+        IteratorType operator++(int unused);
         IteratorType& operator--();
-        MutableNonDiagIterator operator--(int unused);
+        IteratorType operator--(int unused);
 
         MutableNonDiagIterator& operator+=(diff_type offset);
         MutableNonDiagIterator& operator-=(diff_type offset);
@@ -644,11 +644,11 @@ IteratorType& Matrix<T>::MutableNonDiagIterator<
 
 template <MatrixElementType T>
 template <typename IteratorType>
-typename Matrix<T>::template MutableNonDiagIterator<IteratorType> Matrix<T>::MutableNonDiagIterator<
+IteratorType Matrix<T>::MutableNonDiagIterator<
     IteratorType>::operator++(int unused)
 {
     (void)unused;
-    MutableNonDiagIterator<IteratorType> iterator{*this};
+    IteratorType iterator{*static_cast<IteratorType*>(this)};
 
     _increment();
 
@@ -666,11 +666,11 @@ IteratorType& Matrix<T>::MutableNonDiagIterator<
 
 template <MatrixElementType T>
 template <typename IteratorType>
-typename Matrix<T>::template MutableNonDiagIterator<IteratorType> Matrix<T>::MutableNonDiagIterator<
+IteratorType Matrix<T>::MutableNonDiagIterator<
     IteratorType>::operator--(int unused)
 {
     (void)unused;
-    MutableNonDiagIterator<IteratorType> iterator{*this};
+    IteratorType iterator{*static_cast<IteratorType*>(this)};
 
     _decrement();
 
