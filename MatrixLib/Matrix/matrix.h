@@ -50,8 +50,8 @@ public:
         IteratorType& operator--();
         IteratorType operator--(int unused);
 
-        MutableNonDiagIterator& operator+=(diff_type offset);
-        MutableNonDiagIterator& operator-=(diff_type offset);
+        IteratorType& operator+=(diff_type offset);
+        IteratorType& operator-=(diff_type offset);
 
         MutableNonDiagIterator& operator=(const MutableNonDiagIterator& it) = default;
 
@@ -720,7 +720,7 @@ bool Matrix<T>::MutableNonDiagIterator<IteratorType>::_isEmpty() const
 
 template <MatrixElementType T>
 template <typename IteratorType>
-typename Matrix<T>::template MutableNonDiagIterator<IteratorType>& Matrix<T>::MutableNonDiagIterator<
+IteratorType& Matrix<T>::MutableNonDiagIterator<
     IteratorType>::operator+=(Matrix<T>::diff_type offset)
 {
     if (!_isEmpty())
@@ -736,12 +736,12 @@ typename Matrix<T>::template MutableNonDiagIterator<IteratorType>& Matrix<T>::Mu
         m_Index = std::min<diff_type>(c_ResultingIndex, c_UpperBound);
     }
 
-    return *this;
+    return *static_cast<IteratorType*>(this);
 }
 
 template <MatrixElementType T>
 template <typename IteratorType>
-typename Matrix<T>::template MutableNonDiagIterator<IteratorType>& Matrix<T>::MutableNonDiagIterator<
+IteratorType& Matrix<T>::MutableNonDiagIterator<
     IteratorType>::operator-=(Matrix<T>::diff_type offset)
 {
     if (!_isEmpty())
@@ -757,7 +757,7 @@ typename Matrix<T>::template MutableNonDiagIterator<IteratorType>& Matrix<T>::Mu
         m_Index = std::min<diff_type>(c_ResultingIndex, c_UpperBound);
     }
 
-    return *this;
+    return *static_cast<IteratorType*>(this);
 }
 
 template <MatrixElementType T>
