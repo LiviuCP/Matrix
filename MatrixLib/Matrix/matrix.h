@@ -77,8 +77,8 @@ public:
         void _decrement();
         bool _isEmpty() const;
 
-        T& applyAsterisk() const;
-        T* applyArrow() const;
+        T& _applyAsteriskOperator() const;
+        T* _applyArrowOperator() const;
 
         std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
         matrix_size_t m_NrOfMatrixRows;
@@ -152,8 +152,8 @@ public:
         using MutableNonDiagIterator<ZIterator>::_decrement;
         using MutableNonDiagIterator<ZIterator>::_isEmpty;
 
-        using MutableNonDiagIterator<ZIterator>::applyAsterisk;
-        using MutableNonDiagIterator<ZIterator>::applyArrow;
+        using MutableNonDiagIterator<ZIterator>::_applyAsteriskOperator;
+        using MutableNonDiagIterator<ZIterator>::_applyArrowOperator;
     };
 
     class ConstZIterator
@@ -861,7 +861,7 @@ Matrix<T>::MutableNonDiagIterator<IteratorType>::MutableNonDiagIterator(T** pMat
 
 template <MatrixElementType T>
 template <typename IteratorType>
-T& Matrix<T>::MutableNonDiagIterator<IteratorType>::applyAsterisk() const
+T& Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyAsteriskOperator() const
 {
     const diff_type c_UpperBound{
         static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
@@ -873,7 +873,7 @@ T& Matrix<T>::MutableNonDiagIterator<IteratorType>::applyAsterisk() const
 
 template <MatrixElementType T>
 template <typename IteratorType>
-T* Matrix<T>::MutableNonDiagIterator<IteratorType>::applyArrow() const
+T* Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyArrowOperator() const
 {
     const diff_type c_UpperBound{
         static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
@@ -916,12 +916,12 @@ template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::ZI
 
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator*() const
 {
-    return applyAsterisk();
+    return _applyAsteriskOperator();
 }
 
 template <MatrixElementType T> T* Matrix<T>::ZIterator::operator->() const
 {
-    return applyArrow();
+    return _applyArrowOperator();
 }
 
 template <MatrixElementType T>
