@@ -55,8 +55,6 @@ public:
 
         diff_type operator-(const MutableNonDiagIterator& it) const;
 
-        MutableNonDiagIterator& operator=(const MutableNonDiagIterator& it) = default;
-
         std::strong_ordering operator<=>(const MutableNonDiagIterator& it) const;
         bool operator==(const MutableNonDiagIterator& it) const;
 
@@ -81,17 +79,16 @@ public:
         std::optional<size_type> _getColumnNr() const;
 
     protected:
-        std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
+        T** m_pMatrixPtr;
         matrix_size_t m_NrOfMatrixRows;
         matrix_size_t m_NrOfMatrixColumns;
-        T** m_pMatrixPtr;
+        std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
     };
 
     class ZIterator : public MutableNonDiagIterator<ZIterator>
     {
     public:
-        /* Matrix should be allowed to use the private constructor of the iterator, but no other class should have this
-         * "privilege" */
+        /* Required for being able to return iterators by using the private constructor of the iterator class */
         friend class Matrix<T>;
 
         /* all these are required for STL compatibility */
@@ -101,26 +98,22 @@ public:
         using pointer = T**;
         using reference = T&;
 
+        ZIterator() = default;
+
         using MutableNonDiagIterator<ZIterator>::operator++;
         using MutableNonDiagIterator<ZIterator>::operator--;
         using MutableNonDiagIterator<ZIterator>::operator+=;
         using MutableNonDiagIterator<ZIterator>::operator-=;
-        using MutableNonDiagIterator<ZIterator>::operator=;
-
         using MutableNonDiagIterator<ZIterator>::operator-;
-
         using MutableNonDiagIterator<ZIterator>::operator<=>;
         using MutableNonDiagIterator<ZIterator>::operator==;
 
-        std::optional<size_type> getRowNr() const;
-        std::optional<size_type> getColumnNr() const;
-
-        ZIterator() = default;
-
         T& operator*() const;
         T* operator->() const;
-
         T& operator[](diff_type index) const;
+
+        std::optional<size_type> getRowNr() const;
+        std::optional<size_type> getColumnNr() const;
 
         inline friend Matrix<T>::ZIterator operator+(const Matrix<T>::ZIterator& it,
                                                      Matrix<T>::ZIterator::difference_type offset)
@@ -141,20 +134,19 @@ public:
         }
 
     private:
-        using MutableNonDiagIterator<ZIterator>::m_Index;
-        using MutableNonDiagIterator<ZIterator>::m_NrOfMatrixRows;
-        using MutableNonDiagIterator<ZIterator>::m_NrOfMatrixColumns;
-        using MutableNonDiagIterator<ZIterator>::m_pMatrixPtr;
-
         ZIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns, std::optional<size_type> rowNr,
                   std::optional<size_type> columnNr);
 
+        using MutableNonDiagIterator<ZIterator>::_applyAsteriskOperator;
+        using MutableNonDiagIterator<ZIterator>::_applyArrowOperator;
         using MutableNonDiagIterator<ZIterator>::_increment;
         using MutableNonDiagIterator<ZIterator>::_decrement;
         using MutableNonDiagIterator<ZIterator>::_isEmpty;
 
-        using MutableNonDiagIterator<ZIterator>::_applyAsteriskOperator;
-        using MutableNonDiagIterator<ZIterator>::_applyArrowOperator;
+        using MutableNonDiagIterator<ZIterator>::m_pMatrixPtr;
+        using MutableNonDiagIterator<ZIterator>::m_NrOfMatrixRows;
+        using MutableNonDiagIterator<ZIterator>::m_NrOfMatrixColumns;
+        using MutableNonDiagIterator<ZIterator>::m_Index;
     };
 
     class ConstZIterator
@@ -879,16 +871,24 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::MutableNonDiagIterator<I
 
 // 1) ZIterator - iterates within matrix from [0][0] to the end row by row
 
-template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
+template <MatrixElementType T>
+Matrix<T>::ZIterator::ZIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
+                                Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
+                                std::optional<Matrix<T>::size_type> columnNr)
+    : MutableNonDiagIterator<ZIterator>{
+          pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
+          computeForwardNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)}
 {
-    return m_Index.has_value() ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns))
-                               : std::optional<size_type>{};
 }
 
-template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getColumnNr() const
+template <MatrixElementType T> T& Matrix<T>::ZIterator::operator*() const
 {
-    return m_Index.has_value() ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns))
-                               : std::optional<size_type>{};
+    return _applyAsteriskOperator();
+}
+
+template <MatrixElementType T> T* Matrix<T>::ZIterator::operator->() const
+{
+    return _applyArrowOperator();
 }
 
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::ZIterator::difference_type index) const
@@ -908,24 +908,16 @@ template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::ZI
                        [c_ResultingIndex % static_cast<diff_type>(m_NrOfMatrixColumns)];
 }
 
-template <MatrixElementType T> T& Matrix<T>::ZIterator::operator*() const
+template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
 {
-    return _applyAsteriskOperator();
+    return m_Index.has_value() ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns))
+                               : std::optional<size_type>{};
 }
 
-template <MatrixElementType T> T* Matrix<T>::ZIterator::operator->() const
+template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getColumnNr() const
 {
-    return _applyArrowOperator();
-}
-
-template <MatrixElementType T>
-Matrix<T>::ZIterator::ZIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
-                                Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
-                                std::optional<Matrix<T>::size_type> columnNr)
-    : MutableNonDiagIterator<ZIterator>{
-          pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
-          computeForwardNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)}
-{
+    return m_Index.has_value() ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns))
+                               : std::optional<size_type>{};
 }
 
 // 2) ConstZIterator
