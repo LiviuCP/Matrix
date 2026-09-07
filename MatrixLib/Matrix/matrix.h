@@ -68,6 +68,7 @@ public:
 
         T& _applyAsteriskOperator() const;
         T* _applyArrowOperator() const;
+        T& _applyIndexOperator(size_type rowNr, size_type columnNr) const;
 
         bool _isEmpty() const;
 
@@ -78,8 +79,9 @@ public:
         std::optional<size_type> _getRowNr() const;
         std::optional<size_type> _getColumnNr() const;
 
-    protected:
         T** m_pMatrixPtr;
+
+    protected:
         matrix_size_t m_NrOfMatrixRows;
         matrix_size_t m_NrOfMatrixColumns;
         std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
@@ -139,9 +141,9 @@ public:
 
         using MutableNonDiagIterator<ZIterator>::_applyAsteriskOperator;
         using MutableNonDiagIterator<ZIterator>::_applyArrowOperator;
+        using MutableNonDiagIterator<ZIterator>::_applyIndexOperator;
         using MutableNonDiagIterator<ZIterator>::_isEmpty;
 
-        using MutableNonDiagIterator<ZIterator>::m_pMatrixPtr;
         using MutableNonDiagIterator<ZIterator>::m_NrOfMatrixRows;
         using MutableNonDiagIterator<ZIterator>::m_NrOfMatrixColumns;
         using MutableNonDiagIterator<ZIterator>::m_Index;
@@ -814,6 +816,16 @@ T* Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyArrowOperator() const
 
 template <MatrixElementType T>
 template <typename IteratorType>
+T& Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyIndexOperator(Matrix<T>::size_type rowNr,
+                                                                        Matrix<T>::size_type columnNr) const
+{
+    CHECK_ERROR_CONDITION(_isEmpty() || rowNr >= m_NrOfMatrixRows || columnNr >= m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+    return m_pMatrixPtr[rowNr][columnNr];
+}
+
+template <MatrixElementType T>
+template <typename IteratorType>
 bool Matrix<T>::MutableNonDiagIterator<IteratorType>::_isEmpty() const
 {
     if (m_pMatrixPtr)
@@ -902,8 +914,12 @@ template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::ZI
     CHECK_ERROR_CONDITION(c_ResultingIndex >= c_UpperBound,
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
 
-    return m_pMatrixPtr[c_ResultingIndex / static_cast<diff_type>(m_NrOfMatrixColumns)]
-                       [c_ResultingIndex % static_cast<diff_type>(m_NrOfMatrixColumns)];
+    const size_type c_ResultingRowNr{
+        static_cast<size_type>(c_ResultingIndex / static_cast<diff_type>(m_NrOfMatrixColumns))};
+    const size_type c_ResultingColumnNr{
+        static_cast<size_type>(c_ResultingIndex % static_cast<diff_type>(m_NrOfMatrixColumns))};
+
+    return _applyIndexOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
