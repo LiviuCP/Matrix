@@ -53,9 +53,9 @@ public:
         IteratorType& operator+=(diff_type offset);
         IteratorType& operator-=(diff_type offset);
 
-        MutableNonDiagIterator& operator=(const MutableNonDiagIterator& it) = default;
-
         diff_type operator-(const MutableNonDiagIterator& it) const;
+
+        MutableNonDiagIterator& operator=(const MutableNonDiagIterator& it) = default;
 
         std::strong_ordering operator<=>(const MutableNonDiagIterator& it) const;
         bool operator==(const MutableNonDiagIterator& it) const;
@@ -71,12 +71,12 @@ public:
         MutableNonDiagIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
                                std::optional<diff_type> index);
 
+        T& _applyAsteriskOperator() const;
+        T* _applyArrowOperator() const;
+
         void _increment();
         void _decrement();
         bool _isEmpty() const;
-
-        T& _applyAsteriskOperator() const;
-        T* _applyArrowOperator() const;
 
         std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
         matrix_size_t m_NrOfMatrixRows;
@@ -678,47 +678,6 @@ IteratorType Matrix<T>::MutableNonDiagIterator<IteratorType>::operator--(int unu
 
 template <MatrixElementType T>
 template <typename IteratorType>
-void Matrix<T>::MutableNonDiagIterator<IteratorType>::_increment()
-{
-    if (!_isEmpty())
-    {
-        const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) *
-                                                            static_cast<diff_type>(m_NrOfMatrixColumns))};
-        if (m_Index < c_UpperBound)
-        {
-            m_Index = *m_Index + diff_type{1};
-        }
-    }
-}
-
-template <MatrixElementType T>
-template <typename IteratorType>
-void Matrix<T>::MutableNonDiagIterator<IteratorType>::_decrement()
-{
-    if (!_isEmpty() && m_Index > diff_type{0})
-    {
-        m_Index = *m_Index - diff_type{1};
-    }
-}
-
-template <MatrixElementType T>
-template <typename IteratorType>
-bool Matrix<T>::MutableNonDiagIterator<IteratorType>::_isEmpty() const
-{
-    if (m_pMatrixPtr)
-    {
-        assert(m_NrOfMatrixRows > size_type{0} && m_NrOfMatrixColumns > size_type{0} && m_Index.has_value());
-    }
-    else
-    {
-        assert(size_type{0} == m_NrOfMatrixRows && size_type{0} == m_NrOfMatrixColumns && !m_Index.has_value());
-    }
-
-    return !m_pMatrixPtr;
-}
-
-template <MatrixElementType T>
-template <typename IteratorType>
 IteratorType& Matrix<T>::MutableNonDiagIterator<IteratorType>::operator+=(Matrix<T>::diff_type offset)
 {
     if (!_isEmpty())
@@ -872,6 +831,47 @@ T* Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyArrowOperator() const
     CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound,
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
     return (m_pMatrixPtr[*getRowNr()] + *getColumnNr());
+}
+
+template <MatrixElementType T>
+template <typename IteratorType>
+void Matrix<T>::MutableNonDiagIterator<IteratorType>::_increment()
+{
+    if (!_isEmpty())
+    {
+        const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) *
+                                                            static_cast<diff_type>(m_NrOfMatrixColumns))};
+        if (m_Index < c_UpperBound)
+        {
+            m_Index = *m_Index + diff_type{1};
+        }
+    }
+}
+
+template <MatrixElementType T>
+template <typename IteratorType>
+void Matrix<T>::MutableNonDiagIterator<IteratorType>::_decrement()
+{
+    if (!_isEmpty() && m_Index > diff_type{0})
+    {
+        m_Index = *m_Index - diff_type{1};
+    }
+}
+
+template <MatrixElementType T>
+template <typename IteratorType>
+bool Matrix<T>::MutableNonDiagIterator<IteratorType>::_isEmpty() const
+{
+    if (m_pMatrixPtr)
+    {
+        assert(m_NrOfMatrixRows > size_type{0} && m_NrOfMatrixColumns > size_type{0} && m_Index.has_value());
+    }
+    else
+    {
+        assert(size_type{0} == m_NrOfMatrixRows && size_type{0} == m_NrOfMatrixColumns && !m_Index.has_value());
+    }
+
+    return !m_pMatrixPtr;
 }
 
 // 1) ZIterator - iterates within matrix from [0][0] to the end row by row
