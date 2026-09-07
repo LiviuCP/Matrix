@@ -60,9 +60,6 @@ public:
         std::strong_ordering operator<=>(const MutableNonDiagIterator& it) const;
         bool operator==(const MutableNonDiagIterator& it) const;
 
-        std::optional<size_type> getRowNr() const;
-        std::optional<size_type> getColumnNr() const;
-
     protected:
         /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
          * empty matrix */
@@ -76,6 +73,10 @@ public:
 
         void _increment();
         void _decrement();
+
+        std::optional<size_type> _getRowNr() const;
+        std::optional<size_type> _getColumnNr() const;
+
         bool _isEmpty() const;
 
         std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
@@ -753,20 +754,6 @@ bool Matrix<T>::MutableNonDiagIterator<IteratorType>::operator==(const MutableNo
 
 template <MatrixElementType T>
 template <typename IteratorType>
-std::optional<typename Matrix<T>::size_type> Matrix<T>::MutableNonDiagIterator<IteratorType>::getRowNr() const
-{
-    return static_cast<const IteratorType*>(this)->getRowNr();
-}
-
-template <MatrixElementType T>
-template <typename IteratorType>
-std::optional<typename Matrix<T>::size_type> Matrix<T>::MutableNonDiagIterator<IteratorType>::getColumnNr() const
-{
-    return static_cast<const IteratorType*>(this)->getColumnNr();
-}
-
-template <MatrixElementType T>
-template <typename IteratorType>
 Matrix<T>::MutableNonDiagIterator<IteratorType>::MutableNonDiagIterator()
     : m_pMatrixPtr{nullptr}
     , m_NrOfMatrixRows{0}
@@ -818,7 +805,7 @@ T& Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyAsteriskOperator() con
 
     CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound,
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
-    return m_pMatrixPtr[*getRowNr()][*getColumnNr()];
+    return m_pMatrixPtr[*_getRowNr()][*_getColumnNr()];
 }
 
 template <MatrixElementType T>
@@ -830,7 +817,7 @@ T* Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyArrowOperator() const
 
     CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound,
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
-    return (m_pMatrixPtr[*getRowNr()] + *getColumnNr());
+    return (m_pMatrixPtr[*_getRowNr()] + *_getColumnNr());
 }
 
 template <MatrixElementType T>
@@ -856,6 +843,20 @@ void Matrix<T>::MutableNonDiagIterator<IteratorType>::_decrement()
     {
         m_Index = *m_Index - diff_type{1};
     }
+}
+
+template <MatrixElementType T>
+template <typename IteratorType>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::MutableNonDiagIterator<IteratorType>::_getRowNr() const
+{
+    return static_cast<const IteratorType*>(this)->getRowNr();
+}
+
+template <MatrixElementType T>
+template <typename IteratorType>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::MutableNonDiagIterator<IteratorType>::_getColumnNr() const
+{
+    return static_cast<const IteratorType*>(this)->getColumnNr();
 }
 
 template <MatrixElementType T>
