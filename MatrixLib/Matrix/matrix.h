@@ -63,7 +63,6 @@ public:
         std::optional<size_type> getRowNr() const;
         std::optional<size_type> getColumnNr() const;
 
-        T* operator->() const;
         T& operator[](diff_type index) const;
 
     protected:
@@ -79,6 +78,7 @@ public:
         bool _isEmpty() const;
 
         T& applyAsterisk() const;
+        T* applyArrow() const;
 
         std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
         matrix_size_t m_NrOfMatrixRows;
@@ -117,8 +117,8 @@ public:
         ZIterator() = default;
 
         T& operator*() const;
+        T* operator->() const;
 
-        using MutableNonDiagIterator<ZIterator>::operator->;
         T& operator[](diff_type index) const;
 
         inline friend Matrix<T>::ZIterator operator+(const Matrix<T>::ZIterator& it,
@@ -153,6 +153,7 @@ public:
         using MutableNonDiagIterator<ZIterator>::_isEmpty;
 
         using MutableNonDiagIterator<ZIterator>::applyAsterisk;
+        using MutableNonDiagIterator<ZIterator>::applyArrow;
     };
 
     class ConstZIterator
@@ -809,18 +810,6 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::MutableNonDiagIterator<I
 
 template <MatrixElementType T>
 template <typename IteratorType>
-T* Matrix<T>::MutableNonDiagIterator<IteratorType>::operator->() const
-{
-    const diff_type c_UpperBound{
-        static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
-
-    CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound,
-                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
-    return (m_pMatrixPtr[*getRowNr()] + *getColumnNr());
-}
-
-template <MatrixElementType T>
-template <typename IteratorType>
 T& Matrix<T>::MutableNonDiagIterator<IteratorType>::operator[](diff_type index) const
 {
     return static_cast<const IteratorType*>(this)->operator[](index);
@@ -882,6 +871,18 @@ T& Matrix<T>::MutableNonDiagIterator<IteratorType>::applyAsterisk() const
     return m_pMatrixPtr[*getRowNr()][*getColumnNr()];
 }
 
+template <MatrixElementType T>
+template <typename IteratorType>
+T* Matrix<T>::MutableNonDiagIterator<IteratorType>::applyArrow() const
+{
+    const diff_type c_UpperBound{
+        static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
+
+    CHECK_ERROR_CONDITION(_isEmpty() || m_Index == c_UpperBound,
+                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+    return (m_pMatrixPtr[*getRowNr()] + *getColumnNr());
+}
+
 // 1) ZIterator - iterates within matrix from [0][0] to the end row by row
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
@@ -916,6 +917,11 @@ template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::ZI
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator*() const
 {
     return applyAsterisk();
+}
+
+template <MatrixElementType T> T* Matrix<T>::ZIterator::operator->() const
+{
+    return applyArrow();
 }
 
 template <MatrixElementType T>
