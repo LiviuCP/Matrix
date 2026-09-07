@@ -63,8 +63,6 @@ public:
         std::optional<size_type> getRowNr() const;
         std::optional<size_type> getColumnNr() const;
 
-        T& operator[](diff_type index) const;
-
     protected:
         /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
          * empty matrix */
@@ -806,13 +804,6 @@ template <typename IteratorType>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::MutableNonDiagIterator<IteratorType>::getColumnNr() const
 {
     return static_cast<const IteratorType*>(this)->getColumnNr();
-}
-
-template <MatrixElementType T>
-template <typename IteratorType>
-T& Matrix<T>::MutableNonDiagIterator<IteratorType>::operator[](diff_type index) const
-{
-    return static_cast<const IteratorType*>(this)->operator[](index);
 }
 
 template <MatrixElementType T>
