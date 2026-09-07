@@ -69,12 +69,12 @@ public:
         T& _applyAsteriskOperator() const;
         T* _applyArrowOperator() const;
 
-        void _increment();
-        void _decrement();
-
         bool _isEmpty() const;
 
     private:
+        void _increment();
+        void _decrement();
+
         std::optional<size_type> _getRowNr() const;
         std::optional<size_type> _getColumnNr() const;
 
@@ -139,8 +139,6 @@ public:
 
         using MutableNonDiagIterator<ZIterator>::_applyAsteriskOperator;
         using MutableNonDiagIterator<ZIterator>::_applyArrowOperator;
-        using MutableNonDiagIterator<ZIterator>::_increment;
-        using MutableNonDiagIterator<ZIterator>::_decrement;
         using MutableNonDiagIterator<ZIterator>::_isEmpty;
 
         using MutableNonDiagIterator<ZIterator>::m_pMatrixPtr;
@@ -816,6 +814,22 @@ T* Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyArrowOperator() const
 
 template <MatrixElementType T>
 template <typename IteratorType>
+bool Matrix<T>::MutableNonDiagIterator<IteratorType>::_isEmpty() const
+{
+    if (m_pMatrixPtr)
+    {
+        assert(m_NrOfMatrixRows > size_type{0} && m_NrOfMatrixColumns > size_type{0} && m_Index.has_value());
+    }
+    else
+    {
+        assert(size_type{0} == m_NrOfMatrixRows && size_type{0} == m_NrOfMatrixColumns && !m_Index.has_value());
+    }
+
+    return !m_pMatrixPtr;
+}
+
+template <MatrixElementType T>
+template <typename IteratorType>
 void Matrix<T>::MutableNonDiagIterator<IteratorType>::_increment()
 {
     if (!_isEmpty())
@@ -837,22 +851,6 @@ void Matrix<T>::MutableNonDiagIterator<IteratorType>::_decrement()
     {
         m_Index = *m_Index - diff_type{1};
     }
-}
-
-template <MatrixElementType T>
-template <typename IteratorType>
-bool Matrix<T>::MutableNonDiagIterator<IteratorType>::_isEmpty() const
-{
-    if (m_pMatrixPtr)
-    {
-        assert(m_NrOfMatrixRows > size_type{0} && m_NrOfMatrixColumns > size_type{0} && m_Index.has_value());
-    }
-    else
-    {
-        assert(size_type{0} == m_NrOfMatrixRows && size_type{0} == m_NrOfMatrixColumns && !m_Index.has_value());
-    }
-
-    return !m_pMatrixPtr;
 }
 
 template <MatrixElementType T>
