@@ -70,6 +70,7 @@ public:
         T* _applyArrowOperator() const;
         T& _applyIndexOperator(size_type rowNr, size_type columnNr) const;
 
+        T** _getMatrixPtr() const;
         size_type _getNrOfMatrixRows() const;
         size_type _getNrOfMatrixColumns() const;
         std::optional<diff_type> _getIndex() const;
@@ -88,11 +89,14 @@ public:
         std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
     };
 
+    class ConstZIterator;
+
     class ZIterator : public MutableNonDiagIterator<ZIterator>
     {
     public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
         friend class Matrix<T>;
+        friend class Matrix<T>::ConstZIterator;
 
         /* all these are required for STL compatibility */
         using iterator_category = std::random_access_iterator_tag;
@@ -143,6 +147,7 @@ public:
         using MutableNonDiagIterator<ZIterator>::_applyAsteriskOperator;
         using MutableNonDiagIterator<ZIterator>::_applyArrowOperator;
         using MutableNonDiagIterator<ZIterator>::_applyIndexOperator;
+        using MutableNonDiagIterator<ZIterator>::_getMatrixPtr;
         using MutableNonDiagIterator<ZIterator>::_getNrOfMatrixRows;
         using MutableNonDiagIterator<ZIterator>::_getNrOfMatrixColumns;
         using MutableNonDiagIterator<ZIterator>::_getIndex;
@@ -877,6 +882,13 @@ T& Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyIndexOperator(Matrix<T
 
 template <MatrixElementType T>
 template <typename IteratorType>
+T** Matrix<T>::MutableNonDiagIterator<IteratorType>::_getMatrixPtr() const
+{
+    return m_pMatrixPtr;
+}
+
+template <MatrixElementType T>
+template <typename IteratorType>
 typename Matrix<T>::size_type Matrix<T>::MutableNonDiagIterator<IteratorType>::_getNrOfMatrixRows() const
 {
     return m_NrOfMatrixRows;
@@ -1018,11 +1030,12 @@ template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matr
 
 // 2) ConstZIterator
 
-template <MatrixElementType T> Matrix<T>::ConstZIterator::ConstZIterator(const ZIterator& zIterator)
-// : MutableNonDiagIterator<ConstZIterator>{
-//       zIterator.m_pMatrixPtr, zIterator.m_NrOfMatrixRows, zIterator.m_NrOfMatrixColumns,
-//       computeForwardNonDiagIteratorIndex(zIterator.m_NrOfMatrixRows, zIterator.m_NrOfMatrixColumns,
-//       zIterator.getRowNr(), zIterator.getColumnNr())}
+template <MatrixElementType T>
+Matrix<T>::ConstZIterator::ConstZIterator(const ZIterator& zIterator)
+    : MutableNonDiagIterator<ConstZIterator>{
+          zIterator._getMatrixPtr(), zIterator._getNrOfMatrixRows(), zIterator._getNrOfMatrixColumns(),
+          computeForwardNonDiagIteratorIndex(zIterator._getNrOfMatrixRows(), zIterator._getNrOfMatrixColumns(),
+                                             zIterator.getRowNr(), zIterator.getColumnNr())}
 {
 }
 
