@@ -70,6 +70,9 @@ public:
         T* _applyArrowOperator() const;
         T& _applyIndexOperator(size_type rowNr, size_type columnNr) const;
 
+        size_type _getNrOfMatrixRows() const;
+        size_type _getNrOfMatrixColumns() const;
+        std::optional<diff_type> _getIndex() const;
         bool _isEmpty() const;
 
     private:
@@ -80,8 +83,6 @@ public:
         std::optional<size_type> _getColumnNr() const;
 
         T** m_pMatrixPtr;
-
-    protected:
         matrix_size_t m_NrOfMatrixRows;
         matrix_size_t m_NrOfMatrixColumns;
         std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
@@ -142,11 +143,10 @@ public:
         using MutableNonDiagIterator<ZIterator>::_applyAsteriskOperator;
         using MutableNonDiagIterator<ZIterator>::_applyArrowOperator;
         using MutableNonDiagIterator<ZIterator>::_applyIndexOperator;
+        using MutableNonDiagIterator<ZIterator>::_getNrOfMatrixRows;
+        using MutableNonDiagIterator<ZIterator>::_getNrOfMatrixColumns;
+        using MutableNonDiagIterator<ZIterator>::_getIndex;
         using MutableNonDiagIterator<ZIterator>::_isEmpty;
-
-        using MutableNonDiagIterator<ZIterator>::m_NrOfMatrixRows;
-        using MutableNonDiagIterator<ZIterator>::m_NrOfMatrixColumns;
-        using MutableNonDiagIterator<ZIterator>::m_Index;
     };
 
     class ConstZIterator
@@ -826,6 +826,27 @@ T& Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyIndexOperator(Matrix<T
 
 template <MatrixElementType T>
 template <typename IteratorType>
+typename Matrix<T>::size_type Matrix<T>::MutableNonDiagIterator<IteratorType>::_getNrOfMatrixRows() const
+{
+    return m_NrOfMatrixRows;
+}
+
+template <MatrixElementType T>
+template <typename IteratorType>
+typename Matrix<T>::size_type Matrix<T>::MutableNonDiagIterator<IteratorType>::_getNrOfMatrixColumns() const
+{
+    return m_NrOfMatrixColumns;
+}
+
+template <MatrixElementType T>
+template <typename IteratorType>
+std::optional<typename Matrix<T>::diff_type> Matrix<T>::MutableNonDiagIterator<IteratorType>::_getIndex() const
+{
+    return m_Index;
+}
+
+template <MatrixElementType T>
+template <typename IteratorType>
 bool Matrix<T>::MutableNonDiagIterator<IteratorType>::_isEmpty() const
 {
     if (m_pMatrixPtr)
@@ -903,34 +924,44 @@ template <MatrixElementType T> T* Matrix<T>::ZIterator::operator->() const
 
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::ZIterator::difference_type index) const
 {
+    const std::optional<diff_type> c_Index{_getIndex()};
+
     /* The iterator index should not be std::nullopt if the matrix is not empty */
-    CHECK_ERROR_CONDITION(_isEmpty() || (index < diff_type{0} && std::abs(index) > *m_Index),
+    CHECK_ERROR_CONDITION(_isEmpty() || (index < diff_type{0} && std::abs(index) > *c_Index),
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
 
-    const diff_type c_ResultingIndex{static_cast<diff_type>(*m_Index + index)};
+    const size_type c_NrOfMatrixRows{_getNrOfMatrixRows()};
+    const size_type c_NrOfMatrixColumns{_getNrOfMatrixColumns()};
+    const diff_type c_ResultingIndex{static_cast<diff_type>(*c_Index + index)};
     const diff_type c_UpperBound{
-        static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
+        static_cast<diff_type>(static_cast<diff_type>(c_NrOfMatrixRows) * static_cast<diff_type>(c_NrOfMatrixColumns))};
 
     CHECK_ERROR_CONDITION(c_ResultingIndex >= c_UpperBound,
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
 
     const size_type c_ResultingRowNr{
-        static_cast<size_type>(c_ResultingIndex / static_cast<diff_type>(m_NrOfMatrixColumns))};
+        static_cast<size_type>(c_ResultingIndex / static_cast<diff_type>(c_NrOfMatrixColumns))};
     const size_type c_ResultingColumnNr{
-        static_cast<size_type>(c_ResultingIndex % static_cast<diff_type>(m_NrOfMatrixColumns))};
+        static_cast<size_type>(c_ResultingIndex % static_cast<diff_type>(c_NrOfMatrixColumns))};
 
     return _applyIndexOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
 {
-    return m_Index.has_value() ? static_cast<size_type>(*m_Index / static_cast<diff_type>(m_NrOfMatrixColumns))
+    const std::optional<diff_type> c_Index{_getIndex()};
+    const size_type c_NrOfMatrixColumns{_getNrOfMatrixColumns()};
+
+    return c_Index.has_value() ? static_cast<size_type>(*c_Index / static_cast<diff_type>(c_NrOfMatrixColumns))
                                : std::optional<size_type>{};
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getColumnNr() const
 {
-    return m_Index.has_value() ? static_cast<size_type>(*m_Index % static_cast<diff_type>(m_NrOfMatrixColumns))
+    const std::optional<diff_type> c_Index{_getIndex()};
+    const size_type c_NrOfMatrixColumns{_getNrOfMatrixColumns()};
+
+    return c_Index.has_value() ? static_cast<size_type>(*c_Index % static_cast<diff_type>(c_NrOfMatrixColumns))
                                : std::optional<size_type>{};
 }
 
