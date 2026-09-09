@@ -89,7 +89,7 @@ public:
         std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
     };
 
-    class ZIterator : public MutableNonDiagIterator<ZIterator>
+    class ZIterator final : public MutableNonDiagIterator<ZIterator>
     {
     public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
@@ -146,7 +146,7 @@ public:
         using MutableNonDiagIterator<ZIterator>::_isEmpty;
     };
 
-    class ConstZIterator : public MutableNonDiagIterator<ConstZIterator>
+    class ConstZIterator final : public MutableNonDiagIterator<ConstZIterator>
     {
     public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
