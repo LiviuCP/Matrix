@@ -201,8 +201,6 @@ public:
         using MutableNonDiagIterator<ConstZIterator>::_getNrOfMatrixColumns;
         using MutableNonDiagIterator<ConstZIterator>::_getIndex;
         using MutableNonDiagIterator<ConstZIterator>::_isEmpty;
-
-    public:
     };
 
     class ReverseZIterator
