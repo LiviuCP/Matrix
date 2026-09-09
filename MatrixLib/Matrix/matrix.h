@@ -95,12 +95,7 @@ public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
         friend class Matrix<T>;
 
-        /* all these are required for STL compatibility */
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = T;
-        using difference_type = diff_type;
-        using pointer = T**;
-        using reference = T&;
+        ITERATOR_TRAITS(T, diff_type, T&);
 
         ZIterator() = default;
 
@@ -157,12 +152,7 @@ public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
         friend class Matrix<T>;
 
-        /* all these are required for STL compatibility */
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = T;
-        using difference_type = diff_type;
-        using pointer = T**;
-        using reference = const T&;
+        ITERATOR_TRAITS(T, diff_type, const T&);
 
         ConstZIterator() = default;
         ConstZIterator(const ZIterator& zIterator);
@@ -5075,6 +5065,7 @@ template <MatrixElementType T> void* Matrix<T>::_convertToArray(Matrix<T>::size_
 #undef COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS
 #undef COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS
 #undef COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS
+#undef ITERATOR_TRAITS
 
 #undef ITERATOR_PRE_INCREMENT
 #undef ITERATOR_POST_INCREMENT

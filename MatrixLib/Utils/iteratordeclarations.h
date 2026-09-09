@@ -99,3 +99,10 @@
     std::optional<SizeType> m_DiagonalIndex; /* relative index within diagonal */                                      \
     DiffType m_DiagonalNr;                   /* index of the diagonal within matrix */                                 \
     SizeType m_DiagonalSize;                 /* number of elements contained within diagonal */
+
+#define ITERATOR_TRAITS(IterableType, DiffType, ReferenceType)                                                         \
+    using iterator_category = std::random_access_iterator_tag;                                                         \
+    using value_type = IterableType;                                                                                   \
+    using difference_type = DiffType;                                                                                  \
+    using pointer = IterableType**;                                                                                    \
+    using reference = ReferenceType;
