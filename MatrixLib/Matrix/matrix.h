@@ -84,9 +84,9 @@ public:
         std::optional<size_type> _getColumnNr() const;
 
         T** m_pMatrixPtr;
-        matrix_size_t m_NrOfMatrixRows;
-        matrix_size_t m_NrOfMatrixColumns;
-        std::optional<matrix_diff_t> m_Index; /* relative index within begin - end iterators range */
+        size_type m_NrOfMatrixRows;
+        size_type m_NrOfMatrixColumns;
+        std::optional<diff_type> m_Index; /* relative index within begin - end iterators range */
     };
 
     class ZIterator final : public MutableNonDiagIterator<ZIterator>
