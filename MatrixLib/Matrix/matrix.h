@@ -53,10 +53,10 @@ public:
         IteratorType& operator+=(diff_type offset);
         IteratorType& operator-=(diff_type offset);
 
-        diff_type operator-(const MutableNonDiagIterator& it) const;
+        diff_type operator-(const IteratorType& it) const;
 
-        std::strong_ordering operator<=>(const MutableNonDiagIterator& it) const;
-        bool operator==(const MutableNonDiagIterator& it) const;
+        std::strong_ordering operator<=>(const IteratorType& it) const;
+        bool operator==(const IteratorType& it) const;
 
     protected:
         /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
@@ -755,7 +755,7 @@ IteratorType& Matrix<T>::MutableNonDiagIterator<IteratorType>::operator-=(Matrix
 template <MatrixElementType T>
 template <typename IteratorType>
 typename Matrix<T>::diff_type Matrix<T>::MutableNonDiagIterator<IteratorType>::operator-(
-    const MutableNonDiagIterator& it) const
+    const IteratorType& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
                               m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
@@ -766,7 +766,7 @@ typename Matrix<T>::diff_type Matrix<T>::MutableNonDiagIterator<IteratorType>::o
 template <MatrixElementType T>
 template <typename IteratorType>
 std::strong_ordering Matrix<T>::MutableNonDiagIterator<IteratorType>::operator<=>(
-    const MutableNonDiagIterator& it) const
+    const IteratorType& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
                               m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
@@ -778,7 +778,7 @@ std::strong_ordering Matrix<T>::MutableNonDiagIterator<IteratorType>::operator<=
 
 template <MatrixElementType T>
 template <typename IteratorType>
-bool Matrix<T>::MutableNonDiagIterator<IteratorType>::operator==(const MutableNonDiagIterator& it) const
+bool Matrix<T>::MutableNonDiagIterator<IteratorType>::operator==(const IteratorType& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
                               m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
