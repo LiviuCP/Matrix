@@ -72,7 +72,7 @@ public:
 
         T& _applyAsteriskOperator() const;
         T* _applyArrowOperator() const;
-        T& _applyIndexOperator(size_type rowNr, size_type columnNr) const;
+        T& _applySquareBracketsOperator(size_type rowNr, size_type columnNr) const;
 
         T** _getMatrixPtr() const;
         size_type _getNrOfMatrixRows() const;
@@ -134,7 +134,7 @@ public:
 
         using NonDiagIterator<ZIterator>::_applyAsteriskOperator;
         using NonDiagIterator<ZIterator>::_applyArrowOperator;
-        using NonDiagIterator<ZIterator>::_applyIndexOperator;
+        using NonDiagIterator<ZIterator>::_applySquareBracketsOperator;
         using NonDiagIterator<ZIterator>::_getMatrixPtr;
         using NonDiagIterator<ZIterator>::_getNrOfMatrixRows;
         using NonDiagIterator<ZIterator>::_getNrOfMatrixColumns;
@@ -184,7 +184,7 @@ public:
 
         using NonDiagIterator<ConstZIterator>::_applyAsteriskOperator;
         using NonDiagIterator<ConstZIterator>::_applyArrowOperator;
-        using NonDiagIterator<ConstZIterator>::_applyIndexOperator;
+        using NonDiagIterator<ConstZIterator>::_applySquareBracketsOperator;
         using NonDiagIterator<ConstZIterator>::_getNrOfMatrixRows;
         using NonDiagIterator<ConstZIterator>::_getNrOfMatrixColumns;
         using NonDiagIterator<ConstZIterator>::_getIndex;
@@ -232,7 +232,7 @@ public:
 
         using NonDiagIterator<ReverseZIterator>::_applyAsteriskOperator;
         using NonDiagIterator<ReverseZIterator>::_applyArrowOperator;
-        using NonDiagIterator<ReverseZIterator>::_applyIndexOperator;
+        using NonDiagIterator<ReverseZIterator>::_applySquareBracketsOperator;
         using NonDiagIterator<ReverseZIterator>::_getMatrixPtr;
         using NonDiagIterator<ReverseZIterator>::_getNrOfMatrixRows;
         using NonDiagIterator<ReverseZIterator>::_getNrOfMatrixColumns;
@@ -282,7 +282,7 @@ public:
 
         using NonDiagIterator<ConstReverseZIterator>::_applyAsteriskOperator;
         using NonDiagIterator<ConstReverseZIterator>::_applyArrowOperator;
-        using NonDiagIterator<ConstReverseZIterator>::_applyIndexOperator;
+        using NonDiagIterator<ConstReverseZIterator>::_applySquareBracketsOperator;
         using NonDiagIterator<ConstReverseZIterator>::_getNrOfMatrixRows;
         using NonDiagIterator<ConstReverseZIterator>::_getNrOfMatrixColumns;
         using NonDiagIterator<ConstReverseZIterator>::_getIndex;
@@ -330,7 +330,7 @@ public:
 
         using NonDiagIterator<NIterator>::_applyAsteriskOperator;
         using NonDiagIterator<NIterator>::_applyArrowOperator;
-        using NonDiagIterator<NIterator>::_applyIndexOperator;
+        using NonDiagIterator<NIterator>::_applySquareBracketsOperator;
         using NonDiagIterator<NIterator>::_getMatrixPtr;
         using NonDiagIterator<NIterator>::_getNrOfMatrixRows;
         using NonDiagIterator<NIterator>::_getNrOfMatrixColumns;
@@ -380,7 +380,7 @@ public:
 
         using NonDiagIterator<ConstNIterator>::_applyAsteriskOperator;
         using NonDiagIterator<ConstNIterator>::_applyArrowOperator;
-        using NonDiagIterator<ConstNIterator>::_applyIndexOperator;
+        using NonDiagIterator<ConstNIterator>::_applySquareBracketsOperator;
         using NonDiagIterator<ConstNIterator>::_getNrOfMatrixRows;
         using NonDiagIterator<ConstNIterator>::_getNrOfMatrixColumns;
         using NonDiagIterator<ConstNIterator>::_getIndex;
@@ -428,7 +428,7 @@ public:
 
         using NonDiagIterator<ReverseNIterator>::_applyAsteriskOperator;
         using NonDiagIterator<ReverseNIterator>::_applyArrowOperator;
-        using NonDiagIterator<ReverseNIterator>::_applyIndexOperator;
+        using NonDiagIterator<ReverseNIterator>::_applySquareBracketsOperator;
         using NonDiagIterator<ReverseNIterator>::_getMatrixPtr;
         using NonDiagIterator<ReverseNIterator>::_getNrOfMatrixRows;
         using NonDiagIterator<ReverseNIterator>::_getNrOfMatrixColumns;
@@ -478,7 +478,7 @@ public:
 
         using NonDiagIterator<ConstReverseNIterator>::_applyAsteriskOperator;
         using NonDiagIterator<ConstReverseNIterator>::_applyArrowOperator;
-        using NonDiagIterator<ConstReverseNIterator>::_applyIndexOperator;
+        using NonDiagIterator<ConstReverseNIterator>::_applySquareBracketsOperator;
         using NonDiagIterator<ConstReverseNIterator>::_getNrOfMatrixRows;
         using NonDiagIterator<ConstReverseNIterator>::_getNrOfMatrixColumns;
         using NonDiagIterator<ConstReverseNIterator>::_getIndex;
@@ -1038,8 +1038,8 @@ T* Matrix<T>::NonDiagIterator<IterType>::_applyArrowOperator() const
 
 template <MatrixElementType T>
 template <typename IterType>
-T& Matrix<T>::NonDiagIterator<IterType>::_applyIndexOperator(Matrix<T>::size_type rowNr,
-                                                             Matrix<T>::size_type columnNr) const
+T& Matrix<T>::NonDiagIterator<IterType>::_applySquareBracketsOperator(Matrix<T>::size_type rowNr,
+                                                                      Matrix<T>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(_isEmpty() || rowNr >= m_NrOfMatrixRows || columnNr >= m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
@@ -1166,7 +1166,7 @@ template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::di
     const size_type c_ResultingColumnNr{
         static_cast<size_type>(c_ResultingIndex % static_cast<diff_type>(c_NrOfMatrixColumns))};
 
-    return _applyIndexOperator(c_ResultingRowNr, c_ResultingColumnNr);
+    return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::getRowNr() const
@@ -1241,7 +1241,7 @@ template <MatrixElementType T> const T& Matrix<T>::ConstZIterator::operator[](Ma
     const size_type c_ResultingColumnNr{
         static_cast<size_type>(c_ResultingIndex % static_cast<diff_type>(c_NrOfMatrixColumns))};
 
-    return _applyIndexOperator(c_ResultingRowNr, c_ResultingColumnNr);
+    return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstZIterator::getRowNr() const
@@ -1310,7 +1310,7 @@ template <MatrixElementType T> T& Matrix<T>::ReverseZIterator::operator[](Matrix
     const size_type c_ResultingColumnNr{
         static_cast<size_type>(c_ResultingIndex % static_cast<diff_type>(c_NrOfMatrixColumns))};
 
-    return _applyIndexOperator(c_ResultingRowNr, c_ResultingColumnNr);
+    return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T>
@@ -1399,7 +1399,7 @@ template <MatrixElementType T> const T& Matrix<T>::ConstReverseZIterator::operat
     const size_type c_ResultingColumnNr{
         static_cast<size_type>(c_ResultingIndex % static_cast<diff_type>(c_NrOfMatrixColumns))};
 
-    return _applyIndexOperator(c_ResultingRowNr, c_ResultingColumnNr);
+    return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T>
@@ -1475,7 +1475,7 @@ template <MatrixElementType T> T& Matrix<T>::NIterator::operator[](Matrix<T>::di
     const size_type c_ResultingColumnNr{
         static_cast<size_type>(c_ResultingIndex / static_cast<diff_type>(c_NrOfMatrixRows))};
 
-    return _applyIndexOperator(c_ResultingRowNr, c_ResultingColumnNr);
+    return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::NIterator::getRowNr() const
@@ -1551,7 +1551,7 @@ template <MatrixElementType T> const T& Matrix<T>::ConstNIterator::operator[](Ma
     const size_type c_ResultingColumnNr{
         static_cast<size_type>(c_ResultingIndex / static_cast<diff_type>(c_NrOfMatrixRows))};
 
-    return _applyIndexOperator(c_ResultingRowNr, c_ResultingColumnNr);
+    return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstNIterator::getRowNr() const
@@ -1621,7 +1621,7 @@ template <MatrixElementType T> T& Matrix<T>::ReverseNIterator::operator[](Matrix
     const size_type c_ResultingColumnNr{
         static_cast<size_type>(c_ResultingIndex / static_cast<diff_type>(c_NrOfMatrixRows))};
 
-    return _applyIndexOperator(c_ResultingRowNr, c_ResultingColumnNr);
+    return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T>
@@ -1711,7 +1711,7 @@ template <MatrixElementType T> const T& Matrix<T>::ConstReverseNIterator::operat
     const size_type c_ResultingColumnNr{
         static_cast<size_type>(c_ResultingIndex / static_cast<diff_type>(c_NrOfMatrixRows))};
 
-    return _applyIndexOperator(c_ResultingRowNr, c_ResultingColumnNr);
+    return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T>
