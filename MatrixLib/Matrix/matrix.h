@@ -42,7 +42,7 @@ public:
     using diff_type = matrix_diff_t;
     using dimensions_t = std::pair<size_type, size_type>;
 
-    template <typename IteratorType> class MutableNonDiagIterator
+    template <typename IteratorType> class NonDiagIterator
     {
     public:
         IteratorType& operator++();
@@ -61,10 +61,10 @@ public:
     protected:
         /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
          * empty matrix */
-        MutableNonDiagIterator();
+        NonDiagIterator();
 
-        MutableNonDiagIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
-                               std::optional<diff_type> index);
+        NonDiagIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
+                        std::optional<diff_type> index);
 
         T& _applyAsteriskOperator() const;
         T* _applyArrowOperator() const;
@@ -89,7 +89,7 @@ public:
         std::optional<diff_type> m_Index; /* relative index within begin - end iterators range */
     };
 
-    class ZIterator final : public MutableNonDiagIterator<ZIterator>
+    class ZIterator final : public NonDiagIterator<ZIterator>
     {
     public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
@@ -99,8 +99,8 @@ public:
 
         ZIterator() = default;
 
-        using MutableNonDiagIterator<ZIterator>::operator<=>;
-        using MutableNonDiagIterator<ZIterator>::operator==;
+        using NonDiagIterator<ZIterator>::operator<=>;
+        using NonDiagIterator<ZIterator>::operator==;
 
         T& operator*() const;
         T* operator->() const;
@@ -128,17 +128,17 @@ public:
         ZIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns, std::optional<size_type> rowNr,
                   std::optional<size_type> columnNr);
 
-        using MutableNonDiagIterator<ZIterator>::_applyAsteriskOperator;
-        using MutableNonDiagIterator<ZIterator>::_applyArrowOperator;
-        using MutableNonDiagIterator<ZIterator>::_applyIndexOperator;
-        using MutableNonDiagIterator<ZIterator>::_getMatrixPtr;
-        using MutableNonDiagIterator<ZIterator>::_getNrOfMatrixRows;
-        using MutableNonDiagIterator<ZIterator>::_getNrOfMatrixColumns;
-        using MutableNonDiagIterator<ZIterator>::_getIndex;
-        using MutableNonDiagIterator<ZIterator>::_isEmpty;
+        using NonDiagIterator<ZIterator>::_applyAsteriskOperator;
+        using NonDiagIterator<ZIterator>::_applyArrowOperator;
+        using NonDiagIterator<ZIterator>::_applyIndexOperator;
+        using NonDiagIterator<ZIterator>::_getMatrixPtr;
+        using NonDiagIterator<ZIterator>::_getNrOfMatrixRows;
+        using NonDiagIterator<ZIterator>::_getNrOfMatrixColumns;
+        using NonDiagIterator<ZIterator>::_getIndex;
+        using NonDiagIterator<ZIterator>::_isEmpty;
     };
 
-    class ConstZIterator final : public MutableNonDiagIterator<ConstZIterator>
+    class ConstZIterator final : public NonDiagIterator<ConstZIterator>
     {
     public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
@@ -149,8 +149,8 @@ public:
         ConstZIterator() = default;
         ConstZIterator(const ZIterator& zIterator);
 
-        using MutableNonDiagIterator<ConstZIterator>::operator<=>;
-        using MutableNonDiagIterator<ConstZIterator>::operator==;
+        using NonDiagIterator<ConstZIterator>::operator<=>;
+        using NonDiagIterator<ConstZIterator>::operator==;
 
         const T& operator*() const;
         const T* operator->() const;
@@ -178,16 +178,16 @@ public:
         ConstZIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
                        std::optional<size_type> rowNr, std::optional<size_type> columnNr);
 
-        using MutableNonDiagIterator<ConstZIterator>::_applyAsteriskOperator;
-        using MutableNonDiagIterator<ConstZIterator>::_applyArrowOperator;
-        using MutableNonDiagIterator<ConstZIterator>::_applyIndexOperator;
-        using MutableNonDiagIterator<ConstZIterator>::_getNrOfMatrixRows;
-        using MutableNonDiagIterator<ConstZIterator>::_getNrOfMatrixColumns;
-        using MutableNonDiagIterator<ConstZIterator>::_getIndex;
-        using MutableNonDiagIterator<ConstZIterator>::_isEmpty;
+        using NonDiagIterator<ConstZIterator>::_applyAsteriskOperator;
+        using NonDiagIterator<ConstZIterator>::_applyArrowOperator;
+        using NonDiagIterator<ConstZIterator>::_applyIndexOperator;
+        using NonDiagIterator<ConstZIterator>::_getNrOfMatrixRows;
+        using NonDiagIterator<ConstZIterator>::_getNrOfMatrixColumns;
+        using NonDiagIterator<ConstZIterator>::_getIndex;
+        using NonDiagIterator<ConstZIterator>::_isEmpty;
     };
 
-    class ReverseZIterator final : public MutableNonDiagIterator<ReverseZIterator>
+    class ReverseZIterator final : public NonDiagIterator<ReverseZIterator>
     {
     public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
@@ -197,8 +197,8 @@ public:
 
         ReverseZIterator() = default;
 
-        using MutableNonDiagIterator<ReverseZIterator>::operator<=>;
-        using MutableNonDiagIterator<ReverseZIterator>::operator==;
+        using NonDiagIterator<ReverseZIterator>::operator<=>;
+        using NonDiagIterator<ReverseZIterator>::operator==;
 
         T& operator*() const;
         T* operator->() const;
@@ -226,17 +226,17 @@ public:
         ReverseZIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
                          std::optional<size_type> rowNr, std::optional<size_type> columnNr);
 
-        using MutableNonDiagIterator<ReverseZIterator>::_applyAsteriskOperator;
-        using MutableNonDiagIterator<ReverseZIterator>::_applyArrowOperator;
-        using MutableNonDiagIterator<ReverseZIterator>::_applyIndexOperator;
-        using MutableNonDiagIterator<ReverseZIterator>::_getMatrixPtr;
-        using MutableNonDiagIterator<ReverseZIterator>::_getNrOfMatrixRows;
-        using MutableNonDiagIterator<ReverseZIterator>::_getNrOfMatrixColumns;
-        using MutableNonDiagIterator<ReverseZIterator>::_getIndex;
-        using MutableNonDiagIterator<ReverseZIterator>::_isEmpty;
+        using NonDiagIterator<ReverseZIterator>::_applyAsteriskOperator;
+        using NonDiagIterator<ReverseZIterator>::_applyArrowOperator;
+        using NonDiagIterator<ReverseZIterator>::_applyIndexOperator;
+        using NonDiagIterator<ReverseZIterator>::_getMatrixPtr;
+        using NonDiagIterator<ReverseZIterator>::_getNrOfMatrixRows;
+        using NonDiagIterator<ReverseZIterator>::_getNrOfMatrixColumns;
+        using NonDiagIterator<ReverseZIterator>::_getIndex;
+        using NonDiagIterator<ReverseZIterator>::_isEmpty;
     };
 
-    class ConstReverseZIterator final : public MutableNonDiagIterator<ConstReverseZIterator>
+    class ConstReverseZIterator final : public NonDiagIterator<ConstReverseZIterator>
     {
     public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
@@ -247,8 +247,8 @@ public:
         ConstReverseZIterator() = default;
         ConstReverseZIterator(const ReverseZIterator& zIterator);
 
-        using MutableNonDiagIterator<ConstReverseZIterator>::operator<=>;
-        using MutableNonDiagIterator<ConstReverseZIterator>::operator==;
+        using NonDiagIterator<ConstReverseZIterator>::operator<=>;
+        using NonDiagIterator<ConstReverseZIterator>::operator==;
 
         const T& operator*() const;
         const T* operator->() const;
@@ -276,16 +276,16 @@ public:
         ConstReverseZIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
                               std::optional<size_type> rowNr, std::optional<size_type> columnNr);
 
-        using MutableNonDiagIterator<ConstReverseZIterator>::_applyAsteriskOperator;
-        using MutableNonDiagIterator<ConstReverseZIterator>::_applyArrowOperator;
-        using MutableNonDiagIterator<ConstReverseZIterator>::_applyIndexOperator;
-        using MutableNonDiagIterator<ConstReverseZIterator>::_getNrOfMatrixRows;
-        using MutableNonDiagIterator<ConstReverseZIterator>::_getNrOfMatrixColumns;
-        using MutableNonDiagIterator<ConstReverseZIterator>::_getIndex;
-        using MutableNonDiagIterator<ConstReverseZIterator>::_isEmpty;
+        using NonDiagIterator<ConstReverseZIterator>::_applyAsteriskOperator;
+        using NonDiagIterator<ConstReverseZIterator>::_applyArrowOperator;
+        using NonDiagIterator<ConstReverseZIterator>::_applyIndexOperator;
+        using NonDiagIterator<ConstReverseZIterator>::_getNrOfMatrixRows;
+        using NonDiagIterator<ConstReverseZIterator>::_getNrOfMatrixColumns;
+        using NonDiagIterator<ConstReverseZIterator>::_getIndex;
+        using NonDiagIterator<ConstReverseZIterator>::_isEmpty;
     };
 
-    class NIterator final : public MutableNonDiagIterator<NIterator>
+    class NIterator final : public NonDiagIterator<NIterator>
     {
     public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
@@ -295,8 +295,8 @@ public:
 
         NIterator() = default;
 
-        using MutableNonDiagIterator<NIterator>::operator<=>;
-        using MutableNonDiagIterator<NIterator>::operator==;
+        using NonDiagIterator<NIterator>::operator<=>;
+        using NonDiagIterator<NIterator>::operator==;
 
         T& operator*() const;
         T* operator->() const;
@@ -324,17 +324,17 @@ public:
         NIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns, std::optional<size_type> rowNr,
                   std::optional<size_type> columnNr);
 
-        using MutableNonDiagIterator<NIterator>::_applyAsteriskOperator;
-        using MutableNonDiagIterator<NIterator>::_applyArrowOperator;
-        using MutableNonDiagIterator<NIterator>::_applyIndexOperator;
-        using MutableNonDiagIterator<NIterator>::_getMatrixPtr;
-        using MutableNonDiagIterator<NIterator>::_getNrOfMatrixRows;
-        using MutableNonDiagIterator<NIterator>::_getNrOfMatrixColumns;
-        using MutableNonDiagIterator<NIterator>::_getIndex;
-        using MutableNonDiagIterator<NIterator>::_isEmpty;
+        using NonDiagIterator<NIterator>::_applyAsteriskOperator;
+        using NonDiagIterator<NIterator>::_applyArrowOperator;
+        using NonDiagIterator<NIterator>::_applyIndexOperator;
+        using NonDiagIterator<NIterator>::_getMatrixPtr;
+        using NonDiagIterator<NIterator>::_getNrOfMatrixRows;
+        using NonDiagIterator<NIterator>::_getNrOfMatrixColumns;
+        using NonDiagIterator<NIterator>::_getIndex;
+        using NonDiagIterator<NIterator>::_isEmpty;
     };
 
-    class ConstNIterator final : public MutableNonDiagIterator<ConstNIterator>
+    class ConstNIterator final : public NonDiagIterator<ConstNIterator>
     {
     public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
@@ -345,8 +345,8 @@ public:
         ConstNIterator() = default;
         ConstNIterator(const NIterator& zIterator);
 
-        using MutableNonDiagIterator<ConstNIterator>::operator<=>;
-        using MutableNonDiagIterator<ConstNIterator>::operator==;
+        using NonDiagIterator<ConstNIterator>::operator<=>;
+        using NonDiagIterator<ConstNIterator>::operator==;
 
         const T& operator*() const;
         const T* operator->() const;
@@ -374,16 +374,16 @@ public:
         ConstNIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
                        std::optional<size_type> rowNr, std::optional<size_type> columnNr);
 
-        using MutableNonDiagIterator<ConstNIterator>::_applyAsteriskOperator;
-        using MutableNonDiagIterator<ConstNIterator>::_applyArrowOperator;
-        using MutableNonDiagIterator<ConstNIterator>::_applyIndexOperator;
-        using MutableNonDiagIterator<ConstNIterator>::_getNrOfMatrixRows;
-        using MutableNonDiagIterator<ConstNIterator>::_getNrOfMatrixColumns;
-        using MutableNonDiagIterator<ConstNIterator>::_getIndex;
-        using MutableNonDiagIterator<ConstNIterator>::_isEmpty;
+        using NonDiagIterator<ConstNIterator>::_applyAsteriskOperator;
+        using NonDiagIterator<ConstNIterator>::_applyArrowOperator;
+        using NonDiagIterator<ConstNIterator>::_applyIndexOperator;
+        using NonDiagIterator<ConstNIterator>::_getNrOfMatrixRows;
+        using NonDiagIterator<ConstNIterator>::_getNrOfMatrixColumns;
+        using NonDiagIterator<ConstNIterator>::_getIndex;
+        using NonDiagIterator<ConstNIterator>::_isEmpty;
     };
 
-    class ReverseNIterator final : public MutableNonDiagIterator<ReverseNIterator>
+    class ReverseNIterator final : public NonDiagIterator<ReverseNIterator>
     {
     public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
@@ -393,8 +393,8 @@ public:
 
         ReverseNIterator() = default;
 
-        using MutableNonDiagIterator<ReverseNIterator>::operator<=>;
-        using MutableNonDiagIterator<ReverseNIterator>::operator==;
+        using NonDiagIterator<ReverseNIterator>::operator<=>;
+        using NonDiagIterator<ReverseNIterator>::operator==;
 
         T& operator*() const;
         T* operator->() const;
@@ -422,17 +422,17 @@ public:
         ReverseNIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
                          std::optional<size_type> rowNr, std::optional<size_type> columnNr);
 
-        using MutableNonDiagIterator<ReverseNIterator>::_applyAsteriskOperator;
-        using MutableNonDiagIterator<ReverseNIterator>::_applyArrowOperator;
-        using MutableNonDiagIterator<ReverseNIterator>::_applyIndexOperator;
-        using MutableNonDiagIterator<ReverseNIterator>::_getMatrixPtr;
-        using MutableNonDiagIterator<ReverseNIterator>::_getNrOfMatrixRows;
-        using MutableNonDiagIterator<ReverseNIterator>::_getNrOfMatrixColumns;
-        using MutableNonDiagIterator<ReverseNIterator>::_getIndex;
-        using MutableNonDiagIterator<ReverseNIterator>::_isEmpty;
+        using NonDiagIterator<ReverseNIterator>::_applyAsteriskOperator;
+        using NonDiagIterator<ReverseNIterator>::_applyArrowOperator;
+        using NonDiagIterator<ReverseNIterator>::_applyIndexOperator;
+        using NonDiagIterator<ReverseNIterator>::_getMatrixPtr;
+        using NonDiagIterator<ReverseNIterator>::_getNrOfMatrixRows;
+        using NonDiagIterator<ReverseNIterator>::_getNrOfMatrixColumns;
+        using NonDiagIterator<ReverseNIterator>::_getIndex;
+        using NonDiagIterator<ReverseNIterator>::_isEmpty;
     };
 
-    class ConstReverseNIterator final : public MutableNonDiagIterator<ConstReverseNIterator>
+    class ConstReverseNIterator final : public NonDiagIterator<ConstReverseNIterator>
     {
     public:
         /* Required for being able to return iterators by using the private constructor of the iterator class */
@@ -443,8 +443,8 @@ public:
         ConstReverseNIterator() = default;
         ConstReverseNIterator(const ReverseNIterator& zIterator);
 
-        using MutableNonDiagIterator<ConstReverseNIterator>::operator<=>;
-        using MutableNonDiagIterator<ConstReverseNIterator>::operator==;
+        using NonDiagIterator<ConstReverseNIterator>::operator<=>;
+        using NonDiagIterator<ConstReverseNIterator>::operator==;
 
         const T& operator*() const;
         const T* operator->() const;
@@ -472,13 +472,13 @@ public:
         ConstReverseNIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
                               std::optional<size_type> rowNr, std::optional<size_type> columnNr);
 
-        using MutableNonDiagIterator<ConstReverseNIterator>::_applyAsteriskOperator;
-        using MutableNonDiagIterator<ConstReverseNIterator>::_applyArrowOperator;
-        using MutableNonDiagIterator<ConstReverseNIterator>::_applyIndexOperator;
-        using MutableNonDiagIterator<ConstReverseNIterator>::_getNrOfMatrixRows;
-        using MutableNonDiagIterator<ConstReverseNIterator>::_getNrOfMatrixColumns;
-        using MutableNonDiagIterator<ConstReverseNIterator>::_getIndex;
-        using MutableNonDiagIterator<ConstReverseNIterator>::_isEmpty;
+        using NonDiagIterator<ConstReverseNIterator>::_applyAsteriskOperator;
+        using NonDiagIterator<ConstReverseNIterator>::_applyArrowOperator;
+        using NonDiagIterator<ConstReverseNIterator>::_applyIndexOperator;
+        using NonDiagIterator<ConstReverseNIterator>::_getNrOfMatrixRows;
+        using NonDiagIterator<ConstReverseNIterator>::_getNrOfMatrixColumns;
+        using NonDiagIterator<ConstReverseNIterator>::_getIndex;
+        using NonDiagIterator<ConstReverseNIterator>::_isEmpty;
     };
 
     class DIterator
@@ -876,11 +876,11 @@ private:
     std::optional<size_type> m_ColumnCapacityOffset;
 };
 
-// Base MutableNonDiagIterator class to be used for implementing (Reverse)Z/NIterator classes
+// Base NonDiagIterator class to be used for implementing (Reverse)Z/NIterator classes
 
 template <MatrixElementType T>
 template <typename IteratorType>
-IteratorType& Matrix<T>::MutableNonDiagIterator<IteratorType>::operator++()
+IteratorType& Matrix<T>::NonDiagIterator<IteratorType>::operator++()
 {
     _increment();
     return *static_cast<IteratorType*>(this);
@@ -888,7 +888,7 @@ IteratorType& Matrix<T>::MutableNonDiagIterator<IteratorType>::operator++()
 
 template <MatrixElementType T>
 template <typename IteratorType>
-IteratorType Matrix<T>::MutableNonDiagIterator<IteratorType>::operator++(int unused)
+IteratorType Matrix<T>::NonDiagIterator<IteratorType>::operator++(int unused)
 {
     (void)unused;
     IteratorType iterator{*static_cast<IteratorType*>(this)};
@@ -900,7 +900,7 @@ IteratorType Matrix<T>::MutableNonDiagIterator<IteratorType>::operator++(int unu
 
 template <MatrixElementType T>
 template <typename IteratorType>
-IteratorType& Matrix<T>::MutableNonDiagIterator<IteratorType>::operator--()
+IteratorType& Matrix<T>::NonDiagIterator<IteratorType>::operator--()
 {
     _decrement();
     return *static_cast<IteratorType*>(this);
@@ -908,7 +908,7 @@ IteratorType& Matrix<T>::MutableNonDiagIterator<IteratorType>::operator--()
 
 template <MatrixElementType T>
 template <typename IteratorType>
-IteratorType Matrix<T>::MutableNonDiagIterator<IteratorType>::operator--(int unused)
+IteratorType Matrix<T>::NonDiagIterator<IteratorType>::operator--(int unused)
 {
     (void)unused;
     IteratorType iterator{*static_cast<IteratorType*>(this)};
@@ -920,7 +920,7 @@ IteratorType Matrix<T>::MutableNonDiagIterator<IteratorType>::operator--(int unu
 
 template <MatrixElementType T>
 template <typename IteratorType>
-IteratorType& Matrix<T>::MutableNonDiagIterator<IteratorType>::operator+=(Matrix<T>::diff_type offset)
+IteratorType& Matrix<T>::NonDiagIterator<IteratorType>::operator+=(Matrix<T>::diff_type offset)
 {
     if (!_isEmpty())
     {
@@ -940,7 +940,7 @@ IteratorType& Matrix<T>::MutableNonDiagIterator<IteratorType>::operator+=(Matrix
 
 template <MatrixElementType T>
 template <typename IteratorType>
-IteratorType& Matrix<T>::MutableNonDiagIterator<IteratorType>::operator-=(Matrix<T>::diff_type offset)
+IteratorType& Matrix<T>::NonDiagIterator<IteratorType>::operator-=(Matrix<T>::diff_type offset)
 {
     if (!_isEmpty())
     {
@@ -960,7 +960,7 @@ IteratorType& Matrix<T>::MutableNonDiagIterator<IteratorType>::operator-=(Matrix
 
 template <MatrixElementType T>
 template <typename IteratorType>
-typename Matrix<T>::diff_type Matrix<T>::MutableNonDiagIterator<IteratorType>::operator-(const IteratorType& it) const
+typename Matrix<T>::diff_type Matrix<T>::NonDiagIterator<IteratorType>::operator-(const IteratorType& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
                               m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
@@ -970,7 +970,7 @@ typename Matrix<T>::diff_type Matrix<T>::MutableNonDiagIterator<IteratorType>::o
 
 template <MatrixElementType T>
 template <typename IteratorType>
-std::strong_ordering Matrix<T>::MutableNonDiagIterator<IteratorType>::operator<=>(const IteratorType& it) const
+std::strong_ordering Matrix<T>::NonDiagIterator<IteratorType>::operator<=>(const IteratorType& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
                               m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
@@ -982,7 +982,7 @@ std::strong_ordering Matrix<T>::MutableNonDiagIterator<IteratorType>::operator<=
 
 template <MatrixElementType T>
 template <typename IteratorType>
-bool Matrix<T>::MutableNonDiagIterator<IteratorType>::operator==(const IteratorType& it) const
+bool Matrix<T>::NonDiagIterator<IteratorType>::operator==(const IteratorType& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
                               m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
@@ -993,7 +993,7 @@ bool Matrix<T>::MutableNonDiagIterator<IteratorType>::operator==(const IteratorT
 
 template <MatrixElementType T>
 template <typename IteratorType>
-Matrix<T>::MutableNonDiagIterator<IteratorType>::MutableNonDiagIterator()
+Matrix<T>::NonDiagIterator<IteratorType>::NonDiagIterator()
     : m_pMatrixPtr{nullptr}
     , m_NrOfMatrixRows{0}
     , m_NrOfMatrixColumns{0}
@@ -1002,10 +1002,9 @@ Matrix<T>::MutableNonDiagIterator<IteratorType>::MutableNonDiagIterator()
 
 template <MatrixElementType T>
 template <typename IteratorType>
-Matrix<T>::MutableNonDiagIterator<IteratorType>::MutableNonDiagIterator(T** pMatrixPtr,
-                                                                        Matrix<T>::size_type nrOfMatrixRows,
-                                                                        Matrix<T>::size_type nrOfMatrixColumns,
-                                                                        std::optional<Matrix<T>::diff_type> index)
+Matrix<T>::NonDiagIterator<IteratorType>::NonDiagIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
+                                                          Matrix<T>::size_type nrOfMatrixColumns,
+                                                          std::optional<Matrix<T>::diff_type> index)
 {
     bool nonEmptyIteratorConstructed = false;
 
@@ -1037,7 +1036,7 @@ Matrix<T>::MutableNonDiagIterator<IteratorType>::MutableNonDiagIterator(T** pMat
 
 template <MatrixElementType T>
 template <typename IteratorType>
-T& Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyAsteriskOperator() const
+T& Matrix<T>::NonDiagIterator<IteratorType>::_applyAsteriskOperator() const
 {
     const diff_type c_UpperBound{
         static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
@@ -1049,7 +1048,7 @@ T& Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyAsteriskOperator() con
 
 template <MatrixElementType T>
 template <typename IteratorType>
-T* Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyArrowOperator() const
+T* Matrix<T>::NonDiagIterator<IteratorType>::_applyArrowOperator() const
 {
     const diff_type c_UpperBound{
         static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
@@ -1061,8 +1060,8 @@ T* Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyArrowOperator() const
 
 template <MatrixElementType T>
 template <typename IteratorType>
-T& Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyIndexOperator(Matrix<T>::size_type rowNr,
-                                                                        Matrix<T>::size_type columnNr) const
+T& Matrix<T>::NonDiagIterator<IteratorType>::_applyIndexOperator(Matrix<T>::size_type rowNr,
+                                                                 Matrix<T>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(_isEmpty() || rowNr >= m_NrOfMatrixRows || columnNr >= m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
@@ -1071,35 +1070,35 @@ T& Matrix<T>::MutableNonDiagIterator<IteratorType>::_applyIndexOperator(Matrix<T
 
 template <MatrixElementType T>
 template <typename IteratorType>
-T** Matrix<T>::MutableNonDiagIterator<IteratorType>::_getMatrixPtr() const
+T** Matrix<T>::NonDiagIterator<IteratorType>::_getMatrixPtr() const
 {
     return m_pMatrixPtr;
 }
 
 template <MatrixElementType T>
 template <typename IteratorType>
-typename Matrix<T>::size_type Matrix<T>::MutableNonDiagIterator<IteratorType>::_getNrOfMatrixRows() const
+typename Matrix<T>::size_type Matrix<T>::NonDiagIterator<IteratorType>::_getNrOfMatrixRows() const
 {
     return m_NrOfMatrixRows;
 }
 
 template <MatrixElementType T>
 template <typename IteratorType>
-typename Matrix<T>::size_type Matrix<T>::MutableNonDiagIterator<IteratorType>::_getNrOfMatrixColumns() const
+typename Matrix<T>::size_type Matrix<T>::NonDiagIterator<IteratorType>::_getNrOfMatrixColumns() const
 {
     return m_NrOfMatrixColumns;
 }
 
 template <MatrixElementType T>
 template <typename IteratorType>
-std::optional<typename Matrix<T>::diff_type> Matrix<T>::MutableNonDiagIterator<IteratorType>::_getIndex() const
+std::optional<typename Matrix<T>::diff_type> Matrix<T>::NonDiagIterator<IteratorType>::_getIndex() const
 {
     return m_Index;
 }
 
 template <MatrixElementType T>
 template <typename IteratorType>
-bool Matrix<T>::MutableNonDiagIterator<IteratorType>::_isEmpty() const
+bool Matrix<T>::NonDiagIterator<IteratorType>::_isEmpty() const
 {
     if (m_pMatrixPtr)
     {
@@ -1115,7 +1114,7 @@ bool Matrix<T>::MutableNonDiagIterator<IteratorType>::_isEmpty() const
 
 template <MatrixElementType T>
 template <typename IteratorType>
-void Matrix<T>::MutableNonDiagIterator<IteratorType>::_increment()
+void Matrix<T>::NonDiagIterator<IteratorType>::_increment()
 {
     if (!_isEmpty())
     {
@@ -1130,7 +1129,7 @@ void Matrix<T>::MutableNonDiagIterator<IteratorType>::_increment()
 
 template <MatrixElementType T>
 template <typename IteratorType>
-void Matrix<T>::MutableNonDiagIterator<IteratorType>::_decrement()
+void Matrix<T>::NonDiagIterator<IteratorType>::_decrement()
 {
     if (!_isEmpty() && m_Index > diff_type{0})
     {
@@ -1140,14 +1139,14 @@ void Matrix<T>::MutableNonDiagIterator<IteratorType>::_decrement()
 
 template <MatrixElementType T>
 template <typename IteratorType>
-std::optional<typename Matrix<T>::size_type> Matrix<T>::MutableNonDiagIterator<IteratorType>::_getRowNr() const
+std::optional<typename Matrix<T>::size_type> Matrix<T>::NonDiagIterator<IteratorType>::_getRowNr() const
 {
     return static_cast<const IteratorType*>(this)->getRowNr();
 }
 
 template <MatrixElementType T>
 template <typename IteratorType>
-std::optional<typename Matrix<T>::size_type> Matrix<T>::MutableNonDiagIterator<IteratorType>::_getColumnNr() const
+std::optional<typename Matrix<T>::size_type> Matrix<T>::NonDiagIterator<IteratorType>::_getColumnNr() const
 {
     return static_cast<const IteratorType*>(this)->getColumnNr();
 }
@@ -1158,9 +1157,8 @@ template <MatrixElementType T>
 Matrix<T>::ZIterator::ZIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
                                 Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
                                 std::optional<Matrix<T>::size_type> columnNr)
-    : MutableNonDiagIterator<ZIterator>{
-          pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
-          computeForwardNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)}
+    : NonDiagIterator<ZIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
+                                 computeForwardNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)}
 {
 }
 
@@ -1221,7 +1219,7 @@ template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matr
 
 template <MatrixElementType T>
 Matrix<T>::ConstZIterator::ConstZIterator(const ZIterator& zIterator)
-    : MutableNonDiagIterator<ConstZIterator>{
+    : NonDiagIterator<ConstZIterator>{
           zIterator._getMatrixPtr(), zIterator._getNrOfMatrixRows(), zIterator._getNrOfMatrixColumns(),
           computeForwardNonDiagIteratorIndex(zIterator._getNrOfMatrixRows(), zIterator._getNrOfMatrixColumns(),
                                              zIterator.getRowNr(), zIterator.getColumnNr())}
@@ -1233,7 +1231,7 @@ Matrix<T>::ConstZIterator::ConstZIterator(T** pMatrixPtr, Matrix<T>::size_type n
                                           Matrix<T>::size_type nrOfMatrixColumns,
                                           std::optional<Matrix<T>::size_type> rowNr,
                                           std::optional<Matrix<T>::size_type> columnNr)
-    : MutableNonDiagIterator<ConstZIterator>{
+    : NonDiagIterator<ConstZIterator>{
           pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
           computeForwardNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)}
 {
@@ -1301,7 +1299,7 @@ Matrix<T>::ReverseZIterator::ReverseZIterator(T** pMatrixPtr, Matrix<T>::size_ty
                                               Matrix<T>::size_type nrOfMatrixColumns,
                                               std::optional<Matrix<T>::size_type> rowNr,
                                               std::optional<Matrix<T>::size_type> columnNr)
-    : MutableNonDiagIterator<ReverseZIterator>{
+    : NonDiagIterator<ReverseZIterator>{
           pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
           computeReverseNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)}
 {
@@ -1376,7 +1374,7 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseZIterator::getCol
 
 template <MatrixElementType T>
 Matrix<T>::ConstReverseZIterator::ConstReverseZIterator(const ReverseZIterator& reverseZIterator)
-    : MutableNonDiagIterator<ConstReverseZIterator>{
+    : NonDiagIterator<ConstReverseZIterator>{
           reverseZIterator._getMatrixPtr(), reverseZIterator._getNrOfMatrixRows(),
           reverseZIterator._getNrOfMatrixColumns(),
           computeReverseNonDiagIteratorIndex(reverseZIterator._getNrOfMatrixRows(),
@@ -1390,7 +1388,7 @@ Matrix<T>::ConstReverseZIterator::ConstReverseZIterator(T** pMatrixPtr, Matrix<T
                                                         Matrix<T>::size_type nrOfMatrixColumns,
                                                         std::optional<Matrix<T>::size_type> rowNr,
                                                         std::optional<Matrix<T>::size_type> columnNr)
-    : MutableNonDiagIterator<ConstReverseZIterator>{
+    : NonDiagIterator<ConstReverseZIterator>{
           pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
           computeReverseNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)}
 {
@@ -1467,9 +1465,8 @@ template <MatrixElementType T>
 Matrix<T>::NIterator::NIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
                                 Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
                                 std::optional<Matrix<T>::size_type> columnNr)
-    : MutableNonDiagIterator<NIterator>{
-          pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
-          computeForwardNonDiagIteratorIndex(nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr)}
+    : NonDiagIterator<NIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
+                                 computeForwardNonDiagIteratorIndex(nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr)}
 {
 }
 
@@ -1531,7 +1528,7 @@ template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matr
 
 template <MatrixElementType T>
 Matrix<T>::ConstNIterator::ConstNIterator(const NIterator& nIterator)
-    : MutableNonDiagIterator<ConstNIterator>{
+    : NonDiagIterator<ConstNIterator>{
           nIterator._getMatrixPtr(), nIterator._getNrOfMatrixRows(), nIterator._getNrOfMatrixColumns(),
           computeForwardNonDiagIteratorIndex(nIterator._getNrOfMatrixColumns(), nIterator._getNrOfMatrixRows(),
                                              nIterator.getColumnNr(), nIterator.getRowNr())}
@@ -1543,7 +1540,7 @@ Matrix<T>::ConstNIterator::ConstNIterator(T** pMatrixPtr, Matrix<T>::size_type n
                                           Matrix<T>::size_type nrOfMatrixColumns,
                                           std::optional<Matrix<T>::size_type> rowNr,
                                           std::optional<Matrix<T>::size_type> columnNr)
-    : MutableNonDiagIterator<ConstNIterator>{
+    : NonDiagIterator<ConstNIterator>{
           pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
           computeForwardNonDiagIteratorIndex(nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr)}
 {
@@ -1612,7 +1609,7 @@ Matrix<T>::ReverseNIterator::ReverseNIterator(T** pMatrixPtr, Matrix<T>::size_ty
                                               Matrix<T>::size_type nrOfMatrixColumns,
                                               std::optional<Matrix<T>::size_type> rowNr,
                                               std::optional<Matrix<T>::size_type> columnNr)
-    : MutableNonDiagIterator<ReverseNIterator>{
+    : NonDiagIterator<ReverseNIterator>{
           pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
           computeReverseNonDiagIteratorIndex(nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr)}
 {
@@ -1688,7 +1685,7 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseNIterator::getCol
 
 template <MatrixElementType T>
 Matrix<T>::ConstReverseNIterator::ConstReverseNIterator(const ReverseNIterator& reverseNIterator)
-    : MutableNonDiagIterator<ConstReverseNIterator>{
+    : NonDiagIterator<ConstReverseNIterator>{
           reverseNIterator._getMatrixPtr(), reverseNIterator._getNrOfMatrixRows(),
           reverseNIterator._getNrOfMatrixColumns(),
           computeReverseNonDiagIteratorIndex(reverseNIterator._getNrOfMatrixColumns(),
@@ -1702,7 +1699,7 @@ Matrix<T>::ConstReverseNIterator::ConstReverseNIterator(T** pMatrixPtr, Matrix<T
                                                         Matrix<T>::size_type nrOfMatrixColumns,
                                                         std::optional<Matrix<T>::size_type> rowNr,
                                                         std::optional<Matrix<T>::size_type> columnNr)
-    : MutableNonDiagIterator<ConstReverseNIterator>{
+    : NonDiagIterator<ConstReverseNIterator>{
           pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
           computeReverseNonDiagIteratorIndex(nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr)}
 {
