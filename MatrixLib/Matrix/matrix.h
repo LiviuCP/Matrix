@@ -42,21 +42,21 @@ public:
     using diff_type = matrix_diff_t;
     using dimensions_t = std::pair<size_type, size_type>;
 
-    template <typename IteratorType> class NonDiagIterator
+    template <typename IterType> class NonDiagIterator
     {
     public:
-        IteratorType& operator++();
-        IteratorType operator++(int unused);
-        IteratorType& operator--();
-        IteratorType operator--(int unused);
+        IterType& operator++();
+        IterType operator++(int unused);
+        IterType& operator--();
+        IterType operator--(int unused);
 
-        IteratorType& operator+=(diff_type offset);
-        IteratorType& operator-=(diff_type offset);
+        IterType& operator+=(diff_type offset);
+        IterType& operator-=(diff_type offset);
 
-        diff_type operator-(const IteratorType& it) const;
+        diff_type operator-(const IterType& it) const;
 
-        std::strong_ordering operator<=>(const IteratorType& it) const;
-        bool operator==(const IteratorType& it) const;
+        std::strong_ordering operator<=>(const IterType& it) const;
+        bool operator==(const IterType& it) const;
 
     protected:
         /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
@@ -878,40 +878,36 @@ private:
 
 // Base NonDiagIterator class to be used for implementing (Reverse)Z/NIterator classes
 
-template <MatrixElementType T>
-template <typename IteratorType>
-IteratorType& Matrix<T>::NonDiagIterator<IteratorType>::operator++()
+template <MatrixElementType T> template <typename IterType> IterType& Matrix<T>::NonDiagIterator<IterType>::operator++()
 {
     _increment();
-    return *static_cast<IteratorType*>(this);
+    return *static_cast<IterType*>(this);
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-IteratorType Matrix<T>::NonDiagIterator<IteratorType>::operator++(int unused)
+template <typename IterType>
+IterType Matrix<T>::NonDiagIterator<IterType>::operator++(int unused)
 {
     (void)unused;
-    IteratorType iterator{*static_cast<IteratorType*>(this)};
+    IterType iterator{*static_cast<IterType*>(this)};
 
     _increment();
 
     return iterator;
 }
 
-template <MatrixElementType T>
-template <typename IteratorType>
-IteratorType& Matrix<T>::NonDiagIterator<IteratorType>::operator--()
+template <MatrixElementType T> template <typename IterType> IterType& Matrix<T>::NonDiagIterator<IterType>::operator--()
 {
     _decrement();
-    return *static_cast<IteratorType*>(this);
+    return *static_cast<IterType*>(this);
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-IteratorType Matrix<T>::NonDiagIterator<IteratorType>::operator--(int unused)
+template <typename IterType>
+IterType Matrix<T>::NonDiagIterator<IterType>::operator--(int unused)
 {
     (void)unused;
-    IteratorType iterator{*static_cast<IteratorType*>(this)};
+    IterType iterator{*static_cast<IterType*>(this)};
 
     _decrement();
 
@@ -919,8 +915,8 @@ IteratorType Matrix<T>::NonDiagIterator<IteratorType>::operator--(int unused)
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-IteratorType& Matrix<T>::NonDiagIterator<IteratorType>::operator+=(Matrix<T>::diff_type offset)
+template <typename IterType>
+IterType& Matrix<T>::NonDiagIterator<IterType>::operator+=(Matrix<T>::diff_type offset)
 {
     if (!_isEmpty())
     {
@@ -935,12 +931,12 @@ IteratorType& Matrix<T>::NonDiagIterator<IteratorType>::operator+=(Matrix<T>::di
         m_Index = std::min<diff_type>(c_ResultingIndex, c_UpperBound);
     }
 
-    return *static_cast<IteratorType*>(this);
+    return *static_cast<IterType*>(this);
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-IteratorType& Matrix<T>::NonDiagIterator<IteratorType>::operator-=(Matrix<T>::diff_type offset)
+template <typename IterType>
+IterType& Matrix<T>::NonDiagIterator<IterType>::operator-=(Matrix<T>::diff_type offset)
 {
     if (!_isEmpty())
     {
@@ -955,12 +951,12 @@ IteratorType& Matrix<T>::NonDiagIterator<IteratorType>::operator-=(Matrix<T>::di
         m_Index = std::min<diff_type>(c_ResultingIndex, c_UpperBound);
     }
 
-    return *static_cast<IteratorType*>(this);
+    return *static_cast<IterType*>(this);
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-typename Matrix<T>::diff_type Matrix<T>::NonDiagIterator<IteratorType>::operator-(const IteratorType& it) const
+template <typename IterType>
+typename Matrix<T>::diff_type Matrix<T>::NonDiagIterator<IterType>::operator-(const IterType& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
                               m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
@@ -969,8 +965,8 @@ typename Matrix<T>::diff_type Matrix<T>::NonDiagIterator<IteratorType>::operator
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-std::strong_ordering Matrix<T>::NonDiagIterator<IteratorType>::operator<=>(const IteratorType& it) const
+template <typename IterType>
+std::strong_ordering Matrix<T>::NonDiagIterator<IterType>::operator<=>(const IterType& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
                               m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
@@ -981,8 +977,8 @@ std::strong_ordering Matrix<T>::NonDiagIterator<IteratorType>::operator<=>(const
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-bool Matrix<T>::NonDiagIterator<IteratorType>::operator==(const IteratorType& it) const
+template <typename IterType>
+bool Matrix<T>::NonDiagIterator<IterType>::operator==(const IterType& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_NrOfMatrixRows != it.m_NrOfMatrixRows ||
                               m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
@@ -992,8 +988,8 @@ bool Matrix<T>::NonDiagIterator<IteratorType>::operator==(const IteratorType& it
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-Matrix<T>::NonDiagIterator<IteratorType>::NonDiagIterator()
+template <typename IterType>
+Matrix<T>::NonDiagIterator<IterType>::NonDiagIterator()
     : m_pMatrixPtr{nullptr}
     , m_NrOfMatrixRows{0}
     , m_NrOfMatrixColumns{0}
@@ -1001,10 +997,10 @@ Matrix<T>::NonDiagIterator<IteratorType>::NonDiagIterator()
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-Matrix<T>::NonDiagIterator<IteratorType>::NonDiagIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
-                                                          Matrix<T>::size_type nrOfMatrixColumns,
-                                                          std::optional<Matrix<T>::diff_type> index)
+template <typename IterType>
+Matrix<T>::NonDiagIterator<IterType>::NonDiagIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
+                                                      Matrix<T>::size_type nrOfMatrixColumns,
+                                                      std::optional<Matrix<T>::diff_type> index)
 {
     bool nonEmptyIteratorConstructed = false;
 
@@ -1035,8 +1031,8 @@ Matrix<T>::NonDiagIterator<IteratorType>::NonDiagIterator(T** pMatrixPtr, Matrix
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-T& Matrix<T>::NonDiagIterator<IteratorType>::_applyAsteriskOperator() const
+template <typename IterType>
+T& Matrix<T>::NonDiagIterator<IterType>::_applyAsteriskOperator() const
 {
     const diff_type c_UpperBound{
         static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
@@ -1047,8 +1043,8 @@ T& Matrix<T>::NonDiagIterator<IteratorType>::_applyAsteriskOperator() const
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-T* Matrix<T>::NonDiagIterator<IteratorType>::_applyArrowOperator() const
+template <typename IterType>
+T* Matrix<T>::NonDiagIterator<IterType>::_applyArrowOperator() const
 {
     const diff_type c_UpperBound{
         static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) * static_cast<diff_type>(m_NrOfMatrixColumns))};
@@ -1059,9 +1055,9 @@ T* Matrix<T>::NonDiagIterator<IteratorType>::_applyArrowOperator() const
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-T& Matrix<T>::NonDiagIterator<IteratorType>::_applyIndexOperator(Matrix<T>::size_type rowNr,
-                                                                 Matrix<T>::size_type columnNr) const
+template <typename IterType>
+T& Matrix<T>::NonDiagIterator<IterType>::_applyIndexOperator(Matrix<T>::size_type rowNr,
+                                                             Matrix<T>::size_type columnNr) const
 {
     CHECK_ERROR_CONDITION(_isEmpty() || rowNr >= m_NrOfMatrixRows || columnNr >= m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
@@ -1069,36 +1065,34 @@ T& Matrix<T>::NonDiagIterator<IteratorType>::_applyIndexOperator(Matrix<T>::size
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-T** Matrix<T>::NonDiagIterator<IteratorType>::_getMatrixPtr() const
+template <typename IterType>
+T** Matrix<T>::NonDiagIterator<IterType>::_getMatrixPtr() const
 {
     return m_pMatrixPtr;
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-typename Matrix<T>::size_type Matrix<T>::NonDiagIterator<IteratorType>::_getNrOfMatrixRows() const
+template <typename IterType>
+typename Matrix<T>::size_type Matrix<T>::NonDiagIterator<IterType>::_getNrOfMatrixRows() const
 {
     return m_NrOfMatrixRows;
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-typename Matrix<T>::size_type Matrix<T>::NonDiagIterator<IteratorType>::_getNrOfMatrixColumns() const
+template <typename IterType>
+typename Matrix<T>::size_type Matrix<T>::NonDiagIterator<IterType>::_getNrOfMatrixColumns() const
 {
     return m_NrOfMatrixColumns;
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-std::optional<typename Matrix<T>::diff_type> Matrix<T>::NonDiagIterator<IteratorType>::_getIndex() const
+template <typename IterType>
+std::optional<typename Matrix<T>::diff_type> Matrix<T>::NonDiagIterator<IterType>::_getIndex() const
 {
     return m_Index;
 }
 
-template <MatrixElementType T>
-template <typename IteratorType>
-bool Matrix<T>::NonDiagIterator<IteratorType>::_isEmpty() const
+template <MatrixElementType T> template <typename IterType> bool Matrix<T>::NonDiagIterator<IterType>::_isEmpty() const
 {
     if (m_pMatrixPtr)
     {
@@ -1112,9 +1106,7 @@ bool Matrix<T>::NonDiagIterator<IteratorType>::_isEmpty() const
     return !m_pMatrixPtr;
 }
 
-template <MatrixElementType T>
-template <typename IteratorType>
-void Matrix<T>::NonDiagIterator<IteratorType>::_increment()
+template <MatrixElementType T> template <typename IterType> void Matrix<T>::NonDiagIterator<IterType>::_increment()
 {
     if (!_isEmpty())
     {
@@ -1127,9 +1119,7 @@ void Matrix<T>::NonDiagIterator<IteratorType>::_increment()
     }
 }
 
-template <MatrixElementType T>
-template <typename IteratorType>
-void Matrix<T>::NonDiagIterator<IteratorType>::_decrement()
+template <MatrixElementType T> template <typename IterType> void Matrix<T>::NonDiagIterator<IterType>::_decrement()
 {
     if (!_isEmpty() && m_Index > diff_type{0})
     {
@@ -1138,17 +1128,17 @@ void Matrix<T>::NonDiagIterator<IteratorType>::_decrement()
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-std::optional<typename Matrix<T>::size_type> Matrix<T>::NonDiagIterator<IteratorType>::_getRowNr() const
+template <typename IterType>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::NonDiagIterator<IterType>::_getRowNr() const
 {
-    return static_cast<const IteratorType*>(this)->getRowNr();
+    return static_cast<const IterType*>(this)->getRowNr();
 }
 
 template <MatrixElementType T>
-template <typename IteratorType>
-std::optional<typename Matrix<T>::size_type> Matrix<T>::NonDiagIterator<IteratorType>::_getColumnNr() const
+template <typename IterType>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::NonDiagIterator<IterType>::_getColumnNr() const
 {
-    return static_cast<const IteratorType*>(this)->getColumnNr();
+    return static_cast<const IterType*>(this)->getColumnNr();
 }
 
 // 1) ZIterator - iterates within matrix from [0][0] to the end row by row
