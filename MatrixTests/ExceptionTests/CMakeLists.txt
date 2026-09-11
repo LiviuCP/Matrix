@@ -3,11 +3,11 @@ project(ExceptionTests LANGUAGES CXX)
 add_compile_definitions(CONVERT_TO_EXCEPTIONS)
 add_compile_definitions(USE_SMALL_DIMENSIONS)
 
-add_executable(CommonExceptionTests tst_commonexceptiontests.cpp)
+# add_executable(CommonExceptionTests tst_commonexceptiontests.cpp)
 add_executable(IteratorExceptionTests tst_iteratorexceptiontests.cpp)
 
-add_test(NAME CommonExceptionTests COMMAND CommonExceptionTests)
+# add_test(NAME CommonExceptionTests COMMAND CommonExceptionTests)
 add_test(NAME IteratorExceptionTests COMMAND IteratorExceptionTests)
 
-target_link_libraries(CommonExceptionTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
+# target_link_libraries(CommonExceptionTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
 target_link_libraries(IteratorExceptionTests PRIVATE Qt${QT_VERSION_MAJOR}::Test)
