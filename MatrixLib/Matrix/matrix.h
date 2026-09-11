@@ -262,7 +262,7 @@ public:
             return addOffsetToIterator(it, offset);
         }
 
-        inline friend ConstReverseZIterator operator+(diff_type offset, ConstReverseZIterator& it)
+        inline friend ConstReverseZIterator operator+(diff_type offset, const ConstReverseZIterator& it)
         {
             return addOffsetToIterator(it, offset);
         }
@@ -458,7 +458,7 @@ public:
             return addOffsetToIterator(it, offset);
         }
 
-        inline friend ConstReverseNIterator operator+(diff_type offset, ConstReverseNIterator& it)
+        inline friend ConstReverseNIterator operator+(diff_type offset, const ConstReverseNIterator& it)
         {
             return addOffsetToIterator(it, offset);
         }

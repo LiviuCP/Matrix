@@ -13,6 +13,6 @@ include_directories(Shared)
 include_directories(../MatrixLib/Matrix)
 
 # add_subdirectory(CommonTests)
-# add_subdirectory(ExceptionTests)
+add_subdirectory(ExceptionTests)
 add_subdirectory(IteratorTests)
 # add_subdirectory(OtherMatrixTypesTests)
