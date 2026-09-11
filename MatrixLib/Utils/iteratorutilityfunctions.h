@@ -7,6 +7,13 @@
 using matrix_size_t = Matr::size_t;
 using matrix_diff_t = Matr::diff_t;
 
+template <typename MatrixIterator> MatrixIterator addOffsetToIterator(const MatrixIterator& it, matrix_diff_t offset)
+{
+    MatrixIterator temp{it};
+    temp += offset;
+    return temp;
+}
+
 static std::optional<matrix_diff_t> computeForwardNonDiagIteratorIndex(
     matrix_size_t matrixPrimaryDimension, matrix_size_t matrixSecondaryDimension,
     std::optional<matrix_size_t> matrixPrimaryCoordinate, std::optional<matrix_size_t> matrixSecondaryCoordinate)

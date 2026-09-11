@@ -82,14 +82,6 @@
                                                                                                                        \
     IterableType** m_pMatrixPtr;
 
-#define COMMON_PRIVATE_NON_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType, IterableType, DiffType, SizeType)             \
-    IteratorType(IterableType** pMatrixPtr, SizeType nrOfMatrixRows, SizeType nrOfMatrixColumns,                       \
-                 std::optional<SizeType> rowNr, std::optional<SizeType> columnNr);                                     \
-                                                                                                                       \
-    std::optional<DiffType> m_Index; /* relative index within begin - end iterators range */                           \
-    SizeType m_NrOfMatrixRows;                                                                                         \
-    SizeType m_NrOfMatrixColumns;
-
 #define COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(IteratorType, IterableType, DiffType, SizeType)                 \
     IteratorType(IterableType** pMatrixPtr, SizeType nrOfMatrixRows, SizeType nrOfMatrixColumns,                       \
                  std::optional<SizeType> rowNr, std::optional<SizeType> columnNr);                                     \
@@ -99,3 +91,10 @@
     std::optional<SizeType> m_DiagonalIndex; /* relative index within diagonal */                                      \
     DiffType m_DiagonalNr;                   /* index of the diagonal within matrix */                                 \
     SizeType m_DiagonalSize;                 /* number of elements contained within diagonal */
+
+#define ITERATOR_TRAITS(IterableType, DiffType, ReferenceType)                                                         \
+    using iterator_category = std::random_access_iterator_tag;                                                         \
+    using value_type = IterableType;                                                                                   \
+    using difference_type = DiffType;                                                                                  \
+    using pointer = IterableType**;                                                                                    \
+    using reference = ReferenceType;
