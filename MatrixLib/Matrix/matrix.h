@@ -882,6 +882,49 @@ private:
 
 // Base NonDiagIterator class to be used for implementing (Reverse)Z/NIterator classes
 
+template <MatrixElementType T>
+template <typename IterType>
+Matrix<T>::NonDiagIterator<IterType>::NonDiagIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_NrOfMatrixRows{0}
+    , m_NrOfMatrixColumns{0}
+{
+}
+
+template <MatrixElementType T>
+template <typename IterType>
+Matrix<T>::NonDiagIterator<IterType>::NonDiagIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
+                                                      Matrix<T>::size_type nrOfMatrixColumns,
+                                                      std::optional<Matrix<T>::diff_type> index)
+{
+    bool nonEmptyIteratorConstructed = false;
+
+    if (pMatrixPtr)
+    {
+        if (nrOfMatrixRows > size_type{0} && nrOfMatrixColumns > size_type{0} && index.has_value() &&
+            index <= static_cast<diff_type>(static_cast<diff_type>(nrOfMatrixRows) *
+                                            static_cast<diff_type>(nrOfMatrixColumns)))
+        {
+            m_pMatrixPtr = pMatrixPtr;
+            m_NrOfMatrixRows = nrOfMatrixRows;
+            m_NrOfMatrixColumns = nrOfMatrixColumns;
+            m_Index = index;
+            nonEmptyIteratorConstructed = true;
+        }
+        else
+        {
+            assert(false);
+        }
+    }
+
+    if (!nonEmptyIteratorConstructed)
+    {
+        m_pMatrixPtr = nullptr;
+        m_NrOfMatrixRows = size_type{0};
+        m_NrOfMatrixColumns = size_type{0};
+    }
+}
+
 template <MatrixElementType T> template <typename IterType> IterType& Matrix<T>::NonDiagIterator<IterType>::operator++()
 {
     _increment();
@@ -967,49 +1010,6 @@ bool Matrix<T>::NonDiagIterator<IterType>::operator==(const IterType& it) const
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
 
     return m_Index == it.m_Index;
-}
-
-template <MatrixElementType T>
-template <typename IterType>
-Matrix<T>::NonDiagIterator<IterType>::NonDiagIterator()
-    : m_pMatrixPtr{nullptr}
-    , m_NrOfMatrixRows{0}
-    , m_NrOfMatrixColumns{0}
-{
-}
-
-template <MatrixElementType T>
-template <typename IterType>
-Matrix<T>::NonDiagIterator<IterType>::NonDiagIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
-                                                      Matrix<T>::size_type nrOfMatrixColumns,
-                                                      std::optional<Matrix<T>::diff_type> index)
-{
-    bool nonEmptyIteratorConstructed = false;
-
-    if (pMatrixPtr)
-    {
-        if (nrOfMatrixRows > size_type{0} && nrOfMatrixColumns > size_type{0} && index.has_value() &&
-            index <= static_cast<diff_type>(static_cast<diff_type>(nrOfMatrixRows) *
-                                            static_cast<diff_type>(nrOfMatrixColumns)))
-        {
-            m_pMatrixPtr = pMatrixPtr;
-            m_NrOfMatrixRows = nrOfMatrixRows;
-            m_NrOfMatrixColumns = nrOfMatrixColumns;
-            m_Index = index;
-            nonEmptyIteratorConstructed = true;
-        }
-        else
-        {
-            assert(false);
-        }
-    }
-
-    if (!nonEmptyIteratorConstructed)
-    {
-        m_pMatrixPtr = nullptr;
-        m_NrOfMatrixRows = size_type{0};
-        m_NrOfMatrixColumns = size_type{0};
-    }
 }
 
 template <MatrixElementType T>
