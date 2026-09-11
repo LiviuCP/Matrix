@@ -489,6 +489,10 @@ public:
     {
     public:
     protected:
+        /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
+         * empty matrix */
+        PartialDiagIterator();
+
         T** m_pMatrixPtr;
         std::optional<size_type> m_DiagonalIndex; /* relative index within diagonal */
         diff_type m_DiagonalNr;                   /* index of the diagonal within matrix */
@@ -505,9 +509,7 @@ public:
 
         ITERATOR_TRAITS(T, diff_type, T&);
 
-        /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
-         * empty matrix */
-        DIterator();
+        DIterator() = default;
 
         DIterator& operator++();
         DIterator operator++(int unused);
@@ -1808,6 +1810,17 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::ConstReverseNIterator::g
                : std::optional<size_type>{};
 }
 
+// Base PartialDiagIterator class to be used for implementing (Reverse)D/MIterator classes
+
+template <MatrixElementType T>
+template <typename IterType>
+Matrix<T>::PartialDiagIterator<IterType>::PartialDiagIterator()
+    : m_pMatrixPtr{nullptr}
+    , m_DiagonalNr{0}
+    , m_DiagonalSize{0}
+{
+}
+
 // 9) DIterator (diagonal iterator, traverses a matrix diagonal)
 
 template <MatrixElementType T> typename Matrix<T>::DIterator& Matrix<T>::DIterator::operator++()
@@ -1892,13 +1905,6 @@ template <MatrixElementType T> T* Matrix<T>::DIterator::operator->() const
 template <MatrixElementType T> T& Matrix<T>::DIterator::operator[](Matrix<T>::DIterator::difference_type index) const
 {
     FORWARD_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
-}
-
-template <MatrixElementType T> Matrix<T>::DIterator::DIterator()
-{
-    m_pMatrixPtr = nullptr;
-    m_DiagonalNr = 0;
-    m_DiagonalSize = 0;
 }
 
 template <MatrixElementType T>
