@@ -51,7 +51,11 @@ public:
         IterType operator--(int unused);
 
         IterType& operator+=(diff_type offset);
-        IterType& operator-=(diff_type offset);
+
+        inline IterType& operator-=(diff_type offset)
+        {
+            return *this += -offset;
+        };
 
         diff_type operator-(const IterType& it) const;
 
@@ -920,31 +924,9 @@ IterType& Matrix<T>::NonDiagIterator<IterType>::operator+=(Matrix<T>::diff_type 
 {
     if (!_isEmpty())
     {
-        const diff_type normalizedScalarValue = offset;
-        const diff_type c_ResultingIndex{normalizedScalarValue < diff_type{0} &&
-                                                 std::abs(normalizedScalarValue) > *m_Index
+        const diff_type c_ResultingIndex{offset < diff_type{0} && std::abs(offset) > *m_Index
                                              ? diff_type{0}
-                                             : static_cast<diff_type>(*m_Index + normalizedScalarValue)};
-        const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) *
-                                                            static_cast<diff_type>(m_NrOfMatrixColumns))};
-
-        m_Index = std::min<diff_type>(c_ResultingIndex, c_UpperBound);
-    }
-
-    return *static_cast<IterType*>(this);
-}
-
-template <MatrixElementType T>
-template <typename IterType>
-IterType& Matrix<T>::NonDiagIterator<IterType>::operator-=(Matrix<T>::diff_type offset)
-{
-    if (!_isEmpty())
-    {
-        const diff_type normalizedScalarValue = -offset;
-        const diff_type c_ResultingIndex{normalizedScalarValue < diff_type{0} &&
-                                                 std::abs(normalizedScalarValue) > *m_Index
-                                             ? diff_type{0}
-                                             : static_cast<diff_type>(*m_Index + normalizedScalarValue)};
+                                             : static_cast<diff_type>(*m_Index + offset)};
         const diff_type c_UpperBound{static_cast<diff_type>(static_cast<diff_type>(m_NrOfMatrixRows) *
                                                             static_cast<diff_type>(m_NrOfMatrixColumns))};
 
