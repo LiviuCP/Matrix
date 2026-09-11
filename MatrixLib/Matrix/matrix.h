@@ -494,9 +494,10 @@ public:
         PartialDiagIterator();
 
         T** m_pMatrixPtr;
-        std::optional<size_type> m_DiagonalIndex; /* relative index within diagonal */
-        diff_type m_DiagonalNr;                   /* index of the diagonal within matrix */
-        size_type m_DiagonalSize;                 /* number of elements contained within diagonal */
+        std::optional<size_type> m_DiagonalIndex;       /* relative index within diagonal */
+        diff_type m_DiagonalNr;                         /* index of the diagonal within matrix */
+        size_type m_DiagonalSize;                       /* number of elements contained within diagonal */
+        [[maybe_unused]] size_type m_NrOfMatrixColumns; /* only used by mirrored diagonal iterators */
 
     private:
     };
@@ -1818,6 +1819,7 @@ Matrix<T>::PartialDiagIterator<IterType>::PartialDiagIterator()
     : m_pMatrixPtr{nullptr}
     , m_DiagonalNr{0}
     , m_DiagonalSize{0}
+    , m_NrOfMatrixColumns{0}
 {
 }
 
