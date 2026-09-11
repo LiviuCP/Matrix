@@ -485,16 +485,81 @@ public:
         using NonDiagIterator<ConstReverseNIterator>::_isEmpty;
     };
 
-    class DIterator
+    template <typename IterType> class PartialDiagIterator
     {
     public:
-        COMMON_PUBLIC_ITERATOR_CODE_DECLARATIONS(DIterator, T, diff_type, size_type);
-        COMMON_PUBLIC_DIAG_ITERATOR_CODE_DECLARATIONS(diff_type, size_type);
-        COMMON_PUBLIC_NON_CONST_ITERATOR_CODE_DECLARATIONS(T, diff_type);
+    protected:
+        T** m_pMatrixPtr;
+        std::optional<size_type> m_DiagonalIndex; /* relative index within diagonal */
+        diff_type m_DiagonalNr;                   /* index of the diagonal within matrix */
+        size_type m_DiagonalSize;                 /* number of elements contained within diagonal */
 
     private:
-        COMMON_PRIVATE_ITERATOR_CODE_DECLARATIONS(T);
-        COMMON_PRIVATE_DIAG_ITERATOR_CODE_DECLARATIONS(DIterator, T, diff_type, size_type);
+    };
+
+    class DIterator : public PartialDiagIterator<DIterator>
+    {
+    public:
+        /* Required for being able to return iterators by using the private constructor of the iterator class */
+        friend class Matrix<T>;
+
+        ITERATOR_TRAITS(T, diff_type, T&);
+
+        /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
+         * empty matrix */
+        DIterator();
+
+        DIterator& operator++();
+        DIterator operator++(int unused);
+        DIterator& operator--();
+        DIterator operator--(int unused);
+
+        DIterator& operator+=(diff_type offset);
+        DIterator& operator-=(diff_type offset);
+
+        diff_type operator-(const DIterator& it) const;
+
+        auto operator<=>(const DIterator& it) const;
+        bool operator==(const DIterator& it) const;
+
+        T& operator*() const;
+        T* operator->() const;
+        T& operator[](diff_type index) const;
+
+        std::optional<size_type> getRowNr() const;
+        std::optional<size_type> getColumnNr() const;
+        diff_type getDiagonalNr() const;
+        std::optional<size_type> getDiagonalIndex() const;
+
+        inline friend DIterator operator+(const DIterator& it, diff_type offset)
+        {
+            return addOffsetToIterator(it, offset);
+        }
+
+        inline friend DIterator operator+(diff_type offset, const DIterator& it)
+        {
+            return addOffsetToIterator(it, offset);
+        }
+
+        inline friend DIterator operator-(const DIterator& it, diff_type offset)
+        {
+            return addOffsetToIterator(it, -offset);
+        }
+
+    private:
+        void _increment();
+        void _decrement();
+        bool _isEmpty() const;
+
+        DIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns, std::optional<size_type> rowNr,
+                  std::optional<size_type> columnNr);
+        DIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
+                  const std::pair<diff_type, std::optional<size_type>>& diagonalNrAndIndex);
+
+        using PartialDiagIterator<DIterator>::m_pMatrixPtr;
+        using PartialDiagIterator<DIterator>::m_DiagonalIndex;
+        using PartialDiagIterator<DIterator>::m_DiagonalNr;
+        using PartialDiagIterator<DIterator>::m_DiagonalSize;
     };
 
     class ConstDIterator
@@ -1829,12 +1894,11 @@ template <MatrixElementType T> T& Matrix<T>::DIterator::operator[](Matrix<T>::DI
     FORWARD_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
 }
 
-template <MatrixElementType T>
-Matrix<T>::DIterator::DIterator()
-    : m_pMatrixPtr{nullptr}
-    , m_DiagonalNr{0}
-    , m_DiagonalSize{0}
+template <MatrixElementType T> Matrix<T>::DIterator::DIterator()
 {
+    m_pMatrixPtr = nullptr;
+    m_DiagonalNr = 0;
+    m_DiagonalSize = 0;
 }
 
 template <MatrixElementType T>
