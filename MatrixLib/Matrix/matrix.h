@@ -500,6 +500,8 @@ public:
             return *this += -offset;
         };
 
+        diff_type operator-(const IterType& it) const;
+
         std::strong_ordering operator<=>(const IterType& it) const;
         bool operator==(const IterType& it) const;
 
@@ -530,8 +532,6 @@ public:
         ITERATOR_TRAITS(T, diff_type, T&);
 
         DIterator() = default;
-
-        diff_type operator-(const DIterator& it) const;
 
         using PartialDiagIterator<DIterator>::operator<=>;
         using PartialDiagIterator<DIterator>::operator==;
@@ -1887,6 +1887,18 @@ IterType& Matrix<T>::PartialDiagIterator<IterType>::operator+=(Matrix<T>::diff_t
 
 template <MatrixElementType T>
 template <typename IterType>
+typename Matrix<T>::diff_type Matrix<T>::PartialDiagIterator<IterType>::operator-(const IterType& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize ||
+                              m_DiagonalNr != it.m_DiagonalNr,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return !_isEmpty() ? (static_cast<diff_type>(*m_DiagonalIndex) - static_cast<diff_type>(*it.m_DiagonalIndex))
+                       : diff_type{0};
+}
+
+template <MatrixElementType T>
+template <typename IterType>
 std::strong_ordering Matrix<T>::PartialDiagIterator<IterType>::operator<=>(const IterType& it) const
 {
     CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize ||
@@ -1942,12 +1954,6 @@ template <MatrixElementType T> template <typename IterType> void Matrix<T>::Part
 }
 
 // 9) DIterator (diagonal iterator, traverses a matrix diagonal)
-
-template <MatrixElementType T>
-typename Matrix<T>::DIterator::difference_type Matrix<T>::DIterator::operator-(const Matrix<T>::DIterator& it) const
-{
-    DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, it);
-}
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getRowNr() const
 {
