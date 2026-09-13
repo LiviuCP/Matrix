@@ -500,6 +500,9 @@ public:
             return *this += -offset;
         };
 
+        std::strong_ordering operator<=>(const IterType& it) const;
+        bool operator==(const IterType& it) const;
+
     protected:
         /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
          * empty matrix */
@@ -530,8 +533,8 @@ public:
 
         diff_type operator-(const DIterator& it) const;
 
-        auto operator<=>(const DIterator& it) const;
-        bool operator==(const DIterator& it) const;
+        using PartialDiagIterator<DIterator>::operator<=>;
+        using PartialDiagIterator<DIterator>::operator==;
 
         T& operator*() const;
         T* operator->() const;
@@ -1884,6 +1887,28 @@ IterType& Matrix<T>::PartialDiagIterator<IterType>::operator+=(Matrix<T>::diff_t
 
 template <MatrixElementType T>
 template <typename IterType>
+std::strong_ordering Matrix<T>::PartialDiagIterator<IterType>::operator<=>(const IterType& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize ||
+                              m_DiagonalNr != it.m_DiagonalNr,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return !_isEmpty() ? *m_DiagonalIndex <=> *it.m_DiagonalIndex : std::strong_ordering::equal;
+}
+
+template <MatrixElementType T>
+template <typename IterType>
+bool Matrix<T>::PartialDiagIterator<IterType>::operator==(const IterType& it) const
+{
+    CHECK_ERROR_CONDITION(m_pMatrixPtr != it.m_pMatrixPtr || m_DiagonalSize != it.m_DiagonalSize ||
+                              m_DiagonalNr != it.m_DiagonalNr,
+                          Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
+
+    return _isEmpty() || m_DiagonalIndex == it.m_DiagonalIndex;
+}
+
+template <MatrixElementType T>
+template <typename IterType>
 bool Matrix<T>::PartialDiagIterator<IterType>::_isEmpty() const
 {
     if (m_pMatrixPtr)
@@ -1922,16 +1947,6 @@ template <MatrixElementType T>
 typename Matrix<T>::DIterator::difference_type Matrix<T>::DIterator::operator-(const Matrix<T>::DIterator& it) const
 {
     DIAG_ITERATOR_COMPUTE_DIFFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, it);
-}
-
-template <MatrixElementType T> auto Matrix<T>::DIterator::operator<=>(const Matrix<T>::DIterator& it) const
-{
-    DIAG_ITERATOR_CHECK_EQUIVALENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, it);
-}
-
-template <MatrixElementType T> bool Matrix<T>::DIterator::operator==(const Matrix<T>::DIterator& it) const
-{
-    DIAG_ITERATOR_CHECK_EQUALITY(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, it);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getRowNr() const
