@@ -296,70 +296,27 @@
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize,                               \
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
                                                                                                                        \
-    const size_type c_IteratorRowNr{                                                                                   \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(*mIteratorDiagonalIndex + static_cast<size_type>(-mIteratorDiagonalNr))           \
-            : *mIteratorDiagonalIndex};                                                                                \
-    const size_type c_IteratorColumnNr{                                                                                \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? *mIteratorDiagonalIndex                                                                                  \
-            : static_cast<size_type>(*mIteratorDiagonalIndex + static_cast<size_type>(mIteratorDiagonalNr))};          \
-                                                                                                                       \
-    return mpIteratorPtr[c_IteratorRowNr][c_IteratorColumnNr];
+    return mpIteratorPtr[*getRowNr()][*getColumnNr()];
 
 #define REVERSE_DITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize,              \
                                                mIteratorDiagonalIndex)                                                 \
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize,                               \
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
                                                                                                                        \
-    /* no overflow risk, diagonal index is less than diagonal size */                                                  \
-    const size_type c_IteratorRowNr{                                                                                   \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} +                  \
-                                     static_cast<size_type>(-mIteratorDiagonalNr))                                     \
-            : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1})};                 \
-    const size_type c_IteratorColumnNr{                                                                                \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1})                   \
-            : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} +                  \
-                                     static_cast<size_type>(mIteratorDiagonalNr))};                                    \
-                                                                                                                       \
-    return mpIteratorPtr[c_IteratorRowNr][c_IteratorColumnNr];
+    return mpIteratorPtr[*getRowNr()][*getColumnNr()];
 
 #define FORWARD_DITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize,                 \
                                             mIteratorDiagonalIndex)                                                    \
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize,                               \
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
-                                                                                                                       \
-    const size_type c_IteratorRowNr{                                                                                   \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(*mIteratorDiagonalIndex + static_cast<size_type>(-mIteratorDiagonalNr))           \
-            : *mIteratorDiagonalIndex};                                                                                \
-    const size_type c_IteratorColumnNr{                                                                                \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? *mIteratorDiagonalIndex                                                                                  \
-            : static_cast<size_type>(*mIteratorDiagonalIndex + static_cast<size_type>(mIteratorDiagonalNr))};          \
-                                                                                                                       \
-    return (mpIteratorPtr[c_IteratorRowNr] + c_IteratorColumnNr);
+    return (mpIteratorPtr[*getRowNr()] + *getColumnNr());
 
 #define REVERSE_DITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize,                 \
                                             mIteratorDiagonalIndex)                                                    \
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize,                               \
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
                                                                                                                        \
-    /* no overflow risk, diagonal index is less than diagonal size */                                                  \
-    const size_type c_IteratorRowNr{                                                                                   \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} +                  \
-                                     static_cast<size_type>(-mIteratorDiagonalNr))                                     \
-            : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1})};                 \
-    const size_type c_IteratorColumnNr{                                                                                \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1})                   \
-            : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} +                  \
-                                     static_cast<size_type>(mIteratorDiagonalNr))};                                    \
-                                                                                                                       \
-    return (mpIteratorPtr[c_IteratorRowNr] + c_IteratorColumnNr);
+    return (mpIteratorPtr[*getRowNr()] + *getColumnNr());
 
 #define FORWARD_DITERATOR_INDEX_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize,                 \
                                             mIteratorDiagonalIndex, arrayIndex)                                        \
@@ -662,84 +619,28 @@
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize,                               \
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
                                                                                                                        \
-    const size_type c_IteratorRowNr{                                                                                   \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(*mIteratorDiagonalIndex + static_cast<size_type>(-mIteratorDiagonalNr))           \
-            : *mIteratorDiagonalIndex};                                                                                \
-                                                                                                                       \
-    /* No overflow as the maximum diagonal index (for non-end iterators in non-empty matrixes) is less than the        \
-     * difference between the */                                                                                       \
-    /* columns count and diagonal number (for positive diagonals) respectively less than the number of columns (for    \
-     * negative diagonals) */                                                                                          \
-    const size_type c_IteratorColumnNr{                                                                                \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(mIteratorColumnsCount - *mIteratorDiagonalIndex - size_type{1})                   \
-            : static_cast<size_type>(mIteratorColumnsCount - *mIteratorDiagonalIndex - size_type{1} -                  \
-                                     mIteratorDiagonalNr)};                                                            \
-                                                                                                                       \
-    return mpIteratorPtr[c_IteratorRowNr][c_IteratorColumnNr];
+    return mpIteratorPtr[*getRowNr()][*getColumnNr()];
 
 #define REVERSE_MITERATOR_ASTERISK_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize,              \
                                                mIteratorDiagonalIndex, mIteratorColumnsCount)                          \
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize,                               \
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
                                                                                                                        \
-    /* No overflow risk: diagonal index is smaller than diagonal size; diagonal size is not higher than number of      \
-     * columns; diagonal number if smaller than number of columns */                                                   \
-    const size_type c_IteratorRowNr{                                                                                   \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} +                  \
-                                     static_cast<size_type>(-mIteratorDiagonalNr))                                     \
-            : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1})};                 \
-    const size_type c_IteratorColumnNr{                                                                                \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + *mIteratorDiagonalIndex)          \
-            : static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + *mIteratorDiagonalIndex -         \
-                                     static_cast<size_type>(mIteratorDiagonalNr))};                                    \
-                                                                                                                       \
-    return mpIteratorPtr[c_IteratorRowNr][c_IteratorColumnNr];
+    return mpIteratorPtr[*getRowNr()][*getColumnNr()];
 
 #define FORWARD_MITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize,                 \
                                             mIteratorDiagonalIndex, mIteratorColumnsCount)                             \
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize,                               \
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
                                                                                                                        \
-    const size_type c_IteratorRowNr{                                                                                   \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(*mIteratorDiagonalIndex + static_cast<size_type>(-mIteratorDiagonalNr))           \
-            : *mIteratorDiagonalIndex};                                                                                \
-                                                                                                                       \
-    /* No overflow as the maximum diagonal index (for non-end iterators in non-empty matrixes) is less than the        \
-     * difference between the */                                                                                       \
-    /* columns count and diagonal number (for positive diagonals) respectively less than the number of columns (for    \
-     * negative diagonals) */                                                                                          \
-    const size_type c_IteratorColumnNr{                                                                                \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(mIteratorColumnsCount - *mIteratorDiagonalIndex - size_type{1})                   \
-            : static_cast<size_type>(mIteratorColumnsCount - *mIteratorDiagonalIndex - size_type{1} -                  \
-                                     static_cast<size_type>(mIteratorDiagonalNr))};                                    \
-                                                                                                                       \
-    return (mpIteratorPtr[c_IteratorRowNr] + c_IteratorColumnNr);
+    return (mpIteratorPtr[*getRowNr()] + *getColumnNr());
 
 #define REVERSE_MITERATOR_ARROW_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize,                 \
                                             mIteratorDiagonalIndex, mIteratorColumnsCount)                             \
     CHECK_ERROR_CONDITION(_isEmpty() || mIteratorDiagonalIndex == mIteratorDiagonalSize,                               \
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);                                \
                                                                                                                        \
-    /* No overflow risk: diagonal index is smaller than diagonal size; diagonal size is not higher than number of      \
-     * columns; diagonal number if smaller than number of columns */                                                   \
-    const size_type c_IteratorRowNr{                                                                                   \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1} +                  \
-                                     static_cast<size_type>(-mIteratorDiagonalNr))                                     \
-            : static_cast<size_type>(mIteratorDiagonalSize - *mIteratorDiagonalIndex - size_type{1})};                 \
-    const size_type c_IteratorColumnNr{                                                                                \
-        mIteratorDiagonalNr < diff_type{0}                                                                             \
-            ? static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + *mIteratorDiagonalIndex)          \
-            : static_cast<size_type>(mIteratorColumnsCount - mIteratorDiagonalSize + *mIteratorDiagonalIndex -         \
-                                     static_cast<size_type>(mIteratorDiagonalNr))};                                    \
-                                                                                                                       \
-    return (mpIteratorPtr[c_IteratorRowNr] + c_IteratorColumnNr);
+    return (mpIteratorPtr[*getRowNr()] + *getColumnNr());
 
 #define FORWARD_MITERATOR_INDEX_DEREFERENCE(mpIteratorPtr, mIteratorDiagonalNr, mIteratorDiagonalSize,                 \
                                             mIteratorDiagonalIndex, mIteratorColumnsCount, arrayIndex)                 \
