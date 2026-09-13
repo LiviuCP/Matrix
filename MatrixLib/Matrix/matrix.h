@@ -513,6 +513,9 @@ public:
          * empty matrix */
         PartialDiagIterator();
 
+        T& _applyAsteriskOperator() const;
+        T* _applyArrowOperator() const;
+
         bool _isEmpty() const;
 
         T** m_pMatrixPtr;
@@ -524,6 +527,9 @@ public:
     private:
         void _increment();
         void _decrement();
+
+        std::optional<size_type> _getRowNr() const;
+        std::optional<size_type> _getColumnNr() const;
     };
 
     class DIterator : public PartialDiagIterator<DIterator>
@@ -567,6 +573,8 @@ public:
         DIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
                   const std::pair<diff_type, std::optional<size_type>>& diagonalNrAndIndex);
 
+        using PartialDiagIterator<DIterator>::_applyAsteriskOperator;
+        using PartialDiagIterator<DIterator>::_applyArrowOperator;
         using PartialDiagIterator<DIterator>::_isEmpty;
 
         using PartialDiagIterator<DIterator>::m_pMatrixPtr;
@@ -1936,6 +1944,26 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::PartialDiagIterator<Iter
 
 template <MatrixElementType T>
 template <typename IterType>
+T& Matrix<T>::PartialDiagIterator<IterType>::_applyAsteriskOperator() const
+{
+    CHECK_ERROR_CONDITION(_isEmpty() || m_DiagonalIndex == m_DiagonalSize,
+                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+
+    return m_pMatrixPtr[*_getRowNr()][*_getColumnNr()];
+}
+
+template <MatrixElementType T>
+template <typename IterType>
+T* Matrix<T>::PartialDiagIterator<IterType>::_applyArrowOperator() const
+{
+    CHECK_ERROR_CONDITION(_isEmpty() || m_DiagonalIndex == m_DiagonalSize,
+                          Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
+
+    return m_pMatrixPtr[*_getRowNr()] + *_getColumnNr();
+}
+
+template <MatrixElementType T>
+template <typename IterType>
 bool Matrix<T>::PartialDiagIterator<IterType>::_isEmpty() const
 {
     if (m_pMatrixPtr)
@@ -1968,6 +1996,20 @@ template <MatrixElementType T> template <typename IterType> void Matrix<T>::Part
     }
 }
 
+template <MatrixElementType T>
+template <typename IterType>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::PartialDiagIterator<IterType>::_getRowNr() const
+{
+    return static_cast<const IterType*>(this)->getRowNr();
+}
+
+template <MatrixElementType T>
+template <typename IterType>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::PartialDiagIterator<IterType>::_getColumnNr() const
+{
+    return static_cast<const IterType*>(this)->getColumnNr();
+}
+
 // 9) DIterator (diagonal iterator, traverses a matrix diagonal)
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getRowNr() const
@@ -1982,12 +2024,12 @@ template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matr
 
 template <MatrixElementType T> T& Matrix<T>::DIterator::operator*() const
 {
-    FORWARD_DITERATOR_ASTERISK_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
+    return _applyAsteriskOperator();
 }
 
 template <MatrixElementType T> T* Matrix<T>::DIterator::operator->() const
 {
-    FORWARD_DITERATOR_ARROW_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex);
+    return _applyArrowOperator();
 }
 
 template <MatrixElementType T> T& Matrix<T>::DIterator::operator[](Matrix<T>::DIterator::difference_type index) const
