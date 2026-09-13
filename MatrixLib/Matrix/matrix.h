@@ -493,6 +493,13 @@ public:
         IterType& operator--();
         IterType operator--(int unused);
 
+        IterType& operator+=(diff_type offset);
+
+        inline IterType& operator-=(diff_type offset)
+        {
+            return *this += -offset;
+        };
+
     protected:
         /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
          * empty matrix */
@@ -520,9 +527,6 @@ public:
         ITERATOR_TRAITS(T, diff_type, T&);
 
         DIterator() = default;
-
-        DIterator& operator+=(diff_type offset);
-        DIterator& operator-=(diff_type offset);
 
         diff_type operator-(const DIterator& it) const;
 
@@ -1825,7 +1829,9 @@ Matrix<T>::PartialDiagIterator<IterType>::PartialDiagIterator()
 {
 }
 
-template <MatrixElementType T> template <typename IterType> IterType& Matrix<T>::PartialDiagIterator<IterType>::operator++()
+template <MatrixElementType T>
+template <typename IterType>
+IterType& Matrix<T>::PartialDiagIterator<IterType>::operator++()
 {
     _increment();
     return *static_cast<IterType*>(this);
@@ -1843,7 +1849,9 @@ IterType Matrix<T>::PartialDiagIterator<IterType>::operator++(int unused)
     return iterator;
 }
 
-template <MatrixElementType T> template <typename IterType> IterType& Matrix<T>::PartialDiagIterator<IterType>::operator--()
+template <MatrixElementType T>
+template <typename IterType>
+IterType& Matrix<T>::PartialDiagIterator<IterType>::operator--()
 {
     _decrement();
     return *static_cast<IterType*>(this);
@@ -1861,7 +1869,22 @@ IterType Matrix<T>::PartialDiagIterator<IterType>::operator--(int unused)
     return iterator;
 }
 
-template <MatrixElementType T> template <typename IterType> bool Matrix<T>::PartialDiagIterator<IterType>::_isEmpty() const
+template <MatrixElementType T>
+template <typename IterType>
+IterType& Matrix<T>::PartialDiagIterator<IterType>::operator+=(Matrix<T>::diff_type offset)
+{
+    const size_type c_ResultingIndex{
+        static_cast<size_type>((offset < diff_type{0} && static_cast<size_type>(std::abs(offset)) > m_DiagonalIndex)
+                                   ? size_type{0}
+                                   : static_cast<size_type>(static_cast<diff_type>(*m_DiagonalIndex) + offset))};
+    m_DiagonalIndex = std::min(c_ResultingIndex, m_DiagonalSize);
+
+    return *static_cast<IterType*>(this);
+}
+
+template <MatrixElementType T>
+template <typename IterType>
+bool Matrix<T>::PartialDiagIterator<IterType>::_isEmpty() const
 {
     if (m_pMatrixPtr)
     {
@@ -1871,7 +1894,7 @@ template <MatrixElementType T> template <typename IterType> bool Matrix<T>::Part
     else
     {
         assert(diff_type{0} == m_DiagonalNr && size_type{0} == m_DiagonalSize &&
-               !m_DiagonalIndex.has_value()/* && size_type{0} == m_NrOfMatrixColumns*/);
+               !m_DiagonalIndex.has_value() /* && size_type{0} == m_NrOfMatrixColumns*/);
     }
 
     return !m_pMatrixPtr;
@@ -1894,18 +1917,6 @@ template <MatrixElementType T> template <typename IterType> void Matrix<T>::Part
 }
 
 // 9) DIterator (diagonal iterator, traverses a matrix diagonal)
-
-template <MatrixElementType T>
-typename Matrix<T>::DIterator& Matrix<T>::DIterator::operator+=(Matrix<T>::DIterator::difference_type offset)
-{
-    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, +, offset);
-}
-
-template <MatrixElementType T>
-typename Matrix<T>::DIterator& Matrix<T>::DIterator::operator-=(Matrix<T>::DIterator::difference_type offset)
-{
-    DIAG_ITERATOR_ADD_SCALAR_TO_ITSELF(m_DiagonalSize, m_DiagonalIndex, -, offset);
-}
 
 template <MatrixElementType T>
 typename Matrix<T>::DIterator::difference_type Matrix<T>::DIterator::operator-(const Matrix<T>::DIterator& it) const
