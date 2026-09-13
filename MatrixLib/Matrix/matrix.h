@@ -505,6 +505,9 @@ public:
         std::strong_ordering operator<=>(const IterType& it) const;
         bool operator==(const IterType& it) const;
 
+        diff_type getDiagonalNr() const;
+        std::optional<size_type> getDiagonalIndex() const;
+
     protected:
         /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
          * empty matrix */
@@ -542,8 +545,6 @@ public:
 
         std::optional<size_type> getRowNr() const;
         std::optional<size_type> getColumnNr() const;
-        diff_type getDiagonalNr() const;
-        std::optional<size_type> getDiagonalIndex() const;
 
         inline friend DIterator operator+(const DIterator& it, diff_type offset)
         {
@@ -1921,6 +1922,20 @@ bool Matrix<T>::PartialDiagIterator<IterType>::operator==(const IterType& it) co
 
 template <MatrixElementType T>
 template <typename IterType>
+typename Matrix<T>::diff_type Matrix<T>::PartialDiagIterator<IterType>::getDiagonalNr() const
+{
+    return m_DiagonalNr;
+}
+
+template <MatrixElementType T>
+template <typename IterType>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::PartialDiagIterator<IterType>::getDiagonalIndex() const
+{
+    return m_DiagonalIndex;
+}
+
+template <MatrixElementType T>
+template <typename IterType>
 bool Matrix<T>::PartialDiagIterator<IterType>::_isEmpty() const
 {
     if (m_pMatrixPtr)
@@ -1963,17 +1978,6 @@ template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matr
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getColumnNr() const
 {
     RETRIEVE_FORWARD_DITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalIndex);
-}
-
-template <MatrixElementType T> typename Matrix<T>::diff_type Matrix<T>::DIterator::getDiagonalNr() const
-{
-    return m_DiagonalNr;
-}
-
-template <MatrixElementType T>
-std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getDiagonalIndex() const
-{
-    return m_DiagonalIndex;
 }
 
 template <MatrixElementType T> T& Matrix<T>::DIterator::operator*() const
