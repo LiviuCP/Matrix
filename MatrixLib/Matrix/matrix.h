@@ -516,6 +516,10 @@ public:
         T& _applyAsteriskOperator() const;
         T* _applyArrowOperator() const;
 
+        T** _getMatrixPtr() const;
+        std::optional<size_type> _getDiagonalIndex() const;
+        diff_type _getDiagonalNr() const;
+        size_type _getDiagonalSize() const;
         bool _isEmpty() const;
 
         T** m_pMatrixPtr;
@@ -1960,6 +1964,34 @@ T* Matrix<T>::PartialDiagIterator<IterType>::_applyArrowOperator() const
                           Matr::errorMessages[Matr::Errors::DEREFERENCE_END_ITERATOR]);
 
     return m_pMatrixPtr[*_getRowNr()] + *_getColumnNr();
+}
+
+template <MatrixElementType T>
+template <typename IterType>
+T** Matrix<T>::PartialDiagIterator<IterType>::_getMatrixPtr() const
+{
+    return m_pMatrixPtr;
+}
+
+template <MatrixElementType T>
+template <typename IterType>
+std::optional<typename Matrix<T>::size_type> Matrix<T>::PartialDiagIterator<IterType>::_getDiagonalIndex() const
+{
+    return m_DiagonalIndex;
+}
+
+template <MatrixElementType T>
+template <typename IterType>
+typename Matrix<T>::diff_type Matrix<T>::PartialDiagIterator<IterType>::_getDiagonalNr() const
+{
+    return m_DiagonalNr;
+}
+
+template <MatrixElementType T>
+template <typename IterType>
+typename Matrix<T>::size_type Matrix<T>::PartialDiagIterator<IterType>::_getDiagonalSize() const
+{
+    return m_DiagonalSize;
 }
 
 template <MatrixElementType T>
