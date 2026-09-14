@@ -2118,17 +2118,22 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::PartialDiagIterator<Iter
 
 // 9) DIterator (diagonal iterator, traverses a matrix diagonal)
 
-template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getRowNr() const
+template <MatrixElementType T>
+Matrix<T>::DIterator::DIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
+                                Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
+                                std::optional<Matrix<T>::size_type> columnNr)
+    : PartialDiagIterator<DIterator>{
+          pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
+          computeForwardDIteratorDiagNrAndIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)}
 {
-    return !_isEmpty() ? std::optional{m_DiagonalNr < size_type{0} ? *m_DiagonalIndex + std::abs(m_DiagonalNr)
-                                                                   : *m_DiagonalIndex}
-                       : std::nullopt;
 }
 
-template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getColumnNr() const
+template <MatrixElementType T>
+Matrix<T>::DIterator::DIterator(
+    T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows, Matrix<T>::size_type nrOfMatrixColumns,
+    const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
+    : PartialDiagIterator<DIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, diagonalNrAndIndex}
 {
-    return !_isEmpty() ? std::optional{m_DiagonalNr < size_type{0} ? *m_DiagonalIndex : *m_DiagonalIndex + m_DiagonalNr}
-                       : std::nullopt;
 }
 
 template <MatrixElementType T> T& Matrix<T>::DIterator::operator*() const
@@ -2165,22 +2170,17 @@ template <MatrixElementType T> T& Matrix<T>::DIterator::operator[](Matrix<T>::DI
     return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
-template <MatrixElementType T>
-Matrix<T>::DIterator::DIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
-                                Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
-                                std::optional<Matrix<T>::size_type> columnNr)
-    : PartialDiagIterator<DIterator>{
-          pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
-          computeForwardDIteratorDiagNrAndIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)}
+template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getRowNr() const
 {
+    return !_isEmpty() ? std::optional{m_DiagonalNr < size_type{0} ? *m_DiagonalIndex + std::abs(m_DiagonalNr)
+                                                                   : *m_DiagonalIndex}
+                       : std::nullopt;
 }
 
-template <MatrixElementType T>
-Matrix<T>::DIterator::DIterator(
-    T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows, Matrix<T>::size_type nrOfMatrixColumns,
-    const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
-    : PartialDiagIterator<DIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, diagonalNrAndIndex}
+template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getColumnNr() const
 {
+    return !_isEmpty() ? std::optional{m_DiagonalNr < size_type{0} ? *m_DiagonalIndex : *m_DiagonalIndex + m_DiagonalNr}
+                       : std::nullopt;
 }
 
 // 10) ConstDIterator (const diagonal iterator, traverses a matrix diagonal)
