@@ -257,11 +257,11 @@
                     /* There should be no overflow risk (the absolute value of the diagonal number is lower than       \
                      * number of rows (negative) / columns (positive) */                                               \
                     resultingDiagonalSize =                                                                            \
-                        iteratorRowsCount >= iteratorColumnsCount                                                      \
-                            ? (mIteratorDiagonalNr < diff_type{0} ? iteratorRowsCount + mIteratorDiagonalNr            \
-                                                                  : iteratorColumnsCount - mIteratorDiagonalNr)        \
-                            : (mIteratorDiagonalNr <= diff_type{0} ? iteratorRowsCount + mIteratorDiagonalNr           \
-                                                                   : iteratorColumnsCount - mIteratorDiagonalNr);      \
+                        diagonalNr < diff_type{0}                                                                      \
+                            ? std::min<size_type>(iteratorRowsCount - static_cast<size_type>(-diagonalNr),             \
+                                                  iteratorColumnsCount)                                                \
+                            : std::min<size_type>(iteratorColumnsCount - static_cast<size_type>(diagonalNr),           \
+                                                  iteratorRowsCount);                                                  \
                                                                                                                        \
                     if (diagonalIndex <= resultingDiagonalSize)                                                        \
                     {                                                                                                  \
@@ -578,11 +578,11 @@
                 /* There should be no overflow risk (the absolute value of the diagonal number is lower than number of \
                  * rows (negative) / columns (positive) */                                                             \
                 resultingDiagonalSize =                                                                                \
-                    iteratorRowsCount >= iteratorColumnsCount                                                          \
-                        ? (diagonalNr < diff_type{0} ? iteratorRowsCount - static_cast<size_type>(-diagonalNr)         \
-                                                     : iteratorColumnsCount + static_cast<size_type>(-diagonalNr))     \
-                        : (diagonalNr <= diff_type{0} ? iteratorRowsCount + static_cast<size_type>(diagonalNr)         \
-                                                      : iteratorColumnsCount - static_cast<size_type>(diagonalNr));    \
+                    diagonalNr < diff_type{0}                                                                          \
+                        ? std::min<size_type>(iteratorRowsCount - static_cast<size_type>(-diagonalNr),                 \
+                                              iteratorColumnsCount)                                                    \
+                        : std::min<size_type>(iteratorColumnsCount - static_cast<size_type>(diagonalNr),               \
+                                              iteratorRowsCount);                                                      \
                                                                                                                        \
                 if (diagonalIndex <= resultingDiagonalSize)                                                            \
                 {                                                                                                      \
