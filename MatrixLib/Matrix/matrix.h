@@ -512,6 +512,8 @@ public:
         /* creates "empty" iterator (no position information, no linkage to a non-empty matrix); can be linked to any
          * empty matrix */
         PartialDiagIterator();
+        PartialDiagIterator(T** pMatrixPtr, size_type nrOfMatrixRows, size_type nrOfMatrixColumns,
+                            const std::pair<diff_type, std::optional<size_type>>& diagonalNrAndIndex);
 
         T& _applyAsteriskOperator() const;
         T* _applyArrowOperator() const;
@@ -1847,6 +1849,65 @@ Matrix<T>::PartialDiagIterator<IterType>::PartialDiagIterator()
 
 template <MatrixElementType T>
 template <typename IterType>
+Matrix<T>::PartialDiagIterator<IterType>::PartialDiagIterator(
+    T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows, Matrix<T>::size_type nrOfMatrixColumns,
+    const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
+{
+    const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
+    bool nonEmptyIteratorConstructed = false;
+
+    if (pMatrixPtr)
+    {
+        std::optional<size_type> resultingDiagonalIndex;
+        size_type resultingDiagonalSize{0};
+
+        if (nrOfMatrixRows > size_type{0} && nrOfMatrixColumns > size_type{0} && diagonalIndex.has_value())
+        {
+            const diff_type c_MinDiagonalNr{
+                static_cast<diff_type>(diff_type{1} - static_cast<diff_type>(nrOfMatrixRows))};
+            const diff_type c_MaxDiagonalNr{
+                static_cast<diff_type>(static_cast<diff_type>(nrOfMatrixColumns) - diff_type{1})};
+
+            if (diagonalNr >= c_MinDiagonalNr && diagonalNr <= c_MaxDiagonalNr)
+            {
+                resultingDiagonalSize =
+                    diagonalNr < diff_type{0}
+                        ? std::min<size_type>(nrOfMatrixRows - static_cast<size_type>(-diagonalNr), nrOfMatrixColumns)
+                        : std::min<size_type>(nrOfMatrixColumns - static_cast<size_type>(diagonalNr), nrOfMatrixRows);
+
+                if (diagonalIndex <= resultingDiagonalSize)
+                {
+                    resultingDiagonalIndex = diagonalIndex;
+                }
+            }
+        }
+
+        if (resultingDiagonalIndex.has_value())
+        {
+            m_pMatrixPtr = pMatrixPtr;
+            m_DiagonalNr = diagonalNr;
+            m_DiagonalIndex = resultingDiagonalIndex;
+            m_DiagonalSize = resultingDiagonalSize;
+            m_NrOfMatrixColumns = nrOfMatrixColumns;
+            nonEmptyIteratorConstructed = true;
+        }
+        else
+        {
+            assert(false);
+        }
+    }
+
+    if (!nonEmptyIteratorConstructed)
+    {
+        m_pMatrixPtr = nullptr;
+        m_DiagonalNr = diff_type{0};
+        m_DiagonalSize = size_type{0};
+        m_NrOfMatrixColumns = size_type{0};
+    }
+}
+
+template <MatrixElementType T>
+template <typename IterType>
 IterType& Matrix<T>::PartialDiagIterator<IterType>::operator++()
 {
     _increment();
@@ -2082,11 +2143,8 @@ template <MatrixElementType T>
 Matrix<T>::DIterator::DIterator(
     T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows, Matrix<T>::size_type nrOfMatrixColumns,
     const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
+    : PartialDiagIterator<DIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, diagonalNrAndIndex}
 {
-    const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
-    CONSTRUCT_FORWARD_DITERATOR_WITH_DIAG_NR_AND_INDEX(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex,
-                                                       pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, diagonalNr,
-                                                       diagonalIndex);
 }
 
 // 10) ConstDIterator (const diagonal iterator, traverses a matrix diagonal)
