@@ -2106,12 +2106,15 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::PartialDiagIterator<Iter
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getRowNr() const
 {
-    RETRIEVE_FORWARD_DIAG_ITERATOR_ROW_NR(m_DiagonalNr, m_DiagonalIndex);
+    return !_isEmpty() ? std::optional{m_DiagonalNr < size_type{0} ? *m_DiagonalIndex + std::abs(m_DiagonalNr)
+                                                                   : *m_DiagonalIndex}
+                       : std::nullopt;
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getColumnNr() const
 {
-    RETRIEVE_FORWARD_DITERATOR_COLUMN_NR(m_DiagonalNr, m_DiagonalIndex);
+    return !_isEmpty() ? std::optional{m_DiagonalNr < size_type{0} ? *m_DiagonalIndex : *m_DiagonalIndex + m_DiagonalNr}
+                       : std::nullopt;
 }
 
 template <MatrixElementType T> T& Matrix<T>::DIterator::operator*() const
