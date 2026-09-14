@@ -517,6 +517,7 @@ public:
 
         T& _applyAsteriskOperator() const;
         T* _applyArrowOperator() const;
+        T& _applySquareBracketsOperator(size_type rowNr, size_type columnNr) const;
 
         T** _getMatrixPtr() const;
         std::optional<size_type> _getDiagonalIndex() const;
@@ -581,6 +582,7 @@ public:
 
         using PartialDiagIterator<DIterator>::_applyAsteriskOperator;
         using PartialDiagIterator<DIterator>::_applyArrowOperator;
+        using PartialDiagIterator<DIterator>::_applySquareBracketsOperator;
         using PartialDiagIterator<DIterator>::_isEmpty;
 
         using PartialDiagIterator<DIterator>::m_pMatrixPtr;
@@ -2029,6 +2031,18 @@ T* Matrix<T>::PartialDiagIterator<IterType>::_applyArrowOperator() const
 
 template <MatrixElementType T>
 template <typename IterType>
+T& Matrix<T>::PartialDiagIterator<IterType>::_applySquareBracketsOperator(Matrix<T>::size_type rowNr,
+                                                                          Matrix<T>::size_type columnNr) const
+{
+    // TODO: revise error condition
+    CHECK_ERROR_CONDITION(_isEmpty() || columnNr >= m_NrOfMatrixColumns,
+                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    return m_pMatrixPtr[rowNr][columnNr];
+}
+
+template <MatrixElementType T>
+template <typename IterType>
 T** Matrix<T>::PartialDiagIterator<IterType>::_getMatrixPtr() const
 {
     return m_pMatrixPtr;
@@ -2129,7 +2143,26 @@ template <MatrixElementType T> T* Matrix<T>::DIterator::operator->() const
 
 template <MatrixElementType T> T& Matrix<T>::DIterator::operator[](Matrix<T>::DIterator::difference_type index) const
 {
-    FORWARD_DITERATOR_INDEX_DEREFERENCE(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex, index);
+    CHECK_ERROR_CONDITION(_isEmpty() ||
+                              (index < diff_type{0} && static_cast<size_type>(std::abs(index)) > m_DiagonalIndex),
+                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*m_DiagonalIndex) + index)};
+
+    CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= m_DiagonalSize,
+                          Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    const size_type c_ResultingRowNr{
+        m_DiagonalNr < diff_type{0}
+            ? static_cast<size_type>(c_ResultingDiagonalIndex + static_cast<size_type>(-m_DiagonalNr))
+            : c_ResultingDiagonalIndex};
+
+    const size_type c_ResultingColumnNr{
+        m_DiagonalNr < diff_type{0}
+            ? c_ResultingDiagonalIndex
+            : static_cast<size_type>(c_ResultingDiagonalIndex + static_cast<size_type>(m_DiagonalNr))};
+
+    return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T>
