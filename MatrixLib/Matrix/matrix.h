@@ -2061,13 +2061,12 @@ bool Matrix<T>::PartialDiagIterator<IterType>::_isEmpty() const
 {
     if (m_pMatrixPtr)
     {
-        assert(m_DiagonalSize > size_type{0} && m_DiagonalIndex.has_value() /*&&
-               m_NrOfMatrixColumns > size_type{0}*/);
+        assert(m_DiagonalSize > size_type{0} && m_DiagonalIndex.has_value() && m_NrOfMatrixColumns > size_type{0});
     }
     else
     {
-        assert(diff_type{0} == m_DiagonalNr && size_type{0} == m_DiagonalSize &&
-               !m_DiagonalIndex.has_value() /* && size_type{0} == m_NrOfMatrixColumns*/);
+        assert(diff_type{0} == m_DiagonalNr && size_type{0} == m_DiagonalSize && !m_DiagonalIndex.has_value() &&
+               size_type{0} == m_NrOfMatrixColumns);
     }
 
     return !m_pMatrixPtr;
@@ -2134,9 +2133,10 @@ template <MatrixElementType T>
 Matrix<T>::DIterator::DIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixRows,
                                 Matrix<T>::size_type nrOfMatrixColumns, std::optional<Matrix<T>::size_type> rowNr,
                                 std::optional<Matrix<T>::size_type> columnNr)
+    : PartialDiagIterator<DIterator>{
+          pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
+          computeForwardDIteratorDiagNrAndIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)}
 {
-    CONSTRUCT_FORWARD_DITERATOR_WITH_ROW_AND_COLUMN_NR(m_pMatrixPtr, m_DiagonalNr, m_DiagonalSize, m_DiagonalIndex,
-                                                       pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr);
 }
 
 template <MatrixElementType T>

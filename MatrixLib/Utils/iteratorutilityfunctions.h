@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <optional>
 
 #include "../Matrix/matrixdimensions.h"
@@ -43,4 +44,21 @@ static std::optional<matrix_diff_t> computeReverseNonDiagIteratorIndex(
                ? static_cast<matrix_diff_t>(matrixPrimaryDimension) *
                      static_cast<matrix_diff_t>(matrixSecondaryDimension)
                : std::optional<matrix_diff_t>{};
+}
+
+static std::pair<matrix_diff_t, std::optional<matrix_size_t>> computeForwardDIteratorDiagNrAndIndex(
+    matrix_size_t nrOfMatrixRows, matrix_size_t nrOfMatrixColumns, std::optional<matrix_size_t> rowNr,
+    std::optional<matrix_size_t> columnNr)
+{
+    matrix_diff_t diagonalNr{0};
+    std::optional<matrix_size_t> diagonalIndex;
+
+    if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0 && rowNr.has_value() && columnNr.has_value() &&
+        rowNr < nrOfMatrixRows && columnNr < nrOfMatrixColumns)
+    {
+        diagonalNr = static_cast<matrix_diff_t>(*columnNr) - static_cast<matrix_diff_t>(*rowNr);
+        diagonalIndex = std::min(*rowNr, *columnNr);
+    }
+
+    return {diagonalNr, diagonalIndex};
 }
