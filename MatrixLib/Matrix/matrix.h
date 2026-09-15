@@ -2186,7 +2186,7 @@ template <MatrixElementType T> T* Matrix<T>::DIterator::operator->() const
     return _applyArrowOperator();
 }
 
-template <MatrixElementType T> T& Matrix<T>::DIterator::operator[](Matrix<T>::DIterator::difference_type index) const
+template <MatrixElementType T> T& Matrix<T>::DIterator::operator[](Matrix<T>::diff_type index) const
 {
     CHECK_ERROR_CONDITION(_isEmpty() ||
                               (index < diff_type{0} && static_cast<size_type>(std::abs(index)) > m_DiagonalIndex),
@@ -2398,8 +2398,7 @@ template <MatrixElementType T> T* Matrix<T>::ReverseDIterator::operator->() cons
     return _applyArrowOperator();
 }
 
-template <MatrixElementType T>
-T& Matrix<T>::ReverseDIterator::operator[](Matrix<T>::ReverseDIterator::difference_type index) const
+template <MatrixElementType T> T& Matrix<T>::ReverseDIterator::operator[](Matrix<T>::diff_type index) const
 {
     CHECK_ERROR_CONDITION(_isEmpty() ||
                               (index < diff_type{0} && static_cast<size_type>(std::abs(index)) > m_DiagonalIndex),
