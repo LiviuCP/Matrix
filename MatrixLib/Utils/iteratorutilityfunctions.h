@@ -62,3 +62,42 @@ static std::pair<matrix_diff_t, std::optional<matrix_size_t>> computeForwardDIte
 
     return {diagonalNr, diagonalIndex};
 }
+
+static std::pair<matrix_diff_t, std::optional<matrix_size_t>> computeReverseDIteratorDiagNrAndIndex(
+    matrix_size_t nrOfMatrixRows, matrix_size_t nrOfMatrixColumns, std::optional<matrix_size_t> rowNr,
+    std::optional<matrix_size_t> columnNr)
+{
+    matrix_diff_t diagonalNr{0};
+    std::optional<matrix_size_t> diagonalIndex;
+
+    if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0 && rowNr.has_value() && columnNr.has_value() &&
+        rowNr < nrOfMatrixRows && columnNr < nrOfMatrixColumns)
+    {
+        const bool c_AreRowAndColumnNrValid{
+            (!rowNr.has_value() && !columnNr.has_value()) ||
+            (!rowNr.has_value() && columnNr < nrOfMatrixColumns - matrix_size_t{1}) ||
+            (!columnNr.has_value() && rowNr < nrOfMatrixRows - matrix_size_t{1}) ||
+            (rowNr.has_value() && columnNr.has_value() && rowNr < nrOfMatrixRows && columnNr < nrOfMatrixColumns)};
+
+        if (c_AreRowAndColumnNrValid)
+        {
+            diagonalNr = rowNr.has_value() && columnNr.has_value()
+                             ? static_cast<matrix_diff_t>(*columnNr) - static_cast<matrix_diff_t>(*rowNr)
+                         : rowNr.has_value()    ? matrix_diff_t{-1} - static_cast<matrix_diff_t>(*rowNr)
+                         : columnNr.has_value() ? static_cast<matrix_diff_t>(*columnNr) + matrix_diff_t{1}
+                                                : matrix_diff_t{0};
+
+            const matrix_size_t c_DiagonalSize =
+                nrOfMatrixRows >= nrOfMatrixColumns
+                    ? (diagonalNr < matrix_diff_t{0} ? nrOfMatrixRows + diagonalNr : nrOfMatrixColumns - diagonalNr)
+                    : (diagonalNr <= matrix_diff_t{0} ? nrOfMatrixRows + diagonalNr : nrOfMatrixColumns - diagonalNr);
+
+            diagonalIndex =
+                diagonalNr < matrix_diff_t{0}
+                    ? (columnNr.has_value() ? c_DiagonalSize - matrix_size_t{1} - *columnNr : c_DiagonalSize)
+                    : (rowNr.has_value() ? c_DiagonalSize - matrix_size_t{1} - *rowNr : c_DiagonalSize);
+        }
+    }
+
+    return {diagonalNr, diagonalIndex};
+}
