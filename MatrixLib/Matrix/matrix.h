@@ -2192,8 +2192,7 @@ template <typename IterType>
 T& Matrix<T>::PartialDiagIterator<IterType>::_applySquareBracketsOperator(Matrix<T>::size_type rowNr,
                                                                           Matrix<T>::size_type columnNr) const
 {
-    // TODO: revise error condition
-    CHECK_ERROR_CONDITION(_isEmpty() || columnNr >= m_NrOfMatrixColumns,
+    CHECK_ERROR_CONDITION(_isEmpty() || rowNr >= m_NrOfMatrixRows || columnNr >= m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
 
     return m_pMatrixPtr[rowNr][columnNr];
