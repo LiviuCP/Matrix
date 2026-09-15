@@ -521,13 +521,8 @@ public:
 
         T** _getMatrixPtr() const;
         size_type _getDiagonalSize() const;
+        size_type _getNrOfMatrixColumns() const;
         bool _isEmpty() const;
-
-        T** m_pMatrixPtr;
-        std::optional<size_type> m_DiagonalIndex;       /* relative index within diagonal */
-        diff_type m_DiagonalNr;                         /* index of the diagonal within matrix */
-        size_type m_DiagonalSize;                       /* number of elements contained within diagonal */
-        [[maybe_unused]] size_type m_NrOfMatrixColumns; /* only used by mirrored diagonal iterators */
 
     private:
         void _increment();
@@ -535,6 +530,12 @@ public:
 
         std::optional<size_type> _getRowNr() const;
         std::optional<size_type> _getColumnNr() const;
+
+        T** m_pMatrixPtr;
+        std::optional<size_type> m_DiagonalIndex;       /* relative index within diagonal */
+        diff_type m_DiagonalNr;                         /* index of the diagonal within matrix */
+        size_type m_DiagonalSize;                       /* number of elements contained within diagonal */
+        [[maybe_unused]] size_type m_NrOfMatrixColumns; /* only used by mirrored diagonal iterators */
     };
 
     class DIterator : public PartialDiagIterator<DIterator>
@@ -549,6 +550,8 @@ public:
 
         using PartialDiagIterator<DIterator>::operator<=>;
         using PartialDiagIterator<DIterator>::operator==;
+        using PartialDiagIterator<DIterator>::getDiagonalNr;
+        using PartialDiagIterator<DIterator>::getDiagonalIndex;
 
         T& operator*() const;
         T* operator->() const;
@@ -581,12 +584,8 @@ public:
         using PartialDiagIterator<DIterator>::_applyAsteriskOperator;
         using PartialDiagIterator<DIterator>::_applyArrowOperator;
         using PartialDiagIterator<DIterator>::_applySquareBracketsOperator;
+        using PartialDiagIterator<DIterator>::_getDiagonalSize;
         using PartialDiagIterator<DIterator>::_isEmpty;
-
-        using PartialDiagIterator<DIterator>::m_pMatrixPtr;
-        using PartialDiagIterator<DIterator>::m_DiagonalIndex;
-        using PartialDiagIterator<DIterator>::m_DiagonalNr;
-        using PartialDiagIterator<DIterator>::m_DiagonalSize;
     };
 
     class ConstDIterator
@@ -615,6 +614,8 @@ public:
 
         using PartialDiagIterator<ReverseDIterator>::operator<=>;
         using PartialDiagIterator<ReverseDIterator>::operator==;
+        using PartialDiagIterator<ReverseDIterator>::getDiagonalNr;
+        using PartialDiagIterator<ReverseDIterator>::getDiagonalIndex;
 
         T& operator*() const;
         T* operator->() const;
@@ -647,12 +648,8 @@ public:
         using PartialDiagIterator<ReverseDIterator>::_applyAsteriskOperator;
         using PartialDiagIterator<ReverseDIterator>::_applyArrowOperator;
         using PartialDiagIterator<ReverseDIterator>::_applySquareBracketsOperator;
+        using PartialDiagIterator<ReverseDIterator>::_getDiagonalSize;
         using PartialDiagIterator<ReverseDIterator>::_isEmpty;
-
-        using PartialDiagIterator<ReverseDIterator>::m_pMatrixPtr;
-        using PartialDiagIterator<ReverseDIterator>::m_DiagonalIndex;
-        using PartialDiagIterator<ReverseDIterator>::m_DiagonalNr;
-        using PartialDiagIterator<ReverseDIterator>::m_DiagonalSize;
     };
 
     class ConstReverseDIterator
@@ -681,6 +678,8 @@ public:
 
         using PartialDiagIterator<MIterator>::operator<=>;
         using PartialDiagIterator<MIterator>::operator==;
+        using PartialDiagIterator<MIterator>::getDiagonalNr;
+        using PartialDiagIterator<MIterator>::getDiagonalIndex;
 
         T& operator*() const;
         T* operator->() const;
@@ -713,13 +712,9 @@ public:
         using PartialDiagIterator<MIterator>::_applyAsteriskOperator;
         using PartialDiagIterator<MIterator>::_applyArrowOperator;
         using PartialDiagIterator<MIterator>::_applySquareBracketsOperator;
+        using PartialDiagIterator<MIterator>::_getDiagonalSize;
+        using PartialDiagIterator<MIterator>::_getNrOfMatrixColumns;
         using PartialDiagIterator<MIterator>::_isEmpty;
-
-        using PartialDiagIterator<MIterator>::m_pMatrixPtr;
-        using PartialDiagIterator<MIterator>::m_DiagonalIndex;
-        using PartialDiagIterator<MIterator>::m_DiagonalNr;
-        using PartialDiagIterator<MIterator>::m_DiagonalSize;
-        using PartialDiagIterator<MIterator>::m_NrOfMatrixColumns;
     };
 
     class ConstMIterator
@@ -751,6 +746,8 @@ public:
 
         using PartialDiagIterator<ReverseMIterator>::operator<=>;
         using PartialDiagIterator<ReverseMIterator>::operator==;
+        using PartialDiagIterator<ReverseMIterator>::getDiagonalNr;
+        using PartialDiagIterator<ReverseMIterator>::getDiagonalIndex;
 
         T& operator*() const;
         T* operator->() const;
@@ -783,13 +780,9 @@ public:
         using PartialDiagIterator<ReverseMIterator>::_applyAsteriskOperator;
         using PartialDiagIterator<ReverseMIterator>::_applyArrowOperator;
         using PartialDiagIterator<ReverseMIterator>::_applySquareBracketsOperator;
+        using PartialDiagIterator<ReverseMIterator>::_getDiagonalSize;
+        using PartialDiagIterator<ReverseMIterator>::_getNrOfMatrixColumns;
         using PartialDiagIterator<ReverseMIterator>::_isEmpty;
-
-        using PartialDiagIterator<ReverseMIterator>::m_pMatrixPtr;
-        using PartialDiagIterator<ReverseMIterator>::m_DiagonalIndex;
-        using PartialDiagIterator<ReverseMIterator>::m_DiagonalNr;
-        using PartialDiagIterator<ReverseMIterator>::m_DiagonalSize;
-        using PartialDiagIterator<ReverseMIterator>::m_NrOfMatrixColumns;
     };
 
     class ConstReverseMIterator
@@ -2171,6 +2164,13 @@ typename Matrix<T>::size_type Matrix<T>::PartialDiagIterator<IterType>::_getDiag
 
 template <MatrixElementType T>
 template <typename IterType>
+typename Matrix<T>::size_type Matrix<T>::PartialDiagIterator<IterType>::_getNrOfMatrixColumns() const
+{
+    return m_NrOfMatrixColumns;
+}
+
+template <MatrixElementType T>
+template <typename IterType>
 bool Matrix<T>::PartialDiagIterator<IterType>::_isEmpty() const
 {
     if (m_pMatrixPtr)
@@ -2248,38 +2248,49 @@ template <MatrixElementType T> T* Matrix<T>::DIterator::operator->() const
 
 template <MatrixElementType T> T& Matrix<T>::DIterator::operator[](Matrix<T>::diff_type index) const
 {
+    const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
+
     CHECK_ERROR_CONDITION(_isEmpty() ||
-                              (index < diff_type{0} && static_cast<size_type>(std::abs(index)) > m_DiagonalIndex),
+                              (index < diff_type{0} && static_cast<size_type>(std::abs(index)) > c_DiagonalIndex),
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
 
-    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*m_DiagonalIndex) + index)};
+    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*c_DiagonalIndex) + index)};
+    const size_type c_DiagonalSize{_getDiagonalSize()};
 
-    CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= m_DiagonalSize,
+    CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= c_DiagonalSize,
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    const diff_type c_DiagonalNr{getDiagonalNr()};
 
     const size_type c_ResultingRowNr{
-        m_DiagonalNr < diff_type{0}
-            ? static_cast<size_type>(c_ResultingDiagonalIndex + static_cast<size_type>(-m_DiagonalNr))
+        c_DiagonalNr < diff_type{0}
+            ? static_cast<size_type>(c_ResultingDiagonalIndex + static_cast<size_type>(-c_DiagonalNr))
             : c_ResultingDiagonalIndex};
 
     const size_type c_ResultingColumnNr{
-        m_DiagonalNr < diff_type{0}
+        c_DiagonalNr < diff_type{0}
             ? c_ResultingDiagonalIndex
-            : static_cast<size_type>(c_ResultingDiagonalIndex + static_cast<size_type>(m_DiagonalNr))};
+            : static_cast<size_type>(c_ResultingDiagonalIndex + static_cast<size_type>(c_DiagonalNr))};
 
     return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getRowNr() const
 {
-    return !_isEmpty() ? std::optional{m_DiagonalNr < size_type{0} ? *m_DiagonalIndex + std::abs(m_DiagonalNr)
-                                                                   : *m_DiagonalIndex}
+    const diff_type c_DiagonalNr{getDiagonalNr()};
+    const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
+
+    return !_isEmpty() ? std::optional{c_DiagonalNr < size_type{0} ? *c_DiagonalIndex + std::abs(c_DiagonalNr)
+                                                                   : *c_DiagonalIndex}
                        : std::nullopt;
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::DIterator::getColumnNr() const
 {
-    return !_isEmpty() ? std::optional{m_DiagonalNr < size_type{0} ? *m_DiagonalIndex : *m_DiagonalIndex + m_DiagonalNr}
+    const diff_type c_DiagonalNr{getDiagonalNr()};
+    const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
+
+    return !_isEmpty() ? std::optional{c_DiagonalNr < size_type{0} ? *c_DiagonalIndex : *c_DiagonalIndex + c_DiagonalNr}
                        : std::nullopt;
 }
 
@@ -2460,24 +2471,29 @@ template <MatrixElementType T> T* Matrix<T>::ReverseDIterator::operator->() cons
 
 template <MatrixElementType T> T& Matrix<T>::ReverseDIterator::operator[](Matrix<T>::diff_type index) const
 {
+    const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
+
     CHECK_ERROR_CONDITION(_isEmpty() ||
-                              (index < diff_type{0} && static_cast<size_type>(std::abs(index)) > m_DiagonalIndex),
+                              (index < diff_type{0} && static_cast<size_type>(std::abs(index)) > c_DiagonalIndex),
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
 
-    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*m_DiagonalIndex) + index)};
+    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*c_DiagonalIndex) + index)};
+    const size_type c_DiagonalSize{_getDiagonalSize()};
 
-    CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= m_DiagonalSize,
+    CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= c_DiagonalSize,
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    const diff_type c_DiagonalNr{getDiagonalNr()};
 
     /* no overflow risk, diagonal index is less than diagonal size */
     const size_type c_ResultingRowNr{
-        m_DiagonalNr < diff_type{0} ? static_cast<size_type>(m_DiagonalSize - c_ResultingDiagonalIndex - size_type{1} +
-                                                             static_cast<size_type>(-m_DiagonalNr))
-                                    : static_cast<size_type>(m_DiagonalSize - c_ResultingDiagonalIndex - size_type{1})};
+        c_DiagonalNr < diff_type{0} ? static_cast<size_type>(c_DiagonalSize - c_ResultingDiagonalIndex - size_type{1} +
+                                                             static_cast<size_type>(-c_DiagonalNr))
+                                    : static_cast<size_type>(c_DiagonalSize - c_ResultingDiagonalIndex - size_type{1})};
     const size_type c_ResultingColumnNr{
-        m_DiagonalNr < diff_type{0} ? static_cast<size_type>(m_DiagonalSize - c_ResultingDiagonalIndex - size_type{1})
-                                    : static_cast<size_type>(m_DiagonalSize - c_ResultingDiagonalIndex - size_type{1} +
-                                                             static_cast<size_type>(m_DiagonalNr))};
+        c_DiagonalNr < diff_type{0} ? static_cast<size_type>(c_DiagonalSize - c_ResultingDiagonalIndex - size_type{1})
+                                    : static_cast<size_type>(c_DiagonalSize - c_ResultingDiagonalIndex - size_type{1} +
+                                                             static_cast<size_type>(c_DiagonalNr))};
 
     return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
@@ -2485,10 +2501,14 @@ template <MatrixElementType T> T& Matrix<T>::ReverseDIterator::operator[](Matrix
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseDIterator::getRowNr() const
 {
-    return !_isEmpty() ? m_DiagonalNr < size_type{0} ? std::optional{m_DiagonalSize - *m_DiagonalIndex - size_type{1} +
-                                                                     static_cast<size_type>(-m_DiagonalNr)}
-                         : *m_DiagonalIndex < m_DiagonalSize
-                             ? std::optional{m_DiagonalSize - *m_DiagonalIndex - size_type{1}}
+    const diff_type c_DiagonalNr{getDiagonalNr()};
+    const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
+    const size_type c_DiagonalSize{_getDiagonalSize()};
+
+    return !_isEmpty() ? c_DiagonalNr < size_type{0} ? std::optional{c_DiagonalSize - *c_DiagonalIndex - size_type{1} +
+                                                                     static_cast<size_type>(-c_DiagonalNr)}
+                         : *c_DiagonalIndex < c_DiagonalSize
+                             ? std::optional{c_DiagonalSize - *c_DiagonalIndex - size_type{1}}
                              : std::nullopt
                        : std::nullopt;
 }
@@ -2496,10 +2516,14 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseDIterator::getRow
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseDIterator::getColumnNr() const
 {
-    return !_isEmpty() ? m_DiagonalNr > size_type{0} ? std::optional{m_DiagonalSize - *m_DiagonalIndex - size_type{1} +
-                                                                     static_cast<size_type>(m_DiagonalNr)}
-                         : *m_DiagonalIndex < m_DiagonalSize
-                             ? std::optional{m_DiagonalSize - *m_DiagonalIndex - size_type{1}}
+    const diff_type c_DiagonalNr{getDiagonalNr()};
+    const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
+    const size_type c_DiagonalSize{_getDiagonalSize()};
+
+    return !_isEmpty() ? c_DiagonalNr > size_type{0} ? std::optional{c_DiagonalSize - *c_DiagonalIndex - size_type{1} +
+                                                                     static_cast<size_type>(c_DiagonalNr)}
+                         : *c_DiagonalIndex < c_DiagonalSize
+                             ? std::optional{c_DiagonalSize - *c_DiagonalIndex - size_type{1}}
                              : std::nullopt
                        : std::nullopt;
 }
@@ -2687,51 +2711,65 @@ template <MatrixElementType T> T* Matrix<T>::MIterator::operator->() const
 
 template <MatrixElementType T> T& Matrix<T>::MIterator::operator[](Matrix<T>::diff_type index) const
 {
+    const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
+
     CHECK_ERROR_CONDITION(_isEmpty() ||
-                              (index < diff_type{0} && static_cast<size_type>(std::abs(index)) > m_DiagonalIndex),
+                              (index < diff_type{0} && static_cast<size_type>(std::abs(index)) > c_DiagonalIndex),
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
 
-    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*m_DiagonalIndex) + index)};
+    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*c_DiagonalIndex) + index)};
+    const size_type c_DiagonalSize{_getDiagonalSize()};
 
-    CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= m_DiagonalSize,
+    CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= c_DiagonalSize,
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    const diff_type c_DiagonalNr{getDiagonalNr()};
 
     const size_type c_ResultingRowNr{
-        m_DiagonalNr < diff_type{0}
-            ? static_cast<size_type>(c_ResultingDiagonalIndex + static_cast<size_type>(-m_DiagonalNr))
+        c_DiagonalNr < diff_type{0}
+            ? static_cast<size_type>(c_ResultingDiagonalIndex + static_cast<size_type>(-c_DiagonalNr))
             : c_ResultingDiagonalIndex};
+
+    const size_type c_NrOfMatrixColumns{_getNrOfMatrixColumns()};
 
     /* No overflow as the maximum diagonal index (for non-end iterators in non-empty matrixes) is less than the
      * difference between the */
     /* columns count and diagonal number (for positive diagonals) respectively less than the number of columns (for
      * negative diagonals) */
     const size_type c_ResultingColumnNr{
-        m_DiagonalNr < diff_type{0}
-            ? static_cast<size_type>(m_NrOfMatrixColumns - c_ResultingDiagonalIndex - size_type{1})
-            : static_cast<size_type>(m_NrOfMatrixColumns - c_ResultingDiagonalIndex - size_type{1} -
-                                     static_cast<size_type>(m_DiagonalNr))};
+        c_DiagonalNr < diff_type{0}
+            ? static_cast<size_type>(c_NrOfMatrixColumns - c_ResultingDiagonalIndex - size_type{1})
+            : static_cast<size_type>(c_NrOfMatrixColumns - c_ResultingDiagonalIndex - size_type{1} -
+                                     static_cast<size_type>(c_DiagonalNr))};
 
     return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::MIterator::getRowNr() const
 {
-    return !_isEmpty() ? std::optional{m_DiagonalNr < size_type{0} ? *m_DiagonalIndex + std::abs(m_DiagonalNr)
-                                                                   : *m_DiagonalIndex}
+    const diff_type c_DiagonalNr{getDiagonalNr()};
+    const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
+
+    return !_isEmpty() ? std::optional{c_DiagonalNr < size_type{0} ? *c_DiagonalIndex + std::abs(c_DiagonalNr)
+                                                                   : *c_DiagonalIndex}
                        : std::nullopt;
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::MIterator::getColumnNr() const
 {
+    const diff_type c_DiagonalNr{getDiagonalNr()};
+    const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
+    const size_type c_NrOfMatrixColumns{_getNrOfMatrixColumns()};
+
     /* no overflow as for positive diagonals the diagonal number should be strictly smaller */
     /* than the number of matrix columns if the matrix is not empty */
-    return !_isEmpty() ? m_DiagonalNr < size_type{0}
-                             ? (*m_DiagonalIndex < m_NrOfMatrixColumns
-                                    ? std::optional{m_NrOfMatrixColumns - *m_DiagonalIndex - size_type{1}}
+    return !_isEmpty() ? c_DiagonalNr < size_type{0}
+                             ? (*c_DiagonalIndex < c_NrOfMatrixColumns
+                                    ? std::optional{c_NrOfMatrixColumns - *c_DiagonalIndex - size_type{1}}
                                     : std::nullopt)
-                             : (*m_DiagonalIndex < m_NrOfMatrixColumns - static_cast<size_type>(m_DiagonalNr)
-                                    ? std::optional{m_NrOfMatrixColumns - *m_DiagonalIndex - size_type{1} -
-                                                    static_cast<size_type>(m_DiagonalNr)}
+                             : (*c_DiagonalIndex < c_NrOfMatrixColumns - static_cast<size_type>(c_DiagonalNr)
+                                    ? std::optional{c_NrOfMatrixColumns - *c_DiagonalIndex - size_type{1} -
+                                                    static_cast<size_type>(c_DiagonalNr)}
                                     : std::nullopt)
                        : std::nullopt;
 }
@@ -2919,26 +2957,34 @@ template <MatrixElementType T> T* Matrix<T>::ReverseMIterator::operator->() cons
 
 template <MatrixElementType T> T& Matrix<T>::ReverseMIterator::operator[](Matrix<T>::diff_type index) const
 {
+    const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
+
     CHECK_ERROR_CONDITION(_isEmpty() ||
-                              (index < diff_type{0} && static_cast<size_type>(std::abs(index)) > m_DiagonalIndex),
+                              (index < diff_type{0} && static_cast<size_type>(std::abs(index)) > c_DiagonalIndex),
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
 
-    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*m_DiagonalIndex) + index)};
+    const size_type c_ResultingDiagonalIndex{static_cast<size_type>(static_cast<diff_type>(*c_DiagonalIndex) + index)};
+    const size_type c_DiagonalSize{_getDiagonalSize()};
 
-    CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= m_DiagonalSize,
+    CHECK_ERROR_CONDITION(c_ResultingDiagonalIndex >= c_DiagonalSize,
                           Matr::errorMessages[Matr::Errors::ITERATOR_INDEX_OUT_OF_BOUNDS]);
+
+    const diff_type c_DiagonalNr{getDiagonalNr()};
 
     /* No overflow risk: diagonal index is smaller than diagonal size; diagonal size is not higher than number of
      * columns; diagonal number if smaller than number of columns */
     const size_type c_ResultingRowNr{
-        m_DiagonalNr < diff_type{0} ? static_cast<size_type>(m_DiagonalSize - c_ResultingDiagonalIndex - size_type{1} +
-                                                             static_cast<size_type>(-m_DiagonalNr))
-                                    : static_cast<size_type>(m_DiagonalSize - c_ResultingDiagonalIndex - size_type{1})};
+        c_DiagonalNr < diff_type{0} ? static_cast<size_type>(c_DiagonalSize - c_ResultingDiagonalIndex - size_type{1} +
+                                                             static_cast<size_type>(-c_DiagonalNr))
+                                    : static_cast<size_type>(c_DiagonalSize - c_ResultingDiagonalIndex - size_type{1})};
+
+    const size_type c_NrOfMatrixColumns{_getNrOfMatrixColumns()};
+
     const size_type c_ResultingColumnNr{
-        m_DiagonalNr < diff_type{0}
-            ? static_cast<size_type>(m_NrOfMatrixColumns - m_DiagonalSize + c_ResultingDiagonalIndex)
-            : static_cast<size_type>(m_NrOfMatrixColumns - m_DiagonalSize + c_ResultingDiagonalIndex -
-                                     static_cast<size_type>(m_DiagonalNr))};
+        c_DiagonalNr < diff_type{0}
+            ? static_cast<size_type>(c_NrOfMatrixColumns - c_DiagonalSize + c_ResultingDiagonalIndex)
+            : static_cast<size_type>(c_NrOfMatrixColumns - c_DiagonalSize + c_ResultingDiagonalIndex -
+                                     static_cast<size_type>(c_DiagonalNr))};
 
     return _applySquareBracketsOperator(c_ResultingRowNr, c_ResultingColumnNr);
 }
@@ -2946,11 +2992,15 @@ template <MatrixElementType T> T& Matrix<T>::ReverseMIterator::operator[](Matrix
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseMIterator::getRowNr() const
 {
+    const diff_type c_DiagonalNr{getDiagonalNr()};
+    const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
+    const size_type c_DiagonalSize{_getDiagonalSize()};
+
     /* no overflow risk, diagonal index should not exceed diagonal size */
-    return !_isEmpty() ? m_DiagonalNr < size_type{0} ? std::optional{m_DiagonalSize - *m_DiagonalIndex - size_type{1} +
-                                                                     static_cast<size_type>(-m_DiagonalNr)}
-                         : *m_DiagonalIndex < m_DiagonalSize
-                             ? std::optional{m_DiagonalSize - *m_DiagonalIndex - size_type{1}}
+    return !_isEmpty() ? c_DiagonalNr < size_type{0} ? std::optional{c_DiagonalSize - *c_DiagonalIndex - size_type{1} +
+                                                                     static_cast<size_type>(-c_DiagonalNr)}
+                         : *c_DiagonalIndex < c_DiagonalSize
+                             ? std::optional{c_DiagonalSize - *c_DiagonalIndex - size_type{1}}
                              : std::nullopt
                        : std::nullopt;
 }
@@ -2958,11 +3008,16 @@ std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseMIterator::getRow
 template <MatrixElementType T>
 std::optional<typename Matrix<T>::size_type> Matrix<T>::ReverseMIterator::getColumnNr() const
 {
+    const diff_type c_DiagonalNr{getDiagonalNr()};
+    const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
+    const size_type c_DiagonalSize{_getDiagonalSize()};
+    const size_type c_NrOfMatrixColumns{_getNrOfMatrixColumns()};
+
     /* no overflow risk, diagonal index should not exceed diagonal size, the diagonal number */
     /* is smaller than number of columns (in the second case) */
-    return !_isEmpty() ? std::optional{m_DiagonalNr < size_type{0}
-                                           ? m_NrOfMatrixColumns - m_DiagonalSize + *m_DiagonalIndex
-                                           : m_NrOfMatrixColumns - m_DiagonalSize + *m_DiagonalIndex - m_DiagonalNr}
+    return !_isEmpty() ? std::optional{c_DiagonalNr < size_type{0}
+                                           ? c_NrOfMatrixColumns - c_DiagonalSize + *c_DiagonalIndex
+                                           : c_NrOfMatrixColumns - c_DiagonalSize + *c_DiagonalIndex - c_DiagonalNr}
                        : std::nullopt;
 }
 
