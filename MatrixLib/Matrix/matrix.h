@@ -520,8 +520,6 @@ public:
         T& _applySquareBracketsOperator(size_type rowNr, size_type columnNr) const;
 
         T** _getMatrixPtr() const;
-        std::optional<size_type> _getDiagonalIndex() const;
-        diff_type _getDiagonalNr() const;
         size_type _getDiagonalSize() const;
         bool _isEmpty() const;
 
@@ -2162,20 +2160,6 @@ template <typename IterType>
 T** Matrix<T>::PartialDiagIterator<IterType>::_getMatrixPtr() const
 {
     return m_pMatrixPtr;
-}
-
-template <MatrixElementType T>
-template <typename IterType>
-std::optional<typename Matrix<T>::size_type> Matrix<T>::PartialDiagIterator<IterType>::_getDiagonalIndex() const
-{
-    return m_DiagonalIndex;
-}
-
-template <MatrixElementType T>
-template <typename IterType>
-typename Matrix<T>::diff_type Matrix<T>::PartialDiagIterator<IterType>::_getDiagonalNr() const
-{
-    return m_DiagonalNr;
 }
 
 template <MatrixElementType T>
