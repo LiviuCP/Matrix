@@ -159,8 +159,16 @@ public:
         using NonDiagIterator<ZIterator>::operator<=>;
         using NonDiagIterator<ZIterator>::operator==;
 
-        T& operator*() const;
-        T* operator->() const;
+        inline T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -209,8 +217,16 @@ public:
         using NonDiagIterator<ConstZIterator>::operator<=>;
         using NonDiagIterator<ConstZIterator>::operator==;
 
-        const T& operator*() const;
-        const T* operator->() const;
+        inline const T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        const T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         const T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -257,8 +273,16 @@ public:
         using NonDiagIterator<ReverseZIterator>::operator<=>;
         using NonDiagIterator<ReverseZIterator>::operator==;
 
-        T& operator*() const;
-        T* operator->() const;
+        T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -307,8 +331,16 @@ public:
         using NonDiagIterator<ConstReverseZIterator>::operator<=>;
         using NonDiagIterator<ConstReverseZIterator>::operator==;
 
-        const T& operator*() const;
-        const T* operator->() const;
+        const T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        const T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         const T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -355,8 +387,16 @@ public:
         using NonDiagIterator<NIterator>::operator<=>;
         using NonDiagIterator<NIterator>::operator==;
 
-        T& operator*() const;
-        T* operator->() const;
+        T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -405,8 +445,16 @@ public:
         using NonDiagIterator<ConstNIterator>::operator<=>;
         using NonDiagIterator<ConstNIterator>::operator==;
 
-        const T& operator*() const;
-        const T* operator->() const;
+        const T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        const T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         const T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -453,8 +501,16 @@ public:
         using NonDiagIterator<ReverseNIterator>::operator<=>;
         using NonDiagIterator<ReverseNIterator>::operator==;
 
-        T& operator*() const;
-        T* operator->() const;
+        T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -503,8 +559,16 @@ public:
         using NonDiagIterator<ConstReverseNIterator>::operator<=>;
         using NonDiagIterator<ConstReverseNIterator>::operator==;
 
-        const T& operator*() const;
-        const T* operator->() const;
+        const T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        const T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         const T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -553,8 +617,16 @@ public:
         using PartialDiagIterator<DIterator>::getDiagonalNr;
         using PartialDiagIterator<DIterator>::getDiagonalIndex;
 
-        T& operator*() const;
-        T* operator->() const;
+        T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -607,8 +679,16 @@ public:
         using PartialDiagIterator<ConstDIterator>::getDiagonalNr;
         using PartialDiagIterator<ConstDIterator>::getDiagonalIndex;
 
-        const T& operator*() const;
-        const T* operator->() const;
+        const T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        const T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         const T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -657,8 +737,16 @@ public:
         using PartialDiagIterator<ReverseDIterator>::getDiagonalNr;
         using PartialDiagIterator<ReverseDIterator>::getDiagonalIndex;
 
-        T& operator*() const;
-        T* operator->() const;
+        T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -711,8 +799,16 @@ public:
         using PartialDiagIterator<ConstReverseDIterator>::getDiagonalNr;
         using PartialDiagIterator<ConstReverseDIterator>::getDiagonalIndex;
 
-        const T& operator*() const;
-        const T* operator->() const;
+        const T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        const T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         const T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -761,8 +857,16 @@ public:
         using PartialDiagIterator<MIterator>::getDiagonalNr;
         using PartialDiagIterator<MIterator>::getDiagonalIndex;
 
-        T& operator*() const;
-        T* operator->() const;
+        T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -815,8 +919,16 @@ public:
         using PartialDiagIterator<ConstMIterator>::getDiagonalNr;
         using PartialDiagIterator<ConstMIterator>::getDiagonalIndex;
 
-        const T& operator*() const;
-        const T* operator->() const;
+        const T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        const T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         const T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -866,8 +978,16 @@ public:
         using PartialDiagIterator<ReverseMIterator>::getDiagonalNr;
         using PartialDiagIterator<ReverseMIterator>::getDiagonalIndex;
 
-        T& operator*() const;
-        T* operator->() const;
+        T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -920,8 +1040,16 @@ public:
         using PartialDiagIterator<ConstReverseMIterator>::getDiagonalNr;
         using PartialDiagIterator<ConstReverseMIterator>::getDiagonalIndex;
 
-        const T& operator*() const;
-        const T* operator->() const;
+        const T& operator*() const
+        {
+            return _applyAsteriskOperator();
+        }
+
+        const T* operator->() const
+        {
+            return _applyArrowOperator();
+        }
+
         const T& operator[](diff_type index) const;
 
         std::optional<size_type> getRowNr() const;
@@ -1769,16 +1897,6 @@ Matrix<T>::ZIterator::ZIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixR
 {
 }
 
-template <MatrixElementType T> T& Matrix<T>::ZIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> T* Matrix<T>::ZIterator::operator->() const
-{
-    return _applyArrowOperator();
-}
-
 template <MatrixElementType T> T& Matrix<T>::ZIterator::operator[](Matrix<T>::diff_type index) const
 {
     const std::optional<diff_type> c_Index{_getIndex()};
@@ -1844,16 +1962,6 @@ Matrix<T>::ConstZIterator::ConstZIterator(T** pMatrixPtr, Matrix<T>::size_type n
 {
 }
 
-template <MatrixElementType T> const T& Matrix<T>::ConstZIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> const T* Matrix<T>::ConstZIterator::operator->() const
-{
-    return _applyArrowOperator();
-}
-
 template <MatrixElementType T> const T& Matrix<T>::ConstZIterator::operator[](Matrix<T>::diff_type index) const
 {
     const std::optional<diff_type> c_Index{_getIndex()};
@@ -1910,16 +2018,6 @@ Matrix<T>::ReverseZIterator::ReverseZIterator(T** pMatrixPtr, Matrix<T>::size_ty
           pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
           computeReverseNonDiagIteratorIndex(nrOfMatrixRows, nrOfMatrixColumns, rowNr, columnNr)}
 {
-}
-
-template <MatrixElementType T> T& Matrix<T>::ReverseZIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> T* Matrix<T>::ReverseZIterator::operator->() const
-{
-    return _applyArrowOperator();
 }
 
 template <MatrixElementType T> T& Matrix<T>::ReverseZIterator::operator[](Matrix<T>::diff_type index) const
@@ -2001,16 +2099,6 @@ Matrix<T>::ConstReverseZIterator::ConstReverseZIterator(T** pMatrixPtr, Matrix<T
 {
 }
 
-template <MatrixElementType T> const T& Matrix<T>::ConstReverseZIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> const T* Matrix<T>::ConstReverseZIterator::operator->() const
-{
-    return _applyArrowOperator();
-}
-
 template <MatrixElementType T> const T& Matrix<T>::ConstReverseZIterator::operator[](Matrix<T>::diff_type index) const
 {
     const std::optional<diff_type> c_Index{_getIndex()};
@@ -2075,16 +2163,6 @@ Matrix<T>::NIterator::NIterator(T** pMatrixPtr, Matrix<T>::size_type nrOfMatrixR
     : NonDiagIterator<NIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
                                  computeForwardNonDiagIteratorIndex(nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr)}
 {
-}
-
-template <MatrixElementType T> T& Matrix<T>::NIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> T* Matrix<T>::NIterator::operator->() const
-{
-    return _applyArrowOperator();
 }
 
 template <MatrixElementType T> T& Matrix<T>::NIterator::operator[](Matrix<T>::diff_type index) const
@@ -2153,16 +2231,6 @@ Matrix<T>::ConstNIterator::ConstNIterator(T** pMatrixPtr, Matrix<T>::size_type n
 {
 }
 
-template <MatrixElementType T> const T& Matrix<T>::ConstNIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> const T* Matrix<T>::ConstNIterator::operator->() const
-{
-    return _applyArrowOperator();
-}
-
 template <MatrixElementType T> const T& Matrix<T>::ConstNIterator::operator[](Matrix<T>::diff_type index) const
 {
     const std::optional<diff_type> c_Index{_getIndex()};
@@ -2220,16 +2288,6 @@ Matrix<T>::ReverseNIterator::ReverseNIterator(T** pMatrixPtr, Matrix<T>::size_ty
           pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns,
           computeReverseNonDiagIteratorIndex(nrOfMatrixColumns, nrOfMatrixRows, columnNr, rowNr)}
 {
-}
-
-template <MatrixElementType T> T& Matrix<T>::ReverseNIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> T* Matrix<T>::ReverseNIterator::operator->() const
-{
-    return _applyArrowOperator();
 }
 
 template <MatrixElementType T> T& Matrix<T>::ReverseNIterator::operator[](Matrix<T>::diff_type index) const
@@ -2312,16 +2370,6 @@ Matrix<T>::ConstReverseNIterator::ConstReverseNIterator(T** pMatrixPtr, Matrix<T
 {
 }
 
-template <MatrixElementType T> const T& Matrix<T>::ConstReverseNIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> const T* Matrix<T>::ConstReverseNIterator::operator->() const
-{
-    return _applyArrowOperator();
-}
-
 template <MatrixElementType T> const T& Matrix<T>::ConstReverseNIterator::operator[](Matrix<T>::diff_type index) const
 {
     const std::optional<diff_type> c_Index{_getIndex()};
@@ -2396,16 +2444,6 @@ Matrix<T>::DIterator::DIterator(
     const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
     : PartialDiagIterator<DIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, diagonalNrAndIndex}
 {
-}
-
-template <MatrixElementType T> T& Matrix<T>::DIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> T* Matrix<T>::DIterator::operator->() const
-{
-    return _applyArrowOperator();
 }
 
 template <MatrixElementType T> T& Matrix<T>::DIterator::operator[](Matrix<T>::diff_type index) const
@@ -2489,16 +2527,6 @@ Matrix<T>::ConstDIterator::ConstDIterator(
 {
 }
 
-template <MatrixElementType T> const T& Matrix<T>::ConstDIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> const T* Matrix<T>::ConstDIterator::operator->() const
-{
-    return _applyArrowOperator();
-}
-
 template <MatrixElementType T> const T& Matrix<T>::ConstDIterator::operator[](Matrix<T>::diff_type index) const
 {
     const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
@@ -2570,16 +2598,6 @@ Matrix<T>::ReverseDIterator::ReverseDIterator(
     const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
     : PartialDiagIterator<ReverseDIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, diagonalNrAndIndex}
 {
-}
-
-template <MatrixElementType T> T& Matrix<T>::ReverseDIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> T* Matrix<T>::ReverseDIterator::operator->() const
-{
-    return _applyArrowOperator();
 }
 
 template <MatrixElementType T> T& Matrix<T>::ReverseDIterator::operator[](Matrix<T>::diff_type index) const
@@ -2673,16 +2691,6 @@ Matrix<T>::ConstReverseDIterator::ConstReverseDIterator(
 {
 }
 
-template <MatrixElementType T> const T& Matrix<T>::ConstReverseDIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> const T* Matrix<T>::ConstReverseDIterator::operator->() const
-{
-    return _applyArrowOperator();
-}
-
 template <MatrixElementType T> const T& Matrix<T>::ConstReverseDIterator::operator[](Matrix<T>::diff_type index) const
 {
     const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
@@ -2761,16 +2769,6 @@ Matrix<T>::MIterator::MIterator(
     const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
     : PartialDiagIterator<MIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, diagonalNrAndIndex}
 {
-}
-
-template <MatrixElementType T> T& Matrix<T>::MIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> T* Matrix<T>::MIterator::operator->() const
-{
-    return _applyArrowOperator();
 }
 
 template <MatrixElementType T> T& Matrix<T>::MIterator::operator[](Matrix<T>::diff_type index) const
@@ -2869,16 +2867,6 @@ Matrix<T>::ConstMIterator::ConstMIterator(
 {
 }
 
-template <MatrixElementType T> const T& Matrix<T>::ConstMIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> const T* Matrix<T>::ConstMIterator::operator->() const
-{
-    return _applyArrowOperator();
-}
-
 template <MatrixElementType T> const T& Matrix<T>::ConstMIterator::operator[](Matrix<T>::diff_type index) const
 {
     const std::optional<size_type> c_DiagonalIndex{getDiagonalIndex()};
@@ -2965,16 +2953,6 @@ Matrix<T>::ReverseMIterator::ReverseMIterator(
     const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
     : PartialDiagIterator<ReverseMIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, diagonalNrAndIndex}
 {
-}
-
-template <MatrixElementType T> T& Matrix<T>::ReverseMIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> T* Matrix<T>::ReverseMIterator::operator->() const
-{
-    return _applyArrowOperator();
 }
 
 template <MatrixElementType T> T& Matrix<T>::ReverseMIterator::operator[](Matrix<T>::diff_type index) const
@@ -3073,16 +3051,6 @@ Matrix<T>::ConstReverseMIterator::ConstReverseMIterator(
     const std::pair<Matrix<T>::diff_type, std::optional<Matrix<T>::size_type>>& diagonalNrAndIndex)
     : PartialDiagIterator<ConstReverseMIterator>{pMatrixPtr, nrOfMatrixRows, nrOfMatrixColumns, diagonalNrAndIndex}
 {
-}
-
-template <MatrixElementType T> const T& Matrix<T>::ConstReverseMIterator::operator*() const
-{
-    return _applyAsteriskOperator();
-}
-
-template <MatrixElementType T> const T* Matrix<T>::ConstReverseMIterator::operator->() const
-{
-    return _applyArrowOperator();
 }
 
 template <MatrixElementType T> const T& Matrix<T>::ConstReverseMIterator::operator[](Matrix<T>::diff_type index) const
