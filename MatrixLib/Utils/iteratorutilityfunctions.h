@@ -166,3 +166,180 @@ static std::pair<matrix_diff_t, std::optional<matrix_size_t>> computeReverseMIte
 
     return {diagonalNr, diagonalIndex};
 }
+
+static std::optional<matrix_size_t> computeForwardZIteratorRowNr(std::optional<matrix_diff_t> index,
+                                                                 matrix_size_t nrOfMatrixColumns)
+{
+    return index.has_value() && nrOfMatrixColumns > matrix_size_t{0}
+               ? static_cast<matrix_size_t>(*index / static_cast<matrix_diff_t>(nrOfMatrixColumns))
+               : std::optional<matrix_size_t>{};
+}
+
+static std::optional<matrix_size_t> computeForwardZIteratorColumnNr(std::optional<matrix_diff_t> index,
+                                                                    matrix_size_t nrOfMatrixColumns)
+{
+    return index.has_value() && nrOfMatrixColumns > matrix_size_t{0}
+               ? static_cast<matrix_size_t>(*index % static_cast<matrix_diff_t>(nrOfMatrixColumns))
+               : std::optional<matrix_size_t>{};
+}
+
+static std::optional<matrix_size_t> computeReverseZIteratorRowNr(std::optional<matrix_diff_t> index,
+                                                                 matrix_size_t nrOfMatrixRows,
+                                                                 matrix_size_t nrOfMatrixColumns)
+{
+    return index.has_value() && nrOfMatrixRows > matrix_size_t{0} && nrOfMatrixColumns > 0 &&
+                   index < static_cast<matrix_diff_t>(nrOfMatrixRows) * static_cast<matrix_diff_t>(nrOfMatrixColumns)
+               ? static_cast<matrix_size_t>(nrOfMatrixRows) -
+                     static_cast<matrix_size_t>(*index / static_cast<matrix_diff_t>(nrOfMatrixColumns)) -
+                     matrix_size_t{1}
+               : std::optional<matrix_size_t>{};
+}
+
+static std::optional<matrix_size_t> computeReverseZIteratorColumnNr(std::optional<matrix_diff_t> index,
+                                                                    matrix_size_t nrOfMatrixRows,
+                                                                    matrix_size_t nrOfMatrixColumns)
+{
+    return index.has_value() && nrOfMatrixRows > matrix_size_t{0} && nrOfMatrixColumns > matrix_size_t{0}
+               ? index < static_cast<matrix_diff_t>(nrOfMatrixRows) * static_cast<matrix_diff_t>(nrOfMatrixColumns)
+                     ? static_cast<matrix_size_t>(nrOfMatrixColumns) -
+                           static_cast<matrix_size_t>(*index % static_cast<matrix_diff_t>(nrOfMatrixColumns)) -
+                           matrix_size_t{1}
+                     : static_cast<matrix_size_t>(nrOfMatrixColumns) - matrix_size_t{1}
+               : std::optional<matrix_size_t>{};
+}
+
+static std::optional<matrix_size_t> computeForwardNIteratorRowNr(std::optional<matrix_diff_t> index,
+                                                                 matrix_size_t nrOfMatrixRows)
+{
+    return index.has_value() && nrOfMatrixRows > matrix_size_t{0}
+               ? static_cast<matrix_size_t>(*index % static_cast<matrix_diff_t>(nrOfMatrixRows))
+               : std::optional<matrix_size_t>{};
+}
+
+static std::optional<matrix_size_t> computeForwardNIteratorColumnNr(std::optional<matrix_diff_t> index,
+                                                                    matrix_size_t nrOfMatrixRows)
+{
+    return index.has_value() && nrOfMatrixRows > matrix_size_t{0}
+               ? static_cast<matrix_size_t>(*index / static_cast<matrix_diff_t>(nrOfMatrixRows))
+               : std::optional<matrix_size_t>{};
+}
+
+static std::optional<matrix_size_t> computeReverseNIteratorRowNr(std::optional<matrix_diff_t> index,
+                                                                 matrix_size_t nrOfMatrixRows,
+                                                                 matrix_size_t nrOfMatrixColumns)
+{
+    return index.has_value() && nrOfMatrixRows > matrix_size_t{0} && nrOfMatrixColumns > matrix_size_t{0}
+               ? index < static_cast<matrix_diff_t>(nrOfMatrixColumns) * static_cast<matrix_diff_t>(nrOfMatrixRows)
+                     ? static_cast<matrix_size_t>(nrOfMatrixRows) -
+                           static_cast<matrix_size_t>(*index % static_cast<matrix_diff_t>(nrOfMatrixRows)) -
+                           matrix_size_t{1}
+                     : static_cast<matrix_size_t>(nrOfMatrixRows) - matrix_size_t{1}
+               : std::optional<matrix_size_t>{};
+}
+
+static std::optional<matrix_size_t> computeReverseNIteratorColumnNr(std::optional<matrix_diff_t> index,
+                                                                    matrix_size_t nrOfMatrixRows,
+                                                                    matrix_size_t nrOfMatrixColumns)
+{
+    return index.has_value() && nrOfMatrixRows > matrix_size_t{0} && nrOfMatrixColumns > matrix_size_t{0} &&
+                   index < static_cast<matrix_diff_t>(nrOfMatrixColumns) * static_cast<matrix_diff_t>(nrOfMatrixRows)
+               ? static_cast<matrix_size_t>(nrOfMatrixColumns) -
+                     static_cast<matrix_size_t>(*index / static_cast<matrix_diff_t>(nrOfMatrixRows)) - matrix_size_t{1}
+               : std::optional<matrix_size_t>{};
+}
+
+static std::optional<matrix_size_t> computeForwardDIteratorRowNr(matrix_diff_t diagonalNr,
+                                                                 std::optional<matrix_size_t> diagonalIndex)
+{
+    return diagonalIndex.has_value()
+               ? std::optional{diagonalNr < matrix_diff_t{0} ? *diagonalIndex + static_cast<matrix_size_t>(-diagonalNr)
+                                                             : *diagonalIndex}
+               : std::nullopt;
+}
+
+static std::optional<matrix_size_t> computeForwardDIteratorColumnNr(matrix_diff_t diagonalNr,
+                                                                    std::optional<matrix_size_t> diagonalIndex)
+{
+    return diagonalIndex.has_value()
+               ? std::optional{diagonalNr < matrix_diff_t{0} ? *diagonalIndex
+                                                             : *diagonalIndex + static_cast<matrix_size_t>(diagonalNr)}
+               : std::nullopt;
+}
+
+static std::optional<matrix_size_t> computeReverseDIteratorRowNr(matrix_diff_t diagonalNr,
+                                                                 std::optional<matrix_size_t> diagonalIndex,
+                                                                 matrix_size_t diagonalSize)
+{
+    return diagonalIndex.has_value() && diagonalSize > matrix_size_t{0}
+               ? diagonalNr < matrix_diff_t{0}   ? std::optional{diagonalSize - *diagonalIndex - matrix_size_t{1} +
+                                                               static_cast<matrix_size_t>(-diagonalNr)}
+                 : *diagonalIndex < diagonalSize ? std::optional{diagonalSize - *diagonalIndex - matrix_size_t{1}}
+                                                 : std::nullopt
+               : std::nullopt;
+}
+
+static std::optional<matrix_size_t> computeReverseDIteratorColumnNr(matrix_diff_t diagonalNr,
+                                                                    std::optional<matrix_size_t> diagonalIndex,
+                                                                    matrix_size_t diagonalSize)
+{
+    return diagonalIndex.has_value() && diagonalSize > matrix_size_t{0}
+               ? diagonalNr > matrix_diff_t{0}   ? std::optional{diagonalSize - *diagonalIndex - matrix_size_t{1} +
+                                                               static_cast<matrix_size_t>(diagonalNr)}
+                 : *diagonalIndex < diagonalSize ? std::optional{diagonalSize - *diagonalIndex - matrix_size_t{1}}
+                                                 : std::nullopt
+               : std::nullopt;
+}
+
+static std::optional<matrix_size_t> computeForwardMIteratorRowNr(matrix_diff_t diagonalNr,
+                                                                 std::optional<matrix_size_t> diagonalIndex)
+{
+    return diagonalIndex.has_value()
+               ? std::optional{diagonalNr < matrix_diff_t{0} ? *diagonalIndex + static_cast<matrix_size_t>(-diagonalNr)
+                                                             : *diagonalIndex}
+               : std::nullopt;
+}
+
+static std::optional<matrix_size_t> computeForwardMIteratorColumnNr(matrix_diff_t diagonalNr,
+                                                                    std::optional<matrix_size_t> diagonalIndex,
+                                                                    matrix_size_t nrOfMatrixColumns)
+{
+    /* no overflow as for positive diagonals the diagonal number should be strictly smaller */
+    /* than the number of matrix columns if the matrix is not empty */
+    return diagonalIndex.has_value() && nrOfMatrixColumns > matrix_size_t{0}
+               ? diagonalNr < matrix_diff_t{0}
+                     ? (*diagonalIndex < nrOfMatrixColumns
+                            ? std::optional{nrOfMatrixColumns - *diagonalIndex - matrix_size_t{1}}
+                            : std::nullopt)
+                     : (*diagonalIndex < nrOfMatrixColumns - static_cast<matrix_size_t>(diagonalNr)
+                            ? std::optional{nrOfMatrixColumns - *diagonalIndex - matrix_size_t{1} -
+                                            static_cast<matrix_size_t>(diagonalNr)}
+                            : std::nullopt)
+               : std::nullopt;
+}
+
+static std::optional<matrix_size_t> computeReverseMIteratorRowNr(matrix_diff_t diagonalNr,
+                                                                 std::optional<matrix_size_t> diagonalIndex,
+                                                                 matrix_size_t diagonalSize)
+{
+    /* no overflow risk, diagonal index should not exceed diagonal size */
+    return diagonalIndex.has_value() && diagonalSize > matrix_size_t{0}
+               ? diagonalNr < matrix_diff_t{0}   ? std::optional{diagonalSize - *diagonalIndex - matrix_size_t{1} +
+                                                               static_cast<matrix_size_t>(-diagonalNr)}
+                 : *diagonalIndex < diagonalSize ? std::optional{diagonalSize - *diagonalIndex - matrix_size_t{1}}
+                                                 : std::nullopt
+               : std::nullopt;
+}
+
+static std::optional<matrix_size_t> computeReverseMIteratorColumnNr(matrix_diff_t diagonalNr,
+                                                                    std::optional<matrix_size_t> diagonalIndex,
+                                                                    matrix_size_t diagonalSize,
+                                                                    matrix_size_t nrOfMatrixColumns)
+{
+    /* no overflow risk, diagonal index should not exceed diagonal size, the diagonal number */
+    /* is smaller than number of columns (in the second case) */
+    return diagonalIndex.has_value() && diagonalSize > matrix_size_t{0} && nrOfMatrixColumns > matrix_size_t{0}
+               ? std::optional{diagonalNr < matrix_diff_t{0} ? nrOfMatrixColumns - diagonalSize + *diagonalIndex
+                                                             : nrOfMatrixColumns - diagonalSize + *diagonalIndex -
+                                                                   static_cast<matrix_size_t>(diagonalNr)}
+               : std::nullopt;
+}
