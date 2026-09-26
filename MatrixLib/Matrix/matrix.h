@@ -5322,7 +5322,6 @@ template <MatrixElementType T> T& Matrix<T>::WDIterator::operator[](Matrix<T>::W
     return _applySquareBracketsOperator(index);
 }
 
-// TODO: refactor mapDiagonalIndexToRowAndColumnNr() to accept std::nullopt as index + refactor the consumers
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getRowNr() const
 {
     const std::optional<diff_type> c_Index{_getIndex()};
@@ -5331,10 +5330,8 @@ template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matr
     const diff_type c_UpperBound{
         static_cast<diff_type>(static_cast<diff_type>(c_NrOfRows) * static_cast<diff_type>(c_NrOfColumns))};
 
-    return c_Index ? c_Index == c_UpperBound
-                         ? std::optional<size_type>{c_NrOfRows}
-                         : mapDiagonalIndexToRowAndColumnNr(c_NrOfRows, c_NrOfColumns, *c_Index).first.first
-                   : std::nullopt;
+    return c_Index != c_UpperBound ? mapDiagonalIndexToRowAndColumnNr(c_NrOfRows, c_NrOfColumns, c_Index).first.first
+                                   : std::optional<size_type>{c_NrOfRows};
 }
 
 template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::getColumnNr() const
@@ -5345,26 +5342,22 @@ template <MatrixElementType T> std::optional<typename Matrix<T>::size_type> Matr
     const diff_type c_UpperBound{
         static_cast<diff_type>(static_cast<diff_type>(c_NrOfRows) * static_cast<diff_type>(c_NrOfColumns))};
 
-    return c_Index ? c_Index == c_UpperBound
-                         ? std::optional<size_type>{c_NrOfColumns}
-                         : mapDiagonalIndexToRowAndColumnNr(c_NrOfRows, c_NrOfColumns, *c_Index).first.second
-                   : std::nullopt;
+    return c_Index != c_UpperBound ? mapDiagonalIndexToRowAndColumnNr(c_NrOfRows, c_NrOfColumns, c_Index).first.second
+                                   : std::optional<size_type>{c_NrOfColumns};
 }
 
 template <MatrixElementType T>
 inline std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::_rowNrFromIndex(
     std::optional<Matrix<T>::diff_type> index) const
 {
-    return index ? mapDiagonalIndexToRowAndColumnNr(_getNrOfMatrixRows(), _getNrOfMatrixColumns(), *index).first.first
-                 : std::nullopt;
+    return mapDiagonalIndexToRowAndColumnNr(_getNrOfMatrixRows(), _getNrOfMatrixColumns(), index).first.first;
 }
 
 template <MatrixElementType T>
 inline std::optional<typename Matrix<T>::size_type> Matrix<T>::WDIterator::_columnNrFromIndex(
     std::optional<Matrix<T>::diff_type> index) const
 {
-    return index ? mapDiagonalIndexToRowAndColumnNr(_getNrOfMatrixRows(), _getNrOfMatrixColumns(), *index).first.second
-                 : std::nullopt;
+    return mapDiagonalIndexToRowAndColumnNr(_getNrOfMatrixRows(), _getNrOfMatrixColumns(), index).first.second;
 }
 
 #undef CHECK_ERROR_CONDITION

@@ -394,11 +394,11 @@ static std::optional<matrix_size_t> computeReverseMIteratorColumnNr(matrix_diff_
    required bottom-right row and column number would be obtained
 */
 static std::pair<MatrixPoint, std::optional<matrix_diff_t>> mapDiagonalIndexToRowAndColumnNr(
-    matrix_size_t nrOfMatrixRows, matrix_size_t nrOfMatrixColumns, matrix_diff_t diagonalIndex)
+    matrix_size_t nrOfMatrixRows, matrix_size_t nrOfMatrixColumns, std::optional<matrix_diff_t> diagonalIndex)
 {
     std::pair<MatrixPoint, std::optional<matrix_diff_t>> result;
 
-    if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0)
+    if (nrOfMatrixRows > 0 && nrOfMatrixColumns > 0 && diagonalIndex.has_value())
     {
         auto& [coordinates, diagonalIndexToConvert]{result};
         auto& [rowNr, columnNr]{coordinates};
@@ -418,7 +418,7 @@ static std::pair<MatrixPoint, std::optional<matrix_diff_t>> mapDiagonalIndexToRo
         const matrix_diff_t c_ElementsCountIncludingMaxDiagonals{
             static_cast<matrix_diff_t>(c_TotalElementsCount - c_ElementsCountBeforeFirstMaxDiagonal)};
 
-        diagonalIndexToConvert = std::clamp<matrix_diff_t>(diagonalIndex, 0, c_TotalElementsCount - 1);
+        diagonalIndexToConvert = std::clamp<matrix_diff_t>(*diagonalIndex, 0, c_TotalElementsCount - 1);
 
         if (diagonalIndexToConvert < c_ElementsCountBeforeFirstMaxDiagonal)
         {
