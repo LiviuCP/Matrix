@@ -20,8 +20,6 @@ target_sources(${PROJECT_NAME}
             Matrix/matrix.cpp
             Matrix/matrix_header.cpp
             Matrix/matrix_impl.cpp
-            Iterators/matrix_ziterator_impl.cpp
-            Iterators/matrix_niterator_impl.cpp
-            Iterators/matrix_diterator_impl.cpp
-            Iterators/matrix_miterator_impl.cpp
+            Iterators/matrix_full_traverse_iterators_impl.cpp
+            Iterators/matrix_partial_diag_iterators_impl.cpp
 )

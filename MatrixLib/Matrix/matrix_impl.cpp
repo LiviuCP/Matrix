@@ -7,7 +7,6 @@ module;
 #include <vector>
 
 #include "../Utils/errorhandling.h"
-#include "../Utils/iteratorgetters.h"
 
 // When building the project on Mac using Ninja and LLVM Clang, I noticed
 // that a compilation error would be triggered unless adding export to the
@@ -725,727 +724,560 @@ template <MatrixElementType T> bool Matrix<T>::operator==(const Matrix<T>& matri
     return areEqual;
 }
 
-template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zBegin()
+template <MatrixElementType T> inline typename Matrix<T>::ZIterator Matrix<T>::zBegin()
 {
-    GET_FORWARD_NON_DIAG_BEGIN_ITERATOR(ZIterator,
-                                        m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                        m_NrOfRows, m_NrOfColumns);
+    return _getForwardNonDiagBeginIterator<ZIterator>();
 }
 
-template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zEnd()
+template <MatrixElementType T> inline typename Matrix<T>::ZIterator Matrix<T>::zEnd()
 {
-    GET_FORWARD_NON_DIAG_END_ITERATOR(ZIterator,
-                                      m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                      m_NrOfRows, m_NrOfColumns);
+    return _getForwardNonDiagEndIterator<ZIterator>();
 }
 
-template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zRowBegin(Matrix<T>::size_type rowNr)
+template <MatrixElementType T> inline typename Matrix<T>::ZIterator Matrix<T>::zRowBegin(Matrix<T>::size_type rowNr)
 {
-    GET_FORWARD_ROW_BEGIN_ZITERATOR(ZIterator,
-                                    m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                    m_NrOfRows, m_NrOfColumns, rowNr);
+    return _getForwardRowBeginZIterator<ZIterator>(rowNr);
 }
 
-template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::zRowEnd(Matrix<T>::size_type rowNr)
+template <MatrixElementType T> inline typename Matrix<T>::ZIterator Matrix<T>::zRowEnd(Matrix<T>::size_type rowNr)
 {
-    GET_FORWARD_ROW_END_ZITERATOR(ZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                  m_NrOfRows, m_NrOfColumns, rowNr);
+    return _getForwardRowEndZIterator<ZIterator>(rowNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ZIterator Matrix<T>::getZIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::ZIterator Matrix<T>::getZIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
 {
-    GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getNonDiagIteratorByRowAndColumnNumber<ZIterator>(rowNr, columnNr);
 }
 
-template <MatrixElementType T> typename Matrix<T>::ConstZIterator Matrix<T>::constZBegin() const
+template <MatrixElementType T> inline typename Matrix<T>::ConstZIterator Matrix<T>::constZBegin() const
 {
-    GET_FORWARD_NON_DIAG_BEGIN_ITERATOR(ConstZIterator,
-                                        m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                        m_NrOfRows, m_NrOfColumns);
+    return _getForwardNonDiagBeginIterator<ConstZIterator>();
 }
 
-template <MatrixElementType T> typename Matrix<T>::ConstZIterator Matrix<T>::constZEnd() const
+template <MatrixElementType T> inline typename Matrix<T>::ConstZIterator Matrix<T>::constZEnd() const
 {
-    GET_FORWARD_NON_DIAG_END_ITERATOR(ConstZIterator,
-                                      m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                      m_NrOfRows, m_NrOfColumns);
+    return _getForwardNonDiagEndIterator<ConstZIterator>();
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstZIterator Matrix<T>::constZRowBegin(Matrix<T>::size_type rowNr) const
+inline typename Matrix<T>::ConstZIterator Matrix<T>::constZRowBegin(Matrix<T>::size_type rowNr) const
 {
-    GET_FORWARD_ROW_BEGIN_ZITERATOR(ConstZIterator,
-                                    m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                    m_NrOfRows, m_NrOfColumns, rowNr);
+    return _getForwardRowBeginZIterator<ConstZIterator>(rowNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstZIterator Matrix<T>::constZRowEnd(Matrix<T>::size_type rowNr) const
+inline typename Matrix<T>::ConstZIterator Matrix<T>::constZRowEnd(Matrix<T>::size_type rowNr) const
 {
-    GET_FORWARD_ROW_END_ZITERATOR(ConstZIterator,
-                                  m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                  m_NrOfRows, m_NrOfColumns, rowNr);
+    return _getForwardRowEndZIterator<ConstZIterator>(rowNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstZIterator Matrix<T>::getConstZIterator(Matrix<T>::size_type rowNr,
-                                                                Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstZIterator Matrix<T>::getConstZIterator(Matrix<T>::size_type rowNr,
+                                                                       Matrix<T>::size_type columnNr) const
 {
-    GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ConstZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getNonDiagIteratorByRowAndColumnNumber<ConstZIterator>(rowNr, columnNr);
 }
 
-template <MatrixElementType T> typename Matrix<T>::ReverseZIterator Matrix<T>::reverseZBegin()
+template <MatrixElementType T> inline typename Matrix<T>::ReverseZIterator Matrix<T>::reverseZBegin()
 {
-    GET_REVERSE_NON_DIAG_BEGIN_ITERATOR(ReverseZIterator,
-                                        m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                        m_NrOfRows, m_NrOfColumns);
+    return _getReverseNonDiagBeginIterator<ReverseZIterator>();
 }
 
-template <MatrixElementType T> typename Matrix<T>::ReverseZIterator Matrix<T>::reverseZEnd()
+template <MatrixElementType T> inline typename Matrix<T>::ReverseZIterator Matrix<T>::reverseZEnd()
 {
-    GET_REVERSE_END_ZITERATOR(ReverseZIterator,
-                              m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                              m_NrOfColumns);
+    return _getReverseEndZIterator<ReverseZIterator>();
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseZIterator Matrix<T>::reverseZRowBegin(Matrix<T>::size_type rowNr)
+inline typename Matrix<T>::ReverseZIterator Matrix<T>::reverseZRowBegin(Matrix<T>::size_type rowNr)
 {
-    GET_REVERSE_ROW_BEGIN_ZITERATOR(ReverseZIterator,
-                                    m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                    m_NrOfRows, m_NrOfColumns, rowNr);
+    return _getReverseRowBeginZIterator<ReverseZIterator>(rowNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseZIterator Matrix<T>::reverseZRowEnd(Matrix<T>::size_type rowNr)
+inline typename Matrix<T>::ReverseZIterator Matrix<T>::reverseZRowEnd(Matrix<T>::size_type rowNr)
 {
-    GET_REVERSE_ROW_END_ZITERATOR(ReverseZIterator,
-                                  m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                  m_NrOfRows, m_NrOfColumns, rowNr);
+    return _getReverseRowEndZIterator<ReverseZIterator>(rowNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseZIterator Matrix<T>::getReverseZIterator(Matrix<T>::size_type rowNr,
-                                                                    Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::ReverseZIterator Matrix<T>::getReverseZIterator(Matrix<T>::size_type rowNr,
+                                                                           Matrix<T>::size_type columnNr)
 {
-    GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ReverseZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getNonDiagIteratorByRowAndColumnNumber<ReverseZIterator>(rowNr, columnNr);
 }
 
-template <MatrixElementType T> typename Matrix<T>::ConstReverseZIterator Matrix<T>::constReverseZBegin() const
+template <MatrixElementType T> inline typename Matrix<T>::ConstReverseZIterator Matrix<T>::constReverseZBegin() const
 {
-    GET_REVERSE_NON_DIAG_BEGIN_ITERATOR(ConstReverseZIterator,
-                                        m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                        m_NrOfRows, m_NrOfColumns);
+    return _getReverseNonDiagBeginIterator<ConstReverseZIterator>();
 }
 
-template <MatrixElementType T> typename Matrix<T>::ConstReverseZIterator Matrix<T>::constReverseZEnd() const
+template <MatrixElementType T> inline typename Matrix<T>::ConstReverseZIterator Matrix<T>::constReverseZEnd() const
 {
-    GET_REVERSE_END_ZITERATOR(ConstReverseZIterator,
-                              m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                              m_NrOfColumns);
+    return _getReverseEndZIterator<ConstReverseZIterator>();
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseZIterator Matrix<T>::constReverseZRowBegin(Matrix<T>::size_type rowNr) const
+inline typename Matrix<T>::ConstReverseZIterator Matrix<T>::constReverseZRowBegin(Matrix<T>::size_type rowNr) const
 {
-    GET_REVERSE_ROW_BEGIN_ZITERATOR(ConstReverseZIterator,
-                                    m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                    m_NrOfRows, m_NrOfColumns, rowNr);
+    return _getReverseRowBeginZIterator<ConstReverseZIterator>(rowNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseZIterator Matrix<T>::constReverseZRowEnd(Matrix<T>::size_type rowNr) const
+inline typename Matrix<T>::ConstReverseZIterator Matrix<T>::constReverseZRowEnd(Matrix<T>::size_type rowNr) const
 {
-    GET_REVERSE_ROW_END_ZITERATOR(ConstReverseZIterator,
-                                  m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                  m_NrOfRows, m_NrOfColumns, rowNr);
+    return _getReverseRowEndZIterator<ConstReverseZIterator>(rowNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseZIterator Matrix<T>::getConstReverseZIterator(Matrix<T>::size_type rowNr,
-                                                                              Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstReverseZIterator Matrix<T>::getConstReverseZIterator(
+    Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr) const
 {
-    GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ConstReverseZIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getNonDiagIteratorByRowAndColumnNumber<ConstReverseZIterator>(rowNr, columnNr);
 }
 
-template <MatrixElementType T> typename Matrix<T>::NIterator Matrix<T>::nBegin()
+template <MatrixElementType T> inline typename Matrix<T>::NIterator Matrix<T>::nBegin()
 {
-    GET_FORWARD_NON_DIAG_BEGIN_ITERATOR(NIterator,
-                                        m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                        m_NrOfRows, m_NrOfColumns);
+    return _getForwardNonDiagBeginIterator<NIterator>();
 }
 
-template <MatrixElementType T> typename Matrix<T>::NIterator Matrix<T>::nEnd()
+template <MatrixElementType T> inline typename Matrix<T>::NIterator Matrix<T>::nEnd()
 {
-    GET_FORWARD_NON_DIAG_END_ITERATOR(NIterator,
-                                      m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                      m_NrOfRows, m_NrOfColumns);
-}
-
-template <MatrixElementType T> typename Matrix<T>::NIterator Matrix<T>::nColumnBegin(Matrix<T>::size_type columnNr)
-{
-    GET_FORWARD_COLUMN_BEGIN_NITERATOR(NIterator,
-                                       m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                       m_NrOfRows, m_NrOfColumns, columnNr);
-}
-
-template <MatrixElementType T> typename Matrix<T>::NIterator Matrix<T>::nColumnEnd(Matrix<T>::size_type columnNr)
-{
-    GET_FORWARD_COLUMN_END_NITERATOR(NIterator,
-                                     m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                     m_NrOfRows, m_NrOfColumns, columnNr);
+    return _getForwardNonDiagEndIterator<NIterator>();
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::NIterator Matrix<T>::getNIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::NIterator Matrix<T>::nColumnBegin(Matrix<T>::size_type columnNr)
 {
-    GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        NIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getForwardColumnBeginNIterator<NIterator>(columnNr);
 }
 
-template <MatrixElementType T> typename Matrix<T>::ConstNIterator Matrix<T>::constNBegin() const
+template <MatrixElementType T> inline typename Matrix<T>::NIterator Matrix<T>::nColumnEnd(Matrix<T>::size_type columnNr)
 {
-    GET_FORWARD_NON_DIAG_BEGIN_ITERATOR(ConstNIterator,
-                                        m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                        m_NrOfRows, m_NrOfColumns);
-}
-
-template <MatrixElementType T> typename Matrix<T>::ConstNIterator Matrix<T>::constNEnd() const
-{
-    GET_FORWARD_NON_DIAG_END_ITERATOR(ConstNIterator,
-                                      m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                      m_NrOfRows, m_NrOfColumns);
+    return _getForwardColumnEndNIterator<NIterator>(columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstNIterator Matrix<T>::constNColumnBegin(Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::NIterator Matrix<T>::getNIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
 {
-    GET_FORWARD_COLUMN_BEGIN_NITERATOR(ConstNIterator,
-                                       m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                       m_NrOfRows, m_NrOfColumns, columnNr);
+    return _getNonDiagIteratorByRowAndColumnNumber<NIterator>(rowNr, columnNr);
+}
+
+template <MatrixElementType T> inline typename Matrix<T>::ConstNIterator Matrix<T>::constNBegin() const
+{
+    return _getForwardNonDiagBeginIterator<ConstNIterator>();
+}
+
+template <MatrixElementType T> inline typename Matrix<T>::ConstNIterator Matrix<T>::constNEnd() const
+{
+    return _getForwardNonDiagEndIterator<ConstNIterator>();
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstNIterator Matrix<T>::constNColumnEnd(Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstNIterator Matrix<T>::constNColumnBegin(Matrix<T>::size_type columnNr) const
 {
-    GET_FORWARD_COLUMN_END_NITERATOR(ConstNIterator,
-                                     m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                     m_NrOfRows, m_NrOfColumns, columnNr);
+    return _getForwardColumnBeginNIterator<ConstNIterator>(columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstNIterator Matrix<T>::getConstNIterator(Matrix<T>::size_type rowNr,
-                                                                Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstNIterator Matrix<T>::constNColumnEnd(Matrix<T>::size_type columnNr) const
 {
-    GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ConstNIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
-}
-
-template <MatrixElementType T> typename Matrix<T>::ReverseNIterator Matrix<T>::reverseNBegin()
-{
-    GET_REVERSE_NON_DIAG_BEGIN_ITERATOR(ReverseNIterator,
-                                        m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                        m_NrOfRows, m_NrOfColumns);
-}
-
-template <MatrixElementType T> typename Matrix<T>::ReverseNIterator Matrix<T>::reverseNEnd()
-{
-    GET_REVERSE_END_NITERATOR(ReverseNIterator,
-                              m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                              m_NrOfColumns);
+    return _getForwardColumnEndNIterator<ConstNIterator>(columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseNIterator Matrix<T>::reverseNColumnBegin(Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::ConstNIterator Matrix<T>::getConstNIterator(Matrix<T>::size_type rowNr,
+                                                                       Matrix<T>::size_type columnNr) const
 {
-    GET_REVERSE_COLUMN_BEGIN_NITERATOR(ReverseNIterator,
-                                       m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                       m_NrOfRows, m_NrOfColumns, columnNr);
+    return _getNonDiagIteratorByRowAndColumnNumber<ConstNIterator>(rowNr, columnNr);
+}
+
+template <MatrixElementType T> inline typename Matrix<T>::ReverseNIterator Matrix<T>::reverseNBegin()
+{
+    return _getReverseNonDiagBeginIterator<ReverseNIterator>();
+}
+
+template <MatrixElementType T> inline typename Matrix<T>::ReverseNIterator Matrix<T>::reverseNEnd()
+{
+    return _getReverseEndNIterator<ReverseNIterator>();
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseNIterator Matrix<T>::reverseNColumnEnd(Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::ReverseNIterator Matrix<T>::reverseNColumnBegin(Matrix<T>::size_type columnNr)
 {
-    GET_REVERSE_COLUMN_END_NITERATOR(ReverseNIterator,
-                                     m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                     m_NrOfRows, m_NrOfColumns, columnNr);
+    return _getReverseColumnBeginNIterator<ReverseNIterator>(columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseNIterator Matrix<T>::getReverseNIterator(Matrix<T>::size_type rowNr,
-                                                                    Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::ReverseNIterator Matrix<T>::reverseNColumnEnd(Matrix<T>::size_type columnNr)
 {
-    GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ReverseNIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
-}
-
-template <MatrixElementType T> typename Matrix<T>::ConstReverseNIterator Matrix<T>::constReverseNBegin() const
-{
-    GET_REVERSE_NON_DIAG_BEGIN_ITERATOR(ConstReverseNIterator,
-                                        m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                        m_NrOfRows, m_NrOfColumns);
-}
-
-template <MatrixElementType T> typename Matrix<T>::ConstReverseNIterator Matrix<T>::constReverseNEnd() const
-{
-    GET_REVERSE_END_NITERATOR(ConstReverseNIterator,
-                              m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                              m_NrOfColumns);
+    return _getReverseColumnEndNIterator<ReverseNIterator>(columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseNIterator Matrix<T>::constReverseNColumnBegin(Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ReverseNIterator Matrix<T>::getReverseNIterator(Matrix<T>::size_type rowNr,
+                                                                           Matrix<T>::size_type columnNr)
 {
-    GET_REVERSE_COLUMN_BEGIN_NITERATOR(ConstReverseNIterator,
-                                       m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                       m_NrOfRows, m_NrOfColumns, columnNr);
+    return _getNonDiagIteratorByRowAndColumnNumber<ReverseNIterator>(rowNr, columnNr);
+}
+
+template <MatrixElementType T> inline typename Matrix<T>::ConstReverseNIterator Matrix<T>::constReverseNBegin() const
+{
+    return _getReverseNonDiagBeginIterator<ConstReverseNIterator>();
+}
+
+template <MatrixElementType T> inline typename Matrix<T>::ConstReverseNIterator Matrix<T>::constReverseNEnd() const
+{
+    return _getReverseEndNIterator<ConstReverseNIterator>();
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseNIterator Matrix<T>::constReverseNColumnEnd(Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstReverseNIterator Matrix<T>::constReverseNColumnBegin(
+    Matrix<T>::size_type columnNr) const
 {
-    GET_REVERSE_COLUMN_END_NITERATOR(ConstReverseNIterator,
-                                     m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                     m_NrOfRows, m_NrOfColumns, columnNr);
+    return _getReverseColumnBeginNIterator<ConstReverseNIterator>(columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseNIterator Matrix<T>::getConstReverseNIterator(Matrix<T>::size_type rowNr,
-                                                                              Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstReverseNIterator Matrix<T>::constReverseNColumnEnd(Matrix<T>::size_type columnNr) const
 {
-    GET_NON_DIAG_ITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ConstReverseNIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
-}
-
-template <MatrixElementType T> typename Matrix<T>::DIterator Matrix<T>::dBegin(Matrix<T>::diff_type diagonalNr)
-{
-    GET_DIAG_BEGIN_ITERATOR(DIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                            m_NrOfRows, m_NrOfColumns, diagonalNr);
+    return _getReverseColumnEndNIterator<ConstReverseNIterator>(columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::DIterator Matrix<T>::dBegin(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::ConstReverseNIterator Matrix<T>::getConstReverseNIterator(
+    Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr) const
 {
-    GET_BEGIN_DITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        DIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getNonDiagIteratorByRowAndColumnNumber<ConstReverseNIterator>(rowNr, columnNr);
 }
 
-template <MatrixElementType T> typename Matrix<T>::DIterator Matrix<T>::dEnd(Matrix<T>::diff_type diagonalNr)
+template <MatrixElementType T> inline typename Matrix<T>::DIterator Matrix<T>::dBegin(Matrix<T>::diff_type diagonalNr)
 {
-    GET_END_DITERATOR_BY_DIAG_NUMBER(DIterator,
-                                     m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                     m_NrOfRows, m_NrOfColumns, diagonalNr);
+    return _getDiagBeginIterator<DIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::DIterator Matrix<T>::dEnd(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::DIterator Matrix<T>::dBegin(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
 {
-    GET_END_DITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        DIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getBeginDIteratorByRowAndColumnNumber<DIterator>(rowNr, columnNr);
+}
+
+template <MatrixElementType T> inline typename Matrix<T>::DIterator Matrix<T>::dEnd(Matrix<T>::diff_type diagonalNr)
+{
+    return _getEndDIteratorByDiagNumber<DIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::DIterator Matrix<T>::getDIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::DIterator Matrix<T>::dEnd(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
 {
-    GET_DIAG_RANDOM_ITERATOR(DIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                             m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    return _getEndDIteratorByRowAndColumnNumber<DIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::DIterator Matrix<T>::getDIterator(
+inline typename Matrix<T>::DIterator Matrix<T>::getDIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+{
+    return _getDiagRandomIterator<DIterator>(rowNr, columnNr);
+}
+
+template <MatrixElementType T>
+inline typename Matrix<T>::DIterator Matrix<T>::getDIterator(
     const std::pair<Matrix<T>::diff_type, Matrix<T>::size_type>& diagonalNrAndIndex)
 {
-    const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
-    GET_RANDOM_DITERATOR_BY_DIAG_NUMBER_AND_INDEX(
-        DIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, diagonalNr, diagonalIndex);
+    return _getRandomDIteratorByDiagNumberAndIndex<DIterator>(diagonalNrAndIndex);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstDIterator Matrix<T>::constDBegin(Matrix<T>::diff_type diagonalNr) const
+inline typename Matrix<T>::ConstDIterator Matrix<T>::constDBegin(Matrix<T>::diff_type diagonalNr) const
 {
-    GET_DIAG_BEGIN_ITERATOR(ConstDIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                            m_NrOfRows, m_NrOfColumns, diagonalNr);
+    return _getDiagBeginIterator<ConstDIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstDIterator Matrix<T>::constDBegin(Matrix<T>::size_type rowNr,
-                                                          Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstDIterator Matrix<T>::constDBegin(Matrix<T>::size_type rowNr,
+                                                                 Matrix<T>::size_type columnNr) const
 {
-    GET_BEGIN_DITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ConstDIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getBeginDIteratorByRowAndColumnNumber<ConstDIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstDIterator Matrix<T>::constDEnd(Matrix<T>::diff_type diagonalNr) const
+inline typename Matrix<T>::ConstDIterator Matrix<T>::constDEnd(Matrix<T>::diff_type diagonalNr) const
 {
-    GET_END_DITERATOR_BY_DIAG_NUMBER(ConstDIterator,
-                                     m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                     m_NrOfRows, m_NrOfColumns, diagonalNr);
+    return _getEndDIteratorByDiagNumber<ConstDIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstDIterator Matrix<T>::constDEnd(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstDIterator Matrix<T>::constDEnd(Matrix<T>::size_type rowNr,
+                                                               Matrix<T>::size_type columnNr) const
 {
-    GET_END_DITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ConstDIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getEndDIteratorByRowAndColumnNumber<ConstDIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstDIterator Matrix<T>::getConstDIterator(Matrix<T>::size_type rowNr,
-                                                                Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstDIterator Matrix<T>::getConstDIterator(Matrix<T>::size_type rowNr,
+                                                                       Matrix<T>::size_type columnNr) const
 {
-    GET_DIAG_RANDOM_ITERATOR(ConstDIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                             m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    return _getDiagRandomIterator<ConstDIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstDIterator Matrix<T>::getConstDIterator(
+inline typename Matrix<T>::ConstDIterator Matrix<T>::getConstDIterator(
     const std::pair<Matrix<T>::diff_type, Matrix<T>::size_type>& diagonalNrAndIndex) const
 {
-    const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
-    GET_RANDOM_DITERATOR_BY_DIAG_NUMBER_AND_INDEX(
-        ConstDIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, diagonalNr, diagonalIndex);
+    return _getRandomDIteratorByDiagNumberAndIndex<ConstDIterator>(diagonalNrAndIndex);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseDIterator Matrix<T>::reverseDBegin(Matrix<T>::diff_type diagonalNr)
+inline typename Matrix<T>::ReverseDIterator Matrix<T>::reverseDBegin(Matrix<T>::diff_type diagonalNr)
 {
-    GET_DIAG_BEGIN_ITERATOR(ReverseDIterator,
-                            m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                            m_NrOfColumns, diagonalNr);
+    return _getDiagBeginIterator<ReverseDIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseDIterator Matrix<T>::reverseDBegin(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::ReverseDIterator Matrix<T>::reverseDBegin(Matrix<T>::size_type rowNr,
+                                                                     Matrix<T>::size_type columnNr)
 {
-    GET_BEGIN_DITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ReverseDIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getBeginDIteratorByRowAndColumnNumber<ReverseDIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseDIterator Matrix<T>::reverseDEnd(Matrix<T>::diff_type diagonalNr)
+inline typename Matrix<T>::ReverseDIterator Matrix<T>::reverseDEnd(Matrix<T>::diff_type diagonalNr)
 {
-    GET_END_DITERATOR_BY_DIAG_NUMBER(ReverseDIterator,
-                                     m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                     m_NrOfRows, m_NrOfColumns, diagonalNr);
+    return _getEndDIteratorByDiagNumber<ReverseDIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseDIterator Matrix<T>::reverseDEnd(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::ReverseDIterator Matrix<T>::reverseDEnd(Matrix<T>::size_type rowNr,
+                                                                   Matrix<T>::size_type columnNr)
 {
-    GET_END_DITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ReverseDIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getEndDIteratorByRowAndColumnNumber<ReverseDIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseDIterator Matrix<T>::getReverseDIterator(Matrix<T>::size_type rowNr,
-                                                                    Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::ReverseDIterator Matrix<T>::getReverseDIterator(Matrix<T>::size_type rowNr,
+                                                                           Matrix<T>::size_type columnNr)
 {
-    GET_DIAG_RANDOM_ITERATOR(ReverseDIterator,
-                             m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                             m_NrOfColumns, rowNr, columnNr);
+    return _getDiagRandomIterator<ReverseDIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseDIterator Matrix<T>::getReverseDIterator(
+inline typename Matrix<T>::ReverseDIterator Matrix<T>::getReverseDIterator(
     const std::pair<Matrix<T>::diff_type, Matrix<T>::size_type>& diagonalNrAndIndex)
 {
-    const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
-    GET_RANDOM_DITERATOR_BY_DIAG_NUMBER_AND_INDEX(
-        ReverseDIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, diagonalNr, diagonalIndex);
+    return _getRandomDIteratorByDiagNumberAndIndex<ReverseDIterator>(diagonalNrAndIndex);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseDIterator Matrix<T>::constReverseDBegin(Matrix<T>::diff_type diagonalNr) const
+inline typename Matrix<T>::ConstReverseDIterator Matrix<T>::constReverseDBegin(Matrix<T>::diff_type diagonalNr) const
 {
-    GET_DIAG_BEGIN_ITERATOR(ConstReverseDIterator,
-                            m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                            m_NrOfColumns, diagonalNr);
+    return _getDiagBeginIterator<ConstReverseDIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseDIterator Matrix<T>::constReverseDBegin(Matrix<T>::size_type rowNr,
-                                                                        Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstReverseDIterator Matrix<T>::constReverseDBegin(Matrix<T>::size_type rowNr,
+                                                                               Matrix<T>::size_type columnNr) const
 {
-    GET_BEGIN_DITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ConstReverseDIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getBeginDIteratorByRowAndColumnNumber<ConstReverseDIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseDIterator Matrix<T>::constReverseDEnd(Matrix<T>::diff_type diagonalNr) const
+inline typename Matrix<T>::ConstReverseDIterator Matrix<T>::constReverseDEnd(Matrix<T>::diff_type diagonalNr) const
 {
-    GET_END_DITERATOR_BY_DIAG_NUMBER(ConstReverseDIterator,
-                                     m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                     m_NrOfRows, m_NrOfColumns, diagonalNr);
+    return _getEndDIteratorByDiagNumber<ConstReverseDIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseDIterator Matrix<T>::constReverseDEnd(Matrix<T>::size_type rowNr,
-                                                                      Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstReverseDIterator Matrix<T>::constReverseDEnd(Matrix<T>::size_type rowNr,
+                                                                             Matrix<T>::size_type columnNr) const
 {
-    GET_END_DITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ConstReverseDIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getEndDIteratorByRowAndColumnNumber<ConstReverseDIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseDIterator Matrix<T>::getConstReverseDIterator(Matrix<T>::size_type rowNr,
-                                                                              Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstReverseDIterator Matrix<T>::getConstReverseDIterator(
+    Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr) const
 {
-    GET_DIAG_RANDOM_ITERATOR(ConstReverseDIterator,
-                             m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                             m_NrOfColumns, rowNr, columnNr);
+    return _getDiagRandomIterator<ConstReverseDIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseDIterator Matrix<T>::getConstReverseDIterator(
+inline typename Matrix<T>::ConstReverseDIterator Matrix<T>::getConstReverseDIterator(
     const std::pair<Matrix<T>::diff_type, Matrix<T>::size_type>& diagonalNrAndIndex) const
 {
-    const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
-    GET_RANDOM_DITERATOR_BY_DIAG_NUMBER_AND_INDEX(
-        ConstReverseDIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, diagonalNr, diagonalIndex);
+    return _getRandomDIteratorByDiagNumberAndIndex<ConstReverseDIterator>(diagonalNrAndIndex);
 }
 
-template <MatrixElementType T> typename Matrix<T>::MIterator Matrix<T>::mBegin(Matrix<T>::diff_type diagonalNr)
+template <MatrixElementType T> inline typename Matrix<T>::MIterator Matrix<T>::mBegin(Matrix<T>::diff_type diagonalNr)
 {
-    GET_DIAG_BEGIN_ITERATOR(MIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                            m_NrOfRows, m_NrOfColumns, diagonalNr);
+    return _getDiagBeginIterator<MIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::MIterator Matrix<T>::mBegin(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::MIterator Matrix<T>::mBegin(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
 {
-    GET_BEGIN_MITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        MIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getBeginMIteratorByRowAndColumnNumber<MIterator>(rowNr, columnNr);
 }
 
-template <MatrixElementType T> typename Matrix<T>::MIterator Matrix<T>::mEnd(Matrix<T>::diff_type diagonalNr)
+template <MatrixElementType T> inline typename Matrix<T>::MIterator Matrix<T>::mEnd(Matrix<T>::diff_type diagonalNr)
 {
-    GET_END_MITERATOR_BY_DIAG_NUMBER(MIterator,
-                                     m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                     m_NrOfRows, m_NrOfColumns, diagonalNr);
+    return _getEndMIteratorByDiagNumber<MIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::MIterator Matrix<T>::mEnd(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::MIterator Matrix<T>::mEnd(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
 {
-    GET_END_MITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        MIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getEndMIteratorByRowAndColumnNumber<MIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::MIterator Matrix<T>::getMIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::MIterator Matrix<T>::getMIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
 {
-    GET_DIAG_RANDOM_ITERATOR(MIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                             m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    return _getDiagRandomIterator<MIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::MIterator Matrix<T>::getMIterator(
+inline typename Matrix<T>::MIterator Matrix<T>::getMIterator(
     const std::pair<Matrix<T>::diff_type, Matrix<T>::size_type>& diagonalNrAndIndex)
 {
-    const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
-    GET_RANDOM_MITERATOR_BY_DIAG_NUMBER_AND_INDEX(
-        MIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, diagonalNr, diagonalIndex);
+    return _getRandomMIteratorByDiagNumberAndIndex<MIterator>(diagonalNrAndIndex);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstMIterator Matrix<T>::constMBegin(Matrix<T>::diff_type diagonalNr) const
+inline typename Matrix<T>::ConstMIterator Matrix<T>::constMBegin(Matrix<T>::diff_type diagonalNr) const
 {
-    GET_DIAG_BEGIN_ITERATOR(ConstMIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                            m_NrOfRows, m_NrOfColumns, diagonalNr);
+    return _getDiagBeginIterator<ConstMIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstMIterator Matrix<T>::constMBegin(Matrix<T>::size_type rowNr,
-                                                          Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstMIterator Matrix<T>::constMBegin(Matrix<T>::size_type rowNr,
+                                                                 Matrix<T>::size_type columnNr) const
 {
-    GET_BEGIN_MITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ConstMIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getBeginMIteratorByRowAndColumnNumber<ConstMIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstMIterator Matrix<T>::constMEnd(Matrix<T>::diff_type diagonalNr) const
+inline typename Matrix<T>::ConstMIterator Matrix<T>::constMEnd(Matrix<T>::diff_type diagonalNr) const
 {
-    GET_END_MITERATOR_BY_DIAG_NUMBER(ConstMIterator,
-                                     m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                     m_NrOfRows, m_NrOfColumns, diagonalNr);
+    return _getEndMIteratorByDiagNumber<ConstMIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstMIterator Matrix<T>::constMEnd(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstMIterator Matrix<T>::constMEnd(Matrix<T>::size_type rowNr,
+                                                               Matrix<T>::size_type columnNr) const
 {
-    GET_END_MITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ConstMIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getEndMIteratorByRowAndColumnNumber<ConstMIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstMIterator Matrix<T>::getConstMIterator(Matrix<T>::size_type rowNr,
-                                                                Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstMIterator Matrix<T>::getConstMIterator(Matrix<T>::size_type rowNr,
+                                                                       Matrix<T>::size_type columnNr) const
 {
-    GET_DIAG_RANDOM_ITERATOR(MIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                             m_NrOfRows, m_NrOfColumns, rowNr, columnNr);
+    return _getDiagRandomIterator<ConstMIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstMIterator Matrix<T>::getConstMIterator(
+inline typename Matrix<T>::ConstMIterator Matrix<T>::getConstMIterator(
     const std::pair<Matrix<T>::diff_type, Matrix<T>::size_type>& diagonalNrAndIndex) const
 {
-    const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
-    GET_RANDOM_MITERATOR_BY_DIAG_NUMBER_AND_INDEX(
-        MIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, diagonalNr, diagonalIndex);
+    return _getRandomMIteratorByDiagNumberAndIndex<ConstMIterator>(diagonalNrAndIndex);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseMIterator Matrix<T>::reverseMBegin(Matrix<T>::diff_type diagonalNr)
+inline typename Matrix<T>::ReverseMIterator Matrix<T>::reverseMBegin(Matrix<T>::diff_type diagonalNr)
 {
-    GET_DIAG_BEGIN_ITERATOR(ReverseMIterator,
-                            m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                            m_NrOfColumns, diagonalNr);
+    return _getDiagBeginIterator<ReverseMIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseMIterator Matrix<T>::reverseMBegin(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::ReverseMIterator Matrix<T>::reverseMBegin(Matrix<T>::size_type rowNr,
+                                                                     Matrix<T>::size_type columnNr)
 {
-    GET_BEGIN_MITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ReverseMIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getBeginMIteratorByRowAndColumnNumber<ReverseMIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseMIterator Matrix<T>::reverseMEnd(Matrix<T>::diff_type diagonalNr)
+inline typename Matrix<T>::ReverseMIterator Matrix<T>::reverseMEnd(Matrix<T>::diff_type diagonalNr)
 {
-    GET_END_MITERATOR_BY_DIAG_NUMBER(ReverseMIterator,
-                                     m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                     m_NrOfRows, m_NrOfColumns, diagonalNr);
+    return _getEndMIteratorByDiagNumber<ReverseMIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseMIterator Matrix<T>::reverseMEnd(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::ReverseMIterator Matrix<T>::reverseMEnd(Matrix<T>::size_type rowNr,
+                                                                   Matrix<T>::size_type columnNr)
 {
-    GET_END_MITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ReverseMIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getEndMIteratorByRowAndColumnNumber<ReverseMIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseMIterator Matrix<T>::getReverseMIterator(Matrix<T>::size_type rowNr,
-                                                                    Matrix<T>::size_type columnNr)
+inline typename Matrix<T>::ReverseMIterator Matrix<T>::getReverseMIterator(Matrix<T>::size_type rowNr,
+                                                                           Matrix<T>::size_type columnNr)
 {
-    GET_DIAG_RANDOM_ITERATOR(ReverseMIterator,
-                             m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                             m_NrOfColumns, rowNr, columnNr);
+    return _getDiagRandomIterator<ReverseMIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ReverseMIterator Matrix<T>::getReverseMIterator(
+inline typename Matrix<T>::ReverseMIterator Matrix<T>::getReverseMIterator(
     const std::pair<Matrix<T>::diff_type, Matrix<T>::size_type>& diagonalNrAndIndex)
 {
-    const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
-    GET_RANDOM_MITERATOR_BY_DIAG_NUMBER_AND_INDEX(
-        ReverseMIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, diagonalNr, diagonalIndex);
+    return _getRandomMIteratorByDiagNumberAndIndex<ReverseMIterator>(diagonalNrAndIndex);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseMIterator Matrix<T>::constReverseMBegin(Matrix<T>::diff_type diagonalNr) const
+inline typename Matrix<T>::ConstReverseMIterator Matrix<T>::constReverseMBegin(Matrix<T>::diff_type diagonalNr) const
 {
-    GET_DIAG_BEGIN_ITERATOR(ConstReverseMIterator,
-                            m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                            m_NrOfColumns, diagonalNr);
+    return _getDiagBeginIterator<ConstReverseMIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseMIterator Matrix<T>::constReverseMBegin(Matrix<T>::size_type rowNr,
-                                                                        Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstReverseMIterator Matrix<T>::constReverseMBegin(Matrix<T>::size_type rowNr,
+                                                                               Matrix<T>::size_type columnNr) const
 {
-    GET_BEGIN_MITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ConstReverseMIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getBeginMIteratorByRowAndColumnNumber<ConstReverseMIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseMIterator Matrix<T>::constReverseMEnd(Matrix<T>::diff_type diagonaNr) const
+inline typename Matrix<T>::ConstReverseMIterator Matrix<T>::constReverseMEnd(Matrix<T>::diff_type diagonalNr) const
 {
-    GET_END_MITERATOR_BY_DIAG_NUMBER(ConstReverseMIterator,
-                                     m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
-                                     m_NrOfRows, m_NrOfColumns, diagonaNr);
+    return _getEndMIteratorByDiagNumber<ConstReverseMIterator>(diagonalNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseMIterator Matrix<T>::constReverseMEnd(Matrix<T>::size_type rowNr,
-                                                                      Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstReverseMIterator Matrix<T>::constReverseMEnd(Matrix<T>::size_type rowNr,
+                                                                             Matrix<T>::size_type columnNr) const
 {
-    GET_END_MITERATOR_BY_ROW_AND_COLUMN_NUMBER(
-        ConstReverseMIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, rowNr, columnNr);
+    return _getEndMIteratorByRowAndColumnNumber<ConstReverseMIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseMIterator Matrix<T>::getConstReverseMIterator(Matrix<T>::size_type rowNr,
-                                                                              Matrix<T>::size_type columnNr) const
+inline typename Matrix<T>::ConstReverseMIterator Matrix<T>::getConstReverseMIterator(
+    Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr) const
 {
-    GET_DIAG_RANDOM_ITERATOR(ConstReverseMIterator,
-                             m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-                             m_NrOfColumns, rowNr, columnNr);
+    return _getDiagRandomIterator<ConstReverseMIterator>(rowNr, columnNr);
 }
 
 template <MatrixElementType T>
-typename Matrix<T>::ConstReverseMIterator Matrix<T>::getConstReverseMIterator(
+inline typename Matrix<T>::ConstReverseMIterator Matrix<T>::getConstReverseMIterator(
     const std::pair<Matrix<T>::diff_type, Matrix<T>::size_type>& diagonalNrAndIndex) const
 {
-    const auto& [diagonalNr, diagonalIndex] = diagonalNrAndIndex;
-    GET_RANDOM_MITERATOR_BY_DIAG_NUMBER_AND_INDEX(
-        ConstReverseMIterator, m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
-        m_NrOfColumns, diagonalNr, diagonalIndex);
+    return _getRandomMIteratorByDiagNumberAndIndex<ConstReverseMIterator>(diagonalNrAndIndex);
 }
 
-template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::begin()
+template <MatrixElementType T> inline typename Matrix<T>::ZIterator Matrix<T>::begin()
 {
     return zBegin();
 }
 
-template <MatrixElementType T> typename Matrix<T>::ZIterator Matrix<T>::end()
+template <MatrixElementType T> inline typename Matrix<T>::ZIterator Matrix<T>::end()
 {
     return zEnd();
 }
 
-template <MatrixElementType T> typename Matrix<T>::ConstZIterator Matrix<T>::begin() const
+template <MatrixElementType T> inline typename Matrix<T>::ConstZIterator Matrix<T>::begin() const
 {
     return constZBegin();
 }
 
-template <MatrixElementType T> typename Matrix<T>::ConstZIterator Matrix<T>::end() const
+template <MatrixElementType T> inline typename Matrix<T>::ConstZIterator Matrix<T>::end() const
 {
     return constZEnd();
 }
@@ -2107,4 +1939,374 @@ template <MatrixElementType T> void* Matrix<T>::_convertToArray(Matrix<T>::size_
     m_ColumnCapacityOffset.reset();
 
     return pAllocPtr;
+}
+
+template <MatrixElementType T>
+template <typename NonDiagIter>
+NonDiagIter Matrix<T>::_getForwardNonDiagBeginIterator() const
+{
+    return NonDiagIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
+                       m_NrOfColumns, size_type{0}, size_type{0}};
+}
+
+template <MatrixElementType T>
+template <typename NonDiagIter>
+NonDiagIter Matrix<T>::_getForwardNonDiagEndIterator() const
+{
+    return NonDiagIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
+                       m_NrOfColumns, m_NrOfRows, m_NrOfColumns};
+}
+
+template <MatrixElementType T>
+template <typename NonDiagIter>
+NonDiagIter Matrix<T>::_getReverseNonDiagBeginIterator() const
+{
+    return NonDiagIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
+                       m_NrOfColumns,
+                       (m_NrOfRows > size_type{0} ? std::optional{m_NrOfRows - size_type{1}} : std::nullopt),
+                       (m_NrOfColumns > size_type{0} ? std::optional{m_NrOfColumns - size_type{1}} : std::nullopt)};
+}
+
+template <MatrixElementType T>
+template <typename NonDiagIter>
+NonDiagIter Matrix<T>::_getNonDiagIteratorByRowAndColumnNumber(Matrix<T>::size_type rowNr,
+                                                               Matrix<T>::size_type columnNr) const
+{
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows || columnNr >= m_NrOfColumns,
+                          Matr::errorMessages[Matr::Errors::INVALID_ELEMENT_INDEX]);
+    return NonDiagIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
+                       m_NrOfColumns, rowNr, columnNr};
+}
+
+template <MatrixElementType T> template <typename ZIter> ZIter Matrix<T>::_getReverseEndZIterator() const
+{
+    /* m_NrOfColumns - size_type{1} is ignored by constructor if pointer is null (empty matrix),
+      otherwise it should not overflow */
+    return ZIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns,
+                 std::nullopt, m_NrOfColumns - size_type{1}};
+}
+
+template <MatrixElementType T>
+template <typename ZIter>
+ZIter Matrix<T>::_getForwardRowBeginZIterator(Matrix<T>::size_type rowNr) const
+{
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+    return ZIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns,
+                 rowNr, size_type{0}};
+}
+
+template <MatrixElementType T>
+template <typename ZIter>
+ZIter Matrix<T>::_getReverseRowBeginZIterator(Matrix<T>::size_type rowNr) const
+{
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+
+    /* number of columns should be > 0, see above error condition implying matrix should not be empty */
+    return ZIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns,
+                 rowNr, (m_NrOfColumns > size_type{0} ? m_NrOfColumns - size_type{1} : size_type{0})};
+}
+
+template <MatrixElementType T>
+template <typename ZIter>
+ZIter Matrix<T>::_getForwardRowEndZIterator(Matrix<T>::size_type rowNr) const
+{
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+
+    /* no overflow, number of rows should be greater than 0, see above error condition implying matrix should not be
+       empty */
+    return rowNr < m_NrOfRows - size_type{1}
+               ? ZIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
+                       m_NrOfColumns, rowNr + size_type{1}, size_type{0}}
+               : ZIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
+                       m_NrOfColumns, rowNr, m_NrOfColumns};
+}
+
+template <MatrixElementType T>
+template <typename ZIter>
+ZIter Matrix<T>::_getReverseRowEndZIterator(Matrix<T>::size_type rowNr) const
+{
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+
+    /* When rowNr > 0 : number of columns should be > 0, see above error condition implying matrix should not be empty
+     */
+    return rowNr > size_type{0} ? ZIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                                        m_NrOfRows, m_NrOfColumns, rowNr - size_type{1},
+                                        (m_NrOfColumns > size_type{0} ? m_NrOfColumns - size_type{1} : size_type{0})}
+                                : ZIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                                        m_NrOfRows, m_NrOfColumns, std::nullopt, m_NrOfColumns - size_type{1}};
+}
+
+template <MatrixElementType T> template <typename NIter> NIter Matrix<T>::_getReverseEndNIterator() const
+{
+    /* m_NrOfRows - size_type{1} is ignored by constructor if pointer is null (empty matrix),
+      otherwise it should not overflow */
+    return NIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns,
+                 m_NrOfRows - size_type{1}, std::nullopt};
+}
+
+template <MatrixElementType T>
+template <typename NIter>
+NIter Matrix<T>::_getForwardColumnBeginNIterator(Matrix<T>::size_type columnNr) const
+{
+    CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+    return NIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns,
+                 size_type{0}, columnNr};
+}
+
+template <MatrixElementType T>
+template <typename NIter>
+NIter Matrix<T>::_getReverseColumnBeginNIterator(Matrix<T>::size_type columnNr) const
+{
+    CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+
+    /* number of rows should be > 0, see above error condition implying matrix should not be empty */
+    return NIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows, m_NrOfColumns,
+                 (m_NrOfRows > size_type{0} ? m_NrOfRows - size_type{1} : size_type{0}), columnNr};
+}
+
+template <MatrixElementType T>
+template <typename NIter>
+NIter Matrix<T>::_getForwardColumnEndNIterator(Matrix<T>::size_type columnNr) const
+{
+    CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+
+    /* no overflow, number of columns should be greater than 0, see above error condition implying matrix should not
+       be empty */
+    return columnNr < m_NrOfColumns - size_type{1}
+               ? NIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
+                       m_NrOfColumns, size_type{0}, columnNr + size_type{1}}
+               : NIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
+                       m_NrOfColumns, m_NrOfRows, columnNr};
+}
+
+template <MatrixElementType T>
+template <typename NIter>
+NIter Matrix<T>::_getReverseColumnEndNIterator(Matrix<T>::size_type columnNr) const
+{
+    CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+
+    /* When columnNr > 0 : number of rows should be > 0, see above error condition implying matrix should not be
+       empty */
+    return columnNr > size_type{0}
+               ? NIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
+                       m_NrOfColumns, (m_NrOfRows > size_type{0} ? m_NrOfRows - size_type{1} : size_type{0}),
+                       columnNr - size_type{1}}
+               : NIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
+                       m_NrOfColumns, m_NrOfRows - size_type{1}, std::nullopt};
+}
+
+template <MatrixElementType T>
+template <typename DiagIter>
+DiagIter Matrix<T>::_getDiagBeginIterator(Matrix<T>::diff_type diagonalNr) const
+{
+    CHECK_ERROR_CONDITION(diagonalNr < (diff_type{1} - static_cast<diff_type>(m_NrOfRows)) ||
+                              diagonalNr > (static_cast<diff_type>(m_NrOfColumns) - diff_type{1}),
+                          Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
+    return DiagIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                    m_NrOfRows,
+                    m_NrOfColumns,
+                    {diagonalNr, size_type{0}}};
+}
+
+template <MatrixElementType T>
+template <typename DiagIter>
+DiagIter Matrix<T>::_getDiagRandomIterator(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr) const
+{
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+    CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+
+    return DiagIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr, m_NrOfRows,
+                    m_NrOfColumns, rowNr, columnNr};
+}
+
+template <MatrixElementType T>
+template <typename DIter>
+DIter Matrix<T>::_getBeginDIteratorByRowAndColumnNumber(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr) const
+{
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+    CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+
+    const auto c_DiagonalNr{static_cast<diff_type>(static_cast<diff_type>(columnNr) - static_cast<diff_type>(rowNr))};
+
+    return DIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                 m_NrOfRows,
+                 m_NrOfColumns,
+                 {c_DiagonalNr, size_type{0}}};
+}
+
+template <MatrixElementType T>
+template <typename DIter>
+DIter Matrix<T>::_getEndDIteratorByDiagNumber(Matrix<T>::diff_type diagonalNr) const
+{
+    CHECK_ERROR_CONDITION(diagonalNr < (diff_type{1} - static_cast<diff_type>(m_NrOfRows)) ||
+                              diagonalNr > (static_cast<diff_type>(m_NrOfColumns) - diff_type{1}),
+                          Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
+
+    const size_type c_BeginRowNr{diagonalNr < diff_type{0} ? static_cast<size_type>(-diagonalNr) : size_type{0}};
+    const size_type c_BeginColumnNr{diagonalNr < diff_type{0} ? size_type{0} : static_cast<size_type>(diagonalNr)};
+
+    /* no overflow risk, begin row number and begin column number determined based on diagonal number which should not
+       exceed total number of rows/columns (see above error condition) */
+    const size_type c_EndDiagonalIndex{std::min(static_cast<size_type>(m_NrOfRows - c_BeginRowNr),
+                                                static_cast<size_type>(m_NrOfColumns - c_BeginColumnNr))};
+
+    return DIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                 m_NrOfRows,
+                 m_NrOfColumns,
+                 {diagonalNr, c_EndDiagonalIndex}};
+}
+
+template <MatrixElementType T>
+template <typename DIter>
+DIter Matrix<T>::_getEndDIteratorByRowAndColumnNumber(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr) const
+{
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+    CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+
+    const auto c_DiagonalNr{static_cast<diff_type>(static_cast<diff_type>(columnNr) - static_cast<diff_type>(rowNr))};
+
+    const size_type c_BeginRowNr{c_DiagonalNr < diff_type{0} ? static_cast<size_type>(-c_DiagonalNr) : size_type{0}};
+    const size_type c_BeginColumnNr{c_DiagonalNr < diff_type{0} ? size_type{0} : static_cast<size_type>(c_DiagonalNr)};
+
+    /* no overflow risk, begin row number and begin column number determined based on diagonal number which should not
+       exceed total number of rows/columns (see above error conditions) */
+    const size_type c_EndDiagonalIndex{std::min(static_cast<size_type>(m_NrOfRows - c_BeginRowNr),
+                                                static_cast<size_type>(m_NrOfColumns - c_BeginColumnNr))};
+
+    return DIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                 m_NrOfRows,
+                 m_NrOfColumns,
+                 {c_DiagonalNr, c_EndDiagonalIndex}};
+}
+
+template <MatrixElementType T>
+template <typename DIter>
+DIter Matrix<T>::_getRandomDIteratorByDiagNumberAndIndex(
+    const std::pair<Matrix<T>::diff_type, Matrix<T>::size_type>& diagonalNrAndIndex) const
+{
+    const auto& [c_DiagonalNr, c_DiagonalIndex]{diagonalNrAndIndex};
+
+    CHECK_ERROR_CONDITION(c_DiagonalNr < (diff_type{1} - static_cast<diff_type>(m_NrOfRows)) ||
+                              c_DiagonalNr > (static_cast<diff_type>(m_NrOfColumns) - diff_type{1}),
+                          Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
+
+    const size_type c_BeginRowNr{c_DiagonalNr < diff_type{0} ? static_cast<size_type>(-c_DiagonalNr) : size_type{0}};
+    const size_type c_BeginColumnNr{c_DiagonalNr < diff_type{0} ? size_type{0} : static_cast<size_type>(c_DiagonalNr)};
+
+    /* no overflow risk, begin row number and begin column number determined based on diagonal number which should not
+       exceed total number of rows/columns (see above error condition) */
+    const size_type c_DiagonalSize{std::min(static_cast<size_type>(m_NrOfRows - c_BeginRowNr),
+                                            static_cast<size_type>(m_NrOfColumns - c_BeginColumnNr))};
+
+    CHECK_ERROR_CONDITION(c_DiagonalIndex >= c_DiagonalSize,
+                          Matr::errorMessages[Matr::Errors::DIAGONAL_INDEX_OUT_OF_BOUNDS]);
+
+    return DIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                 m_NrOfRows,
+                 m_NrOfColumns,
+                 {c_DiagonalNr, c_DiagonalIndex}};
+}
+
+template <MatrixElementType T>
+template <typename MIter>
+MIter Matrix<T>::_getBeginMIteratorByRowAndColumnNumber(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr) const
+{
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+    CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+
+    const auto c_DiagonalNr{static_cast<diff_type>(static_cast<diff_type>(m_NrOfColumns) -
+                                                   static_cast<diff_type>(columnNr) - diff_type{1}) -
+                            static_cast<diff_type>(rowNr)};
+
+    return MIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                 m_NrOfRows,
+                 m_NrOfColumns,
+                 {c_DiagonalNr, size_type{0}}};
+}
+
+template <MatrixElementType T>
+template <typename MIter>
+MIter Matrix<T>::_getEndMIteratorByDiagNumber(Matrix<T>::diff_type diagonalNr) const
+{
+    CHECK_ERROR_CONDITION(diagonalNr < (diff_type{1} - static_cast<diff_type>(m_NrOfRows)) ||
+                              diagonalNr > (static_cast<diff_type>(m_NrOfColumns) - diff_type{1}),
+                          Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
+
+    const size_type c_BeginRowNr{diagonalNr < diff_type{0} ? static_cast<size_type>(-diagonalNr) : size_type{0}};
+
+    /* no overflow as for positive diagonals the diagonal number should be strictly smaller than the number
+       of matrix columns if the matrix is not empty (if empty above error condition triggers) */
+    const size_type c_BeginColumnNr{
+        diagonalNr <= diff_type{0}
+            ? static_cast<size_type>(m_NrOfColumns - size_type{1})
+            : static_cast<size_type>(m_NrOfColumns - size_type{1} - static_cast<size_type>(diagonalNr))};
+    const size_type c_EndDiagonalIndex{std::min(static_cast<size_type>(m_NrOfRows - c_BeginRowNr),
+                                                static_cast<size_type>(c_BeginColumnNr + size_type{1}))};
+
+    return MIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                 m_NrOfRows,
+                 m_NrOfColumns,
+                 {diagonalNr, c_EndDiagonalIndex}};
+}
+
+template <MatrixElementType T>
+template <typename MIter>
+MIter Matrix<T>::_getEndMIteratorByRowAndColumnNumber(Matrix<T>::size_type rowNr, Matrix<T>::size_type columnNr) const
+{
+    CHECK_ERROR_CONDITION(rowNr >= m_NrOfRows, Matr::errorMessages[Matr::Errors::ROW_DOES_NOT_EXIST]);
+    CHECK_ERROR_CONDITION(columnNr >= m_NrOfColumns, Matr::errorMessages[Matr::Errors::COLUMN_DOES_NOT_EXIST]);
+
+    const auto c_DiagonalNr{static_cast<diff_type>(static_cast<diff_type>(m_NrOfColumns) -
+                                                   static_cast<diff_type>(columnNr) - diff_type{1}) -
+                            static_cast<diff_type>(rowNr)};
+
+    const size_type c_BeginRowNr{c_DiagonalNr < diff_type{0} ? static_cast<size_type>(-c_DiagonalNr) : size_type{0}};
+
+    /* no overflow as for positive diagonals the diagonal number should be strictly smaller than the number
+       of matrix columns if the matrix is not empty (if empty above error conditions trigger) */
+    const size_type c_BeginColumnNr{
+        c_DiagonalNr <= diff_type{0}
+            ? static_cast<size_type>(m_NrOfColumns - size_type{1})
+            : static_cast<size_type>(m_NrOfColumns - size_type{1} - static_cast<size_type>(c_DiagonalNr))};
+    const size_type c_EndDiagonalIndex{std::min(static_cast<size_type>(m_NrOfRows - c_BeginRowNr),
+                                                static_cast<size_type>(c_BeginColumnNr + size_type{1}))};
+
+    return MIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                 m_NrOfRows,
+                 m_NrOfColumns,
+                 {c_DiagonalNr, c_EndDiagonalIndex}};
+}
+
+template <MatrixElementType T>
+template <typename MIter>
+MIter Matrix<T>::_getRandomMIteratorByDiagNumberAndIndex(
+    const std::pair<Matrix<T>::diff_type, Matrix<T>::size_type>& diagonalNrAndIndex) const
+{
+    const auto& [c_DiagonalNr, c_DiagonalIndex]{diagonalNrAndIndex};
+
+    CHECK_ERROR_CONDITION(c_DiagonalNr < (diff_type{1} - static_cast<diff_type>(m_NrOfRows)) ||
+                              c_DiagonalNr > (static_cast<diff_type>(m_NrOfColumns) - diff_type{1}),
+                          Matr::errorMessages[Matr::Errors::DIAGONAL_DOES_NOT_EXIST]);
+
+    const size_type c_BeginRowNr{c_DiagonalNr < diff_type{0} ? static_cast<size_type>(-c_DiagonalNr) : size_type{0}};
+
+    /* no overflow as for positive diagonals the diagonal number should be strictly smaller than the
+       number of matrix columns if the matrix is not empty (if empty above error condition triggers) */
+    const size_type c_BeginColumnNr{
+        c_DiagonalNr <= diff_type{0}
+            ? static_cast<size_type>(m_NrOfColumns - size_type{1})
+            : static_cast<size_type>(m_NrOfColumns - size_type{1} - static_cast<size_type>(c_DiagonalNr))};
+
+    /* no overflow as for negative diagonals the diagonal number (in absolute value) should be strictly smaller than
+       the number of matrix rows if the matrix is not empty (if empty above error condition triggers */
+    const size_type c_DiagonalSize{std::min(static_cast<size_type>(m_NrOfRows - c_BeginRowNr),
+                                            static_cast<size_type>(c_BeginColumnNr + size_type{1}))};
+
+    CHECK_ERROR_CONDITION(c_DiagonalIndex >= c_DiagonalSize,
+                          Matr::errorMessages[Matr::Errors::DIAGONAL_INDEX_OUT_OF_BOUNDS]);
+
+    return MIter{m_pBaseArrayPtr ? m_pBaseArrayPtr + *m_RowCapacityOffset : m_pBaseArrayPtr,
+                 m_NrOfRows,
+                 m_NrOfColumns,
+                 {c_DiagonalNr, c_DiagonalIndex}};
 }
