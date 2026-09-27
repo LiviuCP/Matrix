@@ -12,8 +12,22 @@
 #include "../Utils/errorhandling.h"
 #include "../Utils/iteratorutilityfunctions.h"
 
+#define ITERATOR_TRAITS(IterableType, DiffType, ReferenceType)                                                         \
+    using iterator_category = std::random_access_iterator_tag;                                                         \
+    using value_type = IterableType;                                                                                   \
+    using difference_type = DiffType;                                                                                  \
+    using pointer = IterableType**;                                                                                    \
+    using reference = ReferenceType;
+
 using matrix_size_t = Matr::size_t;
 using matrix_diff_t = Matr::diff_t;
+
+template <typename MatrixIterator> MatrixIterator addOffsetToIterator(const MatrixIterator& it, matrix_diff_t offset)
+{
+    MatrixIterator temp{it};
+    temp += offset;
+    return temp;
+}
 
 constexpr matrix_size_t maxAllowedDimension()
 {
@@ -3766,7 +3780,8 @@ bool Matrix<T>::FullTraverseIterator<IterType>::operator==(const IterType& it) c
                               m_NrOfMatrixColumns != it.m_NrOfMatrixColumns,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
 
-    return m_Index == it.m_Index;
+    /* both iterators are either empty or not */
+    return _isEmpty() || *m_Index == *it.m_Index;
 }
 
 template <MatrixElementType T>
@@ -4045,6 +4060,7 @@ std::strong_ordering Matrix<T>::PartialDiagIterator<IterType>::operator<=>(const
                               m_DiagonalNr != it.m_DiagonalNr,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
 
+    /* both iterators are either empty or not */
     return !_isEmpty() ? *m_DiagonalIndex <=> *it.m_DiagonalIndex : std::strong_ordering::equal;
 }
 
@@ -4056,7 +4072,8 @@ bool Matrix<T>::PartialDiagIterator<IterType>::operator==(const IterType& it) co
                               m_DiagonalNr != it.m_DiagonalNr,
                           Matr::errorMessages[Matr::Errors::INCOMPATIBLE_ITERATORS]);
 
-    return _isEmpty() || m_DiagonalIndex == it.m_DiagonalIndex;
+    /* both iterators are either empty or not */
+    return _isEmpty() || *m_DiagonalIndex == *it.m_DiagonalIndex;
 }
 
 template <MatrixElementType T>

@@ -5,28 +5,14 @@
 
 #include "../Matrix/matrixdimensions.h"
 
-#define ITERATOR_TRAITS(IterableType, DiffType, ReferenceType)                                                         \
-    using iterator_category = std::random_access_iterator_tag;                                                         \
-    using value_type = IterableType;                                                                                   \
-    using difference_type = DiffType;                                                                                  \
-    using pointer = IterableType**;                                                                                    \
-    using reference = ReferenceType;
-
-using matrix_size_t = Matr::size_t;
-using matrix_diff_t = Matr::diff_t;
-
 /* These functions should solely be used by iterator classes.
 
    They rely on correct data provided from Matrix class when iterators get constructed
    or from iterator classes when row/column numbers are being retrieved.
 */
 
-template <typename MatrixIterator> MatrixIterator addOffsetToIterator(const MatrixIterator& it, matrix_diff_t offset)
-{
-    MatrixIterator temp{it};
-    temp += offset;
-    return temp;
-}
+using matrix_size_t = Matr::size_t;
+using matrix_diff_t = Matr::diff_t;
 
 /* For non-diagonal iterators the end iterator index can also be calculated using the compute functions. */
 
