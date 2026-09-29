@@ -6,13 +6,6 @@
 
 #include "../Matrix/matrixdimensions.h"
 
-#define ITERATOR_TRAITS(IterableType, DiffType, ReferenceType)                                                         \
-    using iterator_category = std::random_access_iterator_tag;                                                         \
-    using value_type = IterableType;                                                                                   \
-    using difference_type = DiffType;                                                                                  \
-    using pointer = IterableType**;                                                                                    \
-    using reference = ReferenceType;
-
 /* These functions should solely be used by iterator classes.
 
    They rely on correct data provided from Matrix class when iterators get constructed
