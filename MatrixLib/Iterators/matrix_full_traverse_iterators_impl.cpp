@@ -397,10 +397,8 @@ inline std::optional<typename Matrix<T>::size_type> Matrix<T>::ZIterator::_colum
 
 template <MatrixElementType T>
 Matrix<T>::ConstZIterator::ConstZIterator(const ZIterator& zIterator)
-    : FullTraverseIterator<ConstZIterator>{
-          zIterator._getMatrixPtr(), zIterator._getNrOfMatrixRows(), zIterator._getNrOfMatrixColumns(),
-          computeForwardNonDiagIteratorIndex(zIterator._getNrOfMatrixRows(), zIterator._getNrOfMatrixColumns(),
-                                             zIterator.getRowNr(), zIterator.getColumnNr())}
+    : FullTraverseIterator<ConstZIterator>{zIterator._getMatrixPtr(), zIterator._getNrOfMatrixRows(),
+                                           zIterator._getNrOfMatrixColumns(), zIterator._getIndex()}
 {
 }
 
@@ -517,10 +515,7 @@ template <MatrixElementType T>
 Matrix<T>::ConstReverseZIterator::ConstReverseZIterator(const ReverseZIterator& reverseZIterator)
     : FullTraverseIterator<ConstReverseZIterator>{
           reverseZIterator._getMatrixPtr(), reverseZIterator._getNrOfMatrixRows(),
-          reverseZIterator._getNrOfMatrixColumns(),
-          computeReverseNonDiagIteratorIndex(reverseZIterator._getNrOfMatrixRows(),
-                                             reverseZIterator._getNrOfMatrixColumns(), reverseZIterator.getRowNr(),
-                                             reverseZIterator.getColumnNr())}
+          reverseZIterator._getNrOfMatrixColumns(), reverseZIterator._getIndex()}
 {
 }
 
@@ -634,10 +629,8 @@ inline std::optional<typename Matrix<T>::size_type> Matrix<T>::NIterator::_colum
 
 template <MatrixElementType T>
 Matrix<T>::ConstNIterator::ConstNIterator(const NIterator& nIterator)
-    : FullTraverseIterator<ConstNIterator>{
-          nIterator._getMatrixPtr(), nIterator._getNrOfMatrixRows(), nIterator._getNrOfMatrixColumns(),
-          computeForwardNonDiagIteratorIndex(nIterator._getNrOfMatrixColumns(), nIterator._getNrOfMatrixRows(),
-                                             nIterator.getColumnNr(), nIterator.getRowNr())}
+    : FullTraverseIterator<ConstNIterator>{nIterator._getMatrixPtr(), nIterator._getNrOfMatrixRows(),
+                                           nIterator._getNrOfMatrixColumns(), nIterator._getIndex()}
 {
 }
 
@@ -754,10 +747,7 @@ template <MatrixElementType T>
 Matrix<T>::ConstReverseNIterator::ConstReverseNIterator(const ReverseNIterator& reverseNIterator)
     : FullTraverseIterator<ConstReverseNIterator>{
           reverseNIterator._getMatrixPtr(), reverseNIterator._getNrOfMatrixRows(),
-          reverseNIterator._getNrOfMatrixColumns(),
-          computeReverseNonDiagIteratorIndex(reverseNIterator._getNrOfMatrixColumns(),
-                                             reverseNIterator._getNrOfMatrixRows(), reverseNIterator.getColumnNr(),
-                                             reverseNIterator.getRowNr())}
+          reverseNIterator._getNrOfMatrixColumns(), reverseNIterator._getIndex()}
 {
 }
 
