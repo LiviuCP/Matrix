@@ -88,6 +88,7 @@ Matrix<T>::FullTraverseIterator<IterType>::FullTraverseIterator(T** pMatrixPtr, 
     if (pMatrixPtr)
     {
         if (nrOfMatrixRows > size_type{0} && nrOfMatrixColumns > size_type{0} && index.has_value() &&
+            index >= diff_type{0} &&
             index <= static_cast<diff_type>(static_cast<diff_type>(nrOfMatrixRows) *
                                             static_cast<diff_type>(nrOfMatrixColumns)))
         {

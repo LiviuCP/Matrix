@@ -82,6 +82,7 @@ Matrix<T>::PartialDiagIterator<IterType>::PartialDiagIterator()
     : m_pMatrixPtr{nullptr}
     , m_DiagonalNr{0}
     , m_DiagonalSize{0}
+    , m_NrOfMatrixRows{0}
     , m_NrOfMatrixColumns{0}
 {
 }
@@ -100,7 +101,8 @@ Matrix<T>::PartialDiagIterator<IterType>::PartialDiagIterator(
         std::optional<size_type> resultingDiagonalIndex;
         size_type resultingDiagonalSize{0};
 
-        if (nrOfMatrixRows > size_type{0} && nrOfMatrixColumns > size_type{0} && diagonalIndex.has_value())
+        if (nrOfMatrixRows > size_type{0} && nrOfMatrixColumns > size_type{0} && diagonalIndex.has_value() &&
+            diagonalIndex <= std::min<size_type>(nrOfMatrixRows, nrOfMatrixColumns))
         {
             const diff_type c_MinDiagonalNr{
                 static_cast<diff_type>(diff_type{1} - static_cast<diff_type>(nrOfMatrixRows))};
